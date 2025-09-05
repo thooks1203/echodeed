@@ -489,6 +489,55 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const { accountId } = req.params;
       
+      // Handle demo data
+      if (accountId === 'demo') {
+        // Create demo corporate account if it doesn't exist
+        const existingDemoAccount = await storage.getCorporateAccount('techflow-solutions');
+        if (!existingDemoAccount) {
+          await storage.initializeSampleCorporateData();
+        }
+        
+        // Use TechFlow Solutions as demo account
+        const demoAccount = await storage.getCorporateAccount('techflow-solutions');
+        if (demoAccount) {
+          const [teams, employees, challenges, analytics] = await Promise.all([
+            storage.getCorporateTeams('techflow-solutions'),
+            storage.getCorporateEmployees('techflow-solutions'),
+            storage.getCorporateChallenges('techflow-solutions'),
+            storage.getCorporateAnalytics('techflow-solutions', 7)
+          ]);
+          
+          const totalEmployees = employees.length;
+          const activeTeams = teams.filter(t => t.isActive === 1).length;
+          const activeChallenges = challenges.filter(c => c.isActive === 1).length;
+          const totalChallengeCompletions = challenges.reduce((sum, c) => sum + (c.completionCount || 0), 0);
+          
+          const latestAnalytics = analytics[analytics.length - 1];
+          const totalTokensEarned = latestAnalytics?.totalEchoTokensEarned || 12450;
+          const engagementScore = latestAnalytics?.averageEngagementScore || 78;
+          const wellnessScore = latestAnalytics?.wellnessImpactScore || 85;
+          
+          const dashboardData = {
+            account: demoAccount,
+            overview: {
+              totalEmployees,
+              activeTeams,
+              activeChallenges,
+              totalChallengeCompletions,
+              totalTokensEarned,
+              engagementScore,
+              wellnessScore
+            },
+            teams,
+            employees: employees.slice(0, 10),
+            recentChallenges: challenges.slice(0, 5),
+            analytics: analytics.slice(-7)
+          };
+          
+          return res.json(dashboardData);
+        }
+      }
+      
       // Fetch comprehensive dashboard data
       const [account, teams, employees, challenges, analytics] = await Promise.all([
         storage.getCorporateAccount(accountId),
