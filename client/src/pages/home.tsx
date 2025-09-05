@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 import { AppHeader } from '@/components/AppHeader';
 import { FilterBar } from '@/components/FilterBar';
 import { KindnessFeed } from '@/components/KindnessFeed';
@@ -17,6 +18,7 @@ import { getSessionId, addSessionHeaders } from '@/lib/session';
 
 export default function Home() {
   const queryClient = useQueryClient();
+  const [pathname, navigate] = useLocation();
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
   const [activeTab, setActiveTab] = useState('feed');
@@ -3481,7 +3483,7 @@ export default function Home() {
       }}>
         {[
           { id: 'feed', label: 'Feed', icon: '🏠' },
-          { id: 'local', label: 'Local', icon: '📍' },
+          { id: 'rewards', label: 'Rewards', icon: '💎' },
           { id: 'ai', label: 'AI Insights', icon: '🧠' },
           { id: 'badges', label: 'Badges', icon: '🏅' },
           { id: 'notifications', label: 'Notifications', icon: '🔔' },
@@ -3493,7 +3495,13 @@ export default function Home() {
           return (
             <button 
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => {
+                if (tab.id === 'rewards') {
+                  navigate('/rewards');
+                } else {
+                  setActiveTab(tab.id);
+                }
+              }}
               style={{
                 background: 'none',
                 border: 'none',

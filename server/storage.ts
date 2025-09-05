@@ -12,6 +12,13 @@ import {
   corporateEmployees,
   corporateChallenges,
   corporateAnalytics,
+  rewardPartners,
+  rewardOffers,
+  rewardRedemptions,
+  kindnessVerifications,
+  badgeRewards,
+  weeklyPrizes,
+  prizeWinners,
   type User,
   type UpsertUser,
   type KindnessPost,
@@ -37,6 +44,20 @@ import {
   type InsertCorporateChallenge,
   type CorporateAnalytics,
   type InsertCorporateAnalytics,
+  type RewardPartner,
+  type InsertRewardPartner,
+  type RewardOffer,
+  type InsertRewardOffer,
+  type RewardRedemption,
+  type InsertRewardRedemption,
+  type KindnessVerification,
+  type InsertKindnessVerification,
+  type BadgeReward,
+  type InsertBadgeReward,
+  type WeeklyPrize,
+  type InsertWeeklyPrize,
+  type PrizeWinner,
+  type InsertPrizeWinner,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte } from "drizzle-orm";
@@ -179,6 +200,32 @@ export interface IStorage {
       projectedOutcome: number;
     };
   }>;
+  
+  // Rewards system operations
+  getRewardPartners(filters?: { isActive?: boolean; partnerType?: string; }): Promise<RewardPartner[]>;
+  createRewardPartner(partner: InsertRewardPartner): Promise<RewardPartner>;
+  getRewardOffers(filters?: { partnerId?: string; isActive?: boolean; offerType?: string; badgeRequirement?: string; }): Promise<RewardOffer[]>;
+  createRewardOffer(offer: InsertRewardOffer): Promise<RewardOffer>;
+  redeemReward(redemption: InsertRewardRedemption): Promise<RewardRedemption>;
+  getUserRedemptions(userId: string): Promise<RewardRedemption[]>;
+  getRedemption(id: string): Promise<RewardRedemption | undefined>;
+  updateRedemptionStatus(id: string, status: string, code?: string): Promise<RewardRedemption | undefined>;
+  
+  // Verification system
+  submitKindnessVerification(verification: InsertKindnessVerification): Promise<KindnessVerification>;
+  getKindnessVerifications(filters?: { userId?: string; status?: string; }): Promise<KindnessVerification[]>;
+  approveKindnessVerification(id: string, reviewerId: string, bonusEcho?: number): Promise<KindnessVerification | undefined>;
+  rejectKindnessVerification(id: string, reviewerId: string, notes?: string): Promise<KindnessVerification | undefined>;
+  
+  // Badge rewards
+  getBadgeRewards(): Promise<BadgeReward[]>;
+  createBadgeReward(reward: InsertBadgeReward): Promise<BadgeReward>;
+  
+  // Weekly prizes
+  getWeeklyPrizes(filters?: { status?: string; }): Promise<WeeklyPrize[]>;
+  createWeeklyPrize(prize: InsertWeeklyPrize): Promise<WeeklyPrize>;
+  drawWeeklyPrizeWinners(prizeId: string): Promise<PrizeWinner[]>;
+  getPrizeWinners(prizeId: string): Promise<PrizeWinner[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -976,6 +1023,198 @@ export class DatabaseStorage implements IStorage {
         projectedOutcome,
       },
     };
+  }
+
+  // Rewards system implementation
+  async getRewardPartners(filters?: { isActive?: boolean; partnerType?: string; }): Promise<RewardPartner[]> {
+    let query = db.select().from(rewardPartners);
+    
+    const conditions = [];
+    if (filters?.isActive !== undefined) {
+      conditions.push(eq(rewardPartners.isActive, filters.isActive ? 1 : 0));
+    }
+    if (filters?.partnerType) {
+      conditions.push(eq(rewardPartners.partnerType, filters.partnerType));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+    
+    return await query.orderBy(desc(rewardPartners.createdAt));
+  }
+
+  async createRewardPartner(partner: InsertRewardPartner): Promise<RewardPartner> {
+    const [newPartner] = await db.insert(rewardPartners).values(partner).returning();
+    return newPartner;
+  }
+
+  async getRewardOffers(filters?: { partnerId?: string; isActive?: boolean; offerType?: string; badgeRequirement?: string; }): Promise<RewardOffer[]> {
+    let query = db.select().from(rewardOffers);
+    
+    const conditions = [];
+    if (filters?.partnerId) {
+      conditions.push(eq(rewardOffers.partnerId, filters.partnerId));
+    }
+    if (filters?.isActive !== undefined) {
+      conditions.push(eq(rewardOffers.isActive, filters.isActive ? 1 : 0));
+    }
+    if (filters?.offerType) {
+      conditions.push(eq(rewardOffers.offerType, filters.offerType));
+    }
+    if (filters?.badgeRequirement) {
+      conditions.push(eq(rewardOffers.badgeRequirement, filters.badgeRequirement));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+    
+    return await query.orderBy(desc(rewardOffers.isFeatured), desc(rewardOffers.createdAt));
+  }
+
+  async createRewardOffer(offer: InsertRewardOffer): Promise<RewardOffer> {
+    const [newOffer] = await db.insert(rewardOffers).values(offer).returning();
+    return newOffer;
+  }
+
+  async redeemReward(redemption: InsertRewardRedemption): Promise<RewardRedemption> {
+    const [newRedemption] = await db.insert(rewardRedemptions).values(redemption).returning();
+    
+    // Increment redemption count for the offer
+    await db.update(rewardOffers)
+      .set({ currentRedemptions: sql`${rewardOffers.currentRedemptions} + 1` })
+      .where(eq(rewardOffers.id, redemption.offerId));
+    
+    return newRedemption;
+  }
+
+  async getUserRedemptions(userId: string): Promise<RewardRedemption[]> {
+    return await db.select().from(rewardRedemptions)
+      .where(eq(rewardRedemptions.userId, userId))
+      .orderBy(desc(rewardRedemptions.redeemedAt));
+  }
+
+  async getRedemption(id: string): Promise<RewardRedemption | undefined> {
+    const [redemption] = await db.select().from(rewardRedemptions).where(eq(rewardRedemptions.id, id));
+    return redemption;
+  }
+
+  async updateRedemptionStatus(id: string, status: string, code?: string): Promise<RewardRedemption | undefined> {
+    const updates: Partial<RewardRedemption> = { status };
+    if (code) updates.redemptionCode = code;
+    if (status === 'used') updates.usedAt = new Date();
+    
+    const [updatedRedemption] = await db.update(rewardRedemptions)
+      .set(updates)
+      .where(eq(rewardRedemptions.id, id))
+      .returning();
+    
+    return updatedRedemption;
+  }
+
+  // Verification system implementation
+  async submitKindnessVerification(verification: InsertKindnessVerification): Promise<KindnessVerification> {
+    const [newVerification] = await db.insert(kindnessVerifications).values(verification).returning();
+    return newVerification;
+  }
+
+  async getKindnessVerifications(filters?: { userId?: string; status?: string; }): Promise<KindnessVerification[]> {
+    let query = db.select().from(kindnessVerifications);
+    
+    const conditions = [];
+    if (filters?.userId) {
+      conditions.push(eq(kindnessVerifications.userId, filters.userId));
+    }
+    if (filters?.status) {
+      conditions.push(eq(kindnessVerifications.status, filters.status));
+    }
+    
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions));
+    }
+    
+    return await query.orderBy(desc(kindnessVerifications.submittedAt));
+  }
+
+  async approveKindnessVerification(id: string, reviewerId: string, bonusEcho?: number): Promise<KindnessVerification | undefined> {
+    const [updatedVerification] = await db.update(kindnessVerifications)
+      .set({
+        status: 'approved',
+        reviewedBy: reviewerId,
+        reviewedAt: new Date(),
+        bonusEchoAwarded: bonusEcho || 0,
+      })
+      .where(eq(kindnessVerifications.id, id))
+      .returning();
+
+    // Award bonus echo tokens to user if specified
+    if (updatedVerification && bonusEcho && bonusEcho > 0) {
+      await this.updateUserTokens(updatedVerification.userId, {
+        echoTokens: sql`${userTokens.echoTokens} + ${bonusEcho}`,
+      } as any);
+    }
+    
+    return updatedVerification;
+  }
+
+  async rejectKindnessVerification(id: string, reviewerId: string, notes?: string): Promise<KindnessVerification | undefined> {
+    const [updatedVerification] = await db.update(kindnessVerifications)
+      .set({
+        status: 'rejected',
+        reviewedBy: reviewerId,
+        reviewedAt: new Date(),
+        reviewNotes: notes || '',
+      })
+      .where(eq(kindnessVerifications.id, id))
+      .returning();
+    
+    return updatedVerification;
+  }
+
+  // Badge rewards implementation
+  async getBadgeRewards(): Promise<BadgeReward[]> {
+    return await db.select().from(badgeRewards)
+      .where(eq(badgeRewards.isActive, 1))
+      .orderBy(desc(badgeRewards.createdAt));
+  }
+
+  async createBadgeReward(reward: InsertBadgeReward): Promise<BadgeReward> {
+    const [newReward] = await db.insert(badgeRewards).values(reward).returning();
+    return newReward;
+  }
+
+  // Weekly prizes implementation
+  async getWeeklyPrizes(filters?: { status?: string; }): Promise<WeeklyPrize[]> {
+    let query = db.select().from(weeklyPrizes);
+    
+    if (filters?.status) {
+      query = query.where(eq(weeklyPrizes.status, filters.status));
+    }
+    
+    return await query.orderBy(desc(weeklyPrizes.weekStartDate));
+  }
+
+  async createWeeklyPrize(prize: InsertWeeklyPrize): Promise<WeeklyPrize> {
+    const [newPrize] = await db.insert(weeklyPrizes).values(prize).returning();
+    return newPrize;
+  }
+
+  async drawWeeklyPrizeWinners(prizeId: string): Promise<PrizeWinner[]> {
+    const prize = await db.select().from(weeklyPrizes).where(eq(weeklyPrizes.id, prizeId));
+    if (!prize[0]) {
+      throw new Error('Prize not found');
+    }
+
+    // For now, return empty array - would implement actual lottery logic
+    // In real implementation, would select random qualifying users based on eligibility criteria
+    return [];
+  }
+
+  async getPrizeWinners(prizeId: string): Promise<PrizeWinner[]> {
+    return await db.select().from(prizeWinners)
+      .where(eq(prizeWinners.prizeId, prizeId))
+      .orderBy(desc(prizeWinners.wonAt));
   }
 }
 

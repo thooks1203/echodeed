@@ -253,6 +253,121 @@ export const insertUserAchievementSchema = createInsertSchema(userAchievements).
   unlockedAt: true,
 });
 
+// Rewards & Partners System
+export const rewardPartners = pgTable("reward_partners", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  partnerName: varchar("partner_name", { length: 200 }).notNull(),
+  partnerLogo: text("partner_logo"), // URL to partner logo
+  partnerType: varchar("partner_type", { length: 50 }).default("retail").notNull(), // retail, food, wellness, tech, travel
+  websiteUrl: text("website_url"),
+  description: text("description").notNull(),
+  isActive: integer("is_active").default(1).notNull(),
+  isFeatured: integer("is_featured").default(0).notNull(),
+  minRedemptionAmount: integer("min_redemption_amount").default(100).notNull(), // Minimum $ECHO to redeem
+  maxRedemptionAmount: integer("max_redemption_amount").default(5000).notNull(), // Maximum $ECHO per redemption
+  contactEmail: varchar("contact_email", { length: 200 }),
+  apiEndpoint: text("api_endpoint"), // For automated discount code generation
+  apiKey: text("api_key"), // Encrypted API key for partner integration
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const rewardOffers = pgTable("reward_offers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  partnerId: varchar("partner_id").notNull(),
+  offerType: varchar("offer_type", { length: 50 }).default("discount").notNull(), // discount, freebie, cashback, experience
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description").notNull(),
+  offerValue: varchar("offer_value", { length: 50 }).notNull(), // "20%", "$5", "Buy 1 Get 1"
+  echoCost: integer("echo_cost").notNull(), // Cost in $ECHO tokens
+  badgeRequirement: varchar("badge_requirement"), // Required achievement badge
+  maxRedemptions: integer("max_redemptions").default(-1), // -1 = unlimited
+  currentRedemptions: integer("current_redemptions").default(0),
+  isActive: integer("is_active").default(1).notNull(),
+  isFeatured: integer("is_featured").default(0).notNull(),
+  requiresVerification: integer("requires_verification").default(0).notNull(), // 1 = requires kindness verification
+  expiresAt: timestamp("expires_at"),
+  termsAndConditions: text("terms_and_conditions"),
+  imageUrl: text("image_url"), // Offer banner image
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const rewardRedemptions = pgTable("reward_redemptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  offerId: varchar("offer_id").notNull(),
+  partnerId: varchar("partner_id").notNull(),
+  echoSpent: integer("echo_spent").notNull(),
+  redemptionCode: varchar("redemption_code", { length: 50 }), // Generated discount/promo code
+  status: varchar("status", { length: 50 }).default("pending").notNull(), // pending, active, used, expired, refunded
+  verificationRequired: integer("verification_required").default(0).notNull(),
+  verificationStatus: varchar("verification_status", { length: 50 }).default("none").notNull(), // none, pending, approved, rejected
+  verificationData: jsonb("verification_data"), // Photo/proof of kindness act
+  expiresAt: timestamp("expires_at"),
+  usedAt: timestamp("used_at"),
+  redeemedAt: timestamp("redeemed_at").defaultNow().notNull(),
+  refundedAt: timestamp("refunded_at"),
+});
+
+export const kindnessVerifications = pgTable("kindness_verifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  postId: varchar("post_id"), // Optional - link to kindness post
+  redemptionId: varchar("redemption_id"), // Link to reward redemption requiring verification
+  verificationType: varchar("verification_type", { length: 50 }).default("photo").notNull(), // photo, video, witness, receipt
+  verificationData: jsonb("verification_data").notNull(), // URLs, witness info, etc.
+  description: text("description").notNull(), // User's description of the act
+  location: text("location"),
+  witnessName: varchar("witness_name", { length: 100 }),
+  witnessContact: varchar("witness_contact", { length: 200 }),
+  status: varchar("status", { length: 50 }).default("pending").notNull(), // pending, approved, rejected
+  reviewedBy: varchar("reviewed_by"), // Admin user ID
+  reviewNotes: text("review_notes"),
+  bonusEchoAwarded: integer("bonus_echo_awarded").default(0), // Extra tokens for verified acts
+  submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+  reviewedAt: timestamp("reviewed_at"),
+});
+
+export const badgeRewards = pgTable("badge_rewards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  badgeId: varchar("badge_id").notNull(), // Links to achievement ID
+  rewardType: varchar("reward_type", { length: 50 }).default("echo_multiplier").notNull(), // echo_multiplier, exclusive_offers, priority_access
+  rewardValue: varchar("reward_value", { length: 100 }).notNull(), // "2x", "exclusive_partner_access", "early_access"
+  description: text("description").notNull(),
+  isActive: integer("is_active").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const weeklyPrizes = pgTable("weekly_prizes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  prizeType: varchar("prize_type", { length: 50 }).default("grand_prize").notNull(), // grand_prize, category_winner, participation
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description").notNull(),
+  prizeValue: varchar("prize_value", { length: 50 }), // "$500 Gift Card", "Apple Watch"
+  eligibilityCriteria: text("eligibility_criteria").notNull(), // JSON criteria for winning
+  maxWinners: integer("max_winners").default(1).notNull(),
+  weekStartDate: timestamp("week_start_date").notNull(),
+  weekEndDate: timestamp("week_end_date").notNull(),
+  drawDate: timestamp("draw_date").notNull(),
+  status: varchar("status", { length: 50 }).default("upcoming").notNull(), // upcoming, active, drawn, completed
+  sponsorId: varchar("sponsor_id"), // Partner sponsor
+  imageUrl: text("image_url"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const prizeWinners = pgTable("prize_winners", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  prizeId: varchar("prize_id").notNull(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  winningCriteria: text("winning_criteria"), // What they won for
+  contactStatus: varchar("contact_status", { length: 50 }).default("pending").notNull(), // pending, contacted, claimed, delivered
+  claimCode: varchar("claim_code", { length: 50 }), // Code to claim prize
+  deliveryInfo: jsonb("delivery_info"), // Shipping address, etc.
+  wonAt: timestamp("won_at").defaultNow().notNull(),
+  contactedAt: timestamp("contacted_at"),
+  claimedAt: timestamp("claimed_at"),
+  deliveredAt: timestamp("delivered_at"),
+});
+
 // B2B SaaS Insert Schemas
 export const insertCorporateAccountSchema = createInsertSchema(corporateAccounts).omit({
   id: true,
@@ -282,6 +397,43 @@ export const insertCorporateAnalyticsSchema = createInsertSchema(corporateAnalyt
   createdAt: true,
 });
 
+// Rewards System Insert Schemas
+export const insertRewardPartnerSchema = createInsertSchema(rewardPartners).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertRewardOfferSchema = createInsertSchema(rewardOffers).omit({
+  id: true,
+  createdAt: true,
+  currentRedemptions: true,
+});
+
+export const insertRewardRedemptionSchema = createInsertSchema(rewardRedemptions).omit({
+  id: true,
+  redeemedAt: true,
+});
+
+export const insertKindnessVerificationSchema = createInsertSchema(kindnessVerifications).omit({
+  id: true,
+  submittedAt: true,
+});
+
+export const insertBadgeRewardSchema = createInsertSchema(badgeRewards).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertWeeklyPrizeSchema = createInsertSchema(weeklyPrizes).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertPrizeWinnerSchema = createInsertSchema(prizeWinners).omit({
+  id: true,
+  wonAt: true,
+});
+
 export type InsertKindnessPost = z.infer<typeof insertKindnessPostSchema>;
 export type KindnessPost = typeof kindnessPosts.$inferSelect;
 export type KindnessCounter = typeof kindnessCounter.$inferSelect;
@@ -307,6 +459,22 @@ export type CorporateChallenge = typeof corporateChallenges.$inferSelect;
 export type InsertCorporateChallenge = z.infer<typeof insertCorporateChallengeSchema>;
 export type CorporateAnalytics = typeof corporateAnalytics.$inferSelect;
 export type InsertCorporateAnalytics = z.infer<typeof insertCorporateAnalyticsSchema>;
+
+// Rewards System Types
+export type RewardPartner = typeof rewardPartners.$inferSelect;
+export type InsertRewardPartner = z.infer<typeof insertRewardPartnerSchema>;
+export type RewardOffer = typeof rewardOffers.$inferSelect;
+export type InsertRewardOffer = z.infer<typeof insertRewardOfferSchema>;
+export type RewardRedemption = typeof rewardRedemptions.$inferSelect;
+export type InsertRewardRedemption = z.infer<typeof insertRewardRedemptionSchema>;
+export type KindnessVerification = typeof kindnessVerifications.$inferSelect;
+export type InsertKindnessVerification = z.infer<typeof insertKindnessVerificationSchema>;
+export type BadgeReward = typeof badgeRewards.$inferSelect;
+export type InsertBadgeReward = z.infer<typeof insertBadgeRewardSchema>;
+export type WeeklyPrize = typeof weeklyPrizes.$inferSelect;
+export type InsertWeeklyPrize = z.infer<typeof insertWeeklyPrizeSchema>;
+export type PrizeWinner = typeof prizeWinners.$inferSelect;
+export type InsertPrizeWinner = z.infer<typeof insertPrizeWinnerSchema>;
 
 // User relations for better query performance
 export const usersRelations = relations(users, ({ many }) => ({

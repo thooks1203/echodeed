@@ -1,4 +1,4 @@
-import { Home, MapPin, TrendingUp, Info } from 'lucide-react';
+import { Home, MapPin, TrendingUp, Info, Gift } from 'lucide-react';
 
 interface BottomNavigationProps {
   activeTab: string;
@@ -8,7 +8,7 @@ interface BottomNavigationProps {
 export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationProps) {
   const tabs = [
     { id: 'feed', label: 'Feed', icon: Home },
-    { id: 'local', label: 'Local', icon: MapPin },
+    { id: 'rewards', label: 'Rewards', icon: Gift },
     { id: 'spacer', label: '', icon: null }, // Spacer for FAB
     { id: 'impact', label: 'Impact', icon: TrendingUp },
     { id: 'about', label: 'About', icon: Info },

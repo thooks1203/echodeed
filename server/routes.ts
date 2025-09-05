@@ -1211,5 +1211,445 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Rewards System API Endpoints
+  
+  // Reward Partners
+  app.get('/api/rewards/partners', async (req, res) => {
+    try {
+      const { isActive, partnerType } = req.query;
+      const partners = await storage.getRewardPartners({
+        isActive: isActive ? (isActive === 'true') : undefined,
+        partnerType: partnerType as string
+      });
+      res.json(partners);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/rewards/partners', isAuthenticated, async (req, res) => {
+    try {
+      const partner = await storage.createRewardPartner(req.body);
+      res.status(201).json(partner);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Reward Offers
+  app.get('/api/rewards/offers', async (req, res) => {
+    try {
+      const { partnerId, isActive, offerType, badgeRequirement } = req.query;
+      const offers = await storage.getRewardOffers({
+        partnerId: partnerId as string,
+        isActive: isActive ? (isActive === 'true') : undefined,
+        offerType: offerType as string,
+        badgeRequirement: badgeRequirement as string
+      });
+      res.json(offers);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/rewards/offers', isAuthenticated, async (req, res) => {
+    try {
+      const offer = await storage.createRewardOffer(req.body);
+      res.status(201).json(offer);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Reward Redemptions
+  app.post('/api/rewards/redeem', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { offerId, partnerId, echoSpent } = req.body;
+
+      // Check if user has enough tokens
+      const userTokens = await storage.getUserTokens(userId);
+      if (!userTokens || userTokens.echoTokens < echoSpent) {
+        return res.status(400).json({ message: 'Insufficient $ECHO tokens' });
+      }
+
+      // Deduct tokens from user
+      await storage.updateUserTokens(userId, {
+        echoTokens: userTokens.echoTokens - echoSpent
+      });
+
+      // Create redemption
+      const redemption = await storage.redeemReward({
+        userId,
+        offerId,
+        partnerId,
+        echoSpent,
+        status: 'pending',
+        verificationRequired: req.body.verificationRequired || 0,
+        verificationStatus: req.body.verificationRequired ? 'pending' : 'none',
+        expiresAt: req.body.expiresAt ? new Date(req.body.expiresAt) : undefined
+      });
+
+      // Generate discount code (simplified - in real app would integrate with partner API)
+      const discountCode = `ECHO${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+      await storage.updateRedemptionStatus(redemption.id, 'active', discountCode);
+
+      res.status(201).json({
+        ...redemption,
+        redemptionCode: discountCode,
+        status: 'active'
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/rewards/my-redemptions', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const redemptions = await storage.getUserRedemptions(userId);
+      res.json(redemptions);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.patch('/api/rewards/redemptions/:id/status', isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status, code } = req.body;
+      
+      const updatedRedemption = await storage.updateRedemptionStatus(id, status, code);
+      if (!updatedRedemption) {
+        return res.status(404).json({ message: 'Redemption not found' });
+      }
+      
+      res.json(updatedRedemption);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Kindness Verification System
+  app.post('/api/verification/submit', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const verification = await storage.submitKindnessVerification({
+        ...req.body,
+        userId,
+        status: 'pending'
+      });
+      
+      res.status(201).json(verification);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/verification/my-submissions', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const verifications = await storage.getKindnessVerifications({ userId });
+      res.json(verifications);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/verification/pending', isAuthenticated, async (req, res) => {
+    try {
+      // In production, would check if user has admin permissions
+      const verifications = await storage.getKindnessVerifications({ status: 'pending' });
+      res.json(verifications);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.patch('/api/verification/:id/approve', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { bonusEcho } = req.body;
+      const reviewerId = req.user.claims.sub;
+      
+      const verification = await storage.approveKindnessVerification(id, reviewerId, bonusEcho);
+      if (!verification) {
+        return res.status(404).json({ message: 'Verification not found' });
+      }
+      
+      res.json(verification);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.patch('/api/verification/:id/reject', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { notes } = req.body;
+      const reviewerId = req.user.claims.sub;
+      
+      const verification = await storage.rejectKindnessVerification(id, reviewerId, notes);
+      if (!verification) {
+        return res.status(404).json({ message: 'Verification not found' });
+      }
+      
+      res.json(verification);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Badge Rewards
+  app.get('/api/rewards/badge-rewards', async (req, res) => {
+    try {
+      const rewards = await storage.getBadgeRewards();
+      res.json(rewards);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/rewards/badge-rewards', isAuthenticated, async (req, res) => {
+    try {
+      const reward = await storage.createBadgeReward(req.body);
+      res.status(201).json(reward);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Sample Data Population (Development Only)
+  app.post('/api/rewards/populate-sample-data', async (req, res) => {
+    try {
+      // Create sample partners
+      const partners = await Promise.all([
+        storage.createRewardPartner({
+          partnerName: "Starbucks",
+          partnerLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1200px-Starbucks_Corporation_Logo_2011.svg.png",
+          partnerType: "food",
+          websiteUrl: "https://starbucks.com",
+          description: "America's favorite coffee destination with premium beverages and food",
+          isActive: 1,
+          isFeatured: 1,
+          minRedemptionAmount: 100,
+          maxRedemptionAmount: 2000,
+          contactEmail: "partners@starbucks.com"
+        }),
+        storage.createRewardPartner({
+          partnerName: "Amazon",
+          partnerLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/1200px-Amazon_logo.svg.png",
+          partnerType: "retail",
+          websiteUrl: "https://amazon.com",
+          description: "Everything you need, delivered fast with exclusive EchoDeed™ member discounts",
+          isActive: 1,
+          isFeatured: 1,
+          minRedemptionAmount: 200,
+          maxRedemptionAmount: 5000,
+          contactEmail: "corporate@amazon.com"
+        }),
+        storage.createRewardPartner({
+          partnerName: "Nike",
+          partnerLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png",
+          partnerType: "wellness",
+          websiteUrl: "https://nike.com",
+          description: "Premium athletic gear and wellness products to support your active lifestyle",
+          isActive: 1,
+          isFeatured: 1,
+          minRedemptionAmount: 300,
+          maxRedemptionAmount: 3000,
+          contactEmail: "corporate@nike.com"
+        }),
+        storage.createRewardPartner({
+          partnerName: "Spotify",
+          partnerLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_without_text.svg/1200px-Spotify_logo_without_text.svg.png",
+          partnerType: "tech",
+          websiteUrl: "https://spotify.com",
+          description: "Premium music streaming with exclusive wellness playlists for EchoDeed™ members",
+          isActive: 1,
+          isFeatured: 0,
+          minRedemptionAmount: 150,
+          maxRedemptionAmount: 1500,
+          contactEmail: "partnerships@spotify.com"
+        })
+      ]);
+
+      // Create sample offers for each partner
+      const offers = [];
+      
+      // Starbucks offers
+      offers.push(await storage.createRewardOffer({
+        partnerId: partners[0].id,
+        offerType: "discount",
+        title: "$5 Off Your Order",
+        description: "Get $5 off any Starbucks order over $10. Perfect for your daily coffee motivation!",
+        offerValue: "$5 off",
+        echoCost: 250,
+        isActive: 1,
+        isFeatured: 1,
+        maxRedemptions: 1000,
+        termsAndConditions: "Valid for 30 days. Cannot be combined with other offers. Minimum $10 purchase required.",
+        imageUrl: "https://images.unsplash.com/photo-1461023058943-07fcbe16d735?w=400"
+      }));
+
+      offers.push(await storage.createRewardOffer({
+        partnerId: partners[0].id,
+        offerType: "freebie",
+        title: "Free Grande Coffee",
+        description: "Complimentary grande coffee of your choice. Spread kindness, get caffeinated!",
+        offerValue: "Free Grande",
+        echoCost: 400,
+        badgeRequirement: "coffee_lover",
+        isActive: 1,
+        isFeatured: 0,
+        maxRedemptions: 500,
+        termsAndConditions: "Badge required: Coffee Lover. Valid for 30 days.",
+        imageUrl: "https://images.unsplash.com/photo-1459755486867-b55449bb39ff?w=400"
+      }));
+
+      // Amazon offers
+      offers.push(await storage.createRewardOffer({
+        partnerId: partners[1].id,
+        offerType: "discount",
+        title: "15% Off Wellness Products",
+        description: "Exclusive 15% discount on all health, wellness, and fitness products on Amazon",
+        offerValue: "15% off",
+        echoCost: 500,
+        isActive: 1,
+        isFeatured: 1,
+        maxRedemptions: 2000,
+        termsAndConditions: "Valid on health & wellness category only. Maximum discount $50. Valid for 60 days.",
+        imageUrl: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400"
+      }));
+
+      offers.push(await storage.createRewardOffer({
+        partnerId: partners[1].id,
+        offerType: "cashback",
+        title: "$25 Amazon Gift Card",
+        description: "Get a $25 Amazon gift card to spend on anything you love",
+        offerValue: "$25 Gift Card",
+        echoCost: 1200,
+        isActive: 1,
+        isFeatured: 1,
+        maxRedemptions: 300,
+        requiresVerification: 1,
+        termsAndConditions: "Requires kindness verification. Gift card delivered electronically within 48 hours.",
+        imageUrl: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=400"
+      }));
+
+      // Nike offers
+      offers.push(await storage.createRewardOffer({
+        partnerId: partners[2].id,
+        offerType: "discount",
+        title: "20% Off Athletic Wear",
+        description: "Get 20% off on Nike athletic wear to fuel your fitness journey",
+        offerValue: "20% off",
+        echoCost: 600,
+        isActive: 1,
+        isFeatured: 1,
+        maxRedemptions: 800,
+        termsAndConditions: "Valid on athletic wear only. Cannot be combined with other offers. Valid for 45 days.",
+        imageUrl: "https://images.unsplash.com/photo-1556906781-9a412961c28c?w=400"
+      }));
+
+      // Spotify offers
+      offers.push(await storage.createRewardOffer({
+        partnerId: partners[3].id,
+        offerType: "freebie",
+        title: "3 Months Spotify Premium",
+        description: "Enjoy 3 months of ad-free music with curated wellness and motivation playlists",
+        offerValue: "3 Months Free",
+        echoCost: 800,
+        badgeRequirement: "kindness_streaker",
+        isActive: 1,
+        isFeatured: 0,
+        maxRedemptions: 200,
+        requiresVerification: 1,
+        termsAndConditions: "Badge required: Kindness Streaker. Must verify recent acts of kindness.",
+        imageUrl: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=400"
+      }));
+
+      // Create sample badge rewards
+      const badgeRewards = await Promise.all([
+        storage.createBadgeReward({
+          badgeId: "kindness_streaker",
+          rewardType: "echo_multiplier", 
+          rewardValue: "2x",
+          description: "Double $ECHO tokens for all verified acts of kindness",
+          isActive: 1
+        }),
+        storage.createBadgeReward({
+          badgeId: "coffee_lover",
+          rewardType: "exclusive_offers",
+          rewardValue: "starbucks_exclusive",
+          description: "Access to exclusive Starbucks offers and early access to limited deals",
+          isActive: 1
+        }),
+        storage.createBadgeReward({
+          badgeId: "wellness_champion", 
+          rewardType: "priority_access",
+          rewardValue: "early_access",
+          description: "Priority access to wellness-related rewards and challenges",
+          isActive: 1
+        })
+      ]);
+
+      res.status(201).json({
+        message: "Sample data created successfully",
+        stats: {
+          partners: partners.length,
+          offers: offers.length,
+          badgeRewards: badgeRewards.length
+        },
+        data: { partners, offers, badgeRewards }
+      });
+      
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Weekly Prizes
+  app.get('/api/prizes/weekly', async (req, res) => {
+    try {
+      const { status } = req.query;
+      const prizes = await storage.getWeeklyPrizes({
+        status: status as string
+      });
+      res.json(prizes);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/prizes/weekly', isAuthenticated, async (req, res) => {
+    try {
+      const prize = await storage.createWeeklyPrize(req.body);
+      res.status(201).json(prize);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/prizes/:id/draw', isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const winners = await storage.drawWeeklyPrizeWinners(id);
+      res.json({ winners, message: `Drew ${winners.length} winners for prize` });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/prizes/:id/winners', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const winners = await storage.getPrizeWinners(id);
+      res.json(winners);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   return httpServer;
 }
