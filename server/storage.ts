@@ -78,6 +78,8 @@ export interface IStorage {
     userId?: string; // For user-specific posts
   }): Promise<KindnessPost[]>;
   createPost(post: InsertKindnessPost): Promise<KindnessPost>;
+  addHeartToPost(postId: string, sessionId: string): Promise<KindnessPost>;
+  addEchoToPost(postId: string, sessionId: string): Promise<KindnessPost>;
   updatePostAnalytics(id: string, analytics: {
     sentimentScore?: number;
     impactScore?: number;
@@ -295,6 +297,38 @@ export class DatabaseStorage implements IStorage {
       .values(post)
       .returning();
     return newPost;
+  }
+
+  async addHeartToPost(postId: string, sessionId: string): Promise<KindnessPost> {
+    const [updatedPost] = await db
+      .update(kindnessPosts)
+      .set({
+        heartsCount: sql`${kindnessPosts.heartsCount} + 1`
+      })
+      .where(eq(kindnessPosts.id, postId))
+      .returning();
+    
+    if (!updatedPost) {
+      throw new Error('Post not found');
+    }
+    
+    return updatedPost;
+  }
+
+  async addEchoToPost(postId: string, sessionId: string): Promise<KindnessPost> {
+    const [updatedPost] = await db
+      .update(kindnessPosts)
+      .set({
+        echoesCount: sql`${kindnessPosts.echoesCount} + 1`
+      })
+      .where(eq(kindnessPosts.id, postId))
+      .returning();
+    
+    if (!updatedPost) {
+      throw new Error('Post not found');
+    }
+    
+    return updatedPost;
   }
 
   async updatePostAnalytics(id: string, analytics: {
