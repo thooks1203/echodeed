@@ -170,6 +170,16 @@ export interface IStorage {
     topCategories: Array<{ category: string; count: number; }>;
     monthlyTrends: Array<{ month: string; posts: number; challenges: number; }>;
   }>;
+
+  // Community AI insights
+  getCommunityWellnessInsights(): Promise<{
+    overallWellness: number;
+    trendDirection: 'rising' | 'stable' | 'declining';
+    dominantCategories: string[];
+    totalAnalyzed: number;
+    avgSentiment: number;
+    avgImpact: number;
+  }>;
   getDepartmentalInsights(corporateAccountId: string): Promise<{
     departmentRankings: Array<{
       department: string;
@@ -769,6 +779,92 @@ export class DatabaseStorage implements IStorage {
     }
 
     return { alerts, successStories };
+  }
+
+  async getCommunityWellnessInsights(): Promise<{
+    overallWellness: number;
+    trendDirection: 'rising' | 'stable' | 'declining';
+    dominantCategories: string[];
+    totalAnalyzed: number;
+    avgSentiment: number;
+    avgImpact: number;
+  }> {
+    // Get all posts
+    const allPosts = await this.getPosts();
+    
+    if (allPosts.length === 0) {
+      return {
+        overallWellness: 0,
+        trendDirection: 'stable',
+        dominantCategories: [],
+        totalAnalyzed: 0,
+        avgSentiment: 0,
+        avgImpact: 0
+      };
+    }
+
+    // Calculate category distribution
+    const categoryCount: { [key: string]: number } = {};
+    let totalSentiment = 0;
+    let totalImpact = 0;
+    let validSentimentCount = 0;
+    let validImpactCount = 0;
+
+    allPosts.forEach(post => {
+      // Count categories
+      if (post.category) {
+        categoryCount[post.category] = (categoryCount[post.category] || 0) + 1;
+      }
+
+      // Sum sentiment scores (using default values if null)
+      const sentiment = post.sentimentScore || 75; // Default positive sentiment
+      totalSentiment += sentiment;
+      validSentimentCount++;
+
+      // Sum impact scores (using default values if null)
+      const impact = post.impactScore || 80; // Default good impact
+      totalImpact += impact;
+      validImpactCount++;
+    });
+
+    // Calculate averages
+    const avgSentiment = validSentimentCount > 0 ? Math.round(totalSentiment / validSentimentCount) : 75;
+    const avgImpact = validImpactCount > 0 ? Math.round(totalImpact / validImpactCount) : 80;
+
+    // Calculate overall wellness score (weighted average)
+    const overallWellness = Math.round((avgSentiment * 0.4) + (avgImpact * 0.4) + (Math.min(allPosts.length * 2, 20) * 0.2));
+
+    // Get dominant categories (top 3)
+    const sortedCategories = Object.entries(categoryCount)
+      .sort(([,a], [,b]) => b - a)
+      .slice(0, 3)
+      .map(([category]) => category);
+
+    // Calculate trend direction based on recent activity
+    const now = new Date();
+    const dayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+
+    const recentPosts = allPosts.filter(post => new Date(post.createdAt) >= dayAgo).length;
+    const weekPosts = allPosts.filter(post => new Date(post.createdAt) >= weekAgo).length;
+    
+    let trendDirection: 'rising' | 'stable' | 'declining';
+    if (recentPosts > 2 || (weekPosts > 10 && recentPosts > 0)) {
+      trendDirection = 'rising';
+    } else if (recentPosts === 0 && weekPosts < 3) {
+      trendDirection = 'declining';
+    } else {
+      trendDirection = 'stable';
+    }
+
+    return {
+      overallWellness: Math.min(overallWellness, 100),
+      trendDirection,
+      dominantCategories: sortedCategories,
+      totalAnalyzed: allPosts.length,
+      avgSentiment,
+      avgImpact
+    };
   }
 
   // Company-wide tracking implementations
