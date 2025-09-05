@@ -131,11 +131,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Add heart to post
-  app.post('/api/posts/:postId/heart', async (req, res) => {
+  app.post('/api/posts/:postId/heart', isAuthenticated, async (req: any, res) => {
     try {
       const { postId } = req.params;
       const sessionId = req.headers['x-session-id'] as string;
+      const userId = req.user.claims.sub;
       const updatedPost = await storage.addHeartToPost(postId, sessionId);
+      
+      // Award tokens for hearting a post (1 token)
+      let userTokens = await storage.getUserTokens(userId);
+      if (!userTokens) {
+        userTokens = await storage.createUserTokens({ userId });
+      }
+      await storage.updateUserTokens(userId, { 
+        echoBalance: userTokens.echoBalance + 1,
+        totalEarned: userTokens.totalEarned + 1 
+      });
       
       // Broadcast the update to all connected WebSocket clients
       broadcast({
@@ -154,11 +165,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Add echo to post  
-  app.post('/api/posts/:postId/echo', async (req, res) => {
+  app.post('/api/posts/:postId/echo', isAuthenticated, async (req: any, res) => {
     try {
       const { postId } = req.params;
       const sessionId = req.headers['x-session-id'] as string;
+      const userId = req.user.claims.sub;
       const updatedPost = await storage.addEchoToPost(postId, sessionId);
+      
+      // Award tokens for echoing a post (2 tokens - higher reward for commitment)
+      let userTokens = await storage.getUserTokens(userId);
+      if (!userTokens) {
+        userTokens = await storage.createUserTokens({ userId });
+      }
+      await storage.updateUserTokens(userId, { 
+        echoBalance: userTokens.echoBalance + 2,
+        totalEarned: userTokens.totalEarned + 2 
+      });
       
       // Broadcast the update to all connected WebSocket clients
       broadcast({

@@ -116,6 +116,7 @@ export interface IStorage {
   getAchievements(): Promise<Achievement[]>;
   getUserAchievements(userId: string): Promise<UserAchievement[]>;
   unlockUserAchievement(achievement: InsertUserAchievement): Promise<UserAchievement>;
+  checkAndUnlockAchievements(sessionId: string): Promise<UserAchievement[]>;
   
   // Corporate operations
   getCorporateAccount(id: string): Promise<CorporateAccount | undefined>;
@@ -474,6 +475,12 @@ export class DatabaseStorage implements IStorage {
       .values(achievement)
       .returning();
     return newAchievement;
+  }
+
+  async checkAndUnlockAchievements(sessionId: string): Promise<UserAchievement[]> {
+    // For now, return empty array to fix the error
+    // This can be expanded later with actual achievement checking logic
+    return [];
   }
   
   // Corporate operations
