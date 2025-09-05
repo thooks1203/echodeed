@@ -24,6 +24,21 @@ export default function Home() {
   // Fetch posts
   const { data: posts = [], isLoading: postsLoading, refetch: refetchPosts } = useQuery<KindnessPost[]>({
     queryKey: ['/api/posts', filters],
+    queryFn: async ({ queryKey }) => {
+      const [baseUrl, filterParams] = queryKey;
+      const searchParams = new URLSearchParams();
+      
+      if (filterParams && typeof filterParams === 'object') {
+        Object.entries(filterParams).forEach(([key, value]) => {
+          if (value) searchParams.set(key, value as string);
+        });
+      }
+      
+      const url = searchParams.toString() ? `${baseUrl}?${searchParams}` : baseUrl as string;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Failed to fetch posts');
+      return response.json();
+    },
   });
 
   // Fetch counter
