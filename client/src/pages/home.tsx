@@ -200,6 +200,73 @@ export default function Home() {
             </p>
           </div>
 
+          {/* How It Works */}
+          <div style={{ 
+            backgroundColor: 'white', 
+            borderRadius: '16px', 
+            padding: '20px', 
+            marginBottom: '30px',
+            border: '1px solid #f3f4f6'
+          }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: '600', 
+              margin: '0 0 15px 0',
+              color: '#374151',
+              textAlign: 'center'
+            }}>
+              How to Amplify Kindness:
+            </h3>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ 
+                  backgroundColor: '#8B5CF6', 
+                  borderRadius: '50%', 
+                  width: '40px', 
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <span style={{ fontSize: '20px' }}>💜</span>
+                </div>
+                <div>
+                  <div style={{ fontWeight: '600', color: '#374151', fontSize: '14px' }}>
+                    Purple Heart
+                  </div>
+                  <div style={{ color: '#6b7280', fontSize: '13px' }}>
+                    Tap to show love and appreciation for an act of kindness
+                  </div>
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ 
+                  backgroundColor: '#06B6D4', 
+                  borderRadius: '50%', 
+                  width: '40px', 
+                  height: '40px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  <span style={{ fontSize: '20px' }}>🌊</span>
+                </div>
+                <div>
+                  <div style={{ fontWeight: '600', color: '#374151', fontSize: '14px' }}>
+                    Echo Ripple
+                  </div>
+                  <div style={{ color: '#6b7280', fontSize: '13px' }}>
+                    Tap when you're inspired to duplicate this act of kindness
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Example Posts */}
           <div style={{ marginBottom: '30px' }}>
             <h3 style={{ 
