@@ -19,6 +19,7 @@ export default function Home() {
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [tokenEarning, setTokenEarning] = useState<{amount: number, reason: string} | null>(null);
 
   const { location } = useGeolocation();
 
@@ -85,8 +86,9 @@ export default function Home() {
       });
       if (!response.ok) throw new Error('Failed to add heart');
       
-      // Show earning feedback
-      console.log('Earned 1 $ECHO for showing love! 💜');
+      // Show earning feedback popup
+      setTokenEarning({ amount: 1, reason: 'Showing love! 💜' });
+      setTimeout(() => setTokenEarning(null), 3000);
       
       // Post and tokens will update via WebSocket
       refetchTokens(); // Force refresh tokens
@@ -103,8 +105,9 @@ export default function Home() {
       });
       if (!response.ok) throw new Error('Failed to add echo');
       
-      // Show earning feedback
-      console.log('Earned 2 $ECHO for echoing kindness! 🌊');
+      // Show earning feedback popup
+      setTokenEarning({ amount: 2, reason: 'Echoing kindness! 🌊' });
+      setTimeout(() => setTokenEarning(null), 3000);
       
       // Post and tokens will update via WebSocket  
       refetchTokens(); // Force refresh tokens
@@ -539,6 +542,7 @@ export default function Home() {
                   }}>
                     <button
                       onClick={() => handleHeartPost(post.id)}
+                      title="Show love for this kindness! (Earn 1 $ECHO 🪙)"
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -551,17 +555,20 @@ export default function Home() {
                         fontSize: '14px',
                         color: '#6b7280',
                         transition: 'all 0.2s ease',
-                        outline: 'none'
+                        outline: 'none',
+                        position: 'relative'
                       }}
                       onMouseEnter={e => {
                         e.currentTarget.style.backgroundColor = '#8B5CF6';
                         e.currentTarget.style.color = 'white';
                         e.currentTarget.style.borderColor = '#8B5CF6';
+                        e.currentTarget.style.transform = 'scale(1.05)';
                       }}
                       onMouseLeave={e => {
                         e.currentTarget.style.backgroundColor = '#f8f9fa';
                         e.currentTarget.style.color = '#6b7280';
                         e.currentTarget.style.borderColor = '#e5e7eb';
+                        e.currentTarget.style.transform = 'scale(1)';
                       }}
                     >
                       <span style={{ fontSize: '16px' }}>💜</span>
@@ -570,6 +577,7 @@ export default function Home() {
                     
                     <button
                       onClick={() => handleEchoPost(post.id)}
+                      title="Echo this kindness! Commit to doing it too! (Earn 2 $ECHO 🪙)"
                       style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -582,17 +590,20 @@ export default function Home() {
                         fontSize: '14px',
                         color: '#6b7280',
                         transition: 'all 0.2s ease',
-                        outline: 'none'
+                        outline: 'none',
+                        position: 'relative'
                       }}
                       onMouseEnter={e => {
                         e.currentTarget.style.backgroundColor = '#06B6D4';
                         e.currentTarget.style.color = 'white';
                         e.currentTarget.style.borderColor = '#06B6D4';
+                        e.currentTarget.style.transform = 'scale(1.05)';
                       }}
                       onMouseLeave={e => {
                         e.currentTarget.style.backgroundColor = '#f8f9fa';
                         e.currentTarget.style.color = '#6b7280';
                         e.currentTarget.style.borderColor = '#e5e7eb';
+                        e.currentTarget.style.transform = 'scale(1)';
                       }}
                     >
                       <span style={{ fontSize: '16px' }}>🌊</span>
@@ -684,6 +695,33 @@ export default function Home() {
           );
         })}
       </div>
+      
+      {/* Token Earning Popup */}
+      {tokenEarning && (
+        <div style={{
+          position: 'fixed',
+          top: '80px',
+          right: '20px',
+          backgroundColor: '#10B981',
+          color: 'white',
+          padding: '12px 16px',
+          borderRadius: '12px',
+          fontSize: '14px',
+          fontWeight: '600',
+          boxShadow: '0 8px 25px rgba(16, 185, 129, 0.3)',
+          zIndex: 1000,
+          animation: 'slideIn 0.3s ease-out',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <span style={{ fontSize: '18px' }}>🪙</span>
+          <div>
+            <div>+{tokenEarning.amount} $ECHO</div>
+            <div style={{ fontSize: '12px', opacity: 0.9 }}>{tokenEarning.reason}</div>
+          </div>
+        </div>
+      )}
       
     </div>
   );
