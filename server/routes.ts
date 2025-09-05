@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { insertKindnessPostSchema } from "@shared/schema";
+import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema } from "@shared/schema";
 import { contentFilter } from "./services/contentFilter";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -264,6 +264,274 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       res.json(newAchievements);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // ==================== B2B SaaS Corporate API Routes ====================
+
+  // Corporate Account Management
+  app.get('/api/corporate/accounts', async (req, res) => {
+    try {
+      const accounts = await storage.getCorporateAccounts();
+      res.json(accounts);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/corporate/accounts', async (req, res) => {
+    try {
+      const accountData = insertCorporateAccountSchema.parse(req.body);
+      const account = await storage.createCorporateAccount(accountData);
+      res.status(201).json(account);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/corporate/accounts/:accountId', async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const account = await storage.getCorporateAccount(accountId);
+      if (!account) {
+        return res.status(404).json({ message: 'Corporate account not found' });
+      }
+      res.json(account);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.put('/api/corporate/accounts/:accountId', async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const updates = req.body;
+      const account = await storage.updateCorporateAccount(accountId, updates);
+      res.json(account);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Corporate Team Management
+  app.get('/api/corporate/accounts/:accountId/teams', async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const teams = await storage.getCorporateTeams(accountId);
+      res.json(teams);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/corporate/accounts/:accountId/teams', async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const teamData = insertCorporateTeamSchema.parse({
+        ...req.body,
+        corporateAccountId: accountId
+      });
+      const team = await storage.createCorporateTeam(teamData);
+      res.status(201).json(team);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.put('/api/corporate/teams/:teamId', async (req, res) => {
+    try {
+      const { teamId } = req.params;
+      const updates = req.body;
+      const team = await storage.updateCorporateTeam(teamId, updates);
+      res.json(team);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.delete('/api/corporate/teams/:teamId', async (req, res) => {
+    try {
+      const { teamId } = req.params;
+      const deleted = await storage.deleteCorporateTeam(teamId);
+      if (!deleted) {
+        return res.status(404).json({ message: 'Team not found' });
+      }
+      res.status(204).send();
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Corporate Employee Management
+  app.get('/api/corporate/accounts/:accountId/employees', async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const employees = await storage.getCorporateEmployees(accountId);
+      res.json(employees);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/corporate/employees/enroll', async (req, res) => {
+    try {
+      const employeeData = insertCorporateEmployeeSchema.parse(req.body);
+      const employee = await storage.enrollCorporateEmployee(employeeData);
+      res.status(201).json(employee);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/corporate/employees/me', async (req, res) => {
+    try {
+      const sessionId = req.headers['x-session-id'] as string;
+      if (!sessionId) {
+        return res.status(400).json({ message: 'Session ID required' });
+      }
+      
+      const employee = await storage.getCorporateEmployee(sessionId);
+      if (!employee) {
+        return res.status(404).json({ message: 'Employee not found' });
+      }
+      
+      res.json(employee);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.put('/api/corporate/employees/:employeeId', async (req, res) => {
+    try {
+      const { employeeId } = req.params;
+      const updates = req.body;
+      const employee = await storage.updateCorporateEmployee(employeeId, updates);
+      res.json(employee);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Corporate Challenge Management
+  app.get('/api/corporate/accounts/:accountId/challenges', async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const challenges = await storage.getCorporateChallenges(accountId);
+      res.json(challenges);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/corporate/accounts/:accountId/challenges', async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const challengeData = insertCorporateChallengeSchema.parse({
+        ...req.body,
+        corporateAccountId: accountId
+      });
+      const challenge = await storage.createCorporateChallenge(challengeData);
+      res.status(201).json(challenge);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/corporate/challenges/:challengeId/complete', async (req, res) => {
+    try {
+      const { challengeId } = req.params;
+      const sessionId = req.headers['x-session-id'] as string;
+      if (!sessionId) {
+        return res.status(400).json({ message: 'Session ID required' });
+      }
+      
+      const result = await storage.completeCorporateChallenge(challengeId, sessionId);
+      
+      // Broadcast challenge completion
+      broadcast({
+        type: 'CORPORATE_CHALLENGE_COMPLETED',
+        challenge: result.challenge,
+        sessionId
+      });
+      
+      res.json(result);
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Corporate Analytics & Reporting
+  app.get('/api/corporate/accounts/:accountId/analytics', async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const days = parseInt(req.query.days as string) || 30;
+      const analytics = await storage.getCorporateAnalytics(accountId, days);
+      res.json(analytics);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/corporate/accounts/:accountId/analytics/generate', async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const analytics = await storage.generateDailyCorporateAnalytics(accountId);
+      res.json(analytics);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Corporate Dashboard Summary
+  app.get('/api/corporate/accounts/:accountId/dashboard', async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      
+      // Fetch comprehensive dashboard data
+      const [account, teams, employees, challenges, analytics] = await Promise.all([
+        storage.getCorporateAccount(accountId),
+        storage.getCorporateTeams(accountId),
+        storage.getCorporateEmployees(accountId),
+        storage.getCorporateChallenges(accountId),
+        storage.getCorporateAnalytics(accountId, 7) // Last 7 days
+      ]);
+      
+      if (!account) {
+        return res.status(404).json({ message: 'Corporate account not found' });
+      }
+      
+      // Calculate summary metrics
+      const totalEmployees = employees.length;
+      const activeTeams = teams.filter(t => t.isActive === 1).length;
+      const activeChallenges = challenges.filter(c => c.isActive === 1).length;
+      const totalChallengeCompletions = challenges.reduce((sum, c) => sum + (c.completionCount || 0), 0);
+      
+      // Get latest analytics
+      const latestAnalytics = analytics[analytics.length - 1];
+      const totalTokensEarned = latestAnalytics?.totalEchoTokensEarned || 0;
+      const engagementScore = latestAnalytics?.averageEngagementScore || 0;
+      const wellnessScore = latestAnalytics?.wellnessImpactScore || 0;
+      
+      const dashboardData = {
+        account,
+        overview: {
+          totalEmployees,
+          activeTeams,
+          activeChallenges,
+          totalChallengeCompletions,
+          totalTokensEarned,
+          engagementScore,
+          wellnessScore
+        },
+        teams,
+        employees: employees.slice(0, 10), // Top 10 employees
+        recentChallenges: challenges.slice(0, 5), // 5 most recent
+        analytics: analytics.slice(-7) // Last 7 days
+      };
+      
+      res.json(dashboardData);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }

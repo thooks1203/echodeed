@@ -1,4 +1,4 @@
-import { type KindnessPost, type InsertKindnessPost, type KindnessCounter, type UserTokens, type InsertUserTokens, type BrandChallenge, type InsertBrandChallenge, type ChallengeCompletion, type Achievement, type UserAchievement } from "@shared/schema";
+import { type KindnessPost, type InsertKindnessPost, type KindnessCounter, type UserTokens, type InsertUserTokens, type BrandChallenge, type InsertBrandChallenge, type ChallengeCompletion, type Achievement, type UserAchievement, type CorporateAccount, type InsertCorporateAccount, type CorporateTeam, type InsertCorporateTeam, type CorporateEmployee, type InsertCorporateEmployee, type CorporateChallenge, type InsertCorporateChallenge, type CorporateAnalytics } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -17,6 +17,31 @@ export interface IStorage {
   getAchievements(): Promise<Achievement[]>;
   getUserAchievements(sessionId: string): Promise<UserAchievement[]>;
   checkAndUnlockAchievements(sessionId: string): Promise<UserAchievement[]>; // Returns newly unlocked achievements
+  
+  // B2B SaaS Corporate Methods
+  createCorporateAccount(account: InsertCorporateAccount): Promise<CorporateAccount>;
+  getCorporateAccount(accountId: string): Promise<CorporateAccount | null>;
+  getCorporateAccountByDomain(domain: string): Promise<CorporateAccount | null>;
+  updateCorporateAccount(accountId: string, updates: Partial<CorporateAccount>): Promise<CorporateAccount>;
+  getCorporateAccounts(): Promise<CorporateAccount[]>;
+  
+  createCorporateTeam(team: InsertCorporateTeam): Promise<CorporateTeam>;
+  getCorporateTeams(corporateAccountId: string): Promise<CorporateTeam[]>;
+  updateCorporateTeam(teamId: string, updates: Partial<CorporateTeam>): Promise<CorporateTeam>;
+  deleteCorporateTeam(teamId: string): Promise<boolean>;
+  
+  enrollCorporateEmployee(employee: InsertCorporateEmployee): Promise<CorporateEmployee>;
+  getCorporateEmployees(corporateAccountId: string): Promise<CorporateEmployee[]>;
+  getCorporateEmployee(sessionId: string): Promise<CorporateEmployee | null>;
+  updateCorporateEmployee(employeeId: string, updates: Partial<CorporateEmployee>): Promise<CorporateEmployee>;
+  
+  createCorporateChallenge(challenge: InsertCorporateChallenge): Promise<CorporateChallenge>;
+  getCorporateChallenges(corporateAccountId: string): Promise<CorporateChallenge[]>;
+  completeCorporateChallenge(challengeId: string, sessionId: string): Promise<{ challenge: CorporateChallenge; tokens: UserTokens }>;
+  
+  recordCorporateAnalytics(analytics: CorporateAnalytics): Promise<void>;
+  getCorporateAnalytics(corporateAccountId: string, days?: number): Promise<CorporateAnalytics[]>;
+  generateDailyCorporateAnalytics(corporateAccountId: string): Promise<CorporateAnalytics>;
 }
 
 export class MemStorage implements IStorage {
@@ -27,6 +52,13 @@ export class MemStorage implements IStorage {
   private challengeCompletions: Map<string, string[]>; // sessionId -> challengeIds
   private achievements: Map<string, Achievement>;
   private userAchievements: Map<string, UserAchievement[]>; // sessionId -> achievements
+  
+  // B2B SaaS Data Stores
+  private corporateAccounts: Map<string, CorporateAccount>;
+  private corporateTeams: Map<string, CorporateTeam>;
+  private corporateEmployees: Map<string, CorporateEmployee>;
+  private corporateChallenges: Map<string, CorporateChallenge>;
+  private corporateAnalytics: Map<string, CorporateAnalytics[]>; // corporateAccountId -> analytics
 
   constructor() {
     this.posts = new Map();
@@ -35,6 +67,13 @@ export class MemStorage implements IStorage {
     this.challengeCompletions = new Map();
     this.achievements = new Map();
     this.userAchievements = new Map();
+    
+    // Initialize B2B SaaS data stores
+    this.corporateAccounts = new Map();
+    this.corporateTeams = new Map();
+    this.corporateEmployees = new Map();
+    this.corporateChallenges = new Map();
+    this.corporateAnalytics = new Map();
     this.counter = {
       id: "global",
       count: 247891, // Starting count from design
@@ -45,6 +84,7 @@ export class MemStorage implements IStorage {
     this.seedInitialPosts();
     this.seedBrandChallenges();
     this.seedAchievements();
+    this.seedCorporateAccounts();
   }
 
   private seedInitialPosts() {
@@ -747,6 +787,352 @@ export class MemStorage implements IStorage {
     }
 
     return newlyUnlocked;
+  }
+
+  // B2B SaaS Corporate Account Methods
+  private seedCorporateAccounts() {
+    const corporateAccountsData = [
+      {
+        companyName: "TechFlow Solutions",
+        companyLogo: "https://placeholder.com/100x100",
+        domain: "techflow.com",
+        industry: "Technology",
+        companySize: "medium",
+        subscriptionTier: "pro",
+        maxEmployees: 200,
+        monthlyBudget: 5000,
+        primaryColor: "#6366F1",
+        contactEmail: "hr@techflow.com",
+        contactName: "Sarah Chen",
+        isActive: 1,
+        billingStatus: "active",
+        trialEndsAt: null
+      },
+      {
+        companyName: "Wellness Corp",
+        companyLogo: "https://placeholder.com/100x100",
+        domain: "wellnesscorp.com",
+        industry: "Healthcare",
+        companySize: "large",
+        subscriptionTier: "enterprise",
+        maxEmployees: 500,
+        monthlyBudget: 15000,
+        primaryColor: "#10B981",
+        contactEmail: "admin@wellnesscorp.com",
+        contactName: "Mike Rodriguez",
+        isActive: 1,
+        billingStatus: "active",
+        trialEndsAt: null
+      }
+    ];
+
+    corporateAccountsData.forEach(data => {
+      const id = randomUUID();
+      const account: CorporateAccount = {
+        id,
+        companyName: data.companyName,
+        companyLogo: data.companyLogo || null,
+        domain: data.domain,
+        industry: data.industry || null,
+        companySize: data.companySize || null,
+        subscriptionTier: data.subscriptionTier,
+        maxEmployees: data.maxEmployees,
+        monthlyBudget: data.monthlyBudget,
+        primaryColor: data.primaryColor,
+        contactEmail: data.contactEmail,
+        contactName: data.contactName || null,
+        isActive: 1,
+        billingStatus: data.billingStatus,
+        trialEndsAt: data.trialEndsAt || null,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      this.corporateAccounts.set(id, account);
+      
+      // Add sample teams for each corporate account
+      const teamData = [
+        { teamName: "Engineering", department: "Engineering", teamLead: "John Smith", targetSize: 25 },
+        { teamName: "Marketing", department: "Marketing", teamLead: "Lisa Wong", targetSize: 15 },
+        { teamName: "HR & People", department: "HR", teamLead: "David Kim", targetSize: 8 }
+      ];
+      
+      teamData.forEach(team => {
+        const teamId = randomUUID();
+        const corporateTeam: CorporateTeam = {
+          id: teamId,
+          corporateAccountId: id,
+          teamName: team.teamName,
+          department: team.department || null,
+          teamLead: team.teamLead || null,
+          teamLeadEmail: `${team.teamLead.toLowerCase().replace(' ', '.')}@${data.domain}`,
+          targetSize: team.targetSize || null,
+          currentSize: Math.floor(team.targetSize * 0.7), // 70% filled
+          monthlyKindnessGoal: team.targetSize * 3, // 3 acts per person per month
+          isActive: 1,
+          createdAt: new Date()
+        };
+        this.corporateTeams.set(teamId, corporateTeam);
+      });
+    });
+  }
+
+  async createCorporateAccount(account: InsertCorporateAccount): Promise<CorporateAccount> {
+    const id = randomUUID();
+    const corporateAccount: CorporateAccount = {
+      ...account,
+      id,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    this.corporateAccounts.set(id, corporateAccount);
+    return corporateAccount;
+  }
+
+  async getCorporateAccount(accountId: string): Promise<CorporateAccount | null> {
+    return this.corporateAccounts.get(accountId) || null;
+  }
+
+  async getCorporateAccountByDomain(domain: string): Promise<CorporateAccount | null> {
+    for (const account of Array.from(this.corporateAccounts.values())) {
+      if (account.domain === domain) {
+        return account;
+      }
+    }
+    return null;
+  }
+
+  async updateCorporateAccount(accountId: string, updates: Partial<CorporateAccount>): Promise<CorporateAccount> {
+    const existing = this.corporateAccounts.get(accountId);
+    if (!existing) throw new Error('Corporate account not found');
+    
+    const updated: CorporateAccount = {
+      ...existing,
+      ...updates,
+      updatedAt: new Date()
+    };
+    this.corporateAccounts.set(accountId, updated);
+    return updated;
+  }
+
+  async getCorporateAccounts(): Promise<CorporateAccount[]> {
+    return Array.from(this.corporateAccounts.values())
+      .filter(account => account.isActive === 1)
+      .sort((a, b) => a.companyName.localeCompare(b.companyName));
+  }
+
+  async createCorporateTeam(team: InsertCorporateTeam): Promise<CorporateTeam> {
+    const id = randomUUID();
+    const corporateTeam: CorporateTeam = {
+      ...team,
+      id,
+      isActive: 1,
+      createdAt: new Date(),
+    };
+    this.corporateTeams.set(id, corporateTeam);
+    return corporateTeam;
+  }
+
+  async getCorporateTeams(corporateAccountId: string): Promise<CorporateTeam[]> {
+    return Array.from(this.corporateTeams.values())
+      .filter(team => team.corporateAccountId === corporateAccountId && team.isActive === 1)
+      .sort((a, b) => a.teamName.localeCompare(b.teamName));
+  }
+
+  async updateCorporateTeam(teamId: string, updates: Partial<CorporateTeam>): Promise<CorporateTeam> {
+    const existing = this.corporateTeams.get(teamId);
+    if (!existing) throw new Error('Corporate team not found');
+    
+    const updated: CorporateTeam = {
+      ...existing,
+      ...updates,
+    };
+    this.corporateTeams.set(teamId, updated);
+    return updated;
+  }
+
+  async deleteCorporateTeam(teamId: string): Promise<boolean> {
+    return this.corporateTeams.delete(teamId);
+  }
+
+  async enrollCorporateEmployee(employee: InsertCorporateEmployee): Promise<CorporateEmployee> {
+    const id = randomUUID();
+    const corporateEmployee: CorporateEmployee = {
+      id,
+      sessionId: employee.sessionId,
+      corporateAccountId: employee.corporateAccountId,
+      teamId: employee.teamId || null,
+      employeeEmail: employee.employeeEmail,
+      displayName: employee.displayName || null,
+      role: employee.role || 'employee',
+      department: employee.department || null,
+      startDate: employee.startDate || new Date(),
+      isActive: 1,
+      enrolledAt: new Date(),
+    };
+    this.corporateEmployees.set(id, corporateEmployee);
+    
+    // Update team size if assigned to a team
+    if (employee.teamId) {
+      const team = this.corporateTeams.get(employee.teamId);
+      if (team) {
+        team.currentSize = (team.currentSize || 0) + 1;
+        this.corporateTeams.set(employee.teamId, team);
+      }
+    }
+    
+    return corporateEmployee;
+  }
+
+  async getCorporateEmployees(corporateAccountId: string): Promise<CorporateEmployee[]> {
+    return Array.from(this.corporateEmployees.values())
+      .filter(emp => emp.corporateAccountId === corporateAccountId && emp.isActive === 1)
+      .sort((a, b) => (a.displayName || a.employeeEmail).localeCompare(b.displayName || b.employeeEmail));
+  }
+
+  async getCorporateEmployee(sessionId: string): Promise<CorporateEmployee | null> {
+    for (const employee of Array.from(this.corporateEmployees.values())) {
+      if (employee.sessionId === sessionId && employee.isActive === 1) {
+        return employee;
+      }
+    }
+    return null;
+  }
+
+  async updateCorporateEmployee(employeeId: string, updates: Partial<CorporateEmployee>): Promise<CorporateEmployee> {
+    const existing = this.corporateEmployees.get(employeeId);
+    if (!existing) throw new Error('Corporate employee not found');
+    
+    const updated: CorporateEmployee = {
+      ...existing,
+      ...updates,
+    };
+    this.corporateEmployees.set(employeeId, updated);
+    return updated;
+  }
+
+  async createCorporateChallenge(challenge: InsertCorporateChallenge): Promise<CorporateChallenge> {
+    const id = randomUUID();
+    const corporateChallenge: CorporateChallenge = {
+      id,
+      corporateAccountId: challenge.corporateAccountId,
+      title: challenge.title,
+      content: challenge.content,
+      challengeType: challenge.challengeType || 'company_wide',
+      targetTeamIds: challenge.targetTeamIds || null,
+      echoReward: challenge.echoReward || 15,
+      bonusReward: challenge.bonusReward || null,
+      participationGoal: challenge.participationGoal || null,
+      currentParticipation: 0,
+      completionCount: 0,
+      isActive: challenge.isActive || 1,
+      isInternal: challenge.isInternal || 1,
+      createdByEmployeeId: challenge.createdByEmployeeId || null,
+      startsAt: challenge.startsAt || new Date(),
+      expiresAt: challenge.expiresAt || null,
+      createdAt: new Date(),
+    };
+    this.corporateChallenges.set(id, corporateChallenge);
+    return corporateChallenge;
+  }
+
+  async getCorporateChallenges(corporateAccountId: string): Promise<CorporateChallenge[]> {
+    return Array.from(this.corporateChallenges.values())
+      .filter(challenge => challenge.corporateAccountId === corporateAccountId && challenge.isActive === 1)
+      .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async completeCorporateChallenge(challengeId: string, sessionId: string): Promise<{ challenge: CorporateChallenge; tokens: UserTokens }> {
+    const challenge = this.corporateChallenges.get(challengeId);
+    if (!challenge) throw new Error('Challenge not found');
+    
+    // Update challenge participation and completion count
+    challenge.currentParticipation = (challenge.currentParticipation || 0) + 1;
+    challenge.completionCount = (challenge.completionCount || 0) + 1;
+    this.corporateChallenges.set(challengeId, challenge);
+    
+    // Award tokens (corporate challenges pay more)
+    const totalReward = challenge.echoReward + (challenge.bonusReward || 0);
+    const tokens = await this.awardTokens(sessionId, totalReward, `Corporate challenge: ${challenge.title}`);
+    
+    return { challenge, tokens };
+  }
+
+  async recordCorporateAnalytics(analytics: CorporateAnalytics): Promise<void> {
+    const existing = this.corporateAnalytics.get(analytics.corporateAccountId) || [];
+    existing.push(analytics);
+    
+    // Keep only last 90 days of data
+    const ninetyDaysAgo = new Date(Date.now() - 90 * 24 * 60 * 60 * 1000);
+    const filtered = existing.filter(a => a.analyticsDate > ninetyDaysAgo);
+    
+    this.corporateAnalytics.set(analytics.corporateAccountId, filtered);
+  }
+
+  async getCorporateAnalytics(corporateAccountId: string, days = 30): Promise<CorporateAnalytics[]> {
+    const analytics = this.corporateAnalytics.get(corporateAccountId) || [];
+    const cutoffDate = new Date(Date.now() - days * 24 * 60 * 60 * 1000);
+    
+    return analytics
+      .filter(a => a.analyticsDate > cutoffDate)
+      .sort((a, b) => a.analyticsDate.getTime() - b.analyticsDate.getTime());
+  }
+
+  async generateDailyCorporateAnalytics(corporateAccountId: string): Promise<CorporateAnalytics> {
+    const employees = await this.getCorporateEmployees(corporateAccountId);
+    const teams = await this.getCorporateTeams(corporateAccountId);
+    const corporateChallenges = await this.getCorporateChallenges(corporateAccountId);
+    
+    // Calculate daily metrics (simplified for demo)
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    const activeEmployees = employees.filter(emp => 
+      emp.enrolledAt <= today && emp.isActive === 1
+    ).length;
+    
+    const totalEchoTokensEarned = employees.reduce((sum, emp) => {
+      const userTokens = this.userTokens.get(emp.sessionId);
+      return sum + (userTokens?.totalEarned || 0);
+    }, 0);
+    
+    const totalChallengesCompleted = corporateChallenges.reduce((sum, challenge) => 
+      sum + challenge.completionCount, 0
+    );
+    
+    // Calculate engagement score (0-100)
+    const averageEngagementScore = Math.min(100, Math.floor(
+      (activeEmployees > 0 ? (totalChallengesCompleted / activeEmployees) * 10 : 0) + 
+      (totalEchoTokensEarned > 0 ? Math.min(50, totalEchoTokensEarned / 100) : 0)
+    ));
+    
+    // Find top performing team
+    const topPerformingTeam = teams.reduce((best, team) => {
+      const teamEmployees = employees.filter(emp => emp.teamId === team.id);
+      const teamTokens = teamEmployees.reduce((sum, emp) => {
+        const tokens = this.userTokens.get(emp.sessionId);
+        return sum + (tokens?.totalEarned || 0);
+      }, 0);
+      
+      return teamTokens > (best.score || 0) ? { team, score: teamTokens } : best;
+    }, { team: null as CorporateTeam | null, score: 0 });
+    
+    const analytics: CorporateAnalytics = {
+      id: randomUUID(),
+      corporateAccountId,
+      analyticsDate: today,
+      activeEmployees,
+      totalKindnessPosts: Math.floor(totalEchoTokensEarned / 5), // Estimate posts from tokens
+      totalChallengesCompleted,
+      totalEchoTokensEarned,
+      averageEngagementScore,
+      topPerformingTeamId: topPerformingTeam.team?.id || null,
+      topPerformingDepartment: topPerformingTeam.team?.department || null,
+      wellnessImpactScore: Math.floor(averageEngagementScore * 0.8), // Simplified wellness calculation
+      createdAt: new Date()
+    };
+    
+    await this.recordCorporateAnalytics(analytics);
+    return analytics;
   }
 }
 

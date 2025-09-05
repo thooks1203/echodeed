@@ -28,6 +28,68 @@ export interface TokenEarning {
   reason: string;
 }
 
+// B2B SaaS Corporate Dashboard Types
+export interface CorporateDashboardData {
+  account: {
+    id: string;
+    companyName: string;
+    companyLogo: string | null;
+    subscriptionTier: string;
+    primaryColor: string;
+    totalEmployees?: number;
+  };
+  overview: {
+    totalEmployees: number;
+    activeTeams: number;
+    activeChallenges: number;
+    totalChallengeCompletions: number;
+    totalTokensEarned: number;
+    engagementScore: number;
+    wellnessScore: number;
+  };
+  teams: Array<{
+    id: string;
+    teamName: string;
+    department: string | null;
+    currentSize: number | null;
+    targetSize: number | null;
+    monthlyKindnessGoal: number | null;
+  }>;
+  employees: Array<{
+    id: string;
+    displayName: string | null;
+    employeeEmail: string;
+    department: string | null;
+    role: string;
+    teamId: string | null;
+  }>;
+  recentChallenges: Array<{
+    id: string;
+    title: string;
+    challengeType: string;
+    completionCount: number;
+    currentParticipation: number;
+    echoReward: number;
+  }>;
+  analytics: Array<{
+    analyticsDate: Date;
+    activeEmployees: number;
+    totalKindnessPosts: number;
+    totalChallengesCompleted: number;
+    totalEchoTokensEarned: number;
+    averageEngagementScore: number;
+    wellnessImpactScore: number;
+  }>;
+}
+
+export interface CorporateMetric {
+  label: string;
+  value: number | string;
+  change?: number;
+  icon: string;
+  color: string;
+}
+
 export interface Achievement {
   id: string;
   title: string;
