@@ -18,6 +18,11 @@ export interface IStorage {
   getUserAchievements(sessionId: string): Promise<UserAchievement[]>;
   checkAndUnlockAchievements(sessionId: string): Promise<UserAchievement[]>; // Returns newly unlocked achievements
   
+  // AI Analytics Methods  
+  updatePostWithAIAnalysis(postId: string, analysis: any): Promise<KindnessPost>;
+  getPostsWithAIAnalysis(): Promise<KindnessPost[]>;
+  getCommunityWellnessInsights(): Promise<any>;
+
   // B2B SaaS Corporate Methods
   createCorporateAccount(account: InsertCorporateAccount): Promise<CorporateAccount>;
   getCorporateAccount(accountId: string): Promise<CorporateAccount | null>;
@@ -143,6 +148,16 @@ export class MemStorage implements IStorage {
       createdAt: new Date(),
       heartsCount: 0,
       echoesCount: 0,
+      // Initialize AI fields as null - will be populated by background analysis
+      sentimentScore: null,
+      impactScore: null,
+      emotionalUplift: null,
+      kindnessCategory: null,
+      rippleEffect: null,
+      wellnessContribution: null,
+      aiConfidence: null,
+      aiTags: null,
+      analyzedAt: null,
     };
     this.posts.set(id, post);
     
@@ -1145,6 +1160,70 @@ export class MemStorage implements IStorage {
     
     await this.recordCorporateAnalytics(analytics);
     return analytics;
+  }
+
+  // AI Analytics Methods Implementation
+  async updatePostWithAIAnalysis(postId: string, analysis: any): Promise<KindnessPost> {
+    const post = this.posts.get(postId);
+    if (!post) {
+      throw new Error('Post not found');
+    }
+    
+    const updatedPost: KindnessPost = {
+      ...post,
+      sentimentScore: analysis.sentimentScore,
+      impactScore: analysis.impactScore,
+      emotionalUplift: analysis.emotionalUplift,
+      kindnessCategory: analysis.kindnessCategory,
+      rippleEffect: analysis.rippleEffect,
+      wellnessContribution: analysis.wellnessContribution,
+      aiConfidence: analysis.confidence,
+      aiTags: analysis.tags,
+      analyzedAt: new Date(),
+    };
+    
+    this.posts.set(postId, updatedPost);
+    return updatedPost;
+  }
+
+  async getPostsWithAIAnalysis(): Promise<KindnessPost[]> {
+    return Array.from(this.posts.values())
+      .filter(post => post.analyzedAt !== null)
+      .sort((a, b) => (b.createdAt?.getTime() || 0) - (a.createdAt?.getTime() || 0));
+  }
+
+  async getCommunityWellnessInsights(): Promise<any> {
+    const posts = Array.from(this.posts.values()).filter(p => p.analyzedAt !== null);
+    
+    if (posts.length === 0) {
+      return {
+        overallWellness: 75,
+        trendDirection: 'stable',
+        dominantCategories: ['helping', 'supporting', 'encouraging'],
+        totalAnalyzed: 0
+      };
+    }
+    
+    const avgWellness = posts.reduce((sum, p) => sum + (p.wellnessContribution || 50), 0) / posts.length;
+    const categoryCount = posts.reduce((acc, p) => {
+      const category = p.kindnessCategory || 'general';
+      acc[category] = (acc[category] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
+    
+    const dominantCategories = Object.entries(categoryCount)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 3)
+      .map(([category]) => category);
+    
+    return {
+      overallWellness: Math.round(avgWellness),
+      trendDirection: 'rising',
+      dominantCategories,
+      totalAnalyzed: posts.length,
+      avgSentiment: Math.round(posts.reduce((sum, p) => sum + (p.sentimentScore || 50), 0) / posts.length),
+      avgImpact: Math.round(posts.reduce((sum, p) => sum + (p.impactScore || 50), 0) / posts.length)
+    };
   }
 }
 

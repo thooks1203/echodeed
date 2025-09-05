@@ -4,6 +4,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema } from "@shared/schema";
 import { contentFilter } from "./services/contentFilter";
+import { aiAnalytics } from "./services/aiAnalytics";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
@@ -860,6 +861,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
+    }
+  });
+
+  // AI Analytics Endpoints
+  app.get('/api/ai/wellness-insights', async (req, res) => {
+    try {
+      const insights = await storage.getCommunityWellnessInsights();
+      res.json(insights);
+    } catch (error: any) {
+      console.error('Error getting wellness insights:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/ai/posts', async (req, res) => {
+    try {
+      const posts = await storage.getPostsWithAIAnalysis();
+      res.json(posts);
+    } catch (error: any) {
+      console.error('Error getting AI-analyzed posts:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Manually trigger AI analysis for a specific post
+  app.post('/api/ai/analyze/:postId', async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const posts = await storage.getKindnessPosts();
+      const post = posts.find(p => p.id === postId);
+      
+      if (!post) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+      
+      const analysis = await aiAnalytics.analyzeKindnessPost(post.content);
+      const updatedPost = await storage.updatePostWithAIAnalysis(postId, analysis);
+      
+      // Broadcast the analyzed post
+      broadcast({
+        type: 'POST_ANALYZED',
+        post: updatedPost,
+      });
+      
+      res.json(updatedPost);
+    } catch (error: any) {
+      console.error('Error analyzing post:', error);
+      res.status(500).json({ message: error.message });
     }
   });
 

@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, jsonb } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
@@ -14,6 +14,16 @@ export const kindnessPosts = pgTable("kindness_posts", {
   heartsCount: integer("hearts_count").default(0).notNull(),
   echoesCount: integer("echoes_count").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  // AI Analysis Fields
+  sentimentScore: integer("sentiment_score"), // 0-100
+  impactScore: integer("impact_score"), // 0-100  
+  emotionalUplift: integer("emotional_uplift"), // 0-100
+  kindnessCategory: varchar("kindness_category", { length: 50 }),
+  rippleEffect: integer("ripple_effect"), // 0-100
+  wellnessContribution: integer("wellness_contribution"), // 0-100
+  aiConfidence: integer("ai_confidence"), // 0-100
+  aiTags: jsonb("ai_tags"), // string array of AI-generated tags
+  analyzedAt: timestamp("analyzed_at"),
 });
 
 export const kindnessCounter = pgTable("kindness_counter", {

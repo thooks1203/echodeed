@@ -6,6 +6,7 @@ import { KindnessFeed } from '@/components/KindnessFeed';
 import { PostDeedModal } from '@/components/PostDeedModal';
 import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { BottomNavigation } from '@/components/BottomNavigation';
+import { AIDashboard } from '@/components/ai-dashboard';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { KindnessPost, KindnessCounter, UserTokens, BrandChallenge } from '@shared/schema';
@@ -2116,6 +2117,113 @@ export default function Home() {
     );
   }
 
+  // Show AI Insights tab if selected
+  if (activeTab === 'ai') {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        {/* Header */}
+        <div style={{ 
+          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+          color: 'white',
+          padding: '16px 20px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          borderBottomLeftRadius: '16px',
+          borderBottomRightRadius: '16px'
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '8px'
+          }}>
+            <h1 style={{ 
+              fontSize: '20px', 
+              fontWeight: '700',
+              margin: 0
+            }}>
+              AI-Powered Analytics
+            </h1>
+            <div style={{
+              background: 'rgba(255,255,255,0.2)',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: '600'
+            }}>
+              LIVE ✨
+            </div>
+          </div>
+          <p style={{ 
+            fontSize: '14px', 
+            opacity: 0.9, 
+            margin: 0 
+          }}>
+            Real-time kindness impact measurement
+          </p>
+        </div>
+        
+        {/* AI Dashboard Content */}
+        <div style={{ padding: '20px' }}>
+          <AIDashboard />
+        </div>
+        
+        {/* Bottom Navigation */}
+        <div style={{
+          position: 'fixed',
+          bottom: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          maxWidth: '430px',
+          width: '100%',
+          backgroundColor: 'rgba(255,255,255,0.95)',
+          backdropFilter: 'blur(8px)',
+          borderTop: '1px solid #e5e7eb',
+          display: 'flex',
+          justifyContent: 'space-around',
+          padding: '12px 0',
+          zIndex: 100
+        }}>
+          {[
+            { id: 'feed', label: 'Feed', icon: '🏠' },
+            { id: 'local', label: 'Local', icon: '📍' },
+            { id: 'ai', label: 'AI', icon: '🧠' },
+            { id: 'badges', label: 'Badges', icon: '🏅' },
+            { id: 'corporate', label: 'Corporate', icon: '🏢' },
+          ].map((tab) => (
+            <button 
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                background: 'none',
+                border: 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '4px',
+                cursor: 'pointer',
+                padding: '8px',
+                borderRadius: '8px',
+                fontSize: '12px',
+                fontWeight: '500',
+                color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
+                backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
+              }}
+            >
+              <span style={{ fontSize: '18px' }}>{tab.icon}</span>
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   // Show Corporate tab if selected
   if (activeTab === 'corporate') {
     return (
@@ -3047,9 +3155,9 @@ export default function Home() {
         {[
           { id: 'feed', label: 'Feed', icon: '🏠' },
           { id: 'local', label: 'Local', icon: '📍' },
+          { id: 'ai', label: 'AI Insights', icon: '🧠' },
           { id: 'badges', label: 'Badges', icon: '🏅' },
           { id: 'corporate', label: 'Corporate', icon: '🏢' },
-          { id: 'admin', label: 'Admin', icon: '⚙️' },
         ].map((tab) => {
           if (tab.id === 'spacer') {
             return <div key={tab.id} style={{ width: '32px' }} />;
