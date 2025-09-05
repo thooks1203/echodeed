@@ -9,7 +9,7 @@ interface AppHeaderProps {
 
 export function AppHeader({ counter, isPulse }: AppHeaderProps) {
   return (
-    <header className="sticky top-0 z-40 bg-card/95 backdrop-blur-sm border-b border-border">
+    <header className="bg-card border-b border-border">
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-3">
