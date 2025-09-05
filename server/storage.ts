@@ -6,6 +6,8 @@ export interface IStorage {
   getKindnessPosts(filters?: { category?: string; city?: string; state?: string; country?: string }): Promise<KindnessPost[]>;
   getKindnessCounter(): Promise<KindnessCounter>;
   incrementKindnessCounter(): Promise<KindnessCounter>;
+  addHeartToPost(postId: string): Promise<KindnessPost>;
+  addEchoToPost(postId: string): Promise<KindnessPost>;
 }
 
 export class MemStorage implements IStorage {
@@ -33,6 +35,8 @@ export class MemStorage implements IStorage {
         city: "San Francisco",
         state: "California",
         country: "United States",
+        heartsCount: Math.floor(Math.random() * 50) + 10,
+        echoesCount: Math.floor(Math.random() * 25) + 5,
       },
       {
         content: "Left encouraging sticky notes on random cars in the parking lot. Simple words like 'You're amazing!' and 'Someone believes in you!' Hope it brightens someone's day.",
@@ -41,6 +45,8 @@ export class MemStorage implements IStorage {
         city: "Austin",
         state: "Texas",
         country: "United States",
+        heartsCount: Math.floor(Math.random() * 50) + 10,
+        echoesCount: Math.floor(Math.random() * 25) + 5,
       },
       {
         content: "Organized a neighborhood cleanup this morning. 15 people showed up! We collected 8 bags of trash and planted 12 flowers. Our community looks so much better now.",
@@ -49,6 +55,8 @@ export class MemStorage implements IStorage {
         city: "Portland",
         state: "Oregon", 
         country: "United States",
+        heartsCount: Math.floor(Math.random() * 50) + 10,
+        echoesCount: Math.floor(Math.random() * 25) + 5,
       },
     ];
 
@@ -69,6 +77,8 @@ export class MemStorage implements IStorage {
       ...insertPost,
       id,
       createdAt: new Date(),
+      heartsCount: 0,
+      echoesCount: 0,
     };
     this.posts.set(id, post);
     return post;
@@ -108,6 +118,36 @@ export class MemStorage implements IStorage {
       updatedAt: new Date(),
     };
     return this.counter;
+  }
+
+  async addHeartToPost(postId: string): Promise<KindnessPost> {
+    const post = this.posts.get(postId);
+    if (!post) {
+      throw new Error('Post not found');
+    }
+    
+    const updatedPost = {
+      ...post,
+      heartsCount: post.heartsCount + 1,
+    };
+    
+    this.posts.set(postId, updatedPost);
+    return updatedPost;
+  }
+
+  async addEchoToPost(postId: string): Promise<KindnessPost> {
+    const post = this.posts.get(postId);
+    if (!post) {
+      throw new Error('Post not found');
+    }
+    
+    const updatedPost = {
+      ...post,
+      echoesCount: post.echoesCount + 1,
+    };
+    
+    this.posts.set(postId, updatedPost);
+    return updatedPost;
   }
 }
 

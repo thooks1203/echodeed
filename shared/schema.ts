@@ -11,6 +11,8 @@ export const kindnessPosts = pgTable("kindness_posts", {
   city: text("city"),
   state: text("state"), 
   country: text("country"),
+  heartsCount: integer("hearts_count").default(0).notNull(),
+  echoesCount: integer("echoes_count").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

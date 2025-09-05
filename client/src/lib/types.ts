@@ -6,7 +6,7 @@ export interface LocationData {
 }
 
 export interface WebSocketMessage {
-  type: 'NEW_POST' | 'COUNTER_UPDATE';
+  type: 'NEW_POST' | 'COUNTER_UPDATE' | 'POST_UPDATE';
   post?: any;
   counter?: any;
 }

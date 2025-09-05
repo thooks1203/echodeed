@@ -102,5 +102,49 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Add heart to post
+  app.post('/api/posts/:postId/heart', async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const updatedPost = await storage.addHeartToPost(postId);
+      
+      // Broadcast the update to all connected WebSocket clients
+      broadcast({
+        type: 'POST_UPDATE',
+        post: updatedPost,
+      });
+      
+      res.json(updatedPost);
+    } catch (error: any) {
+      if (error.message === 'Post not found') {
+        res.status(404).json({ message: 'Post not found' });
+      } else {
+        res.status(500).json({ message: error.message });
+      }
+    }
+  });
+
+  // Add echo to post  
+  app.post('/api/posts/:postId/echo', async (req, res) => {
+    try {
+      const { postId } = req.params;
+      const updatedPost = await storage.addEchoToPost(postId);
+      
+      // Broadcast the update to all connected WebSocket clients
+      broadcast({
+        type: 'POST_UPDATE',
+        post: updatedPost,
+      });
+      
+      res.json(updatedPost);
+    } catch (error: any) {
+      if (error.message === 'Post not found') {
+        res.status(404).json({ message: 'Post not found' });
+      } else {
+        res.status(500).json({ message: error.message });
+      }
+    }
+  });
+
   return httpServer;
 }

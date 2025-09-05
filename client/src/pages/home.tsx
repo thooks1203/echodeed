@@ -54,6 +54,8 @@ export default function Home() {
       refetchCounter();
       setCounterPulse(true);
       setTimeout(() => setCounterPulse(false), 600);
+    } else if (message.type === 'POST_UPDATE') {
+      refetchPosts(); // Refetch posts to get updated counts
     }
   }, [refetchPosts, refetchCounter]);
 
@@ -63,6 +65,26 @@ export default function Home() {
   const handleFilterChange = (filter: string, newFilters: PostFilters) => {
     setActiveFilter(filter);
     setFilters(newFilters);
+  };
+
+  const handleHeartPost = async (postId: string) => {
+    try {
+      const response = await fetch(`/api/posts/${postId}/heart`, { method: 'POST' });
+      if (!response.ok) throw new Error('Failed to add heart');
+      // Post will update via WebSocket
+    } catch (error) {
+      console.error('Failed to add heart:', error);
+    }
+  };
+
+  const handleEchoPost = async (postId: string) => {
+    try {
+      const response = await fetch(`/api/posts/${postId}/echo`, { method: 'POST' });
+      if (!response.ok) throw new Error('Failed to add echo');
+      // Post will update via WebSocket
+    } catch (error) {
+      console.error('Failed to add echo:', error);
+    }
   };
 
   const defaultCounter: KindnessCounter = {
@@ -398,6 +420,76 @@ export default function Home() {
                     }}>
                       {post.category}
                     </span>
+                  </div>
+                  
+                  {/* Interaction Buttons */}
+                  <div style={{
+                    display: 'flex',
+                    gap: '12px',
+                    alignItems: 'center',
+                    marginTop: '12px'
+                  }}>
+                    <button
+                      onClick={() => handleHeartPost(post.id)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '6px 12px',
+                        backgroundColor: '#f8f9fa',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '20px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        color: '#6b7280',
+                        transition: 'all 0.2s ease',
+                        outline: 'none'
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.backgroundColor = '#8B5CF6';
+                        e.currentTarget.style.color = 'white';
+                        e.currentTarget.style.borderColor = '#8B5CF6';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.backgroundColor = '#f8f9fa';
+                        e.currentTarget.style.color = '#6b7280';
+                        e.currentTarget.style.borderColor = '#e5e7eb';
+                      }}
+                    >
+                      <span style={{ fontSize: '16px' }}>💜</span>
+                      <span>{post.heartsCount || 0}</span>
+                    </button>
+                    
+                    <button
+                      onClick={() => handleEchoPost(post.id)}
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '6px 12px',
+                        backgroundColor: '#f8f9fa',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '20px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        color: '#6b7280',
+                        transition: 'all 0.2s ease',
+                        outline: 'none'
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.backgroundColor = '#06B6D4';
+                        e.currentTarget.style.color = 'white';
+                        e.currentTarget.style.borderColor = '#06B6D4';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.backgroundColor = '#f8f9fa';
+                        e.currentTarget.style.color = '#6b7280';
+                        e.currentTarget.style.borderColor = '#e5e7eb';
+                      }}
+                    >
+                      <span style={{ fontSize: '16px' }}>🌊</span>
+                      <span>{post.echoesCount || 0} Echo</span>
+                    </button>
                   </div>
                 </div>
               </div>
