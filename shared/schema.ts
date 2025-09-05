@@ -1,10 +1,34 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, jsonb, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
+import { relations } from "drizzle-orm";
 import { z } from "zod";
+
+// Session storage table - Required for Replit Auth
+export const sessions = pgTable(
+  "sessions",
+  {
+    sid: varchar("sid").primaryKey(),
+    sess: jsonb("sess").notNull(),
+    expire: timestamp("expire").notNull(),
+  },
+  (table) => [index("IDX_session_expire").on(table.expire)],
+);
+
+// User storage table - Required for Replit Auth  
+export const users = pgTable("users", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  email: varchar("email").unique(),
+  firstName: varchar("first_name"),
+  lastName: varchar("last_name"),
+  profileImageUrl: varchar("profile_image_url"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
 
 export const kindnessPosts = pgTable("kindness_posts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id), // Link to authenticated user
   content: text("content").notNull(),
   category: varchar("category", { length: 50 }).notNull(),
   location: text("location").notNull(),
@@ -13,6 +37,7 @@ export const kindnessPosts = pgTable("kindness_posts", {
   country: text("country"),
   heartsCount: integer("hearts_count").default(0).notNull(),
   echoesCount: integer("echoes_count").default(0).notNull(),
+  isAnonymous: integer("is_anonymous").default(1).notNull(), // 1 = anonymous, 0 = show user
   createdAt: timestamp("created_at").defaultNow().notNull(),
   // AI Analysis Fields
   sentimentScore: integer("sentiment_score"), // 0-100
@@ -32,10 +57,10 @@ export const kindnessCounter = pgTable("kindness_counter", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// Anonymous user token tracking (no personal info, just session-based)
+// User token tracking - now linked to authenticated users
 export const userTokens = pgTable("user_tokens", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  sessionId: varchar("session_id").notNull().unique(), // Anonymous session ID
+  userId: varchar("user_id").notNull().unique().references(() => users.id), // Link to authenticated user
   echoBalance: integer("echo_balance").default(0).notNull(),
   totalEarned: integer("total_earned").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -66,11 +91,11 @@ export const brandChallenges = pgTable("brand_challenges", {
   expiresAt: timestamp("expires_at"),
 });
 
-// Track challenge completions
+// Track challenge completions - now user-based
 export const challengeCompletions = pgTable("challenge_completions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   challengeId: varchar("challenge_id").notNull(),
-  sessionId: varchar("session_id").notNull(),
+  userId: varchar("user_id").notNull().references(() => users.id),
   completedAt: timestamp("completed_at").defaultNow().notNull(),
 });
 
@@ -89,10 +114,10 @@ export const achievements = pgTable("achievements", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// User achievement unlocks
+// User achievement unlocks - now user-based
 export const userAchievements = pgTable("user_achievements", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  sessionId: varchar("session_id").notNull(),
+  userId: varchar("user_id").notNull().references(() => users.id),
   achievementId: varchar("achievement_id").notNull(),
   unlockedAt: timestamp("unlocked_at").defaultNow().notNull(),
   progress: integer("progress").default(0), // For progress-based achievements
@@ -134,10 +159,10 @@ export const corporateTeams = pgTable("corporate_teams", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// Corporate employees (links sessionIds to corporate structure)
+// Corporate employees (links users to corporate structure)
 export const corporateEmployees = pgTable("corporate_employees", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  sessionId: varchar("session_id").notNull().unique(), // Links to existing userTokens
+  userId: varchar("user_id").notNull().unique().references(() => users.id), // Links to authenticated users
   corporateAccountId: varchar("corporate_account_id").notNull(),
   teamId: varchar("team_id"), // Optional team assignment
   employeeEmail: varchar("employee_email", { length: 200 }).notNull(),
@@ -201,6 +226,11 @@ export const insertUserTokensSchema = createInsertSchema(userTokens).omit({
   createdAt: true,
   lastActive: true,
 });
+
+// Replit Auth schemas - Required for authentication
+export const upsertUserSchema = createInsertSchema(users);
+export type UpsertUser = typeof users.$inferInsert;
+export type User = typeof users.$inferSelect;
 
 export const insertBrandChallengeSchema = createInsertSchema(brandChallenges).omit({
   id: true,
@@ -277,3 +307,18 @@ export type CorporateChallenge = typeof corporateChallenges.$inferSelect;
 export type InsertCorporateChallenge = z.infer<typeof insertCorporateChallengeSchema>;
 export type CorporateAnalytics = typeof corporateAnalytics.$inferSelect;
 export type InsertCorporateAnalytics = z.infer<typeof insertCorporateAnalyticsSchema>;
+
+// User relations for better query performance
+export const usersRelations = relations(users, ({ many }) => ({
+  posts: many(kindnessPosts),
+  tokens: many(userTokens),
+  achievements: many(userAchievements),
+  challengeCompletions: many(challengeCompletions),
+}));
+
+export const kindnessPostsRelations = relations(kindnessPosts, ({ one }) => ({
+  user: one(users, {
+    fields: [kindnessPosts.userId],
+    references: [users.id],
+  }),
+}));

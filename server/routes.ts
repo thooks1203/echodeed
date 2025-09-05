@@ -5,9 +5,25 @@ import { storage } from "./storage";
 import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema } from "@shared/schema";
 import { contentFilter } from "./services/contentFilter";
 import { aiAnalytics } from "./services/aiAnalytics";
+import { setupAuth, isAuthenticated } from "./replitAuth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
+
+  // Auth middleware - Set up before routes
+  await setupAuth(app);
+
+  // Auth routes - Get current user info
+  app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      res.json(user);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
   
   // WebSocket server for real-time updates
   const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
@@ -37,7 +53,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get kindness counter
   app.get("/api/counter", async (req, res) => {
     try {
-      const counter = await storage.getKindnessCounter();
+      const counter = await storage.getCounter();
       res.json(counter);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
@@ -62,18 +78,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
       
-      const posts = await storage.getKindnessPosts(Object.keys(filters).length > 0 ? filters : undefined);
+      const posts = await storage.getPosts(Object.keys(filters).length > 0 ? filters : undefined);
       res.json(posts);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
   });
 
-  // Create new kindness post
-  app.post("/api/posts", async (req, res) => {
+  // Create new kindness post - Protected route
+  app.post("/api/posts", isAuthenticated, async (req: any, res) => {
     try {
       const postData = insertKindnessPostSchema.parse(req.body);
-      const sessionId = req.headers['x-session-id'] as string;
+      const userId = req.user.claims.sub;
       
       // Content filtering
       const contentValidation = contentFilter.isContentAppropriate(postData.content);
@@ -81,11 +97,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: contentValidation.reason });
       }
       
-      // Create post (awards tokens automatically)
-      const post = await storage.createKindnessPost(postData, sessionId);
+      // Create post with user ID
+      const post = await storage.createPost({ ...postData, userId });
       
-      // Increment counter
-      const counter = await storage.incrementKindnessCounter();
+      // Increment counter and award tokens
+      const counter = await storage.incrementCounter();
+      
+      // Ensure user has tokens record and award posting tokens
+      let userTokens = await storage.getUserTokens(userId);
+      if (!userTokens) {
+        userTokens = await storage.createUserTokens({ userId });
+      }
+      await storage.updateUserTokens(userId, { 
+        echoBalance: userTokens.echoBalance + 5,
+        totalEarned: userTokens.totalEarned + 5 
+      });
       
       // Broadcast new post and counter to all WebSocket clients
       broadcast({
@@ -168,7 +194,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get brand challenges
   app.get('/api/challenges', async (req, res) => {
     try {
-      const challenges = await storage.getBrandChallenges();
+      const challenges = await storage.getChallenges({ isActive: true });
       res.json(challenges);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
@@ -205,15 +231,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get user's completed challenges
-  app.get('/api/challenges/completed', async (req, res) => {
+  // Get user's completed challenges - Protected route
+  app.get('/api/challenges/completed', isAuthenticated, async (req: any, res) => {
     try {
-      const sessionId = req.headers['x-session-id'] as string;
-      if (!sessionId) {
-        return res.status(400).json({ message: 'Session ID required' });
-      }
+      const userId = req.user.claims.sub;
       
-      const completedChallenges = await storage.getChallengeCompletions(sessionId);
+      const completedChallenges = await storage.getCompletedChallenges(userId);
       res.json(completedChallenges);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
