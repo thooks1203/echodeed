@@ -13,48 +13,6 @@ import { KindnessPost, KindnessCounter } from '@shared/schema';
 import { PostFilters, WebSocketMessage } from '@/lib/types';
 
 export default function Home() {
-  const [isPostModalOpen, setIsPostModalOpen] = useState(false);
-  const [activeFilter, setActiveFilter] = useState('global');
-  const [activeTab, setActiveTab] = useState('feed');
-  const [filters, setFilters] = useState<PostFilters>({});
-  const [counterPulse, setCounterPulse] = useState(false);
-  const [onboardingCompleted, setOnboardingCompleted] = useState(false);
-
-  const { location } = useGeolocation();
-
-  // Fetch posts
-  const { data: posts = [], isLoading: postsLoading, refetch: refetchPosts } = useQuery<KindnessPost[]>({
-    queryKey: ['/api/posts', filters],
-  });
-
-  // Fetch counter
-  const { data: counter, refetch: refetchCounter } = useQuery<KindnessCounter>({
-    queryKey: ['/api/counter'],
-  });
-
-  // WebSocket message handler
-  const handleWebSocketMessage = useCallback((message: WebSocketMessage) => {
-    if (message.type === 'NEW_POST') {
-      refetchPosts();
-    } else if (message.type === 'COUNTER_UPDATE') {
-      refetchCounter();
-      setCounterPulse(true);
-      setTimeout(() => setCounterPulse(false), 600);
-    }
-  }, [refetchPosts, refetchCounter]);
-
-  // Initialize WebSocket
-  const { isConnected } = useWebSocket(handleWebSocketMessage);
-
-  useEffect(() => {
-    console.log('WebSocket connected:', isConnected);
-  }, [isConnected]);
-
-  const handleFilterChange = (filter: string, newFilters: PostFilters) => {
-    setActiveFilter(filter);
-    setFilters(newFilters);
-  };
-
   const defaultCounter: KindnessCounter = {
     id: 'global',
     count: 247891,
@@ -62,49 +20,19 @@ export default function Home() {
   };
 
   return (
-    <>
-      <OnboardingOverlay onComplete={() => setOnboardingCompleted(true)} />
+    <div className="mobile-container bg-background min-h-screen">
+      <AppHeader 
+        counter={defaultCounter} 
+        isPulse={false}
+      />
       
-      <div className="mobile-container bg-background min-h-screen">
-        <AppHeader 
-          counter={counter || defaultCounter} 
-          isPulse={counterPulse}
-        />
-        
-        <div style={{ backgroundColor: 'red', padding: '10px', margin: '10px' }}>
-          <p style={{ color: 'white' }}>Debug: Filter Bar Should Be Here</p>
-        </div>
-        
-        <div style={{ backgroundColor: 'blue', padding: '10px', margin: '10px' }}>
-          <p style={{ color: 'white' }}>Debug: Feed Should Be Here. Posts: {posts.length}</p>
-        </div>
-        
-        <FilterBar 
-          activeFilter={activeFilter}
-          location={location}
-          onFilterChange={handleFilterChange}
-        />
-        
-        <KindnessFeed 
-          posts={posts}
-          isLoading={postsLoading}
-        />
-        
-        <PostDeedModal 
-          isOpen={isPostModalOpen}
-          onClose={() => setIsPostModalOpen(false)}
-          location={location}
-        />
-        
-        <FloatingActionButton 
-          onClick={() => setIsPostModalOpen(true)}
-        />
-        
-        <BottomNavigation 
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-        />
+      <div style={{ backgroundColor: 'red', padding: '20px', margin: '20px' }}>
+        <h2 style={{ color: 'white', fontSize: '18px' }}>DEBUG: This should show below the header</h2>
       </div>
-    </>
+      
+      <div style={{ backgroundColor: 'blue', padding: '20px', margin: '20px' }}>
+        <h2 style={{ color: 'white', fontSize: '18px' }}>DEBUG: This is a simple div test</h2>
+      </div>
+    </div>
   );
 }
