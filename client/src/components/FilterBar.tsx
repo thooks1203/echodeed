@@ -14,7 +14,7 @@ export function FilterBar({ activeFilter, location, onFilterChange }: FilterBarP
   };
 
   return (
-    <div className="bg-card px-4 py-3 border-b border-border relative z-10">
+    <div className="bg-card px-4 py-3 border-b border-border">
       <div className="flex space-x-2 overflow-x-auto pb-1">
         <button 
           className={`filter-chip ${activeFilter === 'global' ? 'active' : ''}`}

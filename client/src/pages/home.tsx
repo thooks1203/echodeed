@@ -75,11 +75,15 @@ export default function Home() {
     <>
       <OnboardingOverlay onComplete={() => {}} />
       
-      <div className="mobile-container bg-background min-h-screen">
+      <div className="max-w-lg mx-auto bg-background min-h-screen">
         <AppHeader 
           counter={counter || defaultCounter} 
           isPulse={counterPulse}
         />
+        
+        <div style={{ backgroundColor: '#ff0000', color: 'white', padding: '20px', textAlign: 'center' }}>
+          VISIBILITY TEST - You should see this red box below the counter
+        </div>
         
         <FilterBar 
           activeFilter={activeFilter}

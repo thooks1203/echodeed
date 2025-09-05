@@ -33,7 +33,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
   }
 
   return (
-    <main className="pb-20 relative z-10 bg-background">
+    <main className="pb-20 bg-background">
       {posts.length === 0 ? (
         <div className="text-center py-12 px-4">
           <Heart className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
