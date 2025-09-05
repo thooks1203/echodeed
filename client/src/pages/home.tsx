@@ -6,7 +6,7 @@ import { KindnessFeed } from '@/components/KindnessFeed';
 import { PostDeedModal } from '@/components/PostDeedModal';
 import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { BottomNavigation } from '@/components/BottomNavigation';
-import { AIDashboard } from '@/components/ai-dashboard';
+import { AIDashboard } from '@/components/ai-dashboard-simple';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { KindnessPost, KindnessCounter, UserTokens, BrandChallenge } from '@shared/schema';
