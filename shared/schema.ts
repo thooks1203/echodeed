@@ -32,6 +32,29 @@ export const userTokens = pgTable("user_tokens", {
   lastActive: timestamp("last_active").defaultNow().notNull(),
 });
 
+// Brand challenges - sponsored kindness challenges
+export const brandChallenges = pgTable("brand_challenges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  content: text("content").notNull(), // The challenge description
+  brandName: varchar("brand_name", { length: 100 }).notNull(),
+  brandLogo: text("brand_logo"), // URL or emoji for brand representation
+  category: varchar("category", { length: 50 }).notNull(),
+  echoReward: integer("echo_reward").default(10).notNull(), // Higher reward for brand challenges
+  isActive: integer("is_active").default(1).notNull(), // 1 = active, 0 = inactive
+  completionCount: integer("completion_count").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at"),
+});
+
+// Track challenge completions
+export const challengeCompletions = pgTable("challenge_completions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  challengeId: varchar("challenge_id").notNull(),
+  sessionId: varchar("session_id").notNull(),
+  completedAt: timestamp("completed_at").defaultNow().notNull(),
+});
+
 export const insertKindnessPostSchema = createInsertSchema(kindnessPosts).omit({
   id: true,
   createdAt: true,
@@ -48,8 +71,23 @@ export const insertUserTokensSchema = createInsertSchema(userTokens).omit({
   lastActive: true,
 });
 
+export const insertBrandChallengeSchema = createInsertSchema(brandChallenges).omit({
+  id: true,
+  createdAt: true,
+  completionCount: true,
+});
+
+export const insertChallengeCompletionSchema = createInsertSchema(challengeCompletions).omit({
+  id: true,
+  completedAt: true,
+});
+
 export type InsertKindnessPost = z.infer<typeof insertKindnessPostSchema>;
 export type KindnessPost = typeof kindnessPosts.$inferSelect;
 export type KindnessCounter = typeof kindnessCounter.$inferSelect;
 export type UserTokens = typeof userTokens.$inferSelect;
 export type InsertUserTokens = z.infer<typeof insertUserTokensSchema>;
+export type BrandChallenge = typeof brandChallenges.$inferSelect;
+export type InsertBrandChallenge = z.infer<typeof insertBrandChallengeSchema>;
+export type ChallengeCompletion = typeof challengeCompletions.$inferSelect;
+export type InsertChallengeCompletion = z.infer<typeof insertChallengeCompletionSchema>;

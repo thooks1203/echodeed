@@ -1,4 +1,4 @@
-import { type KindnessPost, type InsertKindnessPost, type KindnessCounter, type UserTokens, type InsertUserTokens } from "@shared/schema";
+import { type KindnessPost, type InsertKindnessPost, type KindnessCounter, type UserTokens, type InsertUserTokens, type BrandChallenge, type InsertBrandChallenge, type ChallengeCompletion } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -11,24 +11,32 @@ export interface IStorage {
   getUserTokens(sessionId: string): Promise<UserTokens>;
   createOrUpdateUserTokens(sessionId: string): Promise<UserTokens>;
   awardTokens(sessionId: string, amount: number, reason: string): Promise<UserTokens>;
+  getBrandChallenges(): Promise<BrandChallenge[]>;
+  completeChallenge(challengeId: string, sessionId: string): Promise<{ challenge: BrandChallenge; tokens: UserTokens }>;
+  getChallengeCompletions(sessionId: string): Promise<string[]>; // Returns array of completed challenge IDs
 }
 
 export class MemStorage implements IStorage {
   private posts: Map<string, KindnessPost>;
   private counter: KindnessCounter;
   private userTokens: Map<string, UserTokens>;
+  private brandChallenges: Map<string, BrandChallenge>;
+  private challengeCompletions: Map<string, string[]>; // sessionId -> challengeIds
 
   constructor() {
     this.posts = new Map();
     this.userTokens = new Map();
+    this.brandChallenges = new Map();
+    this.challengeCompletions = new Map();
     this.counter = {
       id: "global",
       count: 247891, // Starting count from design
       updatedAt: new Date(),
     };
 
-    // Add some initial posts for demonstration
+    // Add some initial posts and challenges for demonstration
     this.seedInitialPosts();
+    this.seedBrandChallenges();
   }
 
   private seedInitialPosts() {
@@ -221,6 +229,100 @@ export class MemStorage implements IStorage {
     console.log(`Awarded ${amount} $ECHO to ${sessionId} for ${reason}. New balance: ${updatedTokens.echoBalance}`);
     
     return updatedTokens;
+  }
+
+  private seedBrandChallenges() {
+    const challenges = [
+      {
+        title: "Green Earth Challenge",
+        content: "Pick up 5 pieces of litter in your neighborhood and post a photo. Every piece makes a difference! Help us create cleaner communities together.",
+        brandName: "EcoClean Solutions",
+        brandLogo: "🌱",
+        category: "Community Action",
+        echoReward: 15,
+        isActive: 1,
+        completionCount: 0,
+        expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+      },
+      {
+        title: "Coffee & Kindness",
+        content: "Buy coffee for the person behind you in line, or leave an encouraging note for the barista. Small gestures create big smiles!",
+        brandName: "Brew Brothers Coffee",
+        brandLogo: "☕",
+        category: "Spreading Positivity",
+        echoReward: 12,
+        isActive: 1,
+        completionCount: 0,
+        expiresAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000), // 14 days from now
+      },
+      {
+        title: "Helping Hands Initiative",
+        content: "Volunteer 2 hours at a local food bank, shelter, or community center. Share how it made you feel and inspire others to give their time too.",
+        brandName: "Community First Bank",
+        brandLogo: "🏦",
+        category: "Helping Others",
+        echoReward: 20,
+        isActive: 1,
+        completionCount: 0,
+        expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), // 60 days from now
+      }
+    ];
+
+    challenges.forEach(challengeData => {
+      const id = randomUUID();
+      const challenge: BrandChallenge = {
+        ...challengeData,
+        id,
+        createdAt: new Date(Date.now() - Math.random() * 7 * 24 * 60 * 60 * 1000), // Random time within last week
+      };
+      this.brandChallenges.set(id, challenge);
+    });
+  }
+
+  async getBrandChallenges(): Promise<BrandChallenge[]> {
+    const challenges = Array.from(this.brandChallenges.values());
+    
+    // Only return active challenges that haven't expired
+    const activeChallenges = challenges.filter(challenge => 
+      challenge.isActive === 1 && 
+      (!challenge.expiresAt || challenge.expiresAt > new Date())
+    );
+    
+    // Sort by creation date, newest first
+    return activeChallenges.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  }
+
+  async completeChallenge(challengeId: string, sessionId: string): Promise<{ challenge: BrandChallenge; tokens: UserTokens }> {
+    const challenge = this.brandChallenges.get(challengeId);
+    if (!challenge) {
+      throw new Error('Challenge not found');
+    }
+
+    // Check if user already completed this challenge
+    const userCompletions = this.challengeCompletions.get(sessionId) || [];
+    if (userCompletions.includes(challengeId)) {
+      throw new Error('Challenge already completed');
+    }
+
+    // Mark challenge as completed for this user
+    userCompletions.push(challengeId);
+    this.challengeCompletions.set(sessionId, userCompletions);
+
+    // Increment challenge completion count
+    const updatedChallenge = {
+      ...challenge,
+      completionCount: challenge.completionCount + 1,
+    };
+    this.brandChallenges.set(challengeId, updatedChallenge);
+
+    // Award tokens
+    const tokens = await this.awardTokens(sessionId, challenge.echoReward, `Completed ${challenge.brandName} challenge`);
+
+    return { challenge: updatedChallenge, tokens };
+  }
+
+  async getChallengeCompletions(sessionId: string): Promise<string[]> {
+    return this.challengeCompletions.get(sessionId) || [];
   }
 }
 

@@ -8,7 +8,7 @@ import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
-import { KindnessPost, KindnessCounter, UserTokens } from '@shared/schema';
+import { KindnessPost, KindnessCounter, UserTokens, BrandChallenge } from '@shared/schema';
 import { PostFilters, WebSocketMessage } from '@/lib/types';
 import { getSessionId, addSessionHeaders } from '@/lib/session';
 
@@ -54,6 +54,16 @@ export default function Home() {
   const { data: tokens, refetch: refetchTokens } = useQuery<UserTokens>({
     queryKey: ['/api/tokens'],
     retry: 2,
+  });
+
+  // Fetch brand challenges
+  const { data: challenges = [] } = useQuery<BrandChallenge[]>({
+    queryKey: ['/api/challenges'],
+  });
+
+  // Fetch completed challenges
+  const { data: completedChallenges = [] } = useQuery<string[]>({
+    queryKey: ['/api/challenges/completed'],
   });
 
   // WebSocket message handler
@@ -116,6 +126,39 @@ export default function Home() {
     }
   };
 
+  const handleCompleteChallenge = async (challengeId: string, brandName: string, reward: number) => {
+    try {
+      const response = await fetch(`/api/challenges/${challengeId}/complete`, {
+        method: 'POST',
+        headers: addSessionHeaders({
+          'Content-Type': 'application/json',
+        }),
+      });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message);
+      }
+      
+      const data = await response.json();
+      
+      // Show token earning popup
+      setTokenEarning({
+        amount: reward,
+        reason: `${brandName} challenge! 🏆`,
+      });
+      
+      setTimeout(() => setTokenEarning(null), 3000);
+      
+      // Refresh data
+      queryClient.invalidateQueries({ queryKey: ['/api/challenges/completed'] });
+      refetchTokens();
+    } catch (error: any) {
+      console.error('Failed to complete challenge:', error);
+      alert(error.message || 'Failed to complete challenge');
+    }
+  };
+
   const defaultCounter: KindnessCounter = {
     id: 'global',
     count: 247891,
@@ -138,6 +181,113 @@ export default function Home() {
     backgroundColor: '#8B5CF6',
     color: 'white'
   };
+
+  // Partners tab content
+  const renderPartnersTab = () => (
+    <div style={{ padding: '20px', paddingBottom: '100px' }}>
+      <h2 style={{ 
+        fontSize: '24px', 
+        fontWeight: 'bold', 
+        marginBottom: '16px', 
+        textAlign: 'center',
+        background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent'
+      }}>
+        Our Kindness Partners 🤝
+      </h2>
+      
+      <p style={{ 
+        textAlign: 'center', 
+        color: '#6b7280', 
+        marginBottom: '24px',
+        fontSize: '14px'
+      }}>
+        Companies supporting our mission to amplify kindness worldwide
+      </p>
+
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        {challenges.map((challenge) => (
+          <div key={challenge.id} style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            border: '2px solid #f3f4f6'
+          }}>
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              marginBottom: '12px'
+            }}>
+              <span style={{ fontSize: '32px', marginRight: '12px' }}>
+                {challenge.brandLogo}
+              </span>
+              <div>
+                <h3 style={{ 
+                  fontSize: '18px', 
+                  fontWeight: 'bold', 
+                  margin: 0,
+                  color: '#1f2937'
+                }}>
+                  {challenge.brandName}
+                </h3>
+                <div style={{
+                  fontSize: '12px',
+                  backgroundColor: '#10B981',
+                  color: 'white',
+                  padding: '2px 8px',
+                  borderRadius: '10px',
+                  display: 'inline-block',
+                  marginTop: '4px'
+                }}>
+                  Partner Sponsor
+                </div>
+              </div>
+            </div>
+            
+            <p style={{ 
+              color: '#4b5563', 
+              fontSize: '14px', 
+              lineHeight: '1.5',
+              margin: '0 0 12px 0'
+            }}>
+              Supporting kindness through: <strong>{challenge.category}</strong>
+            </p>
+            
+            <div style={{
+              backgroundColor: '#f9fafb',
+              padding: '12px',
+              borderRadius: '8px',
+              fontSize: '12px',
+              color: '#6b7280'
+            }}>
+              <strong>Current Challenge:</strong> {challenge.title}
+              <br />
+              <strong>Reward:</strong> {challenge.echoReward} $ECHO tokens
+              <br />
+              <strong>Completions:</strong> {challenge.completionCount} kindness acts inspired
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <div style={{
+        marginTop: '24px',
+        padding: '16px',
+        backgroundColor: '#fef3c7',
+        borderRadius: '12px',
+        textAlign: 'center'
+      }}>
+        <h4 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 8px 0' }}>
+          Interested in Partnering?
+        </h4>
+        <p style={{ fontSize: '12px', color: '#92400e', margin: 0 }}>
+          Contact us to sponsor kindness challenges and support positive community impact
+        </p>
+      </div>
+    </div>
+  );
 
   // Welcome Page
   if (showWelcome) {
@@ -374,6 +524,145 @@ export default function Home() {
     );
   }
 
+  // Show Partners tab if selected
+  if (activeTab === 'partners') {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        {/* Header */}
+        <div style={{ 
+          background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+          color: 'white', 
+          padding: '20px', 
+          textAlign: 'center',
+          position: 'relative'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ 
+                width: '32px', 
+                height: '32px', 
+                backgroundColor: 'rgba(255,255,255,0.2)', 
+                borderRadius: '50%', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center' 
+              }}>
+                ❤️
+              </div>
+              <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
+            </div>
+            
+            {/* $ECHO Balance */}
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '6px',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              padding: '6px 12px',
+              borderRadius: '20px',
+              fontSize: '14px',
+              fontWeight: '600'
+            }}>
+              <span style={{ fontSize: '16px' }}>🪙</span>
+              <span>{tokens?.echoBalance || 0} $ECHO</span>
+            </div>
+          </div>
+          
+          <div style={{ fontSize: '14px', opacity: 0.8 }}>Your Kindness, Amplified</div>
+        </div>
+
+        {renderPartnersTab()}
+
+        {/* Bottom Navigation */}
+        <div style={{
+          position: 'fixed',
+          bottom: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          maxWidth: '430px',
+          width: '100%',
+          backgroundColor: 'rgba(255,255,255,0.95)',
+          backdropFilter: 'blur(8px)',
+          borderTop: '1px solid #e5e7eb',
+          display: 'flex',
+          justifyContent: 'space-around',
+          padding: '12px 0',
+          zIndex: 100
+        }}>
+          {[
+            { id: 'feed', label: 'Feed', icon: '🏠' },
+            { id: 'local', label: 'Local', icon: '📍' },
+            { id: 'spacer', label: '', icon: '' },
+            { id: 'partners', label: 'Partners', icon: '🤝' },
+            { id: 'impact', label: 'Impact', icon: '📈' },
+          ].map((tab) => {
+            if (tab.id === 'spacer') {
+              return <div key={tab.id} style={{ width: '32px' }} />;
+            }
+            
+            return (
+              <button 
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: '4px 8px',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
+                  backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
+                }}
+              >
+                <span style={{ fontSize: '18px' }}>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+        
+        {/* Token Earning Popup */}
+        {tokenEarning && (
+          <div style={{
+            position: 'fixed',
+            top: '80px',
+            right: '20px',
+            backgroundColor: '#10B981',
+            color: 'white',
+            padding: '12px 16px',
+            borderRadius: '12px',
+            fontSize: '14px',
+            fontWeight: '600',
+            boxShadow: '0 8px 25px rgba(16, 185, 129, 0.3)',
+            zIndex: 1000,
+            animation: 'slideIn 0.3s ease-out',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <span style={{ fontSize: '18px' }}>🪙</span>
+            <div>
+              <div>+{tokenEarning.amount} $ECHO</div>
+              <div style={{ fontSize: '12px', opacity: 0.9 }}>{tokenEarning.reason}</div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // Main App
   return (
     <div style={{ 
@@ -473,6 +762,157 @@ export default function Home() {
       
       {/* Feed */}
       <div style={{ backgroundColor: '#f8f9fa', paddingBottom: '100px' }}>
+        
+        {/* Brand Challenges Section */}
+        {challenges.length > 0 && (
+          <div style={{ padding: '16px 16px 0 16px' }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: 'bold', 
+              marginBottom: '12px',
+              textAlign: 'center',
+              color: '#1f2937'
+            }}>
+              🏆 Brand Challenges - Higher Rewards!
+            </h3>
+            {challenges.slice(0, 2).map((challenge) => { // Show only 2 challenges in feed
+              const isCompleted = completedChallenges.includes(challenge.id);
+              return (
+                <div key={challenge.id} style={{
+                  backgroundColor: 'white',
+                  borderRadius: '16px',
+                  padding: '16px',
+                  marginBottom: '12px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  border: '2px solid #10B981',
+                  position: 'relative',
+                  overflow: 'hidden'
+                }}>
+                  {/* Sponsored Label */}
+                  <div style={{
+                    position: 'absolute',
+                    top: '8px',
+                    right: '8px',
+                    backgroundColor: '#10B981',
+                    color: 'white',
+                    fontSize: '10px',
+                    fontWeight: '600',
+                    padding: '4px 8px',
+                    borderRadius: '8px'
+                  }}>
+                    SPONSORED
+                  </div>
+                  
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    marginBottom: '12px',
+                    paddingRight: '80px' // Make room for sponsored label
+                  }}>
+                    <span style={{ fontSize: '32px', marginRight: '12px' }}>
+                      {challenge.brandLogo}
+                    </span>
+                    <div>
+                      <h4 style={{ 
+                        fontSize: '16px', 
+                        fontWeight: 'bold', 
+                        margin: 0,
+                        color: '#1f2937'
+                      }}>
+                        {challenge.title}
+                      </h4>
+                      <p style={{ 
+                        fontSize: '12px', 
+                        color: '#10B981', 
+                        margin: '2px 0 0 0',
+                        fontWeight: '600'
+                      }}>
+                        by {challenge.brandName}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <p style={{ 
+                    color: '#4b5563', 
+                    fontSize: '14px', 
+                    lineHeight: '1.5',
+                    marginBottom: '16px'
+                  }}>
+                    {challenge.content}
+                  </p>
+                  
+                  <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'space-between', 
+                    alignItems: 'center' 
+                  }}>
+                    <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                      <span style={{ 
+                        backgroundColor: '#fef3c7', 
+                        color: '#92400e',
+                        padding: '2px 8px',
+                        borderRadius: '8px',
+                        marginRight: '8px',
+                        fontWeight: '500'
+                      }}>
+                        {challenge.category}
+                      </span>
+                      <strong>{challenge.echoReward} $ECHO</strong> reward
+                    </div>
+                    
+                    <button
+                      onClick={() => handleCompleteChallenge(challenge.id, challenge.brandName, challenge.echoReward)}
+                      disabled={isCompleted}
+                      style={{
+                        backgroundColor: isCompleted ? '#9ca3af' : '#10B981',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '20px',
+                        padding: '8px 16px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        cursor: isCompleted ? 'not-allowed' : 'pointer',
+                        opacity: isCompleted ? 0.6 : 1,
+                        transition: 'all 0.2s ease'
+                      }}
+                    >
+                      {isCompleted ? '✅ Completed' : `Complete (+${challenge.echoReward} $ECHO)`}
+                    </button>
+                  </div>
+                  
+                  <div style={{ 
+                    fontSize: '10px', 
+                    color: '#9ca3af',
+                    marginTop: '8px',
+                    textAlign: 'center'
+                  }}>
+                    {challenge.completionCount} people have completed this challenge
+                  </div>
+                </div>
+              );
+            })}
+            
+            {/* View more challenges link */}
+            <div style={{ textAlign: 'center', marginBottom: '16px' }}>
+              <button
+                onClick={() => setActiveTab('partners')}
+                style={{
+                  backgroundColor: 'transparent',
+                  border: '1px solid #10B981',
+                  color: '#10B981',
+                  borderRadius: '20px',
+                  padding: '8px 16px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                View All Partner Challenges 🤝
+              </button>
+            </div>
+          </div>
+        )}
+        
         {postsLoading ? (
           <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
             <div>Loading acts of kindness...</div>
@@ -666,8 +1106,8 @@ export default function Home() {
           { id: 'feed', label: 'Feed', icon: '🏠' },
           { id: 'local', label: 'Local', icon: '📍' },
           { id: 'spacer', label: '', icon: '' },
+          { id: 'partners', label: 'Partners', icon: '🤝' },
           { id: 'impact', label: 'Impact', icon: '📈' },
-          { id: 'about', label: 'About', icon: 'ℹ️' },
         ].map((tab) => {
           if (tab.id === 'spacer') {
             return <div key={tab.id} style={{ width: '32px' }} />;

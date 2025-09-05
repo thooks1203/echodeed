@@ -164,5 +164,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get brand challenges
+  app.get('/api/challenges', async (req, res) => {
+    try {
+      const challenges = await storage.getBrandChallenges();
+      res.json(challenges);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Complete a brand challenge
+  app.post('/api/challenges/:challengeId/complete', async (req, res) => {
+    try {
+      const { challengeId } = req.params;
+      const sessionId = req.headers['x-session-id'] as string;
+      
+      if (!sessionId) {
+        return res.status(400).json({ message: 'Session ID required' });
+      }
+
+      const result = await storage.completeChallenge(challengeId, sessionId);
+      
+      // Broadcast challenge completion
+      broadcast({
+        type: 'CHALLENGE_COMPLETED',
+        challenge: result.challenge,
+      });
+      
+      res.json(result);
+    } catch (error: any) {
+      if (error.message === 'Challenge not found') {
+        res.status(404).json({ message: 'Challenge not found' });
+      } else if (error.message === 'Challenge already completed') {
+        res.status(400).json({ message: 'Challenge already completed' });
+      } else {
+        res.status(500).json({ message: error.message });
+      }
+    }
+  });
+
+  // Get user's completed challenges
+  app.get('/api/challenges/completed', async (req, res) => {
+    try {
+      const sessionId = req.headers['x-session-id'] as string;
+      if (!sessionId) {
+        return res.status(400).json({ message: 'Session ID required' });
+      }
+      
+      const completedChallenges = await storage.getChallengeCompletions(sessionId);
+      res.json(completedChallenges);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   return httpServer;
 }

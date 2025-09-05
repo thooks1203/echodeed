@@ -6,9 +6,10 @@ export interface LocationData {
 }
 
 export interface WebSocketMessage {
-  type: 'NEW_POST' | 'COUNTER_UPDATE' | 'POST_UPDATE';
+  type: 'NEW_POST' | 'COUNTER_UPDATE' | 'POST_UPDATE' | 'CHALLENGE_COMPLETED';
   post?: any;
   counter?: any;
+  challenge?: any;
 }
 
 export type FilterType = 'global' | 'local' | 'category';
