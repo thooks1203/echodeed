@@ -182,6 +182,329 @@ export default function Home() {
     color: 'white'
   };
 
+  // Admin tab content
+  const renderAdminTab = () => (
+    <div style={{ padding: '20px', paddingBottom: '100px' }}>
+      <h2 style={{ 
+        fontSize: '24px', 
+        fontWeight: 'bold', 
+        marginBottom: '16px', 
+        textAlign: 'center',
+        background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+        WebkitBackgroundClip: 'text',
+        WebkitTextFillColor: 'transparent'
+      }}>
+        EchoDeed™ Admin Panel ⚙️
+      </h2>
+      
+      {/* Analytics Overview */}
+      <div style={{ marginBottom: '24px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px' }}>📊 Analytics Overview</h3>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '16px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#10B981' }}>
+              {(counter || defaultCounter).count.toLocaleString()}
+            </div>
+            <div style={{ fontSize: '12px', color: '#6b7280' }}>Total Kindness Acts</div>
+          </div>
+          
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '16px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#8B5CF6' }}>
+              {challenges.reduce((sum, c) => sum + c.completionCount, 0).toLocaleString()}
+            </div>
+            <div style={{ fontSize: '12px', color: '#6b7280' }}>Challenge Completions</div>
+          </div>
+          
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '16px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#06B6D4' }}>
+              {challenges.length}
+            </div>
+            <div style={{ fontSize: '12px', color: '#6b7280' }}>Active Challenges</div>
+          </div>
+          
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '16px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#F59E0B' }}>
+              {new Set(challenges.map(c => c.brandName)).size}
+            </div>
+            <div style={{ fontSize: '12px', color: '#6b7280' }}>Partner Brands</div>
+          </div>
+        </div>
+      </div>
+
+      {/* Challenge Management */}
+      <div style={{ marginBottom: '24px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px' }}>🏆 Challenge Management</h3>
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          padding: '16px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          marginBottom: '12px'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <h4 style={{ fontSize: '16px', fontWeight: 'bold', margin: 0 }}>Active Challenges</h4>
+            <button style={{
+              backgroundColor: '#10B981',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '8px 12px',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}>
+              + Add Challenge
+            </button>
+          </div>
+          
+          {challenges.slice(0, 3).map((challenge) => (
+            <div key={challenge.id} style={{
+              padding: '12px',
+              backgroundColor: '#f9fafb',
+              borderRadius: '8px',
+              marginBottom: '8px',
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center'
+            }}>
+              <div>
+                <div style={{ fontSize: '14px', fontWeight: '600' }}>
+                  {challenge.brandLogo} {challenge.title}
+                </div>
+                <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                  {challenge.brandName} • {challenge.completionCount} completions • {challenge.echoReward + (challenge.bonusReward || 0)} $ECHO
+                </div>
+              </div>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button style={{
+                  backgroundColor: '#F59E0B',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '4px 8px',
+                  fontSize: '10px',
+                  cursor: 'pointer'
+                }}>
+                  Edit
+                </button>
+                <button style={{
+                  backgroundColor: challenge.isActive ? '#EF4444' : '#10B981',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '4px 8px',
+                  fontSize: '10px',
+                  cursor: 'pointer'
+                }}>
+                  {challenge.isActive ? 'Pause' : 'Activate'}
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Partner Management */}
+      <div style={{ marginBottom: '24px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px' }}>🤝 Partner Management</h3>
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          padding: '16px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+        }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+            <h4 style={{ fontSize: '16px', fontWeight: 'bold', margin: 0 }}>Partner Relationships</h4>
+            <button style={{
+              backgroundColor: '#8B5CF6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '8px 12px',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}>
+              + Add Partner
+            </button>
+          </div>
+          
+          {Array.from(new Set(challenges.map(c => c.brandName))).slice(0, 4).map((brandName) => {
+            const brandChallenges = challenges.filter(c => c.brandName === brandName);
+            const totalCompletions = brandChallenges.reduce((sum, c) => sum + c.completionCount, 0);
+            const totalReward = brandChallenges.reduce((sum, c) => sum + (c.echoReward + (c.bonusReward || 0)) * c.completionCount, 0);
+            
+            return (
+              <div key={brandName} style={{
+                padding: '12px',
+                backgroundColor: '#f0f9ff',
+                borderRadius: '8px',
+                marginBottom: '8px',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center'
+              }}>
+                <div>
+                  <div style={{ fontSize: '14px', fontWeight: '600' }}>
+                    {brandChallenges[0]?.brandLogo} {brandName}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                    {brandChallenges.length} challenges • {totalCompletions} completions • {totalReward} $ECHO distributed
+                  </div>
+                </div>
+                <div style={{
+                  fontSize: '12px',
+                  backgroundColor: '#10B981',
+                  color: 'white',
+                  padding: '4px 8px',
+                  borderRadius: '8px',
+                  fontWeight: '600'
+                }}>
+                  Active
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Revenue Metrics */}
+      <div style={{ marginBottom: '24px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px' }}>💰 Revenue Metrics</h3>
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          padding: '16px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+        }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+            <div style={{
+              padding: '12px',
+              backgroundColor: '#ecfdf5',
+              borderRadius: '8px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#059669' }}>
+                $12,450
+              </div>
+              <div style={{ fontSize: '12px', color: '#6b7280' }}>Monthly Revenue</div>
+            </div>
+            
+            <div style={{
+              padding: '12px',
+              backgroundColor: '#fef3c7',
+              borderRadius: '8px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '20px', fontWeight: 'bold', color: '#92400e' }}>
+                $2,890
+              </div>
+              <div style={{ fontSize: '12px', color: '#6b7280' }}>Avg Per Partner</div>
+            </div>
+          </div>
+          
+          <div style={{ 
+            marginTop: '12px', 
+            padding: '12px', 
+            backgroundColor: '#f3f4f6', 
+            borderRadius: '8px',
+            fontSize: '12px',
+            color: '#4b5563'
+          }}>
+            <strong>Revenue Breakdown:</strong> Brand Challenges (73%), Premium Features (18%), Data Insights (9%)
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div style={{
+        backgroundColor: 'white',
+        borderRadius: '16px',
+        padding: '16px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+      }}>
+        <h4 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px' }}>⚡ Quick Actions</h4>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+          <button style={{
+            backgroundColor: '#10B981',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '12px',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer'
+          }}>
+            🎄 Create Holiday Campaign
+          </button>
+          
+          <button style={{
+            backgroundColor: '#8B5CF6',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '12px',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer'
+          }}>
+            📊 Export Analytics
+          </button>
+          
+          <button style={{
+            backgroundColor: '#06B6D4',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '12px',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer'
+          }}>
+            🚀 Launch Feature
+          </button>
+          
+          <button style={{
+            backgroundColor: '#F59E0B',
+            color: 'white',
+            border: 'none',
+            borderRadius: '8px',
+            padding: '12px',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer'
+          }}>
+            👥 User Insights
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   // Partners tab content
   const renderPartnersTab = () => (
     <div style={{ padding: '20px', paddingBottom: '100px' }}>
@@ -264,7 +587,13 @@ export default function Home() {
             }}>
               <strong>Current Challenge:</strong> {challenge.title}
               <br />
-              <strong>Reward:</strong> {challenge.echoReward} $ECHO tokens
+              <strong>Type:</strong> {challenge.challengeType} 
+              {challenge.difficulty && <span> • <strong>Difficulty:</strong> {challenge.difficulty}</span>}
+              <br />
+              <strong>Reward:</strong> {challenge.echoReward} $ECHO
+              {challenge.bonusReward && challenge.bonusReward > 0 && (
+                <span style={{ color: '#10B981' }}> + {challenge.bonusReward} bonus</span>
+              )}
               <br />
               <strong>Completions:</strong> {challenge.completionCount} kindness acts inspired
             </div>
@@ -524,6 +853,145 @@ export default function Home() {
     );
   }
 
+  // Show Admin tab if selected
+  if (activeTab === 'admin') {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        {/* Header */}
+        <div style={{ 
+          background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+          color: 'white', 
+          padding: '20px', 
+          textAlign: 'center',
+          position: 'relative'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ 
+                width: '32px', 
+                height: '32px', 
+                backgroundColor: 'rgba(255,255,255,0.2)', 
+                borderRadius: '50%', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center' 
+              }}>
+                ⚙️
+              </div>
+              <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™ Admin</h1>
+            </div>
+            
+            {/* $ECHO Balance */}
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '6px',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              padding: '6px 12px',
+              borderRadius: '20px',
+              fontSize: '14px',
+              fontWeight: '600'
+            }}>
+              <span style={{ fontSize: '16px' }}>🪙</span>
+              <span>{tokens?.echoBalance || 0} $ECHO</span>
+            </div>
+          </div>
+          
+          <div style={{ fontSize: '14px', opacity: 0.8 }}>Platform Management Dashboard</div>
+        </div>
+
+        {renderAdminTab()}
+
+        {/* Bottom Navigation */}
+        <div style={{
+          position: 'fixed',
+          bottom: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          maxWidth: '430px',
+          width: '100%',
+          backgroundColor: 'rgba(255,255,255,0.95)',
+          backdropFilter: 'blur(8px)',
+          borderTop: '1px solid #e5e7eb',
+          display: 'flex',
+          justifyContent: 'space-around',
+          padding: '12px 0',
+          zIndex: 100
+        }}>
+          {[
+            { id: 'feed', label: 'Feed', icon: '🏠' },
+            { id: 'local', label: 'Local', icon: '📍' },
+            { id: 'admin', label: 'Admin', icon: '⚙️' },
+            { id: 'partners', label: 'Partners', icon: '🤝' },
+            { id: 'impact', label: 'Impact', icon: '📈' },
+          ].map((tab) => {
+            if (tab.id === 'spacer') {
+              return <div key={tab.id} style={{ width: '32px' }} />;
+            }
+            
+            return (
+              <button 
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: '4px 8px',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
+                  backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
+                }}
+              >
+                <span style={{ fontSize: '18px' }}>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+        
+        {/* Token Earning Popup */}
+        {tokenEarning && (
+          <div style={{
+            position: 'fixed',
+            top: '80px',
+            right: '20px',
+            backgroundColor: '#10B981',
+            color: 'white',
+            padding: '12px 16px',
+            borderRadius: '12px',
+            fontSize: '14px',
+            fontWeight: '600',
+            boxShadow: '0 8px 25px rgba(16, 185, 129, 0.3)',
+            zIndex: 1000,
+            animation: 'slideIn 0.3s ease-out',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '8px'
+          }}>
+            <span style={{ fontSize: '18px' }}>🪙</span>
+            <div>
+              <div>+{tokenEarning.amount} $ECHO</div>
+              <div style={{ fontSize: '12px', opacity: 0.9 }}>{tokenEarning.reason}</div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // Show Partners tab if selected
   if (activeTab === 'partners') {
     return (
@@ -598,7 +1066,7 @@ export default function Home() {
           {[
             { id: 'feed', label: 'Feed', icon: '🏠' },
             { id: 'local', label: 'Local', icon: '📍' },
-            { id: 'spacer', label: '', icon: '' },
+            { id: 'admin', label: 'Admin', icon: '⚙️' },
             { id: 'partners', label: 'Partners', icon: '🤝' },
             { id: 'impact', label: 'Impact', icon: '📈' },
           ].map((tab) => {
@@ -812,23 +1280,108 @@ export default function Home() {
                     <span style={{ fontSize: '32px', marginRight: '12px' }}>
                       {challenge.brandLogo}
                     </span>
-                    <div>
-                      <h4 style={{ 
-                        fontSize: '16px', 
-                        fontWeight: 'bold', 
-                        margin: 0,
-                        color: '#1f2937'
-                      }}>
-                        {challenge.title}
-                      </h4>
-                      <p style={{ 
-                        fontSize: '12px', 
-                        color: '#10B981', 
-                        margin: '2px 0 0 0',
-                        fontWeight: '600'
-                      }}>
-                        by {challenge.brandName}
-                      </p>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <h4 style={{ 
+                          fontSize: '16px', 
+                          fontWeight: 'bold', 
+                          margin: 0,
+                          color: '#1f2937'
+                        }}>
+                          {challenge.title}
+                        </h4>
+                        
+                        {/* Difficulty Badge */}
+                        <span style={{
+                          fontSize: '10px',
+                          fontWeight: '600',
+                          padding: '2px 6px',
+                          borderRadius: '10px',
+                          backgroundColor: challenge.difficulty === 'advanced' ? '#EF4444' : 
+                                         challenge.difficulty === 'intermediate' ? '#F59E0B' : '#10B981',
+                          color: 'white'
+                        }}>
+                          {challenge.difficulty?.toUpperCase()}
+                        </span>
+                        
+                        {/* Priority/Featured Badge */}
+                        {challenge.isPriority === 1 && (
+                          <span style={{
+                            fontSize: '10px',
+                            fontWeight: '600',
+                            padding: '2px 6px',
+                            borderRadius: '10px',
+                            backgroundColor: '#8B5CF6',
+                            color: 'white'
+                          }}>
+                            FEATURED
+                          </span>
+                        )}
+                      </div>
+                      
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <p style={{ 
+                          fontSize: '12px', 
+                          color: '#10B981', 
+                          margin: 0,
+                          fontWeight: '600'
+                        }}>
+                          by {challenge.brandName}
+                        </p>
+                        
+                        {/* Challenge Type Indicator */}
+                        {challenge.challengeType === 'seasonal' && challenge.seasonalTheme && (
+                          <span style={{
+                            fontSize: '10px',
+                            color: '#8B5CF6',
+                            backgroundColor: '#F3F4F6',
+                            padding: '2px 6px',
+                            borderRadius: '8px',
+                            fontWeight: '500'
+                          }}>
+                            🎄 {challenge.seasonalTheme.toUpperCase()}
+                          </span>
+                        )}
+                        
+                        {challenge.challengeType === 'recurring' && (
+                          <span style={{
+                            fontSize: '10px',
+                            color: '#06B6D4',
+                            backgroundColor: '#F0F9FF',
+                            padding: '2px 6px',
+                            borderRadius: '8px',
+                            fontWeight: '500'
+                          }}>
+                            🔄 {challenge.recurringPeriod?.toUpperCase()}
+                          </span>
+                        )}
+                        
+                        {challenge.challengeType === 'location' && (
+                          <span style={{
+                            fontSize: '10px',
+                            color: '#059669',
+                            backgroundColor: '#ECFDF5',
+                            padding: '2px 6px',
+                            borderRadius: '8px',
+                            fontWeight: '500'
+                          }}>
+                            📍 LOCAL
+                          </span>
+                        )}
+                        
+                        {(challenge.minParticipants && challenge.minParticipants > 1) && (
+                          <span style={{
+                            fontSize: '10px',
+                            color: '#7C3AED',
+                            backgroundColor: '#F5F3FF',
+                            padding: '2px 6px',
+                            borderRadius: '8px',
+                            fontWeight: '500'
+                          }}>
+                            👥 TEAM ({challenge.minParticipants}-{challenge.maxParticipants})
+                          </span>
+                        )}
+                      </div>
                     </div>
                   </div>
                   
@@ -844,24 +1397,37 @@ export default function Home() {
                   <div style={{ 
                     display: 'flex', 
                     justifyContent: 'space-between', 
-                    alignItems: 'center' 
+                    alignItems: 'center',
+                    flexWrap: 'wrap',
+                    gap: '8px'
                   }}>
-                    <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                    <div style={{ fontSize: '12px', color: '#6b7280', display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
                       <span style={{ 
                         backgroundColor: '#fef3c7', 
                         color: '#92400e',
                         padding: '2px 8px',
                         borderRadius: '8px',
-                        marginRight: '8px',
                         fontWeight: '500'
                       }}>
                         {challenge.category}
                       </span>
-                      <strong>{challenge.echoReward} $ECHO</strong> reward
+                      
+                      <div>
+                        <strong>{challenge.echoReward} $ECHO</strong>
+                        {challenge.bonusReward && challenge.bonusReward > 0 && (
+                          <span style={{ 
+                            color: '#10B981',
+                            fontWeight: '600',
+                            marginLeft: '4px'
+                          }}>
+                            + {challenge.bonusReward} bonus
+                          </span>
+                        )}
+                      </div>
                     </div>
                     
                     <button
-                      onClick={() => handleCompleteChallenge(challenge.id, challenge.brandName, challenge.echoReward)}
+                      onClick={() => handleCompleteChallenge(challenge.id, challenge.brandName, challenge.echoReward + (challenge.bonusReward || 0))}
                       disabled={isCompleted}
                       style={{
                         backgroundColor: isCompleted ? '#9ca3af' : '#10B981',
@@ -876,7 +1442,8 @@ export default function Home() {
                         transition: 'all 0.2s ease'
                       }}
                     >
-                      {isCompleted ? '✅ Completed' : `Complete (+${challenge.echoReward} $ECHO)`}
+                      {isCompleted ? '✅ Completed' : 
+                        `Complete (+${challenge.echoReward + (challenge.bonusReward || 0)} $ECHO)`}
                     </button>
                   </div>
                   
@@ -1105,7 +1672,7 @@ export default function Home() {
         {[
           { id: 'feed', label: 'Feed', icon: '🏠' },
           { id: 'local', label: 'Local', icon: '📍' },
-          { id: 'spacer', label: '', icon: '' },
+          { id: 'admin', label: 'Admin', icon: '⚙️' },
           { id: 'partners', label: 'Partners', icon: '🤝' },
           { id: 'impact', label: 'Impact', icon: '📈' },
         ].map((tab) => {

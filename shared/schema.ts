@@ -40,8 +40,17 @@ export const brandChallenges = pgTable("brand_challenges", {
   brandName: varchar("brand_name", { length: 100 }).notNull(),
   brandLogo: text("brand_logo"), // URL or emoji for brand representation
   category: varchar("category", { length: 50 }).notNull(),
+  challengeType: varchar("challenge_type", { length: 50 }).default("standard").notNull(), // standard, seasonal, recurring, location, team
+  difficulty: varchar("difficulty", { length: 20 }).default("beginner").notNull(), // beginner, intermediate, advanced
+  seasonalTheme: varchar("seasonal_theme", { length: 50 }), // holiday, spring, summer, fall, winter, special-event
+  targetLocation: varchar("target_location", { length: 100 }), // For location-based challenges
+  recurringPeriod: varchar("recurring_period", { length: 20 }), // daily, weekly, monthly
+  minParticipants: integer("min_participants").default(1), // For team challenges
+  maxParticipants: integer("max_participants").default(1), // For team challenges
   echoReward: integer("echo_reward").default(10).notNull(), // Higher reward for brand challenges
+  bonusReward: integer("bonus_reward").default(0), // Extra seasonal/team bonuses
   isActive: integer("is_active").default(1).notNull(), // 1 = active, 0 = inactive
+  isPriority: integer("is_priority").default(0).notNull(), // 1 = featured challenge
   completionCount: integer("completion_count").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   expiresAt: timestamp("expires_at"),
