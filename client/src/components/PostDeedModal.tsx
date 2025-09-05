@@ -150,7 +150,7 @@ export function PostDeedModal({ isOpen, onClose, location }: PostDeedModalProps)
             
             <p className="mt-3 text-xs text-center text-muted-foreground leading-relaxed">
               Your post will be completely anonymous. <br />
-              <strong>Less Ego. More Echo.</strong>
+              <strong>Your Kindness, Amplified.</strong>
             </p>
           </form>
         </div>

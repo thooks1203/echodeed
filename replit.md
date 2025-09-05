@@ -2,7 +2,7 @@
 
 ## Overview
 
-EchoDeed™ is a mobile-first web application designed to inspire and track anonymous acts of kindness through a community-driven feed. Built with the philosophy of "Less Ego. More Echo," the platform provides a simple, anonymous way for users to share kind acts and view a real-time global feed of positivity.
+EchoDeed™ is a mobile-first web application designed to inspire and track anonymous acts of kindness through a community-driven feed. Built with the philosophy of "Your Kindness, Amplified," the platform provides a simple, anonymous way for users to share kind acts and view a real-time global feed of positivity.
 
 The application features a minimalist design with a focus on anonymity - no user profiles, social interactions, or personal information. Users can post text-only descriptions of their kind acts, browse a global feed, filter by location and category, and watch a real-time global kindness counter that tracks all acts shared on the platform.
 

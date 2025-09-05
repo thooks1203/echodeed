@@ -31,7 +31,7 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
         </div>
         <h2 className="text-2xl font-bold text-foreground mb-3">Welcome to EchoDeed™</h2>
         <p className="text-muted-foreground mb-6 leading-relaxed">
-          Share anonymous acts of kindness and inspire others. <strong>Less Ego. More Echo.</strong>
+          Share anonymous acts of kindness and inspire others. <strong>Your Kindness, Amplified.</strong>
         </p>
         <button 
           onClick={handleClose}
