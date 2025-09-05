@@ -72,45 +72,63 @@ export default function Home() {
   };
 
   return (
-    <>
+    <div style={{ maxWidth: '430px', margin: '0 auto', backgroundColor: '#f8f9fa' }}>
       <OnboardingOverlay onComplete={() => {}} />
       
-      <div className="max-w-lg mx-auto bg-background min-h-screen">
+      {/* Header */}
+      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e7eb', position: 'relative' }}>
         <AppHeader 
           counter={counter || defaultCounter} 
           isPulse={counterPulse}
         />
-        
-        <div style={{ backgroundColor: '#ff0000', color: 'white', padding: '20px', textAlign: 'center' }}>
-          VISIBILITY TEST - You should see this red box below the counter
-        </div>
-        
+      </div>
+      
+      {/* Visible Test */}
+      <div style={{ 
+        backgroundColor: '#dc2626', 
+        color: 'white', 
+        padding: '20px', 
+        textAlign: 'center',
+        fontSize: '16px',
+        fontWeight: 'bold',
+        position: 'relative',
+        zIndex: 1
+      }}>
+        ✅ SUCCESS! You should see this red box clearly below the counter
+      </div>
+      
+      {/* Filter Bar */}
+      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e7eb' }}>
         <FilterBar 
           activeFilter={activeFilter}
           location={location}
           onFilterChange={handleFilterChange}
         />
-        
+      </div>
+      
+      {/* Feed */}
+      <div style={{ backgroundColor: '#f8f9fa' }}>
         <KindnessFeed 
           posts={posts}
           isLoading={postsLoading}
         />
-        
-        <PostDeedModal 
-          isOpen={isPostModalOpen}
-          onClose={() => setIsPostModalOpen(false)}
-          location={location}
-        />
-        
-        <FloatingActionButton 
-          onClick={() => setIsPostModalOpen(true)}
-        />
-        
-        <BottomNavigation 
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-        />
       </div>
-    </>
+      
+      {/* Modals and UI */}
+      <PostDeedModal 
+        isOpen={isPostModalOpen}
+        onClose={() => setIsPostModalOpen(false)}
+        location={location}
+      />
+      
+      <FloatingActionButton 
+        onClick={() => setIsPostModalOpen(true)}
+      />
+      
+      <BottomNavigation 
+        activeTab={activeTab}
+        onTabChange={setActiveTab}
+      />
+    </div>
   );
 }
