@@ -1,5 +1,6 @@
 import { Heart, Sliders } from 'lucide-react';
 import { KindnessCounter } from '@shared/schema';
+import logoUrl from '@assets/ECHODEED_1757095612642.png';
 
 interface AppHeaderProps {
   counter: KindnessCounter;
@@ -12,8 +13,8 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
-              <Heart className="text-primary-foreground" size={14} />
+            <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center">
+              <img src={logoUrl} alt="EchoDeed Logo" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-xl font-bold text-foreground" data-testid="text-app-title">EchoDeed™</h1>
           </div>
