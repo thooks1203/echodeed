@@ -72,63 +72,77 @@ export default function Home() {
   };
 
   return (
-    <div style={{ maxWidth: '430px', margin: '0 auto', backgroundColor: '#f8f9fa' }}>
-      <OnboardingOverlay onComplete={() => {}} />
+    <div style={{ 
+      maxWidth: '430px', 
+      margin: '0 auto', 
+      backgroundColor: '#f8f9fa',
+      minHeight: '100vh',
+      position: 'relative'
+    }}>
       
-      {/* Header */}
-      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e7eb', position: 'relative' }}>
-        <AppHeader 
-          counter={counter || defaultCounter} 
-          isPulse={counterPulse}
-        />
-      </div>
-      
-      {/* Visible Test */}
+      {/* Simple Header Test */}
       <div style={{ 
-        backgroundColor: '#dc2626', 
+        backgroundColor: 'linear-gradient(135deg, #8B5CF6, #06B6D4)', 
+        background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
         color: 'white', 
         padding: '20px', 
         textAlign: 'center',
-        fontSize: '16px',
-        fontWeight: 'bold',
-        position: 'relative',
-        zIndex: 1
+        position: 'relative'
       }}>
-        ✅ SUCCESS! You should see this red box clearly below the counter
+        <h1 style={{ margin: '0 0 10px 0', fontSize: '24px' }}>EchoDeed™</h1>
+        <div style={{ fontSize: '32px', fontWeight: 'bold', margin: '10px 0' }}>
+          {defaultCounter.count.toLocaleString()} ❤️
+        </div>
+        <div style={{ fontSize: '14px', opacity: 0.9 }}>acts of kindness shared</div>
       </div>
       
-      {/* Filter Bar */}
-      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #e5e7eb' }}>
-        <FilterBar 
-          activeFilter={activeFilter}
-          location={location}
-          onFilterChange={handleFilterChange}
-        />
+      {/* Test Content */}
+      <div style={{ 
+        backgroundColor: '#22C55E', 
+        color: 'white', 
+        padding: '20px', 
+        textAlign: 'center',
+        fontSize: '18px',
+        fontWeight: 'bold'
+      }}>
+        🎉 GREEN BOX - Can you see this clearly?
       </div>
       
-      {/* Feed */}
-      <div style={{ backgroundColor: '#f8f9fa' }}>
-        <KindnessFeed 
-          posts={posts}
-          isLoading={postsLoading}
-        />
+      <div style={{ 
+        backgroundColor: '#EF4444', 
+        color: 'white', 
+        padding: '20px', 
+        textAlign: 'center',
+        fontSize: '18px',
+        fontWeight: 'bold'
+      }}>
+        🔴 RED BOX - This should be below the green box
       </div>
       
-      {/* Modals and UI */}
-      <PostDeedModal 
-        isOpen={isPostModalOpen}
-        onClose={() => setIsPostModalOpen(false)}
-        location={location}
-      />
+      <div style={{ 
+        backgroundColor: '#3B82F6', 
+        color: 'white', 
+        padding: '20px', 
+        textAlign: 'center',
+        fontSize: '18px',
+        fontWeight: 'bold'
+      }}>
+        🔵 BLUE BOX - Final visibility test
+      </div>
       
-      <FloatingActionButton 
-        onClick={() => setIsPostModalOpen(true)}
-      />
+      {/* Sample Posts */}
+      <div style={{ padding: '20px', backgroundColor: 'white' }}>
+        <h2 style={{ margin: '0 0 15px 0', fontSize: '18px' }}>Sample Kindness Posts:</h2>
+        <div style={{ backgroundColor: '#F3F4F6', padding: '15px', borderRadius: '8px', marginBottom: '10px' }}>
+          <p>Helped an elderly woman carry her groceries up three flights of stairs today. Her smile made my whole week brighter.</p>
+          <small style={{ color: '#666' }}>San Francisco, CA • 2 hours ago</small>
+        </div>
+        <div style={{ backgroundColor: '#F3F4F6', padding: '15px', borderRadius: '8px', marginBottom: '10px' }}>
+          <p>Left encouraging sticky notes on random cars in the parking lot. Hope it brightens someone's day!</p>
+          <small style={{ color: '#666' }}>Austin, TX • 4 hours ago</small>
+        </div>
+      </div>
       
-      <BottomNavigation 
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
     </div>
   );
 }
