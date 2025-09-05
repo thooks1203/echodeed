@@ -71,6 +71,23 @@ export default function Home() {
     updatedAt: new Date(),
   };
 
+  const buttonStyle = {
+    padding: '8px 16px',
+    margin: '4px',
+    borderRadius: '20px',
+    border: 'none',
+    fontSize: '14px',
+    cursor: 'pointer',
+    backgroundColor: '#f3f4f6',
+    color: '#374151'
+  };
+
+  const activeButtonStyle = {
+    ...buttonStyle,
+    backgroundColor: '#8B5CF6',
+    color: 'white'
+  };
+
   return (
     <div style={{ 
       maxWidth: '430px', 
@@ -79,68 +96,225 @@ export default function Home() {
       minHeight: '100vh',
       position: 'relative'
     }}>
+      <OnboardingOverlay onComplete={() => {}} />
       
-      {/* Simple Header Test */}
+      {/* Header */}
       <div style={{ 
-        backgroundColor: 'linear-gradient(135deg, #8B5CF6, #06B6D4)', 
         background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
         color: 'white', 
         padding: '20px', 
         textAlign: 'center',
         position: 'relative'
       }}>
-        <h1 style={{ margin: '0 0 10px 0', fontSize: '24px' }}>EchoDeed™</h1>
-        <div style={{ fontSize: '32px', fontWeight: 'bold', margin: '10px 0' }}>
-          {defaultCounter.count.toLocaleString()} ❤️
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ 
+              width: '32px', 
+              height: '32px', 
+              backgroundColor: 'rgba(255,255,255,0.2)', 
+              borderRadius: '50%', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center' 
+            }}>
+              ❤️
+            </div>
+            <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
+          </div>
         </div>
-        <div style={{ fontSize: '14px', opacity: 0.9 }}>acts of kindness shared</div>
-      </div>
-      
-      {/* Test Content */}
-      <div style={{ 
-        backgroundColor: '#22C55E', 
-        color: 'white', 
-        padding: '20px', 
-        textAlign: 'center',
-        fontSize: '18px',
-        fontWeight: 'bold'
-      }}>
-        🎉 GREEN BOX - Can you see this clearly?
-      </div>
-      
-      <div style={{ 
-        backgroundColor: '#EF4444', 
-        color: 'white', 
-        padding: '20px', 
-        textAlign: 'center',
-        fontSize: '18px',
-        fontWeight: 'bold'
-      }}>
-        🔴 RED BOX - This should be below the green box
-      </div>
-      
-      <div style={{ 
-        backgroundColor: '#3B82F6', 
-        color: 'white', 
-        padding: '20px', 
-        textAlign: 'center',
-        fontSize: '18px',
-        fontWeight: 'bold'
-      }}>
-        🔵 BLUE BOX - Final visibility test
-      </div>
-      
-      {/* Sample Posts */}
-      <div style={{ padding: '20px', backgroundColor: 'white' }}>
-        <h2 style={{ margin: '0 0 15px 0', fontSize: '18px' }}>Sample Kindness Posts:</h2>
-        <div style={{ backgroundColor: '#F3F4F6', padding: '15px', borderRadius: '8px', marginBottom: '10px' }}>
-          <p>Helped an elderly woman carry her groceries up three flights of stairs today. Her smile made my whole week brighter.</p>
-          <small style={{ color: '#666' }}>San Francisco, CA • 2 hours ago</small>
+        
+        <div style={{ marginBottom: '8px', fontSize: '14px', opacity: 0.9 }}>Global Kindness Counter</div>
+        <div style={{ 
+          fontSize: '36px', 
+          fontWeight: 'bold', 
+          margin: '8px 0',
+          className: counterPulse ? 'counter-pulse' : ''
+        }}>
+          {(counter || defaultCounter).count.toLocaleString()} ❤️
         </div>
-        <div style={{ backgroundColor: '#F3F4F6', padding: '15px', borderRadius: '8px', marginBottom: '10px' }}>
-          <p>Left encouraging sticky notes on random cars in the parking lot. Hope it brightens someone's day!</p>
-          <small style={{ color: '#666' }}>Austin, TX • 4 hours ago</small>
-        </div>
+        <div style={{ fontSize: '12px', opacity: 0.8 }}>acts of kindness shared</div>
+      </div>
+      
+      {/* Filter Bar */}
+      <div style={{ 
+        backgroundColor: 'white', 
+        padding: '15px', 
+        borderBottom: '1px solid #e5e7eb',
+        display: 'flex',
+        gap: '8px',
+        overflowX: 'auto'
+      }}>
+        <button 
+          style={activeFilter === 'global' ? activeButtonStyle : buttonStyle}
+          onClick={() => handleFilterChange('global', {})}
+        >
+          🌍 Global
+        </button>
+        <button 
+          style={activeFilter === 'helping' ? activeButtonStyle : buttonStyle}
+          onClick={() => handleFilterChange('helping', { category: 'Helping Others' })}
+        >
+          🤝 Helping Others
+        </button>
+        <button 
+          style={activeFilter === 'community' ? activeButtonStyle : buttonStyle}
+          onClick={() => handleFilterChange('community', { category: 'Community Action' })}
+        >
+          👥 Community
+        </button>
+        <button 
+          style={activeFilter === 'positivity' ? activeButtonStyle : buttonStyle}
+          onClick={() => handleFilterChange('positivity', { category: 'Spreading Positivity' })}
+        >
+          😊 Positivity
+        </button>
+      </div>
+      
+      {/* Feed */}
+      <div style={{ backgroundColor: '#f8f9fa', paddingBottom: '100px' }}>
+        {postsLoading ? (
+          <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+            <div>Loading acts of kindness...</div>
+          </div>
+        ) : posts.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>❤️</div>
+            <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>No acts of kindness found</h3>
+            <p>Be the first to share a kind deed in this area!</p>
+          </div>
+        ) : (
+          posts.map((post, index) => (
+            <div key={post.id} style={{ 
+              backgroundColor: 'white',
+              margin: '1px 0',
+              padding: '20px',
+              borderBottom: '1px solid #f3f4f6'
+            }}>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  backgroundColor: '#f3f4f6',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  marginTop: '4px'
+                }}>
+                  ❤️
+                </div>
+                <div style={{ flex: 1 }}>
+                  <p style={{ 
+                    margin: '0 0 12px 0', 
+                    lineHeight: '1.5',
+                    color: '#374151'
+                  }}>
+                    {post.content}
+                  </p>
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: '#6b7280',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <span>📍 {post.location}</span>
+                    <span>•</span>
+                    <span>{new Date(post.createdAt).toLocaleString()}</span>
+                    <span>•</span>
+                    <span style={{ 
+                      backgroundColor: '#f3f4f6',
+                      padding: '2px 8px',
+                      borderRadius: '12px'
+                    }}>
+                      {post.category}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      
+      {/* Floating Action Button */}
+      <button 
+        onClick={() => setIsPostModalOpen(true)}
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          width: '56px',
+          height: '56px',
+          backgroundColor: '#8B5CF6',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50%',
+          fontSize: '24px',
+          cursor: 'pointer',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          zIndex: 1000
+        }}
+      >
+        +
+      </button>
+      
+      {/* Post Modal */}
+      <PostDeedModal 
+        isOpen={isPostModalOpen}
+        onClose={() => setIsPostModalOpen(false)}
+        location={location}
+      />
+      
+      {/* Bottom Navigation */}
+      <div style={{
+        position: 'fixed',
+        bottom: 0,
+        left: '50%',
+        transform: 'translateX(-50%)',
+        maxWidth: '430px',
+        width: '100%',
+        backgroundColor: 'rgba(255,255,255,0.95)',
+        backdropFilter: 'blur(8px)',
+        borderTop: '1px solid #e5e7eb',
+        display: 'flex',
+        justifyContent: 'space-around',
+        padding: '12px 0',
+        zIndex: 100
+      }}>
+        {[
+          { id: 'feed', label: 'Feed', icon: '🏠' },
+          { id: 'local', label: 'Local', icon: '📍' },
+          { id: 'spacer', label: '', icon: '' },
+          { id: 'impact', label: 'Impact', icon: '📈' },
+          { id: 'about', label: 'About', icon: 'ℹ️' },
+        ].map((tab) => {
+          if (tab.id === 'spacer') {
+            return <div key={tab.id} style={{ width: '32px' }} />;
+          }
+          
+          return (
+            <button 
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                background: 'none',
+                border: 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '4px',
+                cursor: 'pointer',
+                color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
+                fontSize: '12px'
+              }}
+            >
+              <span style={{ fontSize: '18px' }}>{tab.icon}</span>
+              <span>{tab.label}</span>
+            </button>
+          );
+        })}
       </div>
       
     </div>
