@@ -1695,7 +1695,7 @@ export default function Home() {
           <div style={{ 
             width: '400px', 
             height: '400px', 
-            margin: '0 auto 16px',
+            margin: '0 auto 8px',
             position: 'relative',
             filter: 'drop-shadow(0 12px 48px rgba(139,92,246,0.8))',
             animation: 'logoFloat 3s ease-in-out infinite'
