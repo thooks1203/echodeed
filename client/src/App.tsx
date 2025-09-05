@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import Home from "@/pages/home";
+import AdminDashboard from "@/pages/admin-dashboard";
 import { LandingPage } from "@/components/landing-page";
 import NotFound from "@/pages/not-found";
 
@@ -18,6 +19,7 @@ function Router() {
       ) : (
         <>
           <Route path="/" component={Home} />
+          <Route path="/admin" component={AdminDashboard} />
         </>
       )}
       <Route component={NotFound} />

@@ -176,16 +176,222 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get user tokens
-  app.get('/api/tokens', async (req, res) => {
+  // Get user tokens - Protected route  
+  app.get('/api/tokens', isAuthenticated, async (req: any, res) => {
     try {
-      const sessionId = req.headers['x-session-id'] as string;
-      if (!sessionId) {
-        return res.status(400).json({ message: 'Session ID required' });
+      const userId = req.user.claims.sub;
+      let userTokens = await storage.getUserTokens(userId);
+      
+      if (!userTokens) {
+        userTokens = await storage.createUserTokens({ userId, echoBalance: 0, totalEarned: 0 });
       }
       
-      const tokens = await storage.getUserTokens(sessionId);
-      res.json(tokens);
+      res.json(userTokens);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Corporate Admin Routes - Protected
+  app.get('/api/corporate/account', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const employee = await storage.getCorporateEmployee(userId);
+      
+      if (!employee) {
+        return res.status(404).json({ message: 'Employee not found in corporate account' });
+      }
+      
+      const account = await storage.getCorporateAccount(employee.corporateAccountId);
+      res.json(account);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  app.get('/api/corporate/teams', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const employee = await storage.getCorporateEmployee(userId);
+      
+      if (!employee) {
+        return res.status(404).json({ message: 'Employee not found in corporate account' });
+      }
+      
+      const teams = await storage.getCorporateTeams(employee.corporateAccountId);
+      res.json(teams);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  app.get('/api/corporate/analytics', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const employee = await storage.getCorporateEmployee(userId);
+      
+      if (!employee) {
+        return res.status(404).json({ message: 'Employee not found in corporate account' });
+      }
+      
+      const { days } = req.query;
+      const analytics = await storage.getCorporateAnalytics(
+        employee.corporateAccountId, 
+        days ? parseInt(days as string) : 30
+      );
+      res.json(analytics);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  app.get('/api/corporate/employee', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const employee = await storage.getCorporateEmployee(userId);
+      res.json(employee || null);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Wellness Analytics Routes - Protected
+  app.get('/api/corporate/engagement-metrics', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const employee = await storage.getCorporateEmployee(userId);
+      
+      if (!employee) {
+        return res.status(404).json({ message: 'Employee not found in corporate account' });
+      }
+      
+      const metrics = await storage.getEmployeeEngagementMetrics(employee.corporateAccountId);
+      res.json(metrics);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/corporate/team-metrics/:teamId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const employee = await storage.getCorporateEmployee(userId);
+      
+      if (!employee) {
+        return res.status(404).json({ message: 'Employee not found in corporate account' });
+      }
+      
+      const { teamId } = req.params;
+      const metrics = await storage.getTeamWellnessMetrics(teamId);
+      res.json(metrics);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/corporate/wellness-insights', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const employee = await storage.getCorporateEmployee(userId);
+      
+      if (!employee) {
+        return res.status(404).json({ message: 'Employee not found in corporate account' });
+      }
+      
+      const insights = await storage.generateWellnessInsights(employee.corporateAccountId);
+      res.json(insights);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/corporate/employee-wellness/:employeeId', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const employee = await storage.getCorporateEmployee(userId);
+      
+      if (!employee) {
+        return res.status(404).json({ message: 'Employee not found in corporate account' });
+      }
+      
+      // Only allow access if user is admin or requesting their own data
+      const { employeeId } = req.params;
+      const isAdmin = employee.role === 'hr_admin' || employee.role === 'corporate_admin';
+      
+      if (!isAdmin && employeeId !== userId) {
+        return res.status(403).json({ message: 'Forbidden: Cannot access other employee data' });
+      }
+      
+      const wellnessScore = await storage.calculateEmployeeWellnessScore(employeeId);
+      res.json({ employeeId, wellnessScore });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Company Insights Routes - Admin Only
+  app.get('/api/corporate/company-metrics', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const employee = await storage.getCorporateEmployee(userId);
+      
+      if (!employee) {
+        return res.status(404).json({ message: 'Employee not found in corporate account' });
+      }
+      
+      const isAdmin = employee.role === 'hr_admin' || employee.role === 'corporate_admin';
+      if (!isAdmin) {
+        return res.status(403).json({ message: 'Forbidden: Admin access required' });
+      }
+      
+      const { days } = req.query;
+      const metrics = await storage.getCompanyKindnessMetrics(
+        employee.corporateAccountId, 
+        days ? parseInt(days as string) : 30
+      );
+      res.json(metrics);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/corporate/departmental-insights', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const employee = await storage.getCorporateEmployee(userId);
+      
+      if (!employee) {
+        return res.status(404).json({ message: 'Employee not found in corporate account' });
+      }
+      
+      const isAdmin = employee.role === 'hr_admin' || employee.role === 'corporate_admin';
+      if (!isAdmin) {
+        return res.status(403).json({ message: 'Forbidden: Admin access required' });
+      }
+      
+      const insights = await storage.getDepartmentalInsights(employee.corporateAccountId);
+      res.json(insights);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/corporate/benchmarks', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const employee = await storage.getCorporateEmployee(userId);
+      
+      if (!employee) {
+        return res.status(404).json({ message: 'Employee not found in corporate account' });
+      }
+      
+      const isAdmin = employee.role === 'hr_admin' || employee.role === 'corporate_admin';
+      if (!isAdmin) {
+        return res.status(403).json({ message: 'Forbidden: Admin access required' });
+      }
+      
+      const benchmarks = await storage.getCompanyBenchmarks(employee.corporateAccountId);
+      res.json(benchmarks);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
