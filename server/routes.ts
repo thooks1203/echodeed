@@ -474,6 +474,120 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Export Corporate Analytics (CSV format)
+  app.get('/api/corporate/accounts/:accountId/analytics/export', async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const { format = 'csv', period = '30' } = req.query;
+      const days = parseInt(period as string);
+      
+      // Get comprehensive export data
+      const [account, analytics, teams, employees, challenges] = await Promise.all([
+        storage.getCorporateAccount(accountId),
+        storage.getCorporateAnalytics(accountId, days),
+        storage.getCorporateTeams(accountId),
+        storage.getCorporateEmployees(accountId),
+        storage.getCorporateChallenges(accountId)
+      ]);
+      
+      if (!account) {
+        return res.status(404).json({ message: 'Corporate account not found' });
+      }
+      
+      const exportData = {
+        companyInfo: {
+          companyName: account.companyName,
+          domain: account.domain,
+          industry: account.industry,
+          subscriptionTier: account.subscriptionTier,
+          exportDate: new Date().toISOString(),
+          reportPeriod: `Last ${days} days`
+        },
+        summary: {
+          totalEmployees: employees.length,
+          activeTeams: teams.filter(t => t.isActive === 1).length,
+          totalChallenges: challenges.length,
+          activeChallenges: challenges.filter(c => c.isActive === 1).length,
+          totalChallengeCompletions: challenges.reduce((sum, c) => sum + (c.completionCount || 0), 0)
+        },
+        analytics,
+        teams: teams.map(team => ({
+          teamName: team.teamName,
+          department: team.department,
+          currentSize: team.currentSize,
+          targetSize: team.targetSize,
+          monthlyKindnessGoal: team.monthlyKindnessGoal,
+          goalProgress: team.targetSize ? ((team.currentSize || 0) / team.targetSize * 100).toFixed(1) + '%' : 'N/A'
+        })),
+        challenges: challenges.map(challenge => ({
+          title: challenge.title,
+          challengeType: challenge.challengeType,
+          completionCount: challenge.completionCount,
+          currentParticipation: challenge.currentParticipation,
+          echoReward: challenge.echoReward,
+          participationRate: employees.length > 0 ? ((challenge.currentParticipation || 0) / employees.length * 100).toFixed(1) + '%' : '0%'
+        }))
+      };
+      
+      if (format === 'csv') {
+        // Generate CSV content
+        let csvContent = `# ${account.companyName} Wellness Analytics Export\n`;
+        csvContent += `# Generated: ${new Date().toLocaleString()}\n`;
+        csvContent += `# Period: ${exportData.companyInfo.reportPeriod}\n\n`;
+        
+        // Company Summary
+        csvContent += `## Company Summary\n`;
+        csvContent += `Metric,Value\n`;
+        csvContent += `Company Name,${exportData.companyInfo.companyName}\n`;
+        csvContent += `Industry,${exportData.companyInfo.industry}\n`;
+        csvContent += `Subscription Tier,${exportData.companyInfo.subscriptionTier}\n`;
+        csvContent += `Total Employees,${exportData.summary.totalEmployees}\n`;
+        csvContent += `Active Teams,${exportData.summary.activeTeams}\n`;
+        csvContent += `Total Challenges,${exportData.summary.totalChallenges}\n`;
+        csvContent += `Challenge Completions,${exportData.summary.totalChallengeCompletions}\n\n`;
+        
+        // Analytics Data
+        if (analytics.length > 0) {
+          csvContent += `## Daily Analytics\n`;
+          csvContent += `Date,Active Employees,Kindness Posts,Challenges Completed,ECHO Tokens Earned,Engagement Score,Wellness Score\n`;
+          analytics.forEach(day => {
+            csvContent += `${day.analyticsDate},${day.activeEmployees},${day.totalKindnessPosts},${day.totalChallengesCompleted},${day.totalEchoTokensEarned},${day.averageEngagementScore}%,${day.wellnessImpactScore}%\n`;
+          });
+          csvContent += '\n';
+        }
+        
+        // Team Performance
+        if (exportData.teams.length > 0) {
+          csvContent += `## Team Performance\n`;
+          csvContent += `Team Name,Department,Current Size,Target Size,Goal Progress,Monthly Kindness Goal\n`;
+          exportData.teams.forEach(team => {
+            csvContent += `${team.teamName},${team.department || 'N/A'},${team.currentSize || 0},${team.targetSize || 0},${team.goalProgress},${team.monthlyKindnessGoal || 0}\n`;
+          });
+          csvContent += '\n';
+        }
+        
+        // Challenge Performance
+        if (exportData.challenges.length > 0) {
+          csvContent += `## Challenge Performance\n`;
+          csvContent += `Challenge Title,Type,Completions,Current Participation,Participation Rate,ECHO Reward\n`;
+          exportData.challenges.forEach(challenge => {
+            csvContent += `${challenge.title},${challenge.challengeType},${challenge.completionCount || 0},${challenge.currentParticipation || 0},${challenge.participationRate},${challenge.echoReward}\n`;
+          });
+        }
+        
+        res.setHeader('Content-Type', 'text/csv');
+        res.setHeader('Content-Disposition', `attachment; filename="${account.companyName.replace(/[^a-zA-Z0-9]/g, '_')}_wellness_report_${new Date().toISOString().split('T')[0]}.csv"`);
+        res.send(csvContent);
+      } else {
+        // Return JSON format (for PDF generation on frontend)
+        res.json(exportData);
+      }
+      
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   app.post('/api/corporate/accounts/:accountId/analytics/generate', async (req, res) => {
     try {
       const { accountId } = req.params;
@@ -491,20 +605,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Handle demo data
       if (accountId === 'demo') {
-        // Create demo corporate account if it doesn't exist
-        const existingDemoAccount = await storage.getCorporateAccount('techflow-solutions');
-        if (!existingDemoAccount) {
-          await storage.initializeSampleCorporateData();
-        }
+        // Initialize sample corporate data if needed
+        await storage.initializeSampleCorporateData();
         
-        // Use TechFlow Solutions as demo account
-        const demoAccount = await storage.getCorporateAccount('techflow-solutions');
+        // Get all accounts and find TechFlow Solutions
+        const allAccounts = await storage.getCorporateAccounts();
+        const demoAccount = allAccounts.find(acc => acc.domain === 'techflow.com');
+        
         if (demoAccount) {
           const [teams, employees, challenges, analytics] = await Promise.all([
-            storage.getCorporateTeams('techflow-solutions'),
-            storage.getCorporateEmployees('techflow-solutions'),
-            storage.getCorporateChallenges('techflow-solutions'),
-            storage.getCorporateAnalytics('techflow-solutions', 7)
+            storage.getCorporateTeams(demoAccount.id),
+            storage.getCorporateEmployees(demoAccount.id),
+            storage.getCorporateChallenges(demoAccount.id),
+            storage.getCorporateAnalytics(demoAccount.id, 7)
           ]);
           
           const totalEmployees = employees.length;
@@ -583,6 +696,170 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(dashboardData);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Challenge Templates for Corporate Wellness Programs
+  app.get('/api/corporate/challenge-templates', async (req, res) => {
+    try {
+      const templates = [
+        {
+          id: 'wellness-week',
+          category: 'Health & Wellness',
+          title: 'Wellness Week Challenge',
+          description: 'Promote healthy habits across your organization',
+          content: 'Share a photo or story of your healthy choice today - whether it\'s taking the stairs, eating a nutritious meal, taking a walk, or practicing mindfulness. Let\'s inspire each other to prioritize wellness!',
+          challengeType: 'company_wide',
+          suggestedDuration: 7,
+          echoReward: 25,
+          participationGoal: 75,
+          icon: '💪',
+          color: '#10B981'
+        },
+        {
+          id: 'team-appreciation',
+          category: 'Team Building',
+          title: 'Team Appreciation Challenge',
+          description: 'Foster gratitude and recognition within teams',
+          content: 'Recognize a colleague today! Share how a team member helped you, inspired you, or made your day better. Tag them if comfortable. Building a culture of appreciation strengthens our entire organization.',
+          challengeType: 'team_specific',
+          suggestedDuration: 14,
+          echoReward: 30,
+          participationGoal: 85,
+          icon: '🙏',
+          color: '#8B5CF6'
+        },
+        {
+          id: 'community-impact',
+          category: 'Community Service',
+          title: 'Community Impact Week',
+          description: 'Make a difference in your local community',
+          content: 'Volunteer, donate, or perform a kind act for someone in your community. Share your story to inspire others. Together, we can amplify our positive impact beyond our workplace.',
+          challengeType: 'company_wide',
+          suggestedDuration: 7,
+          echoReward: 50,
+          participationGoal: 60,
+          icon: '🌍',
+          color: '#06B6D4'
+        },
+        {
+          id: 'mindful-monday',
+          category: 'Mental Health',
+          title: 'Mindful Monday',
+          description: 'Start each week with intentional mindfulness',
+          content: 'Begin your Monday with a mindful moment. Whether it\'s meditation, deep breathing, gratitude journaling, or simply enjoying your morning coffee mindfully. Share what grounds you each week.',
+          challengeType: 'recurring_weekly',
+          suggestedDuration: 4,
+          echoReward: 20,
+          participationGoal: 70,
+          icon: '🧘',
+          color: '#84CC16'
+        },
+        {
+          id: 'innovation-friday',
+          category: 'Innovation & Creativity',
+          title: 'Innovation Friday',
+          description: 'Share creative ideas and process improvements',
+          content: 'Share one small innovation, creative idea, or process improvement you implemented this week. It could be a work hack, a new approach, or helping a colleague solve a problem creatively.',
+          challengeType: 'department_wide',
+          suggestedDuration: 4,
+          echoReward: 35,
+          participationGoal: 50,
+          icon: '💡',
+          color: '#F59E0B'
+        },
+        {
+          id: 'sustainability-challenge',
+          category: 'Environmental',
+          title: 'Green Impact Challenge',
+          description: 'Promote environmental consciousness',
+          content: 'Share one eco-friendly action you took today - recycling, using public transport, reducing waste, or choosing sustainable options. Small actions create big environmental impact.',
+          challengeType: 'company_wide',
+          suggestedDuration: 10,
+          echoReward: 25,
+          participationGoal: 65,
+          icon: '🌱',
+          color: '#059669'
+        },
+        {
+          id: 'learning-together',
+          category: 'Professional Development',
+          title: 'Learning & Growth Challenge',
+          description: 'Foster continuous learning and knowledge sharing',
+          content: 'Share something new you learned this week or teach others a skill/insight. Could be from a course, article, podcast, or experience. Knowledge shared is knowledge multiplied.',
+          challengeType: 'company_wide',
+          suggestedDuration: 14,
+          echoReward: 40,
+          participationGoal: 60,
+          icon: '📚',
+          color: '#7C3AED'
+        },
+        {
+          id: 'random-acts',
+          category: 'General Kindness',
+          title: 'Random Acts of Kindness',
+          description: 'Classic kindness challenge for everyday acts',
+          content: 'Perform and share a random act of kindness. It could be helping a stranger, supporting a colleague, or brightening someone\'s day. Every act of kindness creates ripples of positivity.',
+          challengeType: 'company_wide',
+          suggestedDuration: 7,
+          echoReward: 20,
+          participationGoal: 80,
+          icon: '❤️',
+          color: '#EF4444'
+        }
+      ];
+      
+      res.json(templates);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Create challenge from template
+  app.post('/api/corporate/accounts/:accountId/challenges/from-template', async (req, res) => {
+    try {
+      const { accountId } = req.params;
+      const { templateId, customizations } = req.body;
+      
+      // Get the template (simplified - in real app would validate template exists)
+      const templates = [
+        // Template data would be stored in database, but for demo using inline data
+        {
+          id: 'wellness-week',
+          title: 'Wellness Week Challenge',
+          content: 'Share a photo or story of your healthy choice today - whether it\'s taking the stairs, eating a nutritious meal, taking a walk, or practicing mindfulness. Let\'s inspire each other to prioritize wellness!',
+          challengeType: 'company_wide',
+          echoReward: 25
+        }
+        // ... other templates
+      ];
+      
+      const template = templates.find(t => t.id === templateId) || templates[0];
+      
+      // Create challenge with template data + customizations
+      const challengeData = {
+        title: customizations?.title || template.title,
+        content: customizations?.content || template.content,
+        challengeType: customizations?.challengeType || template.challengeType,
+        echoReward: customizations?.echoReward || template.echoReward,
+        participationGoal: customizations?.participationGoal || null,
+        startsAt: customizations?.startsAt ? new Date(customizations.startsAt) : new Date(),
+        expiresAt: customizations?.expiresAt ? new Date(customizations.expiresAt) : new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
+      };
+      
+      const challenge = await storage.createCorporateChallenge({
+        ...challengeData,
+        corporateAccountId: accountId,
+        isInternal: 1,
+        isActive: 1
+      });
+      
+      res.status(201).json({
+        challenge,
+        message: `Challenge "${challenge.title}" created successfully from template`
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
     }
   });
 

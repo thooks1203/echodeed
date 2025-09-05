@@ -901,6 +901,18 @@ export class MemStorage implements IStorage {
     return null;
   }
 
+  // Public method to initialize sample corporate data for demo
+  async initializeSampleCorporateData(): Promise<void> {
+    // Check if sample data already exists
+    const existingAccount = await this.getCorporateAccountByDomain('techflow.com');
+    if (existingAccount) {
+      return; // Sample data already exists
+    }
+
+    // Re-seed corporate accounts with fixed demo data
+    this.seedCorporateAccounts();
+  }
+
   async updateCorporateAccount(accountId: string, updates: Partial<CorporateAccount>): Promise<CorporateAccount> {
     const existing = this.corporateAccounts.get(accountId);
     if (!existing) throw new Error('Corporate account not found');

@@ -9,7 +9,7 @@ import { BottomNavigation } from '@/components/BottomNavigation';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { KindnessPost, KindnessCounter, UserTokens, BrandChallenge } from '@shared/schema';
-import { PostFilters, WebSocketMessage, Achievement, UserAchievement, AchievementNotification, TokenEarning, CorporateDashboardData, CorporateMetric } from '@/lib/types';
+import { PostFilters, WebSocketMessage, Achievement, UserAchievement, AchievementNotification, TokenEarning, CorporateDashboardData, CorporateMetric, ChallengeTemplate } from '@/lib/types';
 import { getSessionId, addSessionHeaders } from '@/lib/session';
 
 export default function Home() {
@@ -83,6 +83,18 @@ export default function Home() {
     queryKey: ['/api/corporate/accounts/demo/dashboard'],
     retry: false, // Don't retry if no corporate account
     enabled: activeTab === 'corporate' // Only fetch when corporate tab is active
+  });
+
+  // Fetch corporate accounts for admin panel
+  const { data: corporateAccounts = [] } = useQuery({
+    queryKey: ['/api/corporate/accounts'],
+    enabled: activeTab === 'admin' // Only fetch when admin tab is active
+  });
+
+  // Fetch challenge templates for corporate dashboard
+  const { data: challengeTemplates = [] } = useQuery({
+    queryKey: ['/api/corporate/challenge-templates'],
+    enabled: activeTab === 'corporate' && !!corporateDashboard // Only fetch when corporate tab is active and dashboard is loaded
   });
 
   // Achievement checking helper
@@ -274,24 +286,133 @@ export default function Home() {
         <div style={{ padding: '40px 20px', textAlign: 'center' }}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>🏢</div>
           <h3 style={{ fontSize: '20px', color: '#374151', marginBottom: '8px' }}>
-            Corporate Dashboard
+            Corporate Wellness
           </h3>
-          <p style={{ fontSize: '14px', color: '#6b7280' }}>
+          <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '24px' }}>
             Connect your corporate account to view team analytics and manage employee wellness programs.
           </p>
-          <button style={{
-            backgroundColor: '#8B5CF6',
-            color: 'white',
-            border: 'none',
-            borderRadius: '12px',
-            padding: '12px 24px',
-            fontSize: '14px',
-            fontWeight: '600',
-            cursor: 'pointer',
-            marginTop: '16px'
+          
+          {/* Employee Enrollment Form */}
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            marginBottom: '20px',
+            textAlign: 'left'
           }}>
-            Connect Corporate Account
-          </button>
+            <h4 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px', color: '#1f2937' }}>
+              Employee Enrollment
+            </h4>
+            <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '16px' }}>
+              Join your company's kindness and wellness program
+            </p>
+            
+            <form onSubmit={(e) => {
+              e.preventDefault();
+              const formData = new FormData(e.target as HTMLFormElement);
+              const email = formData.get('email') as string;
+              const company = formData.get('company') as string;
+              
+              // Simple enrollment simulation
+              alert(`Enrollment request sent!\n\nEmail: ${email}\nCompany: ${company}\n\nYour HR team will activate your account within 24 hours.`);
+            }}>
+              <div style={{ marginBottom: '12px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', color: '#374151', marginBottom: '4px' }}>
+                  Work Email Address
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  required
+                  placeholder="you@company.com"
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    backgroundColor: '#f9fafb'
+                  }}
+                />
+              </div>
+              
+              <div style={{ marginBottom: '16px' }}>
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', color: '#374151', marginBottom: '4px' }}>
+                  Company Domain
+                </label>
+                <select
+                  name="company"
+                  required
+                  style={{
+                    width: '100%',
+                    padding: '8px 12px',
+                    border: '1px solid #d1d5db',
+                    borderRadius: '6px',
+                    fontSize: '14px',
+                    backgroundColor: '#f9fafb'
+                  }}
+                >
+                  <option value="">Select your company...</option>
+                  <option value="techflow.com">TechFlow Solutions</option>
+                  <option value="wellnesscorp.com">Wellness Corp</option>
+                  <option value="other">Other (Contact HR)</option>
+                </select>
+              </div>
+              
+              <button
+                type="submit"
+                style={{
+                  width: '100%',
+                  backgroundColor: '#8B5CF6',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '10px 16px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                Request Access
+              </button>
+            </form>
+          </div>
+          
+          {/* Demo Access */}
+          <div style={{
+            backgroundColor: '#f0f9ff',
+            border: '1px solid #0ea5e9',
+            borderRadius: '12px',
+            padding: '16px',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontSize: '16px', marginBottom: '8px' }}>💼</div>
+            <div style={{ fontSize: '14px', fontWeight: '600', color: '#0369a1', marginBottom: '4px' }}>
+              View Demo Dashboard
+            </div>
+            <div style={{ fontSize: '12px', color: '#075985', marginBottom: '12px' }}>
+              See how TechFlow Solutions uses EchoDeed™
+            </div>
+            <button 
+              onClick={() => {
+                // Force refresh the corporate dashboard query to load demo data
+                queryClient.invalidateQueries({ queryKey: ['/api/corporate/accounts/demo/dashboard'] });
+              }}
+              style={{
+                backgroundColor: '#0ea5e9',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '8px 16px',
+                fontSize: '12px',
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
+            >
+              View Demo
+            </button>
+          </div>
         </div>
       );
     }
@@ -590,6 +711,106 @@ export default function Home() {
           </div>
         </div>
 
+        {/* Challenge Templates */}
+        {challengeTemplates.length > 0 && (
+          <div style={{ marginBottom: '24px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <h3 style={{ 
+                fontSize: '18px', 
+                fontWeight: 'bold',
+                margin: '0',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <span style={{ fontSize: '20px' }}>📋</span>
+                Challenge Templates
+              </h3>
+              <div style={{ fontSize: '11px', color: '#6b7280', padding: '2px 6px', backgroundColor: '#f3f4f6', borderRadius: '4px' }}>
+                {challengeTemplates.length} Available
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gap: '8px', maxHeight: '300px', overflowY: 'auto' }}>
+              {challengeTemplates.slice(0, 4).map((template: ChallengeTemplate) => (
+                <div key={template.id} style={{
+                  backgroundColor: 'white',
+                  borderRadius: '12px',
+                  padding: '12px',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                  border: `1px solid ${template.color}20`,
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease',
+                  ':hover': {
+                    transform: 'translateY(-2px)'
+                  }
+                }} onClick={() => {
+                  alert(`Create "${template.title}" Challenge?\n\n${template.description}\n\nReward: ${template.echoReward} $ECHO\nDuration: ${template.suggestedDuration} days\nTarget: ${template.participationGoal}% participation\n\n(Challenge creation will be implemented in the next phase)`);
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                    <div style={{
+                      fontSize: '24px',
+                      backgroundColor: `${template.color}15`,
+                      borderRadius: '8px',
+                      padding: '6px',
+                      minWidth: '36px',
+                      height: '36px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      {template.icon}
+                    </div>
+                    
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '4px' }}>
+                        <div style={{ fontSize: '14px', fontWeight: '600', color: '#1f2937' }}>
+                          {template.title}
+                        </div>
+                        <div style={{
+                          fontSize: '10px',
+                          fontWeight: '600',
+                          color: template.color,
+                          backgroundColor: `${template.color}15`,
+                          padding: '2px 6px',
+                          borderRadius: '4px'
+                        }}>
+                          {template.echoReward} $ECHO
+                        </div>
+                      </div>
+                      
+                      <div style={{ fontSize: '11px', color: '#6b7280', marginBottom: '6px' }}>
+                        {template.category} • {template.suggestedDuration} days • {template.participationGoal}% target
+                      </div>
+                      
+                      <div style={{ fontSize: '11px', color: '#374151', lineHeight: '1.3' }}>
+                        {template.description}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+              
+              {challengeTemplates.length > 4 && (
+                <div style={{
+                  backgroundColor: '#f8f9fa',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  textAlign: 'center',
+                  border: '1px dashed #d1d5db',
+                  cursor: 'pointer'
+                }} onClick={() => {
+                  alert(`View All Templates\n\n${challengeTemplates.length} total templates available:\n\n${challengeTemplates.map(t => `${t.icon} ${t.title} (${t.category})`).join('\n')}\n\n(Full template browser coming soon!)`);
+                }}>
+                  <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500' }}>
+                    View All {challengeTemplates.length} Templates →
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Quick Actions */}
         <div style={{
           backgroundColor: 'white',
@@ -612,9 +833,9 @@ export default function Home() {
           
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
             {[
-              { label: 'Export Analytics', icon: '📊', color: '#8B5CF6' },
+              { label: 'Export Analytics', icon: '📊', color: '#8B5CF6', action: 'export' },
               { label: 'Add Employees', icon: '👤', color: '#10B981' },
-              { label: 'Create Challenge', icon: '🎯', color: '#F59E0B' },
+              { label: 'Browse Templates', icon: '📋', color: '#F59E0B' },
               { label: 'Team Settings', icon: '⚙️', color: '#6B7280' }
             ].map((action, index) => (
               <button key={index} style={{
@@ -630,6 +851,31 @@ export default function Home() {
                 flexDirection: 'column',
                 alignItems: 'center',
                 gap: '4px'
+              }} onClick={() => {
+                if (action.label === 'Browse Templates') {
+                  alert(`Challenge Template Library\n\n${challengeTemplates.length} templates available across 8 categories:\n\n• Health & Wellness\n• Team Building\n• Community Service\n• Mental Health\n• Innovation & Creativity\n• Environmental\n• Professional Development\n• General Kindness\n\n(Full template management coming soon!)`);
+                } else if (action.action === 'export') {
+                  // Generate export functionality
+                  const accountId = corporateDashboard?.account?.id || 'demo';
+                  const fileName = `${corporateDashboard?.account?.companyName?.replace(/[^a-zA-Z0-9]/g, '_') || 'Company'}_wellness_report_${new Date().toISOString().split('T')[0]}.csv`;
+                  
+                  // Create download link
+                  const exportUrl = `/api/corporate/accounts/${accountId}/analytics/export?format=csv&period=30`;
+                  
+                  // Trigger download
+                  const link = document.createElement('a');
+                  link.href = exportUrl;
+                  link.download = fileName;
+                  link.style.display = 'none';
+                  document.body.appendChild(link);
+                  link.click();
+                  document.body.removeChild(link);
+                  
+                  // Show success message
+                  alert(`📊 Analytics Export Generated!\n\nDownloading: ${fileName}\n\nIncludes:\n• Company summary & metrics\n• Daily analytics data (30 days)\n• Team performance data\n• Challenge completion statistics\n• Employee engagement scores\n\nPerfect for executive reports and stakeholder updates!`);
+                } else {
+                  alert(`${action.label} feature coming soon!`);
+                }
               }}>
                 <span style={{ fontSize: '16px' }}>{action.icon}</span>
                 {action.label}
@@ -939,6 +1185,97 @@ export default function Home() {
             <div style={{ fontSize: '12px', color: '#6b7280' }}>Partner Brands</div>
           </div>
         </div>
+      </div>
+
+      {/* Corporate Account Management */}
+      <div style={{ marginBottom: '24px' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 'bold', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <span style={{ fontSize: '20px' }}>🏢</span>
+          Corporate Accounts ({corporateAccounts.length})
+        </h3>
+        
+        {corporateAccounts.length > 0 ? (
+          <div style={{ display: 'grid', gap: '12px' }}>
+            {corporateAccounts.slice(0, 3).map((account: any) => (
+              <div key={account.id} style={{
+                backgroundColor: 'white',
+                borderRadius: '12px',
+                padding: '16px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                border: `2px solid ${account.primaryColor}20`
+              }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontSize: '16px', fontWeight: '600', color: '#1f2937', marginBottom: '4px' }}>
+                      {account.companyName}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                      {account.domain} • {account.industry} • {account.subscriptionTier.charAt(0).toUpperCase() + account.subscriptionTier.slice(1)} Plan
+                    </div>
+                  </div>
+                  <div style={{
+                    fontSize: '10px',
+                    fontWeight: '600',
+                    color: account.billingStatus === 'active' ? '#10B981' : '#F59E0B',
+                    backgroundColor: account.billingStatus === 'active' ? '#10B98115' : '#F59E0B15',
+                    padding: '3px 8px',
+                    borderRadius: '6px',
+                    textTransform: 'uppercase'
+                  }}>
+                    {account.billingStatus}
+                  </div>
+                </div>
+                
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginTop: '8px' }}>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '14px', fontWeight: '600', color: account.primaryColor }}>
+                      {account.maxEmployees}
+                    </div>
+                    <div style={{ fontSize: '10px', color: '#6b7280' }}>Max Employees</div>
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '14px', fontWeight: '600', color: account.primaryColor }}>
+                      ${(account.monthlyBudget / 1000).toFixed(1)}k
+                    </div>
+                    <div style={{ fontSize: '10px', color: '#6b7280' }}>Monthly Budget</div>
+                  </div>
+                  <div style={{ textAlign: 'center' }}>
+                    <div style={{ fontSize: '14px', fontWeight: '600', color: account.primaryColor }}>
+                      {new Date(account.createdAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                    </div>
+                    <div style={{ fontSize: '10px', color: '#6b7280' }}>Created</div>
+                  </div>
+                </div>
+              </div>
+            ))}
+            
+            {corporateAccounts.length > 3 && (
+              <div style={{
+                backgroundColor: '#f8f9fa',
+                borderRadius: '8px',
+                padding: '12px',
+                textAlign: 'center',
+                border: '1px dashed #d1d5db'
+              }}>
+                <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                  +{corporateAccounts.length - 3} more corporate accounts
+                </div>
+              </div>
+            )}
+          </div>
+        ) : (
+          <div style={{
+            backgroundColor: 'white',
+            borderRadius: '12px',
+            padding: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontSize: '32px', marginBottom: '12px' }}>🏢</div>
+            <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '8px' }}>No corporate accounts yet</div>
+            <div style={{ fontSize: '12px', color: '#9ca3af' }}>Companies will appear here as they join the platform</div>
+          </div>
+        )}
       </div>
 
       {/* Challenge Management */}

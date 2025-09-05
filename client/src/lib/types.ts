@@ -90,6 +90,20 @@ export interface CorporateMetric {
   color: string;
 }
 
+export interface ChallengeTemplate {
+  id: string;
+  category: string;
+  title: string;
+  description: string;
+  content: string;
+  challengeType: string;
+  suggestedDuration: number;
+  echoReward: number;
+  participationGoal: number;
+  icon: string;
+  color: string;
+}
+
 export interface Achievement {
   id: string;
   title: string;
