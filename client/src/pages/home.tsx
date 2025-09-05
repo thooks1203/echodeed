@@ -79,7 +79,7 @@ export default function Home() {
     <>
       <OnboardingOverlay onComplete={() => setOnboardingCompleted(true)} />
       
-      <div className="mobile-container bg-background">
+      <div className="mobile-container bg-background min-h-screen">
         <AppHeader 
           counter={counter || defaultCounter} 
           isPulse={counterPulse}

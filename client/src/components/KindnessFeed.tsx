@@ -33,7 +33,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
   }
 
   return (
-    <main className="pb-20">
+    <main className="pb-20 relative z-10 bg-background">
       {posts.length === 0 ? (
         <div className="text-center py-12 px-4">
           <Heart className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
@@ -42,7 +42,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
         </div>
       ) : (
         posts.map((post, index) => (
-          <div key={post.id} className="px-4 py-3 border-b border-border bg-card">
+          <div key={post.id} className="px-4 py-3 border-b border-border bg-card relative">
             <div className="flex items-start space-x-3">
               <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0 mt-1">
                 <Heart className={`${getCategoryStyle(post.category)}`} size={12} />
