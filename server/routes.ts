@@ -875,6 +875,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Predictive Wellness Endpoints
+  app.get('/api/ai/wellness-alerts', async (req, res) => {
+    try {
+      // Mock predictive wellness alerts for demonstration
+      const mockAlerts = [
+        {
+          id: '1',
+          type: 'risk_detected',
+          severity: 'high',
+          employeeId: 'emp_001',
+          title: 'Wellness Risk Detected: Employee Support Needed',
+          description: 'AI analysis indicates an employee may experience a decline in wellness. Current score: 65, predicted: 45.',
+          recommendations: [
+            'Schedule wellness check-in',
+            'Assign wellness buddy', 
+            'Reduce workload temporarily',
+            'Offer mental health resources'
+          ],
+          predictedOutcome: 'Prevent potential burnout',
+          confidence: 87,
+          createdAt: new Date().toISOString()
+        },
+        {
+          id: '2',
+          type: 'intervention_needed',
+          severity: 'medium',
+          teamId: 'team_eng',
+          title: 'Team Wellness Declining: Engineering Team',
+          description: 'The Engineering team shows a 15% decline in predicted wellness. 4 employees may need support.',
+          recommendations: [
+            'Schedule team building activities',
+            'Implement peer recognition program',
+            'Consider workload redistribution', 
+            'Launch team-specific kindness challenges'
+          ],
+          predictedOutcome: 'Improved team cohesion and individual wellness',
+          confidence: 78,
+          createdAt: new Date().toISOString()
+        }
+      ];
+      
+      res.json(mockAlerts);
+    } catch (error: any) {
+      console.error('Error getting wellness alerts:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/ai/kindness-prescription', async (req, res) => {
+    try {
+      // Mock personalized kindness prescription
+      const mockPrescription = {
+        employeeId: 'current_user',
+        prescriptionType: 'individual',
+        suggestedActions: [
+          { action: 'Send appreciation messages to 3 colleagues', impact: 25, effort: 'low', timeframe: 'This week' },
+          { action: 'Practice daily gratitude journaling', impact: 15, effort: 'low', timeframe: 'Daily for 2 weeks' },
+          { action: 'Share a kindness story in team meeting', impact: 20, effort: 'low', timeframe: 'Next meeting' }
+        ],
+        personalizedMessage: 'Based on your wellness patterns, here are some personalized kindness activities that could boost your well-being by 15% over the next week.',
+        expectedOutcome: 'Gradual wellness improvement expected (20% boost in well-being)'
+      };
+      
+      res.json(mockPrescription);
+    } catch (error: any) {
+      console.error('Error getting kindness prescription:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   app.get('/api/ai/posts', async (req, res) => {
     try {
       const posts = await storage.getPostsWithAIAnalysis();

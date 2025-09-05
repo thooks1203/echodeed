@@ -1,4 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
+import { PredictiveWellnessDashboard } from "./predictive-wellness-dashboard";
+import { useState } from "react";
 
 interface WellnessInsights {
   overallWellness: number;
@@ -10,6 +12,8 @@ interface WellnessInsights {
 }
 
 export function AIDashboard() {
+  const [activeView, setActiveView] = useState<'analytics' | 'predictive'>('analytics');
+
   const { data: insights, isLoading } = useQuery<WellnessInsights>({
     queryKey: ['/api/ai/wellness-insights'],
     refetchInterval: 30000, // Refresh every 30 seconds
@@ -84,11 +88,64 @@ export function AIDashboard() {
         <p style={{ 
           fontSize: '14px', 
           color: '#6b7280', 
-          margin: 0 
+          margin: 0,
+          marginBottom: '16px'
         }}>
           Real-time sentiment analysis and wellness prediction
         </p>
+        
+        {/* View Toggle */}
+        <div style={{
+          display: 'flex',
+          background: '#f3f4f6',
+          borderRadius: '8px',
+          padding: '4px',
+          gap: '4px',
+          maxWidth: '300px',
+          margin: '0 auto'
+        }}>
+          <button
+            onClick={() => setActiveView('analytics')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'analytics' ? '#8B5CF6' : 'transparent',
+              color: activeView === 'analytics' ? 'white' : '#6b7280'
+            }}
+          >
+            📊 Analytics
+          </button>
+          <button
+            onClick={() => setActiveView('predictive')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'predictive' ? '#DC2626' : 'transparent',
+              color: activeView === 'predictive' ? 'white' : '#6b7280'
+            }}
+          >
+            🔮 Predictive
+          </button>
+        </div>
       </div>
+
+      {/* Content based on active view */}
+      {activeView === 'predictive' ? (
+        <PredictiveWellnessDashboard />
+      ) : (
+        <div>
 
       {/* Wellness Overview */}
       <div style={{
@@ -248,7 +305,8 @@ export function AIDashboard() {
           <span>🧠</span>
           Powered by GPT-5 AI
         </span>
-      </div>
+        </div>
+      )}
     </div>
   );
 }
