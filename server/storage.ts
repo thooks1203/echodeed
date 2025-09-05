@@ -1,4 +1,4 @@
-import { type KindnessPost, type InsertKindnessPost, type KindnessCounter, type UserTokens, type InsertUserTokens, type BrandChallenge, type InsertBrandChallenge, type ChallengeCompletion } from "@shared/schema";
+import { type KindnessPost, type InsertKindnessPost, type KindnessCounter, type UserTokens, type InsertUserTokens, type BrandChallenge, type InsertBrandChallenge, type ChallengeCompletion, type Achievement, type UserAchievement } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
@@ -14,6 +14,9 @@ export interface IStorage {
   getBrandChallenges(): Promise<BrandChallenge[]>;
   completeChallenge(challengeId: string, sessionId: string): Promise<{ challenge: BrandChallenge; tokens: UserTokens }>;
   getChallengeCompletions(sessionId: string): Promise<string[]>; // Returns array of completed challenge IDs
+  getAchievements(): Promise<Achievement[]>;
+  getUserAchievements(sessionId: string): Promise<UserAchievement[]>;
+  checkAndUnlockAchievements(sessionId: string): Promise<UserAchievement[]>; // Returns newly unlocked achievements
 }
 
 export class MemStorage implements IStorage {
@@ -22,12 +25,16 @@ export class MemStorage implements IStorage {
   private userTokens: Map<string, UserTokens>;
   private brandChallenges: Map<string, BrandChallenge>;
   private challengeCompletions: Map<string, string[]>; // sessionId -> challengeIds
+  private achievements: Map<string, Achievement>;
+  private userAchievements: Map<string, UserAchievement[]>; // sessionId -> achievements
 
   constructor() {
     this.posts = new Map();
     this.userTokens = new Map();
     this.brandChallenges = new Map();
     this.challengeCompletions = new Map();
+    this.achievements = new Map();
+    this.userAchievements = new Map();
     this.counter = {
       id: "global",
       count: 247891, // Starting count from design
@@ -37,6 +44,7 @@ export class MemStorage implements IStorage {
     // Add some initial posts and challenges for demonstration
     this.seedInitialPosts();
     this.seedBrandChallenges();
+    this.seedAchievements();
   }
 
   private seedInitialPosts() {
@@ -456,6 +464,289 @@ export class MemStorage implements IStorage {
 
   async getChallengeCompletions(sessionId: string): Promise<string[]> {
     return this.challengeCompletions.get(sessionId) || [];
+  }
+
+  private seedAchievements() {
+    const achievementData = [
+      // Kindness Milestones - Bronze Tier
+      {
+        title: "First Step",
+        description: "Share your very first act of kindness",
+        badge: "🌱",
+        category: "kindness",
+        tier: "bronze",
+        requirement: JSON.stringify({ type: "posts_created", value: 1 }),
+        echoReward: 10,
+        sortOrder: 1
+      },
+      {
+        title: "Kindness Streak",
+        description: "Share 5 acts of kindness",
+        badge: "🔥",
+        category: "kindness",
+        tier: "bronze",
+        requirement: JSON.stringify({ type: "posts_created", value: 5 }),
+        echoReward: 25,
+        sortOrder: 2
+      },
+      
+      // Kindness Milestones - Silver Tier
+      {
+        title: "Compassion Champion",
+        description: "Share 25 acts of kindness",
+        badge: "💎",
+        category: "kindness",
+        tier: "silver",
+        requirement: JSON.stringify({ type: "posts_created", value: 25 }),
+        echoReward: 100,
+        sortOrder: 3
+      },
+      {
+        title: "Kindness Ambassador",
+        description: "Share 100 acts of kindness",
+        badge: "👑",
+        category: "kindness",
+        tier: "gold",
+        requirement: JSON.stringify({ type: "posts_created", value: 100 }),
+        echoReward: 500,
+        sortOrder: 4
+      },
+      
+      // Social Engagement - Bronze Tier
+      {
+        title: "Heart Giver",
+        description: "Give your first heart to someone's kindness",
+        badge: "❤️",
+        category: "social",
+        tier: "bronze",
+        requirement: JSON.stringify({ type: "hearts_given", value: 1 }),
+        echoReward: 5,
+        sortOrder: 10
+      },
+      {
+        title: "Echo Supporter",
+        description: "Echo someone's kindness for the first time",
+        badge: "📢",
+        category: "social", 
+        tier: "bronze",
+        requirement: JSON.stringify({ type: "echoes_given", value: 1 }),
+        echoReward: 10,
+        sortOrder: 11
+      },
+      {
+        title: "Community Builder",
+        description: "Give 50 hearts to others' kindness posts",
+        badge: "🤝",
+        category: "social",
+        tier: "silver",
+        requirement: JSON.stringify({ type: "hearts_given", value: 50 }),
+        echoReward: 75,
+        sortOrder: 12
+      },
+      
+      // Challenge Achievements - Bronze to Diamond
+      {
+        title: "Challenge Starter",
+        description: "Complete your first brand challenge",
+        badge: "🎯",
+        category: "challenges",
+        tier: "bronze",
+        requirement: JSON.stringify({ type: "challenges_completed", value: 1 }),
+        echoReward: 15,
+        sortOrder: 20
+      },
+      {
+        title: "Challenge Enthusiast",
+        description: "Complete 10 brand challenges",
+        badge: "🏆",
+        category: "challenges",
+        tier: "silver",
+        requirement: JSON.stringify({ type: "challenges_completed", value: 10 }),
+        echoReward: 100,
+        sortOrder: 21
+      },
+      {
+        title: "Challenge Master",
+        description: "Complete 25 brand challenges", 
+        badge: "🥇",
+        category: "challenges",
+        tier: "gold",
+        requirement: JSON.stringify({ type: "challenges_completed", value: 25 }),
+        echoReward: 300,
+        sortOrder: 22
+      },
+      {
+        title: "Challenge Legend",
+        description: "Complete 50 brand challenges",
+        badge: "💫",
+        category: "challenges",
+        tier: "diamond",
+        requirement: JSON.stringify({ type: "challenges_completed", value: 50 }),
+        echoReward: 1000,
+        sortOrder: 23
+      },
+      
+      // Token Milestones - Silver to Legendary
+      {
+        title: "Echo Earner",
+        description: "Earn your first 100 $ECHO tokens",
+        badge: "🪙",
+        category: "milestones",
+        tier: "bronze", 
+        requirement: JSON.stringify({ type: "tokens_earned", value: 100 }),
+        echoReward: 25,
+        sortOrder: 30
+      },
+      {
+        title: "Token Collector",
+        description: "Earn 1,000 $ECHO tokens",
+        badge: "💰",
+        category: "milestones",
+        tier: "silver",
+        requirement: JSON.stringify({ type: "tokens_earned", value: 1000 }),
+        echoReward: 200,
+        sortOrder: 31
+      },
+      {
+        title: "Echo Tycoon",
+        description: "Earn 10,000 $ECHO tokens",
+        badge: "💎",
+        category: "milestones",
+        tier: "gold",
+        requirement: JSON.stringify({ type: "tokens_earned", value: 10000 }),
+        echoReward: 1500,
+        sortOrder: 32
+      },
+      {
+        title: "Kindness Millionaire",
+        description: "Earn 50,000 $ECHO tokens",
+        badge: "👑",
+        category: "milestones",
+        tier: "legendary",
+        requirement: JSON.stringify({ type: "tokens_earned", value: 50000 }),
+        echoReward: 10000,
+        sortOrder: 33
+      },
+      
+      // Special Achievements
+      {
+        title: "Early Adopter",
+        description: "One of the first 1000 users on EchoDeed™",
+        badge: "🚀",
+        category: "special",
+        tier: "gold",
+        requirement: JSON.stringify({ type: "early_user", value: 1 }),
+        echoReward: 500,
+        sortOrder: 50
+      },
+      {
+        title: "Community Pillar",
+        description: "Active for 30 consecutive days",
+        badge: "🏛️",
+        category: "special",
+        tier: "diamond",
+        requirement: JSON.stringify({ type: "consecutive_days", value: 30 }),
+        echoReward: 2000,
+        sortOrder: 51
+      }
+    ];
+
+    achievementData.forEach(data => {
+      const id = randomUUID();
+      const achievement: Achievement = {
+        ...data,
+        id,
+        requirement: data.requirement,
+        isActive: 1,
+        createdAt: new Date()
+      };
+      this.achievements.set(id, achievement);
+    });
+  }
+
+  async getAchievements(): Promise<Achievement[]> {
+    const achievements = Array.from(this.achievements.values());
+    return achievements
+      .filter(a => a.isActive === 1)
+      .sort((a, b) => a.sortOrder - b.sortOrder);
+  }
+
+  async getUserAchievements(sessionId: string): Promise<UserAchievement[]> {
+    return this.userAchievements.get(sessionId) || [];
+  }
+
+  async checkAndUnlockAchievements(sessionId: string): Promise<UserAchievement[]> {
+    const userTokens = await this.getUserTokens(sessionId);
+    const userAchievements = await this.getUserAchievements(sessionId);
+    const allAchievements = await this.getAchievements();
+    const unlockedAchievementIds = new Set(userAchievements.map(ua => ua.achievementId));
+    
+    const newlyUnlocked: UserAchievement[] = [];
+
+    // Count user's activities
+    const posts = Array.from(this.posts.values());
+    const userPosts = posts.filter(p => p.createdAt > userTokens.createdAt); // Approximate user posts
+    const challengeCompletions = await this.getChallengeCompletions(sessionId);
+    
+    // Rough estimates for hearts/echoes given (would be tracked properly in production)
+    const heartsGiven = Math.floor(userTokens.totalEarned / 10); // Estimate based on token activity
+    const echoesGiven = Math.floor(userTokens.totalEarned / 15); // Estimate based on token activity
+
+    for (const achievement of allAchievements) {
+      if (unlockedAchievementIds.has(achievement.id)) continue;
+
+      const requirement = JSON.parse(achievement.requirement);
+      let shouldUnlock = false;
+
+      switch (requirement.type) {
+        case 'posts_created':
+          shouldUnlock = userPosts.length >= requirement.value;
+          break;
+        case 'challenges_completed':
+          shouldUnlock = challengeCompletions.length >= requirement.value;
+          break;
+        case 'tokens_earned':
+          shouldUnlock = userTokens.totalEarned >= requirement.value;
+          break;
+        case 'hearts_given':
+          shouldUnlock = heartsGiven >= requirement.value;
+          break;
+        case 'echoes_given':
+          shouldUnlock = echoesGiven >= requirement.value;
+          break;
+        case 'early_user':
+          // Check if user is in first 1000 (simplified logic)
+          shouldUnlock = this.userTokens.size <= 1000;
+          break;
+        case 'consecutive_days':
+          // Simplified check - would need proper day tracking in production
+          const daysSinceJoined = Math.floor((Date.now() - userTokens.createdAt.getTime()) / (1000 * 60 * 60 * 24));
+          shouldUnlock = daysSinceJoined >= requirement.value && userTokens.totalEarned > 100; // Active user approximation
+          break;
+      }
+
+      if (shouldUnlock) {
+        const userAchievement: UserAchievement = {
+          id: randomUUID(),
+          sessionId,
+          achievementId: achievement.id,
+          unlockedAt: new Date(),
+          progress: requirement.value
+        };
+        
+        newlyUnlocked.push(userAchievement);
+        
+        // Update user achievements
+        const existing = this.userAchievements.get(sessionId) || [];
+        existing.push(userAchievement);
+        this.userAchievements.set(sessionId, existing);
+        
+        // Award bonus tokens for unlocking achievement
+        await this.awardTokens(sessionId, achievement.echoReward, `Achievement unlocked: ${achievement.title}`);
+      }
+    }
+
+    return newlyUnlocked;
   }
 }
 

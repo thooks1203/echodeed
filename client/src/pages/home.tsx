@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { AppHeader } from '@/components/AppHeader';
 import { FilterBar } from '@/components/FilterBar';
 import { KindnessFeed } from '@/components/KindnessFeed';
@@ -9,17 +9,19 @@ import { BottomNavigation } from '@/components/BottomNavigation';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { KindnessPost, KindnessCounter, UserTokens, BrandChallenge } from '@shared/schema';
-import { PostFilters, WebSocketMessage } from '@/lib/types';
+import { PostFilters, WebSocketMessage, Achievement, UserAchievement, AchievementNotification, TokenEarning } from '@/lib/types';
 import { getSessionId, addSessionHeaders } from '@/lib/session';
 
 export default function Home() {
+  const queryClient = useQueryClient();
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
   const [activeTab, setActiveTab] = useState('feed');
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
-  const [tokenEarning, setTokenEarning] = useState<{amount: number, reason: string} | null>(null);
+  const [tokenEarning, setTokenEarning] = useState<TokenEarning | null>(null);
+  const [achievementNotification, setAchievementNotification] = useState<AchievementNotification | null>(null);
 
   const { location } = useGeolocation();
 
@@ -66,6 +68,50 @@ export default function Home() {
     queryKey: ['/api/challenges/completed'],
   });
 
+  // Fetch achievements
+  const { data: achievements = [] } = useQuery<Achievement[]>({
+    queryKey: ['/api/achievements'],
+  });
+
+  // Fetch user achievements
+  const { data: userAchievements = [], refetch: refetchUserAchievements } = useQuery<UserAchievement[]>({
+    queryKey: ['/api/achievements/user'],
+  });
+
+  // Achievement checking helper
+  const checkAchievements = useCallback(async () => {
+    try {
+      const response = await fetch('/api/achievements/check', {
+        method: 'POST',
+        headers: addSessionHeaders()
+      });
+      
+      if (response.ok) {
+        const newAchievements = await response.json();
+        if (newAchievements && newAchievements.length > 0) {
+          // Show first achievement notification
+          const firstAchievement = newAchievements[0];
+          const achievement = achievements.find(a => a.id === firstAchievement.achievementId);
+          if (achievement) {
+            setAchievementNotification({
+              achievement,
+              echoReward: achievement.echoReward
+            });
+            
+            // Auto-hide after 4 seconds
+            setTimeout(() => setAchievementNotification(null), 4000);
+          }
+          
+          // Refetch user achievements and tokens
+          refetchUserAchievements();
+          refetchTokens();
+        }
+      }
+    } catch (error) {
+      console.error('Failed to check achievements:', error);
+    }
+  }, [achievements, refetchUserAchievements, refetchTokens]);
+
   // WebSocket message handler
   const handleWebSocketMessage = useCallback((message: WebSocketMessage) => {
     if (message.type === 'NEW_POST') {
@@ -102,6 +148,9 @@ export default function Home() {
       
       // Post and tokens will update via WebSocket
       refetchTokens(); // Force refresh tokens
+      
+      // Check for new achievements
+      await checkAchievements();
     } catch (error) {
       console.error('Failed to add heart:', error);
     }
@@ -121,6 +170,9 @@ export default function Home() {
       
       // Post and tokens will update via WebSocket  
       refetchTokens(); // Force refresh tokens
+      
+      // Check for new achievements
+      await checkAchievements();
     } catch (error) {
       console.error('Failed to add echo:', error);
     }
@@ -153,6 +205,9 @@ export default function Home() {
       // Refresh data
       queryClient.invalidateQueries({ queryKey: ['/api/challenges/completed'] });
       refetchTokens();
+      
+      // Check for new achievements
+      await checkAchievements();
     } catch (error: any) {
       console.error('Failed to complete challenge:', error);
       alert(error.message || 'Failed to complete challenge');
@@ -180,6 +235,256 @@ export default function Home() {
     ...buttonStyle,
     backgroundColor: '#8B5CF6',
     color: 'white'
+  };
+
+  // Helper function to get tier colors and styling
+  const getTierStyling = (tier: string, isUnlocked: boolean) => {
+    const baseStyle = {
+      opacity: isUnlocked ? 1 : 0.4,
+      filter: isUnlocked ? 'none' : 'grayscale(50%)'
+    };
+    
+    switch (tier) {
+      case 'bronze':
+        return { ...baseStyle, backgroundColor: '#F59E0B', color: 'white' };
+      case 'silver':
+        return { ...baseStyle, backgroundColor: '#6B7280', color: 'white' };
+      case 'gold':
+        return { ...baseStyle, backgroundColor: '#EAB308', color: 'white' };
+      case 'diamond':
+        return { ...baseStyle, backgroundColor: '#06B6D4', color: 'white' };
+      case 'legendary':
+        return { ...baseStyle, backgroundColor: '#8B5CF6', color: 'white' };
+      default:
+        return baseStyle;
+    }
+  };
+
+  // Badges tab content
+  const renderBadgesTab = () => {
+    const unlockedAchievementIds = new Set(userAchievements.map(ua => ua.achievementId));
+    const unlockedCount = userAchievements.length;
+    const totalCount = achievements.length;
+    const completionPercentage = totalCount > 0 ? Math.round((unlockedCount / totalCount) * 100) : 0;
+    
+    // Group achievements by category
+    const achievementsByCategory = achievements.reduce((acc, achievement) => {
+      if (!acc[achievement.category]) acc[achievement.category] = [];
+      acc[achievement.category].push(achievement);
+      return acc;
+    }, {} as Record<string, Achievement[]>);
+
+    return (
+      <div style={{ padding: '20px', paddingBottom: '100px' }}>
+        <h2 style={{ 
+          fontSize: '24px', 
+          fontWeight: 'bold', 
+          marginBottom: '16px', 
+          textAlign: 'center',
+          background: 'linear-gradient(135deg, #F59E0B, #EAB308)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent'
+        }}>
+          🏅 Achievement Badges
+        </h2>
+        
+        <div style={{ fontSize: '14px', textAlign: 'center', marginBottom: '24px', color: '#6b7280' }}>
+          Collect badges by spreading kindness and completing challenges!
+        </div>
+        
+        {/* Progress Summary */}
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          padding: '20px',
+          marginBottom: '24px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          textAlign: 'center'
+        }}>
+          <div style={{ fontSize: '32px', marginBottom: '8px' }}>
+            🎯
+          </div>
+          <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#1f2937' }}>
+            {unlockedCount} / {totalCount}
+          </div>
+          <div style={{ fontSize: '14px', color: '#6b7280', marginBottom: '12px' }}>
+            Badges Collected ({completionPercentage}%)
+          </div>
+          
+          {/* Progress Bar */}
+          <div style={{
+            width: '100%',
+            height: '8px',
+            backgroundColor: '#f3f4f6',
+            borderRadius: '4px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              width: `${completionPercentage}%`,
+              height: '100%',
+              background: 'linear-gradient(90deg, #F59E0B, #EAB308)',
+              borderRadius: '4px',
+              transition: 'width 0.3s ease'
+            }} />
+          </div>
+        </div>
+
+        {/* Achievement Categories */}
+        {Object.entries(achievementsByCategory).map(([category, categoryAchievements]) => {
+          const categoryIcons = {
+            kindness: '💝',
+            challenges: '🏆',
+            social: '🤝',
+            milestones: '🎯',
+            special: '⭐'
+          };
+          
+          const categoryTitles = {
+            kindness: 'Kindness Achievements',
+            challenges: 'Challenge Master',
+            social: 'Social Engagement',
+            milestones: 'Milestone Rewards',
+            special: 'Special Recognition'
+          };
+
+          return (
+            <div key={category} style={{ marginBottom: '32px' }}>
+              <h3 style={{ 
+                fontSize: '18px', 
+                fontWeight: 'bold', 
+                marginBottom: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px'
+              }}>
+                <span style={{ fontSize: '24px' }}>{categoryIcons[category as keyof typeof categoryIcons]}</span>
+                {categoryTitles[category as keyof typeof categoryTitles]}
+              </h3>
+              
+              <div style={{ 
+                display: 'grid', 
+                gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', 
+                gap: '16px' 
+              }}>
+                {categoryAchievements.map((achievement) => {
+                  const isUnlocked = unlockedAchievementIds.has(achievement.id);
+                  const tierStyling = getTierStyling(achievement.tier, isUnlocked);
+                  
+                  return (
+                    <div key={achievement.id} style={{
+                      backgroundColor: 'white',
+                      borderRadius: '12px',
+                      padding: '16px',
+                      textAlign: 'center',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                      border: isUnlocked ? '2px solid #F59E0B' : '2px solid #e5e7eb',
+                      transform: isUnlocked ? 'scale(1.02)' : 'scale(1)',
+                      transition: 'all 0.2s ease',
+                      position: 'relative',
+                      ...tierStyling
+                    }}>
+                      {/* Tier Badge */}
+                      <div style={{
+                        position: 'absolute',
+                        top: '-8px',
+                        right: '-8px',
+                        ...getTierStyling(achievement.tier, true),
+                        borderRadius: '12px',
+                        padding: '2px 8px',
+                        fontSize: '10px',
+                        fontWeight: 'bold',
+                        textTransform: 'uppercase',
+                        border: '2px solid white',
+                        boxShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                      }}>
+                        {achievement.tier}
+                      </div>
+                      
+                      {/* Badge Icon */}
+                      <div style={{ 
+                        fontSize: '32px', 
+                        marginBottom: '8px',
+                        filter: isUnlocked ? 'none' : 'grayscale(100%)'
+                      }}>
+                        {achievement.badge}
+                      </div>
+                      
+                      {/* Title */}
+                      <div style={{ 
+                        fontSize: '14px', 
+                        fontWeight: 'bold', 
+                        marginBottom: '4px',
+                        color: isUnlocked ? '#1f2937' : '#9ca3af'
+                      }}>
+                        {achievement.title}
+                      </div>
+                      
+                      {/* Description */}
+                      <div style={{ 
+                        fontSize: '12px', 
+                        color: isUnlocked ? '#6b7280' : '#9ca3af',
+                        marginBottom: '8px',
+                        lineHeight: '1.4'
+                      }}>
+                        {achievement.description}
+                      </div>
+                      
+                      {/* Reward */}
+                      <div style={{ 
+                        fontSize: '11px', 
+                        color: isUnlocked ? '#10B981' : '#9ca3af',
+                        fontWeight: '600'
+                      }}>
+                        {achievement.echoReward > 0 && `+${achievement.echoReward} $ECHO`}
+                      </div>
+                      
+                      {/* Unlocked Indicator */}
+                      {isUnlocked && (
+                        <div style={{
+                          position: 'absolute',
+                          top: '8px',
+                          left: '8px',
+                          backgroundColor: '#10B981',
+                          color: 'white',
+                          borderRadius: '50%',
+                          width: '20px',
+                          height: '20px',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '12px',
+                          fontWeight: 'bold'
+                        }}>
+                          ✓
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+        
+        {/* Motivational Message */}
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          padding: '20px',
+          textAlign: 'center',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          marginTop: '24px'
+        }}>
+          <div style={{ fontSize: '20px', marginBottom: '8px' }}>🌟</div>
+          <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#1f2937', marginBottom: '4px' }}>
+            Keep spreading kindness!
+          </div>
+          <div style={{ fontSize: '14px', color: '#6b7280' }}>
+            Every act of kindness brings you closer to new badges and rewards.
+          </div>
+        </div>
+      </div>
+    );
   };
 
   // Admin tab content
@@ -853,6 +1158,151 @@ export default function Home() {
     );
   }
 
+  // Show Badges tab if selected
+  if (activeTab === 'badges') {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        {/* Header */}
+        <div style={{ 
+          background: 'linear-gradient(135deg, #F59E0B, #EAB308)',
+          color: 'white', 
+          padding: '20px', 
+          textAlign: 'center',
+          position: 'relative'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ 
+                width: '32px', 
+                height: '32px', 
+                backgroundColor: 'rgba(255,255,255,0.2)', 
+                borderRadius: '50%', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center' 
+              }}>
+                🏅
+              </div>
+              <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
+            </div>
+            
+            {/* $ECHO Balance */}
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '6px',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              padding: '6px 12px',
+              borderRadius: '20px',
+              fontSize: '14px',
+              fontWeight: '600'
+            }}>
+              <span style={{ fontSize: '16px' }}>🪙</span>
+              <span>{tokens?.echoBalance || 0} $ECHO</span>
+            </div>
+          </div>
+          
+          <div style={{ fontSize: '14px', opacity: 0.8 }}>Your Kindness, Amplified</div>
+        </div>
+
+        {renderBadgesTab()}
+
+        {/* Bottom Navigation */}
+        <div style={{
+          position: 'fixed',
+          bottom: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          maxWidth: '430px',
+          width: '100%',
+          backgroundColor: 'rgba(255,255,255,0.95)',
+          backdropFilter: 'blur(8px)',
+          borderTop: '1px solid #e5e7eb',
+          display: 'flex',
+          justifyContent: 'space-around',
+          padding: '12px 0',
+          zIndex: 100
+        }}>
+          {[
+            { id: 'feed', label: 'Feed', icon: '🏠' },
+            { id: 'local', label: 'Local', icon: '📍' },
+            { id: 'badges', label: 'Badges', icon: '🏅' },
+            { id: 'partners', label: 'Partners', icon: '🤝' },
+            { id: 'admin', label: 'Admin', icon: '⚙️' },
+          ].map((tab) => {
+            if (tab.id === 'spacer') {
+              return <div key={tab.id} style={{ width: '32px' }} />;
+            }
+            
+            return (
+              <button 
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                style={{
+                  background: 'none',
+                  border: 'none',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '4px',
+                  padding: '4px 8px',
+                  borderRadius: '8px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: '500',
+                  color: activeTab === tab.id ? '#F59E0B' : '#6b7280',
+                  backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
+                }}
+              >
+                <span style={{ fontSize: '18px' }}>{tab.icon}</span>
+                <span>{tab.label}</span>
+              </button>
+            );
+          })}
+        </div>
+        
+        {/* Achievement Notification */}
+        {achievementNotification && (
+          <div style={{
+            position: 'fixed',
+            top: '80px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            backgroundColor: '#F59E0B',
+            color: 'white',
+            padding: '16px 20px',
+            borderRadius: '16px',
+            fontSize: '14px',
+            fontWeight: '600',
+            boxShadow: '0 8px 25px rgba(245, 158, 11, 0.4)',
+            zIndex: 1000,
+            animation: 'slideIn 0.3s ease-out',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '12px',
+            maxWidth: '90%',
+            textAlign: 'center'
+          }}>
+            <span style={{ fontSize: '24px' }}>{achievementNotification.achievement.badge}</span>
+            <div>
+              <div style={{ fontSize: '16px', marginBottom: '4px' }}>🎉 Achievement Unlocked!</div>
+              <div style={{ fontWeight: 'bold' }}>{achievementNotification.achievement.title}</div>
+              <div style={{ fontSize: '12px', opacity: 0.9 }}>
+                +{achievementNotification.echoReward} $ECHO earned!
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
+
   // Show Admin tab if selected
   if (activeTab === 'admin') {
     return (
@@ -927,9 +1377,9 @@ export default function Home() {
           {[
             { id: 'feed', label: 'Feed', icon: '🏠' },
             { id: 'local', label: 'Local', icon: '📍' },
-            { id: 'admin', label: 'Admin', icon: '⚙️' },
+            { id: 'badges', label: 'Badges', icon: '🏅' },
             { id: 'partners', label: 'Partners', icon: '🤝' },
-            { id: 'impact', label: 'Impact', icon: '📈' },
+            { id: 'admin', label: 'Admin', icon: '⚙️' },
           ].map((tab) => {
             if (tab.id === 'spacer') {
               return <div key={tab.id} style={{ width: '32px' }} />;
@@ -1066,9 +1516,9 @@ export default function Home() {
           {[
             { id: 'feed', label: 'Feed', icon: '🏠' },
             { id: 'local', label: 'Local', icon: '📍' },
-            { id: 'admin', label: 'Admin', icon: '⚙️' },
+            { id: 'badges', label: 'Badges', icon: '🏅' },
             { id: 'partners', label: 'Partners', icon: '🤝' },
-            { id: 'impact', label: 'Impact', icon: '📈' },
+            { id: 'admin', label: 'Admin', icon: '⚙️' },
           ].map((tab) => {
             if (tab.id === 'spacer') {
               return <div key={tab.id} style={{ width: '32px' }} />;
@@ -1672,9 +2122,9 @@ export default function Home() {
         {[
           { id: 'feed', label: 'Feed', icon: '🏠' },
           { id: 'local', label: 'Local', icon: '📍' },
-          { id: 'admin', label: 'Admin', icon: '⚙️' },
+          { id: 'badges', label: 'Badges', icon: '🏅' },
           { id: 'partners', label: 'Partners', icon: '🤝' },
-          { id: 'impact', label: 'Impact', icon: '📈' },
+          { id: 'admin', label: 'Admin', icon: '⚙️' },
         ].map((tab) => {
           if (tab.id === 'spacer') {
             return <div key={tab.id} style={{ width: '32px' }} />;

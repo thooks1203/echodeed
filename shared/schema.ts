@@ -64,6 +64,30 @@ export const challengeCompletions = pgTable("challenge_completions", {
   completedAt: timestamp("completed_at").defaultNow().notNull(),
 });
 
+// Achievement badges system
+export const achievements = pgTable("achievements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title", { length: 100 }).notNull(),
+  description: text("description").notNull(),
+  badge: text("badge").notNull(), // Emoji or icon for the badge
+  category: varchar("category", { length: 50 }).notNull(), // kindness, challenges, social, milestones
+  tier: varchar("tier", { length: 20 }).default("bronze").notNull(), // bronze, silver, gold, diamond, legendary
+  requirement: text("requirement").notNull(), // JSON string describing unlock condition
+  echoReward: integer("echo_reward").default(0).notNull(), // Bonus tokens for unlocking
+  isActive: integer("is_active").default(1).notNull(),
+  sortOrder: integer("sort_order").default(0).notNull(), // Display order
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// User achievement unlocks
+export const userAchievements = pgTable("user_achievements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sessionId: varchar("session_id").notNull(),
+  achievementId: varchar("achievement_id").notNull(),
+  unlockedAt: timestamp("unlocked_at").defaultNow().notNull(),
+  progress: integer("progress").default(0), // For progress-based achievements
+});
+
 export const insertKindnessPostSchema = createInsertSchema(kindnessPosts).omit({
   id: true,
   createdAt: true,
@@ -91,6 +115,16 @@ export const insertChallengeCompletionSchema = createInsertSchema(challengeCompl
   completedAt: true,
 });
 
+export const insertAchievementSchema = createInsertSchema(achievements).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertUserAchievementSchema = createInsertSchema(userAchievements).omit({
+  id: true,
+  unlockedAt: true,
+});
+
 export type InsertKindnessPost = z.infer<typeof insertKindnessPostSchema>;
 export type KindnessPost = typeof kindnessPosts.$inferSelect;
 export type KindnessCounter = typeof kindnessCounter.$inferSelect;
@@ -100,3 +134,7 @@ export type BrandChallenge = typeof brandChallenges.$inferSelect;
 export type InsertBrandChallenge = z.infer<typeof insertBrandChallengeSchema>;
 export type ChallengeCompletion = typeof challengeCompletions.$inferSelect;
 export type InsertChallengeCompletion = z.infer<typeof insertChallengeCompletionSchema>;
+export type Achievement = typeof achievements.$inferSelect;
+export type InsertAchievement = z.infer<typeof insertAchievementSchema>;
+export type UserAchievement = typeof userAchievements.$inferSelect;
+export type InsertUserAchievement = z.infer<typeof insertUserAchievementSchema>;
