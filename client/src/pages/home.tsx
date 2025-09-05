@@ -1,6 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { OnboardingOverlay } from '@/components/OnboardingOverlay';
 import { AppHeader } from '@/components/AppHeader';
 import { FilterBar } from '@/components/FilterBar';
 import { KindnessFeed } from '@/components/KindnessFeed';
@@ -18,6 +17,7 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState('feed');
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(true);
 
   const { location } = useGeolocation();
 
@@ -88,6 +88,175 @@ export default function Home() {
     color: 'white'
   };
 
+  // Welcome Page
+  if (showWelcome) {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        {/* Welcome Header */}
+        <div style={{ 
+          background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+          color: 'white', 
+          padding: '40px 20px', 
+          textAlign: 'center'
+        }}>
+          <div style={{ 
+            width: '80px', 
+            height: '80px', 
+            backgroundColor: 'rgba(255,255,255,0.2)', 
+            borderRadius: '50%', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center',
+            margin: '0 auto 20px',
+            fontSize: '40px'
+          }}>
+            ❤️
+          </div>
+          <h1 style={{ margin: '0 0 10px 0', fontSize: '32px', fontWeight: 'bold' }}>EchoDeed™</h1>
+          <p style={{ 
+            fontSize: '18px', 
+            fontWeight: '500', 
+            margin: '0 0 30px 0', 
+            opacity: 0.95 
+          }}>
+            Your Kindness, Amplified
+          </p>
+          
+          {/* Global Counter */}
+          <div style={{ 
+            backgroundColor: 'rgba(255,255,255,0.1)', 
+            borderRadius: '16px', 
+            padding: '20px',
+            backdropFilter: 'blur(10px)'
+          }}>
+            <div style={{ fontSize: '14px', marginBottom: '8px', opacity: 0.9 }}>
+              Global Kindness Counter
+            </div>
+            <div style={{ 
+              fontSize: '42px', 
+              fontWeight: 'bold', 
+              margin: '8px 0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px'
+            }}>
+              {(counter || defaultCounter).count.toLocaleString()}
+              <span style={{ fontSize: '36px' }}>❤️</span>
+            </div>
+            <div style={{ fontSize: '12px', opacity: 0.8 }}>
+              acts of kindness shared worldwide
+            </div>
+          </div>
+        </div>
+
+        {/* Mission & Examples */}
+        <div style={{ padding: '30px 20px' }}>
+          <div style={{ textAlign: 'center', marginBottom: '30px' }}>
+            <h2 style={{ 
+              fontSize: '24px', 
+              fontWeight: 'bold', 
+              margin: '0 0 15px 0',
+              color: '#374151'
+            }}>
+              Inspire Kindness Everywhere
+            </h2>
+            <p style={{ 
+              fontSize: '16px', 
+              lineHeight: '1.6', 
+              color: '#6b7280',
+              margin: '0 0 20px 0'
+            }}>
+              Share your anonymous acts of kindness and inspire others to spread positivity. 
+              Every small gesture creates ripples of goodness across the world.
+            </p>
+          </div>
+
+          {/* Example Posts */}
+          <div style={{ marginBottom: '30px' }}>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: '600', 
+              margin: '0 0 15px 0',
+              color: '#374151'
+            }}>
+              Recent Acts of Kindness:
+            </h3>
+            
+            <div style={{ 
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '16px',
+              marginBottom: '12px',
+              border: '1px solid #f3f4f6'
+            }}>
+              <p style={{ margin: '0 0 8px 0', lineHeight: '1.5', color: '#374151' }}>
+                "Helped an elderly woman carry her groceries up three flights of stairs. Her smile made my whole week brighter."
+              </p>
+              <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                📍 San Francisco, CA • Helping Others
+              </div>
+            </div>
+
+            <div style={{ 
+              backgroundColor: 'white',
+              borderRadius: '12px',
+              padding: '16px',
+              marginBottom: '12px',
+              border: '1px solid #f3f4f6'
+            }}>
+              <p style={{ margin: '0 0 8px 0', lineHeight: '1.5', color: '#374151' }}>
+                "Left encouraging sticky notes on random cars in the parking lot. Hope it brightens someone's day!"
+              </p>
+              <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                📍 Austin, TX • Spreading Positivity
+              </div>
+            </div>
+          </div>
+
+          {/* Call to Action */}
+          <div style={{ textAlign: 'center' }}>
+            <button 
+              onClick={() => setShowWelcome(false)}
+              style={{
+                background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '12px',
+                padding: '16px 32px',
+                fontSize: '18px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
+                width: '100%',
+                marginBottom: '15px'
+              }}
+            >
+              Start Spreading Kindness ❤️
+            </button>
+            
+            <p style={{ 
+              fontSize: '12px', 
+              color: '#6b7280', 
+              margin: '0',
+              textAlign: 'center',
+              lineHeight: '1.4'
+            }}>
+              Join thousands of people making the world a little brighter, one kind act at a time.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Main App
   return (
     <div style={{ 
       maxWidth: '430px', 
@@ -96,7 +265,6 @@ export default function Home() {
       minHeight: '100vh',
       position: 'relative'
     }}>
-      <OnboardingOverlay onComplete={() => {}} />
       
       {/* Header */}
       <div style={{ 
