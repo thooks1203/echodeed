@@ -39,7 +39,7 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
           className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:opacity-90 transition-opacity"
           data-testid="button-start-kindness"
         >
-          Start Spreading Kindness
+          Click Here to Start Spreading Kindness!
         </button>
       </div>
     </div>
