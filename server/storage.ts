@@ -1,21 +1,26 @@
-import { type KindnessPost, type InsertKindnessPost, type KindnessCounter } from "@shared/schema";
+import { type KindnessPost, type InsertKindnessPost, type KindnessCounter, type UserTokens, type InsertUserTokens } from "@shared/schema";
 import { randomUUID } from "crypto";
 
 export interface IStorage {
-  createKindnessPost(post: InsertKindnessPost): Promise<KindnessPost>;
+  createKindnessPost(post: InsertKindnessPost, sessionId?: string): Promise<KindnessPost>;
   getKindnessPosts(filters?: { category?: string; city?: string; state?: string; country?: string }): Promise<KindnessPost[]>;
   getKindnessCounter(): Promise<KindnessCounter>;
   incrementKindnessCounter(): Promise<KindnessCounter>;
-  addHeartToPost(postId: string): Promise<KindnessPost>;
-  addEchoToPost(postId: string): Promise<KindnessPost>;
+  addHeartToPost(postId: string, sessionId?: string): Promise<KindnessPost>;
+  addEchoToPost(postId: string, sessionId?: string): Promise<KindnessPost>;
+  getUserTokens(sessionId: string): Promise<UserTokens>;
+  createOrUpdateUserTokens(sessionId: string): Promise<UserTokens>;
+  awardTokens(sessionId: string, amount: number, reason: string): Promise<UserTokens>;
 }
 
 export class MemStorage implements IStorage {
   private posts: Map<string, KindnessPost>;
   private counter: KindnessCounter;
+  private userTokens: Map<string, UserTokens>;
 
   constructor() {
     this.posts = new Map();
+    this.userTokens = new Map();
     this.counter = {
       id: "global",
       count: 247891, // Starting count from design
@@ -71,7 +76,7 @@ export class MemStorage implements IStorage {
     });
   }
 
-  async createKindnessPost(insertPost: InsertKindnessPost): Promise<KindnessPost> {
+  async createKindnessPost(insertPost: InsertKindnessPost, sessionId?: string): Promise<KindnessPost> {
     const id = randomUUID();
     const post: KindnessPost = {
       ...insertPost,
@@ -81,6 +86,12 @@ export class MemStorage implements IStorage {
       echoesCount: 0,
     };
     this.posts.set(id, post);
+    
+    // Award tokens for posting (5 $ECHO per post)
+    if (sessionId) {
+      await this.awardTokens(sessionId, 5, 'kindness_post');
+    }
+    
     return post;
   }
 
@@ -120,7 +131,7 @@ export class MemStorage implements IStorage {
     return this.counter;
   }
 
-  async addHeartToPost(postId: string): Promise<KindnessPost> {
+  async addHeartToPost(postId: string, sessionId?: string): Promise<KindnessPost> {
     const post = this.posts.get(postId);
     if (!post) {
       throw new Error('Post not found');
@@ -132,10 +143,16 @@ export class MemStorage implements IStorage {
     };
     
     this.posts.set(postId, updatedPost);
+    
+    // Award tokens for giving hearts (1 $ECHO per heart)
+    if (sessionId) {
+      await this.awardTokens(sessionId, 1, 'heart_given');
+    }
+    
     return updatedPost;
   }
 
-  async addEchoToPost(postId: string): Promise<KindnessPost> {
+  async addEchoToPost(postId: string, sessionId?: string): Promise<KindnessPost> {
     const post = this.posts.get(postId);
     if (!post) {
       throw new Error('Post not found');
@@ -147,7 +164,63 @@ export class MemStorage implements IStorage {
     };
     
     this.posts.set(postId, updatedPost);
+    
+    // Award tokens for echoing (2 $ECHO per echo - commitment to duplicate)
+    if (sessionId) {
+      await this.awardTokens(sessionId, 2, 'echo_given');
+    }
+    
     return updatedPost;
+  }
+
+  async getUserTokens(sessionId: string): Promise<UserTokens> {
+    const tokens = this.userTokens.get(sessionId);
+    if (!tokens) {
+      return await this.createOrUpdateUserTokens(sessionId);
+    }
+    return tokens;
+  }
+
+  async createOrUpdateUserTokens(sessionId: string): Promise<UserTokens> {
+    const existing = this.userTokens.get(sessionId);
+    if (existing) {
+      // Update last active
+      const updated = {
+        ...existing,
+        lastActive: new Date(),
+      };
+      this.userTokens.set(sessionId, updated);
+      return updated;
+    }
+
+    // Create new user tokens
+    const tokens: UserTokens = {
+      id: randomUUID(),
+      sessionId,
+      echoBalance: 0,
+      totalEarned: 0,
+      createdAt: new Date(),
+      lastActive: new Date(),
+    };
+    
+    this.userTokens.set(sessionId, tokens);
+    return tokens;
+  }
+
+  async awardTokens(sessionId: string, amount: number, reason: string): Promise<UserTokens> {
+    const tokens = await this.getUserTokens(sessionId);
+    
+    const updatedTokens = {
+      ...tokens,
+      echoBalance: tokens.echoBalance + amount,
+      totalEarned: tokens.totalEarned + amount,
+      lastActive: new Date(),
+    };
+    
+    this.userTokens.set(sessionId, updatedTokens);
+    console.log(`Awarded ${amount} $ECHO to ${sessionId} for ${reason}. New balance: ${updatedTokens.echoBalance}`);
+    
+    return updatedTokens;
   }
 }
 

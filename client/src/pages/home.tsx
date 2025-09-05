@@ -8,8 +8,9 @@ import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
-import { KindnessPost, KindnessCounter } from '@shared/schema';
+import { KindnessPost, KindnessCounter, UserTokens } from '@shared/schema';
 import { PostFilters, WebSocketMessage } from '@/lib/types';
+import { getSessionId, addSessionHeaders } from '@/lib/session';
 
 export default function Home() {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
@@ -35,7 +36,9 @@ export default function Home() {
       }
       
       const url = searchParams.toString() ? `${baseUrl}?${searchParams}` : baseUrl as string;
-      const response = await fetch(url);
+      const response = await fetch(url, { 
+        headers: addSessionHeaders()
+      });
       if (!response.ok) throw new Error('Failed to fetch posts');
       return response.json();
     },
@@ -44,6 +47,12 @@ export default function Home() {
   // Fetch counter
   const { data: counter, refetch: refetchCounter } = useQuery<KindnessCounter>({
     queryKey: ['/api/counter'],
+  });
+
+  // Fetch user tokens
+  const { data: tokens, refetch: refetchTokens } = useQuery<UserTokens>({
+    queryKey: ['/api/tokens'],
+    retry: 2,
   });
 
   // WebSocket message handler
@@ -56,8 +65,9 @@ export default function Home() {
       setTimeout(() => setCounterPulse(false), 600);
     } else if (message.type === 'POST_UPDATE') {
       refetchPosts(); // Refetch posts to get updated counts
+      refetchTokens(); // Refetch tokens to get updated balance
     }
-  }, [refetchPosts, refetchCounter]);
+  }, [refetchPosts, refetchCounter, refetchTokens]);
 
   // Initialize WebSocket
   const { isConnected } = useWebSocket(handleWebSocketMessage);
@@ -69,9 +79,17 @@ export default function Home() {
 
   const handleHeartPost = async (postId: string) => {
     try {
-      const response = await fetch(`/api/posts/${postId}/heart`, { method: 'POST' });
+      const response = await fetch(`/api/posts/${postId}/heart`, { 
+        method: 'POST',
+        headers: addSessionHeaders()
+      });
       if (!response.ok) throw new Error('Failed to add heart');
-      // Post will update via WebSocket
+      
+      // Show earning feedback
+      console.log('Earned 1 $ECHO for showing love! 💜');
+      
+      // Post and tokens will update via WebSocket
+      refetchTokens(); // Force refresh tokens
     } catch (error) {
       console.error('Failed to add heart:', error);
     }
@@ -79,9 +97,17 @@ export default function Home() {
 
   const handleEchoPost = async (postId: string) => {
     try {
-      const response = await fetch(`/api/posts/${postId}/echo`, { method: 'POST' });
+      const response = await fetch(`/api/posts/${postId}/echo`, { 
+        method: 'POST',
+        headers: addSessionHeaders()
+      });
       if (!response.ok) throw new Error('Failed to add echo');
-      // Post will update via WebSocket
+      
+      // Show earning feedback
+      console.log('Earned 2 $ECHO for echoing kindness! 🌊');
+      
+      // Post and tokens will update via WebSocket  
+      refetchTokens(); // Force refresh tokens
     } catch (error) {
       console.error('Failed to add echo:', error);
     }
@@ -377,6 +403,21 @@ export default function Home() {
               ❤️
             </div>
             <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
+          </div>
+          
+          {/* $ECHO Balance */}
+          <div style={{ 
+            display: 'flex', 
+            alignItems: 'center', 
+            gap: '6px',
+            backgroundColor: 'rgba(255,255,255,0.2)',
+            padding: '6px 12px',
+            borderRadius: '20px',
+            fontSize: '14px',
+            fontWeight: '600'
+          }}>
+            <span style={{ fontSize: '16px' }}>🪙</span>
+            <span>{tokens?.echoBalance || 0} $ECHO</span>
           </div>
         </div>
         

@@ -22,6 +22,16 @@ export const kindnessCounter = pgTable("kindness_counter", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Anonymous user token tracking (no personal info, just session-based)
+export const userTokens = pgTable("user_tokens", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sessionId: varchar("session_id").notNull().unique(), // Anonymous session ID
+  echoBalance: integer("echo_balance").default(0).notNull(),
+  totalEarned: integer("total_earned").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  lastActive: timestamp("last_active").defaultNow().notNull(),
+});
+
 export const insertKindnessPostSchema = createInsertSchema(kindnessPosts).omit({
   id: true,
   createdAt: true,
@@ -32,6 +42,14 @@ export const insertKindnessCounterSchema = createInsertSchema(kindnessCounter).o
   updatedAt: true,
 });
 
+export const insertUserTokensSchema = createInsertSchema(userTokens).omit({
+  id: true,
+  createdAt: true,
+  lastActive: true,
+});
+
 export type InsertKindnessPost = z.infer<typeof insertKindnessPostSchema>;
 export type KindnessPost = typeof kindnessPosts.$inferSelect;
 export type KindnessCounter = typeof kindnessCounter.$inferSelect;
+export type UserTokens = typeof userTokens.$inferSelect;
+export type InsertUserTokens = z.infer<typeof insertUserTokensSchema>;

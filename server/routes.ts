@@ -72,6 +72,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post("/api/posts", async (req, res) => {
     try {
       const postData = insertKindnessPostSchema.parse(req.body);
+      const sessionId = req.headers['x-session-id'] as string;
       
       // Content filtering
       const contentValidation = contentFilter.isContentAppropriate(postData.content);
@@ -79,8 +80,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: contentValidation.reason });
       }
       
-      // Create post
-      const post = await storage.createKindnessPost(postData);
+      // Create post (awards tokens automatically)
+      const post = await storage.createKindnessPost(postData, sessionId);
       
       // Increment counter
       const counter = await storage.incrementKindnessCounter();
@@ -106,7 +107,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/posts/:postId/heart', async (req, res) => {
     try {
       const { postId } = req.params;
-      const updatedPost = await storage.addHeartToPost(postId);
+      const sessionId = req.headers['x-session-id'] as string;
+      const updatedPost = await storage.addHeartToPost(postId, sessionId);
       
       // Broadcast the update to all connected WebSocket clients
       broadcast({
@@ -128,7 +130,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/posts/:postId/echo', async (req, res) => {
     try {
       const { postId } = req.params;
-      const updatedPost = await storage.addEchoToPost(postId);
+      const sessionId = req.headers['x-session-id'] as string;
+      const updatedPost = await storage.addEchoToPost(postId, sessionId);
       
       // Broadcast the update to all connected WebSocket clients
       broadcast({
@@ -143,6 +146,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } else {
         res.status(500).json({ message: error.message });
       }
+    }
+  });
+
+  // Get user tokens
+  app.get('/api/tokens', async (req, res) => {
+    try {
+      const sessionId = req.headers['x-session-id'] as string;
+      if (!sessionId) {
+        return res.status(400).json({ message: 'Session ID required' });
+      }
+      
+      const tokens = await storage.getUserTokens(sessionId);
+      res.json(tokens);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
     }
   });
 
