@@ -1,0 +1,37 @@
+. Core Purpose
+EchoDeed™ is a native mobile app for iOS and Android. Its core purpose is to inspire and track anonymous acts of kindness in a community-driven feed. The app's design is based on the philosophy of "Less Ego. More Echo." — prioritizing the collective impact of good deeds over individual recognition.
+
+2. Key User Flow
+The app's user experience is designed to be simple and frictionless.
+
+A user opens the app and immediately sees a live, public feed of kindness posts and a global Kindness Counter.
+
+To post, a user taps a prominent "Post a Deed" button.
+
+They write a short, text-only description of their kind act.
+
+Upon submitting, their post appears on the feed, and the global Kindness Counter increases by one.
+
+Users can easily browse the feed, but cannot interact with posts via likes, comments, or messages.
+
+3. Core Features
+
+Anonymous Posting: All posts are completely anonymous. There are no user profiles, no names, no followers, and no personal information of any kind attached to a post.
+
+The Kindness Feed: The central hub of the app is a simple, single, scrollable feed. It is text-only to maintain simplicity and focus.
+
+Kindness Counter: A highly visible, real-time counter on the home screen that displays the total number of EchoDeeds™ performed globally since the app's launch. This is the app's primary form of "social proof" and reinforcement.
+
+No Social Interaction: To maintain a positive-only environment, the app strictly prohibits all forms of social interaction on posts, including comments, likes, hearts, or direct messaging.
+
+Filtering and Search: Users can filter the Kindness Feed by location (e.g., city, state, country) to see local impact. They can also use a few predefined categories to filter posts, such as "Helping Others," "Community Action," or "Spreading Positivity."
+
+Verification System (Simple Version for MVP): To ensure a trust-based community, the app will incorporate a simple system. Posts are automatically flagged if they contain profanity or keywords associated with negativity. This will help maintain the integrity of the feed.
+
+4. App's Tone and Aesthetics
+
+Visuals: The app should have a clean, minimalist design with a positive and uplifting color palette. The focus should be on readability and ease of use.
+
+Messaging: The tone should be encouraging, humble, and positive.
+
+Onboarding: The onboarding process should be quick and simple, with a clear statement about the app's purpose and a quick path to viewing and posting kindness.
