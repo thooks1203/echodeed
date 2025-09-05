@@ -76,39 +76,41 @@ export default function Home() {
   };
 
   return (
-    <div className="mobile-container bg-background relative">
+    <>
       <OnboardingOverlay onComplete={() => setOnboardingCompleted(true)} />
       
-      <AppHeader 
-        counter={counter || defaultCounter} 
-        isPulse={counterPulse}
-      />
-      
-      <FilterBar 
-        activeFilter={activeFilter}
-        location={location}
-        onFilterChange={handleFilterChange}
-      />
-      
-      <KindnessFeed 
-        posts={posts}
-        isLoading={postsLoading}
-      />
-      
-      <PostDeedModal 
-        isOpen={isPostModalOpen}
-        onClose={() => setIsPostModalOpen(false)}
-        location={location}
-      />
-      
-      <FloatingActionButton 
-        onClick={() => setIsPostModalOpen(true)}
-      />
-      
-      <BottomNavigation 
-        activeTab={activeTab}
-        onTabChange={setActiveTab}
-      />
-    </div>
+      <div className="mobile-container bg-background">
+        <AppHeader 
+          counter={counter || defaultCounter} 
+          isPulse={counterPulse}
+        />
+        
+        <FilterBar 
+          activeFilter={activeFilter}
+          location={location}
+          onFilterChange={handleFilterChange}
+        />
+        
+        <KindnessFeed 
+          posts={posts}
+          isLoading={postsLoading}
+        />
+        
+        <PostDeedModal 
+          isOpen={isPostModalOpen}
+          onClose={() => setIsPostModalOpen(false)}
+          location={location}
+        />
+        
+        <FloatingActionButton 
+          onClick={() => setIsPostModalOpen(true)}
+        />
+        
+        <BottomNavigation 
+          activeTab={activeTab}
+          onTabChange={setActiveTab}
+        />
+      </div>
+    </>
   );
 }

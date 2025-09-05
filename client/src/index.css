@@ -110,6 +110,8 @@
   max-width: 430px;
   margin: 0 auto;
   min-height: 100vh;
+  width: 100%;
+  position: relative;
 }
 
 .filter-chip {
