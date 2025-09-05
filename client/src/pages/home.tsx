@@ -20,18 +20,22 @@ export default function Home() {
   };
 
   return (
-    <div className="mobile-container bg-background min-h-screen">
+    <div style={{ width: '100%', minHeight: '100vh', backgroundColor: '#f5f5f5' }}>
       <AppHeader 
         counter={defaultCounter} 
         isPulse={false}
       />
       
-      <div style={{ backgroundColor: 'red', padding: '20px', margin: '20px' }}>
+      <div style={{ backgroundColor: 'red', padding: '20px', margin: '20px', position: 'relative', zIndex: 1 }}>
         <h2 style={{ color: 'white', fontSize: '18px' }}>DEBUG: This should show below the header</h2>
       </div>
       
-      <div style={{ backgroundColor: 'blue', padding: '20px', margin: '20px' }}>
+      <div style={{ backgroundColor: 'blue', padding: '20px', margin: '20px', position: 'relative', zIndex: 1 }}>
         <h2 style={{ color: 'white', fontSize: '18px' }}>DEBUG: This is a simple div test</h2>
+      </div>
+      
+      <div style={{ backgroundColor: 'green', padding: '20px', margin: '20px', position: 'relative', zIndex: 1 }}>
+        <h2 style={{ color: 'white', fontSize: '18px' }}>DEBUG: Green box for visibility test</h2>
       </div>
     </div>
   );
