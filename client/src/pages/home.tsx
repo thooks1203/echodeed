@@ -25,20 +25,6 @@ export default function Home() {
   // Fetch posts
   const { data: posts = [], isLoading: postsLoading, refetch: refetchPosts } = useQuery<KindnessPost[]>({
     queryKey: ['/api/posts', filters],
-    queryFn: async ({ queryKey }) => {
-      const [baseUrl, filterParams] = queryKey;
-      const searchParams = new URLSearchParams();
-      
-      if (filterParams && typeof filterParams === 'object') {
-        Object.entries(filterParams).forEach(([key, value]) => {
-          if (value) searchParams.set(key, value as string);
-        });
-      }
-      
-      const url = searchParams.toString() ? `${baseUrl}?${searchParams}` : baseUrl as string;
-      const response = await fetch(url);
-      return response.json();
-    },
   });
 
   // Fetch counter
@@ -84,6 +70,14 @@ export default function Home() {
           counter={counter || defaultCounter} 
           isPulse={counterPulse}
         />
+        
+        <div style={{ backgroundColor: 'red', padding: '10px', margin: '10px' }}>
+          <p style={{ color: 'white' }}>Debug: Filter Bar Should Be Here</p>
+        </div>
+        
+        <div style={{ backgroundColor: 'blue', padding: '10px', margin: '10px' }}>
+          <p style={{ color: 'white' }}>Debug: Feed Should Be Here. Posts: {posts.length}</p>
+        </div>
         
         <FilterBar 
           activeFilter={activeFilter}
