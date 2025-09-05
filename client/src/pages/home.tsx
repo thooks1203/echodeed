@@ -1659,7 +1659,7 @@ export default function Home() {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'linear-gradient(135deg, #1a0033 0%, #2d1b69 25%, #0f4c75 50%, #3f7cac 75%, #95e1d3 100%)',
+          background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a52 15%, #ff8a80 30%, #ffab91 45%, #ffcc80 60%, #fff59d 75%, #f8bbd9 90%, #e1bee7 100%)',
           backgroundSize: '400% 400%',
           animation: 'gradientShift 8s ease infinite'
         }} />
@@ -1673,10 +1673,10 @@ export default function Home() {
           bottom: 0,
           background: `
             radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
-            radial-gradient(2px 2px at 40px 70px, rgba(139,92,246,0.4), transparent),
-            radial-gradient(1px 1px at 90px 40px, rgba(6,182,212,0.3), transparent),
-            radial-gradient(1px 1px at 130px 80px, rgba(16,185,129,0.3), transparent),
-            radial-gradient(2px 2px at 160px 30px, rgba(245,158,11,0.2), transparent)
+            radial-gradient(2px 2px at 40px 70px, rgba(255,107,107,0.5), transparent),
+            radial-gradient(1px 1px at 90px 40px, rgba(255,138,128,0.4), transparent),
+            radial-gradient(1px 1px at 130px 80px, rgba(255,171,145,0.4), transparent),
+            radial-gradient(2px 2px at 160px 30px, rgba(255,204,128,0.3), transparent)
           `,
           backgroundRepeat: 'repeat',
           backgroundSize: '200px 100px',
@@ -1693,11 +1693,11 @@ export default function Home() {
         }}>
           {/* Logo */}
           <div style={{ 
-            width: '120px', 
-            height: '120px', 
-            margin: '0 auto 24px',
+            width: '400px', 
+            height: '400px', 
+            margin: '0 auto 32px',
             position: 'relative',
-            filter: 'drop-shadow(0 8px 32px rgba(139,92,246,0.4))',
+            filter: 'drop-shadow(0 12px 48px rgba(255,107,107,0.6))',
             animation: 'logoFloat 3s ease-in-out infinite'
           }}>
             <img 
@@ -1717,7 +1717,7 @@ export default function Home() {
             margin: '0 0 16px 0', 
             fontSize: '42px', 
             fontWeight: '900',
-            background: 'linear-gradient(135deg, #ff6ec7 0%, #8b5cf6 25%, #06b6d4 50%, #10b981 75%, #f59e0b 100%)',
+            background: 'linear-gradient(135deg, #ff6b6b 0%, #ff8a80 20%, #ffab91 40%, #ffcc80 60%, #fff59d 80%, #f8bbd9 100%)',
             backgroundSize: '200% 200%',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
@@ -1918,13 +1918,13 @@ export default function Home() {
           <div style={{ 
             position: 'relative',
             zIndex: 2,
-            padding: '20px',
+            padding: '10px 20px 20px',
             textAlign: 'center' 
           }}>
             <button 
               onClick={() => setShowWelcome(false)}
               style={{
-                background: 'linear-gradient(135deg, #ff6ec7, #8b5cf6, #06b6d4)',
+                background: 'linear-gradient(135deg, #ff6b6b, #ff8a80, #ffab91)',
                 backgroundSize: '200% 200%',
                 color: 'white',
                 border: 'none',
@@ -1933,7 +1933,7 @@ export default function Home() {
                 fontSize: '18px',
                 fontWeight: '700',
                 cursor: 'pointer',
-                boxShadow: '0 8px 32px rgba(139,92,246,0.3), 0 0 0 1px rgba(255,255,255,0.2)',
+                boxShadow: '0 8px 32px rgba(255,107,107,0.4), 0 0 0 1px rgba(255,255,255,0.2)',
                 animation: 'buttonGlow 2s ease-in-out infinite, titleShimmer 3s ease-in-out infinite',
                 transform: 'translateY(0)',
                 transition: 'all 0.3s ease',
@@ -1945,11 +1945,11 @@ export default function Home() {
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-                e.currentTarget.style.boxShadow = '0 12px 40px rgba(139,92,246,0.5), 0 0 0 1px rgba(255,255,255,0.3)';
+                e.currentTarget.style.boxShadow = '0 12px 40px rgba(255,107,107,0.6), 0 0 0 1px rgba(255,255,255,0.3)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                e.currentTarget.style.boxShadow = '0 8px 32px rgba(139,92,246,0.3), 0 0 0 1px rgba(255,255,255,0.2)';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(255,107,107,0.4), 0 0 0 1px rgba(255,255,255,0.2)';
               }}
             >
               🚀 Start Spreading Kindness ❤️
