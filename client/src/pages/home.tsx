@@ -3005,6 +3005,49 @@ export default function Home() {
         <div style={{ fontSize: '12px', opacity: 0.8 }}>acts of kindness shared</div>
       </div>
       
+      {/* Start Spreading Kindness Button - Always visible */}
+      <div style={{ 
+        backgroundColor: 'white', 
+        padding: '16px', 
+        textAlign: 'center',
+        borderBottom: '1px solid #e5e7eb'
+      }}>
+        <button 
+          onClick={() => setIsPostModalOpen(true)}
+          style={{
+            background: 'linear-gradient(135deg, #8b5cf6, #06b6d4, #10b981)',
+            backgroundSize: '200% 200%',
+            color: 'white',
+            border: 'none',
+            borderRadius: '16px',
+            padding: '14px 28px',
+            fontSize: '16px',
+            fontWeight: '600',
+            cursor: 'pointer',
+            boxShadow: '0 4px 16px rgba(139,92,246,0.4)',
+            animation: 'titleShimmer 3s ease-in-out infinite',
+            transform: 'translateY(0)',
+            transition: 'all 0.3s ease',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            letterSpacing: '0.3px',
+            textShadow: '0 1px 2px rgba(0,0,0,0.1)',
+            width: '280px',
+            maxWidth: '100%'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-1px) scale(1.02)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(139,92,246,0.6)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0) scale(1)';
+            e.currentTarget.style.boxShadow = '0 4px 16px rgba(139,92,246,0.4)';
+          }}
+          data-testid="button-spread-kindness"
+        >
+          ✨ Tap Here to Start Spreading Kindness! ❤️
+        </button>
+      </div>
+      
       {/* Filter Bar */}
       <div style={{ 
         backgroundColor: 'white', 
