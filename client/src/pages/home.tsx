@@ -6,9 +6,11 @@ import { KindnessFeed } from '@/components/KindnessFeed';
 import { PostDeedModal } from '@/components/PostDeedModal';
 import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { BottomNavigation } from '@/components/BottomNavigation';
-import { AIDashboard } from '@/components/ai-dashboard-simple';
+import { AIDashboard } from '@/components/ai-dashboard-fixed';
+import { NotificationSetupModal } from '@/components/notification-setup-modal';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
+import { pushNotifications } from '@/services/pushNotifications';
 import { KindnessPost, KindnessCounter, UserTokens, BrandChallenge } from '@shared/schema';
 import { PostFilters, WebSocketMessage, Achievement, UserAchievement, AchievementNotification, TokenEarning, CorporateDashboardData, CorporateMetric, ChallengeTemplate } from '@/lib/types';
 import { getSessionId, addSessionHeaders } from '@/lib/session';
@@ -21,6 +23,7 @@ export default function Home() {
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+  const [showNotificationSetup, setShowNotificationSetup] = useState(false);
   const [tokenEarning, setTokenEarning] = useState<TokenEarning | null>(null);
   const [achievementNotification, setAchievementNotification] = useState<AchievementNotification | null>(null);
 
@@ -2224,6 +2227,330 @@ export default function Home() {
     );
   }
 
+  // Show Notifications tab if selected
+  if (activeTab === 'notifications') {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        {/* Header */}
+        <div style={{ 
+          background: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
+          color: 'white',
+          padding: '16px 20px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          borderBottomLeftRadius: '16px',
+          borderBottomRightRadius: '16px'
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '8px'
+          }}>
+            <h1 style={{ 
+              fontSize: '20px', 
+              fontWeight: '700',
+              margin: 0
+            }}>
+              Smart Notifications
+            </h1>
+            <div style={{
+              background: 'rgba(255,255,255,0.2)',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: '600'
+            }}>
+              🔔 PUSH
+            </div>
+          </div>
+          <p style={{ 
+            fontSize: '14px', 
+            opacity: 0.9, 
+            margin: 0 
+          }}>
+            Real-time wellness alerts and kindness reminders
+          </p>
+        </div>
+        
+        {/* Notification Content */}
+        <div style={{ padding: '20px' }}>
+          
+          {/* Quick Setup */}
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(245,158,11,0.1) 0%, rgba(217,119,6,0.1) 100%)',
+            border: '1px solid rgba(245,158,11,0.2)',
+            borderRadius: '12px',
+            padding: '20px',
+            marginBottom: '20px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+              <span style={{ fontSize: '24px' }}>🔔</span>
+              <h3 style={{ fontSize: '18px', fontWeight: '600', margin: 0, color: '#D97706' }}>
+                Enable Push Notifications
+              </h3>
+            </div>
+            <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '16px' }}>
+              Get real-time alerts when AI detects you need wellness support, plus daily kindness reminders.
+            </p>
+            <button
+              onClick={() => setShowNotificationSetup(true)}
+              style={{
+                width: '100%',
+                padding: '12px 24px',
+                background: 'linear-gradient(135deg, #F59E0B, #D97706)',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                fontSize: '16px',
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
+            >
+              Set Up Notifications 🚀
+            </button>
+          </div>
+
+          {/* Notification Types */}
+          <div style={{
+            background: 'white',
+            border: '1px solid #e5e7eb',
+            borderRadius: '12px',
+            padding: '20px',
+            marginBottom: '20px'
+          }}>
+            <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: '#1f2937' }}>
+              📱 What You'll Receive
+            </h3>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {[
+                { 
+                  icon: '🚨', 
+                  title: 'Wellness Alerts', 
+                  desc: 'AI predicts when you need support (87% accuracy)',
+                  example: '"Your wellness score is declining. Time for a mental health check?"'
+                },
+                { 
+                  icon: '💜', 
+                  title: 'Daily Kindness Reminders', 
+                  desc: 'Personalized prompts to spread joy',
+                  example: '"Ready to make someone\'s day brighter? Try sending appreciation messages!"'
+                },
+                { 
+                  icon: '🏆', 
+                  title: 'Achievement Celebrations', 
+                  desc: 'Instant notifications for badges and milestones',
+                  example: '"Achievement Unlocked: Heart Giver! +50 $ECHO earned!"'
+                },
+                { 
+                  icon: '💊', 
+                  title: 'Kindness Prescriptions', 
+                  desc: 'AI-generated wellness activities',
+                  example: '"Your personalized kindness prescription is ready! (+25% wellness boost)"'
+                }
+              ].map((item, index) => (
+                <div key={index} style={{
+                  display: 'flex',
+                  gap: '12px',
+                  padding: '12px',
+                  backgroundColor: '#f9fafb',
+                  borderRadius: '8px'
+                }}>
+                  <span style={{ fontSize: '24px', minWidth: '24px' }}>{item.icon}</span>
+                  <div>
+                    <div style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px' }}>
+                      {item.title}
+                    </div>
+                    <div style={{ fontSize: '12px', color: '#6b7280', marginBottom: '8px' }}>
+                      {item.desc}
+                    </div>
+                    <div style={{ 
+                      fontSize: '11px', 
+                      color: '#059669',
+                      fontStyle: 'italic',
+                      padding: '4px 8px',
+                      backgroundColor: '#ecfdf5',
+                      borderRadius: '4px'
+                    }}>
+                      Example: {item.example}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Demo Notifications */}
+          <div style={{
+            background: 'white',
+            border: '1px solid #e5e7eb',
+            borderRadius: '12px',
+            padding: '20px'
+          }}>
+            <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: '#1f2937' }}>
+              🧪 Try Demo Notifications
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+              <button
+                onClick={() => {
+                  pushNotifications.sendWellnessAlert({
+                    severity: 'medium',
+                    message: 'Your wellness pattern shows you might need some self-care today. Consider taking a 10-minute break!'
+                  });
+                }}
+                style={{
+                  padding: '12px',
+                  backgroundColor: '#FEF3C7',
+                  color: '#92400E',
+                  border: '1px solid #F59E0B',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                🚨 Wellness Alert
+              </button>
+              <button
+                onClick={() => {
+                  pushNotifications.sendKindnessReminder();
+                }}
+                style={{
+                  padding: '12px',
+                  backgroundColor: '#F3E8FF',
+                  color: '#6B46C1',
+                  border: '1px solid #8B5CF6',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                💜 Kindness Reminder
+              </button>
+              <button
+                onClick={() => {
+                  pushNotifications.sendAchievementNotification({
+                    title: 'Demo Achievement',
+                    description: 'You unlocked a test badge!',
+                    badge: '🏆',
+                    echoReward: 25,
+                    tier: 'gold'
+                  });
+                }}
+                style={{
+                  padding: '12px',
+                  backgroundColor: '#ECFDF5',
+                  color: '#065F46',
+                  border: '1px solid #10B981',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                🏆 Achievement
+              </button>
+              <button
+                onClick={() => {
+                  pushNotifications.sendPrescriptionNotification({
+                    message: 'Your personalized wellness plan is ready!',
+                    actions: [
+                      { action: 'Send thank you messages', impact: 20, effort: 'low' }
+                    ],
+                    expectedOutcome: '15% wellness boost expected'
+                  });
+                }}
+                style={{
+                  padding: '12px',
+                  backgroundColor: '#FEF2F2',
+                  color: '#991B1B',
+                  border: '1px solid #EF4444',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                💊 Prescription
+              </button>
+            </div>
+            <p style={{ 
+              fontSize: '11px', 
+              color: '#6b7280', 
+              textAlign: 'center',
+              marginTop: '12px',
+              fontStyle: 'italic'
+            }}>
+              * Demo notifications require browser permission
+            </p>
+          </div>
+
+        </div>
+        
+        {/* Bottom Navigation */}
+        <div style={{
+          position: 'fixed',
+          bottom: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          maxWidth: '430px',
+          width: '100%',
+          backgroundColor: 'rgba(255,255,255,0.95)',
+          backdropFilter: 'blur(8px)',
+          borderTop: '1px solid #e5e7eb',
+          display: 'flex',
+          justifyContent: 'space-around',
+          padding: '12px 0',
+          zIndex: 100
+        }}>
+          {[
+            { id: 'feed', label: 'Feed', icon: '🏠' },
+            { id: 'local', label: 'Local', icon: '📍' },
+            { id: 'ai', label: 'AI', icon: '🧠' },
+            { id: 'badges', label: 'Badges', icon: '🏅' },
+            { id: 'notifications', label: 'Notifications', icon: '🔔' },
+          ].map((tab) => (
+            <button 
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                background: 'none',
+                border: 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '4px',
+                cursor: 'pointer',
+                padding: '8px',
+                borderRadius: '8px',
+                fontSize: '12px',
+                fontWeight: '500',
+                color: activeTab === tab.id ? '#F59E0B' : '#6b7280',
+                backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
+              }}
+            >
+              <span style={{ fontSize: '18px' }}>{tab.icon}</span>
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {/* Notification Setup Modal */}
+        <NotificationSetupModal 
+          isOpen={showNotificationSetup}
+          onClose={() => setShowNotificationSetup(false)}
+        />
+      </div>
+    );
+  }
+
   // Show Corporate tab if selected
   if (activeTab === 'corporate') {
     return (
@@ -3157,7 +3484,7 @@ export default function Home() {
           { id: 'local', label: 'Local', icon: '📍' },
           { id: 'ai', label: 'AI Insights', icon: '🧠' },
           { id: 'badges', label: 'Badges', icon: '🏅' },
-          { id: 'corporate', label: 'Corporate', icon: '🏢' },
+          { id: 'notifications', label: 'Notifications', icon: '🔔' },
         ].map((tab) => {
           if (tab.id === 'spacer') {
             return <div key={tab.id} style={{ width: '32px' }} />;
