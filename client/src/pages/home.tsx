@@ -1647,53 +1647,127 @@ export default function Home() {
       <div style={{ 
         maxWidth: '430px', 
         margin: '0 auto', 
-        backgroundColor: '#f8f9fa',
+        backgroundColor: '#0f0f23',
         minHeight: '100vh',
-        position: 'relative'
+        position: 'relative',
+        overflow: 'hidden'
       }}>
+        {/* Animated Background */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'linear-gradient(135deg, #1a0033 0%, #2d1b69 25%, #0f4c75 50%, #3f7cac 75%, #95e1d3 100%)',
+          backgroundSize: '400% 400%',
+          animation: 'gradientShift 8s ease infinite'
+        }} />
+        
+        {/* Floating Particles */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `
+            radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(2px 2px at 40px 70px, rgba(139,92,246,0.4), transparent),
+            radial-gradient(1px 1px at 90px 40px, rgba(6,182,212,0.3), transparent),
+            radial-gradient(1px 1px at 130px 80px, rgba(16,185,129,0.3), transparent),
+            radial-gradient(2px 2px at 160px 30px, rgba(245,158,11,0.2), transparent)
+          `,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '200px 100px',
+          animation: 'sparkle 6s linear infinite'
+        }} />
+
         {/* Welcome Header */}
         <div style={{ 
-          background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+          position: 'relative',
+          zIndex: 2,
           color: 'white', 
-          padding: '40px 20px', 
+          padding: '60px 20px 40px', 
           textAlign: 'center'
         }}>
+          {/* Logo */}
           <div style={{ 
-            width: '80px', 
-            height: '80px', 
-            backgroundColor: 'rgba(255,255,255,0.2)', 
-            borderRadius: '50%', 
-            display: 'flex', 
-            alignItems: 'center', 
-            justifyContent: 'center',
-            margin: '0 auto 20px',
-            fontSize: '40px'
+            width: '120px', 
+            height: '120px', 
+            margin: '0 auto 24px',
+            position: 'relative',
+            filter: 'drop-shadow(0 8px 32px rgba(139,92,246,0.4))',
+            animation: 'logoFloat 3s ease-in-out infinite'
           }}>
-            ❤️
+            <img 
+              src="/logo.png" 
+              alt="EchoDeed™ Logo" 
+              style={{ 
+                width: '100%', 
+                height: '100%', 
+                objectFit: 'contain',
+                filter: 'brightness(1.1) contrast(1.1)'
+              }} 
+            />
           </div>
-          <h1 style={{ margin: '0 0 10px 0', fontSize: '32px', fontWeight: 'bold' }}>EchoDeed™</h1>
-          <p style={{ 
-            fontSize: '18px', 
-            fontWeight: '500', 
-            margin: '0 0 30px 0', 
-            opacity: 0.95 
+          
+          {/* Brand Name */}
+          <h1 style={{ 
+            margin: '0 0 16px 0', 
+            fontSize: '42px', 
+            fontWeight: '900',
+            background: 'linear-gradient(135deg, #ff6ec7 0%, #8b5cf6 25%, #06b6d4 50%, #10b981 75%, #f59e0b 100%)',
+            backgroundSize: '200% 200%',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            animation: 'titleShimmer 4s ease-in-out infinite',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            letterSpacing: '-0.02em',
+            textShadow: '0 0 30px rgba(139,92,246,0.3)'
           }}>
-            Your Kindness, Amplified
+            EchoDeed™
+          </h1>
+          
+          {/* Tagline */}
+          <p style={{ 
+            fontSize: '22px', 
+            fontWeight: '600', 
+            margin: '0 0 32px 0', 
+            background: 'linear-gradient(45deg, rgba(255,255,255,0.95), rgba(255,255,255,0.8))',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            letterSpacing: '0.01em',
+            textShadow: '0 2px 20px rgba(255,255,255,0.1)'
+          }}>
+            Your Kindness, Amplified ✨
           </p>
           
           {/* Global Counter */}
           <div style={{ 
-            backgroundColor: 'rgba(255,255,255,0.1)', 
-            borderRadius: '16px', 
-            padding: '20px',
-            backdropFilter: 'blur(10px)'
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05))', 
+            borderRadius: '20px', 
+            padding: '24px',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+            animation: counterPulse ? 'counterPulse 0.6s ease-in-out' : 'none'
           }}>
-            <div style={{ fontSize: '14px', marginBottom: '8px', opacity: 0.9 }}>
-              Global Kindness Counter
+            <div style={{ 
+              fontSize: '16px', 
+              marginBottom: '12px', 
+              opacity: 0.9,
+              fontWeight: '500',
+              letterSpacing: '0.5px'
+            }}>
+              🌍 Acts of Kindness Shared Globally
             </div>
             <div style={{ 
-              fontSize: '42px', 
-              fontWeight: 'bold', 
+              fontSize: '48px', 
+              fontWeight: '900', 
               margin: '8px 0',
               display: 'flex',
               alignItems: 'center',
@@ -1840,35 +1914,56 @@ export default function Home() {
             </div>
           </div>
 
-          {/* Call to Action */}
-          <div style={{ textAlign: 'center' }}>
+          {/* Call to Action Button */}
+          <div style={{ 
+            position: 'relative',
+            zIndex: 2,
+            padding: '20px',
+            textAlign: 'center' 
+          }}>
             <button 
               onClick={() => setShowWelcome(false)}
               style={{
-                background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+                background: 'linear-gradient(135deg, #ff6ec7, #8b5cf6, #06b6d4)',
+                backgroundSize: '200% 200%',
                 color: 'white',
                 border: 'none',
-                borderRadius: '12px',
+                borderRadius: '16px',
                 padding: '16px 32px',
                 fontSize: '18px',
-                fontWeight: '600',
+                fontWeight: '700',
                 cursor: 'pointer',
-                boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
-                width: '100%',
-                marginBottom: '15px'
+                boxShadow: '0 8px 32px rgba(139,92,246,0.3), 0 0 0 1px rgba(255,255,255,0.2)',
+                animation: 'buttonGlow 2s ease-in-out infinite, titleShimmer 3s ease-in-out infinite',
+                transform: 'translateY(0)',
+                transition: 'all 0.3s ease',
+                fontFamily: 'system-ui, -apple-system, sans-serif',
+                letterSpacing: '0.5px',
+                textShadow: '0 1px 2px rgba(0,0,0,0.2)',
+                width: '280px',
+                maxWidth: '100%'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+                e.currentTarget.style.boxShadow = '0 12px 40px rgba(139,92,246,0.5), 0 0 0 1px rgba(255,255,255,0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0) scale(1)';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(139,92,246,0.3), 0 0 0 1px rgba(255,255,255,0.2)';
               }}
             >
-              Start Spreading Kindness ❤️
+              🚀 Start Spreading Kindness ❤️
             </button>
             
-            <p style={{ 
-              fontSize: '12px', 
-              color: '#6b7280', 
-              margin: '0',
-              textAlign: 'center',
-              lineHeight: '1.4'
+            {/* Magical Footer Text */}
+            <p style={{
+              fontSize: '14px',
+              color: 'rgba(255,255,255,0.8)',
+              marginTop: '16px',
+              fontWeight: '500',
+              textShadow: '0 1px 3px rgba(0,0,0,0.3)'
             }}>
-              Join thousands of people making the world a little brighter, one kind act at a time.
+              Join 250,000+ people spreading kindness worldwide 🌍✨
             </p>
           </div>
         </div>
