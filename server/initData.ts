@@ -216,9 +216,17 @@ export async function initializeSampleData() {
 
     // Set the global counter to a high number to show platform popularity
     // First ensure the counter exists
-    await storage.getCounter();
-    // Then set it to a realistic high number (243,876 acts of kindness)
-    await storage.incrementCounter(243876 - samplePosts.length);
+    const existingCounter = await storage.getCounter();
+    
+    // If this is a fresh database (counter is 0), set it to our target number
+    if (existingCounter.count === 0) {
+      await storage.incrementCounter(243876);
+      log(`✓ Set global counter to 243,876 for new deployment`);
+    } else {
+      // If counter already exists, just add the new posts
+      await storage.incrementCounter(samplePosts.length);
+      log(`✓ Incremented existing counter by ${samplePosts.length} posts`);
+    }
 
     log(`✓ Successfully initialized ${samplePosts.length} sample posts and updated global counter`);
   } catch (error: any) {
