@@ -11,6 +11,7 @@ import { AIDashboard } from '@/components/ai-dashboard-fixed';
 import { NotificationSetupModal } from '@/components/notification-setup-modal';
 import { useTabNavigation } from '@/hooks/useNavigation';
 import { BackButton } from '@/components/BackButton';
+import { WelcomeModal } from '@/components/WelcomeModal';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { pushNotifications } from '@/services/pushNotifications';
@@ -30,8 +31,27 @@ export default function Home() {
   const [showNotificationSetup, setShowNotificationSetup] = useState(false);
   const [tokenEarning, setTokenEarning] = useState<TokenEarning | null>(null);
   const [achievementNotification, setAchievementNotification] = useState<AchievementNotification | null>(null);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   const { location } = useGeolocation();
+
+  // Check if user has seen welcome modal
+  useEffect(() => {
+    const hasSeenWelcome = localStorage.getItem('echodeed_has_seen_welcome');
+    if (!hasSeenWelcome) {
+      // Small delay to let the page load first
+      setTimeout(() => setShowWelcomeModal(true), 1000);
+    }
+  }, []);
+
+  const handleWelcomeClose = () => {
+    setShowWelcomeModal(false);
+    localStorage.setItem('echodeed_has_seen_welcome', 'true');
+  };
+
+  const showWelcomeAgain = () => {
+    setShowWelcomeModal(true);
+  };
 
   // Fetch posts
   const { data: posts = [], isLoading: postsLoading, refetch: refetchPosts } = useQuery<KindnessPost[]>({
@@ -2598,19 +2618,43 @@ export default function Home() {
               <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™ B2B</h1>
             </div>
             
-            {/* $ECHO Balance */}
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '6px',
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              padding: '6px 12px',
-              borderRadius: '20px',
-              fontSize: '14px',
-              fontWeight: '600'
-            }}>
-              <span style={{ fontSize: '16px' }}>🪙</span>
-              <span>{tokens?.echoBalance || 0} $ECHO</span>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {/* About Button */}
+              <button
+                onClick={showWelcomeAgain}
+                style={{
+                  backgroundColor: 'rgba(255,255,255,0.2)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: 'white',
+                  fontSize: '16px'
+                }}
+                title="About EchoDeed"
+                data-testid="button-about-echodeed"
+              >
+                ℹ️
+              </button>
+              
+              {/* $ECHO Balance */}
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '6px',
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                padding: '6px 12px',
+                borderRadius: '20px',
+                fontSize: '14px',
+                fontWeight: '600'
+              }}>
+                <span style={{ fontSize: '16px' }}>🪙</span>
+                <span>{tokens?.echoBalance || 0} $ECHO</span>
+              </div>
             </div>
           </div>
           
@@ -3517,6 +3561,12 @@ export default function Home() {
         isOpen={isPostModalOpen}
         onClose={() => setIsPostModalOpen(false)}
         location={location}
+      />
+      
+      {/* Welcome Modal */}
+      <WelcomeModal 
+        isOpen={showWelcomeModal} 
+        onClose={handleWelcomeClose}
       />
       
       {/* Bottom Navigation */}
