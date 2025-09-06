@@ -28,7 +28,7 @@ export default function Home() {
   const { activeTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation('feed');
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(false);
   const [showNotificationSetup, setShowNotificationSetup] = useState(false);
   const [tokenEarning, setTokenEarning] = useState<TokenEarning | null>(null);
   const [achievementNotification, setAchievementNotification] = useState<AchievementNotification | null>(null);

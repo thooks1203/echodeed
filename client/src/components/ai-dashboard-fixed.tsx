@@ -108,22 +108,25 @@ export function AIDashboard() {
           borderRadius: '8px',
           padding: '4px',
           gap: '4px',
-          maxWidth: '300px',
-          margin: '0 auto'
-        }}>
+          maxWidth: '100%',
+          margin: '0 auto',
+          overflowX: 'auto',
+          scrollBehavior: 'smooth'
+        }} className="scrollbar-hide">
           <button
             onClick={() => setActiveView('analytics')}
             style={{
-              flex: 1,
-              padding: '8px 16px',
+              flex: '0 0 auto',
+              padding: '8px 12px',
               borderRadius: '4px',
               border: 'none',
-              fontSize: '12px',
+              fontSize: '11px',
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               background: activeView === 'analytics' ? '#8B5CF6' : 'transparent',
-              color: activeView === 'analytics' ? 'white' : '#6b7280'
+              color: activeView === 'analytics' ? 'white' : '#6b7280',
+              whiteSpace: 'nowrap'
             }}
           >
             📊 Analytics
