@@ -343,7 +343,10 @@ export default function Home() {
               display: 'block',
               filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))',
               animation: 'logoFloat 3s ease-in-out infinite',
-              borderRadius: '0'
+              borderRadius: '0',
+              background: 'transparent',
+              border: 'none',
+              boxShadow: 'none'
             }}
           />
           
@@ -2215,7 +2218,10 @@ export default function Home() {
                 style={{ 
                   width: '32px', 
                   height: '32px',
-                  objectFit: 'contain'
+                  objectFit: 'contain',
+                  background: 'transparent',
+                  border: 'none',
+                  borderRadius: '0'
                 }}
               />
               <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
@@ -2335,7 +2341,10 @@ export default function Home() {
                 style={{ 
                   width: '32px', 
                   height: '32px',
-                  objectFit: 'contain'
+                  objectFit: 'contain',
+                  background: 'transparent',
+                  border: 'none',
+                  borderRadius: '0'
                 }}
               />
               <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
@@ -3430,7 +3439,10 @@ export default function Home() {
                 style={{ 
                   width: '32px', 
                   height: '32px',
-                  objectFit: 'contain'
+                  objectFit: 'contain',
+                  background: 'transparent',
+                  border: 'none',
+                  borderRadius: '0'
                 }}
               />
               <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
