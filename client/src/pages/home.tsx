@@ -3546,6 +3546,46 @@ export default function Home() {
         <div style={{ fontSize: '12px', opacity: 0.8 }}>acts of kindness shared</div>
       </div>
       
+      {/* Brief EchoDeed Explanation */}
+      <div style={{ 
+        backgroundColor: 'rgba(139,92,246,0.05)', 
+        margin: '16px', 
+        borderRadius: '12px',
+        padding: '16px',
+        border: '1px solid rgba(139,92,246,0.1)',
+        textAlign: 'center'
+      }}>
+        <div style={{ fontSize: '24px', marginBottom: '8px' }}>💜</div>
+        <h3 style={{ 
+          fontSize: '16px', 
+          fontWeight: '700',
+          margin: '0 0 8px 0',
+          color: '#8B5CF6'
+        }}>
+          Transform Kindness Into Business Results
+        </h3>
+        <p style={{ 
+          fontSize: '12px', 
+          color: '#6b7280', 
+          margin: '0 0 12px 0', 
+          lineHeight: '1.4' 
+        }}>
+          EchoDeed™ uses AI to turn anonymous acts of workplace kindness into measurable wellness insights. Share kindness anonymously, earn $ECHO tokens, and help build a thriving company culture.
+        </p>
+        <div style={{
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '12px',
+          fontSize: '10px',
+          fontWeight: '600',
+          color: '#8B5CF6'
+        }}>
+          <span>🧠 87% AI Accuracy</span>
+          <span>📊 Real-time Analytics</span>
+          <span>💎 Earn Rewards</span>
+        </div>
+      </div>
+      
       {/* Start Spreading Kindness Button - Always visible */}
       <div style={{ 
         backgroundColor: 'white', 
