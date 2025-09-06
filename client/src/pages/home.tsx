@@ -27,6 +27,9 @@ export default function Home() {
   const [activeFilter, setActiveFilter] = useState('global');
   const { activeTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation('feed');
   
+  // Debug - check what tab is loading
+  console.log('🔍 Active tab on load:', activeTab);
+  
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
