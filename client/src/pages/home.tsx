@@ -408,6 +408,9 @@ export default function Home() {
             <p style={{ margin: '0 0 12px 0' }}>
               🎁 <strong>Collect $ECHO tokens</strong> and redeem real rewards for being kind
             </p>
+            <p style={{ margin: '0 0 12px 0' }}>
+              ❤️ <strong>Heart = "I like this"</strong> • 🔁 <strong>Echo = "I'll do this too"</strong>
+            </p>
             <p style={{ margin: '0' }}>
               ✨ <strong>For everyone:</strong> individuals seeking connection & teams building wellness
             </p>
@@ -3306,6 +3309,17 @@ export default function Home() {
           opacity: 0.9
         }}>
           Share kindness, spread joy, earn rewards ✨
+        </div>
+        <div style={{
+          fontSize: '12px',
+          opacity: 0.8,
+          marginTop: '8px',
+          padding: '8px 12px',
+          backgroundColor: 'rgba(255,255,255,0.1)',
+          borderRadius: '8px',
+          border: '1px solid rgba(255,255,255,0.2)'
+        }}>
+          💡 <strong>Tip:</strong> ❤️ Heart posts you like • 🔁 Echo to do the same act of kindness
         </div>
       </div>
       
