@@ -334,7 +334,6 @@ export default function Home() {
               margin: '0 auto 20px',
               display: 'block',
               filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))',
-              borderRadius: '20px',
               animation: 'logoFloat 3s ease-in-out infinite'
             }}
           />
@@ -3933,60 +3932,7 @@ export default function Home() {
       />
       
       {/* Bottom Navigation */}
-      <div style={{
-        position: 'fixed',
-        bottom: 0,
-        left: '50%',
-        transform: 'translateX(-50%)',
-        maxWidth: '430px',
-        width: '100%',
-        backgroundColor: 'rgba(255,255,255,0.95)',
-        backdropFilter: 'blur(8px)',
-        borderTop: '1px solid #e5e7eb',
-        display: 'flex',
-        justifyContent: 'space-around',
-        padding: '12px 0',
-        zIndex: 100
-      }}>
-        {[
-          { id: 'feed', label: 'Feed', icon: '🏠' },
-          { id: 'marketing', label: 'Marketing', icon: '🚀' },
-          { id: 'ai', label: 'AI Insights', icon: '🧠' },
-          { id: 'badges', label: 'Badges', icon: '🏅' },
-          { id: 'corporate', label: 'Corporate', icon: '🏢' },
-        ].map((tab) => {
-          if (tab.id === 'spacer') {
-            return <div key={tab.id} style={{ width: '32px' }} />;
-          }
-          
-          return (
-            <button 
-              key={tab.id}
-              onClick={() => {
-                if (tab.id === 'rewards') {
-                  navigate('/rewards');
-                } else {
-                  navigateToTab(tab.id);
-                }
-              }}
-              style={{
-                background: 'none',
-                border: 'none',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '4px',
-                cursor: 'pointer',
-                color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
-                fontSize: '12px'
-              }}
-            >
-              <span style={{ fontSize: '18px' }}>{tab.icon}</span>
-              <span>{tab.label}</span>
-            </button>
-          );
-        })}
-      </div>
+      <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       
       {/* Token Earning Popup */}
       {tokenEarning && (
