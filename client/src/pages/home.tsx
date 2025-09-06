@@ -3431,6 +3431,136 @@ export default function Home() {
       {/* Feed */}
       <div style={{ backgroundColor: '#f8f9fa', paddingBottom: '100px' }}>
         
+        {/* Posts Display */}
+        {postsLoading ? (
+          <div style={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            height: '200px',
+            fontSize: '16px',
+            color: '#6b7280'
+          }}>
+            Loading kindness acts...
+          </div>
+        ) : posts.length === 0 ? (
+          <div style={{
+            textAlign: 'center',
+            padding: '40px 20px',
+            color: '#6b7280',
+            fontSize: '16px'
+          }}>
+            No kindness acts found. Be the first to share!
+          </div>
+        ) : (
+          posts.map((post) => (
+            <div key={post.id} style={{
+              backgroundColor: 'white',
+              margin: '8px 16px',
+              padding: '16px',
+              borderRadius: '16px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              border: '1px solid #e5e7eb'
+            }}>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  backgroundColor: '#f3f4f6',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  marginTop: '4px'
+                }}>
+                  ❤️
+                </div>
+                <div style={{ flex: 1 }}>
+                  <p style={{ 
+                    margin: '0 0 12px 0', 
+                    lineHeight: '1.5',
+                    color: '#374151'
+                  }}>
+                    {post.content}
+                  </p>
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: '#6b7280',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <span>📍 {post.location}</span>
+                    <span>•</span>
+                    <span>{new Date(post.createdAt).toLocaleString()}</span>
+                    <span>•</span>
+                    <span style={{ 
+                      backgroundColor: '#f3f4f6',
+                      padding: '2px 8px',
+                      borderRadius: '12px'
+                    }}>
+                      {post.category}
+                    </span>
+                  </div>
+                  
+                  {/* Interaction Buttons */}
+                  <div style={{
+                    display: 'flex',
+                    gap: '12px',
+                    alignItems: 'center',
+                    marginTop: '12px'
+                  }}>
+                    <button
+                      onClick={() => handleHeartPost(post.id)}
+                      title="Show love for this kindness! (Earn 1 $ECHO 🪙)"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '6px 12px',
+                        backgroundColor: '#f8f9fa',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '20px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        color: '#6b7280',
+                        transition: 'all 0.2s ease',
+                        outline: 'none'
+                      }}
+                    >
+                      <span style={{ fontSize: '16px' }}>💜</span>
+                      <span>{post.heartsCount || 0} Hearts</span>
+                    </button>
+                    
+                    <button
+                      onClick={() => handleEchoPost(post.id)}
+                      title="Echo this kindness - do the same act! (Earn 2 $ECHO 🪙)"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '6px 12px',
+                        backgroundColor: '#f8f9fa',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '20px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        color: '#6b7280',
+                        transition: 'all 0.2s ease',
+                        outline: 'none'
+                      }}
+                    >
+                      <span style={{ fontSize: '16px' }}>🌊</span>
+                      <span>{post.echoesCount || 0} Echo</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+        
         {/* Welcome to EchoDeed Section */}
         <div style={{
           background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1))',
