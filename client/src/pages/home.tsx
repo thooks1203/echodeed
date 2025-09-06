@@ -1422,7 +1422,7 @@ export default function Home() {
                       
                       {/* Title */}
                       <div style={{ 
-                        fontSize: '14px', 
+                        fontSize: '16px', 
                         fontWeight: 'bold', 
                         marginBottom: '4px',
                         color: isUnlocked ? '#1f2937' : '#9ca3af'
@@ -2546,19 +2546,21 @@ export default function Home() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
-                        padding: '6px 12px',
+                        gap: '8px',
+                        padding: '12px 20px',
                         backgroundColor: '#f8f9fa',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '20px',
+                        border: '2px solid #e5e7eb',
+                        borderRadius: '24px',
                         cursor: 'pointer',
-                        fontSize: '14px',
-                        color: '#6b7280',
+                        fontSize: '16px',
+                        color: '#374151',
+                        fontWeight: '600',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                         transition: 'all 0.2s ease',
                         outline: 'none'
                       }}
                     >
-                      <span style={{ fontSize: '16px' }}>💜</span>
+                      <span style={{ fontSize: '22px' }}>💜</span>
                       <span>{post.heartsCount || 0} Hearts</span>
                     </button>
                     
@@ -2567,19 +2569,21 @@ export default function Home() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
-                        padding: '6px 12px',
+                        gap: '8px',
+                        padding: '12px 20px',
                         backgroundColor: '#f8f9fa',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '20px',
+                        border: '2px solid #e5e7eb',
+                        borderRadius: '24px',
                         cursor: 'pointer',
-                        fontSize: '14px',
-                        color: '#6b7280',
+                        fontSize: '16px',
+                        color: '#374151',
+                        fontWeight: '600',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                         transition: 'all 0.2s ease',
                         outline: 'none'
                       }}
                     >
-                      <span style={{ fontSize: '16px' }}>🌊</span>
+                      <span style={{ fontSize: '22px' }}>🌊</span>
                       <span>{post.echoesCount || 0} Echo</span>
                     </button>
                   </div>
@@ -3938,19 +3942,21 @@ export default function Home() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
-                        padding: '6px 12px',
+                        gap: '8px',
+                        padding: '12px 20px',
                         backgroundColor: '#f8f9fa',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '20px',
+                        border: '2px solid #e5e7eb',
+                        borderRadius: '24px',
                         cursor: 'pointer',
-                        fontSize: '14px',
-                        color: '#6b7280',
+                        fontSize: '16px',
+                        color: '#374151',
+                        fontWeight: '600',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                         transition: 'all 0.2s ease',
                         outline: 'none'
                       }}
                     >
-                      <span style={{ fontSize: '16px' }}>💜</span>
+                      <span style={{ fontSize: '22px' }}>💜</span>
                       <span>{post.heartsCount || 0} Hearts</span>
                     </button>
                     
@@ -3960,19 +3966,21 @@ export default function Home() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
-                        padding: '6px 12px',
+                        gap: '8px',
+                        padding: '12px 20px',
                         backgroundColor: '#f8f9fa',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '20px',
+                        border: '2px solid #e5e7eb',
+                        borderRadius: '24px',
                         cursor: 'pointer',
-                        fontSize: '14px',
-                        color: '#6b7280',
+                        fontSize: '16px',
+                        color: '#374151',
+                        fontWeight: '600',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                         transition: 'all 0.2s ease',
                         outline: 'none'
                       }}
                     >
-                      <span style={{ fontSize: '16px' }}>🌊</span>
+                      <span style={{ fontSize: '22px' }}>🌊</span>
                       <span>{post.echoesCount || 0} Echo</span>
                     </button>
                   </div>
@@ -4257,7 +4265,7 @@ export default function Home() {
                         backgroundColor: isCompleted ? '#9ca3af' : '#10B981',
                         color: 'white',
                         border: 'none',
-                        borderRadius: '20px',
+                        borderRadius: '24px',
                         padding: '8px 16px',
                         fontSize: '12px',
                         fontWeight: '600',
@@ -4377,14 +4385,16 @@ export default function Home() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
-                        padding: '6px 12px',
+                        gap: '8px',
+                        padding: '12px 20px',
                         backgroundColor: '#f8f9fa',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '20px',
+                        border: '2px solid #e5e7eb',
+                        borderRadius: '24px',
                         cursor: 'pointer',
-                        fontSize: '14px',
-                        color: '#6b7280',
+                        fontSize: '16px',
+                        color: '#374151',
+                        fontWeight: '600',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                         transition: 'all 0.2s ease',
                         outline: 'none',
                         position: 'relative'
@@ -4402,7 +4412,7 @@ export default function Home() {
                         e.currentTarget.style.transform = 'scale(1)';
                       }}
                     >
-                      <span style={{ fontSize: '16px' }}>💜</span>
+                      <span style={{ fontSize: '22px' }}>💜</span>
                       <span>{post.heartsCount || 0}</span>
                     </button>
                     
@@ -4412,14 +4422,16 @@ export default function Home() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '6px',
-                        padding: '6px 12px',
+                        gap: '8px',
+                        padding: '12px 20px',
                         backgroundColor: '#f8f9fa',
-                        border: '1px solid #e5e7eb',
-                        borderRadius: '20px',
+                        border: '2px solid #e5e7eb',
+                        borderRadius: '24px',
                         cursor: 'pointer',
-                        fontSize: '14px',
-                        color: '#6b7280',
+                        fontSize: '16px',
+                        color: '#374151',
+                        fontWeight: '600',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                         transition: 'all 0.2s ease',
                         outline: 'none',
                         position: 'relative'
@@ -4437,7 +4449,7 @@ export default function Home() {
                         e.currentTarget.style.transform = 'scale(1)';
                       }}
                     >
-                      <span style={{ fontSize: '16px' }}>🌊</span>
+                      <span style={{ fontSize: '22px' }}>🌊</span>
                       <span>{post.echoesCount || 0} Echo</span>
                     </button>
                   </div>
