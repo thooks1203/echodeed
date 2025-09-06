@@ -533,21 +533,31 @@ export function AIKindnessSuggestions() {
       </div>
 
       {/* Footer */}
-      <div style={{ textAlign: 'center', marginTop: '20px' }}>
+      <div style={{ textAlign: 'center', marginTop: '20px', marginBottom: '100px' }}>
         <span style={{
           background: 'linear-gradient(90deg, #8B5CF6, #EC4899)',
           color: 'white',
-          padding: '6px 12px',
-          borderRadius: '16px',
-          fontSize: '11px',
+          padding: '8px 16px',
+          borderRadius: '20px',
+          fontSize: '12px',
           fontWeight: '600',
           display: 'inline-flex',
           alignItems: 'center',
-          gap: '4px'
+          gap: '6px',
+          boxShadow: '0 4px 15px rgba(139,92,246,0.3)'
         }}>
           <span>🤖</span>
           Powered by Contextual AI
         </span>
+        <p style={{
+          fontSize: '11px',
+          color: '#8B5CF6',
+          marginTop: '12px',
+          margin: '12px 0 0 0',
+          opacity: 0.8
+        }}>
+          Refreshes every 30 minutes with new personalized opportunities
+        </p>
       </div>
     </div>
   );
