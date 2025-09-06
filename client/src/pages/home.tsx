@@ -101,10 +101,89 @@ export default function Home() {
     retry: 2,
   });
 
-  // Fetch brand challenges
-  const { data: challenges = [] } = useQuery<BrandChallenge[]>({
+  // Fetch brand challenges with fallback sample data
+  const { data: fetchedChallenges = [] } = useQuery<BrandChallenge[]>({
     queryKey: ['/api/challenges'],
   });
+
+  // Sample partner companies (always available)
+  const samplePartners = [
+    { 
+      id: 'starbucks', 
+      brandName: 'Starbucks', 
+      brandLogo: '☕', 
+      category: 'Food & Beverage',
+      title: 'Morning Kindness Challenge',
+      challengeType: 'daily',
+      echoReward: 50,
+      bonusReward: 25,
+      completionCount: 1247,
+      description: 'Share a kind moment during your morning coffee routine'
+    },
+    { 
+      id: 'microsoft', 
+      brandName: 'Microsoft', 
+      brandLogo: '💻', 
+      category: 'Technology',
+      title: 'Digital Wellness Initiative',
+      challengeType: 'weekly',
+      echoReward: 100,
+      bonusReward: 50,
+      completionCount: 892,
+      description: 'Promote healthy technology habits in your community'
+    },
+    { 
+      id: 'nike', 
+      brandName: 'Nike', 
+      brandLogo: '👟', 
+      category: 'Health & Fitness',
+      title: 'Move Together Campaign',
+      challengeType: 'monthly',
+      echoReward: 200,
+      bonusReward: 100,
+      completionCount: 634,
+      description: 'Encourage physical activity and wellness in your workplace'
+    },
+    { 
+      id: 'whole-foods', 
+      brandName: 'Whole Foods', 
+      brandLogo: '🥬', 
+      category: 'Food & Wellness',
+      title: 'Healthy Choices Challenge',
+      challengeType: 'daily',
+      echoReward: 75,
+      bonusReward: 30,
+      completionCount: 1089,
+      description: 'Share healthy eating tips and sustainable food choices'
+    },
+    { 
+      id: 'tesla', 
+      brandName: 'Tesla', 
+      brandLogo: '🚗', 
+      category: 'Sustainability',
+      title: 'Green Transportation Initiative',
+      challengeType: 'weekly',
+      echoReward: 150,
+      bonusReward: 75,
+      completionCount: 456,
+      description: 'Promote eco-friendly transportation choices'
+    },
+    { 
+      id: 'patagonia', 
+      brandName: 'Patagonia', 
+      brandLogo: '🏔️', 
+      category: 'Environmental',
+      title: 'Outdoor Conservation Challenge',
+      challengeType: 'monthly',
+      echoReward: 180,
+      bonusReward: 90,
+      completionCount: 723,
+      description: 'Encourage environmental stewardship and outdoor activities'
+    }
+  ] as BrandChallenge[];
+
+  // Use sample data if no challenges from API
+  const challenges = fetchedChallenges.length > 0 ? fetchedChallenges : samplePartners;
 
   // Fetch completed challenges
   const { data: completedChallenges = [] } = useQuery<string[]>({
