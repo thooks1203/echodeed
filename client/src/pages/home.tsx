@@ -1430,7 +1430,7 @@ export default function Home() {
             <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#10B981' }}>
               {(counter || defaultCounter).count.toLocaleString()}
             </div>
-            <div style={{ fontSize: '12px', color: '#6b7280' }}>Total Kindness Acts</div>
+            <div style={{ fontSize: '12px', color: '#6b7280' }}>Admin Dashboard Views</div>
           </div>
           
           <div style={{
