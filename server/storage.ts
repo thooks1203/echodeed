@@ -1371,7 +1371,6 @@ export class DatabaseStorage implements IStorage {
 
       // Create sample corporate account - TechFlow Solutions
       const [corporateAccount] = await db.insert(corporateAccounts).values({
-        id: 'corp-techflow-demo',
         companyName: 'TechFlow Solutions',
         domain: 'techflow.com',
         industry: 'Technology',
@@ -1421,25 +1420,19 @@ export class DatabaseStorage implements IStorage {
       // Create sample challenges
       const challenges = [
         {
-          id: 'challenge-coffee-kindness',
           corporateAccountId: corporateAccount.id,
           title: 'Coffee Chain Kindness',
-          description: 'Buy coffee for a colleague or stranger this week',
+          content: 'Buy coffee for a colleague or stranger this week',
           challengeType: 'individual',
           echoReward: 150,
-          completionCount: 23,
-          currentParticipation: 45,
           isActive: 1
         },
         {
-          id: 'challenge-team-volunteer',
           corporateAccountId: corporateAccount.id,
           title: 'Team Volunteer Day',
-          description: 'Organize a volunteer activity with your team',
+          content: 'Organize a volunteer activity with your team',
           challengeType: 'team',
           echoReward: 500,
-          completionCount: 8,
-          currentParticipation: 12,
           isActive: 1
         }
       ];
