@@ -239,6 +239,9 @@ export interface IStorage {
   createWeeklyPrize(prize: InsertWeeklyPrize): Promise<WeeklyPrize>;
   drawWeeklyPrizeWinners(prizeId: string): Promise<PrizeWinner[]>;
   getPrizeWinners(prizeId: string): Promise<PrizeWinner[]>;
+  
+  // Sample data initialization
+  initializeSampleCorporateData(): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1352,6 +1355,125 @@ export class DatabaseStorage implements IStorage {
     return await db.select().from(prizeWinners)
       .where(eq(prizeWinners.prizeId, prizeId))
       .orderBy(desc(prizeWinners.wonAt));
+  }
+
+  // Sample corporate data initialization
+  async initializeSampleCorporateData(): Promise<void> {
+    try {
+      // Check if demo corporate account already exists
+      const existingAccount = await db.select()
+        .from(corporateAccounts)
+        .where(eq(corporateAccounts.domain, 'techflow.com'));
+      
+      if (existingAccount.length > 0) {
+        return; // Demo data already exists
+      }
+
+      // Create sample corporate account - TechFlow Solutions
+      const [corporateAccount] = await db.insert(corporateAccounts).values({
+        id: 'corp-techflow-demo',
+        companyName: 'TechFlow Solutions',
+        domain: 'techflow.com',
+        industry: 'Technology',
+        subscriptionTier: 'Enterprise',
+        primaryColor: '#8B5CF6',
+        companyLogo: null,
+        totalEmployees: 156,
+        isActive: 1
+      }).returning();
+
+      // Create sample teams
+      const teams = [
+        { id: 'team-engineering', teamName: 'Engineering', department: 'Technology', currentSize: 24, targetSize: 30, monthlyKindnessGoal: 50 },
+        { id: 'team-design', teamName: 'Design', department: 'Product', currentSize: 8, targetSize: 10, monthlyKindnessGoal: 20 },
+        { id: 'team-marketing', teamName: 'Marketing', department: 'Marketing', currentSize: 12, targetSize: 15, monthlyKindnessGoal: 30 },
+        { id: 'team-sales', teamName: 'Sales', department: 'Sales', currentSize: 18, targetSize: 20, monthlyKindnessGoal: 40 },
+        { id: 'team-hr', teamName: 'People Operations', department: 'HR', currentSize: 6, targetSize: 8, monthlyKindnessGoal: 15 }
+      ];
+
+      for (const team of teams) {
+        await db.insert(corporateTeams).values({
+          ...team,
+          corporateAccountId: corporateAccount.id,
+          isActive: 1
+        });
+      }
+
+      // Create sample employees
+      const employees = [
+        { id: 'emp-sarah-chen', displayName: 'Sarah Chen', employeeEmail: 'sarah@techflow.com', department: 'Technology', role: 'corporate_admin', teamId: 'team-engineering' },
+        { id: 'emp-mike-johnson', displayName: 'Mike Johnson', employeeEmail: 'mike@techflow.com', department: 'Technology', role: 'employee', teamId: 'team-engineering' },
+        { id: 'emp-elena-rodriguez', displayName: 'Elena Rodriguez', employeeEmail: 'elena@techflow.com', department: 'Product', role: 'team_lead', teamId: 'team-design' },
+        { id: 'emp-david-kim', displayName: 'David Kim', employeeEmail: 'david@techflow.com', department: 'Marketing', role: 'employee', teamId: 'team-marketing' },
+        { id: 'emp-jessica-wright', displayName: 'Jessica Wright', employeeEmail: 'jessica@techflow.com', department: 'HR', role: 'hr_admin', teamId: 'team-hr' }
+      ];
+
+      for (const employee of employees) {
+        await db.insert(corporateEmployees).values({
+          ...employee,
+          userId: employee.id,
+          corporateAccountId: corporateAccount.id,
+          isActive: 1
+        });
+      }
+
+      // Create sample challenges
+      const challenges = [
+        {
+          id: 'challenge-coffee-kindness',
+          corporateAccountId: corporateAccount.id,
+          title: 'Coffee Chain Kindness',
+          description: 'Buy coffee for a colleague or stranger this week',
+          challengeType: 'individual',
+          echoReward: 150,
+          completionCount: 23,
+          currentParticipation: 45,
+          isActive: 1
+        },
+        {
+          id: 'challenge-team-volunteer',
+          corporateAccountId: corporateAccount.id,
+          title: 'Team Volunteer Day',
+          description: 'Organize a volunteer activity with your team',
+          challengeType: 'team',
+          echoReward: 500,
+          completionCount: 8,
+          currentParticipation: 12,
+          isActive: 1
+        }
+      ];
+
+      for (const challenge of challenges) {
+        await db.insert(corporateChallenges).values(challenge);
+      }
+
+      // Create sample analytics for the last 7 days
+      const analyticsData = [];
+      for (let i = 6; i >= 0; i--) {
+        const date = new Date();
+        date.setDate(date.getDate() - i);
+        
+        analyticsData.push({
+          id: `analytics-${corporateAccount.id}-${i}`,
+          corporateAccountId: corporateAccount.id,
+          analyticsDate: date,
+          activeEmployees: 45 + Math.floor(Math.random() * 15),
+          totalKindnessPosts: 8 + Math.floor(Math.random() * 12),
+          totalChallengesCompleted: 3 + Math.floor(Math.random() * 5),
+          totalEchoTokensEarned: 850 + Math.floor(Math.random() * 300),
+          averageEngagementScore: 75 + Math.floor(Math.random() * 15),
+          wellnessImpactScore: 80 + Math.floor(Math.random() * 10)
+        });
+      }
+
+      for (const analytics of analyticsData) {
+        await db.insert(corporateAnalytics).values(analytics);
+      }
+
+    } catch (error: any) {
+      console.error('Failed to initialize sample corporate data:', error.message);
+      throw error;
+    }
   }
 }
 
