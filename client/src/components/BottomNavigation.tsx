@@ -7,11 +7,11 @@ interface BottomNavigationProps {
 
 export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationProps) {
   const tabs = [
-    { id: 'feed', label: 'Feed', icon: Home },
+    { id: 'feed', label: 'Kindness', icon: Home },
     { id: 'rewards', label: 'Rewards', icon: Gift },
     { id: 'spacer', label: '', icon: null }, // Spacer for FAB
     { id: 'impact', label: 'Impact', icon: TrendingUp },
-    { id: 'about', label: 'About', icon: Info },
+    { id: 'about', label: 'Discover', icon: Info },
   ];
 
   return (

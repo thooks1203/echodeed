@@ -404,16 +404,16 @@ export default function Home() {
             color: 'rgba(255,255,255,0.9)'
           }}>
             <p style={{ margin: '0 0 12px 0' }}>
-              💝 <strong>Share anonymous acts of kindness</strong> with a global community
+              💝 <strong>Share your kindness anonymously</strong> - no profiles, just pure positivity
             </p>
             <p style={{ margin: '0 0 12px 0' }}>
-              🌍 <strong>Watch real-time impact</strong> as kindness spreads worldwide  
+              🌟 <strong>Join a global movement</strong> of people spreading joy and compassion
             </p>
             <p style={{ margin: '0 0 12px 0' }}>
-              🎁 <strong>Earn $ECHO tokens</strong> for spreading positivity
+              🎁 <strong>Collect $ECHO tokens</strong> and redeem real rewards for being kind
             </p>
             <p style={{ margin: '0' }}>
-              🏢 <strong>Perfect for individuals & corporate wellness programs</strong>
+              ✨ <strong>For everyone:</strong> individuals seeking connection & teams building wellness
             </p>
           </div>
           
