@@ -326,41 +326,30 @@ export default function Home() {
         }}>
           {/* Floating Logo */}
           <div style={{ 
-            width: '120px', 
-            height: '120px', 
+            width: '200px', 
+            height: '200px', 
             margin: '0 auto 20px',
             position: 'relative',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: 'rgba(255,255,255,0.15)',
-            borderRadius: '50%',
+            borderRadius: '20px',
             backdropFilter: 'blur(20px)',
             border: '2px solid rgba(255,255,255,0.3)',
             boxShadow: '0 8px 32px rgba(139,92,246,0.4), 0 0 60px rgba(255,255,255,0.2)',
             animation: 'logoFloat 3s ease-in-out infinite'
           }}>
-            <div style={{
-              width: '80px',
-              height: '80px',
-              backgroundColor: 'rgba(139,92,246,0.8)',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: 'inset 0 2px 10px rgba(255,255,255,0.3)'
-            }}>
-              <img 
-                src={logoUrl} 
-                alt="EchoDeed Logo"
-                style={{ 
-                  width: '60px',
-                  height: '60px',
-                  filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))',
-                  borderRadius: '50%'
-                }}
-              />
-            </div>
+            <img 
+              src={logoUrl} 
+              alt="EchoDeed Logo"
+              style={{ 
+                width: '160px',
+                height: '160px',
+                filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))',
+                borderRadius: '12px'
+              }}
+            />
           </div>
           
           {/* Brand Name */}
