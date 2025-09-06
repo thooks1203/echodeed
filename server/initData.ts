@@ -16,8 +16,19 @@ export async function initializeSampleData() {
     
     // Check if we already have posts (to avoid duplicate initialization)
     const existingPosts = await storage.getPosts();
-    if (existingPosts.length > 0) {
+    const existingCounter = await storage.getCounter();
+    
+    // If we have posts AND a high counter, then we're fully initialized
+    if (existingPosts.length > 0 && existingCounter.count > 1000) {
       log('Sample data already exists, skipping initialization');
+      return;
+    }
+    
+    // If we have some posts but low counter, we need to fix the counter
+    if (existingPosts.length > 0 && existingCounter.count < 243876) {
+      log(`Found ${existingPosts.length} posts but counter only at ${existingCounter.count}, updating counter...`);
+      await storage.incrementCounter(243876 - existingCounter.count);
+      log(`✓ Updated counter to 243,876 for existing deployment`);
       return;
     }
 
@@ -215,18 +226,10 @@ export async function initializeSampleData() {
     }
 
     // Set the global counter to a high number to show platform popularity
-    // First ensure the counter exists
-    const existingCounter = await storage.getCounter();
-    
-    // If this is a fresh database (counter is 0), set it to our target number
-    if (existingCounter.count === 0) {
-      await storage.incrementCounter(243876);
-      log(`✓ Set global counter to 243,876 for new deployment`);
-    } else {
-      // If counter already exists, just add the new posts
-      await storage.incrementCounter(samplePosts.length);
-      log(`✓ Incremented existing counter by ${samplePosts.length} posts`);
-    }
+    // For fresh deployments, set to our target high number
+    await storage.incrementCounter(243876);
+    log(`✓ Set global counter to 243,876 for fresh deployment`);
+    log(`✓ Added ${samplePosts.length} sample posts`);
 
     log(`✓ Successfully initialized ${samplePosts.length} sample posts and updated global counter`);
   } catch (error: any) {
