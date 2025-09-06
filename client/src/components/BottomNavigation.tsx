@@ -1,5 +1,3 @@
-import { Home, MapPin, TrendingUp, Info, Gift } from 'lucide-react';
-
 interface BottomNavigationProps {
   activeTab: string;
   onTabChange: (tab: string) => void;
@@ -7,41 +5,54 @@ interface BottomNavigationProps {
 
 export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationProps) {
   const tabs = [
-    { id: 'feed', label: 'Feed', icon: Home },
-    { id: 'local', label: 'Local', icon: MapPin },
-    { id: 'ai', label: 'AI', icon: TrendingUp },
-    { id: 'badges', label: 'Badges', icon: Gift },
-    { id: 'rewards', label: 'Rewards', icon: Info },
+    { id: 'feed', label: 'Feed', icon: '🏠' },
+    { id: 'local', label: 'Local', icon: '📍' },
+    { id: 'ai', label: 'AI', icon: '🧠' },
+    { id: 'badges', label: 'Badges', icon: '🏅' },
+    { id: 'rewards', label: 'Rewards', icon: '🎁' },
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border z-20">
-      <div className="mobile-container">
-        <div className="flex items-center justify-around py-3">
-          {tabs.map((tab) => {
-            if (tab.id === 'spacer') {
-              return <div key={tab.id} className="w-8" />; // Spacer for FAB
-            }
-
-            const Icon = tab.icon!;
-            const isActive = activeTab === tab.id;
-
-            return (
-              <button 
-                key={tab.id}
-                onClick={() => onTabChange(tab.id)}
-                className={`flex flex-col items-center space-y-1 transition-colors ${
-                  isActive ? 'text-primary' : 'text-muted-foreground hover:text-foreground'
-                }`}
-                data-testid={`button-nav-${tab.id}`}
-              >
-                <Icon size={18} />
-                <span className="text-xs font-medium">{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
-      </div>
-    </nav>
+    <div style={{
+      position: 'fixed',
+      bottom: 0,
+      left: '50%',
+      transform: 'translateX(-50%)',
+      maxWidth: '430px',
+      width: '100%',
+      backgroundColor: 'rgba(255,255,255,0.95)',
+      backdropFilter: 'blur(8px)',
+      borderTop: '1px solid #e5e7eb',
+      display: 'flex',
+      justifyContent: 'space-around',
+      padding: '12px 0',
+      zIndex: 100
+    }}>
+      {tabs.map((tab) => (
+        <button 
+          key={tab.id}
+          onClick={() => onTabChange(tab.id)}
+          style={{
+            background: 'none',
+            border: 'none',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '4px',
+            cursor: 'pointer',
+            padding: '8px',
+            borderRadius: '8px',
+            fontSize: '12px',
+            fontWeight: '500',
+            color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
+            backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
+          }}
+          data-testid={`button-nav-${tab.id}`}
+        >
+          <span style={{ fontSize: '18px' }}>{tab.icon}</span>
+          <span>{tab.label}</span>
+        </button>
+      ))}
+    </div>
   );
 }
