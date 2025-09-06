@@ -2695,11 +2695,11 @@ export default function Home() {
           ))}
         </div>
 
-        {/* Notification Setup Modal */}
-        <NotificationSetupModal 
+        {/* Notification Setup Modal - Temporarily disabled */}
+        {false && <NotificationSetupModal 
           isOpen={showNotificationSetup}
           onClose={() => setShowNotificationSetup(false)}
-        />
+        />}
       </div>
     );
   }
@@ -3108,17 +3108,15 @@ export default function Home() {
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{ 
-                width: '32px', 
-                height: '32px', 
-                backgroundColor: 'rgba(255,255,255,0.2)', 
-                borderRadius: '50%', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center' 
-              }}>
-                ❤️
-              </div>
+              <img 
+                src={logoUrl} 
+                alt="EchoDeed Logo"
+                style={{ 
+                  width: '32px', 
+                  height: '32px',
+                  objectFit: 'contain'
+                }}
+              />
               <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
             </div>
             
@@ -3260,17 +3258,15 @@ export default function Home() {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <div style={{ 
-              width: '32px', 
-              height: '32px', 
-              backgroundColor: 'rgba(255,255,255,0.2)', 
-              borderRadius: '50%', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center' 
-            }}>
-              ❤️
-            </div>
+            <img 
+              src={logoUrl} 
+              alt="EchoDeed Logo"
+              style={{ 
+                width: '32px', 
+                height: '32px',
+                objectFit: 'contain'
+              }}
+            />
             <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
           </div>
           
@@ -4058,11 +4054,11 @@ export default function Home() {
         location={location}
       />
       
-      {/* Welcome Modal */}
-      <WelcomeModal 
+      {/* Welcome Modal - Temporarily disabled */}
+      {false && <WelcomeModal 
         isOpen={showWelcomeModal} 
         onClose={handleWelcomeClose}
-      />
+      />}
       
       {/* Bottom Navigation */}
       <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
