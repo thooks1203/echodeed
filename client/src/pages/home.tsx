@@ -2114,52 +2114,7 @@ export default function Home() {
         </div>
         
         {/* Bottom Navigation */}
-        <div style={{
-          position: 'fixed',
-          bottom: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          maxWidth: '430px',
-          width: '100%',
-          backgroundColor: 'rgba(255,255,255,0.95)',
-          backdropFilter: 'blur(8px)',
-          borderTop: '1px solid #e5e7eb',
-          display: 'flex',
-          justifyContent: 'space-around',
-          padding: '12px 0',
-          zIndex: 100
-        }}>
-          {[
-            { id: 'feed', label: 'Feed', icon: '🏠' },
-            { id: 'local', label: 'Local', icon: '📍' },
-            { id: 'ai', label: 'AI', icon: '🧠' },
-            { id: 'badges', label: 'Badges', icon: '🏅' },
-            { id: 'corporate', label: 'Corporate', icon: '🏢' },
-          ].map((tab) => (
-            <button 
-              key={tab.id}
-              onClick={() => navigateToTab(tab.id)}
-              style={{
-                background: 'none',
-                border: 'none',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '4px',
-                cursor: 'pointer',
-                padding: '8px',
-                borderRadius: '8px',
-                fontSize: '12px',
-                fontWeight: '500',
-                color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
-                backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
-              }}
-            >
-              <span style={{ fontSize: '18px' }}>{tab.icon}</span>
-              <span>{tab.label}</span>
-            </button>
-          ))}
-        </div>
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
   }
@@ -2968,52 +2923,7 @@ export default function Home() {
         </div>
         
         {/* Bottom Navigation */}
-        <div style={{
-          position: 'fixed',
-          bottom: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          maxWidth: '430px',
-          width: '100%',
-          backgroundColor: 'rgba(255,255,255,0.95)',
-          backdropFilter: 'blur(8px)',
-          borderTop: '1px solid #e5e7eb',
-          display: 'flex',
-          justifyContent: 'space-around',
-          padding: '12px 0',
-          zIndex: 100
-        }}>
-          {[
-            { id: 'feed', label: 'Feed', icon: '🏠' },
-            { id: 'local', label: 'Local', icon: '📍' },
-            { id: 'ai', label: 'AI', icon: '🧠' },
-            { id: 'badges', label: 'Badges', icon: '🏅' },
-            { id: 'notifications', label: 'Notifications', icon: '🔔' },
-          ].map((tab) => (
-            <button 
-              key={tab.id}
-              onClick={() => navigateToTab(tab.id)}
-              style={{
-                background: 'none',
-                border: 'none',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                gap: '4px',
-                cursor: 'pointer',
-                padding: '8px',
-                borderRadius: '8px',
-                fontSize: '12px',
-                fontWeight: '500',
-                color: activeTab === tab.id ? '#F59E0B' : '#6b7280',
-                backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
-              }}
-            >
-              <span style={{ fontSize: '18px' }}>{tab.icon}</span>
-              <span>{tab.label}</span>
-            </button>
-          ))}
-        </div>
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
 
         {/* Notification Setup Modal - Temporarily disabled */}
         {false && <NotificationSetupModal 
@@ -3104,59 +3014,7 @@ export default function Home() {
         {renderCorporateTab()}
 
         {/* Bottom Navigation */}
-        <div style={{
-          position: 'fixed',
-          bottom: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          maxWidth: '430px',
-          width: '100%',
-          backgroundColor: 'rgba(255,255,255,0.95)',
-          backdropFilter: 'blur(8px)',
-          borderTop: '1px solid #e5e7eb',
-          display: 'flex',
-          justifyContent: 'space-around',
-          padding: '12px 0',
-          zIndex: 100
-        }}>
-          {[
-            { id: 'feed', label: 'Feed', icon: '🏠' },
-            { id: 'local', label: 'Local', icon: '📍' },
-            { id: 'badges', label: 'Badges', icon: '🏅' },
-            { id: 'partners', label: 'Rewards', icon: '🎁' },
-            { id: 'corporate', label: 'Corporate', icon: '🏢' },
-            { id: 'admin', label: 'Admin', icon: '⚙️' },
-          ].map((tab) => {
-            if (tab.id === 'spacer') {
-              return <div key={tab.id} style={{ width: '32px' }} />;
-            }
-            
-            return (
-              <button 
-                key={tab.id}
-                onClick={() => navigateToTab(tab.id)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '4px',
-                  padding: '4px 8px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
-                  backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
-                }}
-              >
-                <span style={{ fontSize: '18px' }}>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
   }
@@ -3324,59 +3182,7 @@ export default function Home() {
         {renderAdminTab()}
 
         {/* Bottom Navigation */}
-        <div style={{
-          position: 'fixed',
-          bottom: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          maxWidth: '430px',
-          width: '100%',
-          backgroundColor: 'rgba(255,255,255,0.95)',
-          backdropFilter: 'blur(8px)',
-          borderTop: '1px solid #e5e7eb',
-          display: 'flex',
-          justifyContent: 'space-around',
-          padding: '12px 0',
-          zIndex: 100
-        }}>
-          {[
-            { id: 'feed', label: 'Feed', icon: '🏠' },
-            { id: 'local', label: 'Local', icon: '📍' },
-            { id: 'badges', label: 'Badges', icon: '🏅' },
-            { id: 'partners', label: 'Rewards', icon: '🎁' },
-            { id: 'corporate', label: 'Corporate', icon: '🏢' },
-            { id: 'admin', label: 'Admin', icon: '⚙️' },
-          ].map((tab) => {
-            if (tab.id === 'spacer') {
-              return <div key={tab.id} style={{ width: '32px' }} />;
-            }
-            
-            return (
-              <button 
-                key={tab.id}
-                onClick={() => navigateToTab(tab.id)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '4px',
-                  padding: '4px 8px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
-                  backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
-                }}
-              >
-                <span style={{ fontSize: '18px' }}>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
         
         {/* Token Earning Popup */}
         {false && tokenEarning && (
@@ -3462,59 +3268,7 @@ export default function Home() {
         {renderPartnersTab()}
 
         {/* Bottom Navigation */}
-        <div style={{
-          position: 'fixed',
-          bottom: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          maxWidth: '430px',
-          width: '100%',
-          backgroundColor: 'rgba(255,255,255,0.95)',
-          backdropFilter: 'blur(8px)',
-          borderTop: '1px solid #e5e7eb',
-          display: 'flex',
-          justifyContent: 'space-around',
-          padding: '12px 0',
-          zIndex: 100
-        }}>
-          {[
-            { id: 'feed', label: 'Feed', icon: '🏠' },
-            { id: 'local', label: 'Local', icon: '📍' },
-            { id: 'badges', label: 'Badges', icon: '🏅' },
-            { id: 'partners', label: 'Rewards', icon: '🎁' },
-            { id: 'corporate', label: 'Corporate', icon: '🏢' },
-            { id: 'admin', label: 'Admin', icon: '⚙️' },
-          ].map((tab) => {
-            if (tab.id === 'spacer') {
-              return <div key={tab.id} style={{ width: '32px' }} />;
-            }
-            
-            return (
-              <button 
-                key={tab.id}
-                onClick={() => navigateToTab(tab.id)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '4px',
-                  padding: '4px 8px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
-                  backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
-                }}
-              >
-                <span style={{ fontSize: '18px' }}>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
         
         {/* Token Earning Popup */}
         {false && tokenEarning && (
