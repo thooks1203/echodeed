@@ -18,9 +18,10 @@ export async function initializeSampleData() {
     const existingPosts = await storage.getPosts();
     const existingCounter = await storage.getCounter();
     
-    // If we have posts AND a high counter, then we're fully initialized
-    if (existingPosts.length > 0 && existingCounter.count > 1000) {
-      log('Sample data already exists, skipping initialization');
+    // If we have posts AND a high counter AND the right categories, then we're fully initialized
+    const hasNewCategories = existingPosts.some(p => p.category === 'Community Action' || p.category === 'Spreading Positivity');
+    if (existingPosts.length > 0 && existingCounter.count > 1000 && hasNewCategories) {
+      log('Sample data already exists with new categories, skipping initialization');
       return;
     }
     
