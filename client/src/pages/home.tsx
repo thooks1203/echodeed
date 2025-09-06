@@ -1916,6 +1916,66 @@ export default function Home() {
       </div>
     </div>
   );
+
+  // Show Badges tab if selected
+  if (activeTab === 'badges') {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        {/* Header */}
+        <div style={{ 
+          background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+          color: 'white', 
+          padding: '20px', 
+          textAlign: 'center',
+          position: 'relative'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <img 
+                src={logoUrl} 
+                alt="EchoDeed Logo"
+                style={{ 
+                  width: '32px', 
+                  height: '32px',
+                  objectFit: 'contain'
+                }}
+              />
+              <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
+            </div>
+            
+            {/* $ECHO Balance */}
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '6px',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              padding: '6px 12px',
+              borderRadius: '20px',
+              fontSize: '14px',
+              fontWeight: '600'
+            }}>
+              <span style={{ fontSize: '16px' }}>🪙</span>
+              <span>{tokens?.echoBalance || 0} $ECHO</span>
+            </div>
+          </div>
+          
+          <div style={{ fontSize: '14px', opacity: 0.8 }}>Achievement Badges & Rewards</div>
+        </div>
+
+        {renderBadgesTab()}
+
+        {/* Bottom Navigation */}
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
+    );
+  }
+
   if (activeTab === 'ai') {
     return (
       <div style={{ 
