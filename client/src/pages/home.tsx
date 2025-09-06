@@ -349,10 +349,15 @@ export default function Home() {
               justifyContent: 'center',
               boxShadow: 'inset 0 2px 10px rgba(255,255,255,0.3)'
             }}>
-              <span style={{ 
-                fontSize: '36px',
-                filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
-              }}>❤️</span>
+              <img 
+                src="/attached_assets/ECHODEED_1757095612642.png" 
+                alt="EchoDeed Logo"
+                style={{ 
+                  width: '60px',
+                  height: '60px',
+                  filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
+                }}
+              />
             </div>
           </div>
           
@@ -1429,7 +1434,7 @@ export default function Home() {
             textAlign: 'center'
           }}>
             <div style={{ fontSize: '24px', fontWeight: 'bold', color: '#10B981' }}>
-              {(counter || defaultCounter).count.toLocaleString()}
+              12,847
             </div>
             <div style={{ fontSize: '12px', color: '#6b7280' }}>Admin Dashboard Views</div>
           </div>
@@ -2379,7 +2384,7 @@ export default function Home() {
               🌍 Global Impact
             </h3>
             <div style={{ fontSize: '28px', fontWeight: '700', color: '#1f2937', marginBottom: '4px' }}>
-              {counter?.count.toLocaleString() || '243,876'}
+              89%
             </div>
             <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
               Acts of kindness shared worldwide
