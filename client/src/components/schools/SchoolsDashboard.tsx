@@ -48,7 +48,7 @@ export function SchoolsDashboard() {
     ];
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px', paddingBottom: '40px' }}>
         {/* Student Header */}
         <div style={{
           background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
@@ -197,7 +197,7 @@ export function SchoolsDashboard() {
     ];
 
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px', paddingBottom: '40px' }}>
         {/* Teacher Header */}
         <div style={{
           background: 'linear-gradient(135deg, #10B981 0%, #047857 100%)',
@@ -329,7 +329,7 @@ export function SchoolsDashboard() {
   // Admin Dashboard Component  
   const AdminDashboard = () => {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', padding: '20px', paddingBottom: '40px' }}>
         {/* Admin Header */}
         <div style={{
           background: 'linear-gradient(135deg, #EF4444 0%, #B91C1C 100%)',
@@ -493,7 +493,12 @@ export function SchoolsDashboard() {
       </div>
 
       {/* Main Content */}
-      <div style={{ flex: 1, overflowY: 'auto', background: '#f8fafc' }}>
+      <div style={{ 
+        flex: 1, 
+        overflowY: 'auto', 
+        background: '#f8fafc',
+        paddingBottom: '100px' /* Add bottom padding to prevent content being cut off by bottom nav */
+      }}>
         {userRole === 'student' && <StudentDashboard />}
         {userRole === 'teacher' && <TeacherDashboard />}
         {userRole === 'admin' && <AdminDashboard />}
