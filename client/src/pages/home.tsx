@@ -378,7 +378,7 @@ export default function Home() {
           <p style={{ 
             fontSize: '22px', 
             fontWeight: '600', 
-            margin: '0 0 32px 0', 
+            margin: '0 0 24px 0', 
             background: 'linear-gradient(45deg, rgba(255,255,255,0.95), rgba(255,255,255,0.8))',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
@@ -389,6 +389,33 @@ export default function Home() {
           }}>
             Your Kindness, Amplified ✨
           </p>
+          
+          {/* Intro About EchoDeed */}
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.12), rgba(255,255,255,0.06))',
+            borderRadius: '16px',
+            padding: '20px',
+            marginBottom: '28px',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            textAlign: 'left',
+            fontSize: '15px',
+            lineHeight: '1.6',
+            color: 'rgba(255,255,255,0.9)'
+          }}>
+            <p style={{ margin: '0 0 12px 0' }}>
+              💝 <strong>Share anonymous acts of kindness</strong> with a global community
+            </p>
+            <p style={{ margin: '0 0 12px 0' }}>
+              🌍 <strong>Watch real-time impact</strong> as kindness spreads worldwide  
+            </p>
+            <p style={{ margin: '0 0 12px 0' }}>
+              🎁 <strong>Earn $ECHO tokens</strong> for spreading positivity
+            </p>
+            <p style={{ margin: '0' }}>
+              🏢 <strong>Perfect for individuals & corporate wellness programs</strong>
+            </p>
+          </div>
           
           {/* Global Counter */}
           <div style={{ 
