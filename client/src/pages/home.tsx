@@ -1888,481 +1888,7 @@ export default function Home() {
       </div>
     </div>
   );
-      <div style={{ 
-        maxWidth: '430px', 
-        margin: '0 auto', 
-        backgroundColor: '#0f0f23',
-        minHeight: '100vh',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        {/* Animated Background */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 20%, #0f3460 40%, #533483 60%, #7209b7 80%, #2d1b69 100%)',
-          backgroundSize: '400% 400%',
-          animation: 'gradientShift 8s ease infinite'
-        }} />
-        
-        {/* Floating Particles */}
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: `
-            radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
-            radial-gradient(2px 2px at 40px 70px, rgba(139,92,246,0.6), transparent),
-            radial-gradient(1px 1px at 90px 40px, rgba(6,182,212,0.4), transparent),
-            radial-gradient(1px 1px at 130px 80px, rgba(16,185,129,0.4), transparent),
-            radial-gradient(2px 2px at 160px 30px, rgba(245,158,11,0.3), transparent)
-          `,
-          backgroundRepeat: 'repeat',
-          backgroundSize: '200px 100px',
-          animation: 'sparkle 6s linear infinite'
-        }} />
-
-        {/* Welcome Header */}
-        <div style={{ 
-          position: 'relative',
-          zIndex: 2,
-          color: 'white', 
-          padding: '60px 20px 40px', 
-          textAlign: 'center'
-        }}>
-          {/* Logo */}
-          <div style={{ 
-            width: '400px', 
-            height: '400px', 
-            margin: '0 auto 8px',
-            position: 'relative',
-            filter: 'drop-shadow(0 12px 48px rgba(139,92,246,0.8))',
-            animation: 'logoFloat 3s ease-in-out infinite'
-          }}>
-            <img 
-              src="/logo.png" 
-              alt="EchoDeed™ Logo" 
-              style={{ 
-                width: '100%', 
-                height: '100%', 
-                objectFit: 'contain',
-                filter: 'brightness(1.1) contrast(1.1)'
-              }} 
-            />
-          </div>
-          
-          {/* Brand Name */}
-          <h1 style={{ 
-            margin: '0 0 16px 0', 
-            fontSize: '42px', 
-            fontWeight: '900',
-            background: 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 25%, #10b981 50%, #f59e0b 75%, #ef4444 100%)',
-            backgroundSize: '200% 200%',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            animation: 'titleShimmer 4s ease-in-out infinite',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            letterSpacing: '-0.02em',
-            textShadow: '0 0 30px rgba(139,92,246,0.3)'
-          }}>
-            EchoDeed™
-          </h1>
-          
-          {/* Tagline */}
-          <p style={{ 
-            fontSize: '22px', 
-            fontWeight: '600', 
-            margin: '0 0 32px 0', 
-            background: 'linear-gradient(45deg, rgba(255,255,255,0.95), rgba(255,255,255,0.8))',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            letterSpacing: '0.01em',
-            textShadow: '0 2px 20px rgba(255,255,255,0.1)'
-          }}>
-            Your Kindness, Amplified ✨
-          </p>
-          
-          {/* Global Counter */}
-          <div style={{ 
-            background: 'linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05))', 
-            borderRadius: '20px', 
-            padding: '24px',
-            backdropFilter: 'blur(20px)',
-            border: '1px solid rgba(255,255,255,0.2)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
-            animation: counterPulse ? 'counterPulse 0.6s ease-in-out' : 'none'
-          }}>
-            <div style={{ 
-              fontSize: '16px', 
-              marginBottom: '12px', 
-              opacity: 0.9,
-              fontWeight: '500',
-              letterSpacing: '0.5px'
-            }}>
-              🌍 Acts of Kindness Shared Globally
-            </div>
-            <div style={{ 
-              fontSize: '48px', 
-              fontWeight: '900', 
-              margin: '8px 0',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px'
-            }}>
-              {(counter || defaultCounter).count.toLocaleString()}
-              <span style={{ fontSize: '36px' }}>❤️</span>
-            </div>
-            <div style={{ fontSize: '12px', opacity: 0.8 }}>
-              acts of kindness shared worldwide
-            </div>
-          </div>
-        </div>
-
-        {/* Mission & Examples */}
-        <div style={{ padding: '30px 20px' }}>
-          <div style={{ textAlign: 'center', marginBottom: '30px' }}>
-            <h2 style={{ 
-              fontSize: '24px', 
-              fontWeight: 'bold', 
-              margin: '0 0 15px 0',
-              color: '#374151'
-            }}>
-              Inspire Kindness Everywhere
-            </h2>
-            <p style={{ 
-              fontSize: '16px', 
-              lineHeight: '1.6', 
-              color: '#6b7280',
-              margin: '0 0 20px 0'
-            }}>
-              Share your anonymous acts of kindness and inspire others to spread positivity. 
-              Every small gesture creates ripples of goodness across the world.
-            </p>
-          </div>
-
-          {/* How It Works */}
-          <div style={{ 
-            backgroundColor: 'white', 
-            borderRadius: '16px', 
-            padding: '20px', 
-            marginBottom: '30px',
-            border: '1px solid #f3f4f6'
-          }}>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: '600', 
-              margin: '0 0 15px 0',
-              color: '#374151',
-              textAlign: 'center'
-            }}>
-              How to Amplify Kindness:
-            </h3>
-            
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ 
-                  backgroundColor: '#8B5CF6', 
-                  borderRadius: '50%', 
-                  width: '40px', 
-                  height: '40px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}>
-                  <span style={{ fontSize: '20px' }}>💜</span>
-                </div>
-                <div>
-                  <div style={{ fontWeight: '600', color: '#374151', fontSize: '14px' }}>
-                    Purple Heart
-                  </div>
-                  <div style={{ color: '#6b7280', fontSize: '13px' }}>
-                    Tap to show love and appreciation for an act of kindness
-                  </div>
-                </div>
-              </div>
-              
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div style={{ 
-                  backgroundColor: '#06B6D4', 
-                  borderRadius: '50%', 
-                  width: '40px', 
-                  height: '40px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}>
-                  <span style={{ fontSize: '20px' }}>🌊</span>
-                </div>
-                <div>
-                  <div style={{ fontWeight: '600', color: '#374151', fontSize: '14px' }}>
-                    Echo Ripple
-                  </div>
-                  <div style={{ color: '#6b7280', fontSize: '13px' }}>
-                    Tap when you're inspired to duplicate this act of kindness
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Example Posts */}
-          <div style={{ marginBottom: '30px' }}>
-            <h3 style={{ 
-              fontSize: '18px', 
-              fontWeight: '600', 
-              margin: '0 0 15px 0',
-              color: '#374151'
-            }}>
-              Recent Acts of Kindness:
-            </h3>
-            
-            <div style={{ 
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '16px',
-              marginBottom: '12px',
-              border: '1px solid #f3f4f6'
-            }}>
-              <p style={{ margin: '0 0 8px 0', lineHeight: '1.5', color: '#374151' }}>
-                "Helped an elderly woman carry her groceries up three flights of stairs. Her smile made my whole week brighter."
-              </p>
-              <div style={{ fontSize: '12px', color: '#6b7280' }}>
-                📍 San Francisco, CA • Helping Others
-              </div>
-            </div>
-
-            <div style={{ 
-              backgroundColor: 'white',
-              borderRadius: '12px',
-              padding: '16px',
-              marginBottom: '12px',
-              border: '1px solid #f3f4f6'
-            }}>
-              <p style={{ margin: '0 0 8px 0', lineHeight: '1.5', color: '#374151' }}>
-                "Left encouraging sticky notes on random cars in the parking lot. Hope it brightens someone's day!"
-              </p>
-              <div style={{ fontSize: '12px', color: '#6b7280' }}>
-                📍 Austin, TX • Spreading Positivity
-              </div>
-            </div>
-          </div>
-
-          {/* Call to Action Button */}
-          <div style={{ 
-            position: 'relative',
-            zIndex: 2,
-            padding: '10px 20px 20px',
-            textAlign: 'center' 
-          }}>
-            <button 
-              onClick={() => setShowWelcome(false)}
-              style={{
-                background: 'linear-gradient(135deg, #8b5cf6, #06b6d4, #10b981)',
-                backgroundSize: '200% 200%',
-                color: 'white',
-                border: 'none',
-                borderRadius: '16px',
-                padding: '16px 32px',
-                fontSize: '18px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                boxShadow: '0 8px 32px rgba(139,92,246,0.5), 0 0 0 1px rgba(255,255,255,0.2)',
-                animation: 'buttonGlow 2s ease-in-out infinite, titleShimmer 3s ease-in-out infinite',
-                transform: 'translateY(0)',
-                transition: 'all 0.3s ease',
-                fontFamily: 'system-ui, -apple-system, sans-serif',
-                letterSpacing: '0.5px',
-                textShadow: '0 1px 2px rgba(0,0,0,0.2)',
-                width: '280px',
-                maxWidth: '100%'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-                e.currentTarget.style.boxShadow = '0 12px 40px rgba(139,92,246,0.8), 0 0 0 1px rgba(255,255,255,0.3)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                e.currentTarget.style.boxShadow = '0 8px 32px rgba(139,92,246,0.5), 0 0 0 1px rgba(255,255,255,0.2)';
-              }}
-            >
-              🚀 Start Spreading Kindness ❤️
-            </button>
-            
-            {/* Magical Footer Text */}
-            <p style={{
-              fontSize: '14px',
-              color: 'rgba(255,255,255,0.8)',
-              marginTop: '16px',
-              fontWeight: '500',
-              textShadow: '0 1px 3px rgba(0,0,0,0.3)'
-            }}>
-              Join 250,000+ people spreading kindness worldwide 🌍✨
-            </p>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // Show Badges tab if selected
-  else if (activeTab === 'badges') {
-    return (
-      <div style={{ 
-        maxWidth: '430px', 
-        margin: '0 auto', 
-        backgroundColor: '#f8f9fa',
-        minHeight: '100vh',
-        position: 'relative'
-      }}>
-        {/* Header */}
-        <div style={{ 
-          background: 'linear-gradient(135deg, #F59E0B, #EAB308)',
-          color: 'white', 
-          padding: '20px', 
-          textAlign: 'center',
-          position: 'relative'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{ 
-                width: '32px', 
-                height: '32px', 
-                backgroundColor: 'rgba(255,255,255,0.2)', 
-                borderRadius: '50%', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center' 
-              }}>
-                🏅
-              </div>
-              <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
-            </div>
-            
-            {/* $ECHO Balance */}
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '6px',
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              padding: '6px 12px',
-              borderRadius: '20px',
-              fontSize: '14px',
-              fontWeight: '600'
-            }}>
-              <span style={{ fontSize: '16px' }}>🪙</span>
-              <span>{tokens?.echoBalance || 0} $ECHO</span>
-            </div>
-          </div>
-          
-          <div style={{ fontSize: '14px', opacity: 0.8 }}>Your Kindness, Amplified</div>
-        </div>
-
-        {renderBadgesTab()}
-
-        {/* Bottom Navigation */}
-        <div style={{
-          position: 'fixed',
-          bottom: 0,
-          left: '50%',
-          transform: 'translateX(-50%)',
-          maxWidth: '430px',
-          width: '100%',
-          backgroundColor: 'rgba(255,255,255,0.95)',
-          backdropFilter: 'blur(8px)',
-          borderTop: '1px solid #e5e7eb',
-          display: 'flex',
-          justifyContent: 'space-around',
-          padding: '12px 0',
-          zIndex: 100
-        }}>
-          {[
-            { id: 'feed', label: 'Feed', icon: '🏠' },
-            { id: 'local', label: 'Local', icon: '📍' },
-            { id: 'badges', label: 'Badges', icon: '🏅' },
-            { id: 'partners', label: 'Rewards', icon: '🎁' },
-            { id: 'corporate', label: 'Corporate', icon: '🏢' },
-            { id: 'admin', label: 'Admin', icon: '⚙️' },
-          ].map((tab) => {
-            if (tab.id === 'spacer') {
-              return <div key={tab.id} style={{ width: '32px' }} />;
-            }
-            
-            return (
-              <button 
-                key={tab.id}
-                onClick={() => navigateToTab(tab.id)}
-                style={{
-                  background: 'none',
-                  border: 'none',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  gap: '4px',
-                  padding: '4px 8px',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  fontWeight: '500',
-                  color: activeTab === tab.id ? '#F59E0B' : '#6b7280',
-                  backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
-                }}
-              >
-                <span style={{ fontSize: '18px' }}>{tab.icon}</span>
-                <span>{tab.label}</span>
-              </button>
-            );
-          })}
-        </div>
-        
-        {/* Achievement Notification */}
-        {achievementNotification && (
-          <div style={{
-            position: 'fixed',
-            top: '80px',
-            left: '50%',
-            transform: 'translateX(-50%)',
-            backgroundColor: '#F59E0B',
-            color: 'white',
-            padding: '16px 20px',
-            borderRadius: '16px',
-            fontSize: '14px',
-            fontWeight: '600',
-            boxShadow: '0 8px 25px rgba(245, 158, 11, 0.4)',
-            zIndex: 1000,
-            animation: 'slideIn 0.3s ease-out',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            maxWidth: '90%',
-            textAlign: 'center'
-          }}>
-            <span style={{ fontSize: '24px' }}>{achievementNotification.achievement.badge}</span>
-            <div>
-              <div style={{ fontSize: '16px', marginBottom: '4px' }}>🎉 Achievement Unlocked!</div>
-              <div style={{ fontWeight: 'bold' }}>{achievementNotification.achievement.title}</div>
-              <div style={{ fontSize: '12px', opacity: 0.9 }}>
-                +{achievementNotification.echoReward} $ECHO earned!
-              </div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
-
-  // Show AI Insights tab if selected
-  else if (activeTab === 'ai') {
+  if (activeTab === 'ai') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -2469,7 +1995,7 @@ export default function Home() {
   }
 
   // Show Rewards tab if selected
-  else if (activeTab === 'rewards') {
+  if (activeTab === 'rewards') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -2611,7 +2137,7 @@ export default function Home() {
   }
 
   // Show About EchoDeed tab if selected
-  else if (activeTab === 'about') {
+  if (activeTab === 'about') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -2827,7 +2353,7 @@ export default function Home() {
   }
 
   // Show Notifications tab if selected
-  else if (activeTab === 'notifications') {
+  if (activeTab === 'notifications') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -3151,7 +2677,7 @@ export default function Home() {
   }
 
   // Show Corporate tab if selected
-  else if (activeTab === 'corporate') {
+  if (activeTab === 'corporate') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -3288,7 +2814,7 @@ export default function Home() {
   }
 
   // Show Admin tab if selected
-  else if (activeTab === 'marketing') {
+  if (activeTab === 'marketing') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -3395,7 +2921,7 @@ export default function Home() {
       </div>
     );
   }
-  else if (activeTab === 'admin') {
+  if (activeTab === 'admin') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -3535,7 +3061,7 @@ export default function Home() {
   }
 
   // Show Partners tab if selected
-  else if (activeTab === 'partners') {
+  if (activeTab === 'partners') {
     return (
       <div style={{ 
         maxWidth: '430px', 
