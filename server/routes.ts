@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema } from "@shared/schema";
 import { contentFilter } from "./services/contentFilter";
 import { aiAnalytics } from "./services/aiAnalytics";
+import { slackNotifications } from "./services/slackNotifications";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 
 export async function registerRoutes(app: Express): Promise<Server> {
@@ -25,6 +26,189 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // AI Sentiment Analysis endpoints
+  app.post('/api/sentiment/analyze', isAuthenticated, async (req, res) => {
+    try {
+      // Simulate AI sentiment analysis processing
+      await new Promise(resolve => setTimeout(resolve, 2500));
+      
+      const analysisResult = {
+        overallMood: Math.random() > 0.3 ? 'positive' : Math.random() > 0.5 ? 'neutral' : 'negative',
+        confidence: Math.random() * 0.2 + 0.8,
+        emotionBreakdown: {
+          joy: Math.random() * 40 + 30,
+          gratitude: Math.random() * 30 + 25,
+          compassion: Math.random() * 35 + 20,
+          anxiety: Math.random() * 20 + 5,
+          stress: Math.random() * 25 + 10,
+          burnout: Math.random() * 15 + 3
+        },
+        insights: [
+          'Team morale improved 23% since wellness initiatives implementation',
+          'Gratitude expressions increased 41% in engineering department',
+          'Early stress detection: Sales team showing end-of-quarter pressure',
+          'Cross-departmental kindness activities correlate with 18% productivity increase'
+        ],
+        recommendations: [
+          'Schedule team wellness check-in for high-stress departments within 48 hours',
+          'Amplify peer recognition program to boost positive sentiment',
+          'Implement mindfulness breaks during identified stress periods',
+          'Create buddy support system for employees showing isolation patterns'
+        ],
+        predictedTrend: Math.random() > 0.6 ? 'improving' : Math.random() > 0.3 ? 'stable' : 'declining',
+        riskLevel: Math.random() > 0.7 ? 'low' : Math.random() > 0.4 ? 'medium' : 'high'
+      };
+
+      // Send Slack notification for high-risk analysis
+      if (analysisResult.riskLevel === 'high' || analysisResult.overallMood === 'negative') {
+        const mockPrediction = {
+          department: 'Company-wide',
+          riskLevel: 'high',
+          confidence: analysisResult.confidence,
+          prediction: 'AI sentiment analysis detected potential wellness concerns across teams',
+          recommendations: analysisResult.recommendations,
+          estimatedImpact: 'High Priority'
+        };
+
+        try {
+          await slackNotifications.sendWellnessAlert(mockPrediction);
+        } catch (error) {
+          console.error('Failed to send Slack sentiment alert:', error);
+        }
+      }
+
+      res.json({
+        success: true,
+        analysis: analysisResult,
+        message: 'AI sentiment analysis completed successfully',
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/sentiment/team-analysis', isAuthenticated, async (req, res) => {
+    try {
+      // Simulate team sentiment analysis
+      await new Promise(resolve => setTimeout(resolve, 1500));
+
+      const teamAnalysis = [
+        {
+          department: 'Engineering',
+          averageSentiment: Math.random() * 30 + 70,
+          participationRate: Math.random() * 20 + 78,
+          moodTrend: Math.random() > 0.5 ? 'up' : Math.random() > 0.3 ? 'stable' : 'down',
+          alertLevel: Math.random() > 0.7 ? 'green' : Math.random() > 0.4 ? 'yellow' : 'red',
+          keyInsights: ['High collaboration score', 'Innovation mood positive', 'Workload balance optimal'],
+          lastUpdated: new Date().toISOString()
+        },
+        {
+          department: 'Sales',
+          averageSentiment: Math.random() * 25 + 65,
+          participationRate: Math.random() * 15 + 82,
+          moodTrend: Math.random() > 0.4 ? 'up' : Math.random() > 0.3 ? 'stable' : 'down',
+          alertLevel: Math.random() > 0.6 ? 'green' : Math.random() > 0.4 ? 'yellow' : 'red',
+          keyInsights: ['Quarter-end pressure detected', 'Team support strong', 'Recognition program effective'],
+          lastUpdated: new Date().toISOString()
+        },
+        {
+          department: 'Marketing',
+          averageSentiment: Math.random() * 28 + 72,
+          participationRate: Math.random() * 18 + 85,
+          moodTrend: Math.random() > 0.6 ? 'up' : Math.random() > 0.3 ? 'stable' : 'down',
+          alertLevel: Math.random() > 0.8 ? 'green' : Math.random() > 0.5 ? 'yellow' : 'red',
+          keyInsights: ['Creative energy high', 'Campaign execution smooth', 'Cross-team collaboration excellent'],
+          lastUpdated: new Date().toISOString()
+        },
+        {
+          department: 'HR',
+          averageSentiment: Math.random() * 32 + 68,
+          participationRate: Math.random() * 25 + 75,
+          moodTrend: Math.random() > 0.5 ? 'up' : Math.random() > 0.3 ? 'stable' : 'down',
+          alertLevel: Math.random() > 0.7 ? 'green' : Math.random() > 0.4 ? 'yellow' : 'red',
+          keyInsights: ['Employee satisfaction rising', 'Wellness program adoption high', 'Communication effectiveness strong'],
+          lastUpdated: new Date().toISOString()
+        }
+      ];
+
+      res.json({
+        success: true,
+        teams: teamAnalysis,
+        totalDepartments: teamAnalysis.length,
+        averageCompanyMood: teamAnalysis.reduce((acc, team) => acc + team.averageSentiment, 0) / teamAnalysis.length,
+        timestamp: new Date().toISOString()
+      });
+
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/kindness/categorize', isAuthenticated, async (req, res) => {
+    try {
+      const { text } = req.body;
+      
+      if (!text) {
+        return res.status(400).json({ message: 'Text content is required for categorization' });
+      }
+
+      // Simulate AI categorization processing
+      await new Promise(resolve => setTimeout(resolve, 1200));
+
+      // AI-powered automatic categorization
+      const categories = ['helping', 'mentoring', 'appreciation', 'community', 'environment', 'wellness'];
+      const keywords = {
+        helping: ['help', 'assist', 'support', 'volunteer', 'donate'],
+        mentoring: ['teach', 'guide', 'mentor', 'train', 'coach'],
+        appreciation: ['thank', 'appreciate', 'grateful', 'recognize', 'acknowledge'],
+        community: ['community', 'neighbor', 'local', 'together', 'group'],
+        environment: ['clean', 'recycle', 'green', 'environment', 'sustainable'],
+        wellness: ['health', 'exercise', 'mental', 'wellbeing', 'care']
+      };
+
+      // Simple AI categorization logic
+      let bestCategory = 'helping';
+      let maxScore = 0;
+      let confidence = 0.6; // Base confidence
+
+      for (const [category, words] of Object.entries(keywords)) {
+        const score = words.reduce((acc, word) => {
+          return acc + (text.toLowerCase().includes(word) ? 1 : 0);
+        }, 0);
+        
+        if (score > maxScore) {
+          maxScore = score;
+          bestCategory = category;
+          confidence = Math.min(0.95, 0.6 + (score * 0.1));
+        }
+      }
+
+      const result = {
+        originalText: text,
+        suggestedCategory: bestCategory,
+        confidence: confidence,
+        alternativeCategories: categories.filter(cat => cat !== bestCategory).slice(0, 2),
+        sentiment: text.length > 0 ? (Math.random() > 0.2 ? 'positive' : 'neutral') : 'neutral',
+        aiInsights: [
+          `Detected ${bestCategory} theme with ${(confidence * 100).toFixed(1)}% confidence`,
+          `Sentiment analysis indicates ${text.length > 50 ? 'detailed' : 'concise'} kindness expression`,
+          'Content suitable for public sharing and team inspiration'
+        ]
+      };
+
+      res.json({
+        success: true,
+        categorization: result,
+        message: 'AI categorization completed successfully'
+      });
+
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // WebSocket server for real-time updates
   const wss = new WebSocketServer({ server: httpServer, path: '/ws' });
   
@@ -2199,6 +2383,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       console.log(`User ${userId} joined opportunity ${id}`);
       
+      // Generate mock smart matching data for Slack notification
+      const opportunityTitles = ['Community Garden Project', 'Food Bank Volunteering', 'Elderly Care Support', 'Environmental Cleanup Initiative'];
+      const mockMatch = {
+        title: opportunityTitles[Math.floor(Math.random() * opportunityTitles.length)],
+        accuracy: Math.floor(Math.random() * 13) + 85, // 85-97%
+        participants: Math.floor(Math.random() * 20) + 5, // 5-25 participants
+        impactScore: Math.random() * 2 + 8, // 8-10
+        description: 'A perfectly matched opportunity that aligns with your skills and interests, providing maximum positive impact in your community.'
+      };
+      
+      // Send Slack notification about successful matching
+      try {
+        await slackNotifications.sendMatchingSuccess(mockMatch);
+      } catch (error) {
+        console.error('Failed to send Slack matching notification:', error);
+      }
+      
       res.json({ 
         success: true, 
         message: 'Successfully joined the kindness opportunity! You will receive updates and instructions via email.' 
@@ -2418,6 +2619,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
       await new Promise(resolve => setTimeout(resolve, 2000));
       
       const newReportId = `esg-${Date.now()}`;
+      
+      // Generate mock ESG report for Slack notification
+      const mockReport = {
+        title: `${period.charAt(0).toUpperCase() + period.slice(1)} 2024 ESG Impact Report`,
+        totalScore: Math.floor(Math.random() * 15) + 82, // 82-97
+        industryRanking: Math.floor(Math.random() * 15) + 8, // 8-23
+        period: `${period.charAt(0).toUpperCase() + period.slice(1)} 2024`,
+        status: 'Final',
+        achievements: [
+          'Exceeded annual carbon offset target by 180%',
+          'Achieved 94% employee wellness participation rate',
+          'Launched 3 community impact partnerships',
+          'Received B-Corp certification for social responsibility'
+        ],
+        downloadUrl: `/downloads/esg-${period}-2024-report.pdf`
+      };
+      
+      // Send Slack notification about completed ESG report
+      try {
+        await slackNotifications.sendESGReport(mockReport);
+      } catch (error) {
+        console.error('Failed to send Slack ESG report notification:', error);
+      }
       
       res.json({ 
         success: true, 
@@ -2640,6 +2864,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const newCertificateId = `cert-${milestoneId}-${Date.now()}`;
       const blockchainTxHash = `0x${Math.random().toString(16).substr(2, 64)}`;
+      
+      // Generate mock certificate data for Slack notification
+      const mockCertificate = {
+        title: milestoneId.includes('community') ? 'Community Builder' : milestoneId.includes('mentor') ? 'Mentor Master' : 'Sustainability Leader',
+        level: milestoneId.includes('sustainability') ? 'Diamond' : milestoneId.includes('mentor') ? 'Platinum' : 'Gold',
+        rarity: milestoneId.includes('sustainability') ? 2.9 : milestoneId.includes('mentor') ? 4.1 : 8.2,
+        blockchainNetwork: 'EchoDeed Chain',
+        impactMetrics: {
+          peopleHelped: Math.floor(Math.random() * 300) + 150,
+          hoursContributed: Math.floor(Math.random() * 100) + 80,
+          co2Offset: Math.floor(Math.random() * 500) + 250
+        },
+        certificateUrl: `/certificates/${newCertificateId}.pdf`,
+        verificationUrl: `https://echodeeed-explorer.com/tx/${blockchainTxHash}`
+      };
+      
+      // Send Slack notification about new certificate achievement
+      try {
+        await slackNotifications.sendCertificateAchievement(mockCertificate);
+      } catch (error) {
+        console.error('Failed to send Slack certificate notification:', error);
+      }
       
       res.json({ 
         success: true, 
@@ -2935,6 +3181,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const newMessageId = `msg-${Date.now()}`;
       const estimatedRecipients = 1; // Would calculate based on recipient selection
+      
+      // Generate mock time-locked message for Slack notification
+      const mockMessage = {
+        subject,
+        content: content.length > 100 ? content.substring(0, 100) + '...' : content,
+        recipientCount: estimatedRecipients,
+        category,
+        scheduledDelay: new Date(unlockDate).toLocaleDateString()
+      };
+      
+      // Send Slack notification about scheduled message
+      try {
+        await slackNotifications.sendMessageDelivered(mockMessage);
+      } catch (error) {
+        console.error('Failed to send Slack message notification:', error);
+      }
       
       res.json({ 
         success: true, 

@@ -6,6 +6,7 @@ import { SmartKindnessMatching } from "./SmartKindnessMatching";
 import { ESGImpactReporting } from "./ESGImpactReporting";
 import { KindnessImpactCertificates } from "./KindnessImpactCertificates";
 import { TimeLockedWellnessMessages } from "./TimeLockedWellnessMessages";
+import AISentimentAnalyzer from "./AISentimentAnalyzer";
 import { useState } from "react";
 
 interface WellnessInsights {
@@ -18,7 +19,7 @@ interface WellnessInsights {
 }
 
 export function AIDashboard() {
-  const [activeView, setActiveView] = useState<'analytics' | 'predictive' | 'predictions' | 'heatmap' | 'matching' | 'esg' | 'certificates' | 'messages'>('analytics');
+  const [activeView, setActiveView] = useState<'analytics' | 'predictive' | 'predictions' | 'heatmap' | 'matching' | 'esg' | 'certificates' | 'messages' | 'sentiment'>('analytics');
 
   const { data: insights, isLoading } = useQuery<WellnessInsights>({
     queryKey: ['/api/ai/wellness-insights'],

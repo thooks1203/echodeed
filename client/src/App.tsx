@@ -9,6 +9,9 @@ import AdminDashboard from "@/pages/admin-dashboard";
 import RewardsPage from "@/pages/rewards";
 import { LandingPage } from "@/components/landing-page";
 import NotFound from "@/pages/not-found";
+import PWAInstall from "@/components/PWAInstall";
+import OfflineDataHandler from "@/components/OfflineDataHandler";
+import MobileTouchOptimizer from "@/components/MobileTouchOptimizer";
 
 function Router() {
   const { isAuthenticated, isLoading } = useAuth();
@@ -35,6 +38,9 @@ function App() {
       <TooltipProvider>
         <Toaster />
         <Router />
+        <PWAInstall />
+        <OfflineDataHandler />
+        <MobileTouchOptimizer />
       </TooltipProvider>
     </QueryClientProvider>
   );
