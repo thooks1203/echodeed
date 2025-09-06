@@ -3344,19 +3344,51 @@ export default function Home() {
             <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
           </div>
           
-          {/* $ECHO Balance */}
-          <div style={{ 
-            display: 'flex', 
-            alignItems: 'center', 
-            gap: '6px',
-            backgroundColor: 'rgba(255,255,255,0.2)',
-            padding: '6px 12px',
-            borderRadius: '20px',
-            fontSize: '14px',
-            fontWeight: '600'
-          }}>
-            <span style={{ fontSize: '16px' }}>🪙</span>
-            <span>{tokens?.echoBalance || 0} $ECHO</span>
+          {/* About & Balance */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            {/* About Button */}
+            <button
+              onClick={showWelcomeAgain}
+              style={{
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                border: 'none',
+                borderRadius: '50%',
+                width: '32px',
+                height: '32px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                fontSize: '14px',
+                color: 'white',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.3)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.2)';
+              }}
+              data-testid="button-about"
+              title="About EchoDeed™"
+            >
+              ℹ️
+            </button>
+            
+            {/* $ECHO Balance */}
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '6px',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              padding: '6px 12px',
+              borderRadius: '20px',
+              fontSize: '14px',
+              fontWeight: '600'
+            }}>
+              <span style={{ fontSize: '16px' }}>🪙</span>
+              <span>{tokens?.echoBalance || 0} $ECHO</span>
+            </div>
           </div>
         </div>
         
