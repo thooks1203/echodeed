@@ -39,7 +39,7 @@ export function LandingPage() {
           margin: 0,
           fontStyle: 'italic'
         }}>
-          AI-Powered Corporate Wellness Platform
+          Anonymous kindness platform designed to inspire and track acts of kindness through a community-driven feed
         </p>
       </div>
 

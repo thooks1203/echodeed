@@ -19,7 +19,7 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '64px', marginBottom: '20px' }}>💜</div>
           <p style={{ fontSize: '16px', color: '#6b7280', marginBottom: '24px' }}>
-            The AI-Powered Corporate Wellness Platform that transforms workplace culture through kindness.
+            EchoDeed™ is an anonymous kindness platform designed to inspire and track acts of kindness through a community-driven feed. Our AI-powered system transforms simple acts of kindness into measurable business outcomes for corporate wellness.
           </p>
           <div style={{
             background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1))',

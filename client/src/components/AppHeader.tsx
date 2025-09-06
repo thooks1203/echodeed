@@ -12,7 +12,7 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
     <header className="bg-card border-b border-border">
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center justify-center space-x-3 w-full">
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
               <Heart className="text-primary-foreground" size={14} />
             </div>
