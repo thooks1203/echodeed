@@ -411,41 +411,59 @@ export default function Home() {
           padding: '60px 20px 40px', 
           textAlign: 'center'
         }}>
-          {/* Floating Logo */}
-          <img 
-            src={logoUrl} 
-            alt="EchoDeed Logo"
-            style={{ 
-              width: '280px',
-              height: '280px',
-              margin: '0 auto 20px',
-              display: 'block',
-              filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))',
-              animation: 'logoFloat 3s ease-in-out infinite',
-              borderRadius: '0',
-              background: 'transparent',
-              border: 'none',
-              boxShadow: 'none'
-            }}
-          />
+          {/* Floating Logo with RAYS OF LIGHT! ✨ */}
+          <div className="logo-with-rays" style={{ margin: '0 auto 20px', display: 'block' }}>
+            <div className="ray-1"></div>
+            <div className="ray-2"></div>
+            <div className="ray-3"></div>
+            <div className="ray-4"></div>
+            <div className="ray-5"></div>
+            <div className="ray-6"></div>
+            <img 
+              src={logoUrl} 
+              alt="EchoDeed Logo"
+              style={{ 
+                width: '280px',
+                height: '280px',
+                display: 'block',
+                animation: 'logoFloat 3s ease-in-out infinite',
+                borderRadius: '0',
+                background: 'transparent',
+                border: 'none',
+                boxShadow: 'none',
+                position: 'relative',
+                zIndex: 2
+              }}
+            />
+          </div>
           
-          {/* Brand Name */}
-          <h1 style={{ 
-            margin: '0 0 16px 0', 
-            fontSize: '42px', 
-            fontWeight: '900',
-            background: 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 25%, #10b981 50%, #f59e0b 75%, #ef4444 100%)',
-            backgroundSize: '200% 200%',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            backgroundClip: 'text',
-            animation: 'titleShimmer 4s ease-in-out infinite',
-            fontFamily: 'system-ui, -apple-system, sans-serif',
-            letterSpacing: '-0.02em',
-            textShadow: '0 0 30px rgba(139,92,246,0.3)'
-          }}>
-            EchoDeed™
-          </h1>
+          {/* Brand Name with Light Effect */}
+          <div className="logo-with-rays" style={{ display: 'inline-block', margin: '0 0 16px 0' }}>
+            <div className="ray-1"></div>
+            <div className="ray-2"></div>
+            <div className="ray-3"></div>
+            <div className="ray-4"></div>
+            <div className="ray-5"></div>
+            <div className="ray-6"></div>
+            <h1 style={{ 
+              margin: '0', 
+              fontSize: '42px', 
+              fontWeight: '900',
+              background: 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 25%, #10b981 50%, #f59e0b 75%, #ef4444 100%)',
+              backgroundSize: '200% 200%',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+              animation: 'titleShimmer 4s ease-in-out infinite',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
+              letterSpacing: '-0.02em',
+              textShadow: '0 0 30px rgba(139,92,246,0.3)',
+              position: 'relative',
+              zIndex: 2
+            }}>
+              EchoDeed™
+            </h1>
+          </div>
           
           {/* Tagline */}
           <p style={{ 

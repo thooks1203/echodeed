@@ -144,6 +144,236 @@
   animation: logoFloat 3s ease-in-out infinite;
 }
 
+/* ✨ LIGHT RAYS ANIMATION - Rays shooting from logo! ✨ */
+@keyframes lightRay1 {
+  0% {
+    transform: scale(0) rotate(0deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(2.5) rotate(15deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(5) rotate(30deg);
+    opacity: 0;
+  }
+}
+
+@keyframes lightRay2 {
+  0% {
+    transform: scale(0) rotate(45deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(3) rotate(60deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(6) rotate(75deg);
+    opacity: 0;
+  }
+}
+
+@keyframes lightRay3 {
+  0% {
+    transform: scale(0) rotate(90deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(2.8) rotate(105deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(5.5) rotate(120deg);
+    opacity: 0;
+  }
+}
+
+@keyframes lightRay4 {
+  0% {
+    transform: scale(0) rotate(135deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(3.2) rotate(150deg);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(6.5) rotate(165deg);
+    opacity: 0;
+  }
+}
+
+@keyframes lightRay5 {
+  0% {
+    transform: scale(0) rotate(180deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(2.6) rotate(195deg);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(5.2) rotate(210deg);
+    opacity: 0;
+  }
+}
+
+@keyframes lightRay6 {
+  0% {
+    transform: scale(0) rotate(225deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(3.4) rotate(240deg);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(6.8) rotate(255deg);
+    opacity: 0;
+  }
+}
+
+@keyframes lightRay7 {
+  0% {
+    transform: scale(0) rotate(270deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(2.9) rotate(285deg);
+    opacity: 0.9;
+  }
+  100% {
+    transform: scale(5.8) rotate(300deg);
+    opacity: 0;
+  }
+}
+
+@keyframes lightRay8 {
+  0% {
+    transform: scale(0) rotate(315deg);
+    opacity: 1;
+  }
+  70% {
+    transform: scale(3.6) rotate(330deg);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(7.2) rotate(345deg);
+    opacity: 0;
+  }
+}
+
+/* Logo with Light Rays Container - POWERFUL VISUAL! */
+.logo-with-rays {
+  position: relative;
+  display: inline-block;
+  z-index: 1;
+}
+
+.logo-with-rays::before,
+.logo-with-rays::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    rgba(255, 215, 0, 1) 0%, 
+    rgba(255, 193, 7, 0.9) 20%, 
+    rgba(255, 235, 59, 0.7) 50%, 
+    rgba(255, 255, 255, 0.5) 80%, 
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 2px;
+  transform-origin: 0 50%;
+  pointer-events: none;
+  z-index: -1;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+.logo-with-rays::before {
+  animation: lightRay1 2.5s ease-out infinite;
+  animation-delay: 0s;
+}
+
+.logo-with-rays::after {
+  animation: lightRay2 2.5s ease-out infinite;
+  animation-delay: 0.3s;
+}
+
+/* Additional light rays using pseudo elements on child divs */
+.logo-with-rays .ray-1,
+.logo-with-rays .ray-2,
+.logo-with-rays .ray-3,
+.logo-with-rays .ray-4,
+.logo-with-rays .ray-5,
+.logo-with-rays .ray-6 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 120px;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    rgba(255, 215, 0, 1) 0%, 
+    rgba(255, 193, 7, 0.9) 20%, 
+    rgba(255, 235, 59, 0.7) 50%, 
+    rgba(255, 255, 255, 0.5) 80%, 
+    rgba(255, 255, 255, 0) 100%
+  );
+  border-radius: 2px;
+  transform-origin: 0 50%;
+  pointer-events: none;
+  z-index: -1;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+}
+
+.logo-with-rays .ray-1 {
+  animation: lightRay3 2.5s ease-out infinite;
+  animation-delay: 0.6s;
+}
+
+.logo-with-rays .ray-2 {
+  animation: lightRay4 2.5s ease-out infinite;
+  animation-delay: 0.9s;
+}
+
+.logo-with-rays .ray-3 {
+  animation: lightRay5 2.5s ease-out infinite;
+  animation-delay: 1.2s;
+}
+
+.logo-with-rays .ray-4 {
+  animation: lightRay6 2.5s ease-out infinite;
+  animation-delay: 1.5s;
+}
+
+.logo-with-rays .ray-5 {
+  animation: lightRay7 2.5s ease-out infinite;
+  animation-delay: 1.8s;
+}
+
+.logo-with-rays .ray-6 {
+  animation: lightRay8 2.5s ease-out infinite;
+  animation-delay: 2.1s;
+}
+
+/* Enhanced logo glow effect - RADIANT! */
+.logo-with-rays img,
+.logo-with-rays .logo-content,
+.logo-with-rays h1 {
+  filter: drop-shadow(0 0 15px rgba(255, 215, 0, 0.6)) drop-shadow(0 0 30px rgba(255, 235, 59, 0.4));
+  transition: filter 0.3s ease;
+}
+
+.logo-with-rays:hover img,
+.logo-with-rays:hover .logo-content,
+.logo-with-rays:hover h1 {
+  filter: drop-shadow(0 0 25px rgba(255, 215, 0, 0.8)) drop-shadow(0 0 50px rgba(255, 235, 59, 0.6));
+}
+
 @keyframes titleShimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
