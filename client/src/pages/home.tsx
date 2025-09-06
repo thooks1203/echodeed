@@ -4253,5 +4253,13 @@ export default function Home() {
       )}
       
     </div>
+    );
+  }
+
+  // Default fallback - shouldn't reach here
+  return (
+    <div style={{ padding: '20px', textAlign: 'center' }}>
+      <p>Loading...</p>
+    </div>
   );
 }
