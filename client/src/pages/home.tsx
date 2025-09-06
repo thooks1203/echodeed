@@ -3562,7 +3562,7 @@ export default function Home() {
           margin: '0 0 8px 0',
           color: '#8B5CF6'
         }}>
-          Transform Kindness Into Business Results
+          Share Anonymous Acts of Kindness
         </h3>
         <p style={{ 
           fontSize: '12px', 
@@ -3570,7 +3570,7 @@ export default function Home() {
           margin: '0 0 12px 0', 
           lineHeight: '1.4' 
         }}>
-          EchoDeed™ uses AI to turn anonymous acts of workplace kindness into measurable wellness insights. Share kindness anonymously, earn $ECHO tokens, and help build a thriving company culture.
+          EchoDeed™ is a community platform where you can anonymously share acts of kindness and inspire others. Every deed matters - from small gestures to life-changing moments.
         </p>
         <div style={{
           display: 'flex',
@@ -3580,8 +3580,8 @@ export default function Home() {
           fontWeight: '600',
           color: '#8B5CF6'
         }}>
-          <span>🧠 87% AI Accuracy</span>
-          <span>📊 Real-time Analytics</span>
+          <span>🤝 Anonymous Sharing</span>
+          <span>🌍 Global Community</span>
           <span>💎 Earn Rewards</span>
         </div>
       </div>
