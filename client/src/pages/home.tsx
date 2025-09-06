@@ -2009,140 +2009,149 @@ export default function Home() {
         minHeight: '100vh',
         position: 'relative'
       }}>
-        {/* Welcome Header */}
+        {/* Original Welcome Experience */}
         <div style={{ 
-          background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
-          color: 'white', 
-          padding: '40px 20px', 
-          textAlign: 'center',
-          position: 'relative'
+          background: 'linear-gradient(135deg, #1e293b 0%, #334155 50%, #475569 100%)',
+          minHeight: '100vh',
+          color: 'white',
+          position: 'relative',
+          padding: '0',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center'
         }}>
+          {/* Back Button */}
           <div style={{ 
             position: 'absolute',
             top: '20px',
-            left: '20px'
+            left: '20px',
+            zIndex: 10
           }}>
             <button
               onClick={() => setActiveTab('feed')}
               style={{
-                backgroundColor: 'rgba(255,255,255,0.2)',
-                border: 'none',
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                border: '1px solid rgba(255,255,255,0.2)',
                 borderRadius: '50%',
-                width: '40px',
-                height: '40px',
+                width: '44px',
+                height: '44px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 cursor: 'pointer',
                 fontSize: '18px',
-                color: 'white'
+                color: 'white',
+                backdropFilter: 'blur(8px)'
               }}
               title="Back to Feed"
             >
               ←
             </button>
           </div>
-          
-          <img 
-            src={logoUrl} 
-            alt="EchoDeed Logo"
-            style={{ 
-              width: '80px', 
-              height: '80px',
-              objectFit: 'contain',
-              marginBottom: '20px'
-            }}
-          />
-          <h1 style={{ margin: '0', fontSize: '32px', fontWeight: '700' }}>EchoDeed™</h1>
-          <p style={{ margin: '8px 0 0 0', fontSize: '18px', opacity: 0.9 }}>Your Kindness, Amplified</p>
-        </div>
 
-        {/* Welcome Content */}
-        <div style={{ padding: '40px 20px', paddingBottom: '100px' }}>
-          {/* Main Message */}
-          <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-            <div style={{ fontSize: '64px', marginBottom: '20px' }}>💜</div>
-            <h2 style={{ fontSize: '24px', fontWeight: '700', color: '#1f2937', marginBottom: '16px' }}>
-              Welcome to EchoDeed™
-            </h2>
-            <p style={{ fontSize: '18px', color: '#6b7280', lineHeight: '1.6', marginBottom: '24px' }}>
-              Share anonymous acts of kindness and be part of a global community spreading positivity, one kind act at a time.
-            </p>
-            <div style={{
-              background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(16,185,129,0.1))',
-              borderRadius: '16px',
-              padding: '24px',
-              border: '1px solid rgba(139,92,246,0.2)',
-              marginBottom: '20px'
-            }}>
-              <p style={{ fontSize: '16px', color: '#8B5CF6', fontWeight: '600', margin: 0 }}>
-                ✨ Every act of kindness creates ripples of positivity
-              </p>
-            </div>
+          {/* Main Content Container */}
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(59,130,246,0.1), rgba(139,92,246,0.1))',
+            borderRadius: '24px',
+            padding: '40px 30px',
+            margin: '20px',
+            maxWidth: '380px',
+            width: '90%',
+            border: '1px solid rgba(255,255,255,0.1)',
+            backdropFilter: 'blur(16px)',
+            textAlign: 'center'
+          }}>
+            
+            {/* Animated Heart Logo */}
             <div style={{ 
-              fontSize: '28px', 
-              color: '#10B981', 
-              fontWeight: '700',
-              backgroundColor: 'white',
-              padding: '16px',
-              borderRadius: '12px',
-              boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
+              fontSize: '80px', 
+              marginBottom: '20px',
+              background: 'linear-gradient(135deg, #ec4899, #8b5cf6, #06b6d4, #10b981)',
+              backgroundSize: '300% 300%',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              animation: 'gradientShift 4s ease-in-out infinite'
             }}>
-              {counter?.count?.toLocaleString() || '243,876'} acts of kindness shared!
+              💜
             </div>
-          </div>
 
-          {/* How It Works */}
-          <div style={{ marginBottom: '40px' }}>
-            <h3 style={{ fontSize: '20px', fontWeight: '700', color: '#1f2937', textAlign: 'center', marginBottom: '24px' }}>
-              🌟 How It Works
-            </h3>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              {[
-                { step: '1', icon: '📝', title: 'Share Your Story', desc: 'Post about a kind act you did or witnessed - completely anonymous' },
-                { step: '2', icon: '💜', title: 'Inspire Others', desc: 'Your story joins a global feed of kindness that motivates others' },
-                { step: '3', icon: '🪙', title: 'Earn ECHO Tokens', desc: 'Get rewarded with tokens you can redeem for real gifts' },
-                { step: '4', icon: '🌍', title: 'Make an Impact', desc: 'Watch the kindness counter grow as we build a more positive world' }
-              ].map((step, index) => (
-                <div key={index} style={{
-                  display: 'flex',
-                  alignItems: 'flex-start',
-                  gap: '16px',
-                  padding: '20px',
-                  background: 'white',
-                  borderRadius: '16px',
-                  border: '1px solid #e5e7eb',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
-                }}>
-                  <div style={{
-                    minWidth: '40px',
-                    height: '40px',
-                    borderRadius: '20px',
-                    background: 'linear-gradient(135deg, #10B981, #8B5CF6)',
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '16px',
-                    fontWeight: '700',
-                    flexShrink: 0
-                  }}>
-                    {step.step}
-                  </div>
-                  <div style={{ flex: 1 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                      <span style={{ fontSize: '24px' }}>{step.icon}</span>
-                      <span style={{ fontWeight: '600', color: '#1f2937', fontSize: '18px' }}>{step.title}</span>
-                    </div>
-                    <p style={{ fontSize: '14px', color: '#6b7280', margin: 0, lineHeight: '1.5' }}>{step.desc}</p>
-                  </div>
+            {/* Title */}
+            <h1 style={{
+              fontSize: '36px',
+              fontWeight: '700',
+              margin: '0 0 8px 0',
+              background: 'linear-gradient(135deg, #f59e0b, #ec4899, #8b5cf6)',
+              backgroundSize: '200% 200%',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              animation: 'titleShimmer 3s ease-in-out infinite'
+            }}>
+              EchoDeed™
+            </h1>
+
+            {/* Subtitle */}
+            <p style={{
+              fontSize: '18px',
+              margin: '0 0 32px 0',
+              color: 'rgba(255,255,255,0.9)',
+              fontWeight: '500'
+            }}>
+              Your Kindness, Amplified ✨
+            </p>
+
+            {/* Feature List */}
+            <div style={{ 
+              display: 'flex', 
+              flexDirection: 'column', 
+              gap: '16px',
+              textAlign: 'left',
+              marginBottom: '32px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <span style={{ fontSize: '20px', marginTop: '2px' }}>🥰</span>
+                <div>
+                  <strong style={{ color: 'white', fontSize: '16px' }}>Share your kindness anonymously</strong>
+                  <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '16px' }}> - no profiles, just pure positivity</span>
                 </div>
-              ))}
+              </div>
+              
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <span style={{ fontSize: '20px', marginTop: '2px' }}>☀️</span>
+                <div>
+                  <strong style={{ color: 'white', fontSize: '16px' }}>Join a global movement</strong>
+                  <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '16px' }}> of people spreading joy and compassion</span>
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <span style={{ fontSize: '20px', marginTop: '2px' }}>🎁</span>
+                <div>
+                  <strong style={{ color: 'white', fontSize: '16px' }}>Collect $ECHO tokens</strong>
+                  <span style={{ color: 'rgba(255,255,255,0.7)', fontSize: '16px' }}> and redeem real rewards</span>
+                </div>
+              </div>
             </div>
-          </div>
 
-          {/* Get Started */}
-          <div style={{ textAlign: 'center' }}>
+            {/* Counter */}
+            <div style={{
+              background: 'rgba(255,255,255,0.1)',
+              borderRadius: '16px',
+              padding: '16px',
+              marginBottom: '24px',
+              border: '1px solid rgba(255,255,255,0.2)'
+            }}>
+              <div style={{ fontSize: '24px', fontWeight: '700', color: '#10b981' }}>
+                {counter?.count?.toLocaleString() || '243,876'}
+              </div>
+              <div style={{ fontSize: '14px', color: 'rgba(255,255,255,0.8)' }}>
+                acts of kindness shared so far!
+              </div>
+            </div>
+
+            {/* Enter App Button */}
             <button 
               onClick={() => setActiveTab('feed')}
               style={{
@@ -2151,26 +2160,25 @@ export default function Home() {
                 color: 'white',
                 border: 'none',
                 borderRadius: '16px',
-                padding: '16px 32px',
-                fontSize: '18px',
+                padding: '16px 24px',
+                fontSize: '16px',
                 fontWeight: '600',
                 cursor: 'pointer',
-                boxShadow: '0 4px 16px rgba(139,92,246,0.4)',
+                boxShadow: '0 8px 32px rgba(139,92,246,0.3)',
                 animation: 'titleShimmer 3s ease-in-out infinite',
                 transition: 'all 0.3s ease',
-                width: '100%',
-                maxWidth: '280px'
+                width: '100%'
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-                e.currentTarget.style.boxShadow = '0 6px 20px rgba(139,92,246,0.6)';
+                e.currentTarget.style.boxShadow = '0 12px 40px rgba(139,92,246,0.4)';
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                e.currentTarget.style.boxShadow = '0 4px 16px rgba(139,92,246,0.4)';
+                e.currentTarget.style.boxShadow = '0 8px 32px rgba(139,92,246,0.3)';
               }}
             >
-              🌟 Start Spreading Kindness!
+              🌟 Enter EchoDeed™
             </button>
           </div>
         </div>
