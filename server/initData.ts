@@ -5,6 +5,15 @@ export async function initializeSampleData() {
   try {
     log('Initializing sample data...');
     
+    // Test database connection first
+    try {
+      await storage.getCounter();
+      log('✓ Database connection verified');
+    } catch (dbError: any) {
+      log(`✗ Database connection failed: ${dbError.message}`);
+      throw new Error(`Database connection failed during startup: ${dbError.message}`);
+    }
+    
     // Check if we already have posts (to avoid duplicate initialization)
     const existingPosts = await storage.getPosts();
     if (existingPosts.length > 0) {
@@ -96,8 +105,10 @@ export async function initializeSampleData() {
     // Update global counter to reflect the sample posts
     await storage.incrementCounter(samplePosts.length);
 
-    log(`Successfully initialized ${samplePosts.length} sample posts and updated global counter`);
-  } catch (error) {
-    log(`Error initializing sample data: ${error}`);
+    log(`✓ Successfully initialized ${samplePosts.length} sample posts and updated global counter`);
+  } catch (error: any) {
+    log(`✗ Error initializing sample data: ${error.message}`);
+    // Re-throw the error so the calling code can decide how to handle it
+    throw new Error(`Sample data initialization failed: ${error.message}`);
   }
 }
