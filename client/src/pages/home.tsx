@@ -2277,6 +2277,148 @@ export default function Home() {
     );
   }
 
+  // Show Rewards tab if selected
+  if (activeTab === 'rewards') {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        {/* Header */}
+        <div style={{ 
+          background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+          color: 'white',
+          padding: '16px 20px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          borderBottomLeftRadius: '16px',
+          borderBottomRightRadius: '16px'
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '8px'
+          }}>
+            <h1 style={{ 
+              fontSize: '20px', 
+              fontWeight: '700',
+              margin: 0
+            }}>
+              🎁 Rewards & $ECHO
+            </h1>
+            <div style={{
+              background: 'rgba(255,255,255,0.2)',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: '600'
+            }}>
+              {tokens?.balance || 0} $ECHO
+            </div>
+          </div>
+          <p style={{ 
+            fontSize: '14px', 
+            opacity: 0.9, 
+            margin: 0 
+          }}>
+            Redeem your kindness tokens for real rewards
+          </p>
+        </div>
+        
+        {/* Rewards Content */}
+        <div style={{ padding: '20px' }}>
+          {/* $ECHO Balance */}
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '20px',
+            marginBottom: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontSize: '32px', marginBottom: '8px' }}>💰</div>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: '700',
+              margin: '0 0 8px 0',
+              color: '#10B981'
+            }}>
+              Your $ECHO Balance
+            </h3>
+            <div style={{ fontSize: '36px', fontWeight: '700', color: '#1f2937', marginBottom: '8px' }}>
+              {tokens?.balance || 0}
+            </div>
+            <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
+              Earned through acts of kindness
+            </p>
+          </div>
+
+          {/* Available Rewards */}
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}>
+            <h3 style={{ 
+              fontSize: '16px', 
+              fontWeight: '700',
+              margin: '0 0 16px 0',
+              color: '#1f2937',
+              textAlign: 'center'
+            }}>
+              🏆 Available Rewards
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { icon: '☕️', title: '$5 Coffee Gift Card', cost: 50, available: true },
+                { icon: '🎬', title: '$10 Movie Ticket', cost: 100, available: (tokens?.balance || 0) >= 100 },
+                { icon: '🛍️', title: '$25 Shopping Voucher', cost: 250, available: (tokens?.balance || 0) >= 250 },
+                { icon: '🍽️', title: '$50 Restaurant Credit', cost: 500, available: (tokens?.balance || 0) >= 500 }
+              ].map((reward, index) => (
+                <div key={index} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '12px',
+                  background: reward.available ? 'rgba(16,185,129,0.05)' : 'rgba(156,163,175,0.05)',
+                  borderRadius: '8px',
+                  border: `1px solid ${reward.available ? 'rgba(16,185,129,0.2)' : 'rgba(156,163,175,0.2)'}`
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <span style={{ fontSize: '20px' }}>{reward.icon}</span>
+                    <div>
+                      <div style={{ fontWeight: '600', color: '#1f2937', fontSize: '13px' }}>{reward.title}</div>
+                      <div style={{ fontSize: '11px', color: '#6b7280' }}>{reward.cost} $ECHO tokens</div>
+                    </div>
+                  </div>
+                  <button style={{
+                    background: reward.available ? 'linear-gradient(135deg, #10B981, #059669)' : '#9ca3af',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '6px',
+                    padding: '6px 12px',
+                    fontSize: '10px',
+                    fontWeight: '600',
+                    cursor: reward.available ? 'pointer' : 'not-allowed',
+                    opacity: reward.available ? 1 : 0.6
+                  }}>
+                    {reward.available ? 'Redeem' : 'Need More'}
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+        
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
+    );
+  }
+
   // Show About EchoDeed tab if selected
   if (activeTab === 'about') {
     return (
