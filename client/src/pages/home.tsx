@@ -334,7 +334,8 @@ export default function Home() {
               margin: '0 auto 20px',
               display: 'block',
               filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))',
-              animation: 'logoFloat 3s ease-in-out infinite'
+              animation: 'logoFloat 3s ease-in-out infinite',
+              borderRadius: '0'
             }}
           />
           
