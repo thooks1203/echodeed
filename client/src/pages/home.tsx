@@ -323,25 +323,37 @@ export default function Home() {
           padding: '60px 20px 40px', 
           textAlign: 'center'
         }}>
-          {/* Logo */}
+          {/* Floating Logo */}
           <div style={{ 
-            width: '400px', 
-            height: '400px', 
-            margin: '0 auto 8px',
+            width: '120px', 
+            height: '120px', 
+            margin: '0 auto 20px',
             position: 'relative',
-            filter: 'drop-shadow(0 12px 48px rgba(139,92,246,0.8))',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            backgroundColor: 'rgba(255,255,255,0.15)',
+            borderRadius: '50%',
+            backdropFilter: 'blur(20px)',
+            border: '2px solid rgba(255,255,255,0.3)',
+            boxShadow: '0 8px 32px rgba(139,92,246,0.4), 0 0 60px rgba(255,255,255,0.2)',
             animation: 'logoFloat 3s ease-in-out infinite'
           }}>
-            <img 
-              src="/logo.png" 
-              alt="EchoDeed™ Logo" 
-              style={{ 
-                width: '100%', 
-                height: '100%', 
-                objectFit: 'contain',
-                filter: 'brightness(1.1) contrast(1.1)'
-              }} 
-            />
+            <div style={{
+              width: '80px',
+              height: '80px',
+              backgroundColor: 'rgba(139,92,246,0.8)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: 'inset 0 2px 10px rgba(255,255,255,0.3)'
+            }}>
+              <span style={{ 
+                fontSize: '36px',
+                filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
+              }}>❤️</span>
+            </div>
           </div>
           
           {/* Brand Name */}
