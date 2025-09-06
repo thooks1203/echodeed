@@ -11,15 +11,15 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
   return (
     <header className="bg-card border-b border-border">
       <div className="p-4">
-        <div className="flex items-center justify-between mb-4">
-          <div className="flex items-center justify-center space-x-3 w-full">
+        <div className="relative flex items-center justify-center mb-4">
+          <div className="flex items-center space-x-3">
             <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
               <Heart className="text-primary-foreground" size={14} />
             </div>
             <h1 className="text-xl font-bold text-foreground" data-testid="text-app-title">EchoDeed™</h1>
           </div>
           <button 
-            className="p-2 rounded-lg bg-muted text-muted-foreground hover:bg-secondary transition-colors"
+            className="absolute right-0 p-2 rounded-lg bg-muted text-muted-foreground hover:bg-secondary transition-colors"
             data-testid="button-settings"
           >
             <Sliders size={14} />
