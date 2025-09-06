@@ -133,6 +133,10 @@
   }
 }
 
+.animate-logoFloat {
+  animation: logoFloat 3s ease-in-out infinite;
+}
+
 @keyframes titleShimmer {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
