@@ -18,92 +18,101 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
       content: (
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '64px', marginBottom: '20px' }}>💜</div>
-          <p style={{ fontSize: '16px', color: '#6b7280', marginBottom: '24px' }}>
-            EchoDeed™ is an anonymous kindness platform designed to inspire and track acts of kindness through a community-driven feed. Our AI-powered system transforms simple acts of kindness into measurable business outcomes for corporate wellness.
+          <p style={{ fontSize: '18px', color: '#6b7280', marginBottom: '24px', lineHeight: '1.6' }}>
+            Share anonymous acts of kindness and be part of a global community spreading positivity, one kind act at a time.
           </p>
           <div style={{
-            background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1))',
+            background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(16,185,129,0.1))',
             borderRadius: '12px',
-            padding: '16px',
-            border: '1px solid rgba(139,92,246,0.2)'
+            padding: '20px',
+            border: '1px solid rgba(139,92,246,0.2)',
+            marginBottom: '20px'
           }}>
-            <p style={{ fontSize: '14px', color: '#8B5CF6', fontWeight: '600', margin: 0 }}>
-              ✨ Turn every act of kindness into measurable business outcomes
+            <p style={{ fontSize: '16px', color: '#8B5CF6', fontWeight: '600', margin: 0 }}>
+              ✨ Every act of kindness creates ripples of positivity
             </p>
           </div>
-        </div>
-      )
-    },
-    {
-      title: "🧠 AI-Powered Insights",
-      subtitle: "Predictive Wellness Analytics",
-      content: (
-        <div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {[
-              { icon: '🔮', title: 'Predictive Analytics', desc: '87% accuracy in predicting employee wellness decline' },
-              { icon: '📊', title: 'Real-Time Insights', desc: 'Live sentiment analysis and wellness scoring' },
-              { icon: '🎯', title: 'Smart Alerts', desc: 'AI recommendations for team interventions' }
-            ].map((feature, index) => (
-              <div key={index} style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '12px',
-                padding: '12px',
-                background: 'rgba(59,130,246,0.05)',
-                borderRadius: '8px',
-                border: '1px solid rgba(59,130,246,0.1)'
-              }}>
-                <span style={{ fontSize: '24px' }}>{feature.icon}</span>
-                <div>
-                  <div style={{ fontWeight: '600', color: '#1f2937', fontSize: '14px' }}>{feature.title}</div>
-                  <div style={{ fontSize: '12px', color: '#6b7280' }}>{feature.desc}</div>
-                </div>
-              </div>
-            ))}
+          <div style={{ fontSize: '24px', color: '#10B981', fontWeight: '700' }}>
+            243,876 acts of kindness shared so far!
           </div>
         </div>
       )
     },
     {
-      title: "🎯 How It Works",
-      subtitle: "Simple. Powerful. Measurable.",
+      title: "🌟 How It Works",
+      subtitle: "Simple, Anonymous, Inspiring",
       content: (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {[
-            { step: '1', icon: '📝', title: 'Share Kindness', desc: 'Post anonymous acts of kindness that happen in your workplace' },
-            { step: '2', icon: '🧠', title: 'AI Analysis', desc: 'Our AI analyzes sentiment and predicts wellness trends' },
-            { step: '3', icon: '💎', title: 'Earn Rewards', desc: 'Get $ECHO tokens to redeem for real-world partner rewards' },
-            { step: '4', icon: '📈', title: 'Track Impact', desc: 'Watch your company culture transform with measurable results' }
+            { step: '1', icon: '📝', title: 'Share Your Story', desc: 'Post about a kind act you did or witnessed - completely anonymous' },
+            { step: '2', icon: '💜', title: 'Inspire Others', desc: 'Your story joins a global feed of kindness that motivates others' },
+            { step: '3', icon: '🪙', title: 'Earn ECHO Tokens', desc: 'Get rewarded with tokens you can redeem for real gifts' },
+            { step: '4', icon: '🌍', title: 'Make an Impact', desc: 'Watch the kindness counter grow as we build a more positive world' }
           ].map((step, index) => (
             <div key={index} style={{
               display: 'flex',
               alignItems: 'flex-start',
-              gap: '12px'
+              gap: '16px',
+              padding: '16px',
+              background: 'rgba(16,185,129,0.05)',
+              borderRadius: '12px',
+              border: '1px solid rgba(16,185,129,0.1)'
             }}>
               <div style={{
-                minWidth: '32px',
-                height: '32px',
-                borderRadius: '16px',
-                background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)',
+                minWidth: '36px',
+                height: '36px',
+                borderRadius: '18px',
+                background: 'linear-gradient(135deg, #10B981, #8B5CF6)',
                 color: 'white',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                fontSize: '12px',
-                fontWeight: '600'
+                fontSize: '14px',
+                fontWeight: '700',
+                flexShrink: 0
               }}>
                 {step.step}
               </div>
               <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px' }}>
                   <span style={{ fontSize: '20px' }}>{step.icon}</span>
-                  <span style={{ fontWeight: '600', color: '#1f2937', fontSize: '14px' }}>{step.title}</span>
+                  <span style={{ fontWeight: '600', color: '#1f2937', fontSize: '16px' }}>{step.title}</span>
                 </div>
-                <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>{step.desc}</p>
+                <p style={{ fontSize: '14px', color: '#6b7280', margin: 0, lineHeight: '1.5' }}>{step.desc}</p>
               </div>
             </div>
           ))}
+        </div>
+      )
+    },
+    {
+      title: "🎁 Ready to Start?",
+      subtitle: "Join the Global Kindness Movement",
+      content: (
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '48px', marginBottom: '20px' }}>🌟</div>
+          <p style={{ fontSize: '18px', color: '#6b7280', marginBottom: '24px', lineHeight: '1.6' }}>
+            You're now part of a growing community of people making the world a little brighter through small acts of kindness.
+          </p>
+          <div style={{ 
+            display: 'flex', 
+            flexDirection: 'column', 
+            gap: '12px',
+            padding: '20px',
+            background: 'linear-gradient(135deg, rgba(16,185,129,0.1), rgba(139,92,246,0.1))',
+            borderRadius: '12px',
+            border: '1px solid rgba(16,185,129,0.2)'
+          }}>
+            <div style={{ fontSize: '16px', fontWeight: '600', color: '#10B981' }}>
+              🏠 Browse the global kindness feed
+            </div>
+            <div style={{ fontSize: '16px', fontWeight: '600', color: '#8B5CF6' }}>
+              📍 Discover local acts of kindness
+            </div>
+            <div style={{ fontSize: '16px', fontWeight: '600', color: '#F59E0B' }}>
+              🏅 Earn badges and track your impact
+            </div>
+          </div>
         </div>
       )
     }
