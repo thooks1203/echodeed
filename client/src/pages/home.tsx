@@ -42,12 +42,20 @@ export default function Home() {
 
   // Force disable all overlays
   useEffect(() => {
-    // Force all modal states to false
+    // Force all modal states to false and clear any blocking elements
     setShowWelcomeModal(false);
     setShowNotificationSetup(false);
     setTokenEarning(null);
     setAchievementNotification(null);
-  }, []);
+    
+    // Remove any lingering modal overlays from DOM
+    const overlays = document.querySelectorAll('[style*="position: fixed"][style*="z-index"]');
+    overlays.forEach(overlay => {
+      if (overlay.getAttribute('style')?.includes('rgba(0,0,0')) {
+        overlay.remove();
+      }
+    });
+  }, [activeTab]); // Re-run when tab changes
 
   const handleWelcomeClose = () => {
     setShowWelcomeModal(false);
