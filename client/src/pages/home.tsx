@@ -429,17 +429,30 @@ export default function Home() {
                 queryClient.invalidateQueries({ queryKey: ['/api/corporate/accounts/demo/dashboard'] });
               }}
               style={{
-                backgroundColor: '#0ea5e9',
+                backgroundColor: '#8B5CF6',
                 color: 'white',
                 border: 'none',
-                borderRadius: '8px',
-                padding: '8px 16px',
-                fontSize: '12px',
-                fontWeight: '600',
-                cursor: 'pointer'
+                borderRadius: '12px',
+                padding: '14px 24px',
+                fontSize: '16px',
+                fontWeight: '700',
+                cursor: 'pointer',
+                width: '100%',
+                boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
+                transition: 'all 0.2s ease',
+                marginTop: '4px'
               }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.backgroundColor = '#7C3AED';
+                e.currentTarget.style.transform = 'translateY(-1px)';
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.backgroundColor = '#8B5CF6';
+                e.currentTarget.style.transform = 'translateY(0px)';
+              }}
+              data-testid="button-view-demo-dashboard"
             >
-              View Demo
+              🚀 View Demo Dashboard
             </button>
           </div>
         </div>
