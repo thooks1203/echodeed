@@ -128,7 +128,7 @@ export function LandingPage() {
             boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
           }}
         >
-          🚀 Sign In with Replit
+          TAP HERE to Start Spreading Kindness!
         </a>
       </div>
 
