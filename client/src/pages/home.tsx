@@ -12,6 +12,7 @@ import { NotificationSetupModal } from '@/components/notification-setup-modal';
 import { useTabNavigation } from '@/hooks/useNavigation';
 import { BackButton } from '@/components/BackButton';
 import { WelcomeModal } from '@/components/WelcomeModal';
+import { MarketingDashboard } from '@/components/MarketingDashboard';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { pushNotifications } from '@/services/pushNotifications';
@@ -2721,6 +2722,114 @@ export default function Home() {
   }
 
   // Show Admin tab if selected
+  if (activeTab === 'marketing') {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        {/* Header */}
+        <div style={{ 
+          background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+          color: 'white', 
+          padding: '20px', 
+          textAlign: 'center',
+          position: 'relative'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <div style={{ 
+                width: '32px', 
+                height: '32px', 
+                backgroundColor: 'rgba(255,255,255,0.2)', 
+                borderRadius: '50%', 
+                display: 'flex', 
+                alignItems: 'center', 
+                justifyContent: 'center' 
+              }}>
+                🚀
+              </div>
+              <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™ Marketing</h1>
+            </div>
+            
+            {/* $ECHO Balance */}
+            <div style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '6px',
+              backgroundColor: 'rgba(255,255,255,0.2)',
+              padding: '6px 12px',
+              borderRadius: '20px',
+              fontSize: '14px',
+              fontWeight: '600'
+            }}>
+              <span style={{ fontSize: '16px' }}>🪙</span>
+              <span>{tokens?.echoBalance || 0} $ECHO</span>
+            </div>
+          </div>
+          
+          <div style={{ fontSize: '14px', opacity: 0.8 }}>Viral Growth & Social Amplification</div>
+        </div>
+
+        {/* Marketing Dashboard Content */}
+        <div style={{ padding: '20px' }}>
+          <MarketingDashboard />
+        </div>
+
+        {/* Bottom Navigation */}
+        <div style={{
+          position: 'fixed',
+          bottom: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          maxWidth: '430px',
+          width: '100%',
+          backgroundColor: 'rgba(255,255,255,0.95)',
+          backdropFilter: 'blur(8px)',
+          borderTop: '1px solid #e5e7eb',
+          display: 'flex',
+          justifyContent: 'space-around',
+          padding: '12px 0',
+          zIndex: 100
+        }}>
+          {[
+            { id: 'feed', label: 'Feed', icon: '🏠' },
+            { id: 'marketing', label: 'Marketing', icon: '🚀' },
+            { id: 'ai', label: 'AI', icon: '🧠' },
+            { id: 'badges', label: 'Badges', icon: '🏅' },
+            { id: 'corporate', label: 'Corporate', icon: '🏢' },
+          ].map((tab) => (
+            <button 
+              key={tab.id}
+              onClick={() => navigateToTab(tab.id)}
+              style={{
+                background: 'none',
+                border: 'none',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '4px',
+                padding: '8px',
+                borderRadius: '8px',
+                cursor: 'pointer',
+                fontSize: '12px',
+                fontWeight: '500',
+                color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
+                backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
+              }}
+            >
+              <span style={{ fontSize: '18px' }}>{tab.icon}</span>
+              <span>{tab.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
   if (activeTab === 'admin') {
     return (
       <div style={{ 
@@ -3587,10 +3696,10 @@ export default function Home() {
       }}>
         {[
           { id: 'feed', label: 'Feed', icon: '🏠' },
-          { id: 'rewards', label: 'Rewards', icon: '💎' },
+          { id: 'marketing', label: 'Marketing', icon: '🚀' },
           { id: 'ai', label: 'AI Insights', icon: '🧠' },
           { id: 'badges', label: 'Badges', icon: '🏅' },
-          { id: 'notifications', label: 'Notifications', icon: '🔔' },
+          { id: 'corporate', label: 'Corporate', icon: '🏢' },
         ].map((tab) => {
           if (tab.id === 'spacer') {
             return <div key={tab.id} style={{ width: '32px' }} />;

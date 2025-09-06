@@ -22,6 +22,10 @@ export const users = pgTable("users", {
   firstName: varchar("first_name"),
   lastName: varchar("last_name"),
   profileImageUrl: varchar("profile_image_url"),
+  referralCode: varchar("referral_code"),
+  referredBy: varchar("referred_by"),
+  totalReferrals: integer("total_referrals").default(0),
+  referralEarnings: integer("referral_earnings").default(0),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -368,6 +372,86 @@ export const prizeWinners = pgTable("prize_winners", {
   deliveredAt: timestamp("delivered_at"),
 });
 
+// Marketing & Viral Growth System
+export const referrals = pgTable("referrals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  referrerId: varchar("referrer_id").references(() => users.id),
+  refereeId: varchar("referee_id").references(() => users.id),
+  referralCode: varchar("referral_code").notNull(),
+  rewardAmount: integer("reward_amount").default(50),
+  status: varchar("status").default("pending").notNull(), // pending, completed, paid
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const shareableAchievements = pgTable("shareable_achievements", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id),
+  achievementType: varchar("achievement_type").notNull(), // milestone, badge, streak, company_stats
+  title: varchar("title").notNull(),
+  description: varchar("description").notNull(),
+  imageUrl: varchar("image_url"),
+  shareData: jsonb("share_data"), // Custom data for different share types
+  shareCount: integer("share_count").default(0),
+  clickCount: integer("click_count").default(0),
+  conversionCount: integer("conversion_count").default(0),
+  isPublic: integer("is_public").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const companyLeaderboards = pgTable("company_leaderboards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  corporateAccountId: varchar("corporate_account_id").notNull(),
+  leaderboardType: varchar("leaderboard_type").notNull(), // kindness_count, echo_earnings, streak, wellness_score
+  period: varchar("period").notNull(), // daily, weekly, monthly, all_time
+  title: varchar("title").notNull(),
+  description: text("description"),
+  prizes: jsonb("prizes"), // Prize structure for winners
+  isPublic: integer("is_public").default(0).notNull(), // 0 = internal only, 1 = public
+  isActive: integer("is_active").default(1).notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const leaderboardEntries = pgTable("leaderboard_entries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  leaderboardId: varchar("leaderboard_id").notNull(),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  score: integer("score").notNull(),
+  rank: integer("rank"),
+  metadata: jsonb("metadata"), // Additional stats for display
+  calculatedAt: timestamp("calculated_at").defaultNow().notNull(),
+});
+
+export const marketingCampaigns = pgTable("marketing_campaigns", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  campaignName: varchar("campaign_name").notNull(),
+  campaignType: varchar("campaign_type").notNull(), // referral, social_share, leaderboard, viral_challenge
+  targetAudience: varchar("target_audience"), // new_users, active_users, corporate_admins
+  title: varchar("title").notNull(),
+  description: text("description"),
+  callToAction: varchar("call_to_action"),
+  rewardStructure: jsonb("reward_structure"), // How rewards are calculated
+  trackingData: jsonb("tracking_data"), // UTM codes, attribution
+  isActive: integer("is_active").default(1).notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const marketingAnalytics = pgTable("marketing_analytics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  analyticsDate: timestamp("analytics_date").notNull(),
+  metric: varchar("metric").notNull(), // referrals_sent, shares_made, clicks_received, conversions
+  source: varchar("source"), // referral, social, email, direct
+  value: integer("value").notNull(),
+  metadata: jsonb("metadata"), // Additional context
+  corporateAccountId: varchar("corporate_account_id"), // Optional - for company-specific metrics
+  campaignId: varchar("campaign_id"), // Optional - for campaign attribution
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // B2B SaaS Insert Schemas
 export const insertCorporateAccountSchema = createInsertSchema(corporateAccounts).omit({
   id: true,
@@ -434,6 +518,37 @@ export const insertPrizeWinnerSchema = createInsertSchema(prizeWinners).omit({
   wonAt: true,
 });
 
+// Marketing System Insert Schemas
+export const insertReferralSchema = createInsertSchema(referrals).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertShareableAchievementSchema = createInsertSchema(shareableAchievements).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertCompanyLeaderboardSchema = createInsertSchema(companyLeaderboards).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertLeaderboardEntrySchema = createInsertSchema(leaderboardEntries).omit({
+  id: true,
+  calculatedAt: true,
+});
+
+export const insertMarketingCampaignSchema = createInsertSchema(marketingCampaigns).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertMarketingAnalyticsSchema = createInsertSchema(marketingAnalytics).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertKindnessPost = z.infer<typeof insertKindnessPostSchema>;
 export type KindnessPost = typeof kindnessPosts.$inferSelect;
 export type KindnessCounter = typeof kindnessCounter.$inferSelect;
@@ -470,6 +585,20 @@ export type InsertRewardRedemption = z.infer<typeof insertRewardRedemptionSchema
 export type KindnessVerification = typeof kindnessVerifications.$inferSelect;
 export type InsertKindnessVerification = z.infer<typeof insertKindnessVerificationSchema>;
 export type BadgeReward = typeof badgeRewards.$inferSelect;
+
+// Marketing & Viral Growth Types
+export type Referral = typeof referrals.$inferSelect;
+export type InsertReferral = z.infer<typeof insertReferralSchema>;
+export type ShareableAchievement = typeof shareableAchievements.$inferSelect;
+export type InsertShareableAchievement = z.infer<typeof insertShareableAchievementSchema>;
+export type CompanyLeaderboard = typeof companyLeaderboards.$inferSelect;
+export type InsertCompanyLeaderboard = z.infer<typeof insertCompanyLeaderboardSchema>;
+export type LeaderboardEntry = typeof leaderboardEntries.$inferSelect;
+export type InsertLeaderboardEntry = z.infer<typeof insertLeaderboardEntrySchema>;
+export type MarketingCampaign = typeof marketingCampaigns.$inferSelect;
+export type InsertMarketingCampaign = z.infer<typeof insertMarketingCampaignSchema>;
+export type MarketingAnalytics = typeof marketingAnalytics.$inferSelect;
+export type InsertMarketingAnalytics = z.infer<typeof insertMarketingAnalyticsSchema>;
 export type InsertBadgeReward = z.infer<typeof insertBadgeRewardSchema>;
 export type WeeklyPrize = typeof weeklyPrizes.$inferSelect;
 export type InsertWeeklyPrize = z.infer<typeof insertWeeklyPrizeSchema>;
