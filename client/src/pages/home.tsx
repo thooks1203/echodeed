@@ -9,6 +9,8 @@ import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { AIDashboard } from '@/components/ai-dashboard-fixed';
 import { NotificationSetupModal } from '@/components/notification-setup-modal';
+import { useTabNavigation } from '@/hooks/useNavigation';
+import { BackButton } from '@/components/BackButton';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { pushNotifications } from '@/services/pushNotifications';
@@ -21,7 +23,7 @@ export default function Home() {
   const [pathname, navigate] = useLocation();
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
-  const [activeTab, setActiveTab] = useState('feed');
+  const { activeTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation('feed');
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
@@ -480,6 +482,15 @@ export default function Home() {
           WebkitBackgroundClip: 'text',
           WebkitTextFillColor: 'transparent'
         }}>
+          {canGoBackInTabs && (
+            <div style={{ position: 'absolute', left: '20px', top: '20px' }}>
+              <BackButton 
+                onClick={goBackInTabs}
+                variant="default"
+                label=""
+              />
+            </div>
+          )}
           {account.companyName} Dashboard
         </h2>
         
@@ -2062,7 +2073,7 @@ export default function Home() {
             return (
               <button 
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => navigateToTab(tab.id)}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -2203,7 +2214,7 @@ export default function Home() {
           ].map((tab) => (
             <button 
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => navigateToTab(tab.id)}
               style={{
                 background: 'none',
                 border: 'none',
@@ -2521,7 +2532,7 @@ export default function Home() {
           ].map((tab) => (
             <button 
               key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
+              onClick={() => navigateToTab(tab.id)}
               style={{
                 background: 'none',
                 border: 'none',
@@ -2638,7 +2649,7 @@ export default function Home() {
             return (
               <button 
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => navigateToTab(tab.id)}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -2750,7 +2761,7 @@ export default function Home() {
             return (
               <button 
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => navigateToTab(tab.id)}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -2889,7 +2900,7 @@ export default function Home() {
             return (
               <button 
                 key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
+                onClick={() => navigateToTab(tab.id)}
                 style={{
                   background: 'none',
                   border: 'none',
@@ -3317,7 +3328,7 @@ export default function Home() {
             {/* View more challenges link */}
             <div style={{ textAlign: 'center', marginBottom: '16px' }}>
               <button
-                onClick={() => setActiveTab('partners')}
+                onClick={() => navigateToTab('partners')}
                 style={{
                   backgroundColor: 'transparent',
                   border: '1px solid #10B981',
@@ -3542,7 +3553,7 @@ export default function Home() {
                 if (tab.id === 'rewards') {
                   navigate('/rewards');
                 } else {
-                  setActiveTab(tab.id);
+                  navigateToTab(tab.id);
                 }
               }}
               style={{

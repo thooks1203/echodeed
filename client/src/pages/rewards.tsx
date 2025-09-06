@@ -7,6 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import { useNavigation } from '@/hooks/useNavigation';
+import { BackButton } from '@/components/BackButton';
 import { Shield, Star, Gift, ShoppingBag, Coffee, Music, Trophy, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
 
 interface RewardOffer {
@@ -78,6 +80,7 @@ export default function RewardsPage() {
   const [selectedOfferType, setSelectedOfferType] = useState<string>('all');
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { canGoBack, goBack } = useNavigation();
 
   // Fetch user tokens
   const { data: userTokens } = useQuery<UserTokens>({
@@ -162,7 +165,16 @@ export default function RewardsPage() {
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-green-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-green-950/20 p-4 md:p-8">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-8 relative">
+          {canGoBack && (
+            <div className="absolute left-0 top-0">
+              <BackButton 
+                onClick={goBack}
+                variant="minimal"
+                style={{ color: '#6b7280' }}
+              />
+            </div>
+          )}
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             💎 Rewards Marketplace
           </h1>
