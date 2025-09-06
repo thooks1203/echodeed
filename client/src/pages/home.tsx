@@ -4466,6 +4466,9 @@ export default function Home() {
         onClose={handleWelcomeClose}
       />
       
+      {/* Smart Kindness Nudging System - Revolutionary feature! ✨ */}
+      <KindnessNudgeSystem />
+      
       {/* Bottom Navigation */}
       <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       
