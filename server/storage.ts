@@ -94,6 +94,7 @@ export interface IStorage {
   // Counter operations
   getCounter(): Promise<KindnessCounter>;
   incrementCounter(amount?: number): Promise<KindnessCounter>;
+  setCounter(count: number): Promise<KindnessCounter>;
   
   // User token operations
   getUserTokens(userId: string): Promise<UserTokens | undefined>;
@@ -384,6 +385,19 @@ export class DatabaseStorage implements IStorage {
       .update(kindnessCounter)
       .set({ 
         count: sql`${kindnessCounter.count} + ${amount}`,
+        updatedAt: new Date()
+      })
+      .where(eq(kindnessCounter.id, "global"))
+      .returning();
+      
+    return counter;
+  }
+
+  async setCounter(count: number): Promise<KindnessCounter> {
+    const [counter] = await db
+      .update(kindnessCounter)
+      .set({ 
+        count: count,
         updatedAt: new Date()
       })
       .where(eq(kindnessCounter.id, "global"))
