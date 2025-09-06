@@ -324,6 +324,71 @@ export async function initializeSampleData() {
     log(`✓ Set global counter to 243,876 for fresh deployment`);
     log(`✓ Added ${samplePosts.length} sample posts`);
 
+    // Initialize sample reward partners
+    const existingPartners = await storage.getRewardPartners();
+    if (existingPartners.length === 0) {
+      log('Initializing sample reward partners...');
+      
+      const samplePartners = [
+        {
+          partnerName: "Starbucks",
+          partnerLogo: "https://upload.wikimedia.org/wikipedia/en/thumb/d/d3/Starbucks_Corporation_Logo_2011.svg/1200px-Starbucks_Corporation_Logo_2011.svg.png",
+          partnerType: "food",
+          websiteUrl: "https://starbucks.com",
+          description: "America's favorite coffee destination with premium beverages and food",
+          isActive: 1,
+          isFeatured: 1,
+          minRedemptionAmount: 100,
+          maxRedemptionAmount: 2000,
+          contactEmail: "partners@starbucks.com"
+        },
+        {
+          partnerName: "Amazon",
+          partnerLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a9/Amazon_logo.svg/1200px-Amazon_logo.svg.png",
+          partnerType: "retail",
+          websiteUrl: "https://amazon.com",
+          description: "Everything you need, delivered fast with exclusive EchoDeed™ member discounts",
+          isActive: 1,
+          isFeatured: 1,
+          minRedemptionAmount: 200,
+          maxRedemptionAmount: 5000,
+          contactEmail: "corporate@amazon.com"
+        },
+        {
+          partnerName: "Nike",
+          partnerLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a6/Logo_NIKE.svg/1200px-Logo_NIKE.svg.png",
+          partnerType: "wellness",
+          websiteUrl: "https://nike.com",
+          description: "Premium athletic gear and wellness products to support your active lifestyle",
+          isActive: 1,
+          isFeatured: 1,
+          minRedemptionAmount: 300,
+          maxRedemptionAmount: 3000,
+          contactEmail: "corporate@nike.com"
+        },
+        {
+          partnerName: "Spotify",
+          partnerLogo: "https://upload.wikimedia.org/wikipedia/commons/thumb/1/19/Spotify_logo_without_text.svg/1200px-Spotify_logo_without_text.svg.png",
+          partnerType: "tech",
+          websiteUrl: "https://spotify.com",
+          description: "Premium music streaming with exclusive wellness playlists for EchoDeed™ members",
+          isActive: 1,
+          isFeatured: 0,
+          minRedemptionAmount: 150,
+          maxRedemptionAmount: 1500,
+          contactEmail: "partnerships@spotify.com"
+        }
+      ];
+
+      for (const partner of samplePartners) {
+        await storage.createRewardPartner(partner);
+      }
+      
+      log(`✓ Initialized ${samplePartners.length} sample reward partners`);
+    } else {
+      log('Reward partners already exist, skipping initialization');
+    }
+
     log(`✓ Successfully initialized ${samplePosts.length} sample posts and updated global counter`);
   } catch (error: any) {
     log(`✗ Error initializing sample data: ${error.message}`);

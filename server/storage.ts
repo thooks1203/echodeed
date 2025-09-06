@@ -1379,6 +1379,7 @@ export class DatabaseStorage implements IStorage {
         primaryColor: '#8B5CF6',
         companyLogo: null,
         totalEmployees: 156,
+        contactEmail: 'hello@techflow.com',
         isActive: 1
       }).returning();
 

@@ -2097,6 +2097,7 @@ export default function Home() {
             { id: 'feed', label: 'Feed', icon: '🏠' },
             { id: 'local', label: 'Local', icon: '📍' },
             { id: 'badges', label: 'Badges', icon: '🏅' },
+            { id: 'partners', label: 'Rewards', icon: '🎁' },
             { id: 'corporate', label: 'Corporate', icon: '🏢' },
             { id: 'admin', label: 'Admin', icon: '⚙️' },
           ].map((tab) => {
@@ -2697,6 +2698,7 @@ export default function Home() {
             { id: 'feed', label: 'Feed', icon: '🏠' },
             { id: 'local', label: 'Local', icon: '📍' },
             { id: 'badges', label: 'Badges', icon: '🏅' },
+            { id: 'partners', label: 'Rewards', icon: '🎁' },
             { id: 'corporate', label: 'Corporate', icon: '🏢' },
             { id: 'admin', label: 'Admin', icon: '⚙️' },
           ].map((tab) => {
@@ -2917,6 +2919,7 @@ export default function Home() {
             { id: 'feed', label: 'Feed', icon: '🏠' },
             { id: 'local', label: 'Local', icon: '📍' },
             { id: 'badges', label: 'Badges', icon: '🏅' },
+            { id: 'partners', label: 'Rewards', icon: '🎁' },
             { id: 'corporate', label: 'Corporate', icon: '🏢' },
             { id: 'admin', label: 'Admin', icon: '⚙️' },
           ].map((tab) => {
@@ -3056,6 +3059,7 @@ export default function Home() {
             { id: 'feed', label: 'Feed', icon: '🏠' },
             { id: 'local', label: 'Local', icon: '📍' },
             { id: 'badges', label: 'Badges', icon: '🏅' },
+            { id: 'partners', label: 'Rewards', icon: '🎁' },
             { id: 'corporate', label: 'Corporate', icon: '🏢' },
             { id: 'admin', label: 'Admin', icon: '⚙️' },
           ].map((tab) => {
