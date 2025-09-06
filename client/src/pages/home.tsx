@@ -79,6 +79,8 @@ export default function Home() {
   // Fetch counter
   const { data: counter, refetch: refetchCounter } = useQuery<KindnessCounter>({
     queryKey: ['/api/counter'],
+    staleTime: 0, // Force fresh data
+    cacheTime: 0, // Don't cache
   });
 
   // Fetch user tokens
@@ -3482,6 +3484,79 @@ export default function Home() {
       
       {/* Feed */}
       <div style={{ backgroundColor: '#f8f9fa', paddingBottom: '100px' }}>
+        
+        {/* Welcome to EchoDeed Section */}
+        <div style={{
+          background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1))',
+          margin: '16px',
+          borderRadius: '12px',
+          padding: '16px',
+          border: '1px solid rgba(139,92,246,0.2)',
+          marginBottom: '20px'
+        }}>
+          <div style={{ textAlign: 'center', marginBottom: '12px' }}>
+            <div style={{ fontSize: '32px', marginBottom: '8px' }}>💜</div>
+            <h3 style={{ 
+              fontSize: '18px', 
+              fontWeight: '700',
+              margin: '0 0 8px 0',
+              background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
+              Welcome to EchoDeed™
+            </h3>
+            <p style={{ fontSize: '12px', color: '#6b7280', margin: '0 0 12px 0', lineHeight: '1.4' }}>
+              Anonymous kindness platform transforming acts of kindness into measurable business outcomes through AI-powered wellness analytics.
+            </p>
+            <div style={{
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              gap: '8px',
+              marginBottom: '12px'
+            }}>
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(16,185,129,0.1))',
+                borderRadius: '6px',
+                padding: '6px 10px',
+                border: '1px solid rgba(139,92,246,0.2)',
+                fontSize: '10px',
+                color: '#8B5CF6',
+                fontWeight: '600'
+              }}>
+                ✨ 87% AI Accuracy
+              </div>
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(16,185,129,0.1))',
+                borderRadius: '6px',
+                padding: '6px 10px',
+                border: '1px solid rgba(139,92,246,0.2)',
+                fontSize: '10px',
+                color: '#8B5CF6',
+                fontWeight: '600'
+              }}>
+                🧠 Real-time Insights
+              </div>
+            </div>
+            <button 
+              onClick={() => navigateToTab('about')}
+              style={{
+                background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)',
+                color: 'white',
+                border: 'none',
+                padding: '8px 16px',
+                borderRadius: '6px',
+                fontSize: '11px',
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
+            >
+              Learn More About EchoDeed
+            </button>
+          </div>
+        </div>
         
         {/* Brand Challenges Section */}
         {challenges.length > 0 && (
