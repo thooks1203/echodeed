@@ -15,6 +15,7 @@ import logoUrl from '@assets/ECHODEED_1757095612642.png';
 import { WelcomeModal } from '@/components/WelcomeModal';
 import { MarketingDashboard } from '@/components/MarketingDashboard';
 import { KindnessNudgeSystem } from '@/components/KindnessNudgeSystem';
+import { SchoolsDashboard } from '@/components/schools/SchoolsDashboard';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { pushNotifications } from '@/services/pushNotifications';
@@ -3311,6 +3312,22 @@ export default function Home() {
         {renderCorporateTab()}
 
         {/* Bottom Navigation */}
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
+    );
+  }
+
+  // 🏫 Show Schools tab if selected - REVOLUTIONARY EDUCATION PLATFORM!
+  if (activeTab === 'schools') {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        <SchoolsDashboard />
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
