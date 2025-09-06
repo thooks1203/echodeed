@@ -14,19 +14,14 @@ import OfflineDataHandler from "@/components/OfflineDataHandler";
 import MobileTouchOptimizer from "@/components/MobileTouchOptimizer";
 
 function Router() {
-  const { isAuthenticated, isLoading } = useAuth();
+  // Removed authentication requirement for easier access
+  // const { isAuthenticated, isLoading } = useAuth();
 
   return (
     <Switch>
-      {isLoading || !isAuthenticated ? (
-        <Route path="/" component={LandingPage} />
-      ) : (
-        <>
-          <Route path="/" component={Home} />
-          <Route path="/rewards" component={RewardsPage} />
-          <Route path="/admin" component={AdminDashboard} />
-        </>
-      )}
+      <Route path="/" component={Home} />
+      <Route path="/rewards" component={RewardsPage} />
+      <Route path="/admin" component={AdminDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
