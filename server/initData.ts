@@ -217,6 +217,98 @@ export async function initializeSampleData() {
         state: "Utah",
         country: "United States",
         isAnonymous: 1
+      },
+      // Community Action
+      {
+        content: "Organized a neighborhood cleanup day and 30 volunteers showed up! Together we collected 15 bags of trash. 🌟",
+        category: "Community Action",
+        location: "Portland, Oregon",
+        city: "Portland",
+        state: "Oregon",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Started a community garden in an empty lot. Now families have fresh vegetables and a place to connect! 🌱",
+        category: "Community Action",
+        location: "Detroit, Michigan",
+        city: "Detroit",
+        state: "Michigan",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Coordinated a tool lending library for neighbors. Why buy when you can share and build community? 🔨",
+        category: "Community Action",
+        location: "Burlington, Vermont",
+        city: "Burlington",
+        state: "Vermont",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Organized free community skill-sharing workshops. Teaching photography, cooking, and guitar lessons! 📸",
+        category: "Community Action",
+        location: "Asheville, North Carolina",
+        city: "Asheville",
+        state: "North Carolina",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Started a neighborhood book exchange in old phone booth. Now everyone has access to free books! 📚",
+        category: "Community Action",
+        location: "Madison, Wisconsin",
+        city: "Madison",
+        state: "Wisconsin",
+        country: "United States",
+        isAnonymous: 1
+      },
+      // Spreading Positivity
+      {
+        content: "Left rainbow chalk art with inspiring quotes on sidewalks throughout my town. Color makes everything better! 🌈",
+        category: "Spreading Positivity",
+        location: "Santa Fe, New Mexico",
+        city: "Santa Fe",
+        state: "New Mexico",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Started a compliment chain at work - each person has to genuinely compliment someone new daily! 😊",
+        category: "Spreading Positivity",
+        location: "Richmond, Virginia",
+        city: "Richmond",
+        state: "Virginia",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Created handmade gratitude cards and left them randomly in coffee shops, libraries, and bus stops! 💌",
+        category: "Spreading Positivity",
+        location: "Eugene, Oregon",
+        city: "Eugene",
+        state: "Oregon",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Started a social media campaign sharing one positive local business story daily. Spreading good vibes! ✨",
+        category: "Spreading Positivity",
+        location: "Savannah, Georgia",
+        city: "Savannah",
+        state: "Georgia",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Organized a community gratitude circle in the park. 20 strangers sharing what they're thankful for! 🙏",
+        category: "Spreading Positivity",
+        location: "Boulder, Colorado",
+        city: "Boulder",
+        state: "Colorado",
+        country: "United States",
+        isAnonymous: 1
       }
     ];
 
