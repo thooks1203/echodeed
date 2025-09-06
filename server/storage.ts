@@ -595,6 +595,15 @@ export class DatabaseStorage implements IStorage {
     return newEmployee;
   }
 
+  async updateCorporateEmployee(id: string, updates: Partial<CorporateEmployee>): Promise<CorporateEmployee | undefined> {
+    const [updatedEmployee] = await db
+      .update(corporateEmployees)
+      .set(updates)
+      .where(eq(corporateEmployees.id, id))
+      .returning();
+    return updatedEmployee || undefined;
+  }
+
   async getCorporateTeams(corporateAccountId: string): Promise<CorporateTeam[]> {
     return await db.select()
       .from(corporateTeams)
@@ -602,6 +611,30 @@ export class DatabaseStorage implements IStorage {
         eq(corporateTeams.corporateAccountId, corporateAccountId),
         eq(corporateTeams.isActive, 1)
       ));
+  }
+
+  async createCorporateTeam(team: InsertCorporateTeam): Promise<CorporateTeam> {
+    const [newTeam] = await db
+      .insert(corporateTeams)
+      .values(team)
+      .returning();
+    return newTeam;
+  }
+
+  async updateCorporateTeam(id: string, updates: Partial<CorporateTeam>): Promise<CorporateTeam | undefined> {
+    const [updatedTeam] = await db
+      .update(corporateTeams)
+      .set(updates)
+      .where(eq(corporateTeams.id, id))
+      .returning();
+    return updatedTeam || undefined;
+  }
+
+  async deleteCorporateTeam(id: string): Promise<void> {
+    await db
+      .update(corporateTeams)
+      .set({ isActive: 0 })
+      .where(eq(corporateTeams.id, id));
   }
 
   async getCorporateChallenges(corporateAccountId: string): Promise<CorporateChallenge[]> {
@@ -625,6 +658,28 @@ export class DatabaseStorage implements IStorage {
         gte(corporateAnalytics.analyticsDate, startDate)
       ))
       .orderBy(desc(corporateAnalytics.analyticsDate));
+  }
+
+  async createCorporateChallenge(challenge: InsertCorporateChallenge): Promise<CorporateChallenge> {
+    const [newChallenge] = await db
+      .insert(corporateChallenges)
+      .values(challenge)
+      .returning();
+    return newChallenge;
+  }
+
+  async completeCorporateChallenge(challengeId: string, userId: string): Promise<ChallengeCompletion> {
+    const [completion] = await db
+      .insert(challengeCompletions)
+      .values({ challengeId, userId })
+      .returning();
+    return completion;
+  }
+
+  async generateDailyCorporateAnalytics(corporateAccountId: string): Promise<void> {
+    // This would generate daily analytics - for now just a placeholder
+    // In a real implementation, this would calculate and store daily metrics
+    console.log(`Generating daily analytics for corporate account: ${corporateAccountId}`);
   }
 
   // Wellness analytics implementations

@@ -623,12 +623,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Session ID required' });
       }
 
-      const result = await storage.completeChallenge(challengeId, sessionId);
+      const result = await storage.completeChallenge({ challengeId, userId: sessionId });
       
       // Broadcast challenge completion
       broadcast({
         type: 'CHALLENGE_COMPLETED',
-        challenge: result.challenge,
+        challengeId: result.challengeId,
       });
       
       res.json(result);
@@ -888,7 +888,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Broadcast challenge completion
       broadcast({
         type: 'CORPORATE_CHALLENGE_COMPLETED',
-        challenge: result.challenge,
+        challengeId: result.challengeId,
         sessionId
       });
       
@@ -1475,13 +1475,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check if user has enough tokens
       const userTokens = await storage.getUserTokens(userId);
-      if (!userTokens || userTokens.echoTokens < echoSpent) {
+      if (!userTokens || userTokens.echoBalance < echoSpent) {
         return res.status(400).json({ message: 'Insufficient $ECHO tokens' });
       }
 
       // Deduct tokens from user
       await storage.updateUserTokens(userId, {
-        echoTokens: userTokens.echoTokens - echoSpent
+        echoBalance: userTokens.echoBalance - echoSpent
       });
 
       // Create redemption
