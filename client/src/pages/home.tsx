@@ -11,6 +11,7 @@ import { AIDashboard } from '@/components/ai-dashboard-fixed';
 import { NotificationSetupModal } from '@/components/notification-setup-modal';
 import { useTabNavigation } from '@/hooks/useNavigation';
 import { BackButton } from '@/components/BackButton';
+import logoUrl from '@assets/ECHODEED_1757095612642.png';
 import { WelcomeModal } from '@/components/WelcomeModal';
 import { MarketingDashboard } from '@/components/MarketingDashboard';
 import { useWebSocket } from '@/hooks/use-websocket';
@@ -349,10 +350,16 @@ export default function Home() {
               justifyContent: 'center',
               boxShadow: 'inset 0 2px 10px rgba(255,255,255,0.3)'
             }}>
-              <span style={{ 
-                fontSize: '36px',
-                filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
-              }}>❤️</span>
+              <img 
+                src={logoUrl} 
+                alt="EchoDeed Logo"
+                style={{ 
+                  width: '60px',
+                  height: '60px',
+                  filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))',
+                  borderRadius: '50%'
+                }}
+              />
             </div>
           </div>
           
@@ -3250,6 +3257,17 @@ export default function Home() {
       minHeight: '100vh',
       position: 'relative'
     }}>
+      
+      {/* Back Button */}
+      {canGoBackInTabs && (
+        <div style={{ position: 'fixed', left: '20px', top: '20px', zIndex: 100 }}>
+          <BackButton 
+            onClick={goBackInTabs}
+            variant="floating"
+            label=""
+          />
+        </div>
+      )}
       
       {/* Header */}
       <div style={{ 
