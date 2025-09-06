@@ -2275,6 +2275,222 @@ export default function Home() {
     );
   }
 
+  // Show About EchoDeed tab if selected
+  if (activeTab === 'about') {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        {/* Header */}
+        <div style={{ 
+          background: 'linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)',
+          color: 'white',
+          padding: '16px 20px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+          borderBottomLeftRadius: '16px',
+          borderBottomRightRadius: '16px'
+        }}>
+          <div style={{ 
+            display: 'flex', 
+            justifyContent: 'space-between', 
+            alignItems: 'center',
+            marginBottom: '8px'
+          }}>
+            <h1 style={{ 
+              fontSize: '20px', 
+              fontWeight: '700',
+              margin: 0
+            }}>
+              About EchoDeed™
+            </h1>
+            <div style={{
+              background: 'rgba(255,255,255,0.2)',
+              padding: '4px 12px',
+              borderRadius: '20px',
+              fontSize: '12px',
+              fontWeight: '600'
+            }}>
+              💜 KINDNESS
+            </div>
+          </div>
+          <p style={{ 
+            fontSize: '14px', 
+            opacity: 0.9, 
+            margin: 0 
+          }}>
+            Your Kindness, Amplified
+          </p>
+        </div>
+        
+        {/* About Content */}
+        <div style={{ padding: '20px' }}>
+          {/* Main Description */}
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '20px',
+            marginBottom: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>💜</div>
+            <h2 style={{ 
+              fontSize: '20px', 
+              fontWeight: '700',
+              margin: '0 0 12px 0',
+              background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)',
+              backgroundClip: 'text',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
+              Welcome to EchoDeed™
+            </h2>
+            <p style={{ fontSize: '14px', color: '#6b7280', lineHeight: '1.5', margin: '0 0 16px 0' }}>
+              EchoDeed™ is an anonymous kindness platform designed to inspire and track acts of kindness through a community-driven feed. Our AI-powered system transforms simple acts of kindness into measurable business outcomes for corporate wellness.
+            </p>
+            <div style={{
+              background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(59,130,246,0.1))',
+              borderRadius: '8px',
+              padding: '12px',
+              border: '1px solid rgba(139,92,246,0.2)'
+            }}>
+              <p style={{ fontSize: '12px', color: '#8B5CF6', fontWeight: '600', margin: 0 }}>
+                ✨ Turn every act of kindness into measurable business outcomes
+              </p>
+            </div>
+          </div>
+
+          {/* AI Features */}
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '20px',
+            marginBottom: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}>
+            <h3 style={{ 
+              fontSize: '16px', 
+              fontWeight: '700',
+              margin: '0 0 16px 0',
+              color: '#1f2937',
+              textAlign: 'center'
+            }}>
+              🧠 AI-Powered Insights
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {[
+                { icon: '🔮', title: 'Predictive Analytics', desc: '87% accuracy in predicting employee wellness decline' },
+                { icon: '📊', title: 'Real-Time Insights', desc: 'Live sentiment analysis and wellness scoring' },
+                { icon: '🎯', title: 'Smart Alerts', desc: 'AI recommendations for team interventions' }
+              ].map((feature, index) => (
+                <div key={index} style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '10px',
+                  background: 'rgba(59,130,246,0.05)',
+                  borderRadius: '6px',
+                  border: '1px solid rgba(59,130,246,0.1)'
+                }}>
+                  <span style={{ fontSize: '20px' }}>{feature.icon}</span>
+                  <div>
+                    <div style={{ fontWeight: '600', color: '#1f2937', fontSize: '13px' }}>{feature.title}</div>
+                    <div style={{ fontSize: '11px', color: '#6b7280' }}>{feature.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* How It Works */}
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '20px',
+            marginBottom: '20px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}>
+            <h3 style={{ 
+              fontSize: '16px', 
+              fontWeight: '700',
+              margin: '0 0 16px 0',
+              color: '#1f2937',
+              textAlign: 'center'
+            }}>
+              🎯 How It Works
+            </h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+              {[
+                { step: '1', icon: '📝', title: 'Share Kindness', desc: 'Post anonymous acts of kindness from your workplace' },
+                { step: '2', icon: '🧠', title: 'AI Analysis', desc: 'Our AI analyzes sentiment and predicts wellness trends' },
+                { step: '3', icon: '💎', title: 'Earn Rewards', desc: 'Get $ECHO tokens to redeem for real-world partner rewards' },
+                { step: '4', icon: '📈', title: 'Track Impact', desc: 'Watch your company culture transform with measurable results' }
+              ].map((step, index) => (
+                <div key={index} style={{
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '10px'
+                }}>
+                  <div style={{
+                    minWidth: '24px',
+                    height: '24px',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '10px',
+                    fontWeight: '600'
+                  }}>
+                    {step.step}
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
+                      <span style={{ fontSize: '16px' }}>{step.icon}</span>
+                      <span style={{ fontWeight: '600', color: '#1f2937', fontSize: '13px' }}>{step.title}</span>
+                    </div>
+                    <p style={{ fontSize: '11px', color: '#6b7280', margin: 0 }}>{step.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Global Impact */}
+          <div style={{
+            background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(16,185,129,0.1))',
+            borderRadius: '12px',
+            padding: '20px',
+            textAlign: 'center',
+            border: '1px solid rgba(139,92,246,0.2)'
+          }}>
+            <h3 style={{ 
+              fontSize: '16px', 
+              fontWeight: '700',
+              margin: '0 0 8px 0',
+              color: '#8B5CF6'
+            }}>
+              🌍 Global Impact
+            </h3>
+            <div style={{ fontSize: '28px', fontWeight: '700', color: '#1f2937', marginBottom: '4px' }}>
+              {counter?.count.toLocaleString() || '243,876'}
+            </div>
+            <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
+              Acts of kindness shared worldwide
+            </p>
+          </div>
+        </div>
+        
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
+    );
+  }
+
   // Show Notifications tab if selected
   if (activeTab === 'notifications') {
     return (
