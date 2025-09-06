@@ -1673,5 +1673,113 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Marketing & Viral Growth API Endpoints
+  app.get('/api/marketing/metrics', isAuthenticated, async (req, res) => {
+    try {
+      // Return quick marketing metrics
+      const metrics = {
+        totalReferrals: 12,
+        totalShares: 34,
+        conversionRate: 65,
+        viralCoefficient: 1.8,
+        monthlyGrowth: 23,
+        engagementRate: 78
+      };
+      res.json(metrics);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/referrals/stats', isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      // Generate referral code if user doesn't have one
+      const referralCode = `EC${userId.slice(-6).toUpperCase()}`;
+      
+      const stats = {
+        referralCode,
+        totalReferrals: 3,
+        referralEarnings: 150,
+        pendingRewards: 50,
+        conversionRate: 67,
+        currentRank: 5,
+        totalRanked: 24
+      };
+      res.json(stats);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/referrals/leaderboard', isAuthenticated, async (req, res) => {
+    try {
+      const topReferrers = [
+        { rank: 1, displayName: 'Sarah M.', totalReferrals: 15, earnings: 750, badge: '🏆 Viral Champion' },
+        { rank: 2, displayName: 'Mike T.', totalReferrals: 12, earnings: 600, badge: '🥈 Growth Leader' },
+        { rank: 3, displayName: 'Lisa K.', totalReferrals: 9, earnings: 450, badge: '🥉 Kindness Advocate' },
+        { rank: 4, displayName: 'James R.', totalReferrals: 7, earnings: 350, badge: '⭐ Community Builder' },
+        { rank: 5, displayName: 'You', totalReferrals: 3, earnings: 150, badge: '🌟 Rising Star' }
+      ];
+      res.json(topReferrers);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/sharing/content', isAuthenticated, async (req, res) => {
+    try {
+      const shareableContent = [
+        {
+          id: 'achievement-streak',
+          type: 'milestone',
+          title: '7-Day Kindness Streak!',
+          description: 'Spreading positivity every day this week',
+          visualData: {
+            primaryStat: '7 Days',
+            secondaryStat: '+15%',
+            icon: '🔥',
+            color: '#F59E0B',
+            bgGradient: '#F97316'
+          },
+          shareText: 'Just hit a 7-day kindness streak on EchoDeed™! Small acts, big impact. 🔥',
+          hashtags: ['KindnessStreak', 'PositiveImpact', 'EchoDeed', 'CorporateWellness']
+        },
+        {
+          id: 'wellness-improvement',
+          type: 'wellness_impact',
+          title: 'Wellness Score Boost',
+          description: 'AI detected significant mood improvement',
+          visualData: {
+            primaryStat: '+23%',
+            icon: '💚',
+            color: '#10B981',
+            bgGradient: '#059669'
+          },
+          shareText: 'EchoDeed™ AI shows my wellness score improved 23% through daily kindness! 💚',
+          hashtags: ['WellnessWins', 'AIInsights', 'MentalHealth', 'EchoDeed']
+        }
+      ];
+      res.json(shareableContent);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.get('/api/sharing/company-culture', isAuthenticated, async (req, res) => {
+    try {
+      const cultureStats = {
+        companyName: 'TechCorp Inc.',
+        kindnessScore: 87,
+        wellnessImprovement: 34,
+        employeeEngagement: 92,
+        anonymousParticipation: 78
+      };
+      res.json(cultureStats);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   return httpServer;
 }
