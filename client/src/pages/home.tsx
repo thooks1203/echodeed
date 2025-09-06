@@ -63,7 +63,7 @@ export default function Home() {
   };
 
   const showWelcomeAgain = () => {
-    setActiveTab('welcome');
+    navigateToTab('welcome');
   };
 
   // Fetch posts
@@ -2235,7 +2235,7 @@ export default function Home() {
 
             {/* Enter App Button */}
             <button 
-              onClick={() => setActiveTab('feed')}
+              onClick={() => navigateToTab('feed')}
               style={{
                 background: 'linear-gradient(135deg, #8b5cf6, #06b6d4, #10b981)',
                 backgroundSize: '200% 200%',
