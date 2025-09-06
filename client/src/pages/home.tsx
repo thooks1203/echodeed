@@ -3723,15 +3723,17 @@ export default function Home() {
           Share kindness, spread joy, earn rewards ✨
         </div>
         <div style={{
-          fontSize: '12px',
-          opacity: 0.8,
-          marginTop: '8px',
-          padding: '8px 12px',
-          backgroundColor: 'rgba(255,255,255,0.1)',
-          borderRadius: '8px',
-          border: '1px solid rgba(255,255,255,0.2)'
+          fontSize: '16px',
+          opacity: 1,
+          marginTop: '12px',
+          padding: '16px 20px',
+          backgroundColor: 'rgba(255,255,255,0.15)',
+          borderRadius: '12px',
+          border: '2px solid rgba(255,255,255,0.3)',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
+          fontWeight: '500'
         }}>
-          💡 <strong>Tip:</strong> ❤️ Heart posts you like • 🔁 Echo to do the same act of kindness
+          💡 <strong>Tip:</strong> 💜 Heart posts you like • ↩ Echo to do the same act of kindness
         </div>
       </div>
       
