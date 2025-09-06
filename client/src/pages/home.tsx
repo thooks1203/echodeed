@@ -40,15 +40,13 @@ export default function Home() {
 
   const { location } = useGeolocation();
 
-  // Check if user has seen welcome modal
+  // Force disable all overlays
   useEffect(() => {
-    const hasSeenWelcome = localStorage.getItem('echodeed_has_seen_welcome');
-    // Temporarily disable welcome modal to fix display issue
+    // Force all modal states to false
     setShowWelcomeModal(false);
-    // if (!hasSeenWelcome) {
-    //   // Small delay to let the page load first
-    //   setTimeout(() => setShowWelcomeModal(true), 1000);
-    // }
+    setShowNotificationSetup(false);
+    setTokenEarning(null);
+    setAchievementNotification(null);
   }, []);
 
   const handleWelcomeClose = () => {
@@ -3119,7 +3117,7 @@ export default function Home() {
         </div>
         
         {/* Token Earning Popup */}
-        {tokenEarning && (
+        {false && tokenEarning && (
           <div style={{
             position: 'fixed',
             top: '80px',
@@ -3257,7 +3255,7 @@ export default function Home() {
         </div>
         
         {/* Token Earning Popup */}
-        {tokenEarning && (
+        {false && tokenEarning && (
           <div style={{
             position: 'fixed',
             top: '80px',
@@ -4123,8 +4121,8 @@ export default function Home() {
       {/* Bottom Navigation */}
       <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       
-      {/* Token Earning Popup */}
-      {tokenEarning && (
+      {/* Token Earning Popup - Temporarily disabled */}
+      {false && tokenEarning && (
         <div style={{
           position: 'fixed',
           top: '80px',
