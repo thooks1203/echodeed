@@ -40,18 +40,18 @@ export default function Home() {
 
   const { location } = useGeolocation();
 
-  // Force disable all overlays
+  // Force disable problematic overlays (but allow welcome modal when requested)
   useEffect(() => {
-    // Force all modal states to false and clear any blocking elements
-    setShowWelcomeModal(false);
+    // Force problematic modal states to false but don't auto-disable welcome modal
     setShowNotificationSetup(false);
     setTokenEarning(null);
     setAchievementNotification(null);
     
-    // Remove any lingering modal overlays from DOM
+    // Remove any lingering modal overlays from DOM (except welcome modal)
     const overlays = document.querySelectorAll('[style*="position: fixed"][style*="z-index"]');
     overlays.forEach(overlay => {
-      if (overlay.getAttribute('style')?.includes('rgba(0,0,0')) {
+      const style = overlay.getAttribute('style') || '';
+      if (style.includes('rgba(0,0,0') && !overlay.closest('[data-welcome-modal]')) {
         overlay.remove();
       }
     });
@@ -4160,11 +4160,11 @@ export default function Home() {
         location={location}
       />
       
-      {/* Welcome Modal - Temporarily disabled */}
-      {false && <WelcomeModal 
+      {/* Welcome Modal */}
+      <WelcomeModal 
         isOpen={showWelcomeModal} 
         onClose={handleWelcomeClose}
-      />}
+      />
       
       {/* Bottom Navigation */}
       <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
