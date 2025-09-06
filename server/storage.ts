@@ -77,6 +77,8 @@ export interface IStorage {
     limit?: number;
     userId?: string; // For user-specific posts
   }): Promise<KindnessPost[]>;
+  getKindnessPosts(): Promise<KindnessPost[]>;
+  getPostsWithAIAnalysis(): Promise<KindnessPost[]>;
   createPost(post: InsertKindnessPost): Promise<KindnessPost>;
   addHeartToPost(postId: string, sessionId: string): Promise<KindnessPost>;
   addEchoToPost(postId: string, sessionId: string): Promise<KindnessPost>;
@@ -90,6 +92,7 @@ export interface IStorage {
     aiConfidence?: number;
     aiTags?: string[];
   }): Promise<void>;
+  updatePostWithAIAnalysis(id: string, analytics: any): Promise<void>;
   
   // Counter operations
   getCounter(): Promise<KindnessCounter>;
@@ -121,12 +124,22 @@ export interface IStorage {
   
   // Corporate operations
   getCorporateAccount(id: string): Promise<CorporateAccount | undefined>;
+  getCorporateAccounts(): Promise<CorporateAccount[]>;
   createCorporateAccount(account: InsertCorporateAccount): Promise<CorporateAccount>;
+  updateCorporateAccount(id: string, updates: Partial<CorporateAccount>): Promise<CorporateAccount | undefined>;
   getCorporateEmployee(userId: string): Promise<CorporateEmployee | undefined>;
+  getCorporateEmployees(corporateAccountId: string): Promise<CorporateEmployee[]>;
   enrollCorporateEmployee(employee: InsertCorporateEmployee): Promise<CorporateEmployee>;
+  updateCorporateEmployee(id: string, updates: Partial<CorporateEmployee>): Promise<CorporateEmployee | undefined>;
   getCorporateTeams(corporateAccountId: string): Promise<CorporateTeam[]>;
+  createCorporateTeam(team: InsertCorporateTeam): Promise<CorporateTeam>;
+  updateCorporateTeam(id: string, updates: Partial<CorporateTeam>): Promise<CorporateTeam | undefined>;
+  deleteCorporateTeam(id: string): Promise<void>;
   getCorporateChallenges(corporateAccountId: string): Promise<CorporateChallenge[]>;
+  createCorporateChallenge(challenge: InsertCorporateChallenge): Promise<CorporateChallenge>;
+  completeCorporateChallenge(challengeId: string, userId: string): Promise<ChallengeCompletion>;
   getCorporateAnalytics(corporateAccountId: string, days?: number): Promise<CorporateAnalytics[]>;
+  generateDailyCorporateAnalytics(corporateAccountId: string): Promise<void>;
   
   // Wellness analytics operations
   calculateEmployeeWellnessScore(employeeId: string): Promise<number>;
@@ -365,6 +378,25 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(kindnessPosts.id, id));
   }
+
+  async getKindnessPosts(): Promise<KindnessPost[]> {
+    return await db.select()
+      .from(kindnessPosts)
+      .orderBy(desc(kindnessPosts.createdAt))
+      .limit(100);
+  }
+
+  async getPostsWithAIAnalysis(): Promise<KindnessPost[]> {
+    return await db.select()
+      .from(kindnessPosts)
+      .where(sql`${kindnessPosts.analyzedAt} IS NOT NULL`)
+      .orderBy(desc(kindnessPosts.createdAt))
+      .limit(100);
+  }
+
+  async updatePostWithAIAnalysis(id: string, analytics: any): Promise<void> {
+    await this.updatePostAnalytics(id, analytics);
+  }
   
   // Counter operations
   async getCounter(): Promise<KindnessCounter> {
@@ -524,9 +556,35 @@ export class DatabaseStorage implements IStorage {
     return newAccount;
   }
 
+  async getCorporateAccounts(): Promise<CorporateAccount[]> {
+    return await db.select()
+      .from(corporateAccounts)
+      .where(eq(corporateAccounts.isActive, 1))
+      .orderBy(desc(corporateAccounts.createdAt));
+  }
+
+  async updateCorporateAccount(id: string, updates: Partial<CorporateAccount>): Promise<CorporateAccount | undefined> {
+    const [updatedAccount] = await db
+      .update(corporateAccounts)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(corporateAccounts.id, id))
+      .returning();
+    return updatedAccount || undefined;
+  }
+
   async getCorporateEmployee(userId: string): Promise<CorporateEmployee | undefined> {
     const [employee] = await db.select().from(corporateEmployees).where(eq(corporateEmployees.userId, userId));
     return employee || undefined;
+  }
+
+  async getCorporateEmployees(corporateAccountId: string): Promise<CorporateEmployee[]> {
+    return await db.select()
+      .from(corporateEmployees)
+      .where(and(
+        eq(corporateEmployees.corporateAccountId, corporateAccountId),
+        eq(corporateEmployees.isActive, 1)
+      ))
+      .orderBy(corporateEmployees.displayName);
   }
 
   async enrollCorporateEmployee(employee: InsertCorporateEmployee): Promise<CorporateEmployee> {
