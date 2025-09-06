@@ -266,7 +266,7 @@ export default function Home() {
 
   const defaultCounter: KindnessCounter = {
     id: 'global',
-    count: 247891,
+    count: 243876,
     updatedAt: new Date(),
   };
 
