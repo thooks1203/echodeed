@@ -349,15 +349,10 @@ export default function Home() {
               justifyContent: 'center',
               boxShadow: 'inset 0 2px 10px rgba(255,255,255,0.3)'
             }}>
-              <img 
-                src="/attached_assets/ECHODEED_1757095612642.png" 
-                alt="EchoDeed Logo"
-                style={{ 
-                  width: '60px',
-                  height: '60px',
-                  filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
-                }}
-              />
+              <span style={{ 
+                fontSize: '36px',
+                filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.3))'
+              }}>❤️</span>
             </div>
           </div>
           
@@ -3296,16 +3291,15 @@ export default function Home() {
           </div>
         </div>
         
-        <div style={{ marginBottom: '8px', fontSize: '14px', opacity: 0.9 }}>Global Kindness Counter</div>
+        <div style={{ marginBottom: '8px', fontSize: '14px', opacity: 0.9 }}>Your Kindness Community</div>
         <div style={{ 
-          fontSize: '36px', 
-          fontWeight: 'bold', 
+          fontSize: '18px', 
+          fontWeight: '600', 
           margin: '8px 0',
-          className: counterPulse ? 'counter-pulse' : ''
+          opacity: 0.9
         }}>
-          {(counter || defaultCounter).count.toLocaleString()} ❤️
+          Share kindness, spread joy, earn rewards ✨
         </div>
-        <div style={{ fontSize: '12px', opacity: 0.8 }}>acts of kindness shared</div>
       </div>
       
       {/* Brief EchoDeed Explanation */}
