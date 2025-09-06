@@ -3895,16 +3895,6 @@ export default function Home() {
             </div>
           ))
         )}
-        
-        {/* Kindness Feed - Sample Acts */}
-        <KindnessFeed 
-          posts={posts}
-          isLoading={postsLoading}
-          activeFilter={activeFilter}
-          onFilterChange={setActiveFilter}
-          userTokens={userTokens}
-          onPostUpdate={refetchPosts}
-        />
       </div>
       
       {/* Floating Action Button */}
