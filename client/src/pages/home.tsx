@@ -43,10 +43,12 @@ export default function Home() {
   // Check if user has seen welcome modal
   useEffect(() => {
     const hasSeenWelcome = localStorage.getItem('echodeed_has_seen_welcome');
-    if (!hasSeenWelcome) {
-      // Small delay to let the page load first
-      setTimeout(() => setShowWelcomeModal(true), 1000);
-    }
+    // Temporarily disable welcome modal to fix display issue
+    setShowWelcomeModal(false);
+    // if (!hasSeenWelcome) {
+    //   // Small delay to let the page load first
+    //   setTimeout(() => setShowWelcomeModal(true), 1000);
+    // }
   }, []);
 
   const handleWelcomeClose = () => {
