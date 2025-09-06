@@ -359,7 +359,7 @@ export default function Home() {
 
   const defaultCounter: KindnessCounter = {
     id: 'global',
-    count: 243876,
+    count: 0,
     updatedAt: new Date().toISOString()
   };
 
