@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, jsonb, index } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, jsonb, index, real } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { relations } from "drizzle-orm";
 import { z } from "zod";
@@ -549,6 +549,163 @@ export const insertMarketingAnalyticsSchema = createInsertSchema(marketingAnalyt
   createdAt: true,
 });
 
+// 🔮 AI Kindness Prediction Engine
+export const wellnessPredictions = pgTable("wellness_predictions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id),
+  corporateAccountId: varchar("corporate_account_id"),
+  predictionType: varchar("prediction_type").notNull(), // stress_risk, burnout_warning, team_tension, support_needed
+  riskScore: integer("risk_score").notNull(), // 1-100, higher = more urgent
+  confidence: integer("confidence").notNull(), // 1-100, how confident AI is
+  reasoning: text("reasoning"), // Why AI made this prediction
+  suggestedActions: jsonb("suggested_actions"), // What kindness actions to take
+  triggerPatterns: jsonb("trigger_patterns"), // What patterns caused this prediction
+  isActive: integer("is_active").default(1).notNull(),
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  predictionFor: timestamp("prediction_for").notNull(), // When this event is predicted to occur
+});
+
+// 🌍 Real-time Global Wellness Heatmap
+export const wellnessHeatmapData = pgTable("wellness_heatmap_data", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  corporateAccountId: varchar("corporate_account_id"), // null for global data
+  region: varchar("region"), // continent, country, or state
+  city: varchar("city"),
+  latitude: real("latitude"),
+  longitude: real("longitude"),
+  moodScore: integer("mood_score").notNull(), // 1-100, anonymized mood
+  kindnessActivity: integer("kindness_activity").notNull(), // Acts per hour
+  stressLevel: integer("stress_level").notNull(), // 1-100, derived from activity patterns
+  teamCollaboration: integer("team_collaboration").default(50), // 1-100
+  positivityTrend: varchar("positivity_trend").default("stable"), // rising, falling, stable
+  lastUpdated: timestamp("last_updated").defaultNow().notNull(),
+  anonymizedUserCount: integer("anonymized_user_count").default(1),
+});
+
+// 🎯 Smart Kindness Matching
+export const kindnessOpportunities = pgTable("kindness_opportunities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  createdForUserId: varchar("created_for_user_id").references(() => users.id),
+  opportunityType: varchar("opportunity_type").notNull(), // colleague_support, skill_sharing, mentor_moment, team_boost
+  title: varchar("title").notNull(),
+  description: text("description").notNull(),
+  suggestedAction: text("suggested_action"), // Specific action to take
+  targetUserId: varchar("target_user_id"), // Who might benefit (anonymized)
+  matchingScore: integer("matching_score").notNull(), // 1-100, how good this match is
+  aiReasoning: text("ai_reasoning"), // Why AI suggested this
+  estimatedImpact: integer("estimated_impact"), // 1-100, predicted wellness impact
+  difficulty: varchar("difficulty").default("easy"), // easy, medium, hard
+  timeRequired: integer("time_required_minutes"), // Estimated time
+  tags: jsonb("tags"), // Skills, departments, interests involved
+  isCompleted: integer("is_completed").default(0),
+  completedAt: timestamp("completed_at"),
+  impactRating: integer("impact_rating"), // 1-5 stars from participant
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at"), // When this opportunity expires
+});
+
+// 📊 ESG Impact Integration
+export const esgReports = pgTable("esg_reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  corporateAccountId: varchar("corporate_account_id").notNull(),
+  reportPeriod: varchar("report_period").notNull(), // monthly, quarterly, yearly
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  employeeWellnessScore: integer("employee_wellness_score"), // 1-100
+  kindnessActivities: integer("kindness_activities"),
+  stressReductionPercent: real("stress_reduction_percent"),
+  engagementImprovement: real("engagement_improvement"),
+  anonymousParticipation: real("anonymous_participation"),
+  diversityInclusionScore: integer("diversity_inclusion_score"),
+  mentalHealthSupport: integer("mental_health_support_instances"),
+  communityImpactHours: real("community_impact_hours"),
+  carbonFootprintReduced: real("carbon_footprint_reduced"), // From remote kindness activities
+  sdgAlignment: jsonb("sdg_alignment"), // Which UN SDGs this supports
+  complianceStandards: jsonb("compliance_standards"), // Which standards met
+  reportData: jsonb("report_data"), // Full JSON report
+  reportUrl: varchar("report_url"), // Generated PDF URL
+  isPublished: integer("is_published").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// 🏆 Kindness Impact Certificates  
+export const kindnessCertificates = pgTable("kindness_certificates", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id),
+  certificateType: varchar("certificate_type").notNull(), // kindness_champion, wellness_advocate, culture_builder
+  title: varchar("title").notNull(),
+  description: text("description").notNull(),
+  criteriaMetadata: jsonb("criteria_metadata"), // What achievement unlocked this
+  blockchainHash: varchar("blockchain_hash"), // Immutable proof of achievement
+  blockchainNetwork: varchar("blockchain_network").default("polygon"), // Which blockchain
+  nftTokenId: varchar("nft_token_id"), // Optional NFT representation
+  shareableUrl: varchar("shareable_url"), // Public verification URL
+  anonymousDisplayName: varchar("anonymous_display_name"), // For public sharing
+  impactMetrics: jsonb("impact_metrics"), // Quantified impact data
+  badgeImageUrl: varchar("badge_image_url"), // Generated certificate image
+  isVerified: integer("is_verified").default(1),
+  isPubliclyShareable: integer("is_publicly_shareable").default(1),
+  linkedinShareCount: integer("linkedin_share_count").default(0),
+  verificationClicks: integer("verification_clicks").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  validUntil: timestamp("valid_until"), // Some certificates may expire
+});
+
+// ⏰ Time-Locked Wellness Messages
+export const timeLockedMessages = pgTable("time_locked_messages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  senderUserId: varchar("sender_user_id").references(() => users.id),
+  recipientUserId: varchar("recipient_user_id").references(() => users.id),
+  messageType: varchar("message_type").notNull(), // encouragement, milestone_celebration, anniversary_note, support_message
+  subject: varchar("subject").notNull(),
+  message: text("message").notNull(),
+  unlockCondition: varchar("unlock_condition").notNull(), // date, achievement, milestone, stress_detected
+  unlockValue: varchar("unlock_value").notNull(), // Specific date/condition value
+  unlockDate: timestamp("unlock_date"), // When message becomes available
+  emotionalTone: varchar("emotional_tone"), // uplifting, supportive, celebratory, motivational
+  attachedReward: integer("attached_reward").default(0), // $ECHO tokens to unlock with message
+  isAnonymous: integer("is_anonymous").default(1),
+  isUnlocked: integer("is_unlocked").default(0),
+  unlockedAt: timestamp("unlocked_at"),
+  wasRead: integer("was_read").default(0),
+  readAt: timestamp("read_at"),
+  recipientRating: integer("recipient_rating"), // 1-5 stars for message impact
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  scheduledFor: timestamp("scheduled_for"), // Future delivery date
+});
+
+// Advanced Features Insert Schemas (after table definitions)
+export const insertWellnessPredictionSchema = createInsertSchema(wellnessPredictions).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertWellnessHeatmapDataSchema = createInsertSchema(wellnessHeatmapData).omit({
+  id: true,
+  lastUpdated: true,
+});
+
+export const insertKindnessOpportunitySchema = createInsertSchema(kindnessOpportunities).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertEsgReportSchema = createInsertSchema(esgReports).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertKindnessCertificateSchema = createInsertSchema(kindnessCertificates).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertTimeLockedMessageSchema = createInsertSchema(timeLockedMessages).omit({
+  id: true,
+  createdAt: true,
+});
+
 export type InsertKindnessPost = z.infer<typeof insertKindnessPostSchema>;
 export type KindnessPost = typeof kindnessPosts.$inferSelect;
 export type KindnessCounter = typeof kindnessCounter.$inferSelect;
@@ -599,6 +756,20 @@ export type MarketingCampaign = typeof marketingCampaigns.$inferSelect;
 export type InsertMarketingCampaign = z.infer<typeof insertMarketingCampaignSchema>;
 export type MarketingAnalytics = typeof marketingAnalytics.$inferSelect;
 export type InsertMarketingAnalytics = z.infer<typeof insertMarketingAnalyticsSchema>;
+
+// Advanced Features Types
+export type WellnessPrediction = typeof wellnessPredictions.$inferSelect;
+export type InsertWellnessPrediction = z.infer<typeof insertWellnessPredictionSchema>;
+export type WellnessHeatmapData = typeof wellnessHeatmapData.$inferSelect;
+export type InsertWellnessHeatmapData = z.infer<typeof insertWellnessHeatmapDataSchema>;
+export type KindnessOpportunity = typeof kindnessOpportunities.$inferSelect;
+export type InsertKindnessOpportunity = z.infer<typeof insertKindnessOpportunitySchema>;
+export type EsgReport = typeof esgReports.$inferSelect;
+export type InsertEsgReport = z.infer<typeof insertEsgReportSchema>;
+export type KindnessCertificate = typeof kindnessCertificates.$inferSelect;
+export type InsertKindnessCertificate = z.infer<typeof insertKindnessCertificateSchema>;
+export type TimeLockedMessage = typeof timeLockedMessages.$inferSelect;
+export type InsertTimeLockedMessage = z.infer<typeof insertTimeLockedMessageSchema>;
 export type InsertBadgeReward = z.infer<typeof insertBadgeRewardSchema>;
 export type WeeklyPrize = typeof weeklyPrizes.$inferSelect;
 export type InsertWeeklyPrize = z.infer<typeof insertWeeklyPrizeSchema>;

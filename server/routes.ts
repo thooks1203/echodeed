@@ -1781,5 +1781,1173 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 🔮 AI Kindness Prediction Engine - Revolutionary Feature!
+  app.get('/api/ai/predictions', isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Advanced AI predictions with realistic workplace scenarios
+      const predictions = [
+        {
+          id: 'pred-1',
+          predictionType: 'burnout_warning',
+          riskScore: 85,
+          confidence: 92,
+          reasoning: 'AI detected 67% increase in after-hours activity, decreased response times in team channels, and 40% drop in voluntary collaboration. Pattern matches pre-burnout indicators from similar teams.',
+          suggestedActions: [
+            {
+              action: 'Send anonymous encouragement from a peer',
+              priority: 'high',
+              estimatedImpact: 78,
+              timeRequired: '2 minutes'
+            },
+            {
+              action: 'Suggest team coffee break or walking meeting',
+              priority: 'high',
+              estimatedImpact: 65,
+              timeRequired: '5 minutes'
+            },
+            {
+              action: 'Share wellness resources anonymously',
+              priority: 'medium',
+              estimatedImpact: 45,
+              timeRequired: '1 minute'
+            }
+          ],
+          triggerPatterns: [
+            'Late night Slack activity spike',
+            'Shortened email responses', 
+            'Missed team social events',
+            'Declined meeting invitations'
+          ],
+          predictionFor: new Date(Date.now() + 2 * 24 * 60 * 60 * 1000).toISOString(),
+          isActive: true
+        },
+        {
+          id: 'pred-2',
+          predictionType: 'team_tension',
+          riskScore: 72,
+          confidence: 88,
+          reasoning: 'Communication analysis reveals 45% decrease in positive sentiment, increased formal language usage, and reduced cross-team collaboration. Similar patterns preceded team conflicts in Q2.',
+          suggestedActions: [
+            {
+              action: 'Organize anonymous team appreciation activity',
+              priority: 'high',
+              estimatedImpact: 82,
+              timeRequired: '10 minutes'
+            },
+            {
+              action: 'Schedule informal team building session',
+              priority: 'medium',
+              estimatedImpact: 70,
+              timeRequired: '30 minutes'
+            },
+            {
+              action: 'Send team unity message from leadership',
+              priority: 'medium',
+              estimatedImpact: 55,
+              timeRequired: '5 minutes'
+            }
+          ],
+          triggerPatterns: [
+            'Decreased emoji usage in channels',
+            'Formal communication increase',
+            'Reduced voluntary interactions',
+            'Project handoff delays'
+          ],
+          predictionFor: new Date(Date.now() + 4 * 24 * 60 * 60 * 1000).toISOString(),
+          isActive: true
+        }
+      ];
+      
+      // Filter for demo - show predictions only sometimes to create realistic experience
+      const shouldShowPredictions = Math.random() > 0.3; // 70% chance to show predictions
+      
+      res.json(shouldShowPredictions ? predictions : []);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/ai/predictions/:id/action', isAuthenticated, async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { actionIndex } = req.body;
+      
+      // In a real implementation, this would:
+      // 1. Record the action taken
+      // 2. Update the prediction status
+      // 3. Feed back into ML model for learning
+      
+      console.log(`Action taken for prediction ${id}, action index ${actionIndex}`);
+      
+      res.json({ 
+        success: true, 
+        message: 'Action recorded successfully. AI learning from intervention.' 
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Global Wellness Heatmap endpoints
+  app.get('/api/wellness/heatmap', isAuthenticated, async (req: any, res) => {
+    try {
+      const timeRange = req.query.timeRange || '24h';
+      
+      // Generate realistic heatmap data based on time range
+      const heatmapData = [
+        {
+          id: 'dept-eng',
+          department: 'Engineering',
+          teamSize: 24,
+          averageMood: 6.8,
+          stressLevel: 7.2,
+          engagementScore: 7.5,
+          kindnessActivity: 4,
+          location: 'San Francisco, CA',
+          timestamp: new Date(Date.now() - Math.random() * 60000).toISOString(),
+          riskLevel: 'medium'
+        },
+        {
+          id: 'dept-support',
+          department: 'Customer Support',
+          teamSize: 18,
+          averageMood: 5.2,
+          stressLevel: 8.7,
+          engagementScore: 5.8,
+          kindnessActivity: 2,
+          location: 'Austin, TX',
+          timestamp: new Date(Date.now() - Math.random() * 60000).toISOString(),
+          riskLevel: 'high'
+        },
+        {
+          id: 'dept-marketing',
+          department: 'Marketing',
+          teamSize: 12,
+          averageMood: 8.1,
+          stressLevel: 4.3,
+          engagementScore: 8.7,
+          kindnessActivity: 6,
+          location: 'New York, NY',
+          timestamp: new Date(Date.now() - Math.random() * 60000).toISOString(),
+          riskLevel: 'low'
+        },
+        {
+          id: 'dept-sales',
+          department: 'Sales',
+          teamSize: 15,
+          averageMood: 7.3,
+          stressLevel: 6.1,
+          engagementScore: 7.8,
+          kindnessActivity: 5,
+          location: 'Chicago, IL',
+          timestamp: new Date(Date.now() - Math.random() * 60000).toISOString(),
+          riskLevel: 'low'
+        },
+        {
+          id: 'dept-hr',
+          department: 'Human Resources',
+          teamSize: 8,
+          averageMood: 7.9,
+          stressLevel: 5.1,
+          engagementScore: 8.2,
+          kindnessActivity: 8,
+          location: 'Remote',
+          timestamp: new Date(Date.now() - Math.random() * 60000).toISOString(),
+          riskLevel: 'low'
+        },
+        {
+          id: 'dept-finance',
+          department: 'Finance',
+          teamSize: 10,
+          averageMood: 6.1,
+          stressLevel: 7.8,
+          engagementScore: 6.4,
+          kindnessActivity: 3,
+          location: 'Boston, MA',
+          timestamp: new Date(Date.now() - Math.random() * 60000).toISOString(),
+          riskLevel: 'medium'
+        },
+        {
+          id: 'dept-product',
+          department: 'Product Management',
+          teamSize: 14,
+          averageMood: 7.6,
+          stressLevel: 5.8,
+          engagementScore: 8.1,
+          kindnessActivity: 7,
+          location: 'Seattle, WA',
+          timestamp: new Date(Date.now() - Math.random() * 60000).toISOString(),
+          riskLevel: 'low'
+        }
+      ];
+
+      // Simulate time-based variations
+      if (timeRange === '7d' || timeRange === '30d') {
+        heatmapData.forEach(dept => {
+          // Add some random variation for longer time ranges
+          const variance = timeRange === '30d' ? 1.5 : 0.8;
+          dept.averageMood += (Math.random() - 0.5) * variance;
+          dept.stressLevel += (Math.random() - 0.5) * variance;
+          dept.engagementScore += (Math.random() - 0.5) * variance;
+          
+          // Clamp values
+          dept.averageMood = Math.max(1, Math.min(10, dept.averageMood));
+          dept.stressLevel = Math.max(1, Math.min(10, dept.stressLevel));
+          dept.engagementScore = Math.max(1, Math.min(10, dept.engagementScore));
+        });
+      }
+
+      res.json(heatmapData);
+    } catch (error) {
+      console.error('Error fetching heatmap data:', error);
+      res.status(500).json({ message: 'Failed to fetch heatmap data' });
+    }
+  });
+
+  app.get('/api/wellness/heatmap-stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const stats = {
+        totalDepartments: 7,
+        averageWellness: 7.1,
+        criticalDepartments: 1,
+        improvingTrends: 4,
+        totalEmployees: 101
+      };
+
+      res.json(stats);
+    } catch (error) {
+      console.error('Error fetching heatmap stats:', error);
+      res.status(500).json({ message: 'Failed to fetch heatmap stats' });
+    }
+  });
+
+  // Smart Kindness Matching endpoints
+  app.get('/api/kindness/matches', isAuthenticated, async (req: any, res) => {
+    try {
+      const category = req.query.category || 'all';
+      
+      // Generate AI-powered personalized matches
+      const allOpportunities = [
+        {
+          id: 'match-001',
+          title: 'Coding Workshop for Underprivileged Kids',
+          description: 'Teach basic programming concepts to children in underserved communities. Share your technical skills while inspiring the next generation.',
+          category: 'technology',
+          timeRequired: '3 hours/week',
+          location: 'Downtown Community Center',
+          skillsNeeded: ['JavaScript', 'Teaching', 'Patience'],
+          impactScore: 9.2,
+          urgency: 'medium',
+          matchScore: 97,
+          participants: 8,
+          maxParticipants: 12,
+          deadline: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+          organizer: 'TechForGood Foundation',
+          benefits: ['Skill development', 'Community impact', 'Leadership experience', 'Certificate'],
+          difficulty: 'intermediate',
+          isRemote: false,
+          tags: ['coding', 'education', 'youth', 'weekend']
+        },
+        {
+          id: 'match-002',
+          title: 'Senior Tech Support Virtual Sessions',
+          description: 'Help elderly individuals navigate technology through one-on-one video calls. Bridge the digital divide with your expertise.',
+          category: 'elderly',
+          timeRequired: '1-2 hours/week',
+          location: 'Remote',
+          skillsNeeded: ['Tech Support', 'Communication', 'Empathy'],
+          impactScore: 8.7,
+          urgency: 'high',
+          matchScore: 95,
+          participants: 15,
+          maxParticipants: 20,
+          deadline: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+          organizer: 'Digital Seniors Alliance',
+          benefits: ['Flexible schedule', 'Remote work', 'Meaningful connections', 'References'],
+          difficulty: 'beginner',
+          isRemote: true,
+          tags: ['seniors', 'technology', 'remote', 'flexible']
+        },
+        {
+          id: 'match-003',
+          title: 'Community Garden Design & Setup',
+          description: 'Use your design and planning skills to create a sustainable community garden. Lead environmental change in your neighborhood.',
+          category: 'environment',
+          timeRequired: '5-8 hours/week',
+          location: 'Riverside Park',
+          skillsNeeded: ['Project Management', 'Design', 'Gardening'],
+          impactScore: 9.5,
+          urgency: 'medium',
+          matchScore: 89,
+          participants: 6,
+          maxParticipants: 10,
+          deadline: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
+          organizer: 'Green Communities Initiative',
+          benefits: ['Outdoor work', 'Environmental impact', 'Team leadership', 'Long-term visibility'],
+          difficulty: 'advanced',
+          isRemote: false,
+          tags: ['environment', 'design', 'leadership', 'physical']
+        },
+        {
+          id: 'match-004',
+          title: 'Mental Health First Aid Training',
+          description: 'Support workplace wellness by becoming a certified mental health first aid provider. Help colleagues during challenging times.',
+          category: 'health',
+          timeRequired: '16 hours (2-day intensive)',
+          location: 'Corporate Training Center',
+          skillsNeeded: ['Active Listening', 'Emotional Intelligence', 'Confidentiality'],
+          impactScore: 9.8,
+          urgency: 'high',
+          matchScore: 92,
+          participants: 12,
+          maxParticipants: 15,
+          deadline: new Date(Date.now() + 10 * 24 * 60 * 60 * 1000).toISOString(),
+          organizer: 'Workplace Wellness Network',
+          benefits: ['Professional certification', 'Career development', 'Mental health expertise', 'Network expansion'],
+          difficulty: 'intermediate',
+          isRemote: false,
+          tags: ['health', 'training', 'certification', 'workplace']
+        },
+        {
+          id: 'match-005',
+          title: 'Animal Shelter Social Media Manager',
+          description: 'Create engaging content to help rescue animals find homes. Use your creativity and marketing skills for a heartwarming cause.',
+          category: 'animals',
+          timeRequired: '2-3 hours/week',
+          location: 'Remote + occasional shelter visits',
+          skillsNeeded: ['Social Media', 'Content Creation', 'Photography'],
+          impactScore: 8.3,
+          urgency: 'low',
+          matchScore: 88,
+          participants: 3,
+          maxParticipants: 5,
+          deadline: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+          organizer: 'Happy Tails Rescue',
+          benefits: ['Creative expression', 'Animal welfare impact', 'Portfolio building', 'Flexible timing'],
+          difficulty: 'beginner',
+          isRemote: true,
+          tags: ['animals', 'creative', 'social-media', 'flexible']
+        },
+        {
+          id: 'match-006',
+          title: 'Youth Mentorship Program',
+          description: 'Guide high school students through college applications and career planning. Share your professional journey and wisdom.',
+          category: 'education',
+          timeRequired: '2 hours/week',
+          location: 'Local High School or Virtual',
+          skillsNeeded: ['Mentoring', 'Career Guidance', 'Communication'],
+          impactScore: 9.1,
+          urgency: 'medium',
+          matchScore: 94,
+          participants: 20,
+          maxParticipants: 25,
+          deadline: new Date(Date.now() + 35 * 24 * 60 * 60 * 1000).toISOString(),
+          organizer: 'Future Leaders Foundation',
+          benefits: ['Personal fulfillment', 'Leadership skills', 'Network building', 'Reference opportunities'],
+          difficulty: 'intermediate',
+          isRemote: false,
+          tags: ['mentorship', 'education', 'youth', 'career']
+        }
+      ];
+
+      // Filter by category if specified
+      let opportunities = allOpportunities;
+      if (category !== 'all') {
+        opportunities = allOpportunities.filter(op => op.category === category);
+      }
+
+      // Sort by match score (highest first)
+      opportunities.sort((a, b) => b.matchScore - a.matchScore);
+
+      res.json(opportunities);
+    } catch (error) {
+      console.error('Error fetching kindness matches:', error);
+      res.status(500).json({ message: 'Failed to fetch kindness matches' });
+    }
+  });
+
+  app.get('/api/kindness/matching-stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const stats = {
+        totalOpportunities: 47,
+        perfectMatches: 6,
+        thisWeekMatches: 12,
+        averageImpactScore: 8.9,
+        userRating: 4.8
+      };
+
+      res.json(stats);
+    } catch (error) {
+      console.error('Error fetching matching stats:', error);
+      res.status(500).json({ message: 'Failed to fetch matching stats' });
+    }
+  });
+
+  app.post('/api/kindness/opportunities/:id/join', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.claims.sub;
+      
+      // In a real implementation, this would:
+      // 1. Check if user is already joined
+      // 2. Verify opportunity capacity
+      // 3. Add user to opportunity participants
+      // 4. Send confirmation notifications
+      // 5. Update user's kindness profile
+      
+      console.log(`User ${userId} joined opportunity ${id}`);
+      
+      res.json({ 
+        success: true, 
+        message: 'Successfully joined the kindness opportunity! You will receive updates and instructions via email.' 
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ESG Impact Reporting endpoints
+  app.get('/api/esg/reports', isAuthenticated, async (req: any, res) => {
+    try {
+      const period = req.query.period || 'quarterly';
+      
+      // Generate realistic ESG reports based on kindness data
+      const reports = [
+        {
+          id: 'esg-2024-q4',
+          title: 'Q4 2024 ESG Impact Report',
+          period: 'October - December 2024',
+          generatedDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+          status: 'final',
+          metrics: {
+            environmental: {
+              carbonOffset: 2847,
+              sustainabilityProjects: 12,
+              greenInitiatives: 8,
+              wasteReduction: 23.5
+            },
+            social: {
+              volunteerHours: 1456,
+              communityImpact: 8934,
+              diversityPrograms: 15,
+              wellnessParticipation: 89.2,
+              employeeEngagement: 8.7
+            },
+            governance: {
+              ethicalPracticesScore: 91,
+              transparencyRating: 9.1,
+              complianceRate: 97.8,
+              stakeholderSatisfaction: 94.3
+            }
+          },
+          totalScore: 87.5,
+          industryRanking: 12,
+          improvementAreas: [
+            'Increase renewable energy usage by 15%',
+            'Expand mental health support programs',
+            'Enhance supplier diversity initiatives',
+            'Implement quarterly stakeholder feedback sessions'
+          ],
+          achievements: [
+            'Exceeded annual carbon offset target by 180%',
+            'Achieved highest employee wellness participation rate',
+            'Launched 3 community impact partnerships',
+            'Received B-Corp certification for social responsibility'
+          ],
+          downloadUrl: '/downloads/esg-q4-2024-report.pdf'
+        },
+        {
+          id: 'esg-2024-q3',
+          title: 'Q3 2024 ESG Impact Report',
+          period: 'July - September 2024',
+          generatedDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
+          status: 'submitted',
+          metrics: {
+            environmental: {
+              carbonOffset: 2134,
+              sustainabilityProjects: 9,
+              greenInitiatives: 6,
+              wasteReduction: 18.7
+            },
+            social: {
+              volunteerHours: 1289,
+              communityImpact: 7456,
+              diversityPrograms: 13,
+              wellnessParticipation: 82.4,
+              employeeEngagement: 8.3
+            },
+            governance: {
+              ethicalPracticesScore: 88,
+              transparencyRating: 8.8,
+              complianceRate: 95.2,
+              stakeholderSatisfaction: 91.7
+            }
+          },
+          totalScore: 84.2,
+          industryRanking: 15,
+          improvementAreas: [
+            'Strengthen vendor sustainability requirements',
+            'Increase remote work policy adoption',
+            'Enhance data privacy training programs'
+          ],
+          achievements: [
+            'Launched employee kindness ambassador program',
+            'Reduced office paper usage by 45%',
+            'Implemented weekly team wellness check-ins'
+          ],
+          downloadUrl: '/downloads/esg-q3-2024-report.pdf'
+        },
+        {
+          id: 'esg-2024-q2',
+          title: 'Q2 2024 ESG Impact Report',
+          period: 'April - June 2024',
+          generatedDate: new Date(Date.now() - 60 * 24 * 60 * 60 * 1000).toISOString(),
+          status: 'final',
+          metrics: {
+            environmental: {
+              carbonOffset: 1876,
+              sustainabilityProjects: 7,
+              greenInitiatives: 4,
+              wasteReduction: 15.2
+            },
+            social: {
+              volunteerHours: 1124,
+              communityImpact: 6234,
+              diversityPrograms: 11,
+              wellnessParticipation: 76.8,
+              employeeEngagement: 7.9
+            },
+            governance: {
+              ethicalPracticesScore: 85,
+              transparencyRating: 8.4,
+              complianceRate: 93.1,
+              stakeholderSatisfaction: 88.9
+            }
+          },
+          totalScore: 81.3,
+          industryRanking: 18,
+          improvementAreas: [
+            'Expand community outreach programs',
+            'Increase leadership diversity metrics',
+            'Implement comprehensive ESG training'
+          ],
+          achievements: [
+            'Established corporate kindness policy',
+            'Achieved zero waste to landfill certification',
+            'Launched mentorship program for underrepresented groups'
+          ],
+          downloadUrl: '/downloads/esg-q2-2024-report.pdf'
+        }
+      ];
+
+      // Filter by period if specified
+      let filteredReports = reports;
+      if (period === 'monthly') {
+        // For demo, show same reports but simulate monthly granularity
+        filteredReports = reports.map(r => ({
+          ...r,
+          title: r.title.replace('Q', 'Month of '),
+          period: r.period.split(' - ')[0] + ' 2024'
+        }));
+      } else if (period === 'annual') {
+        // Show consolidated annual report
+        filteredReports = [
+          {
+            ...reports[0],
+            id: 'esg-2024-annual',
+            title: '2024 Annual ESG Impact Report',
+            period: 'January - December 2024',
+            totalScore: 88.7,
+            industryRanking: 8
+          }
+        ];
+      }
+
+      res.json(filteredReports);
+    } catch (error) {
+      console.error('Error fetching ESG reports:', error);
+      res.status(500).json({ message: 'Failed to fetch ESG reports' });
+    }
+  });
+
+  app.get('/api/esg/trends', isAuthenticated, async (req: any, res) => {
+    try {
+      // Generate 12 months of ESG trend data
+      const trends = Array.from({ length: 12 }, (_, i) => {
+        const date = new Date();
+        date.setMonth(date.getMonth() - (11 - i));
+        
+        // Simulate improving trend over time with some variance
+        const baseE = 70 + i * 1.5 + (Math.random() - 0.5) * 4;
+        const baseS = 72 + i * 1.2 + (Math.random() - 0.5) * 3;
+        const baseG = 68 + i * 1.8 + (Math.random() - 0.5) * 5;
+        
+        return {
+          month: date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+          environmentalScore: Math.min(100, Math.max(60, baseE)),
+          socialScore: Math.min(100, Math.max(65, baseS)),
+          governanceScore: Math.min(100, Math.max(60, baseG)),
+          overallScore: Math.min(100, Math.max(62, (baseE + baseS + baseG) / 3))
+        };
+      });
+
+      res.json(trends);
+    } catch (error) {
+      console.error('Error fetching ESG trends:', error);
+      res.status(500).json({ message: 'Failed to fetch ESG trends' });
+    }
+  });
+
+  app.post('/api/esg/generate-report', isAuthenticated, async (req: any, res) => {
+    try {
+      const { period } = req.body;
+      const userId = req.user.claims.sub;
+      
+      // In a real implementation, this would:
+      // 1. Aggregate kindness and wellness data from specified period
+      // 2. Calculate ESG metrics using AI algorithms
+      // 3. Generate compliance-ready PDF report
+      // 4. Store report in database for future access
+      // 5. Send email notification when report is ready
+      
+      console.log(`Generating ${period} ESG report for user ${userId}`);
+      
+      // Simulate report generation process
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const newReportId = `esg-${Date.now()}`;
+      
+      res.json({ 
+        success: true, 
+        reportId: newReportId,
+        message: `${period.charAt(0).toUpperCase() + period.slice(1)} ESG report generated successfully! Processing kindness data into compliance metrics...`,
+        estimatedCompletion: '2-3 minutes'
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Blockchain-verified Kindness Impact Certificates endpoints
+  app.get('/api/certificates/earned', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Generate realistic earned certificates with blockchain verification
+      const earnedCertificates = [
+        {
+          id: 'cert-kindness-pioneer',
+          title: 'Kindness Pioneer',
+          description: 'Completed 50+ acts of kindness and inspired 10+ colleagues to join the movement',
+          achievementType: 'milestone',
+          milestone: {
+            category: 'Acts of Kindness',
+            threshold: 50,
+            currentValue: 67,
+            unit: 'acts'
+          },
+          issuedDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+          blockchainTxHash: '0xa1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890',
+          blockchainNetwork: 'EchoDeed Chain',
+          verificationUrl: 'https://echodeeed-explorer.com/tx/0xa1b2c3d4e5f67890abcdef1234567890abcdef1234567890abcdef1234567890',
+          certificateUrl: '/certificates/kindness-pioneer-67890.pdf',
+          badgeImageUrl: '/badges/kindness-pioneer.png',
+          level: 'Gold',
+          rarity: 12.3, // 12.3% of users have achieved this
+          stakeholders: ['HR Team', 'Wellness Committee', 'Executive Leadership'],
+          impactMetrics: {
+            peopleHelped: 134,
+            hoursContributed: 89,
+            co2Offset: 245,
+            communityReach: 892
+          },
+          status: 'verified',
+          shareCount: 23,
+          endorsements: 15
+        },
+        {
+          id: 'cert-wellness-champion',
+          title: 'Wellness Champion',
+          description: 'Led 5+ team wellness initiatives and achieved 95%+ employee participation rate',
+          achievementType: 'leadership',
+          milestone: {
+            category: 'Wellness Leadership',
+            threshold: 5,
+            currentValue: 8,
+            unit: 'initiatives'
+          },
+          issuedDate: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          blockchainTxHash: '0xb2c3d4e5f67890a1bcdef1234567890abcdef1234567890abcdef1234567890a',
+          blockchainNetwork: 'Polygon',
+          verificationUrl: 'https://polygonscan.com/tx/0xb2c3d4e5f67890a1bcdef1234567890abcdef1234567890abcdef1234567890a',
+          certificateUrl: '/certificates/wellness-champion-89012.pdf',
+          badgeImageUrl: '/badges/wellness-champion.png',
+          level: 'Platinum',
+          rarity: 3.7, // 3.7% of users have achieved this
+          stakeholders: ['Wellness Committee', 'Department Heads', 'CEO Office'],
+          impactMetrics: {
+            peopleHelped: 287,
+            hoursContributed: 156,
+            co2Offset: 612,
+            communityReach: 1547
+          },
+          status: 'verified',
+          shareCount: 41,
+          endorsements: 28
+        },
+        {
+          id: 'cert-innovation-driver',
+          title: 'Innovation Driver',
+          description: 'Developed and implemented 3 new kindness technologies that improved team collaboration by 40%',
+          achievementType: 'innovation',
+          milestone: {
+            category: 'Innovation Projects',
+            threshold: 3,
+            currentValue: 3,
+            unit: 'projects'
+          },
+          issuedDate: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+          blockchainTxHash: '0xc3d4e5f67890a1b2cdef1234567890abcdef1234567890abcdef1234567890ab',
+          blockchainNetwork: 'EchoDeed Chain',
+          verificationUrl: 'https://echodeeed-explorer.com/tx/0xc3d4e5f67890a1b2cdef1234567890abcdef1234567890abcdef1234567890ab',
+          certificateUrl: '/certificates/innovation-driver-90123.pdf',
+          badgeImageUrl: '/badges/innovation-driver.png',
+          level: 'Diamond',
+          rarity: 0.8, // 0.8% of users have achieved this - ultra rare
+          stakeholders: ['CTO Office', 'Innovation Lab', 'Product Team'],
+          impactMetrics: {
+            peopleHelped: 456,
+            hoursContributed: 234,
+            co2Offset: 789,
+            communityReach: 2341
+          },
+          status: 'verified',
+          shareCount: 67,
+          endorsements: 42
+        }
+      ];
+
+      res.json(earnedCertificates);
+    } catch (error) {
+      console.error('Error fetching earned certificates:', error);
+      res.status(500).json({ message: 'Failed to fetch earned certificates' });
+    }
+  });
+
+  app.get('/api/certificates/available', isAuthenticated, async (req: any, res) => {
+    try {
+      const availableMilestones = [
+        {
+          id: 'milestone-community-builder',
+          title: 'Community Builder',
+          description: 'Organize 10 community events and achieve 80% average attendance rate',
+          type: 'Community Leadership',
+          threshold: 10,
+          currentProgress: 7,
+          unit: 'events',
+          estimatedCompletion: '3-4 weeks',
+          rarity: 8.2,
+          level: 'Gold',
+          requirements: [
+            'Organize at least 10 community events',
+            'Maintain 80%+ average attendance rate',
+            'Receive positive feedback from 90%+ of participants',
+            'Document measurable community impact'
+          ]
+        },
+        {
+          id: 'milestone-mentor-master',
+          title: 'Mentor Master',
+          description: 'Successfully mentor 25+ individuals and maintain 95%+ satisfaction rating',
+          type: 'Leadership Development',
+          threshold: 25,
+          currentProgress: 18,
+          unit: 'mentees',
+          estimatedCompletion: '6-8 weeks',
+          rarity: 4.1,
+          level: 'Platinum',
+          requirements: [
+            'Mentor at least 25 individuals',
+            'Achieve 95%+ mentee satisfaction rating',
+            'Complete certified mentorship training',
+            'Track measurable skill development outcomes'
+          ]
+        },
+        {
+          id: 'milestone-sustainability-leader',
+          title: 'Sustainability Leader',
+          description: 'Lead initiatives that offset 1000kg CO2 and reduce company waste by 25%',
+          type: 'Environmental Impact',
+          threshold: 1000,
+          currentProgress: 423,
+          unit: 'kg CO2',
+          estimatedCompletion: '8-10 weeks',
+          rarity: 2.9,
+          level: 'Diamond',
+          requirements: [
+            'Offset 1000kg+ of CO2 emissions',
+            'Reduce company waste by 25%+',
+            'Lead 5+ sustainability initiatives',
+            'Engage 50+ employees in green practices'
+          ]
+        }
+      ];
+
+      res.json(availableMilestones);
+    } catch (error) {
+      console.error('Error fetching available milestones:', error);
+      res.status(500).json({ message: 'Failed to fetch available milestones' });
+    }
+  });
+
+  app.get('/api/certificates/stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const stats = {
+        totalCertificates: 3,
+        verifiedCertificates: 3,
+        pendingVerification: 0,
+        blockchainTransactions: 156,
+        uniqueAchievements: 7,
+        totalEndorsements: 85
+      };
+
+      res.json(stats);
+    } catch (error) {
+      console.error('Error fetching certificate stats:', error);
+      res.status(500).json({ message: 'Failed to fetch certificate stats' });
+    }
+  });
+
+  app.post('/api/certificates/mint', isAuthenticated, async (req: any, res) => {
+    try {
+      const { milestoneId } = req.body;
+      const userId = req.user.claims.sub;
+      
+      // In a real implementation, this would:
+      // 1. Verify milestone completion requirements
+      // 2. Generate unique certificate metadata
+      // 3. Create blockchain transaction on EchoDeed Chain
+      // 4. Generate PDF certificate with blockchain verification
+      // 5. Update user's certificate collection
+      // 6. Send notifications to stakeholders
+      
+      console.log(`Minting certificate for milestone ${milestoneId} for user ${userId}`);
+      
+      // Simulate blockchain minting process
+      await new Promise(resolve => setTimeout(resolve, 3000));
+      
+      const newCertificateId = `cert-${milestoneId}-${Date.now()}`;
+      const blockchainTxHash = `0x${Math.random().toString(16).substr(2, 64)}`;
+      
+      res.json({ 
+        success: true, 
+        certificateId: newCertificateId,
+        blockchainTxHash,
+        message: 'Certificate successfully minted on blockchain! Your achievement is now permanently verified.',
+        verificationUrl: `https://echodeeed-explorer.com/tx/${blockchainTxHash}`,
+        estimatedDelivery: '2-3 minutes'
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Time-Locked Wellness Messages endpoints
+  app.get('/api/messages/scheduled', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Generate realistic scheduled messages
+      const scheduledMessages = [
+        {
+          id: 'msg-weekly-motivation',
+          subject: 'Weekly Team Motivation Boost 🚀',
+          content: 'Hey team! Just wanted to remind you how amazing you all are. This week, take a moment to celebrate the small wins and remember that your dedication to wellness and kindness is making a real difference in our workplace culture. Keep up the incredible work!',
+          senderName: 'Sarah Chen',
+          senderAvatar: '/avatars/sarah.jpg',
+          recipientType: 'team',
+          recipients: ['marketing-team'],
+          recipientCount: 12,
+          scheduledDate: new Date().toISOString(),
+          unlockDate: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 days from now
+          createdDate: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+          category: 'motivation',
+          triggerEvent: '',
+          status: 'scheduled',
+          deliveryMethod: 'all',
+          priority: 'medium',
+          isEncrypted: true,
+          unlockCount: 0,
+          totalRecipients: 12,
+          engagementScore: 0,
+          impactMetrics: {
+            opened: 0,
+            responded: 0,
+            shared: 0,
+            positiveReactions: 0
+          },
+          tags: ['weekly', 'motivation', 'team-building']
+        },
+        {
+          id: 'msg-project-celebration',
+          subject: 'Congratulations on Project Phoenix Launch! 🎉',
+          content: 'What an incredible achievement! The Phoenix project launch was a testament to your teamwork, creativity, and dedication. Take this weekend to relax and celebrate - you\'ve earned it. When you return on Monday, we\'ll have some exciting new opportunities to explore together.',
+          senderName: 'Michael Rodriguez',
+          senderAvatar: '/avatars/michael.jpg',
+          recipientType: 'department',
+          recipients: ['engineering-dept'],
+          recipientCount: 24,
+          scheduledDate: new Date().toISOString(),
+          unlockDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
+          createdDate: new Date(Date.now() - 12 * 60 * 60 * 1000).toISOString(),
+          category: 'celebration',
+          triggerEvent: 'project-completion',
+          status: 'scheduled',
+          deliveryMethod: 'notification',
+          priority: 'high',
+          isEncrypted: true,
+          unlockCount: 0,
+          totalRecipients: 24,
+          engagementScore: 0,
+          impactMetrics: {
+            opened: 0,
+            responded: 0,
+            shared: 0,
+            positiveReactions: 0
+          },
+          tags: ['project', 'celebration', 'achievement']
+        },
+        {
+          id: 'msg-wellness-reminder',
+          subject: 'Your Wellness Journey Milestone 🌟',
+          content: 'Six months ago, you committed to prioritizing your wellness, and look how far you\'ve come! Your consistent effort in the wellness program has been inspiring to watch. Remember that every small step counts, and you\'re building habits that will benefit you for years to come.',
+          senderName: 'Dr. Emma Watson',
+          senderAvatar: '/avatars/emma.jpg',
+          recipientType: 'individual',
+          recipients: ['user-47274916'],
+          recipientCount: 1,
+          scheduledDate: new Date().toISOString(),
+          unlockDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 2 weeks from now
+          createdDate: new Date(Date.now() - 48 * 60 * 60 * 1000).toISOString(),
+          category: 'milestone',
+          triggerEvent: 'wellness-goal',
+          status: 'scheduled',
+          deliveryMethod: 'email',
+          priority: 'low',
+          isEncrypted: true,
+          unlockCount: 0,
+          totalRecipients: 1,
+          engagementScore: 0,
+          impactMetrics: {
+            opened: 0,
+            responded: 0,
+            shared: 0,
+            positiveReactions: 0
+          },
+          tags: ['wellness', 'personal', 'milestone']
+        }
+      ];
+
+      res.json(scheduledMessages);
+    } catch (error) {
+      console.error('Error fetching scheduled messages:', error);
+      res.status(500).json({ message: 'Failed to fetch scheduled messages' });
+    }
+  });
+
+  app.get('/api/messages/delivered', isAuthenticated, async (req: any, res) => {
+    try {
+      const deliveredMessages = [
+        {
+          id: 'msg-delivered-1',
+          subject: 'Monday Motivation: You\'re Crushing It! 💪',
+          content: 'Good morning superstar! Last week you helped 3 colleagues with their projects, participated in 2 wellness activities, and maintained a positive attitude through challenging deadlines. That kind of consistency and kindness doesn\'t go unnoticed!',
+          senderName: 'Alex Thompson',
+          senderAvatar: '/avatars/alex.jpg',
+          recipientType: 'individual',
+          recipients: ['user-47274916'],
+          recipientCount: 1,
+          scheduledDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+          unlockDate: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+          createdDate: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+          category: 'encouragement',
+          status: 'read',
+          deliveryMethod: 'all',
+          priority: 'medium',
+          isEncrypted: true,
+          unlockCount: 1,
+          totalRecipients: 1,
+          engagementScore: 87,
+          impactMetrics: {
+            opened: 1,
+            responded: 1,
+            shared: 1,
+            positiveReactions: 3
+          },
+          tags: ['monday', 'motivation', 'personal']
+        },
+        {
+          id: 'msg-delivered-2',
+          subject: 'Team Achievement Unlocked: Collaboration Champions! 🏆',
+          content: 'Incredible news! Our Q4 wellness initiative exceeded all expectations, with 94% participation across all departments. This success is a direct result of everyone\'s commitment to supporting each other. Special shoutout to the 15 wellness ambassadors who led by example!',
+          senderName: 'Jennifer Liu',
+          senderAvatar: '/avatars/jennifer.jpg',
+          recipientType: 'company',
+          recipients: ['all-employees'],
+          recipientCount: 156,
+          scheduledDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+          unlockDate: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+          createdDate: new Date(Date.now() - 16 * 24 * 60 * 60 * 1000).toISOString(),
+          category: 'celebration',
+          status: 'delivered',
+          deliveryMethod: 'all',
+          priority: 'high',
+          isEncrypted: true,
+          unlockCount: 156,
+          totalRecipients: 156,
+          engagementScore: 73,
+          impactMetrics: {
+            opened: 142,
+            responded: 67,
+            shared: 23,
+            positiveReactions: 89
+          },
+          tags: ['achievement', 'company-wide', 'wellness']
+        }
+      ];
+
+      res.json(deliveredMessages);
+    } catch (error) {
+      console.error('Error fetching delivered messages:', error);
+      res.status(500).json({ message: 'Failed to fetch delivered messages' });
+    }
+  });
+
+  app.get('/api/messages/stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const stats = {
+        totalMessages: 12,
+        scheduledMessages: 3,
+        deliveredMessages: 9,
+        averageEngagement: 78,
+        mostSuccessfulCategory: 'encouragement',
+        upcomingDeliveries: 3
+      };
+
+      res.json(stats);
+    } catch (error) {
+      console.error('Error fetching message stats:', error);
+      res.status(500).json({ message: 'Failed to fetch message stats' });
+    }
+  });
+
+  app.get('/api/messages/templates', isAuthenticated, async (req: any, res) => {
+    try {
+      const templates = [
+        {
+          id: 'template-monday-motivation',
+          title: 'Monday Motivation Boost',
+          description: 'Perfect for starting the week with positive energy and team spirit',
+          category: 'motivation',
+          content: 'Good morning team! This week is full of new opportunities to make a positive impact. Remember that your kindness and dedication make our workplace better every single day. Let\'s make this week amazing together! 🚀',
+          suggestedTiming: 'Monday mornings at 9 AM',
+          popularity: 87,
+          icon: '💪'
+        },
+        {
+          id: 'template-project-celebration',
+          title: 'Project Completion Celebration',
+          description: 'Celebrate team achievements and project milestones with style',
+          category: 'celebration',
+          content: 'Congratulations on another successful project! Your hard work, creativity, and collaboration have paid off tremendously. Take a moment to celebrate this achievement - you\'ve earned it! 🎉',
+          suggestedTiming: 'Same day as project completion',
+          popularity: 92,
+          icon: '🎉'
+        },
+        {
+          id: 'template-wellness-reminder',
+          title: 'Wellness Check-in Reminder',
+          description: 'Gentle reminders about self-care and wellness priorities',
+          category: 'wellness-tip',
+          content: 'Friendly reminder: Your wellness matters! Take time today for something that brings you joy - whether it\'s a short walk, a good laugh with colleagues, or just a few deep breaths. Small acts of self-care make a big difference. 🌟',
+          suggestedTiming: 'Wednesday afternoons',
+          popularity: 76,
+          icon: '🌟'
+        },
+        {
+          id: 'template-appreciation',
+          title: 'Team Appreciation Message',
+          description: 'Express genuine gratitude for team members\' contributions',
+          category: 'appreciation',
+          content: 'I wanted to take a moment to recognize the incredible effort you\'ve been putting in. Your positive attitude and willingness to help others hasn\'t gone unnoticed. Thank you for being such a valuable part of our team! ❤️',
+          suggestedTiming: 'End of week or month',
+          popularity: 89,
+          icon: '❤️'
+        },
+        {
+          id: 'template-milestone-achievement',
+          title: 'Personal Milestone Celebration',
+          description: 'Acknowledge individual achievements and growth milestones',
+          category: 'milestone',
+          content: 'Congratulations on reaching this important milestone! Your consistent effort and dedication have led to this moment. This achievement is a testament to your growth and commitment. Keep up the excellent work! 🏆',
+          suggestedTiming: 'On milestone achievement date',
+          popularity: 81,
+          icon: '🏆'
+        },
+        {
+          id: 'template-encouragement',
+          title: 'General Encouragement',
+          description: 'Uplift spirits during challenging times or busy periods',
+          category: 'encouragement',
+          content: 'You\'re doing great, even if it doesn\'t always feel that way. Every challenge you face is making you stronger and more capable. Remember that your team is here to support you, and together we can overcome any obstacle. Keep going! ⚡',
+          suggestedTiming: 'During stressful periods',
+          popularity: 84,
+          icon: '⚡'
+        }
+      ];
+
+      res.json(templates);
+    } catch (error) {
+      console.error('Error fetching templates:', error);
+      res.status(500).json({ message: 'Failed to fetch templates' });
+    }
+  });
+
+  app.post('/api/messages/create', isAuthenticated, async (req: any, res) => {
+    try {
+      const { subject, content, unlockDate, category, priority, deliveryMethod, triggerEvent } = req.body;
+      const userId = req.user.claims.sub;
+      
+      // In a real implementation, this would:
+      // 1. Validate input data and permissions
+      // 2. Encrypt message content for time-locked storage
+      // 3. Calculate optimal delivery timing
+      // 4. Set up delivery scheduling system
+      // 5. Send confirmation to message creator
+      // 6. Track message creation analytics
+      
+      console.log(`Creating time-locked message "${subject}" for user ${userId}, scheduled for ${unlockDate}`);
+      
+      // Simulate message encryption and scheduling process
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      
+      const newMessageId = `msg-${Date.now()}`;
+      const estimatedRecipients = 1; // Would calculate based on recipient selection
+      
+      res.json({ 
+        success: true, 
+        messageId: newMessageId,
+        message: 'Time-locked message successfully scheduled! Your wellness message is now encrypted and will be delivered at the perfect moment.',
+        scheduledDelivery: unlockDate,
+        estimatedRecipients,
+        encryptionStatus: 'secured'
+      });
+    } catch (error: any) {
+      res.status(400).json({ message: error.message });
+    }
+  });
+
   return httpServer;
 }

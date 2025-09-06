@@ -1,5 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { PredictiveWellnessDashboard } from "./predictive-wellness-dashboard";
+import { AIPredictionEngine } from "./AIPredictionEngine";
+import { GlobalWellnessHeatmap } from "./GlobalWellnessHeatmap";
+import { SmartKindnessMatching } from "./SmartKindnessMatching";
+import { ESGImpactReporting } from "./ESGImpactReporting";
+import { KindnessImpactCertificates } from "./KindnessImpactCertificates";
+import { TimeLockedWellnessMessages } from "./TimeLockedWellnessMessages";
 import { useState } from "react";
 
 interface WellnessInsights {
@@ -12,7 +18,7 @@ interface WellnessInsights {
 }
 
 export function AIDashboard() {
-  const [activeView, setActiveView] = useState<'analytics' | 'predictive'>('analytics');
+  const [activeView, setActiveView] = useState<'analytics' | 'predictive' | 'predictions' | 'heatmap' | 'matching' | 'esg' | 'certificates' | 'messages'>('analytics');
 
   const { data: insights, isLoading } = useQuery<WellnessInsights>({
     queryKey: ['/api/ai/wellness-insights'],
@@ -138,12 +144,132 @@ export function AIDashboard() {
           >
             🔮 Predictive
           </button>
+          <button
+            onClick={() => setActiveView('predictions')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'predictions' ? '#667eea' : 'transparent',
+              color: activeView === 'predictions' ? 'white' : '#6b7280'
+            }}
+            data-testid="tab-ai-predictions"
+          >
+            🧠 Predictions
+          </button>
+          <button
+            onClick={() => setActiveView('heatmap')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'heatmap' ? '#10B981' : 'transparent',
+              color: activeView === 'heatmap' ? 'white' : '#6b7280'
+            }}
+            data-testid="tab-wellness-heatmap"
+          >
+            🗺️ Heatmap
+          </button>
+          <button
+            onClick={() => setActiveView('matching')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'matching' ? '#EC4899' : 'transparent',
+              color: activeView === 'matching' ? 'white' : '#6b7280'
+            }}
+            data-testid="tab-smart-matching"
+          >
+            🎯 Matching
+          </button>
+          <button
+            onClick={() => setActiveView('esg')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'esg' ? '#22C55E' : 'transparent',
+              color: activeView === 'esg' ? 'white' : '#6b7280'
+            }}
+            data-testid="tab-esg-reports"
+          >
+            📊 ESG
+          </button>
+          <button
+            onClick={() => setActiveView('certificates')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'certificates' ? '#8B5CF6' : 'transparent',
+              color: activeView === 'certificates' ? 'white' : '#6b7280'
+            }}
+            data-testid="tab-blockchain-certificates"
+          >
+            🏆 Certificates
+          </button>
+          <button
+            onClick={() => setActiveView('messages')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'messages' ? '#3B82F6' : 'transparent',
+              color: activeView === 'messages' ? 'white' : '#6b7280'
+            }}
+            data-testid="tab-time-locked-messages"
+          >
+            ⏰ Messages
+          </button>
         </div>
       </div>
 
       {/* Content based on active view */}
       {activeView === 'predictive' ? (
         <PredictiveWellnessDashboard />
+      ) : activeView === 'predictions' ? (
+        <AIPredictionEngine />
+      ) : activeView === 'heatmap' ? (
+        <GlobalWellnessHeatmap />
+      ) : activeView === 'matching' ? (
+        <SmartKindnessMatching />
+      ) : activeView === 'esg' ? (
+        <ESGImpactReporting />
+      ) : activeView === 'certificates' ? (
+        <KindnessImpactCertificates />
+      ) : activeView === 'messages' ? (
+        <TimeLockedWellnessMessages />
       ) : (
         <>
           {/* Wellness Overview */}
