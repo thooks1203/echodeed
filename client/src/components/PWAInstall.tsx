@@ -43,8 +43,8 @@ export default function PWAInstall() {
               newWorker.addEventListener('statechange', () => {
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                   toast({
-                    title: \"App Updated!\",
-                    description: \"New features available. Refresh to update.\",
+                    title: "App Updated!",
+                    description: "New features available. Refresh to update.",
                     duration: 10000,
                   });
                 }
@@ -76,8 +76,8 @@ export default function PWAInstall() {
       setIsInstalled(true);
       setShowInstallPrompt(false);
       toast({
-        title: \"🎉 EchoDeed™ Installed!\",
-        description: \"App successfully installed. You can now use it offline!\",
+        title: "🎉 EchoDeed™ Installed!",
+        description: "App successfully installed. You can now use it offline!",
       });
     };
 
@@ -85,17 +85,17 @@ export default function PWAInstall() {
     const handleOnline = () => {
       setIsOnline(true);
       toast({
-        title: \"🌐 Back Online!\",
-        description: \"Connection restored. Syncing data...\",
+        title: "🌐 Back Online!",
+        description: "Connection restored. Syncing data...",
       });
     };
 
     const handleOffline = () => {
       setIsOnline(false);
       toast({
-        title: \"📱 Offline Mode\",
-        description: \"You can continue using the app. Data will sync when online.\",
-        variant: \"destructive\",
+        title: "📱 Offline Mode",
+        description: "You can continue using the app. Data will sync when online.",
+        variant: "destructive",
       });
     };
 
@@ -120,8 +120,8 @@ export default function PWAInstall() {
       
       if (outcome === 'accepted') {
         toast({
-          title: \"Installing EchoDeed™...\",
-          description: \"App will be available on your home screen soon!\",
+          title: "Installing EchoDeed™...",
+          description: "App will be available on your home screen soon!",
         });
       }
       
@@ -150,7 +150,7 @@ export default function PWAInstall() {
 
   if (!showInstallPrompt) {
     return (
-      <div className=\"fixed bottom-4 right-4 z-50 flex items-center gap-2\">
+      <div className="fixed bottom-4 right-4 z-50 flex items-center gap-2">
         {/* Connection Status Indicator */}
         <div className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-all ${
           isOnline 
@@ -159,12 +159,12 @@ export default function PWAInstall() {
         }`}>
           {isOnline ? (
             <>
-              <Wifi className=\"w-3 h-3\" />
+              <Wifi className="w-3 h-3" />
               Online
             </>
           ) : (
             <>
-              <WifiOff className=\"w-3 h-3\" />
+              <WifiOff className="w-3 h-3" />
               Offline
             </>
           )}
@@ -172,8 +172,8 @@ export default function PWAInstall() {
         
         {/* PWA Status */}
         {serviceWorkerReady && (
-          <div className=\"flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400\">
-            <Smartphone className=\"w-3 h-3\" />
+          <div className="flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-700 dark:bg-blue-900/20 dark:text-blue-400">
+            <Smartphone className="w-3 h-3" />
             PWA Ready
           </div>
         )}
@@ -182,76 +182,76 @@ export default function PWAInstall() {
   }
 
   return (
-    <div className=\"fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm\" data-testid=\"pwa-install-modal\">
-      <Card className=\"max-w-md w-full bg-gradient-to-br from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20 border-emerald-200 dark:border-emerald-700\">
-        <CardHeader className=\"text-center relative\">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm" data-testid="pwa-install-modal">
+      <Card className="max-w-md w-full bg-gradient-to-br from-emerald-50 to-blue-50 dark:from-emerald-900/20 dark:to-blue-900/20 border-emerald-200 dark:border-emerald-700">
+        <CardHeader className="text-center relative">
           <Button
-            variant=\"ghost\"
-            size=\"sm\"
-            className=\"absolute top-2 right-2 h-6 w-6 p-0\"
+            variant="ghost"
+            size="sm"
+            className="absolute top-2 right-2 h-6 w-6 p-0"
             onClick={handleDismiss}
-            data-testid=\"button-dismiss-install\"
+            data-testid="button-dismiss-install"
           >
-            <X className=\"w-4 h-4\" />
+            <X className="w-4 h-4" />
           </Button>
           
-          <div className=\"mx-auto w-16 h-16 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-2xl flex items-center justify-center mb-4\">
-            <Smartphone className=\"w-8 h-8 text-white\" />
+          <div className="mx-auto w-16 h-16 bg-gradient-to-br from-emerald-500 to-blue-500 rounded-2xl flex items-center justify-center mb-4">
+            <Smartphone className="w-8 h-8 text-white" />
           </div>
           
-          <CardTitle className=\"text-xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent\">
+          <CardTitle className="text-xl font-bold bg-gradient-to-r from-emerald-600 to-blue-600 bg-clip-text text-transparent">
             Install EchoDeed™
           </CardTitle>
           
-          <CardDescription className=\"text-gray-600 dark:text-gray-300\">
+          <CardDescription className="text-gray-600 dark:text-gray-300">
             Get the full experience with our Progressive Web App
           </CardDescription>
         </CardHeader>
         
-        <CardContent className=\"space-y-4\">
-          <div className=\"space-y-3\">
-            <div className=\"flex items-center gap-3 text-sm\">
-              <div className=\"w-2 h-2 bg-emerald-500 rounded-full flex-shrink-0\" />
+        <CardContent className="space-y-4">
+          <div className="space-y-3">
+            <div className="flex items-center gap-3 text-sm">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full flex-shrink-0" />
               <span>Works offline - access your wellness data anywhere</span>
             </div>
             
-            <div className=\"flex items-center gap-3 text-sm\">
-              <div className=\"w-2 h-2 bg-blue-500 rounded-full flex-shrink-0\" />
+            <div className="flex items-center gap-3 text-sm">
+              <div className="w-2 h-2 bg-blue-500 rounded-full flex-shrink-0" />
               <span>Push notifications for important updates</span>
             </div>
             
-            <div className=\"flex items-center gap-3 text-sm\">
-              <div className=\"w-2 h-2 bg-purple-500 rounded-full flex-shrink-0\" />
+            <div className="flex items-center gap-3 text-sm">
+              <div className="w-2 h-2 bg-purple-500 rounded-full flex-shrink-0" />
               <span>Native app experience on your device</span>
             </div>
             
-            <div className=\"flex items-center gap-3 text-sm\">
-              <div className=\"w-2 h-2 bg-orange-500 rounded-full flex-shrink-0\" />
+            <div className="flex items-center gap-3 text-sm">
+              <div className="w-2 h-2 bg-orange-500 rounded-full flex-shrink-0" />
               <span>Faster loading and better performance</span>
             </div>
           </div>
           
-          <div className=\"flex gap-2 pt-2\">
+          <div className="flex gap-2 pt-2">
             <Button 
               onClick={handleInstallClick}
-              className=\"flex-1 bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white\"
-              data-testid=\"button-install-pwa\"
+              className="flex-1 bg-gradient-to-r from-emerald-500 to-blue-500 hover:from-emerald-600 hover:to-blue-600 text-white"
+              data-testid="button-install-pwa"
             >
-              <Download className=\"w-4 h-4 mr-2\" />
+              <Download className="w-4 h-4 mr-2" />
               Install App
             </Button>
             
             <Button 
-              variant=\"outline\" 
+              variant="outline" 
               onClick={handleDismiss}
-              className=\"px-4\"
-              data-testid=\"button-maybe-later\"
+              className="px-4"
+              data-testid="button-maybe-later"
             >
               Maybe Later
             </Button>
           </div>
           
-          <p className=\"text-xs text-center text-gray-500 dark:text-gray-400\">
+          <p className="text-xs text-center text-gray-500 dark:text-gray-400">
             Free to install • Works on all devices • No app store required
           </p>
         </CardContent>

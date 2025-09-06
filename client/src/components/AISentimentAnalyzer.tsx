@@ -120,18 +120,18 @@ export default function AISentimentAnalyzer() {
       // Show alert for high-risk situations
       if (mockAnalysis.riskLevel === 'high' || mockAnalysis.overallMood === 'negative') {
         toast({
-          title: \"🚨 Wellness Alert\",
-          description: \"AI detected potential team wellness concerns. Immediate intervention recommended.\",
-          variant: \"destructive\",
+          title: "🚨 Wellness Alert",
+          description: "AI detected potential team wellness concerns. Immediate intervention recommended.",
+          variant: "destructive",
         });
       }
 
     } catch (error) {
       console.error('Failed to perform sentiment analysis:', error);
       toast({
-        title: \"Analysis Error\",
-        description: \"Unable to complete sentiment analysis. Please try again.\",
-        variant: \"destructive\",
+        title: "Analysis Error",
+        description: "Unable to complete sentiment analysis. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setIsAnalyzing(false);
@@ -148,9 +148,9 @@ export default function AISentimentAnalyzer() {
 
   const getMoodIcon = (mood: string) => {
     switch (mood) {
-      case 'positive': return <TrendingUp className=\"w-5 h-5 text-emerald-500\" />;
-      case 'negative': return <TrendingDown className=\"w-5 h-5 text-red-500\" />;
-      default: return <Target className=\"w-5 h-5 text-amber-500\" />;
+      case 'positive': return <TrendingUp className="w-5 h-5 text-emerald-500" />;
+      case 'negative': return <TrendingDown className="w-5 h-5 text-red-500" />;
+      default: return <Target className="w-5 h-5 text-amber-500" />;
     }
   };
 
@@ -164,10 +164,10 @@ export default function AISentimentAnalyzer() {
 
   if (!analysis) {
     return (
-      <Card className=\"w-full\" data-testid=\"sentiment-analyzer-loading\">
+      <Card className="w-full" data-testid="sentiment-analyzer-loading">
         <CardHeader>
-          <CardTitle className=\"flex items-center gap-2\">
-            <Brain className=\"w-5 h-5\" />
+          <CardTitle className="flex items-center gap-2">
+            <Brain className="w-5 h-5" />
             AI Sentiment Analysis
           </CardTitle>
           <CardDescription>
@@ -175,9 +175,9 @@ export default function AISentimentAnalyzer() {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className=\"flex items-center gap-2\">
-            <div className=\"animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500\"></div>
-            <span className=\"text-sm text-muted-foreground\">Initializing AI analysis...</span>
+          <div className="flex items-center gap-2">
+            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
+            <span className="text-sm text-muted-foreground">Initializing AI analysis...</span>
           </div>
         </CardContent>
       </Card>
@@ -185,27 +185,27 @@ export default function AISentimentAnalyzer() {
   }
 
   return (
-    <div className=\"space-y-6 w-full\" data-testid=\"sentiment-analyzer-dashboard\">
+    <div className="space-y-6 w-full" data-testid="sentiment-analyzer-dashboard">
       {/* Overall Sentiment Analysis */}
       <Card>
-        <CardHeader className=\"flex flex-row items-center justify-between space-y-0 pb-2\">
-          <CardTitle className=\"text-lg font-semibold flex items-center gap-2\">
-            <Brain className=\"w-5 h-5 text-blue-500\" />
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-lg font-semibold flex items-center gap-2">
+            <Brain className="w-5 h-5 text-blue-500" />
             AI Sentiment Analysis
           </CardTitle>
           <Badge variant={getRiskBadgeVariant(analysis.riskLevel)} data-testid={`risk-level-${analysis.riskLevel}`}>
             {analysis.riskLevel.toUpperCase()} RISK
           </Badge>
         </CardHeader>
-        <CardContent className=\"space-y-4\">
-          <div className=\"flex items-center justify-between\">
-            <div className=\"flex items-center gap-3\">
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
               {getMoodIcon(analysis.overallMood)}
               <div>
                 <div className={`font-semibold ${getMoodColor(analysis.overallMood)}`}>
                   {analysis.overallMood.charAt(0).toUpperCase() + analysis.overallMood.slice(1)} Mood
                 </div>
-                <div className=\"text-sm text-muted-foreground\">
+                <div className="text-sm text-muted-foreground">
                   {(analysis.confidence * 100).toFixed(1)}% confidence
                 </div>
               </div>
@@ -213,17 +213,17 @@ export default function AISentimentAnalyzer() {
             <Button 
               onClick={performSentimentAnalysis}
               disabled={isAnalyzing}
-              size=\"sm\"
-              data-testid=\"button-refresh-analysis\"
+              size="sm"
+              data-testid="button-refresh-analysis"
             >
               {isAnalyzing ? (
                 <>
-                  <div className=\"animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-2\"></div>
+                  <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-white mr-2"></div>
                   Analyzing...
                 </>
               ) : (
                 <>
-                  <Zap className=\"w-3 h-3 mr-2\" />
+                  <Zap className="w-3 h-3 mr-2" />
                   Refresh Analysis
                 </>
               )}
@@ -231,19 +231,19 @@ export default function AISentimentAnalyzer() {
           </div>
 
           {/* Emotion Breakdown */}
-          <div className=\"space-y-3\">
-            <h4 className=\"font-semibold text-sm\">Emotion Breakdown</h4>
-            <div className=\"grid grid-cols-2 gap-4\">
+          <div className="space-y-3">
+            <h4 className="font-semibold text-sm">Emotion Breakdown</h4>
+            <div className="grid grid-cols-2 gap-4">
               {Object.entries(analysis.emotionBreakdown).map(([emotion, value]) => (
-                <div key={emotion} className=\"space-y-2\">
-                  <div className=\"flex justify-between text-sm\">
-                    <span className=\"capitalize flex items-center gap-1\">
-                      <Heart className=\"w-3 h-3\" />
+                <div key={emotion} className="space-y-2">
+                  <div className="flex justify-between text-sm">
+                    <span className="capitalize flex items-center gap-1">
+                      <Heart className="w-3 h-3" />
                       {emotion}
                     </span>
                     <span>{value.toFixed(1)}%</span>
                   </div>
-                  <Progress value={value} className=\"h-2\" />
+                  <Progress value={value} className="h-2" />
                 </div>
               ))}
             </div>
@@ -254,21 +254,21 @@ export default function AISentimentAnalyzer() {
       {/* Team Department Analysis */}
       <Card>
         <CardHeader>
-          <CardTitle className=\"text-lg font-semibold\">Department Mood Analysis</CardTitle>
+          <CardTitle className="text-lg font-semibold">Department Mood Analysis</CardTitle>
           <CardDescription>
             AI-powered insights across different teams
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className=\"space-y-4\">
+          <div className="space-y-4">
             {teamAnalysis.map((team, index) => (
               <div 
                 key={team.department} 
-                className=\"p-4 border rounded-lg space-y-3\"
+                className="p-4 border rounded-lg space-y-3"
                 data-testid={`team-analysis-${team.department.toLowerCase()}`}
               >
-                <div className=\"flex items-center justify-between\">
-                  <h4 className=\"font-semibold\">{team.department}</h4>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-semibold">{team.department}</h4>
                   <Badge 
                     variant={team.alertLevel === 'green' ? 'default' : team.alertLevel === 'yellow' ? 'secondary' : 'destructive'}
                   >
@@ -276,20 +276,20 @@ export default function AISentimentAnalyzer() {
                   </Badge>
                 </div>
                 
-                <div className=\"grid grid-cols-2 gap-4 text-sm\">
+                <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <span className=\"text-muted-foreground\">Avg Sentiment: </span>
-                    <span className=\"font-medium\">{team.averageSentiment.toFixed(1)}%</span>
+                    <span className="text-muted-foreground">Avg Sentiment: </span>
+                    <span className="font-medium">{team.averageSentiment.toFixed(1)}%</span>
                   </div>
                   <div>
-                    <span className=\"text-muted-foreground\">Participation: </span>
-                    <span className=\"font-medium\">{team.participationRate.toFixed(1)}%</span>
+                    <span className="text-muted-foreground">Participation: </span>
+                    <span className="font-medium">{team.participationRate.toFixed(1)}%</span>
                   </div>
                 </div>
 
-                <div className=\"flex flex-wrap gap-2\">
+                <div className="flex flex-wrap gap-2">
                   {team.keyInsights.map((insight, idx) => (
-                    <Badge key={idx} variant=\"outline\" className=\"text-xs\">
+                    <Badge key={idx} variant="outline" className="text-xs">
                       {insight}
                     </Badge>
                   ))}
@@ -301,19 +301,19 @@ export default function AISentimentAnalyzer() {
       </Card>
 
       {/* AI Insights & Recommendations */}
-      <div className=\"grid grid-cols-1 lg:grid-cols-2 gap-6\">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
-            <CardTitle className=\"text-lg font-semibold flex items-center gap-2\">
-              <TrendingUp className=\"w-5 h-5 text-emerald-500\" />
+            <CardTitle className="text-lg font-semibold flex items-center gap-2">
+              <TrendingUp className="w-5 h-5 text-emerald-500" />
               AI Insights
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className=\"space-y-3\">
+            <div className="space-y-3">
               {analysis.insights.map((insight, index) => (
-                <div key={index} className=\"flex gap-2 text-sm\">
-                  <div className=\"w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0\" />
+                <div key={index} className="flex gap-2 text-sm">
+                  <div className="w-2 h-2 bg-emerald-500 rounded-full mt-2 flex-shrink-0" />
                   <span>{insight}</span>
                 </div>
               ))}
@@ -323,16 +323,16 @@ export default function AISentimentAnalyzer() {
 
         <Card>
           <CardHeader>
-            <CardTitle className=\"text-lg font-semibold flex items-center gap-2\">
-              <AlertTriangle className=\"w-5 h-5 text-amber-500\" />
+            <CardTitle className="text-lg font-semibold flex items-center gap-2">
+              <AlertTriangle className="w-5 h-5 text-amber-500" />
               AI Recommendations
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className=\"space-y-3\">
+            <div className="space-y-3">
               {analysis.recommendations.map((rec, index) => (
-                <div key={index} className=\"flex gap-2 text-sm\">
-                  <div className=\"w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0\" />
+                <div key={index} className="flex gap-2 text-sm">
+                  <div className="w-2 h-2 bg-amber-500 rounded-full mt-2 flex-shrink-0" />
                   <span>{rec}</span>
                 </div>
               ))}

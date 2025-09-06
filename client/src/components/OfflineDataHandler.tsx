@@ -128,7 +128,11 @@ export default function OfflineDataHandler() {
         // Register for background sync if available
         if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
           navigator.serviceWorker.ready.then(registration => {
-            return registration.sync.register('kindness-sync');
+            if ('sync' in registration) {
+              return (registration as any).sync.register('kindness-sync');
+            }
+          }).catch(error => {
+            console.log('Background sync registration failed:', error);
           });
         }
         
