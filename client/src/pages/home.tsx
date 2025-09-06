@@ -325,32 +325,19 @@ export default function Home() {
           textAlign: 'center'
         }}>
           {/* Floating Logo */}
-          <div style={{ 
-            width: '200px', 
-            height: '200px', 
-            margin: '0 auto 20px',
-            position: 'relative',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            backgroundColor: 'rgba(255,255,255,0.15)',
-            borderRadius: '20px',
-            backdropFilter: 'blur(20px)',
-            border: '2px solid rgba(255,255,255,0.3)',
-            boxShadow: '0 8px 32px rgba(139,92,246,0.4), 0 0 60px rgba(255,255,255,0.2)',
-            animation: 'logoFloat 3s ease-in-out infinite'
-          }}>
-            <img 
-              src={logoUrl} 
-              alt="EchoDeed Logo"
-              style={{ 
-                width: '160px',
-                height: '160px',
-                filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.3))',
-                borderRadius: '12px'
-              }}
-            />
-          </div>
+          <img 
+            src={logoUrl} 
+            alt="EchoDeed Logo"
+            style={{ 
+              width: '280px',
+              height: '280px',
+              margin: '0 auto 20px',
+              display: 'block',
+              filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))',
+              borderRadius: '20px',
+              animation: 'logoFloat 3s ease-in-out infinite'
+            }}
+          />
           
           {/* Brand Name */}
           <h1 style={{ 
