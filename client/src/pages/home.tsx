@@ -27,9 +27,6 @@ export default function Home() {
   const [activeFilter, setActiveFilter] = useState('global');
   const { activeTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation('feed');
   
-  // Debug logging
-  console.log('🔍 DEBUG - Current activeTab:', activeTab);
-  console.log('🔍 DEBUG - Counter value:', (counter || defaultCounter)?.count);
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
   const [showWelcome, setShowWelcome] = useState(false);
@@ -3208,7 +3205,6 @@ export default function Home() {
       </div>
     );
   }
-
   else if (activeTab === 'admin') {
     return (
       <div style={{ 
@@ -3488,7 +3484,7 @@ export default function Home() {
     );
   }
 
-  // Main App - Default Feed Tab
+  // Main App - Default Feed Tab  
   if (activeTab === 'feed' || !activeTab) {
     return (
     <div style={{ 
