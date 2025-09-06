@@ -31,6 +31,9 @@ export default function Home() {
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
+  
+  // Debug welcome state
+  console.log('🔍 showWelcome state:', showWelcome);
   const [showNotificationSetup, setShowNotificationSetup] = useState(false);
   const [tokenEarning, setTokenEarning] = useState<TokenEarning | null>(null);
   const [achievementNotification, setAchievementNotification] = useState<AchievementNotification | null>(null);
@@ -269,8 +272,202 @@ export default function Home() {
   const defaultCounter: KindnessCounter = {
     id: 'global',
     count: 243876,
-    updatedAt: new Date(),
+    updatedAt: new Date().toISOString()
   };
+
+  // Welcome Page - Check at the very beginning
+  console.log('🔍 Checking showWelcome condition:', showWelcome);
+  if (showWelcome) {
+    console.log('✅ Rendering welcome page!');
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#0f0f23',
+        minHeight: '100vh',
+        position: 'relative',
+        overflow: 'hidden'
+      }}>
+        {/* Animated Background */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'linear-gradient(135deg, #1a1a2e 0%, #16213e 20%, #0f3460 40%, #533483 60%, #7209b7 80%, #2d1b69 100%)',
+          backgroundSize: '400% 400%',
+          animation: 'gradientShift 8s ease infinite'
+        }} />
+        
+        {/* Floating Particles */}
+        <div style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: \`
+            radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
+            radial-gradient(2px 2px at 40px 70px, rgba(139,92,246,0.6), transparent),
+            radial-gradient(1px 1px at 90px 40px, rgba(6,182,212,0.4), transparent),
+            radial-gradient(1px 1px at 130px 80px, rgba(16,185,129,0.4), transparent),
+            radial-gradient(2px 2px at 160px 30px, rgba(245,158,11,0.3), transparent)
+          \`,
+          backgroundRepeat: 'repeat',
+          backgroundSize: '200px 100px',
+          animation: 'sparkle 6s linear infinite'
+        }} />
+
+        {/* Welcome Header */}
+        <div style={{ 
+          position: 'relative',
+          zIndex: 2,
+          color: 'white', 
+          padding: '60px 20px 40px', 
+          textAlign: 'center'
+        }}>
+          {/* Logo */}
+          <div style={{ 
+            width: '400px', 
+            height: '400px', 
+            margin: '0 auto 8px',
+            position: 'relative',
+            filter: 'drop-shadow(0 12px 48px rgba(139,92,246,0.8))',
+            animation: 'logoFloat 3s ease-in-out infinite'
+          }}>
+            <img 
+              src="/logo.png" 
+              alt="EchoDeed™ Logo" 
+              style={{ 
+                width: '100%', 
+                height: '100%', 
+                objectFit: 'contain',
+                filter: 'brightness(1.1) contrast(1.1)'
+              }} 
+            />
+          </div>
+          
+          {/* Brand Name */}
+          <h1 style={{ 
+            margin: '0 0 16px 0', 
+            fontSize: '42px', 
+            fontWeight: '900',
+            background: 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 25%, #10b981 50%, #f59e0b 75%, #ef4444 100%)',
+            backgroundSize: '200% 200%',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            animation: 'titleShimmer 4s ease-in-out infinite',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            letterSpacing: '-0.02em',
+            textShadow: '0 0 30px rgba(139,92,246,0.3)'
+          }}>
+            EchoDeed™
+          </h1>
+          
+          {/* Tagline */}
+          <p style={{ 
+            fontSize: '22px', 
+            fontWeight: '600', 
+            margin: '0 0 32px 0', 
+            background: 'linear-gradient(45deg, rgba(255,255,255,0.95), rgba(255,255,255,0.8))',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            letterSpacing: '0.01em',
+            textShadow: '0 2px 20px rgba(255,255,255,0.1)'
+          }}>
+            Your Kindness, Amplified ✨
+          </p>
+          
+          {/* Global Counter */}
+          <div style={{ 
+            background: 'linear-gradient(135deg, rgba(255,255,255,0.15), rgba(255,255,255,0.05))', 
+            borderRadius: '20px', 
+            padding: '24px',
+            backdropFilter: 'blur(20px)',
+            border: '1px solid rgba(255,255,255,0.2)',
+            boxShadow: '0 8px 32px rgba(0,0,0,0.2)',
+            animation: counterPulse ? 'counterPulse 0.6s ease-in-out' : 'none'
+          }}>
+            <div style={{ 
+              fontSize: '16px', 
+              marginBottom: '12px', 
+              opacity: 0.9,
+              fontWeight: '500',
+              letterSpacing: '0.5px'
+            }}>
+              🌍 Acts of Kindness Shared Globally
+            </div>
+            <div style={{ 
+              fontSize: '48px', 
+              fontWeight: '900', 
+              margin: '8px 0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px'
+            }}>
+              {(counter || defaultCounter).count.toLocaleString()}
+              <span style={{ fontSize: '36px' }}>❤️</span>
+            </div>
+            <div style={{ fontSize: '12px', opacity: 0.8 }}>
+              acts of kindness shared worldwide
+            </div>
+          </div>
+        </div>
+
+        {/* Start Button */}
+        <div style={{ padding: '30px 20px', textAlign: 'center' }}>
+          <button 
+            onClick={() => setShowWelcome(false)}
+            style={{
+              background: 'linear-gradient(135deg, #8b5cf6, #06b6d4, #10b981)',
+              backgroundSize: '200% 200%',
+              color: 'white',
+              border: 'none',
+              borderRadius: '16px',
+              padding: '16px 32px',
+              fontSize: '18px',
+              fontWeight: '700',
+              cursor: 'pointer',
+              boxShadow: '0 8px 32px rgba(139,92,246,0.5), 0 0 0 1px rgba(255,255,255,0.2)',
+              animation: 'titleShimmer 3s ease-in-out infinite',
+              transform: 'translateY(0)',
+              transition: 'all 0.3s ease',
+              fontFamily: 'system-ui, -apple-system, sans-serif',
+              letterSpacing: '0.3px',
+              textShadow: '0 1px 2px rgba(0,0,0,0.2)',
+              width: '280px',
+              maxWidth: '100%'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
+              e.currentTarget.style.boxShadow = '0 12px 40px rgba(139,92,246,0.8), 0 0 0 1px rgba(255,255,255,0.3)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'translateY(0) scale(1)';
+              e.currentTarget.style.boxShadow = '0 8px 32px rgba(139,92,246,0.5), 0 0 0 1px rgba(255,255,255,0.2)';
+            }}
+          >
+            🚀 Start Spreading Kindness ❤️
+          </button>
+          
+          <p style={{
+            fontSize: '14px',
+            color: 'rgba(255,255,255,0.8)',
+            marginTop: '16px',
+            fontWeight: '500',
+            textShadow: '0 1px 3px rgba(0,0,0,0.3)'
+          }}>
+            Join 250,000+ people spreading kindness worldwide 🌍✨
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   const buttonStyle = {
     padding: '8px 16px',
@@ -1695,10 +1892,6 @@ export default function Home() {
       </div>
     </div>
   );
-
-  // Welcome Page
-  if (showWelcome) {
-    return (
       <div style={{ 
         maxWidth: '430px', 
         margin: '0 auto', 
