@@ -10,6 +10,7 @@ import AISentimentAnalyzer from "./AISentimentAnalyzer";
 import { useState } from "react";
 import { GlobalKindnessRippleMap } from "./GlobalKindnessRippleMap";
 import { AIKindnessSuggestions } from "./AIKindnessSuggestions";
+import { KindnessImpactStories } from "./KindnessImpactStories";
 
 interface WellnessInsights {
   overallWellness: number;
@@ -21,7 +22,7 @@ interface WellnessInsights {
 }
 
 export function AIDashboard() {
-  const [activeView, setActiveView] = useState<'analytics' | 'predictive' | 'predictions' | 'heatmap' | 'matching' | 'esg' | 'certificates' | 'messages' | 'sentiment' | 'ripples' | 'suggestions'>('analytics');
+  const [activeView, setActiveView] = useState<'analytics' | 'predictive' | 'predictions' | 'heatmap' | 'matching' | 'esg' | 'certificates' | 'messages' | 'sentiment' | 'ripples' | 'suggestions' | 'stories'>('stories');
 
   const { data: insights, isLoading } = useQuery<WellnessInsights>({
     queryKey: ['/api/ai/wellness-insights'],
@@ -115,6 +116,24 @@ export function AIDashboard() {
           margin: '0 auto'
         }}>
           {/* Priority buttons - most important ones first */}
+          <button
+            onClick={() => setActiveView('stories')}
+            style={{
+              padding: '8px 12px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '11px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'stories' ? '#EC4899' : 'transparent',
+              color: activeView === 'stories' ? 'white' : '#6b7280',
+              whiteSpace: 'nowrap'
+            }}
+            data-testid="tab-impact-stories"
+          >
+            📖 Stories
+          </button>
           <button
             onClick={() => setActiveView('ripples')}
             style={{
@@ -243,6 +262,8 @@ export function AIDashboard() {
         <GlobalKindnessRippleMap />
       ) : activeView === 'suggestions' ? (
         <AIKindnessSuggestions />
+      ) : activeView === 'stories' ? (
+        <KindnessImpactStories />
       ) : (
         <>
           {/* Wellness Overview */}

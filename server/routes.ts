@@ -2074,6 +2074,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AI Impact Stories Endpoints
+  app.get('/api/ai/impact-stories', async (req, res) => {
+    try {
+      const { timeframe = 'week' } = req.query;
+      const sessionId = req.headers['x-session-id'] as string;
+      
+      // Generate sample impact story data (would normally be stored/cached)
+      const stories = await storage.generateImpactStories(sessionId || 'anonymous', timeframe as string);
+      res.json(stories);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/ai/generate-impact-story', async (req, res) => {
+    try {
+      const { timeframe = 'week' } = req.body;
+      const sessionId = req.headers['x-session-id'] as string;
+      
+      // Generate a new personalized impact story using OpenAI
+      const story = await storage.generatePersonalizedImpactStory(sessionId || 'anonymous', timeframe);
+      res.json(story);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Global Wellness Heatmap endpoints
   app.get('/api/wellness/heatmap', isAuthenticated, async (req: any, res) => {
     try {

@@ -1596,6 +1596,117 @@ export class DatabaseStorage implements IStorage {
       throw error;
     }
   }
+
+  // AI Impact Stories Methods
+  async generateImpactStories(userId: string, timeframe: string): Promise<any[]> {
+    // Return sample stories - in production would generate using AI
+    const sampleStories = [
+      {
+        id: `story-${Date.now()}-1`,
+        title: "Your Week of Rippling Kindness",
+        story: "This week, your kindness created ripples that reached 8 countries, inspired 23 other acts, and contributed to a 12% increase in community wellness. Your Monday coffee gesture started a chain reaction that's still going strong! One person you helped at the grocery store went on to volunteer at their local food bank, affecting 200+ families.",
+        metrics: {
+          rippleReach: 847,
+          countriesReached: 8,
+          peopleInspired: 23,
+          wellnessIncrease: 12,
+          chainReactionDays: 5
+        },
+        timeframe,
+        generatedAt: new Date(),
+        shareableHighlight: "Your kindness this week inspired 23 people across 8 countries! 🌍✨"
+      },
+      {
+        id: `story-${Date.now()}-2`,
+        title: "The Butterfly Effect of Your Compassion",
+        story: "Your small acts of kindness this week created an extraordinary butterfly effect. The person you complimented on Tuesday shared that positivity with their team, leading to a breakthrough on a major project. Your donation at the coffee shop inspired 6 other customers to pay it forward, creating a 4-hour chain of generosity that made local news!",
+        metrics: {
+          rippleReach: 1200,
+          countriesReached: 3,
+          peopleInspired: 47,
+          wellnessIncrease: 18,
+          chainReactionDays: 7
+        },
+        timeframe,
+        generatedAt: new Date(),
+        shareableHighlight: "One compliment sparked a team breakthrough and a 4-hour pay-it-forward chain! 💫"
+      }
+    ];
+
+    return sampleStories;
+  }
+
+  async generatePersonalizedImpactStory(userId: string, timeframe: string): Promise<any> {
+    const OpenAI = (await import('openai')).default;
+    
+    try {
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+      // Get user's recent activities (mock data for now)
+      const userActivity = {
+        postsCount: Math.floor(Math.random() * 10) + 1,
+        categoriesUsed: ['helping', 'sharing', 'caring'],
+        timeOfDay: 'morning',
+        locationHint: 'urban area'
+      };
+
+      const prompt = `Create an inspiring, personalized impact story for a user's kindness activities over the past ${timeframe}. The user has shared ${userActivity.postsCount} acts of kindness, focusing on ${userActivity.categoriesUsed.join(', ')}.
+
+Please generate a JSON response with:
+- title: An inspiring title for their impact story
+- story: A 2-3 sentence narrative showing how their kindness created ripples (be specific and heartwarming)
+- metrics: realistic numbers for rippleReach (100-2000), countriesReached (1-15), peopleInspired (5-100), wellnessIncrease (5-25), chainReactionDays (1-14)
+- shareableHighlight: One impactful sentence perfect for social sharing
+
+Make it feel personal, specific, and truly inspiring. Focus on the ripple effect and real-world impact.`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",  // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
+        messages: [
+          {
+            role: "system",
+            content: "You are an expert storyteller who creates inspiring, personalized impact narratives. Always respond in valid JSON format."
+          },
+          {
+            role: "user",
+            content: prompt
+          }
+        ],
+        response_format: { type: "json_object" },
+        max_tokens: 500,
+        temperature: 0.8
+      });
+
+      const aiStory = JSON.parse(response.choices[0].message.content || '{}');
+
+      return {
+        id: `ai-story-${Date.now()}`,
+        ...aiStory,
+        timeframe,
+        generatedAt: new Date()
+      };
+
+    } catch (error) {
+      console.error('Failed to generate AI story:', error);
+      
+      // Fallback to sample story if AI fails
+      return {
+        id: `fallback-story-${Date.now()}`,
+        title: "Your Kindness Creates Waves",
+        story: "Your recent acts of kindness have created beautiful ripples throughout your community. Each gesture, no matter how small it seemed, has touched lives and inspired others to spread positivity. You're part of a growing movement of compassion that's making the world brighter, one kind act at a time.",
+        metrics: {
+          rippleReach: 500 + Math.floor(Math.random() * 1000),
+          countriesReached: Math.floor(Math.random() * 8) + 1,
+          peopleInspired: Math.floor(Math.random() * 50) + 10,
+          wellnessIncrease: Math.floor(Math.random() * 15) + 8,
+          chainReactionDays: Math.floor(Math.random() * 7) + 2
+        },
+        timeframe,
+        generatedAt: new Date(),
+        shareableHighlight: "Your kindness is creating waves of positivity around the world! 🌊💜"
+      };
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();
