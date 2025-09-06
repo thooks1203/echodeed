@@ -2025,7 +2025,7 @@ export default function Home() {
   }
 
   // Show Badges tab if selected
-  if (activeTab === 'badges') {
+  else if (activeTab === 'badges') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -2171,7 +2171,7 @@ export default function Home() {
   }
 
   // Show AI Insights tab if selected
-  if (activeTab === 'ai') {
+  else if (activeTab === 'ai') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -2278,7 +2278,7 @@ export default function Home() {
   }
 
   // Show Rewards tab if selected
-  if (activeTab === 'rewards') {
+  else if (activeTab === 'rewards') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -2420,7 +2420,7 @@ export default function Home() {
   }
 
   // Show About EchoDeed tab if selected
-  if (activeTab === 'about') {
+  else if (activeTab === 'about') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -2636,7 +2636,7 @@ export default function Home() {
   }
 
   // Show Notifications tab if selected
-  if (activeTab === 'notifications') {
+  else if (activeTab === 'notifications') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -2960,7 +2960,7 @@ export default function Home() {
   }
 
   // Show Corporate tab if selected
-  if (activeTab === 'corporate') {
+  else if (activeTab === 'corporate') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -3097,7 +3097,7 @@ export default function Home() {
   }
 
   // Show Admin tab if selected
-  if (activeTab === 'marketing') {
+  else if (activeTab === 'marketing') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -3205,7 +3205,7 @@ export default function Home() {
     );
   }
 
-  if (activeTab === 'admin') {
+  else if (activeTab === 'admin') {
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -3345,7 +3345,7 @@ export default function Home() {
   }
 
   // Show Partners tab if selected
-  if (activeTab === 'partners') {
+  else if (activeTab === 'partners') {
     return (
       <div style={{ 
         maxWidth: '430px', 
