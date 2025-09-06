@@ -1707,6 +1707,230 @@ Make it feel personal, specific, and truly inspiring. Focus on the ripple effect
       };
     }
   }
+
+  // AI Kindness Nudging System Methods
+  async generateKindnessNudges(userId: string, categories: string[], currentPage: string): Promise<any[]> {
+    const timeOfDay = new Date().getHours();
+    const dayOfWeek = new Date().getDay();
+    
+    // Smart nudges based on context
+    const contextualNudges = [
+      // Morning motivations (6-10 AM)
+      ...(timeOfDay >= 6 && timeOfDay <= 10 ? [
+        {
+          id: `nudge-morning-${Date.now()}-1`,
+          message: "Good morning! Start your day with kindness ☀️",
+          emoji: "☀️",
+          category: "motivational",
+          urgency: "gentle" as const,
+          contextType: "time" as const,
+          actionSuggestion: "Compliment someone on your commute or at work",
+          timestamp: new Date(),
+          duration: 8000
+        },
+        {
+          id: `nudge-morning-${Date.now()}-2`, 
+          message: "Perfect coffee shop weather for paying it forward! ☕",
+          emoji: "☕",
+          category: "sharing",
+          urgency: "encouraging" as const,
+          contextType: "time" as const,
+          actionSuggestion: "Buy a stranger's coffee or leave a kind note",
+          timestamp: new Date(),
+          duration: 9000
+        }
+      ] : []),
+
+      // Lunch time opportunities (11 AM - 2 PM)
+      ...(timeOfDay >= 11 && timeOfDay <= 14 ? [
+        {
+          id: `nudge-lunch-${Date.now()}-1`,
+          message: "Lunch time = perfect time for food kindness! 🍕",
+          emoji: "🍕",
+          category: "sharing",
+          urgency: "encouraging" as const,
+          contextType: "time" as const,
+          actionSuggestion: "Share a meal with someone or donate to a food bank",
+          timestamp: new Date(),
+          duration: 8500
+        }
+      ] : []),
+
+      // Evening opportunities (5-8 PM)
+      ...(timeOfDay >= 17 && timeOfDay <= 20 ? [
+        {
+          id: `nudge-evening-${Date.now()}-1`,
+          message: "Wind down with a kind gesture! 🌅",
+          emoji: "🌅",
+          category: "caring",
+          urgency: "gentle" as const,
+          contextType: "time" as const,
+          actionSuggestion: "Check in on a friend or family member",
+          timestamp: new Date(),
+          duration: 7500
+        }
+      ] : []),
+
+      // Weekend specials
+      ...(dayOfWeek === 0 || dayOfWeek === 6 ? [
+        {
+          id: `nudge-weekend-${Date.now()}-1`,
+          message: "Weekend vibes call for community kindness! 🌱",
+          emoji: "🌱",
+          category: "environmental",
+          urgency: "inspiring" as const,
+          contextType: "social" as const,
+          actionSuggestion: "Volunteer in your community or help a neighbor",
+          timestamp: new Date(),
+          duration: 9500
+        }
+      ] : []),
+
+      // General inspiring nudges
+      {
+        id: `nudge-general-${Date.now()}-1`,
+        message: "Someone nearby could use your kindness right now! ✨",
+        emoji: "✨",
+        category: "helping",
+        urgency: "inspiring" as const,
+        contextType: "social" as const,
+        actionSuggestion: "Look around - who could use a helping hand?",
+        timestamp: new Date(),
+        duration: 8000
+      },
+      {
+        id: `nudge-general-${Date.now()}-2`,
+        message: "Your smile is a gift - share it with the world! 😊",
+        emoji: "😊",
+        category: "caring",
+        urgency: "gentle" as const,
+        contextType: "social" as const,
+        actionSuggestion: "Give genuine compliments to three people today",
+        timestamp: new Date(),
+        duration: 7500
+      },
+      {
+        id: `nudge-general-${Date.now()}-3`,
+        message: "Small acts, big impact - what will you choose? 💫",
+        emoji: "💫", 
+        category: "motivational",
+        urgency: "encouraging" as const,
+        contextType: "activity" as const,
+        actionSuggestion: "Pick up litter, hold a door, or leave an encouraging note",
+        timestamp: new Date(),
+        duration: 8500
+      }
+    ];
+
+    // Filter by user's preferred categories
+    const filteredNudges = contextualNudges.filter(nudge => 
+      categories.includes(nudge.category) || categories.includes('motivational')
+    );
+
+    return filteredNudges.slice(0, 5); // Return max 5 suggestions
+  }
+
+  async generateSmartKindnessNudge(
+    userId: string, 
+    userActivity: string, 
+    timeOfDay: number, 
+    lastNudgeTime: number, 
+    preferences: string[]
+  ): Promise<any> {
+    const OpenAI = (await import('openai')).default;
+    
+    try {
+      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+      // Context for AI generation
+      const contextPrompt = `Generate a personalized kindness nudge for a user who is currently on the "${userActivity}" page at ${timeOfDay}:00 hours. 
+      
+      User preferences: ${preferences.join(', ')}
+      
+      Create a gentle, inspiring notification that encourages a specific act of kindness. Consider:
+      - Time of day (${timeOfDay}:00)
+      - Current activity (${userActivity})
+      - Make it feel personal and actionable
+      - Keep the message under 60 characters
+      - Suggest a specific action they can take right now
+      
+      Return JSON with:
+      - message: Short, inspiring text (max 60 chars)
+      - emoji: One relevant emoji
+      - category: One of [helping, sharing, caring, environmental, social, motivational]
+      - urgency: One of [gentle, encouraging, inspiring]  
+      - contextType: One of [time, weather, location, activity, social]
+      - actionSuggestion: Specific suggestion (max 80 chars)
+      - duration: Number between 7000-10000 (milliseconds to show)`;
+
+      const response = await openai.chat.completions.create({
+        model: "gpt-4o",  // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
+        messages: [
+          {
+            role: "system",
+            content: "You are a kindness coach who creates gentle, inspiring nudges that motivate people to spread positivity. Always respond in valid JSON format."
+          },
+          {
+            role: "user",
+            content: contextPrompt
+          }
+        ],
+        response_format: { type: "json_object" },
+        max_tokens: 300,
+        temperature: 0.8
+      });
+
+      const aiNudge = JSON.parse(response.choices[0].message.content || '{}');
+
+      return {
+        id: `ai-nudge-${Date.now()}`,
+        ...aiNudge,
+        timestamp: new Date()
+      };
+
+    } catch (error) {
+      console.error('Failed to generate AI nudge:', error);
+      
+      // Fallback to sample nudge if AI fails
+      const fallbackNudges = [
+        {
+          message: "Someone needs your kindness right now! ✨",
+          emoji: "✨",
+          category: "helping",
+          urgency: "encouraging",
+          contextType: "social",
+          actionSuggestion: "Look around - who could use a helping hand?",
+          duration: 8000
+        },
+        {
+          message: "Your smile is contagious - spread it! 😊",
+          emoji: "😊", 
+          category: "caring",
+          urgency: "gentle",
+          contextType: "social",
+          actionSuggestion: "Give three genuine compliments today",
+          duration: 7500
+        },
+        {
+          message: "Perfect moment for a random act of kindness! 💝",
+          emoji: "💝",
+          category: "sharing",
+          urgency: "inspiring", 
+          contextType: "activity",
+          actionSuggestion: "Buy someone's coffee or leave an encouraging note",
+          duration: 8500
+        }
+      ];
+
+      const randomNudge = fallbackNudges[Math.floor(Math.random() * fallbackNudges.length)];
+      
+      return {
+        id: `fallback-nudge-${Date.now()}`,
+        ...randomNudge,
+        timestamp: new Date()
+      };
+    }
+  }
 }
 
 export const storage = new DatabaseStorage();

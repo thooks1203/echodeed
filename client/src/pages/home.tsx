@@ -14,6 +14,7 @@ import { BackButton } from '@/components/BackButton';
 import logoUrl from '@assets/ECHODEED_1757095612642.png';
 import { WelcomeModal } from '@/components/WelcomeModal';
 import { MarketingDashboard } from '@/components/MarketingDashboard';
+import { KindnessNudgeSystem } from '@/components/KindnessNudgeSystem';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { pushNotifications } from '@/services/pushNotifications';

@@ -2101,6 +2101,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // AI Kindness Nudging System Endpoints
+  app.get('/api/ai/kindness-nudges', async (req, res) => {
+    try {
+      const { categories, currentPage } = req.query;
+      const sessionId = req.headers['x-session-id'] as string;
+      
+      // Generate contextual kindness nudges
+      const nudges = await storage.generateKindnessNudges(
+        sessionId || 'anonymous', 
+        categories ? (categories as string).split(',') : ['helping', 'sharing', 'caring'],
+        currentPage as string || 'feed'
+      );
+      res.json(nudges);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  app.post('/api/ai/generate-nudge', async (req, res) => {
+    try {
+      const { userActivity, timeOfDay, lastNudgeTime, preferences } = req.body;
+      const sessionId = req.headers['x-session-id'] as string;
+      
+      // Generate a smart, contextual nudge using AI
+      const nudge = await storage.generateSmartKindnessNudge(
+        sessionId || 'anonymous',
+        userActivity,
+        timeOfDay,
+        lastNudgeTime,
+        preferences || ['helping', 'sharing', 'caring']
+      );
+      res.json(nudge);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Global Wellness Heatmap endpoints
   app.get('/api/wellness/heatmap', isAuthenticated, async (req: any, res) => {
     try {
