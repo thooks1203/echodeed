@@ -25,11 +25,19 @@ export async function initializeSampleData() {
       return;
     }
     
+    // If we have some posts but counter is way off (indicating duplicate initialization), reset it
+    if (existingPosts.length > 0 && existingCounter.count > 400000) {
+      log(`Found duplicate initialization - counter at ${existingCounter.count}, resetting to 243,876...`);
+      await storage.setCounter(243876);
+      log(`✓ Reset counter to 243,876 for existing deployment`);
+      return;
+    }
+    
     // If we have some posts but low counter, we need to fix the counter
     if (existingPosts.length > 0 && existingCounter.count < 243876) {
       log(`Found ${existingPosts.length} posts but counter only at ${existingCounter.count}, updating counter...`);
-      await storage.incrementCounter(243876 - existingCounter.count);
-      log(`✓ Updated counter to 243,876 for existing deployment`);
+      await storage.setCounter(243876);
+      log(`✓ Set counter to 243,876 for existing deployment`);
       return;
     }
 
@@ -320,7 +328,7 @@ export async function initializeSampleData() {
 
     // Set the global counter to a high number to show platform popularity
     // For fresh deployments, set to our target high number
-    await storage.incrementCounter(243876);
+    await storage.setCounter(243876);
     log(`✓ Set global counter to 243,876 for fresh deployment`);
     log(`✓ Added ${samplePosts.length} sample posts`);
 
