@@ -676,7 +676,8 @@ export default function Home() {
                 width: '100%',
                 boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
                 transition: 'all 0.2s ease',
-                marginTop: '4px'
+                marginTop: '4px',
+                marginBottom: '100px'
               }}
               onMouseOver={(e) => {
                 e.currentTarget.style.backgroundColor = '#7C3AED';
