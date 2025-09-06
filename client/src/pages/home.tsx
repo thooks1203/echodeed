@@ -583,7 +583,7 @@ export default function Home() {
               e.currentTarget.style.boxShadow = '0 8px 32px rgba(139,92,246,0.5), 0 0 0 1px rgba(255,255,255,0.2)';
             }}
           >
-            🚀 Start Spreading Kindness ❤️
+            🚀 TAP HERE to Start Spreading Kindness ❤️
           </button>
           
           <p style={{
