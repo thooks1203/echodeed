@@ -281,21 +281,79 @@ export function AIPredictionEngine() {
         </div>
       )}
 
-      {/* AI Insights */}
+      {/* How AI Predictions Work Section - Enhanced visibility */}
       <div style={{
-        background: 'white',
-        borderRadius: '12px',
-        padding: '20px',
-        border: '1px solid #e5e7eb'
+        background: 'linear-gradient(135deg, rgba(139,92,246,0.05) 0%, rgba(59,130,246,0.05) 100%)',
+        borderRadius: '16px',
+        padding: '24px',
+        border: '1px solid rgba(139,92,246,0.2)',
+        marginBottom: '100px', // Extra bottom margin to ensure content is visible above bottom nav
+        boxShadow: '0 4px 20px rgba(139,92,246,0.1)'
       }}>
-        <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', color: '#8B5CF6' }}>
+        <h3 style={{ 
+          fontSize: '18px', 
+          fontWeight: '700', 
+          marginBottom: '16px', 
+          color: '#8B5CF6',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
           🧠 How AI Predictions Work
         </h3>
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px' }}>
-          <div>📊 <strong>Pattern Analysis:</strong> Monitors communication frequency, response times, and collaboration patterns</div>
-          <div>🕐 <strong>Temporal Trends:</strong> Identifies stress patterns based on work hours and project deadlines</div>
-          <div>🎯 <strong>Behavioral Signals:</strong> Detects changes in kindness activity and team engagement</div>
-          <div>🔮 <strong>Predictive Models:</strong> Forecasts wellness events 3-7 days in advance with 85% accuracy</div>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          gap: '12px', 
+          fontSize: '14px',
+          color: '#374151',
+          lineHeight: '1.5'
+        }}>
+          <div style={{
+            background: 'rgba(139,92,246,0.08)',
+            padding: '12px 16px',
+            borderRadius: '12px',
+            border: '1px solid rgba(139,92,246,0.15)'
+          }}>
+            📊 <strong style={{ color: '#8B5CF6' }}>Pattern Analysis:</strong> Monitors communication frequency, response times, and collaboration patterns across your team
+          </div>
+          <div style={{
+            background: 'rgba(59,130,246,0.08)',
+            padding: '12px 16px',
+            borderRadius: '12px',
+            border: '1px solid rgba(59,130,246,0.15)'
+          }}>
+            🕐 <strong style={{ color: '#3B82F6' }}>Temporal Trends:</strong> Identifies stress patterns based on work hours, project deadlines, and seasonal fluctuations
+          </div>
+          <div style={{
+            background: 'rgba(16,185,129,0.08)',
+            padding: '12px 16px',
+            borderRadius: '12px',
+            border: '1px solid rgba(16,185,129,0.15)'
+          }}>
+            🎯 <strong style={{ color: '#10B981' }}>Behavioral Signals:</strong> Detects changes in kindness activity, team engagement, and wellness indicators
+          </div>
+          <div style={{
+            background: 'rgba(245,158,11,0.08)',
+            padding: '12px 16px',
+            borderRadius: '12px',
+            border: '1px solid rgba(245,158,11,0.15)'
+          }}>
+            🔮 <strong style={{ color: '#F59E0B' }}>Predictive Models:</strong> Forecasts wellness events 3-7 days in advance with 85% accuracy using machine learning
+          </div>
+          
+          {/* Additional detailed explanation */}
+          <div style={{
+            background: 'rgba(255,255,255,0.8)',
+            padding: '16px',
+            borderRadius: '12px',
+            border: '1px solid rgba(139,92,246,0.2)',
+            marginTop: '8px'
+          }}>
+            <div style={{ fontSize: '13px', color: '#6B7280', lineHeight: '1.6' }}>
+              💡 <strong>Real-time Learning:</strong> The AI continuously learns from team interactions, intervention outcomes, and wellness feedback to improve prediction accuracy. All data is anonymized and processed securely to protect employee privacy while maximizing wellness insights.
+            </div>
+          </div>
         </div>
       </div>
     </div>
