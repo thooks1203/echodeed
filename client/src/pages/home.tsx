@@ -3484,8 +3484,9 @@ export default function Home() {
     );
   }
 
-  // Main App
-  return (
+  // Main App - Default Feed Tab
+  if (activeTab === 'feed' || !activeTab) {
+    return (
     <div style={{ 
       maxWidth: '430px', 
       margin: '0 auto', 
