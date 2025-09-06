@@ -2075,6 +2075,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // AI Impact Stories Endpoints
+  // Impact Stories endpoint - matches frontend URL pattern
+  app.get('/api/ai/impact-stories/:timeframe', async (req, res) => {
+    try {
+      const { timeframe = 'week' } = req.params;
+      const sessionId = req.headers['x-session-id'] as string;
+      
+      // Generate sample impact story data (would normally be stored/cached)
+      const stories = await storage.generateImpactStories(sessionId || 'anonymous', timeframe as string);
+      res.json(stories);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Fallback for query parameter version
   app.get('/api/ai/impact-stories', async (req, res) => {
     try {
       const { timeframe = 'week' } = req.query;
