@@ -32,8 +32,6 @@ export default function Home() {
   const [counterPulse, setCounterPulse] = useState(false);
   const [showWelcome, setShowWelcome] = useState(true);
   
-  // Debug welcome state
-  console.log('🔍 showWelcome state:', showWelcome);
   const [showNotificationSetup, setShowNotificationSetup] = useState(false);
   const [tokenEarning, setTokenEarning] = useState<TokenEarning | null>(null);
   const [achievementNotification, setAchievementNotification] = useState<AchievementNotification | null>(null);
@@ -276,9 +274,7 @@ export default function Home() {
   };
 
   // Welcome Page - Check at the very beginning
-  console.log('🔍 Checking showWelcome condition:', showWelcome);
   if (showWelcome) {
-    console.log('✅ Rendering welcome page!');
     return (
       <div style={{ 
         maxWidth: '430px', 
@@ -307,13 +303,13 @@ export default function Home() {
           left: 0,
           right: 0,
           bottom: 0,
-          background: \`
+          background: `
             radial-gradient(2px 2px at 20px 30px, rgba(255,255,255,0.3), transparent),
             radial-gradient(2px 2px at 40px 70px, rgba(139,92,246,0.6), transparent),
             radial-gradient(1px 1px at 90px 40px, rgba(6,182,212,0.4), transparent),
             radial-gradient(1px 1px at 130px 80px, rgba(16,185,129,0.4), transparent),
             radial-gradient(2px 2px at 160px 30px, rgba(245,158,11,0.3), transparent)
-          \`,
+          `,
           backgroundRepeat: 'repeat',
           backgroundSize: '200px 100px',
           animation: 'sparkle 6s linear infinite'
