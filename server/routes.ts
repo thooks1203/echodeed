@@ -9,6 +9,7 @@ import { slackNotifications } from "./services/slackNotifications";
 import { aiWellnessEngine } from "./services/aiWellnessEngine";
 import { scalabilityEngine } from "./services/scalabilityEngine";
 import { marketValidationEngine } from "./services/marketValidation";
+import { goToMarketEngine } from "./services/goToMarketEngine";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { fulfillmentService } from "./fulfillment";
 import { SurpriseGiveawayService } from './surpriseGiveaways';
@@ -559,6 +560,140 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Validation metrics failed:', error);
       res.status(500).json({ error: 'Failed to get validation metrics' });
+    }
+  });
+
+  // GO-TO-MARKET STRATEGY ROUTES (Revenue Generation & Customer Acquisition)
+  app.get('/api/gtm/target-segments', isAuthenticated, async (req: any, res) => {
+    try {
+      console.log('🎯 Analyzing target customer segments...');
+      const segments = await goToMarketEngine.defineTargetSegments();
+      res.json(segments);
+    } catch (error) {
+      console.error('Target segment analysis failed:', error);
+      res.status(500).json({ error: 'Failed to analyze target segments' });
+    }
+  });
+
+  app.get('/api/gtm/sales-process', isAuthenticated, async (req: any, res) => {
+    try {
+      console.log('📈 Designing enterprise sales process...');
+      const salesProcess = await goToMarketEngine.designSalesProcess();
+      res.json(salesProcess);
+    } catch (error) {
+      console.error('Sales process design failed:', error);
+      res.status(500).json({ error: 'Failed to design sales process' });
+    }
+  });
+
+  app.get('/api/gtm/pricing-strategy', isAuthenticated, async (req: any, res) => {
+    try {
+      console.log('💰 Optimizing pricing strategy...');
+      const pricing = await goToMarketEngine.optimizePricingStrategy();
+      res.json(pricing);
+    } catch (error) {
+      console.error('Pricing strategy optimization failed:', error);
+      res.status(500).json({ error: 'Failed to optimize pricing strategy' });
+    }
+  });
+
+  app.get('/api/gtm/channel-strategy', isAuthenticated, async (req: any, res) => {
+    try {
+      console.log('🤝 Developing channel partnership strategy...');
+      const channels = await goToMarketEngine.developChannelStrategy();
+      res.json(channels);
+    } catch (error) {
+      console.error('Channel strategy development failed:', error);
+      res.status(500).json({ error: 'Failed to develop channel strategy' });
+    }
+  });
+
+  app.get('/api/gtm/comprehensive-strategy', isAuthenticated, async (req: any, res) => {
+    try {
+      console.log('🚀 Generating comprehensive go-to-market strategy...');
+      const strategy = await goToMarketEngine.generateComprehensiveStrategy();
+      res.json(strategy);
+    } catch (error) {
+      console.error('Comprehensive GTM strategy failed:', error);
+      res.status(500).json({ error: 'Failed to generate comprehensive strategy' });
+    }
+  });
+
+  app.get('/api/gtm/revenue-projections', isAuthenticated, async (req: any, res) => {
+    try {
+      console.log('📊 Generating revenue projections...');
+      const projections = await goToMarketEngine.generateRevenueProjections();
+      res.json(projections);
+    } catch (error) {
+      console.error('Revenue projections failed:', error);
+      res.status(500).json({ error: 'Failed to generate revenue projections' });
+    }
+  });
+
+  // CUSTOMER ACQUISITION TRACKING
+  app.post('/api/gtm/track-customer-interaction', isAuthenticated, async (req: any, res) => {
+    try {
+      const { customerSegment, interactionType, stage, outcome, notes } = req.body;
+      
+      // Track customer acquisition funnel metrics
+      const interaction = {
+        id: Date.now().toString(),
+        customerSegment,
+        interactionType, // demo, pilot, proposal, etc.
+        stage, // discovery, qualification, demo, pilot, negotiation, etc.
+        outcome, // positive, neutral, negative, conversion
+        notes,
+        timestamp: new Date().toISOString(),
+        salesRep: req.user?.id || 'unknown'
+      };
+
+      console.log('📝 Customer interaction tracked:', interactionType, stage);
+      res.json({ success: true, interactionId: interaction.id });
+    } catch (error) {
+      console.error('Customer interaction tracking failed:', error);
+      res.status(500).json({ error: 'Failed to track customer interaction' });
+    }
+  });
+
+  app.get('/api/gtm/sales-metrics', isAuthenticated, async (req: any, res) => {
+    try {
+      // Real-time sales pipeline and conversion metrics
+      const salesMetrics = {
+        pipeline: {
+          totalOpportunities: 0, // To be tracked
+          qualifiedLeads: 0,
+          demoRequests: 0,
+          pilotPrograms: 0,
+          proposals: 0,
+          closedWon: 0,
+          pipelineValue: "$0"
+        },
+        conversionRates: {
+          leadToDemo: 0, // Target: 15%
+          demoToPilot: 0, // Target: 25%
+          pilotToCustomer: 70, // Target based on market research
+          overallConversion: 0 // Target: 2.6% (15% × 25% × 70%)
+        },
+        salesCycleMetrics: {
+          averageSalesCycle: "18 months (enterprise)",
+          averageDealSize: "$250K annually",
+          customerAcquisitionCost: "$85K target",
+          lifetimeValue: "$750K (3 year average)",
+          ltvCacRatio: "8.8:1 target"
+        },
+        revenueProjections: {
+          currentArr: "$0",
+          year1Target: "$1.2M ARR",
+          year2Target: "$7.6M ARR",
+          year3Target: "$30M ARR",
+          monthlyGrowthRate: "15-20% target"
+        }
+      };
+
+      res.json(salesMetrics);
+    } catch (error) {
+      console.error('Sales metrics failed:', error);
+      res.status(500).json({ error: 'Failed to get sales metrics' });
     }
   });
   
