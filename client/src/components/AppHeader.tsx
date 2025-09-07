@@ -16,8 +16,19 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
           <div className="w-8"> {/* Spacer for balance */}
           </div>
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 flex items-center justify-center animate-logoFloat">
-              <span className="text-2xl" key="electric-logo-header">⚡</span>
+            <div className="w-12 h-12 flex items-center justify-center animate-logoFloat">
+              <img 
+                src="/electric-heart-logo.png?v=1757266300" 
+                alt="EchoDeed Electric Heart" 
+                className="w-full h-full object-contain"
+                style={{
+                  filter: 'drop-shadow(0 0 8px rgba(255,102,51,0.4)) drop-shadow(0 0 16px rgba(255,51,255,0.2))'
+                }}
+                onError={(e) => {
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.parentElement!.innerHTML = '<span class="text-3xl">⚡</span>';
+                }}
+              />
             </div>
             <h1 className="text-xl font-bold text-foreground" data-testid="text-app-title">EchoDeed™</h1>
           </div>

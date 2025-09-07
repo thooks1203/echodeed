@@ -28,8 +28,19 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
   return (
     <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
       <div className="bg-card p-8 rounded-lg mx-4 text-center shadow-xl max-w-sm">
-        <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-          <div className="w-16 h-16 flex items-center justify-center text-6xl" key="electric-onboarding">⚡</div>
+        <div className="w-20 h-20 mx-auto mb-4 flex items-center justify-center">
+          <img 
+            src="/electric-heart-logo.png?v=1757266300" 
+            alt="EchoDeed Electric Heart" 
+            className="w-full h-full object-contain"
+            style={{
+              filter: 'drop-shadow(0 0 12px rgba(255,102,51,0.4)) drop-shadow(0 0 24px rgba(255,51,255,0.2))'
+            }}
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.parentElement!.innerHTML = '<div class="w-20 h-20 flex items-center justify-center text-6xl">⚡</div>';
+            }}
+          />
         </div>
         <h2 className="text-2xl font-bold text-foreground mb-3">Welcome to EchoDeed™</h2>
         <p className="text-muted-foreground mb-1 leading-relaxed">

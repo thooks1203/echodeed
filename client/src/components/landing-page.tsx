@@ -18,8 +18,8 @@ export function LandingPage() {
           justifyContent: 'center',
           alignItems: 'center',
           marginBottom: '16px',
-          width: '80px',
-          height: '80px',
+          width: '120px',
+          height: '120px',
           margin: '0 auto 16px auto'
         }}>
           <img 
