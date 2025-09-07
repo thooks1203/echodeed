@@ -3534,6 +3534,29 @@ export default function Home() {
 
         {/* Schools Dashboard Content */}
         <div style={{ padding: '20px', paddingBottom: '120px' }}>
+          {/* Test notification button */}
+          <button 
+            onClick={() => {
+              console.log('Test button clicked');
+              localStorage.removeItem('echodeed_notification_setup_seen');
+              setShowNotificationSetup(true);
+            }}
+            style={{ 
+              margin: '10px auto 20px', 
+              display: 'block',
+              padding: '10px 20px',
+              backgroundColor: '#8B5CF6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+            }}
+          >
+            🔔 Test Notifications
+          </button>
           <SchoolsDashboard />
         </div>
         
