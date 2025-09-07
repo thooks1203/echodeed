@@ -11,7 +11,8 @@ import { AIDashboard } from '@/components/ai-dashboard-fixed';
 import { NotificationSetupModal } from '@/components/notification-setup-modal';
 import { useTabNavigation } from '@/hooks/useNavigation';
 import { BackButton } from '@/components/BackButton';
-import logoUrl from '@assets/ECHODEED_1757095612642.png';
+// Using new electric heart logo
+const logoUrl = '/new-electric-heart-logo.png';
 import { WelcomeModal } from '@/components/WelcomeModal';
 import { MarketingDashboard } from '@/components/MarketingDashboard';
 import { SchoolsDashboard } from '@/components/SchoolsDashboard';
