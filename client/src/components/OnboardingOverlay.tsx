@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
-import logoUrl from '@assets/generated_images/Enhanced_Diverse_Heart_3fc9c4a4.png';
+import logoUrl from '@assets/generated_images/Transparent_Background_Heart_00eaf618.png';
 
 interface OnboardingOverlayProps {
   onComplete: () => void;
