@@ -23,8 +23,8 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
             display: 'flex',
             justifyContent: 'center',
             alignItems: 'center',
-            width: '200px',
-            height: '200px',
+            width: '280px',
+            height: '280px',
             margin: '0 auto 20px auto'
           }}>
             <div 
