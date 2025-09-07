@@ -8,9 +8,6 @@ import { KindnessImpactCertificates } from "./KindnessImpactCertificates";
 import { TimeLockedWellnessMessages } from "./TimeLockedWellnessMessages";
 import AISentimentAnalyzer from "./AISentimentAnalyzer";
 import { useState } from "react";
-import { GlobalKindnessRippleMap } from "./GlobalKindnessRippleMap";
-import { AIKindnessSuggestions } from "./AIKindnessSuggestions";
-import { KindnessImpactStories } from "./KindnessImpactStories";
 
 interface WellnessInsights {
   overallWellness: number;
@@ -22,7 +19,7 @@ interface WellnessInsights {
 }
 
 export function AIDashboard() {
-  const [activeView, setActiveView] = useState<'analytics' | 'predictive' | 'predictions' | 'heatmap' | 'matching' | 'esg' | 'certificates' | 'messages' | 'sentiment' | 'ripples' | 'suggestions' | 'stories'>('stories');
+  const [activeView, setActiveView] = useState<'analytics' | 'predictive' | 'predictions' | 'heatmap' | 'matching' | 'esg' | 'certificates' | 'messages' | 'sentiment'>('analytics');
 
   const { data: insights, isLoading } = useQuery<WellnessInsights>({
     queryKey: ['/api/ai/wellness-insights'],
@@ -104,75 +101,22 @@ export function AIDashboard() {
           Real-time sentiment analysis and wellness prediction
         </p>
         
-        {/* View Toggle - New Layout */}
+        {/* View Toggle */}
         <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))',
+          display: 'flex',
           background: '#f3f4f6',
           borderRadius: '8px',
           padding: '4px',
           gap: '4px',
           maxWidth: '100%',
-          margin: '0 auto'
-        }}>
-          {/* Priority buttons - most important ones first */}
-          <button
-            onClick={() => setActiveView('stories')}
-            style={{
-              padding: '8px 12px',
-              borderRadius: '4px',
-              border: 'none',
-              fontSize: '11px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              background: activeView === 'stories' ? '#EC4899' : 'transparent',
-              color: activeView === 'stories' ? 'white' : '#6b7280',
-              whiteSpace: 'nowrap'
-            }}
-            data-testid="tab-impact-stories"
-          >
-            📖 Stories
-          </button>
-          <button
-            onClick={() => setActiveView('ripples')}
-            style={{
-              padding: '8px 12px',
-              borderRadius: '4px',
-              border: 'none',
-              fontSize: '11px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              background: activeView === 'ripples' ? '#06B6D4' : 'transparent',
-              color: activeView === 'ripples' ? 'white' : '#6b7280',
-              whiteSpace: 'nowrap'
-            }}
-            data-testid="tab-ripple-map"
-          >
-            🌊 Ripples
-          </button>
-          <button
-            onClick={() => setActiveView('suggestions')}
-            style={{
-              padding: '8px 12px',
-              borderRadius: '4px',
-              border: 'none',
-              fontSize: '11px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              background: activeView === 'suggestions' ? '#F59E0B' : 'transparent',
-              color: activeView === 'suggestions' ? 'white' : '#6b7280',
-              whiteSpace: 'nowrap'
-            }}
-            data-testid="tab-ai-suggestions"
-          >
-            🎯 Suggestions
-          </button>
+          margin: '0 auto',
+          overflowX: 'auto',
+          scrollBehavior: 'smooth'
+        }} className="scrollbar-hide">
           <button
             onClick={() => setActiveView('analytics')}
             style={{
+              flex: '0 0 auto',
               padding: '8px 12px',
               borderRadius: '4px',
               border: 'none',
@@ -190,16 +134,16 @@ export function AIDashboard() {
           <button
             onClick={() => setActiveView('predictive')}
             style={{
-              padding: '8px 12px',
+              flex: 1,
+              padding: '8px 16px',
               borderRadius: '4px',
               border: 'none',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               background: activeView === 'predictive' ? '#DC2626' : 'transparent',
-              color: activeView === 'predictive' ? 'white' : '#6b7280',
-              whiteSpace: 'nowrap'
+              color: activeView === 'predictive' ? 'white' : '#6b7280'
             }}
           >
             🔮 Predictive
@@ -207,16 +151,16 @@ export function AIDashboard() {
           <button
             onClick={() => setActiveView('predictions')}
             style={{
-              padding: '8px 12px',
+              flex: 1,
+              padding: '8px 16px',
               borderRadius: '4px',
               border: 'none',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               background: activeView === 'predictions' ? '#667eea' : 'transparent',
-              color: activeView === 'predictions' ? 'white' : '#6b7280',
-              whiteSpace: 'nowrap'
+              color: activeView === 'predictions' ? 'white' : '#6b7280'
             }}
             data-testid="tab-ai-predictions"
           >
@@ -225,20 +169,92 @@ export function AIDashboard() {
           <button
             onClick={() => setActiveView('heatmap')}
             style={{
-              padding: '8px 12px',
+              flex: 1,
+              padding: '8px 16px',
               borderRadius: '4px',
               border: 'none',
-              fontSize: '11px',
+              fontSize: '12px',
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               background: activeView === 'heatmap' ? '#10B981' : 'transparent',
-              color: activeView === 'heatmap' ? 'white' : '#6b7280',
-              whiteSpace: 'nowrap'
+              color: activeView === 'heatmap' ? 'white' : '#6b7280'
             }}
             data-testid="tab-wellness-heatmap"
           >
             🗺️ Heatmap
+          </button>
+          <button
+            onClick={() => setActiveView('matching')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'matching' ? '#EC4899' : 'transparent',
+              color: activeView === 'matching' ? 'white' : '#6b7280'
+            }}
+            data-testid="tab-smart-matching"
+          >
+            🎯 Matching
+          </button>
+          <button
+            onClick={() => setActiveView('esg')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'esg' ? '#22C55E' : 'transparent',
+              color: activeView === 'esg' ? 'white' : '#6b7280'
+            }}
+            data-testid="tab-esg-reports"
+          >
+            📊 ESG
+          </button>
+          <button
+            onClick={() => setActiveView('certificates')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'certificates' ? '#8B5CF6' : 'transparent',
+              color: activeView === 'certificates' ? 'white' : '#6b7280'
+            }}
+            data-testid="tab-blockchain-certificates"
+          >
+            🏆 Certificates
+          </button>
+          <button
+            onClick={() => setActiveView('messages')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'messages' ? '#3B82F6' : 'transparent',
+              color: activeView === 'messages' ? 'white' : '#6b7280'
+            }}
+            data-testid="tab-time-locked-messages"
+          >
+            ⏰ Messages
           </button>
         </div>
       </div>
@@ -258,12 +274,6 @@ export function AIDashboard() {
         <KindnessImpactCertificates />
       ) : activeView === 'messages' ? (
         <TimeLockedWellnessMessages />
-      ) : activeView === 'ripples' ? (
-        <GlobalKindnessRippleMap />
-      ) : activeView === 'suggestions' ? (
-        <AIKindnessSuggestions />
-      ) : activeView === 'stories' ? (
-        <KindnessImpactStories />
       ) : (
         <>
           {/* Wellness Overview */}

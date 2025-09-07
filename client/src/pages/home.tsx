@@ -11,11 +11,9 @@ import { AIDashboard } from '@/components/ai-dashboard-fixed';
 import { NotificationSetupModal } from '@/components/notification-setup-modal';
 import { useTabNavigation } from '@/hooks/useNavigation';
 import { BackButton } from '@/components/BackButton';
-import logoUrl from '@assets/generated_images/Transparent_Background_Heart_00eaf618.png';
+import logoUrl from '@assets/ECHODEED_1757095612642.png';
 import { WelcomeModal } from '@/components/WelcomeModal';
 import { MarketingDashboard } from '@/components/MarketingDashboard';
-import { KindnessNudgeSystem } from '@/components/KindnessNudgeSystem';
-import { SchoolsDashboard } from '@/components/schools/SchoolsDashboard';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { pushNotifications } from '@/services/pushNotifications';
@@ -65,7 +63,7 @@ export default function Home() {
   };
 
   const showWelcomeAgain = () => {
-    navigateToTab('welcome');
+    setActiveTab('welcome');
   };
 
   // Fetch posts
@@ -359,7 +357,7 @@ export default function Home() {
 
   const defaultCounter: KindnessCounter = {
     id: 'global',
-    count: 0,
+    count: 243876,
     updatedAt: new Date().toISOString()
   };
 
@@ -413,59 +411,41 @@ export default function Home() {
           padding: '60px 20px 40px', 
           textAlign: 'center'
         }}>
-          {/* Floating Logo with RAYS OF LIGHT! ✨ */}
-          <div className="logo-with-rays" style={{ margin: '0 auto 20px', display: 'block' }}>
-            <div className="ray-1"></div>
-            <div className="ray-2"></div>
-            <div className="ray-3"></div>
-            <div className="ray-4"></div>
-            <div className="ray-5"></div>
-            <div className="ray-6"></div>
-            <img 
-              src={logoUrl} 
-              alt="EchoDeed Logo"
-              style={{ 
-                width: '280px',
-                height: '280px',
-                display: 'block',
-                animation: 'logoFloat 3s ease-in-out infinite',
-                borderRadius: '0',
-                background: 'transparent',
-                border: 'none',
-                boxShadow: 'none',
-                position: 'relative',
-                zIndex: 2
-              }}
-            />
-          </div>
+          {/* Floating Logo */}
+          <img 
+            src={logoUrl} 
+            alt="EchoDeed Logo"
+            style={{ 
+              width: '280px',
+              height: '280px',
+              margin: '0 auto 20px',
+              display: 'block',
+              filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))',
+              animation: 'logoFloat 3s ease-in-out infinite',
+              borderRadius: '0',
+              background: 'transparent',
+              border: 'none',
+              boxShadow: 'none'
+            }}
+          />
           
-          {/* Brand Name with Light Effect */}
-          <div className="logo-with-rays" style={{ display: 'inline-block', margin: '0 0 16px 0' }}>
-            <div className="ray-1"></div>
-            <div className="ray-2"></div>
-            <div className="ray-3"></div>
-            <div className="ray-4"></div>
-            <div className="ray-5"></div>
-            <div className="ray-6"></div>
-            <h1 style={{ 
-              margin: '0', 
-              fontSize: '42px', 
-              fontWeight: '900',
-              background: 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 25%, #10b981 50%, #f59e0b 75%, #ef4444 100%)',
-              backgroundSize: '200% 200%',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              backgroundClip: 'text',
-              animation: 'titleShimmer 4s ease-in-out infinite',
-              fontFamily: 'system-ui, -apple-system, sans-serif',
-              letterSpacing: '-0.02em',
-              textShadow: '0 0 30px rgba(139,92,246,0.3)',
-              position: 'relative',
-              zIndex: 2
-            }}>
-              EchoDeed™
-            </h1>
-          </div>
+          {/* Brand Name */}
+          <h1 style={{ 
+            margin: '0 0 16px 0', 
+            fontSize: '42px', 
+            fontWeight: '900',
+            background: 'linear-gradient(135deg, #8b5cf6 0%, #06b6d4 25%, #10b981 50%, #f59e0b 75%, #ef4444 100%)',
+            backgroundSize: '200% 200%',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text',
+            animation: 'titleShimmer 4s ease-in-out infinite',
+            fontFamily: 'system-ui, -apple-system, sans-serif',
+            letterSpacing: '-0.02em',
+            textShadow: '0 0 30px rgba(139,92,246,0.3)'
+          }}>
+            EchoDeed™
+          </h1>
           
           {/* Tagline */}
           <p style={{ 
@@ -583,7 +563,7 @@ export default function Home() {
               e.currentTarget.style.boxShadow = '0 8px 32px rgba(139,92,246,0.5), 0 0 0 1px rgba(255,255,255,0.2)';
             }}
           >
-            🚀 TAP HERE to Start Spreading Kindness ❤️
+            🚀 Start Spreading Kindness ❤️
           </button>
           
           <p style={{
@@ -1422,7 +1402,7 @@ export default function Home() {
                       
                       {/* Title */}
                       <div style={{ 
-                        fontSize: '16px', 
+                        fontSize: '14px', 
                         fontWeight: 'bold', 
                         marginBottom: '4px',
                         color: isUnlocked ? '#1f2937' : '#9ca3af'
@@ -2255,7 +2235,7 @@ export default function Home() {
 
             {/* Enter App Button */}
             <button 
-              onClick={() => navigateToTab('feed')}
+              onClick={() => setActiveTab('feed')}
               style={{
                 background: 'linear-gradient(135deg, #8b5cf6, #06b6d4, #10b981)',
                 backgroundSize: '200% 200%',
@@ -2546,21 +2526,19 @@ export default function Home() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px',
-                        padding: '12px 20px',
+                        gap: '6px',
+                        padding: '6px 12px',
                         backgroundColor: '#f8f9fa',
-                        border: '2px solid #e5e7eb',
-                        borderRadius: '24px',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '20px',
                         cursor: 'pointer',
-                        fontSize: '16px',
-                        color: '#374151',
-                        fontWeight: '600',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        fontSize: '14px',
+                        color: '#6b7280',
                         transition: 'all 0.2s ease',
                         outline: 'none'
                       }}
                     >
-                      <span style={{ fontSize: '22px' }}>💜</span>
+                      <span style={{ fontSize: '16px' }}>💜</span>
                       <span>{post.heartsCount || 0} Hearts</span>
                     </button>
                     
@@ -2569,21 +2547,19 @@ export default function Home() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px',
-                        padding: '12px 20px',
+                        gap: '6px',
+                        padding: '6px 12px',
                         backgroundColor: '#f8f9fa',
-                        border: '2px solid #e5e7eb',
-                        borderRadius: '24px',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '20px',
                         cursor: 'pointer',
-                        fontSize: '16px',
-                        color: '#374151',
-                        fontWeight: '600',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        fontSize: '14px',
+                        color: '#6b7280',
                         transition: 'all 0.2s ease',
                         outline: 'none'
                       }}
                     >
-                      <span style={{ fontSize: '22px' }}>🌊</span>
+                      <span style={{ fontSize: '16px' }}>🌊</span>
                       <span>{post.echoesCount || 0} Echo</span>
                     </button>
                   </div>
@@ -3321,22 +3297,6 @@ export default function Home() {
     );
   }
 
-  // 🏫 Show Schools tab if selected - REVOLUTIONARY EDUCATION PLATFORM!
-  if (activeTab === 'schools') {
-    return (
-      <div style={{ 
-        maxWidth: '430px', 
-        margin: '0 auto', 
-        backgroundColor: '#f8f9fa',
-        minHeight: '100vh',
-        position: 'relative'
-      }}>
-        <SchoolsDashboard />
-        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
-      </div>
-    );
-  }
-
   // Show Admin tab if selected
   if (activeTab === 'marketing') {
     return (
@@ -3657,11 +3617,9 @@ export default function Home() {
               src={logoUrl} 
               alt="EchoDeed Logo"
               style={{ 
-                width: '40px', 
-                height: '40px',
-                objectFit: 'contain',
-                filter: 'drop-shadow(0 2px 8px rgba(255, 255, 255, 0.3))',
-                animation: 'logoFloat 3s ease-in-out infinite'
+                width: '32px', 
+                height: '32px',
+                objectFit: 'contain'
               }}
             />
             <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
@@ -3725,17 +3683,15 @@ export default function Home() {
           Share kindness, spread joy, earn rewards ✨
         </div>
         <div style={{
-          fontSize: '16px',
-          opacity: 1,
-          marginTop: '12px',
-          padding: '16px 20px',
-          backgroundColor: 'rgba(255,255,255,0.15)',
-          borderRadius: '12px',
-          border: '2px solid rgba(255,255,255,0.3)',
-          boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-          fontWeight: '500'
+          fontSize: '12px',
+          opacity: 0.8,
+          marginTop: '8px',
+          padding: '8px 12px',
+          backgroundColor: 'rgba(255,255,255,0.1)',
+          borderRadius: '8px',
+          border: '1px solid rgba(255,255,255,0.2)'
         }}>
-          💡 <strong>Tip:</strong> 💜 Heart posts you like • ↩ Echo to do the same act of kindness
+          💡 <strong>Tip:</strong> ❤️ Heart posts you like • 🔁 Echo to do the same act of kindness
         </div>
       </div>
       
@@ -3946,21 +3902,19 @@ export default function Home() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px',
-                        padding: '12px 20px',
+                        gap: '6px',
+                        padding: '6px 12px',
                         backgroundColor: '#f8f9fa',
-                        border: '2px solid #e5e7eb',
-                        borderRadius: '24px',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '20px',
                         cursor: 'pointer',
-                        fontSize: '16px',
-                        color: '#374151',
-                        fontWeight: '600',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        fontSize: '14px',
+                        color: '#6b7280',
                         transition: 'all 0.2s ease',
                         outline: 'none'
                       }}
                     >
-                      <span style={{ fontSize: '22px' }}>💜</span>
+                      <span style={{ fontSize: '16px' }}>💜</span>
                       <span>{post.heartsCount || 0} Hearts</span>
                     </button>
                     
@@ -3970,21 +3924,19 @@ export default function Home() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px',
-                        padding: '12px 20px',
+                        gap: '6px',
+                        padding: '6px 12px',
                         backgroundColor: '#f8f9fa',
-                        border: '2px solid #e5e7eb',
-                        borderRadius: '24px',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '20px',
                         cursor: 'pointer',
-                        fontSize: '16px',
-                        color: '#374151',
-                        fontWeight: '600',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                        fontSize: '14px',
+                        color: '#6b7280',
                         transition: 'all 0.2s ease',
                         outline: 'none'
                       }}
                     >
-                      <span style={{ fontSize: '22px' }}>🌊</span>
+                      <span style={{ fontSize: '16px' }}>🌊</span>
                       <span>{post.echoesCount || 0} Echo</span>
                     </button>
                   </div>
@@ -4269,7 +4221,7 @@ export default function Home() {
                         backgroundColor: isCompleted ? '#9ca3af' : '#10B981',
                         color: 'white',
                         border: 'none',
-                        borderRadius: '24px',
+                        borderRadius: '20px',
                         padding: '8px 16px',
                         fontSize: '12px',
                         fontWeight: '600',
@@ -4316,8 +4268,148 @@ export default function Home() {
           </div>
         )}
         
-        {/* Duplicate section removed - using KindnessFeed component instead */}
-        <KindnessFeed posts={posts} isLoading={postsLoading} />
+        {postsLoading ? (
+          <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+            <div>Loading acts of kindness...</div>
+          </div>
+        ) : posts.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>❤️</div>
+            <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>No acts of kindness found</h3>
+            <p>Be the first to share a kind deed in this area!</p>
+          </div>
+        ) : (
+          posts.map((post, index) => (
+            <div key={post.id} style={{ 
+              backgroundColor: 'white',
+              margin: '1px 0',
+              padding: '20px',
+              borderBottom: '1px solid #f3f4f6'
+            }}>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <div style={{
+                  width: '32px',
+                  height: '32px',
+                  backgroundColor: '#f3f4f6',
+                  borderRadius: '50%',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                  marginTop: '4px'
+                }}>
+                  ❤️
+                </div>
+                <div style={{ flex: 1 }}>
+                  <p style={{ 
+                    margin: '0 0 12px 0', 
+                    lineHeight: '1.5',
+                    color: '#374151'
+                  }}>
+                    {post.content}
+                  </p>
+                  <div style={{ 
+                    fontSize: '12px', 
+                    color: '#6b7280',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <span>📍 {post.location}</span>
+                    <span>•</span>
+                    <span>{new Date(post.createdAt).toLocaleString()}</span>
+                    <span>•</span>
+                    <span style={{ 
+                      backgroundColor: '#f3f4f6',
+                      padding: '2px 8px',
+                      borderRadius: '12px'
+                    }}>
+                      {post.category}
+                    </span>
+                  </div>
+                  
+                  {/* Interaction Buttons */}
+                  <div style={{
+                    display: 'flex',
+                    gap: '12px',
+                    alignItems: 'center',
+                    marginTop: '12px'
+                  }}>
+                    <button
+                      onClick={() => handleHeartPost(post.id)}
+                      title="Show love for this kindness! (Earn 1 $ECHO 🪙)"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '6px 12px',
+                        backgroundColor: '#f8f9fa',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '20px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        color: '#6b7280',
+                        transition: 'all 0.2s ease',
+                        outline: 'none',
+                        position: 'relative'
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.backgroundColor = '#8B5CF6';
+                        e.currentTarget.style.color = 'white';
+                        e.currentTarget.style.borderColor = '#8B5CF6';
+                        e.currentTarget.style.transform = 'scale(1.05)';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.backgroundColor = '#f8f9fa';
+                        e.currentTarget.style.color = '#6b7280';
+                        e.currentTarget.style.borderColor = '#e5e7eb';
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                    >
+                      <span style={{ fontSize: '16px' }}>💜</span>
+                      <span>{post.heartsCount || 0}</span>
+                    </button>
+                    
+                    <button
+                      onClick={() => handleEchoPost(post.id)}
+                      title="Echo this kindness! Commit to doing it too! (Earn 2 $ECHO 🪙)"
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '6px 12px',
+                        backgroundColor: '#f8f9fa',
+                        border: '1px solid #e5e7eb',
+                        borderRadius: '20px',
+                        cursor: 'pointer',
+                        fontSize: '14px',
+                        color: '#6b7280',
+                        transition: 'all 0.2s ease',
+                        outline: 'none',
+                        position: 'relative'
+                      }}
+                      onMouseEnter={e => {
+                        e.currentTarget.style.backgroundColor = '#06B6D4';
+                        e.currentTarget.style.color = 'white';
+                        e.currentTarget.style.borderColor = '#06B6D4';
+                        e.currentTarget.style.transform = 'scale(1.05)';
+                      }}
+                      onMouseLeave={e => {
+                        e.currentTarget.style.backgroundColor = '#f8f9fa';
+                        e.currentTarget.style.color = '#6b7280';
+                        e.currentTarget.style.borderColor = '#e5e7eb';
+                        e.currentTarget.style.transform = 'scale(1)';
+                      }}
+                    >
+                      <span style={{ fontSize: '16px' }}>🌊</span>
+                      <span>{post.echoesCount || 0} Echo</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
       
       {/* Floating Action Button */}
@@ -4325,7 +4417,7 @@ export default function Home() {
         onClick={() => setIsPostModalOpen(true)}
         style={{
           position: 'fixed',
-          bottom: '84px',
+          bottom: '24px',
           right: '24px',
           width: '56px',
           height: '56px',
@@ -4355,11 +4447,44 @@ export default function Home() {
         onClose={handleWelcomeClose}
       />
       
-      {/* Smart Kindness Nudging System - Revolutionary feature! ✨ */}
-      <KindnessNudgeSystem />
-      
       {/* Bottom Navigation */}
       <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      
+      {/* Token Earning Popup - Temporarily disabled */}
+      {false && tokenEarning && (
+        <div style={{
+          position: 'fixed',
+          top: '80px',
+          right: '20px',
+          backgroundColor: '#10B981',
+          color: 'white',
+          padding: '12px 16px',
+          borderRadius: '12px',
+          fontSize: '14px',
+          fontWeight: '600',
+          boxShadow: '0 8px 25px rgba(16, 185, 129, 0.3)',
+          zIndex: 1000,
+          animation: 'slideIn 0.3s ease-out',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px'
+        }}>
+          <span style={{ fontSize: '18px' }}>🪙</span>
+          <div>
+            <div>+{tokenEarning.amount} $ECHO</div>
+            <div style={{ fontSize: '12px', opacity: 0.9 }}>{tokenEarning.reason}</div>
+          </div>
+        </div>
+      )}
+      
+    </div>
+    );
+  }
+
+  // Default fallback - shouldn't reach here
+  return (
+    <div style={{ padding: '20px', textAlign: 'center' }}>
+      <p>Loading...</p>
     </div>
   );
 }

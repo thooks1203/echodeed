@@ -77,8 +77,6 @@ export interface IStorage {
     limit?: number;
     userId?: string; // For user-specific posts
   }): Promise<KindnessPost[]>;
-  getKindnessPosts(): Promise<KindnessPost[]>;
-  getPostsWithAIAnalysis(): Promise<KindnessPost[]>;
   createPost(post: InsertKindnessPost): Promise<KindnessPost>;
   addHeartToPost(postId: string, sessionId: string): Promise<KindnessPost>;
   addEchoToPost(postId: string, sessionId: string): Promise<KindnessPost>;
@@ -92,12 +90,10 @@ export interface IStorage {
     aiConfidence?: number;
     aiTags?: string[];
   }): Promise<void>;
-  updatePostWithAIAnalysis(id: string, analytics: any): Promise<void>;
   
   // Counter operations
   getCounter(): Promise<KindnessCounter>;
   incrementCounter(amount?: number): Promise<KindnessCounter>;
-  setCounter(count: number): Promise<KindnessCounter>;
   
   // User token operations
   getUserTokens(userId: string): Promise<UserTokens | undefined>;
@@ -124,22 +120,12 @@ export interface IStorage {
   
   // Corporate operations
   getCorporateAccount(id: string): Promise<CorporateAccount | undefined>;
-  getCorporateAccounts(): Promise<CorporateAccount[]>;
   createCorporateAccount(account: InsertCorporateAccount): Promise<CorporateAccount>;
-  updateCorporateAccount(id: string, updates: Partial<CorporateAccount>): Promise<CorporateAccount | undefined>;
   getCorporateEmployee(userId: string): Promise<CorporateEmployee | undefined>;
-  getCorporateEmployees(corporateAccountId: string): Promise<CorporateEmployee[]>;
   enrollCorporateEmployee(employee: InsertCorporateEmployee): Promise<CorporateEmployee>;
-  updateCorporateEmployee(id: string, updates: Partial<CorporateEmployee>): Promise<CorporateEmployee | undefined>;
   getCorporateTeams(corporateAccountId: string): Promise<CorporateTeam[]>;
-  createCorporateTeam(team: InsertCorporateTeam): Promise<CorporateTeam>;
-  updateCorporateTeam(id: string, updates: Partial<CorporateTeam>): Promise<CorporateTeam | undefined>;
-  deleteCorporateTeam(id: string): Promise<void>;
   getCorporateChallenges(corporateAccountId: string): Promise<CorporateChallenge[]>;
-  createCorporateChallenge(challenge: InsertCorporateChallenge): Promise<CorporateChallenge>;
-  completeCorporateChallenge(challengeId: string, userId: string): Promise<ChallengeCompletion>;
   getCorporateAnalytics(corporateAccountId: string, days?: number): Promise<CorporateAnalytics[]>;
-  generateDailyCorporateAnalytics(corporateAccountId: string): Promise<void>;
   
   // Wellness analytics operations
   calculateEmployeeWellnessScore(employeeId: string): Promise<number>;
@@ -378,25 +364,6 @@ export class DatabaseStorage implements IStorage {
       })
       .where(eq(kindnessPosts.id, id));
   }
-
-  async getKindnessPosts(): Promise<KindnessPost[]> {
-    return await db.select()
-      .from(kindnessPosts)
-      .orderBy(desc(kindnessPosts.createdAt))
-      .limit(100);
-  }
-
-  async getPostsWithAIAnalysis(): Promise<KindnessPost[]> {
-    return await db.select()
-      .from(kindnessPosts)
-      .where(sql`${kindnessPosts.analyzedAt} IS NOT NULL`)
-      .orderBy(desc(kindnessPosts.createdAt))
-      .limit(100);
-  }
-
-  async updatePostWithAIAnalysis(id: string, analytics: any): Promise<void> {
-    await this.updatePostAnalytics(id, analytics);
-  }
   
   // Counter operations
   async getCounter(): Promise<KindnessCounter> {
@@ -417,19 +384,6 @@ export class DatabaseStorage implements IStorage {
       .update(kindnessCounter)
       .set({ 
         count: sql`${kindnessCounter.count} + ${amount}`,
-        updatedAt: new Date()
-      })
-      .where(eq(kindnessCounter.id, "global"))
-      .returning();
-      
-    return counter;
-  }
-
-  async setCounter(count: number): Promise<KindnessCounter> {
-    const [counter] = await db
-      .update(kindnessCounter)
-      .set({ 
-        count: count,
         updatedAt: new Date()
       })
       .where(eq(kindnessCounter.id, "global"))
@@ -556,35 +510,9 @@ export class DatabaseStorage implements IStorage {
     return newAccount;
   }
 
-  async getCorporateAccounts(): Promise<CorporateAccount[]> {
-    return await db.select()
-      .from(corporateAccounts)
-      .where(eq(corporateAccounts.isActive, 1))
-      .orderBy(desc(corporateAccounts.createdAt));
-  }
-
-  async updateCorporateAccount(id: string, updates: Partial<CorporateAccount>): Promise<CorporateAccount | undefined> {
-    const [updatedAccount] = await db
-      .update(corporateAccounts)
-      .set({ ...updates, updatedAt: new Date() })
-      .where(eq(corporateAccounts.id, id))
-      .returning();
-    return updatedAccount || undefined;
-  }
-
   async getCorporateEmployee(userId: string): Promise<CorporateEmployee | undefined> {
     const [employee] = await db.select().from(corporateEmployees).where(eq(corporateEmployees.userId, userId));
     return employee || undefined;
-  }
-
-  async getCorporateEmployees(corporateAccountId: string): Promise<CorporateEmployee[]> {
-    return await db.select()
-      .from(corporateEmployees)
-      .where(and(
-        eq(corporateEmployees.corporateAccountId, corporateAccountId),
-        eq(corporateEmployees.isActive, 1)
-      ))
-      .orderBy(corporateEmployees.displayName);
   }
 
   async enrollCorporateEmployee(employee: InsertCorporateEmployee): Promise<CorporateEmployee> {
@@ -595,15 +523,6 @@ export class DatabaseStorage implements IStorage {
     return newEmployee;
   }
 
-  async updateCorporateEmployee(id: string, updates: Partial<CorporateEmployee>): Promise<CorporateEmployee | undefined> {
-    const [updatedEmployee] = await db
-      .update(corporateEmployees)
-      .set(updates)
-      .where(eq(corporateEmployees.id, id))
-      .returning();
-    return updatedEmployee || undefined;
-  }
-
   async getCorporateTeams(corporateAccountId: string): Promise<CorporateTeam[]> {
     return await db.select()
       .from(corporateTeams)
@@ -611,30 +530,6 @@ export class DatabaseStorage implements IStorage {
         eq(corporateTeams.corporateAccountId, corporateAccountId),
         eq(corporateTeams.isActive, 1)
       ));
-  }
-
-  async createCorporateTeam(team: InsertCorporateTeam): Promise<CorporateTeam> {
-    const [newTeam] = await db
-      .insert(corporateTeams)
-      .values(team)
-      .returning();
-    return newTeam;
-  }
-
-  async updateCorporateTeam(id: string, updates: Partial<CorporateTeam>): Promise<CorporateTeam | undefined> {
-    const [updatedTeam] = await db
-      .update(corporateTeams)
-      .set(updates)
-      .where(eq(corporateTeams.id, id))
-      .returning();
-    return updatedTeam || undefined;
-  }
-
-  async deleteCorporateTeam(id: string): Promise<void> {
-    await db
-      .update(corporateTeams)
-      .set({ isActive: 0 })
-      .where(eq(corporateTeams.id, id));
   }
 
   async getCorporateChallenges(corporateAccountId: string): Promise<CorporateChallenge[]> {
@@ -658,28 +553,6 @@ export class DatabaseStorage implements IStorage {
         gte(corporateAnalytics.analyticsDate, startDate)
       ))
       .orderBy(desc(corporateAnalytics.analyticsDate));
-  }
-
-  async createCorporateChallenge(challenge: InsertCorporateChallenge): Promise<CorporateChallenge> {
-    const [newChallenge] = await db
-      .insert(corporateChallenges)
-      .values(challenge)
-      .returning();
-    return newChallenge;
-  }
-
-  async completeCorporateChallenge(challengeId: string, userId: string): Promise<ChallengeCompletion> {
-    const [completion] = await db
-      .insert(challengeCompletions)
-      .values({ challengeId, userId })
-      .returning();
-    return completion;
-  }
-
-  async generateDailyCorporateAnalytics(corporateAccountId: string): Promise<void> {
-    // This would generate daily analytics - for now just a placeholder
-    // In a real implementation, this would calculate and store daily metrics
-    console.log(`Generating daily analytics for corporate account: ${corporateAccountId}`);
   }
 
   // Wellness analytics implementations
@@ -1594,341 +1467,6 @@ export class DatabaseStorage implements IStorage {
     } catch (error: any) {
       console.error('Failed to initialize sample corporate data:', error.message);
       throw error;
-    }
-  }
-
-  // AI Impact Stories Methods
-  async generateImpactStories(userId: string, timeframe: string): Promise<any[]> {
-    // Return sample stories - in production would generate using AI
-    const sampleStories = [
-      {
-        id: `story-${Date.now()}-1`,
-        title: "Your Week of Rippling Kindness",
-        story: "This week, your kindness created ripples that reached 8 countries, inspired 23 other acts, and contributed to a 12% increase in community wellness. Your Monday coffee gesture started a chain reaction that's still going strong! One person you helped at the grocery store went on to volunteer at their local food bank, affecting 200+ families.",
-        metrics: {
-          rippleReach: 847,
-          countriesReached: 8,
-          peopleInspired: 23,
-          wellnessIncrease: 12,
-          chainReactionDays: 5
-        },
-        timeframe,
-        generatedAt: new Date(),
-        shareableHighlight: "Your kindness this week inspired 23 people across 8 countries! 🌍✨"
-      },
-      {
-        id: `story-${Date.now()}-2`,
-        title: "The Butterfly Effect of Your Compassion",
-        story: "Your small acts of kindness this week created an extraordinary butterfly effect. The person you complimented on Tuesday shared that positivity with their team, leading to a breakthrough on a major project. Your donation at the coffee shop inspired 6 other customers to pay it forward, creating a 4-hour chain of generosity that made local news!",
-        metrics: {
-          rippleReach: 1200,
-          countriesReached: 3,
-          peopleInspired: 47,
-          wellnessIncrease: 18,
-          chainReactionDays: 7
-        },
-        timeframe,
-        generatedAt: new Date(),
-        shareableHighlight: "One compliment sparked a team breakthrough and a 4-hour pay-it-forward chain! 💫"
-      }
-    ];
-
-    return sampleStories;
-  }
-
-  async generatePersonalizedImpactStory(userId: string, timeframe: string): Promise<any> {
-    const OpenAI = (await import('openai')).default;
-    
-    try {
-      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-      // Get user's recent activities (mock data for now)
-      const userActivity = {
-        postsCount: Math.floor(Math.random() * 10) + 1,
-        categoriesUsed: ['helping', 'sharing', 'caring'],
-        timeOfDay: 'morning',
-        locationHint: 'urban area'
-      };
-
-      const prompt = `Create an inspiring, personalized impact story for a user's kindness activities over the past ${timeframe}. The user has shared ${userActivity.postsCount} acts of kindness, focusing on ${userActivity.categoriesUsed.join(', ')}.
-
-Please generate a JSON response with:
-- title: An inspiring title for their impact story
-- story: A 2-3 sentence narrative showing how their kindness created ripples (be specific and heartwarming)
-- metrics: realistic numbers for rippleReach (100-2000), countriesReached (1-15), peopleInspired (5-100), wellnessIncrease (5-25), chainReactionDays (1-14)
-- shareableHighlight: One impactful sentence perfect for social sharing
-
-Make it feel personal, specific, and truly inspiring. Focus on the ripple effect and real-world impact.`;
-
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",  // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
-        messages: [
-          {
-            role: "system",
-            content: "You are an expert storyteller who creates inspiring, personalized impact narratives. Always respond in valid JSON format."
-          },
-          {
-            role: "user",
-            content: prompt
-          }
-        ],
-        response_format: { type: "json_object" },
-        max_tokens: 500,
-        temperature: 0.8
-      });
-
-      const aiStory = JSON.parse(response.choices[0].message.content || '{}');
-
-      return {
-        id: `ai-story-${Date.now()}`,
-        ...aiStory,
-        timeframe,
-        generatedAt: new Date()
-      };
-
-    } catch (error) {
-      console.error('Failed to generate AI story:', error);
-      
-      // Fallback to sample story if AI fails
-      return {
-        id: `fallback-story-${Date.now()}`,
-        title: "Your Kindness Creates Waves",
-        story: "Your recent acts of kindness have created beautiful ripples throughout your community. Each gesture, no matter how small it seemed, has touched lives and inspired others to spread positivity. You're part of a growing movement of compassion that's making the world brighter, one kind act at a time.",
-        metrics: {
-          rippleReach: 500 + Math.floor(Math.random() * 1000),
-          countriesReached: Math.floor(Math.random() * 8) + 1,
-          peopleInspired: Math.floor(Math.random() * 50) + 10,
-          wellnessIncrease: Math.floor(Math.random() * 15) + 8,
-          chainReactionDays: Math.floor(Math.random() * 7) + 2
-        },
-        timeframe,
-        generatedAt: new Date(),
-        shareableHighlight: "Your kindness is creating waves of positivity around the world! 🌊💜"
-      };
-    }
-  }
-
-  // AI Kindness Nudging System Methods
-  async generateKindnessNudges(userId: string, categories: string[], currentPage: string): Promise<any[]> {
-    const timeOfDay = new Date().getHours();
-    const dayOfWeek = new Date().getDay();
-    
-    // Smart nudges based on context
-    const contextualNudges = [
-      // Morning motivations (6-10 AM)
-      ...(timeOfDay >= 6 && timeOfDay <= 10 ? [
-        {
-          id: `nudge-morning-${Date.now()}-1`,
-          message: "Good morning! Start your day with kindness ☀️",
-          emoji: "☀️",
-          category: "motivational",
-          urgency: "gentle" as const,
-          contextType: "time" as const,
-          actionSuggestion: "Compliment someone on your commute or at work",
-          timestamp: new Date(),
-          duration: 8000
-        },
-        {
-          id: `nudge-morning-${Date.now()}-2`, 
-          message: "Perfect coffee shop weather for paying it forward! ☕",
-          emoji: "☕",
-          category: "sharing",
-          urgency: "encouraging" as const,
-          contextType: "time" as const,
-          actionSuggestion: "Buy a stranger's coffee or leave a kind note",
-          timestamp: new Date(),
-          duration: 9000
-        }
-      ] : []),
-
-      // Lunch time opportunities (11 AM - 2 PM)
-      ...(timeOfDay >= 11 && timeOfDay <= 14 ? [
-        {
-          id: `nudge-lunch-${Date.now()}-1`,
-          message: "Lunch time = perfect time for food kindness! 🍕",
-          emoji: "🍕",
-          category: "sharing",
-          urgency: "encouraging" as const,
-          contextType: "time" as const,
-          actionSuggestion: "Share a meal with someone or donate to a food bank",
-          timestamp: new Date(),
-          duration: 8500
-        }
-      ] : []),
-
-      // Evening opportunities (5-8 PM)
-      ...(timeOfDay >= 17 && timeOfDay <= 20 ? [
-        {
-          id: `nudge-evening-${Date.now()}-1`,
-          message: "Wind down with a kind gesture! 🌅",
-          emoji: "🌅",
-          category: "caring",
-          urgency: "gentle" as const,
-          contextType: "time" as const,
-          actionSuggestion: "Check in on a friend or family member",
-          timestamp: new Date(),
-          duration: 7500
-        }
-      ] : []),
-
-      // Weekend specials
-      ...(dayOfWeek === 0 || dayOfWeek === 6 ? [
-        {
-          id: `nudge-weekend-${Date.now()}-1`,
-          message: "Weekend vibes call for community kindness! 🌱",
-          emoji: "🌱",
-          category: "environmental",
-          urgency: "inspiring" as const,
-          contextType: "social" as const,
-          actionSuggestion: "Volunteer in your community or help a neighbor",
-          timestamp: new Date(),
-          duration: 9500
-        }
-      ] : []),
-
-      // General inspiring nudges
-      {
-        id: `nudge-general-${Date.now()}-1`,
-        message: "Someone nearby could use your kindness right now! ✨",
-        emoji: "✨",
-        category: "helping",
-        urgency: "inspiring" as const,
-        contextType: "social" as const,
-        actionSuggestion: "Look around - who could use a helping hand?",
-        timestamp: new Date(),
-        duration: 8000
-      },
-      {
-        id: `nudge-general-${Date.now()}-2`,
-        message: "Your smile is a gift - share it with the world! 😊",
-        emoji: "😊",
-        category: "caring",
-        urgency: "gentle" as const,
-        contextType: "social" as const,
-        actionSuggestion: "Give genuine compliments to three people today",
-        timestamp: new Date(),
-        duration: 7500
-      },
-      {
-        id: `nudge-general-${Date.now()}-3`,
-        message: "Small acts, big impact - what will you choose? 💫",
-        emoji: "💫", 
-        category: "motivational",
-        urgency: "encouraging" as const,
-        contextType: "activity" as const,
-        actionSuggestion: "Pick up litter, hold a door, or leave an encouraging note",
-        timestamp: new Date(),
-        duration: 8500
-      }
-    ];
-
-    // Filter by user's preferred categories
-    const filteredNudges = contextualNudges.filter(nudge => 
-      categories.includes(nudge.category) || categories.includes('motivational')
-    );
-
-    return filteredNudges.slice(0, 5); // Return max 5 suggestions
-  }
-
-  async generateSmartKindnessNudge(
-    userId: string, 
-    userActivity: string, 
-    timeOfDay: number, 
-    lastNudgeTime: number, 
-    preferences: string[]
-  ): Promise<any> {
-    const OpenAI = (await import('openai')).default;
-    
-    try {
-      const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
-
-      // Context for AI generation
-      const contextPrompt = `Generate a personalized kindness nudge for a user who is currently on the "${userActivity}" page at ${timeOfDay}:00 hours. 
-      
-      User preferences: ${preferences.join(', ')}
-      
-      Create a gentle, inspiring notification that encourages a specific act of kindness. Consider:
-      - Time of day (${timeOfDay}:00)
-      - Current activity (${userActivity})
-      - Make it feel personal and actionable
-      - Keep the message under 60 characters
-      - Suggest a specific action they can take right now
-      
-      Return JSON with:
-      - message: Short, inspiring text (max 60 chars)
-      - emoji: One relevant emoji
-      - category: One of [helping, sharing, caring, environmental, social, motivational]
-      - urgency: One of [gentle, encouraging, inspiring]  
-      - contextType: One of [time, weather, location, activity, social]
-      - actionSuggestion: Specific suggestion (max 80 chars)
-      - duration: Number between 7000-10000 (milliseconds to show)`;
-
-      const response = await openai.chat.completions.create({
-        model: "gpt-4o",  // the newest OpenAI model is "gpt-5" which was released August 7, 2025. do not change this unless explicitly requested by the user
-        messages: [
-          {
-            role: "system",
-            content: "You are a kindness coach who creates gentle, inspiring nudges that motivate people to spread positivity. Always respond in valid JSON format."
-          },
-          {
-            role: "user",
-            content: contextPrompt
-          }
-        ],
-        response_format: { type: "json_object" },
-        max_tokens: 300,
-        temperature: 0.8
-      });
-
-      const aiNudge = JSON.parse(response.choices[0].message.content || '{}');
-
-      return {
-        id: `ai-nudge-${Date.now()}`,
-        ...aiNudge,
-        timestamp: new Date()
-      };
-
-    } catch (error) {
-      console.error('Failed to generate AI nudge:', error);
-      
-      // Fallback to sample nudge if AI fails
-      const fallbackNudges = [
-        {
-          message: "Someone needs your kindness right now! ✨",
-          emoji: "✨",
-          category: "helping",
-          urgency: "encouraging",
-          contextType: "social",
-          actionSuggestion: "Look around - who could use a helping hand?",
-          duration: 8000
-        },
-        {
-          message: "Your smile is contagious - spread it! 😊",
-          emoji: "😊", 
-          category: "caring",
-          urgency: "gentle",
-          contextType: "social",
-          actionSuggestion: "Give three genuine compliments today",
-          duration: 7500
-        },
-        {
-          message: "Perfect moment for a random act of kindness! 💝",
-          emoji: "💝",
-          category: "sharing",
-          urgency: "inspiring", 
-          contextType: "activity",
-          actionSuggestion: "Buy someone's coffee or leave an encouraging note",
-          duration: 8500
-        }
-      ];
-
-      const randomNudge = fallbackNudges[Math.floor(Math.random() * fallbackNudges.length)];
-      
-      return {
-        id: `fallback-nudge-${Date.now()}`,
-        ...randomNudge,
-        timestamp: new Date()
-      };
     }
   }
 }

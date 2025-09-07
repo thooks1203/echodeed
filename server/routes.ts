@@ -315,24 +315,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Add heart to post
-  app.post('/api/posts/:postId/heart', async (req: any, res) => {
+  app.post('/api/posts/:postId/heart', isAuthenticated, async (req: any, res) => {
     try {
       const { postId } = req.params;
       const sessionId = req.headers['x-session-id'] as string;
+      const userId = req.user.claims.sub;
       const updatedPost = await storage.addHeartToPost(postId, sessionId);
       
-      // Award tokens for hearting a post (1 token) - only if authenticated
-      const userId = req.user?.claims?.sub;
-      if (userId) {
-        let userTokens = await storage.getUserTokens(userId);
-        if (!userTokens) {
-          userTokens = await storage.createUserTokens({ userId });
-        }
-        await storage.updateUserTokens(userId, { 
-          echoBalance: userTokens.echoBalance + 1,
-          totalEarned: userTokens.totalEarned + 1 
-        });
+      // Award tokens for hearting a post (1 token)
+      let userTokens = await storage.getUserTokens(userId);
+      if (!userTokens) {
+        userTokens = await storage.createUserTokens({ userId });
       }
+      await storage.updateUserTokens(userId, { 
+        echoBalance: userTokens.echoBalance + 1,
+        totalEarned: userTokens.totalEarned + 1 
+      });
       
       // Broadcast the update to all connected WebSocket clients
       broadcast({
@@ -351,24 +349,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Add echo to post  
-  app.post('/api/posts/:postId/echo', async (req: any, res) => {
+  app.post('/api/posts/:postId/echo', isAuthenticated, async (req: any, res) => {
     try {
       const { postId } = req.params;
       const sessionId = req.headers['x-session-id'] as string;
+      const userId = req.user.claims.sub;
       const updatedPost = await storage.addEchoToPost(postId, sessionId);
       
-      // Award tokens for echoing a post (2 tokens - higher reward for commitment) - only if authenticated
-      const userId = req.user?.claims?.sub;
-      if (userId) {
-        let userTokens = await storage.getUserTokens(userId);
-        if (!userTokens) {
-          userTokens = await storage.createUserTokens({ userId });
-        }
-        await storage.updateUserTokens(userId, { 
-          echoBalance: userTokens.echoBalance + 2,
-          totalEarned: userTokens.totalEarned + 2 
-        });
+      // Award tokens for echoing a post (2 tokens - higher reward for commitment)
+      let userTokens = await storage.getUserTokens(userId);
+      if (!userTokens) {
+        userTokens = await storage.createUserTokens({ userId });
       }
+      await storage.updateUserTokens(userId, { 
+        echoBalance: userTokens.echoBalance + 2,
+        totalEarned: userTokens.totalEarned + 2 
+      });
       
       // Broadcast the update to all connected WebSocket clients
       broadcast({
@@ -627,12 +623,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Session ID required' });
       }
 
-      const result = await storage.completeChallenge({ challengeId, userId: sessionId });
+      const result = await storage.completeChallenge(challengeId, sessionId);
       
       // Broadcast challenge completion
       broadcast({
         type: 'CHALLENGE_COMPLETED',
-        challengeId: result.challengeId,
+        challenge: result.challenge,
       });
       
       res.json(result);
@@ -892,7 +888,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Broadcast challenge completion
       broadcast({
         type: 'CORPORATE_CHALLENGE_COMPLETED',
-        challengeId: result.challengeId,
+        challenge: result.challenge,
         sessionId
       });
       
@@ -1479,13 +1475,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check if user has enough tokens
       const userTokens = await storage.getUserTokens(userId);
-      if (!userTokens || userTokens.echoBalance < echoSpent) {
+      if (!userTokens || userTokens.echoTokens < echoSpent) {
         return res.status(400).json({ message: 'Insufficient $ECHO tokens' });
       }
 
       // Deduct tokens from user
       await storage.updateUserTokens(userId, {
-        echoBalance: userTokens.echoBalance - echoSpent
+        echoTokens: userTokens.echoTokens - echoSpent
       });
 
       // Create redemption
@@ -2075,85 +2071,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
-    }
-  });
-
-  // AI Impact Stories Endpoints
-  // Impact Stories endpoint - matches frontend URL pattern
-  app.get('/api/ai/impact-stories/:timeframe', async (req, res) => {
-    try {
-      const { timeframe = 'week' } = req.params;
-      const sessionId = req.headers['x-session-id'] as string;
-      
-      // Generate sample impact story data (would normally be stored/cached)
-      const stories = await storage.generateImpactStories(sessionId || 'anonymous', timeframe as string);
-      res.json(stories);
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
-    }
-  });
-
-  // Fallback for query parameter version
-  app.get('/api/ai/impact-stories', async (req, res) => {
-    try {
-      const { timeframe = 'week' } = req.query;
-      const sessionId = req.headers['x-session-id'] as string;
-      
-      // Generate sample impact story data (would normally be stored/cached)
-      const stories = await storage.generateImpactStories(sessionId || 'anonymous', timeframe as string);
-      res.json(stories);
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
-    }
-  });
-
-  app.post('/api/ai/generate-impact-story', async (req, res) => {
-    try {
-      const { timeframe = 'week' } = req.body;
-      const sessionId = req.headers['x-session-id'] as string;
-      
-      // Generate a new personalized impact story using OpenAI
-      const story = await storage.generatePersonalizedImpactStory(sessionId || 'anonymous', timeframe);
-      res.json(story);
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
-    }
-  });
-
-  // AI Kindness Nudging System Endpoints
-  app.get('/api/ai/kindness-nudges', async (req, res) => {
-    try {
-      const { categories, currentPage } = req.query;
-      const sessionId = req.headers['x-session-id'] as string;
-      
-      // Generate contextual kindness nudges
-      const nudges = await storage.generateKindnessNudges(
-        sessionId || 'anonymous', 
-        categories ? (categories as string).split(',') : ['helping', 'sharing', 'caring'],
-        currentPage as string || 'feed'
-      );
-      res.json(nudges);
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
-    }
-  });
-
-  app.post('/api/ai/generate-nudge', async (req, res) => {
-    try {
-      const { userActivity, timeOfDay, lastNudgeTime, preferences } = req.body;
-      const sessionId = req.headers['x-session-id'] as string;
-      
-      // Generate a smart, contextual nudge using AI
-      const nudge = await storage.generateSmartKindnessNudge(
-        sessionId || 'anonymous',
-        userActivity,
-        timeOfDay,
-        lastNudgeTime,
-        preferences || ['helping', 'sharing', 'caring']
-      );
-      res.json(nudge);
-    } catch (error: any) {
-      res.status(500).json({ message: error.message });
     }
   });
 
