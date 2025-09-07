@@ -6,6 +6,12 @@ EchoDeed™ is a mobile-first web application designed to inspire and track anon
 
 ## User Preferences
 
+**Founder Information:**
+- Name: Tavores Vanhook
+- Email: tavores@echodeed.com
+- Phone: 336-214-1645
+- Title: Founder & CEO, EchoDeed™
+
 Preferred communication style: Simple, everyday language.
 
 ## System Architecture
