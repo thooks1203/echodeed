@@ -2429,20 +2429,21 @@ export default function Home() {
           position: 'relative'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '1', minWidth: '0' }}>
               <img 
                 src={logoUrl} 
                 alt="EchoDeed Logo"
                 style={{ 
-                  width: '32px', 
-                  height: '32px',
+                  width: '100px', 
+                  height: '100px',
                   objectFit: 'contain',
                   background: 'transparent',
                   border: 'none',
-                  borderRadius: '0'
+                  borderRadius: '0',
+                  flexShrink: '0'
                 }}
               />
-              <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
+              <h1 style={{ margin: '0', fontSize: '18px', fontWeight: '700', whiteSpace: 'nowrap' }}>EchoDeed™</h1>
             </div>
             
             {/* $ECHO Balance */}
