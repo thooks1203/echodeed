@@ -46,7 +46,10 @@ export default function Home() {
     // Check if notifications should be set up
     const hasSeenNotificationSetup = localStorage.getItem('echodeed_notification_setup_seen');
     if (!hasSeenNotificationSetup && !pushNotifications.isEnabled()) {
-      setTimeout(() => setShowNotificationSetup(true), 2000); // Show after 2 seconds
+      setTimeout(() => {
+        console.log('Showing notification setup modal');
+        setShowNotificationSetup(true);
+      }, 3000); // Show after 3 seconds for better visibility
     }
     
     // Remove any lingering modal overlays from DOM (except welcome modal)
@@ -3460,7 +3463,7 @@ export default function Home() {
           position: 'relative'
         }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '1', minWidth: '0' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '1', minWidth: '0', marginRight: '12px' }}>
               <img 
                 src={logoUrl} 
                 alt="EchoDeed Logo"
@@ -3474,7 +3477,17 @@ export default function Home() {
                   flexShrink: '0'
                 }}
               />
-              <h1 style={{ margin: '0', fontSize: '18px', fontWeight: '700', whiteSpace: 'nowrap' }}>EchoDeed™ Schools</h1>
+              <h1 style={{ 
+                margin: '0', 
+                fontSize: '18px', 
+                fontWeight: '700', 
+                whiteSpace: 'nowrap', 
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                maxWidth: '140px'
+              }}>
+                EchoDeed™ Schools
+              </h1>
             </div>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
@@ -3522,6 +3535,25 @@ export default function Home() {
 
         {/* Schools Dashboard Content */}
         <div style={{ padding: '20px', paddingBottom: '120px' }}>
+          {/* Test notification reset button - remove after testing */}
+          <button 
+            onClick={() => {
+              localStorage.removeItem('echodeed_notification_setup_seen');
+              window.location.reload();
+            }}
+            style={{ 
+              margin: '10px auto 20px', 
+              display: 'block',
+              padding: '8px 16px',
+              backgroundColor: '#8B5CF6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '6px',
+              fontSize: '12px'
+            }}
+          >
+            🔔 Test Notifications
+          </button>
           <SchoolsDashboard />
         </div>
         
