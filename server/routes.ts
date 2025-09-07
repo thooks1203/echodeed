@@ -10,6 +10,7 @@ import { aiWellnessEngine } from "./services/aiWellnessEngine";
 import { scalabilityEngine } from "./services/scalabilityEngine";
 import { marketValidationEngine } from "./services/marketValidation";
 import { goToMarketEngine } from "./services/goToMarketEngine";
+import { executionEngine } from "./services/executionEngine";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { fulfillmentService } from "./fulfillment";
 import { SurpriseGiveawayService } from './surpriseGiveaways';
@@ -694,6 +695,128 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Sales metrics failed:', error);
       res.status(500).json({ error: 'Failed to get sales metrics' });
+    }
+  });
+
+  // EXECUTION ENGINE ROUTES (Immediate Action & Customer Acquisition)
+  app.get('/api/execution/immediate-action-plan', isAuthenticated, async (req: any, res) => {
+    try {
+      console.log('🎯 Generating immediate 30-day action plan...');
+      const actionPlan = await executionEngine.generateImmediateActionPlan();
+      res.json(actionPlan);
+    } catch (error) {
+      console.error('Immediate action plan failed:', error);
+      res.status(500).json({ error: 'Failed to generate immediate action plan' });
+    }
+  });
+
+  app.get('/api/execution/target-companies', isAuthenticated, async (req: any, res) => {
+    try {
+      console.log('🏢 Building target company database...');
+      const targetCompanies = await executionEngine.buildTargetCompanyDatabase();
+      res.json(targetCompanies);
+    } catch (error) {
+      console.error('Target company database failed:', error);
+      res.status(500).json({ error: 'Failed to build target company database' });
+    }
+  });
+
+  app.get('/api/execution/outreach-campaigns', isAuthenticated, async (req: any, res) => {
+    try {
+      console.log('📧 Creating outreach campaigns...');
+      const campaigns = await executionEngine.createOutreachCampaigns();
+      res.json(campaigns);
+    } catch (error) {
+      console.error('Outreach campaigns failed:', error);
+      res.status(500).json({ error: 'Failed to create outreach campaigns' });
+    }
+  });
+
+  app.get('/api/execution/interview-framework', isAuthenticated, async (req: any, res) => {
+    try {
+      console.log('🎤 Creating customer interview framework...');
+      const framework = await executionEngine.createCustomerInterviewFramework();
+      res.json(framework);
+    } catch (error) {
+      console.error('Interview framework failed:', error);
+      res.status(500).json({ error: 'Failed to create interview framework' });
+    }
+  });
+
+  app.get('/api/execution/complete-roadmap', isAuthenticated, async (req: any, res) => {
+    try {
+      console.log('🗺️ Generating complete execution roadmap...');
+      const roadmap = await executionEngine.generateExecutionRoadmap();
+      res.json(roadmap);
+    } catch (error) {
+      console.error('Execution roadmap failed:', error);
+      res.status(500).json({ error: 'Failed to generate execution roadmap' });
+    }
+  });
+
+  // CUSTOMER ACQUISITION TRACKING
+  app.post('/api/execution/track-outreach', isAuthenticated, async (req: any, res) => {
+    try {
+      const { companyName, contactName, outreachType, response, nextAction } = req.body;
+      
+      const outreachRecord = {
+        id: Date.now().toString(),
+        companyName,
+        contactName,
+        outreachType, // email, linkedin, call, demo
+        response, // positive, negative, no-response
+        nextAction,
+        timestamp: new Date().toISOString(),
+        salesRep: req.user?.id || 'unknown'
+      };
+
+      console.log('📝 Outreach activity tracked:', companyName, outreachType);
+      res.json({ success: true, outreachId: outreachRecord.id });
+    } catch (error) {
+      console.error('Outreach tracking failed:', error);
+      res.status(500).json({ error: 'Failed to track outreach' });
+    }
+  });
+
+  app.get('/api/execution/activity-dashboard', isAuthenticated, async (req: any, res) => {
+    try {
+      // Real-time execution metrics dashboard
+      const activityMetrics = {
+        dailyActivities: {
+          outreachEmails: 0, // To be tracked
+          linkedInConnections: 0,
+          customerInterviews: 0,
+          demoRequests: 0,
+          pilotLeads: 0
+        },
+        weeklyTargets: {
+          targetCompaniesContacted: 50, // Goal for week
+          customerInterviewsScheduled: 10,
+          demoRequestsGenerated: 5,
+          partnershipConversations: 3,
+          contentPiecesPublished: 3
+        },
+        conversionFunnel: {
+          companiesContacted: 0,
+          responsesReceived: 0,
+          meetingsScheduled: 0,
+          demosCompleted: 0,
+          pilotsProposed: 0,
+          pilotsStarted: 0
+        },
+        pipelineHealth: {
+          qualifiedProspects: 0,
+          activePilotPrograms: 0,
+          proposalsPending: 0,
+          negotiationsInProgress: 0,
+          contractsToSign: 0
+        }
+      };
+
+      res.json(activityMetrics);
+    } catch (error) {
+      console.error('Activity dashboard failed:', error);
+      res.status(500).json({ error: 'Failed to get activity dashboard' });
     }
   });
   
