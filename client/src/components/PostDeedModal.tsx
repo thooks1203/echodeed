@@ -145,7 +145,7 @@ export function PostDeedModal({ isOpen, onClose, location }: PostDeedModalProps)
               className="w-full mt-6 bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
               data-testid="button-submit-deed"
             >
-              <span className="inline mr-2 w-4 h-4 flex items-center justify-center text-sm">⚡</span>
+              <span className="inline mr-2 w-4 h-4 flex items-center justify-center text-sm" key="electric-modal">⚡</span>
               {postMutation.isPending ? 'Sharing...' : 'Share Your Deed'}
             </button>
             

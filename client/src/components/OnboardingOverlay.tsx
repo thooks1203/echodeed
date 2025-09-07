@@ -29,7 +29,7 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
     <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
       <div className="bg-card p-8 rounded-lg mx-4 text-center shadow-xl max-w-sm">
         <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center">
-          <div className="w-16 h-16 flex items-center justify-center text-6xl">⚡</div>
+          <div className="w-16 h-16 flex items-center justify-center text-6xl" key="electric-onboarding">⚡</div>
         </div>
         <h2 className="text-2xl font-bold text-foreground mb-3">Welcome to EchoDeed™</h2>
         <p className="text-muted-foreground mb-1 leading-relaxed">

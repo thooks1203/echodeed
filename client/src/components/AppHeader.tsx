@@ -17,7 +17,7 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
           </div>
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 flex items-center justify-center animate-logoFloat">
-              <span className="text-2xl">⚡</span>
+              <span className="text-2xl" key="electric-logo-header">⚡</span>
             </div>
             <h1 className="text-xl font-bold text-foreground" data-testid="text-app-title">EchoDeed™</h1>
           </div>
@@ -39,7 +39,7 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
             >
               {counter.count.toLocaleString()}
             </span>
-            <span className="ml-2 w-5 h-5 flex items-center justify-center text-xl animate-bounce-gentle">⚡</span>
+            <span className="ml-2 w-5 h-5 flex items-center justify-center text-xl animate-bounce-gentle" key="electric-counter">⚡</span>
           </div>
           <p className="text-primary-foreground/70 text-xs mt-1">acts of kindness shared</p>
         </div>
