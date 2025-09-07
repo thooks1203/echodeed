@@ -125,8 +125,17 @@ export interface IStorage {
   getCorporateEmployee(userId: string): Promise<CorporateEmployee | undefined>;
   enrollCorporateEmployee(employee: InsertCorporateEmployee): Promise<CorporateEmployee>;
   getCorporateTeams(corporateAccountId: string): Promise<CorporateTeam[]>;
+  createCorporateTeam(team: InsertCorporateTeam): Promise<CorporateTeam>;
+  updateCorporateTeam(id: string, updates: Partial<CorporateTeam>): Promise<CorporateTeam | undefined>;
+  deleteCorporateTeam(id: string): Promise<void>;
+  getCorporateEmployees(corporateAccountId: string): Promise<CorporateEmployee[]>;
+  updateCorporateEmployee(id: string, updates: Partial<CorporateEmployee>): Promise<CorporateEmployee | undefined>;
+  updateCorporateAccount(id: string, updates: Partial<CorporateAccount>): Promise<CorporateAccount | undefined>;
   getCorporateChallenges(corporateAccountId: string): Promise<CorporateChallenge[]>;
+  createCorporateChallenge(challenge: InsertCorporateChallenge): Promise<CorporateChallenge>;
+  completeCorporateChallenge(userId: string, challengeId: string): Promise<ChallengeCompletion>;
   getCorporateAnalytics(corporateAccountId: string, days?: number): Promise<CorporateAnalytics[]>;
+  generateDailyCorporateAnalytics(corporateAccountId: string): Promise<void>;
   
   // Wellness analytics operations
   calculateEmployeeWellnessScore(employeeId: string): Promise<number>;
@@ -240,6 +249,10 @@ export interface IStorage {
   createWeeklyPrize(prize: InsertWeeklyPrize): Promise<WeeklyPrize>;
   drawWeeklyPrizeWinners(prizeId: string): Promise<PrizeWinner[]>;
   getPrizeWinners(prizeId: string): Promise<PrizeWinner[]>;
+  
+  // AI Analysis operations
+  getPostsWithAIAnalysis(limit?: number): Promise<KindnessPost[]>;
+  updatePostWithAIAnalysis(id: string, analysis: any): Promise<void>;
   
   // Sample data initialization
   initializeSampleCorporateData(): Promise<void>;
