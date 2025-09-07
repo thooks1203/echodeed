@@ -4316,95 +4316,53 @@ export default function Home() {
           </div>
         )}
         
-        {postsLoading ? (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
-            <div>Loading acts of kindness...</div>
-          </div>
-        ) : posts.length === 0 ? (
-          <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
-            <div style={{ fontSize: '48px', marginBottom: '16px' }}>❤️</div>
-            <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>No acts of kindness found</h3>
-            <p>Be the first to share a kind deed in this area!</p>
-          </div>
-        ) : (
-          posts.map((post, index) => (
-            <div key={post.id} style={{ 
-              backgroundColor: 'white',
-              margin: '1px 0',
-              padding: '20px',
-              borderBottom: '1px solid #f3f4f6'
-            }}>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <div style={{
-                  width: '32px',
-                  height: '32px',
-                  backgroundColor: '#f3f4f6',
-                  borderRadius: '50%',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                  marginTop: '4px'
-                }}>
-                  ❤️
-                </div>
-                <div style={{ flex: 1 }}>
-                  <p style={{ 
-                    margin: '0 0 12px 0', 
-                    lineHeight: '1.5',
-                    color: '#374151'
-                  }}>
-                    {post.content}
-                  </p>
-                  <div style={{ 
-                    fontSize: '12px', 
-                    color: '#6b7280',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '8px'
-                  }}>
-                    <span>📍 {post.location}</span>
-                    <span>•</span>
-                    <span>{new Date(post.createdAt).toLocaleString()}</span>
-                    <span>•</span>
-                    <span style={{ 
-                      backgroundColor: '#f3f4f6',
-                      padding: '2px 8px',
-                      borderRadius: '12px'
-                    }}>
-                      {post.category}
-                    </span>
-                  </div>
-                  
-                  {/* Interaction Buttons */}
-                  <div style={{
-                    display: 'flex',
-                    gap: '12px',
-                    alignItems: 'center',
-                    marginTop: '12px'
-                  }}>
-                    <button
-                      onClick={() => handleHeartPost(post.id)}
-                      title="Show love for this kindness! (Earn 1 $ECHO 🪙)"
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        padding: '8px 14px',
-                        backgroundColor: '#f8f9fa',
-                        border: '2px solid #e5e7eb',
-                        borderRadius: '20px',
-                        cursor: 'pointer',
-                        fontSize: '14px',
-                        color: '#374151',
-                        fontWeight: '600',
-                        boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                        transition: 'all 0.2s ease',
-                        outline: 'none',
-                        position: 'relative'
-                      }}
-                      onMouseEnter={e => {
-                        e.currentTarget.style.backgroundColor = '#8B5CF6';
+        {/* Duplicate section removed - using KindnessFeed component instead */}
+        <KindnessFeed posts={posts} isLoading={postsLoading} />
+      </div>
+      
+      {/* Floating Action Button */}
+      <button 
+        onClick={() => setIsPostModalOpen(true)}
+        style={{
+          position: 'fixed',
+          bottom: '84px',
+          right: '24px',
+          width: '56px',
+          height: '56px',
+          backgroundColor: '#8B5CF6',
+          color: 'white',
+          border: 'none',
+          borderRadius: '50%',
+          fontSize: '24px',
+          cursor: 'pointer',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          zIndex: 1000
+        }}
+      >
+        +
+      </button>
+      
+      {/* Post Modal */}
+      <PostDeedModal 
+        isOpen={isPostModalOpen}
+        onClose={() => setIsPostModalOpen(false)}
+        location={location}
+      />
+      
+      {/* Welcome Modal */}
+      <WelcomeModal 
+        isOpen={showWelcomeModal} 
+        onClose={handleWelcomeClose}
+      />
+      
+      {/* Smart Kindness Nudging System - Revolutionary feature! ✨ */}
+      <KindnessNudgeSystem />
+      
+      {/* Bottom Navigation */}
+      <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+    </div>
+  );
+}
                         e.currentTarget.style.color = 'white';
                         e.currentTarget.style.borderColor = '#8B5CF6';
                         e.currentTarget.style.transform = 'scale(1.05)';
