@@ -1508,10 +1508,10 @@ export class DatabaseStorage implements IStorage {
       let techFlowAccount: any;
       let wiseAccount: any;
 
-      // Create TechFlow Solutions if it doesn't exist
+      // Create Winners Institute for Successful Empowerment if it doesn't exist
       if (existingTechFlow.length === 0) {
         [techFlowAccount] = await db.insert(corporateAccounts).values({
-          companyName: 'TechFlow Solutions',
+          companyName: 'Winners Institute for Successful Empowerment',
           domain: 'techflow.com',
           industry: 'Technology',
           companySize: 'medium',
@@ -1550,7 +1550,7 @@ export class DatabaseStorage implements IStorage {
         wiseAccount = existingWise[0];
       }
 
-      // Create sample teams for TechFlow
+      // Create sample teams for Winners Institute
       if (existingTechFlow.length === 0) {
         const techFlowTeams = [
           { teamName: 'Engineering', department: 'Technology', currentSize: 24, targetSize: 30, monthlyKindnessGoal: 50 },
@@ -1590,7 +1590,7 @@ export class DatabaseStorage implements IStorage {
         }
       }
 
-      // Create sample employees for TechFlow
+      // Create sample employees for Winners Institute
       if (existingTechFlow.length === 0) {
         const techFlowEmployees = [
           { displayName: 'Sarah Chen', employeeEmail: 'sarah@techflow.com', department: 'Technology', role: 'corporate_admin' },
@@ -1653,7 +1653,7 @@ export class DatabaseStorage implements IStorage {
         }
       }
 
-      // Create sample challenges for TechFlow
+      // Create sample challenges for Winners Institute
       if (existingTechFlow.length === 0) {
         const techFlowChallenges = [
           {
@@ -1678,7 +1678,7 @@ export class DatabaseStorage implements IStorage {
           await db.insert(corporateChallenges).values(challenge);
         }
 
-        // Create sample analytics for TechFlow (last 7 days)
+        // Create sample analytics for Winners Institute (last 7 days)
         for (let i = 6; i >= 0; i--) {
           const date = new Date();
           date.setDate(date.getDate() - i);

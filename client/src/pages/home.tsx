@@ -696,7 +696,7 @@ export default function Home() {
                   }}
                 >
                   <option value="">Select your company...</option>
-                  <option value="techflow.com">TechFlow Solutions</option>
+                  <option value="techflow.com">Winners Institute for Successful Empowerment</option>
                   <option value="wellnesscorp.com">Wellness Corp</option>
                   <option value="other">Other (Contact HR)</option>
                 </select>
@@ -734,7 +734,7 @@ export default function Home() {
               View Demo Dashboard
             </div>
             <div style={{ fontSize: '12px', color: '#075985', marginBottom: '12px' }}>
-              See how TechFlow Solutions uses EchoDeed™
+              See how Winners Institute for Successful Empowerment uses EchoDeed™
             </div>
             <button 
               onClick={() => {

@@ -1048,7 +1048,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         // Initialize sample corporate data if needed
         await storage.initializeSampleCorporateData();
         
-        // Get all accounts and find TechFlow Solutions
+        // Get all accounts and find Winners Institute for Successful Empowerment
         const allAccounts = await storage.getCorporateAccounts();
         const demoAccount = allAccounts.find(acc => acc.domain === 'techflow.com');
         
