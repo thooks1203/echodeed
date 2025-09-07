@@ -1,7 +1,6 @@
 import { Heart, Sliders } from 'lucide-react';
-// import electricLogoUrl from '../assets/echodeed_electric_logo.png';
 import { KindnessCounter } from '@shared/schema';
-// import logoUrl from '@assets/ECHODEED_1757095612642.png';
+import { ElectricHeart } from './ElectricHeart';
 
 interface AppHeaderProps {
   counter: KindnessCounter;
@@ -17,13 +16,7 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
           </div>
           <div className="flex items-center space-x-3">
             <div className="w-20 h-20 flex items-center justify-center animate-logoFloat">
-              <div 
-                className="w-full h-full bg-contain bg-center bg-no-repeat"
-                style={{
-                  backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='heart-gradient' cx='50%25' cy='50%25'%3E%3Cstop offset='0%25' style='stop-color:%23ff6633'/%3E%3Cstop offset='25%25' style='stop-color:%23ff33ff'/%3E%3Cstop offset='75%25' style='stop-color:%23a855f7'/%3E%3Cstop offset='100%25' style='stop-color:%233b82f6'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M100,30 C85,10 60,10 60,40 C60,70 100,100 100,100 S140,70 140,40 C140,10 115,10 100,30 Z' fill='url(%23heart-gradient)' filter='drop-shadow(0 0 10px rgba(255,102,51,0.6))'/%3E%3C/svg%3E")`,
-                  filter: 'drop-shadow(0 0 8px rgba(255,102,51,0.4)) drop-shadow(0 0 16px rgba(255,51,255,0.2))'
-                }}
-              />
+              <ElectricHeart size={80} />
             </div>
             <h1 className="text-xl font-bold text-foreground" data-testid="text-app-title">EchoDeed™</h1>
           </div>
