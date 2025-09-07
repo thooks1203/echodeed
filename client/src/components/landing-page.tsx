@@ -23,7 +23,7 @@ export function LandingPage() {
           margin: '0 auto 16px auto'
         }}>
           <img 
-            src="/echodeed-electric-new.png?v=1757267120" 
+            src="/logo-final.png?v=1757267200&force=true" 
             alt="EchoDeed Electric Heart" 
             style={{
               width: '100%',
