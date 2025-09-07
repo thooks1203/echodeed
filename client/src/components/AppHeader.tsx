@@ -17,7 +17,7 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
           </div>
           <div className="flex items-center space-x-3">
             <div className="w-8 h-8 flex items-center justify-center animate-logoFloat">
-              <img src="/images/echodeed_electric_logo.png" alt="EchoDeed" className="w-8 h-8 object-contain" onError={(e) => { console.log('Logo failed to load'); e.currentTarget.style.display = 'none'; }} />
+              <img src="/images/echodeed_electric_logo.png" alt="EchoDeed" className="w-8 h-8 object-contain border-2 border-red-500" onLoad={() => console.log('Header logo loaded successfully!')} onError={(e) => { console.log('Header logo failed to load'); e.currentTarget.innerHTML = '⚡'; e.currentTarget.style.display = 'flex'; e.currentTarget.style.alignItems = 'center'; e.currentTarget.style.justifyContent = 'center'; e.currentTarget.style.fontSize = '20px'; }} />
             </div>
             <h1 className="text-xl font-bold text-foreground" data-testid="text-app-title">EchoDeed™</h1>
           </div>
@@ -39,7 +39,7 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
             >
               {counter.count.toLocaleString()}
             </span>
-            <img src="/images/echodeed_electric_logo.png" alt="EchoDeed" className="ml-2 w-5 h-5 object-contain animate-bounce-gentle" onError={(e) => { console.log('Counter logo failed to load'); e.currentTarget.style.display = 'none'; }} />
+            <span className="ml-2 w-5 h-5 flex items-center justify-center text-xl animate-bounce-gentle">⚡</span>
           </div>
           <p className="text-primary-foreground/70 text-xs mt-1">acts of kindness shared</p>
         </div>

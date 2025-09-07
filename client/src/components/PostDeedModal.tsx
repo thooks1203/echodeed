@@ -145,7 +145,7 @@ export function PostDeedModal({ isOpen, onClose, location }: PostDeedModalProps)
               className="w-full mt-6 bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
               data-testid="button-submit-deed"
             >
-              <img src="/images/echodeed_electric_logo.png" alt="EchoDeed" className="inline mr-2 w-4 h-4 object-contain" onError={(e) => { console.log('Modal logo failed to load'); e.currentTarget.style.display = 'none'; }} />
+              <span className="inline mr-2 w-4 h-4 flex items-center justify-center text-sm">⚡</span>
               {postMutation.isPending ? 'Sharing...' : 'Share Your Deed'}
             </button>
             
