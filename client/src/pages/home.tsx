@@ -2553,7 +2553,7 @@ export default function Home() {
                         outline: 'none'
                       }}
                     >
-                      <span style={{ fontSize: '16px' }}>💜</span>
+                      <img src="/electric-heart-logo.png" alt="Heart" style={{width: '24px', height: '24px'}} />
                       <span>{post.heartsCount || 0} Hearts</span>
                     </button>
                     
@@ -3777,7 +3777,7 @@ export default function Home() {
           </div>
         </div>
         
-        <div style={{ marginBottom: '8px', fontSize: '14px', opacity: 0.9 }}>Your Kindness Community</div>
+        <div style={{ marginBottom: '8px', fontSize: '14px', opacity: 0.9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><img src="/electric-heart-logo.png" alt="Electric Heart" style={{width: '120px', height: '120px', marginRight: '16px'}} />Your Kindness Community</div>
         <div style={{ 
           fontSize: '18px', 
           fontWeight: '600', 
@@ -3796,7 +3796,7 @@ export default function Home() {
           border: '1px solid rgba(255,255,255,0.25)',
           lineHeight: '1.3'
         }}>
-          💡 <strong>Tip:</strong> ❤️ Heart posts you like • 🔁 Echo to do the same act of kindness
+          💡 <strong>Tip:</strong> <img src="/electric-heart-logo.png" alt="Heart" style={{width: '24px', height: '24px', display: 'inline-block', verticalAlign: 'middle'}} /> Heart posts you like • 🔁 Echo to do the same act of kindness
         </div>
       </div>
       
@@ -4019,7 +4019,7 @@ export default function Home() {
                         outline: 'none'
                       }}
                     >
-                      <span style={{ fontSize: '16px' }}>💜</span>
+                      <img src="/electric-heart-logo.png" alt="Heart" style={{width: '24px', height: '24px'}} />
                       <span>{post.heartsCount || 0} Hearts</span>
                     </button>
                     
@@ -4471,7 +4471,7 @@ export default function Home() {
                         e.currentTarget.style.transform = 'scale(1)';
                       }}
                     >
-                      <span style={{ fontSize: '16px' }}>💜</span>
+                      <img src="/electric-heart-logo.png" alt="Heart" style={{width: '24px', height: '24px'}} />
                       <span>{post.heartsCount || 0}</span>
                     </button>
                     
