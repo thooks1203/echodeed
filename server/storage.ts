@@ -575,6 +575,117 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(corporateAnalytics.analyticsDate));
   }
 
+  async updateCorporateAccount(id: string, updates: Partial<CorporateAccount>): Promise<CorporateAccount | undefined> {
+    const [updatedAccount] = await db
+      .update(corporateAccounts)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(corporateAccounts.id, id))
+      .returning();
+    return updatedAccount || undefined;
+  }
+
+  async createCorporateTeam(team: InsertCorporateTeam): Promise<CorporateTeam> {
+    const [newTeam] = await db
+      .insert(corporateTeams)
+      .values(team)
+      .returning();
+    return newTeam;
+  }
+
+  async updateCorporateTeam(id: string, updates: Partial<CorporateTeam>): Promise<CorporateTeam | undefined> {
+    const [updatedTeam] = await db
+      .update(corporateTeams)
+      .set(updates)
+      .where(eq(corporateTeams.id, id))
+      .returning();
+    return updatedTeam || undefined;
+  }
+
+  async deleteCorporateTeam(id: string): Promise<void> {
+    await db
+      .update(corporateTeams)
+      .set({ isActive: 0 })
+      .where(eq(corporateTeams.id, id));
+  }
+
+  async getCorporateEmployees(corporateAccountId: string): Promise<CorporateEmployee[]> {
+    return await db.select()
+      .from(corporateEmployees)
+      .where(and(
+        eq(corporateEmployees.corporateAccountId, corporateAccountId),
+        eq(corporateEmployees.isActive, 1)
+      ));
+  }
+
+  async updateCorporateEmployee(id: string, updates: Partial<CorporateEmployee>): Promise<CorporateEmployee | undefined> {
+    const [updatedEmployee] = await db
+      .update(corporateEmployees)
+      .set(updates)
+      .where(eq(corporateEmployees.id, id))
+      .returning();
+    return updatedEmployee || undefined;
+  }
+
+  async createCorporateChallenge(challenge: InsertCorporateChallenge): Promise<CorporateChallenge> {
+    const [newChallenge] = await db
+      .insert(corporateChallenges)
+      .values(challenge)
+      .returning();
+    return newChallenge;
+  }
+
+  async completeCorporateChallenge(userId: string, challengeId: string): Promise<ChallengeCompletion> {
+    const [completion] = await db
+      .insert(challengeCompletions)
+      .values({ userId, challengeId })
+      .returning();
+    return completion;
+  }
+
+  async generateDailyCorporateAnalytics(corporateAccountId: string): Promise<void> {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Get employee metrics for today
+    const employees = await this.getCorporateEmployees(corporateAccountId);
+    const activeEmployees = employees.length;
+    
+    // Insert daily analytics
+    await db
+      .insert(corporateAnalytics)
+      .values({
+        corporateAccountId,
+        analyticsDate: today,
+        activeEmployees,
+        totalKindnessPosts: 0,
+        totalChallengesCompleted: 0,
+        totalEchoTokensEarned: 0,
+        averageEngagementScore: 75,
+        wellnessImpactScore: 80,
+      })
+      .onConflictDoNothing();
+  }
+
+  async getPostsWithAIAnalysis(limit: number = 50): Promise<KindnessPost[]> {
+    return await db.select()
+      .from(kindnessPosts)
+      .where(sql`${kindnessPosts.analyzedAt} IS NOT NULL`)
+      .orderBy(desc(kindnessPosts.createdAt))
+      .limit(limit);
+  }
+
+  async updatePostWithAIAnalysis(id: string, analysis: any): Promise<void> {
+    await db
+      .update(kindnessPosts)
+      .set({
+        sentimentScore: analysis.sentimentScore,
+        impactScore: analysis.impactScore,
+        emotionalUplift: analysis.emotionalUplift,
+        analyzedAt: new Date(),
+      })
+      .where(eq(kindnessPosts.id, id));
+  }
+
   // Wellness analytics implementations
   async calculateEmployeeWellnessScore(employeeId: string): Promise<number> {
     // Get the user's posts in the last 30 days
