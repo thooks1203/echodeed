@@ -11,19 +11,25 @@ interface RippleEvent {
 
 export function GlobalKindnessRippleMap() {
   const [ripples, setRipples] = useState<RippleEvent[]>([]);
-  const { lastMessage } = useWebSocket();
+  const { isConnected } = useWebSocket();
 
+  // Mock WebSocket message handling for demo
   useEffect(() => {
-    if (lastMessage) {
-      try {
-        const data = JSON.parse(lastMessage);
-        if (data.type === 'NEW_POST' || data.type === 'KINDNESS_RIPPLE') {
+    const interval = setInterval(() => {
+      if (isConnected) {
+        // Simulate new kindness events
+        const mockData = {
+          type: 'NEW_POST',
+          id: Date.now().toString(),
+        };
+        
+        if (mockData.type === 'NEW_POST' || mockData.type === 'KINDNESS_RIPPLE') {
           // Convert lat/lng to SVG coordinates (simplified world map projection)
           const x = Math.random() * 400 + 50; // Random for demo
           const y = Math.random() * 200 + 50;
           
           const newRipple: RippleEvent = {
-            id: data.id || Date.now().toString(),
+            id: mockData.id || Date.now().toString(),
             x,
             y,
             intensity: Math.random() * 0.8 + 0.2,
@@ -37,11 +43,11 @@ export function GlobalKindnessRippleMap() {
             setRipples(prev => prev.filter(r => r.id !== newRipple.id));
           }, 6000);
         }
-      } catch (error) {
-        console.error('Error parsing WebSocket message:', error);
       }
-    }
-  }, [lastMessage]);
+    }, 3000); // Create ripple every 3 seconds
+    
+    return () => clearInterval(interval);
+  }, [isConnected]);
 
   // Add demo ripples on mount
   useEffect(() => {

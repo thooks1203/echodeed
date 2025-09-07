@@ -2,6 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+
 :root {
   --background: hsl(54, 20%, 97%);
   --foreground: hsl(222, 15%, 20%);
