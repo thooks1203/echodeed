@@ -20,8 +20,8 @@ export function LandingPage() {
           justifyContent: 'center',
           alignItems: 'center',
           marginBottom: '16px',
-          width: '160px',
-          height: '160px',
+          width: '240px',
+          height: '240px',
           margin: '0 auto 16px auto'
         }}>
           <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
