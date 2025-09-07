@@ -2644,7 +2644,7 @@ export default function Home() {
         </div>
         
         {/* Rewards Content */}
-        <div style={{ padding: '20px' }}>
+        <div style={{ padding: '20px', paddingBottom: '100px' }}>
           {/* $ECHO Balance */}
           <div style={{
             background: 'white',
