@@ -27,8 +27,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   // AI Sentiment Analysis endpoints
-  app.post('/api/sentiment/analyze', isAuthenticated, async (req, res) => {
+  app.post('/api/sentiment/analyze', isAuthenticated, async (req: any, res) => {
     try {
+      if (!req.user?.claims?.sub) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+      
       // Simulate AI sentiment analysis processing
       await new Promise(resolve => setTimeout(resolve, 2500));
       
@@ -623,12 +627,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Session ID required' });
       }
 
-      const result = await storage.completeChallenge(challengeId, sessionId);
+      const result = await storage.completeChallenge({ challengeId, userId: sessionId });
       
       // Broadcast challenge completion
       broadcast({
         type: 'CHALLENGE_COMPLETED',
-        challenge: result.challenge,
+        challengeId: result.challengeId,
       });
       
       res.json(result);
@@ -646,7 +650,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get user's completed challenges - Protected route
   app.get('/api/challenges/completed', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user?.claims?.sub;
       
       const completedChallenges = await storage.getCompletedChallenges(userId);
       res.json(completedChallenges);
@@ -1394,8 +1398,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/ai/analyze/:postId', async (req, res) => {
     try {
       const { postId } = req.params;
-      const posts = await storage.getKindnessPosts();
-      const post = posts.find(p => p.id === postId);
+      const posts = await storage.getPosts();
+      const post = posts.find((p: any) => p.id === postId);
       
       if (!post) {
         return res.status(404).json({ message: 'Post not found' });
@@ -1475,13 +1479,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Check if user has enough tokens
       const userTokens = await storage.getUserTokens(userId);
-      if (!userTokens || userTokens.echoTokens < echoSpent) {
+      if (!userTokens || userTokens.echoBalance < echoSpent) {
         return res.status(400).json({ message: 'Insufficient $ECHO tokens' });
       }
 
       // Deduct tokens from user
       await storage.updateUserTokens(userId, {
-        echoTokens: userTokens.echoTokens - echoSpent
+        echoBalance: userTokens.echoBalance - echoSpent
       });
 
       // Create redemption
