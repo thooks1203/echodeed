@@ -3721,12 +3721,12 @@ export default function Home() {
               src={logoUrl} 
               alt="EchoDeed Logo"
               style={{ 
-                width: '32px', 
-                height: '32px',
+                width: '120px', 
+                height: '120px',
                 objectFit: 'contain'
               }}
             />
-            <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
+            <h1 style={{ margin: '0', fontSize: '28px', fontWeight: '700' }}>EchoDeed™</h1>
           </div>
           
           {/* About & Balance */}
