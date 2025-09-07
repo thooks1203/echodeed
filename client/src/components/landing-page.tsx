@@ -24,7 +24,7 @@ export function LandingPage() {
           height: '160px',
           margin: '0 auto 16px auto'
         }}>
-          <ElectricHeart size={160} />
+          <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
         </div>
         <h1 style={{ 
           fontSize: '36px', 
