@@ -103,24 +103,22 @@ export function AIDashboard() {
           Real-time sentiment analysis and wellness prediction
         </p>
         
-        {/* View Toggle */}
+        {/* View Toggle - 2 Rows Layout */}
         <div style={{
-          display: 'flex',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(80px, 1fr))',
+          gridTemplateRows: 'repeat(2, 1fr)',
           background: '#f3f4f6',
           borderRadius: '8px',
           padding: '4px',
           gap: '2px',
           maxWidth: '100%',
-          margin: '0 auto',
-          overflowX: 'auto',
-          scrollBehavior: 'smooth',
-          WebkitOverflowScrolling: 'touch'
-        }} className="scrollbar-hide">
+          margin: '0 auto'
+        }}>
           <button
             onClick={() => setActiveView('analytics')}
             style={{
-              flex: '0 0 auto',
-              padding: '6px 10px',
+              padding: '6px 8px',
               borderRadius: '4px',
               border: 'none',
               fontSize: '10px',
@@ -130,7 +128,7 @@ export function AIDashboard() {
               background: activeView === 'analytics' ? '#8B5CF6' : 'transparent',
               color: activeView === 'analytics' ? 'white' : '#6b7280',
               whiteSpace: 'nowrap',
-              minWidth: 'fit-content'
+              textAlign: 'center'
             }}
           >
             📊 Analytics
@@ -157,8 +155,7 @@ export function AIDashboard() {
           <button
             onClick={() => setActiveView('predictions')}
             style={{
-              flex: '0 0 auto',
-              padding: '6px 10px',
+              padding: '6px 8px',
               borderRadius: '4px',
               border: 'none',
               fontSize: '10px',
@@ -166,7 +163,7 @@ export function AIDashboard() {
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               whiteSpace: 'nowrap',
-              minWidth: 'fit-content',
+              textAlign: 'center',
               background: activeView === 'predictions' ? '#667eea' : 'transparent',
               color: activeView === 'predictions' ? 'white' : '#6b7280'
             }}
@@ -177,8 +174,7 @@ export function AIDashboard() {
           <button
             onClick={() => setActiveView('heatmap')}
             style={{
-              flex: '0 0 auto',
-              padding: '6px 10px',
+              padding: '6px 8px',
               borderRadius: '4px',
               border: 'none',
               fontSize: '10px',
@@ -186,7 +182,7 @@ export function AIDashboard() {
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               whiteSpace: 'nowrap',
-              minWidth: 'fit-content',
+              textAlign: 'center',
               background: activeView === 'heatmap' ? '#10B981' : 'transparent',
               color: activeView === 'heatmap' ? 'white' : '#6b7280'
             }}
@@ -197,8 +193,7 @@ export function AIDashboard() {
           <button
             onClick={() => setActiveView('matching')}
             style={{
-              flex: '0 0 auto',
-              padding: '6px 10px',
+              padding: '6px 8px',
               borderRadius: '4px',
               border: 'none',
               fontSize: '10px',
@@ -206,7 +201,7 @@ export function AIDashboard() {
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               whiteSpace: 'nowrap',
-              minWidth: 'fit-content',
+              textAlign: 'center',
               background: activeView === 'matching' ? '#EC4899' : 'transparent',
               color: activeView === 'matching' ? 'white' : '#6b7280'
             }}
@@ -217,8 +212,7 @@ export function AIDashboard() {
           <button
             onClick={() => setActiveView('esg')}
             style={{
-              flex: '0 0 auto',
-              padding: '6px 10px',
+              padding: '6px 8px',
               borderRadius: '4px',
               border: 'none',
               fontSize: '10px',
@@ -226,7 +220,7 @@ export function AIDashboard() {
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               whiteSpace: 'nowrap',
-              minWidth: 'fit-content',
+              textAlign: 'center',
               background: activeView === 'esg' ? '#22C55E' : 'transparent',
               color: activeView === 'esg' ? 'white' : '#6b7280'
             }}
@@ -237,8 +231,7 @@ export function AIDashboard() {
           <button
             onClick={() => setActiveView('certificates')}
             style={{
-              flex: '0 0 auto',
-              padding: '6px 10px',
+              padding: '6px 8px',
               borderRadius: '4px',
               border: 'none',
               fontSize: '10px',
@@ -246,7 +239,7 @@ export function AIDashboard() {
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               whiteSpace: 'nowrap',
-              minWidth: 'fit-content',
+              textAlign: 'center',
               background: activeView === 'certificates' ? '#8B5CF6' : 'transparent',
               color: activeView === 'certificates' ? 'white' : '#6b7280'
             }}
@@ -257,8 +250,7 @@ export function AIDashboard() {
           <button
             onClick={() => setActiveView('messages')}
             style={{
-              flex: '0 0 auto',
-              padding: '6px 10px',
+              padding: '6px 8px',
               borderRadius: '4px',
               border: 'none',
               fontSize: '10px',
@@ -266,7 +258,7 @@ export function AIDashboard() {
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               whiteSpace: 'nowrap',
-              minWidth: 'fit-content',
+              textAlign: 'center',
               background: activeView === 'messages' ? '#3B82F6' : 'transparent',
               color: activeView === 'messages' ? 'white' : '#6b7280'
             }}
@@ -277,8 +269,7 @@ export function AIDashboard() {
           <button
             onClick={() => setActiveView('sentiment')}
             style={{
-              flex: '0 0 auto',
-              padding: '6px 10px',
+              padding: '6px 8px',
               borderRadius: '4px',
               border: 'none',
               fontSize: '10px',
@@ -286,7 +277,7 @@ export function AIDashboard() {
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               whiteSpace: 'nowrap',
-              minWidth: 'fit-content',
+              textAlign: 'center',
               background: activeView === 'sentiment' ? '#F59E0B' : 'transparent',
               color: activeView === 'sentiment' ? 'white' : '#6b7280'
             }}
@@ -297,8 +288,7 @@ export function AIDashboard() {
           <button
             onClick={() => setActiveView('ripples')}
             style={{
-              flex: '0 0 auto',
-              padding: '6px 10px',
+              padding: '6px 8px',
               borderRadius: '4px',
               border: 'none',
               fontSize: '10px',
@@ -306,7 +296,7 @@ export function AIDashboard() {
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               whiteSpace: 'nowrap',
-              minWidth: 'fit-content',
+              textAlign: 'center',
               background: activeView === 'ripples' ? '#06B6D4' : 'transparent',
               color: activeView === 'ripples' ? 'white' : '#6b7280'
             }}
@@ -317,8 +307,7 @@ export function AIDashboard() {
           <button
             onClick={() => setActiveView('suggestions')}
             style={{
-              flex: '0 0 auto',
-              padding: '6px 10px',
+              padding: '6px 8px',
               borderRadius: '4px',
               border: 'none',
               fontSize: '10px',
@@ -326,7 +315,7 @@ export function AIDashboard() {
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               whiteSpace: 'nowrap',
-              minWidth: 'fit-content',
+              textAlign: 'center',
               background: activeView === 'suggestions' ? '#8B5CF6' : 'transparent',
               color: activeView === 'suggestions' ? 'white' : '#6b7280'
             }}
