@@ -1,5 +1,5 @@
 import { Heart, Sliders } from 'lucide-react';
-import electricLogoUrl from '@assets/echodeed_electric_logo.png';
+import electricLogoUrl from '../assets/echodeed_electric_logo.png';
 import { KindnessCounter } from '@shared/schema';
 // import logoUrl from '@assets/ECHODEED_1757095612642.png';
 

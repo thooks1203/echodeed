@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
-import electricLogoUrl from '@assets/echodeed_electric_logo.png';
+import electricLogoUrl from '../assets/echodeed_electric_logo.png';
 // import logoUrl from '@assets/ECHODEED_1757095612642.png';
 
 interface OnboardingOverlayProps {

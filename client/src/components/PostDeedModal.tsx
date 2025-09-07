@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X, Heart, MapPin, HandHeart, Users, Smile } from 'lucide-react';
-import electricLogoUrl from '@assets/echodeed_electric_logo.png';
+import electricLogoUrl from '../assets/echodeed_electric_logo.png';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
