@@ -2555,7 +2555,7 @@ export default function Home() {
                         outline: 'none'
                       }}
                     >
-                      <img src="/electric-heart-logo.png" alt="Heart" style={{width: '24px', height: '24px'}} />
+                      <img src="/electric-heart-logo.png" alt="Heart" style={{width: '32px', height: '32px'}} />
                       <span>{post.heartsCount || 0} Hearts</span>
                     </button>
                     
@@ -3799,7 +3799,7 @@ export default function Home() {
           border: '1px solid rgba(255,255,255,0.25)',
           lineHeight: '1.3'
         }}>
-          💡 <strong>Tip:</strong> <img src="/electric-heart-logo.png" alt="Heart" style={{width: '24px', height: '24px', display: 'inline-block', verticalAlign: 'middle'}} /> Heart posts you like • 🔁 Echo to do the same act of kindness
+          💡 <strong>Tip:</strong> <img src="/electric-heart-logo.png" alt="Heart" style={{width: '32px', height: '32px', display: 'inline-block', verticalAlign: 'middle'}} /> Heart posts you like • 🔁 Echo to do the same act of kindness
         </div>
       </div>
       
@@ -4022,7 +4022,7 @@ export default function Home() {
                         outline: 'none'
                       }}
                     >
-                      <img src="/electric-heart-logo.png" alt="Heart" style={{width: '24px', height: '24px'}} />
+                      <img src="/electric-heart-logo.png" alt="Heart" style={{width: '32px', height: '32px'}} />
                       <span>{post.heartsCount || 0} Hearts</span>
                     </button>
                     
@@ -4474,7 +4474,7 @@ export default function Home() {
                         e.currentTarget.style.transform = 'scale(1)';
                       }}
                     >
-                      <img src="/electric-heart-logo.png" alt="Heart" style={{width: '24px', height: '24px'}} />
+                      <img src="/electric-heart-logo.png" alt="Heart" style={{width: '32px', height: '32px'}} />
                       <span>{post.heartsCount || 0}</span>
                     </button>
                     
