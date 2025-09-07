@@ -3716,17 +3716,18 @@ export default function Home() {
         position: 'relative'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flex: '1', minWidth: '0' }}>
             <img 
               src={logoUrl} 
               alt="EchoDeed Logo"
               style={{ 
-                width: '120px', 
-                height: '120px',
-                objectFit: 'contain'
+                width: '100px', 
+                height: '100px',
+                objectFit: 'contain',
+                flexShrink: '0'
               }}
             />
-            <h1 style={{ margin: '0', fontSize: '22px', fontWeight: '700' }}>EchoDeed™</h1>
+            <h1 style={{ margin: '0', fontSize: '18px', fontWeight: '700', whiteSpace: 'nowrap' }}>EchoDeed™</h1>
           </div>
           
           {/* About & Balance */}
