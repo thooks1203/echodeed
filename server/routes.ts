@@ -7,6 +7,7 @@ import { contentFilter } from "./services/contentFilter";
 import { aiAnalytics } from "./services/aiAnalytics";
 import { slackNotifications } from "./services/slackNotifications";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { fulfillmentService } from "./fulfillment";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
@@ -1485,7 +1486,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         echoBalance: userTokens.echoBalance - echoSpent
       });
 
-      // Create redemption
+      // Get offer and partner details for fulfillment
+      const [offer, partner] = await Promise.all([
+        storage.getRewardOffer(offerId),
+        storage.getRewardPartner(partnerId)
+      ]);
+
+      if (!offer || !partner) {
+        // Refund tokens
+        await storage.updateUserTokens(userId, {
+          echoBalance: userTokens.echoBalance
+        });
+        return res.status(404).json({ message: 'Offer or partner not found' });
+      }
+
+      // Create initial redemption
       const redemption = await storage.redeemReward({
         userId,
         offerId,
@@ -1497,15 +1512,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
         expiresAt: req.body.expiresAt ? new Date(req.body.expiresAt) : undefined
       });
 
-      // Generate discount code (simplified - in real app would integrate with partner API)
-      const discountCode = `ECHO${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
-      await storage.updateRedemptionStatus(redemption.id, 'active', discountCode);
+      // Process fulfillment through external service
+      const fulfillmentResult = await fulfillmentService.fulfillRedemption(offer, partner, redemption);
+      
+      if (fulfillmentResult.success) {
+        // Update redemption with successful fulfillment
+        await storage.updateRedemptionStatus(
+          redemption.id, 
+          'active', 
+          fulfillmentResult.redemptionCode
+        );
 
-      res.status(201).json({
-        ...redemption,
-        redemptionCode: discountCode,
-        status: 'active'
-      });
+        res.status(201).json({
+          ...redemption,
+          redemptionCode: fulfillmentResult.redemptionCode,
+          status: 'active',
+          externalId: fulfillmentResult.externalId
+        });
+      } else {
+        // Fulfillment failed - refund tokens and mark as failed
+        await storage.updateUserTokens(userId, {
+          echoBalance: userTokens.echoBalance
+        });
+        await storage.updateRedemptionStatus(redemption.id, 'failed');
+
+        res.status(400).json({ 
+          message: `Fulfillment failed: ${fulfillmentResult.error}`,
+          redemptionId: redemption.id,
+          willRetry: !!fulfillmentResult.retryAfter
+        });
+      }
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }

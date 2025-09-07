@@ -1,4 +1,4 @@
-import { RewardPartner, RewardOffer, RewardRedemption } from '@/shared/schema';
+import { RewardPartner, RewardOffer, RewardRedemption } from '../shared/schema';
 
 export interface FulfillmentProvider {
   name: string;
