@@ -2146,18 +2146,32 @@ export default function Home() {
             textAlign: 'center'
           }}>
             
-            {/* Electric Logo */}
+            {/* Electric Heart Logo */}
             <div style={{ 
-              fontSize: '80px', 
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
               marginBottom: '20px',
-              background: 'linear-gradient(135deg, hsl(30, 100%, 60%), hsl(320, 100%, 65%), hsl(280, 100%, 65%), hsl(200, 100%, 60%))',
-              backgroundSize: '300% 300%',
-              backgroundClip: 'text',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              animation: 'gradientShift 4s ease-in-out infinite'
+              width: '120px',
+              height: '120px',
+              margin: '0 auto 20px auto',
+              filter: 'drop-shadow(0 0 20px rgba(255,102,51,0.5)) drop-shadow(0 0 40px rgba(255,51,255,0.3))',
+              animation: 'logoFloat 3s ease-in-out infinite'
             }}>
-              ⚡
+              <img 
+                src="/electric-heart-logo.png" 
+                alt="EchoDeed Electric Heart" 
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain'
+                }}
+                onError={(e) => {
+                  console.log('Logo failed to load, using fallback');
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.parentElement.innerHTML = '<div style="font-size: 80px; background: linear-gradient(135deg, hsl(30, 100%, 60%), hsl(320, 100%, 65%), hsl(280, 100%, 65%), hsl(200, 100%, 60%)); background-size: 300% 300%; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientShift 4s ease-in-out infinite;">⚡</div>';
+                }}
+              />
             </div>
 
             {/* Title */}
