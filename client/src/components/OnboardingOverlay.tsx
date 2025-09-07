@@ -30,7 +30,7 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
       <div className="bg-card p-8 rounded-lg mx-4 text-center shadow-xl max-w-sm">
         <div className="w-20 h-20 mx-auto mb-4 flex items-center justify-center">
           <img 
-            src="/electric-heart-logo.png?v=1757266300" 
+            src="/electric-heart-logo.png?v=1757266534&bust=true" 
             alt="EchoDeed Electric Heart" 
             className="w-full h-full object-contain"
             style={{
