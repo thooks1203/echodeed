@@ -13,7 +13,30 @@ export function LandingPage() {
     }}>
       {/* Logo/Brand */}
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-        <div style={{ fontSize: '64px', marginBottom: '16px' }}>💜</div>
+        <div style={{ 
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginBottom: '16px',
+          width: '80px',
+          height: '80px',
+          margin: '0 auto 16px auto'
+        }}>
+          <img 
+            src="/electric-heart-logo.png?v=1757266150" 
+            alt="EchoDeed Electric Heart" 
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 0 15px rgba(255,102,51,0.4)) drop-shadow(0 0 30px rgba(255,51,255,0.2))'
+            }}
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+              e.currentTarget.parentElement.innerHTML = '<div style="font-size: 64px;">⚡</div>';
+            }}
+          />
+        </div>
         <h1 style={{ 
           fontSize: '36px', 
           fontWeight: '700',
