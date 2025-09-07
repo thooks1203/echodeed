@@ -28,7 +28,7 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
   return (
     <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
       <div className="bg-card p-8 rounded-lg mx-4 text-center shadow-xl max-w-sm">
-        <div className="w-32 h-32 mx-auto mb-4 flex items-center justify-center">
+        <div className="w-48 h-48 mx-auto mb-4 flex items-center justify-center">
           <div 
             className="w-full h-full"
             style={{
