@@ -2152,8 +2152,8 @@ export default function Home() {
               justifyContent: 'center',
               alignItems: 'center',
               marginBottom: '20px',
-              width: '140px',
-              height: '140px',
+              width: '200px',
+              height: '200px',
               margin: '0 auto 20px auto',
               filter: 'drop-shadow(0 0 20px rgba(255,102,51,0.5)) drop-shadow(0 0 40px rgba(255,51,255,0.3))',
               animation: 'logoFloat 3s ease-in-out infinite'
