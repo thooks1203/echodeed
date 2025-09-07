@@ -4363,20 +4363,6 @@ export default function Home() {
     </div>
   );
 }
-                        e.currentTarget.style.color = 'white';
-                        e.currentTarget.style.borderColor = '#8B5CF6';
-                        e.currentTarget.style.transform = 'scale(1.05)';
-                      }}
-                      onMouseLeave={e => {
-                        e.currentTarget.style.backgroundColor = '#f8f9fa';
-                        e.currentTarget.style.color = '#6b7280';
-                        e.currentTarget.style.borderColor = '#e5e7eb';
-                        e.currentTarget.style.transform = 'scale(1)';
-                      }}
-                    >
-                      <span style={{ fontSize: '16px' }}>💜</span>
-                      <span>{post.heartsCount || 0}</span>
-                    </button>
                     
                     <button
                       onClick={() => handleEchoPost(post.id)}
