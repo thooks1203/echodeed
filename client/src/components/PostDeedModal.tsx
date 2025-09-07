@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { X, Heart, MapPin, HandHeart, Users, Smile } from 'lucide-react';
-import electricLogoUrl from '../assets/echodeed_electric_logo.png';
+// import electricLogoUrl from '../assets/echodeed_electric_logo.png';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -145,7 +145,7 @@ export function PostDeedModal({ isOpen, onClose, location }: PostDeedModalProps)
               className="w-full mt-6 bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
               data-testid="button-submit-deed"
             >
-              <img src={electricLogoUrl} alt="EchoDeed" className="inline mr-2 w-4 h-4 object-contain" />
+              <img src="/images/echodeed_electric_logo.png" alt="EchoDeed" className="inline mr-2 w-4 h-4 object-contain" onError={(e) => { console.log('Modal logo failed to load'); e.currentTarget.style.display = 'none'; }} />
               {postMutation.isPending ? 'Sharing...' : 'Share Your Deed'}
             </button>
             
