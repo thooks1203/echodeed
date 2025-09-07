@@ -17,7 +17,31 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
       subtitle: "Your Kindness, Amplified",
       content: (
         <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '64px', marginBottom: '20px' }}>💜</div>
+          <div style={{ 
+            fontSize: '64px', 
+            marginBottom: '20px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            width: '80px',
+            height: '80px',
+            margin: '0 auto 20px auto'
+          }}>
+            <img 
+              src="/electric-heart-logo.png?v=1757266534&bust=true&modal=1" 
+              alt="EchoDeed Electric Heart" 
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'contain',
+                filter: 'drop-shadow(0 0 15px rgba(255,102,51,0.4)) drop-shadow(0 0 30px rgba(255,51,255,0.2))'
+              }}
+              onError={(e) => {
+                e.currentTarget.style.display = 'none';
+                e.currentTarget.parentElement.innerHTML = '<div style="font-size: 64px;">⚡</div>';
+              }}
+            />
+          </div>
           <p style={{ fontSize: '18px', color: '#6b7280', marginBottom: '24px', lineHeight: '1.6' }}>
             Share anonymous acts of kindness and be part of a global community spreading positivity, one kind act at a time.
           </p>
