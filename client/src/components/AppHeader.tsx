@@ -15,7 +15,7 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
           <div className="w-8"> {/* Spacer for balance */}
           </div>
           <div className="flex items-center space-x-4">
-            <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{width: '80px', height: '80px'}} className="animate-logoFloat" />
+            <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{width: '120px', height: '120px'}} className="animate-logoFloat" />
             <h1 className="text-3xl font-bold text-foreground" data-testid="text-app-title">EchoDeed™</h1>
           </div>
           <button 

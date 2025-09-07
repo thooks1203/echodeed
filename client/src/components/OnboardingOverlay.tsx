@@ -29,7 +29,7 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
     <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
       <div className="bg-card p-8 rounded-lg mx-4 text-center shadow-xl max-w-sm">
         <div className="flex items-center justify-center gap-4 mb-6">
-          <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" className="w-24 h-24" />
+          <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{width: '120px', height: '120px'}} />
           <h2 className="text-3xl font-bold text-foreground">Welcome to EchoDeed™</h2>
         </div>
         <p className="text-muted-foreground mb-1 leading-relaxed">
