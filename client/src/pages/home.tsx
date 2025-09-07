@@ -2146,18 +2146,18 @@ export default function Home() {
             textAlign: 'center'
           }}>
             
-            {/* Animated Heart Logo */}
+            {/* Electric Logo */}
             <div style={{ 
               fontSize: '80px', 
               marginBottom: '20px',
-              background: 'linear-gradient(135deg, #ec4899, #8b5cf6, #06b6d4, #10b981)',
+              background: 'linear-gradient(135deg, hsl(30, 100%, 60%), hsl(320, 100%, 65%), hsl(280, 100%, 65%), hsl(200, 100%, 60%))',
               backgroundSize: '300% 300%',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               animation: 'gradientShift 4s ease-in-out infinite'
             }}>
-              💜
+              ⚡
             </div>
 
             {/* Title */}
@@ -2165,7 +2165,7 @@ export default function Home() {
               fontSize: '36px',
               fontWeight: '700',
               margin: '0 0 8px 0',
-              background: 'linear-gradient(135deg, #f59e0b, #ec4899, #8b5cf6)',
+              background: 'linear-gradient(135deg, hsl(30, 100%, 60%), hsl(320, 100%, 65%), hsl(280, 100%, 65%))',
               backgroundSize: '200% 200%',
               backgroundClip: 'text',
               WebkitBackgroundClip: 'text',
@@ -2238,7 +2238,7 @@ export default function Home() {
             <button 
               onClick={() => setActiveTab('feed')}
               style={{
-                background: 'linear-gradient(135deg, #8b5cf6, #06b6d4, #10b981)',
+                background: 'linear-gradient(135deg, hsl(30, 100%, 60%), hsl(320, 100%, 65%), hsl(280, 100%, 65%), hsl(200, 100%, 60%))',
                 backgroundSize: '200% 200%',
                 color: 'white',
                 border: 'none',
