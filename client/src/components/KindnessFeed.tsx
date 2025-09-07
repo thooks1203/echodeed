@@ -36,7 +36,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
     <main className="pb-20 bg-background">
       {posts.length === 0 ? (
         <div className="text-center py-12 px-4">
-          <Heart className="w-12 h-12 mx-auto mb-4 text-muted-foreground" />
+          <span className="text-6xl mx-auto mb-4">⚡</span>
           <h3 className="text-lg font-medium text-foreground mb-2">No acts of kindness found</h3>
           <p className="text-muted-foreground">Be the first to share a kind deed in this area!</p>
         </div>
@@ -45,7 +45,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
           <div key={post.id} className="px-4 py-3 border-b border-border bg-card relative">
             <div className="flex items-start space-x-3">
               <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                <Heart className={`${getCategoryStyle(post.category)}`} size={12} />
+                <span className="text-sm">⚡</span>
               </div>
               <div className="flex-1 min-w-0">
                 <p className="text-foreground leading-relaxed" data-testid={`text-post-content-${index}`}>
