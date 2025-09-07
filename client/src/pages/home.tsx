@@ -41,12 +41,13 @@ export default function Home() {
 
   const { location } = useGeolocation();
 
-  // Force disable problematic overlays (but allow welcome modal when requested)
+  // Initialize notification setup for new users
   useEffect(() => {
-    // Force problematic modal states to false but don't auto-disable welcome modal
-    setShowNotificationSetup(false);
-    setTokenEarning(null);
-    setAchievementNotification(null);
+    // Check if notifications should be set up
+    const hasSeenNotificationSetup = localStorage.getItem('echodeed_notification_setup_seen');
+    if (!hasSeenNotificationSetup && !pushNotifications.isEnabled()) {
+      setTimeout(() => setShowNotificationSetup(true), 2000); // Show after 2 seconds
+    }
     
     // Remove any lingering modal overlays from DOM (except welcome modal)
     const overlays = document.querySelectorAll('[style*="position: fixed"][style*="z-index"]');
@@ -238,6 +239,15 @@ export default function Home() {
             setAchievementNotification({
               achievement,
               echoReward: achievement.echoReward
+            });
+            
+            // Send push notification for achievement
+            pushNotifications.sendAchievementNotification({
+              title: achievement.title,
+              description: achievement.description,
+              badge: achievement.badgeImage || '',
+              echoReward: achievement.echoReward,
+              tier: achievement.tier || 'bronze'
             });
             
             // Auto-hide after 4 seconds

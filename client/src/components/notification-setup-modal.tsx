@@ -38,6 +38,9 @@ export function NotificationSetupModal({ isOpen, onClose }: NotificationSetupMod
   const handleSavePreferences = () => {
     pushNotifications.enableSmartNotifications(preferences);
     
+    // Mark setup as seen
+    localStorage.setItem('echodeed_notification_setup_seen', 'true');
+    
     // Send a test notification
     pushNotifications.sendNotification({
       title: '🎉 Notifications Enabled!',
@@ -46,6 +49,19 @@ export function NotificationSetupModal({ isOpen, onClose }: NotificationSetupMod
       data: { type: 'wellness_alert' }
     });
     
+    // Set up daily reminders
+    pushNotifications.scheduleDailyReminders({
+      morning: '09:00',
+      afternoon: '14:00',
+      evening: '18:00'
+    });
+    
+    onClose();
+  };
+
+  const handleSkip = () => {
+    // Mark setup as seen even if skipped
+    localStorage.setItem('echodeed_notification_setup_seen', 'true');
     onClose();
   };
 
