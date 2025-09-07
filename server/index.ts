@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeSampleData } from "./initData";
+import { initializeSampleRewardData } from "./sampleRewardData";
 
 const app = express();
 app.use(express.json());
@@ -61,6 +62,7 @@ app.use((req, res, next) => {
     log('Initializing sample data...');
     try {
       await initializeSampleData();
+      await initializeSampleRewardData();
       log('✓ Sample data initialization completed');
     } catch (error) {
       log(`✗ Sample data initialization failed: ${error}`);

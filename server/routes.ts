@@ -1487,10 +1487,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Get offer and partner details for fulfillment
-      const [offer, partner] = await Promise.all([
-        storage.getRewardOffer(offerId),
-        storage.getRewardPartner(partnerId)
+      const [allOffers, allPartners] = await Promise.all([
+        storage.getRewardOffers({}),
+        storage.getRewardPartners({})
       ]);
+      
+      const offer = allOffers.find(o => o.id === offerId);
+      const partner = allPartners.find(p => p.id === partnerId);
 
       if (!offer || !partner) {
         // Refund tokens
@@ -1579,13 +1582,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { partnerName } = req.params;
       const webhookPayload = req.body;
       
-      // Get partner configuration
-      const partners = await storage.getRewardPartners({ partnerName });
-      if (!partners || partners.length === 0) {
+      // Get partner configuration by searching all partners
+      const allPartners = await storage.getRewardPartners({});
+      const partner = allPartners.find(p => p.partnerName.toLowerCase() === partnerName.toLowerCase());
+      
+      if (!partner) {
         return res.status(404).json({ message: 'Partner not found' });
       }
-      
-      const partner = partners[0];
       
       // Process webhook through fulfillment service
       const result = await fulfillmentService.handleWebhook(partnerName, webhookPayload, partner);
