@@ -417,8 +417,8 @@ export default function Home() {
             src={logoUrl} 
             alt="EchoDeed Logo"
             style={{ 
-              width: '360px',
-              height: '360px',
+              width: '480px',
+              height: '480px',
               margin: '0 auto 20px',
               display: 'block',
               filter: 'drop-shadow(0 8px 24px rgba(0,0,0,0.4))',
@@ -2152,8 +2152,8 @@ export default function Home() {
               justifyContent: 'center',
               alignItems: 'center',
               marginBottom: '20px',
-              width: '360px',
-              height: '360px',
+              width: '480px',
+              height: '480px',
               margin: '0 auto 20px auto',
               filter: 'drop-shadow(0 0 20px rgba(255,102,51,0.5)) drop-shadow(0 0 40px rgba(255,51,255,0.3))',
               animation: 'logoFloat 3s ease-in-out infinite'
