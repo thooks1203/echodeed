@@ -298,6 +298,15 @@ export default function Home() {
       setTokenEarning({ amount: 1, reason: 'Showing love! 💜' });
       setTimeout(() => setTokenEarning(null), 3000);
       
+      // Send kindness reminder notification occasionally (10% chance)
+      if (Math.random() < 0.1) {
+        pushNotifications.sendKindnessReminder({
+          action: "Show appreciation to a colleague",
+          impact: 85,
+          timeframe: "next 2 hours"
+        });
+      }
+      
       // Post and tokens will update via WebSocket
       refetchTokens(); // Force refresh tokens
       

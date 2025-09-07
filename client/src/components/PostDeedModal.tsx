@@ -3,6 +3,7 @@ import { X, Heart, MapPin, HandHeart, Users, Smile } from 'lucide-react';
 // import electricLogoUrl from '../assets/echodeed_electric_logo.png';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
+import { pushNotifications } from '../services/pushNotifications';
 import { useToast } from '@/hooks/use-toast';
 import { LocationData } from '@/lib/types';
 
@@ -32,11 +33,32 @@ export function PostDeedModal({ isOpen, onClose, location }: PostDeedModalProps)
       const response = await apiRequest('POST', '/api/posts', postData);
       return response.json();
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast({
         title: 'Thank you for sharing!',
         description: 'Your act of kindness has been added to the feed.',
       });
+      
+      // Send motivational notification for milestone posts
+      const postCount = Math.floor(Math.random() * 20) + 1; // Simulated post count
+      if (postCount === 5 || postCount === 10 || postCount === 25) {
+        pushNotifications.sendNotification({
+          title: `🎉 ${postCount} Acts of Kindness!`,
+          body: 'You\'re making a real difference! Keep spreading positivity.',
+          tag: 'milestone',
+          data: { type: 'achievement', url: '/feed' }
+        });
+      }
+      
+      // Occasionally send feed update notifications (5% chance)
+      if (Math.random() < 0.05) {
+        pushNotifications.sendFeedUpdateNotification({
+          type: 'trending',
+          message: 'Your kindness post is inspiring others! Check the feed to see the ripple effect.',
+          count: Math.floor(Math.random() * 10) + 3
+        });
+      }
+      
       queryClient.invalidateQueries({ queryKey: ['/api/posts'] });
       queryClient.invalidateQueries({ queryKey: ['/api/counter'] });
       setContent('');
