@@ -256,6 +256,24 @@ export function AIDashboard() {
           >
             ⏰ Messages
           </button>
+          <button
+            onClick={() => setActiveView('sentiment')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'sentiment' ? '#F59E0B' : 'transparent',
+              color: activeView === 'sentiment' ? 'white' : '#6b7280'
+            }}
+            data-testid="tab-sentiment-analysis"
+          >
+            📈 Sentiment
+          </button>
         </div>
       </div>
 
@@ -274,6 +292,8 @@ export function AIDashboard() {
         <KindnessImpactCertificates />
       ) : activeView === 'messages' ? (
         <TimeLockedWellnessMessages />
+      ) : activeView === 'sentiment' ? (
+        <AISentimentAnalyzer />
       ) : (
         <>
           {/* Wellness Overview */}
