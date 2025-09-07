@@ -3539,7 +3539,7 @@ export default function Home() {
           <button 
             onClick={() => {
               localStorage.removeItem('echodeed_notification_setup_seen');
-              window.location.reload();
+              setShowNotificationSetup(true);
             }}
             style={{ 
               margin: '10px auto 20px', 
