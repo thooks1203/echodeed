@@ -67,6 +67,8 @@ export interface IStorage {
   // User operations - Required for Replit Auth
   getUser(id: string): Promise<User | undefined>;
   upsertUser(user: UpsertUser): Promise<User>;
+  getActiveUsers(days?: number): Promise<User[]>;
+  getUserPosts(userId: string, filters?: { limit?: number }): Promise<KindnessPost[]>;
   
   // Kindness posts operations
   getPosts(filters?: {
@@ -278,6 +280,36 @@ export class DatabaseStorage implements IStorage {
       })
       .returning();
     return user;
+  }
+
+  async getActiveUsers(days: number = 30): Promise<User[]> {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - days);
+    
+    // Get users who have posted in the last N days
+    const activeUserIds = await db
+      .selectDistinct({ userId: kindnessPosts.userId })
+      .from(kindnessPosts)
+      .where(gte(kindnessPosts.createdAt, cutoffDate));
+    
+    if (activeUserIds.length === 0) {
+      return [];
+    }
+    
+    // Get full user data for active users
+    return await db
+      .select()
+      .from(users)
+      .where(or(...activeUserIds.map(u => eq(users.id, u.userId || ''))));
+  }
+
+  async getUserPosts(userId: string, filters?: { limit?: number }): Promise<KindnessPost[]> {
+    return await db
+      .select()
+      .from(kindnessPosts)
+      .where(eq(kindnessPosts.userId, userId))
+      .orderBy(desc(kindnessPosts.createdAt))
+      .limit(filters?.limit || 50);
   }
   
   // Kindness posts operations

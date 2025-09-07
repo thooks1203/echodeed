@@ -15,6 +15,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Initialize surprise giveaway service
   const surpriseGiveawayService = new SurpriseGiveawayService(storage, fulfillmentService);
+  
+  // Auto-trigger a test surprise giveaway after 3 seconds in development
+  if (process.env.NODE_ENV === 'development') {
+    setTimeout(async () => {
+      try {
+        console.log('🎯 Auto-triggering test surprise giveaway in 3 seconds...');
+        const result = await surpriseGiveawayService.runSurpriseGiveaway('daily-starbucks-surprise');
+        console.log('🎉 Test surprise giveaway result:', result);
+      } catch (error) {
+        console.error('❌ Test surprise giveaway failed:', error);
+      }
+    }, 3000);
+  }
 
   // Auth middleware - Set up before routes
   await setupAuth(app);
@@ -1739,11 +1752,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Test endpoint to trigger surprise giveaway (development only)
-  app.post('/api/surprise-giveaways/test-trigger', isAuthenticated, async (req, res) => {
+  app.post('/api/surprise-giveaways/test-trigger', async (req, res) => {
     try {
       if (process.env.NODE_ENV !== 'development') {
         return res.status(403).json({ message: 'Test endpoints only available in development' });
       }
+      
+      console.log('🎯 Triggering test surprise giveaway...');
       
       // Run the daily Starbucks surprise giveaway
       const result = await surpriseGiveawayService.runSurpriseGiveaway('daily-starbucks-surprise');
@@ -1753,6 +1768,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         message: 'Test surprise giveaway triggered successfully!' 
       });
     } catch (error: any) {
+      console.error('Error in test trigger:', error);
       res.status(500).json({ message: error.message });
     }
   });

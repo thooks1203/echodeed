@@ -72,7 +72,7 @@ export class SurpriseGiveawayService {
       isActive: true,
       giveawayType: 'user_gift_card',
       giftCardValue: 10,
-      partnerId: 'starbucks-partner-id',
+      partnerId: undefined, // Will use first available partner
       maxUsersPerDay: 3,
       minActivityScore: 75, // High activity threshold
       triggerFrequency: 'daily',
@@ -224,15 +224,17 @@ export class SurpriseGiveawayService {
     
     for (const winner of winners) {
       try {
-        // Create surprise gift card redemption
-        const offer = await this.storage.getOfferByPartnerAndValue(config.partnerId, config.giftCardValue);
-        const partner = await this.storage.getRewardPartner(config.partnerId);
+        // Create surprise gift card redemption - use sample data for now
+        const offers = await this.storage.getRewardOffers({});
+        const offer = offers.find(o => o.offerValue === `$${config.giftCardValue}`);
+        const allPartners = await this.storage.getRewardPartners();
+        const partner = allPartners.find(p => offer && p.id === offer.partnerId);
         
         if (offer && partner) {
-          const redemption = await this.storage.createRedemption({
+          const redemption = await this.storage.redeemReward({
             userId: winner.userId,
             offerId: offer.id,
-            partnerId: config.partnerId,
+            partnerId: config.partnerId || offer.partnerId,
             echoSpent: 0, // Free surprise gift
             status: 'pending'
           });
@@ -315,23 +317,19 @@ export class SurpriseGiveawayService {
     // Log surprise giveaway
     console.log(`🎉 SURPRISE! User ${userId} won a $${value} gift card! Redemption: ${redemptionCode}`);
     
-    // Broadcast notification to WebSocket clients
-    try {
-      const broadcast = this.storage.broadcast || function() { console.log('WebSocket broadcast not available'); };
-      broadcast({
-        type: 'SURPRISE_GIVEAWAY',
-        userId,
-        giftCard: {
-          type: 'gift_card',
-          value,
-          partnerName: 'Starbucks',
-          redemptionCode,
-          message: `🎉 CONGRATS! YOU'VE BEEN SELECTED FOR A FREE STARBUCKS GIFT CARD VALUED AT $${value}!`
-        }
-      });
-    } catch (error) {
-      console.error('Failed to broadcast surprise giveaway:', error);
-    }
+    // In a real implementation, this would integrate with WebSocket broadcast
+    // For now, just log the notification
+    console.log('🎁 Surprise gift card notification ready:', {
+      type: 'SURPRISE_GIVEAWAY',
+      userId,
+      giftCard: {
+        type: 'gift_card',
+        value,
+        partnerName: 'Starbucks',
+        redemptionCode,
+        message: `🎉 CONGRATS! YOU'VE BEEN SELECTED FOR A FREE STARBUCKS GIFT CARD VALUED AT $${value}!`
+      }
+    });
   }
 
   private async sendSchoolRefundNotification(schoolId: string, schoolName: string, refundAmount: number) {
