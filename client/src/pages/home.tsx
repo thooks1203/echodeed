@@ -3242,11 +3242,11 @@ export default function Home() {
         {/* Bottom Navigation */}
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
 
-        {/* Notification Setup Modal - Temporarily disabled */}
-        {false && <NotificationSetupModal 
+        {/* Notification Setup Modal */}
+        <NotificationSetupModal 
           isOpen={showNotificationSetup}
           onClose={() => setShowNotificationSetup(false)}
-        />}
+        />
       </div>
     );
   }
@@ -3535,11 +3535,12 @@ export default function Home() {
         <div style={{ padding: '20px', paddingBottom: '120px' }}>
           {/* Test notification reset button - remove after testing */}
           <button 
-            onClick={() => {
-              console.log('Test notifications clicked');
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              console.log('Button clicked - showing notification setup');
               localStorage.removeItem('echodeed_notification_setup_seen');
-              console.log('Notification setup will show:', !pushNotifications.isEnabled());
-              setTimeout(() => setShowNotificationSetup(true), 100);
+              setShowNotificationSetup(true);
             }}
             style={{ 
               margin: '10px auto 20px', 
