@@ -66,6 +66,7 @@ export function useTabNavigation(initialTab: string) {
 
   return {
     activeTab,
+    setActiveTab,
     canGoBackInTabs: tabHistory.length > 1,
     navigateToTab,
     goBackInTabs,

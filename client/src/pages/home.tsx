@@ -27,7 +27,7 @@ export default function Home() {
   const [pathname, navigate] = useLocation();
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
-  const { activeTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation('feed');
+  const { activeTab, setActiveTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation('feed');
   
   
   const [filters, setFilters] = useState<PostFilters>({});
@@ -93,7 +93,7 @@ export default function Home() {
   const { data: counter, refetch: refetchCounter } = useQuery<KindnessCounter>({
     queryKey: ['/api/counter'],
     staleTime: 0, // Force fresh data
-    cacheTime: 0, // Don't cache
+    gcTime: 0, // Don't cache
   });
 
   // Fetch user tokens
@@ -119,7 +119,7 @@ export default function Home() {
       echoReward: 50,
       bonusReward: 25,
       completionCount: 1247,
-      description: 'Share a kind moment during your morning coffee routine'
+      content: 'Share a kind moment during your morning coffee routine'
     },
     { 
       id: 'microsoft', 
