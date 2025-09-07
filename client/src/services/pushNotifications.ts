@@ -14,9 +14,11 @@ export interface PushNotificationPayload {
     icon?: string;
   }>;
   data?: {
-    type: 'wellness_alert' | 'kindness_reminder' | 'achievement' | 'team_challenge' | 'prescription' | 'feed_update';
+    type: 'wellness_alert' | 'kindness_reminder' | 'achievement' | 'team_challenge' | 'prescription' | 'feed_update' | 'surprise_giveaway';
     url?: string;
     actionRequired?: boolean;
+    giftCardValue?: number;
+    redemptionCode?: string;
   };
 }
 
@@ -300,6 +302,53 @@ export class PushNotificationService {
   }
 
   /**
+   * Surprise Giveaway Notifications
+   */
+  async sendSurpriseGiveawayNotification(giveaway: {
+    type: 'gift_card' | 'fee_refund';
+    value: number;
+    redemptionCode?: string;
+    partnerName?: string;
+    schoolName?: string;
+  }): Promise<void> {
+    if (giveaway.type === 'gift_card') {
+      await this.sendNotification({
+        title: '🎉 CONGRATS! YOU\'VE BEEN SELECTED!',
+        body: `FREE ${giveaway.partnerName?.toUpperCase() || 'STARBUCKS'} GIFT CARD VALUED AT $${giveaway.value}!\n\nYour kindness has been rewarded! 💜\nRedemption Code: ${giveaway.redemptionCode}`,
+        icon: '/icons/surprise-gift.png',
+        tag: 'surprise-giveaway',
+        requireInteraction: true,
+        actions: [
+          { action: 'claim', title: 'Claim Gift Card', icon: '/icons/gift-card.png' },
+          { action: 'share', title: 'Share Good News', icon: '/icons/share.png' }
+        ],
+        data: {
+          type: 'surprise_giveaway',
+          url: '/rewards',
+          giftCardValue: giveaway.value,
+          redemptionCode: giveaway.redemptionCode
+        }
+      });
+    } else if (giveaway.type === 'fee_refund') {
+      await this.sendNotification({
+        title: '🏆 SCHOOL WINNER ANNOUNCEMENT!',
+        body: `${giveaway.schoolName} has been selected for a $${giveaway.value} annual fee refund!\n\nYour students' exceptional kindness activity earned this amazing reward! 🌟`,
+        icon: '/icons/school-winner.png',
+        tag: 'school-refund',
+        requireInteraction: true,
+        actions: [
+          { action: 'view', title: 'View Details', icon: '/icons/details.png' },
+          { action: 'celebrate', title: 'Celebrate', icon: '/icons/celebrate.png' }
+        ],
+        data: {
+          type: 'surprise_giveaway',
+          url: '/schools/dashboard'
+        }
+      });
+    }
+  }
+
+  /**
    * Schedule daily kindness reminders
    */
   scheduleDailyReminders(timePreferences: {
@@ -322,6 +371,7 @@ export class PushNotificationService {
     team_challenges: boolean;
     prescriptions: boolean;
     feed_updates: boolean;
+    surprise_giveaways: boolean;
     quiet_hours?: { start: string; end: string };
   }): void {
     localStorage.setItem('echodeed_notification_preferences', JSON.stringify(preferences));
@@ -339,6 +389,7 @@ export class PushNotificationService {
       team_challenges: true,
       prescriptions: true,
       feed_updates: false, // Less frequent by default
+      surprise_giveaways: true, // Enable surprise giveaways by default
       quiet_hours: { start: '22:00', end: '07:00' }
     };
   }

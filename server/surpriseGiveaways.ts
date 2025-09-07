@@ -255,7 +255,7 @@ export class SurpriseGiveawayService {
             });
 
             // Send surprise notification
-            await this.sendSurpriseNotification(winner.userId, 'gift_card', config.giftCardValue || 10);
+            await this.sendSurpriseNotification(winner.userId, 'gift_card', config.giftCardValue || 10, fulfillmentResult.redemptionCode);
           }
         }
       } catch (error) {
@@ -311,18 +311,27 @@ export class SurpriseGiveawayService {
     };
   }
 
-  private async sendSurpriseNotification(userId: string, type: string, value: number) {
-    // This would integrate with the push notification system
-    console.log(`🎉 SURPRISE! User ${userId} won a $${value} gift card!`);
+  private async sendSurpriseNotification(userId: string, type: string, value: number, redemptionCode?: string) {
+    // Log surprise giveaway
+    console.log(`🎉 SURPRISE! User ${userId} won a $${value} gift card! Redemption: ${redemptionCode}`);
     
-    // Integration point for push notifications
-    // await pushNotificationService.sendSurpriseGiveawayNotification({
-    //   userId,
-    //   title: '🎉 CONGRATS! YOU\'VE BEEN SELECTED!',
-    //   body: `FREE STARBUCKS GIFT CARD VALUED AT $${value}! Your kindness has been rewarded!`,
-    //   type: 'surprise_giveaway',
-    //   value
-    // });
+    // Broadcast notification to WebSocket clients
+    try {
+      const broadcast = this.storage.broadcast || function() { console.log('WebSocket broadcast not available'); };
+      broadcast({
+        type: 'SURPRISE_GIVEAWAY',
+        userId,
+        giftCard: {
+          type: 'gift_card',
+          value,
+          partnerName: 'Starbucks',
+          redemptionCode,
+          message: `🎉 CONGRATS! YOU'VE BEEN SELECTED FOR A FREE STARBUCKS GIFT CARD VALUED AT $${value}!`
+        }
+      });
+    } catch (error) {
+      console.error('Failed to broadcast surprise giveaway:', error);
+    }
   }
 
   private async sendSchoolRefundNotification(schoolId: string, schoolName: string, refundAmount: number) {

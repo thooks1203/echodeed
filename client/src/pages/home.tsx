@@ -278,6 +278,20 @@ export default function Home() {
     } else if (message.type === 'POST_UPDATE') {
       refetchPosts(); // Refetch posts to get updated counts
       refetchTokens(); // Refetch tokens to get updated balance
+    } else if (message.type === 'SURPRISE_GIVEAWAY') {
+      // Handle surprise giveaway notification
+      if (message.giftCard) {
+        pushNotifications.sendSurpriseGiveawayNotification({
+          type: 'gift_card',
+          value: message.giftCard.value,
+          redemptionCode: message.giftCard.redemptionCode,
+          partnerName: message.giftCard.partnerName
+        });
+        
+        // Refetch user redemptions to show the new gift card
+        // This would refetch rewards data if we had that query
+        console.log('🎉 Surprise giveaway received:', message.giftCard);
+      }
     }
   }, [refetchPosts, refetchCounter, refetchTokens]);
 

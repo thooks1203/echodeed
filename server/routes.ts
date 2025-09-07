@@ -1738,6 +1738,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Test endpoint to trigger surprise giveaway (development only)
+  app.post('/api/surprise-giveaways/test-trigger', isAuthenticated, async (req, res) => {
+    try {
+      if (process.env.NODE_ENV !== 'development') {
+        return res.status(403).json({ message: 'Test endpoints only available in development' });
+      }
+      
+      // Run the daily Starbucks surprise giveaway
+      const result = await surpriseGiveawayService.runSurpriseGiveaway('daily-starbucks-surprise');
+      res.json({ 
+        success: true, 
+        result,
+        message: 'Test surprise giveaway triggered successfully!' 
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Kindness Verification System
   app.post('/api/verification/submit', isAuthenticated, async (req: any, res) => {
     try {

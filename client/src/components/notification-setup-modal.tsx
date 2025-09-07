@@ -16,6 +16,7 @@ export function NotificationSetupModal({ isOpen, onClose }: NotificationSetupMod
     team_challenges: true,
     prescriptions: true,
     feed_updates: false,
+    surprise_giveaways: true,
     quiet_hours: { start: '22:00', end: '07:00' }
   });
 
