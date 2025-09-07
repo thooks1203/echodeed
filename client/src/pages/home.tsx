@@ -3777,7 +3777,7 @@ export default function Home() {
           </div>
         </div>
         
-        <div style={{ marginBottom: '8px', fontSize: '14px', opacity: 0.9, display: 'flex', alignItems: 'center', justifyContent: 'center' }}><img src="/electric-heart-logo.png" alt="Electric Heart" style={{width: '120px', height: '120px', marginRight: '16px'}} />Your Kindness Community</div>
+        <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center' }}><img src="/electric-heart-logo.png" alt="Electric Heart" style={{width: '200px', height: '200px'}} /></div>
         <div style={{ 
           fontSize: '18px', 
           fontWeight: '600', 
