@@ -2159,7 +2159,7 @@ export default function Home() {
               animation: 'logoFloat 3s ease-in-out infinite'
             }}>
               <img 
-                src="/electric-heart-logo.png" 
+                src="/electric-heart-logo.png?v=1757265900" 
                 alt="EchoDeed Electric Heart" 
                 style={{
                   width: '100%',
