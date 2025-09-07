@@ -794,10 +794,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.delete('/api/corporate/teams/:teamId', async (req, res) => {
     try {
       const { teamId } = req.params;
-      const deleted = await storage.deleteCorporateTeam(teamId);
-      if (!deleted) {
-        return res.status(404).json({ message: 'Team not found' });
-      }
+      await storage.deleteCorporateTeam(teamId);
       res.status(204).send();
     } catch (error: any) {
       res.status(500).json({ message: error.message });
@@ -892,7 +889,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Broadcast challenge completion
       broadcast({
         type: 'CORPORATE_CHALLENGE_COMPLETED',
-        challenge: result.challenge,
+        challengeId: challengeId,
         sessionId
       });
       
@@ -1879,7 +1876,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get('/api/referrals/stats', isAuthenticated, async (req, res) => {
+  app.get('/api/referrals/stats', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       // Generate referral code if user doesn't have one
@@ -1970,7 +1967,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // 🔮 AI Kindness Prediction Engine - Revolutionary Feature!
-  app.get('/api/ai/predictions', isAuthenticated, async (req, res) => {
+  app.get('/api/ai/predictions', isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       
