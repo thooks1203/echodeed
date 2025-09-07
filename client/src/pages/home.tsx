@@ -3479,12 +3479,10 @@ export default function Home() {
               />
               <h1 style={{ 
                 margin: '0', 
-                fontSize: '18px', 
+                fontSize: '16px', 
                 fontWeight: '700', 
-                whiteSpace: 'nowrap', 
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                maxWidth: '140px'
+                whiteSpace: 'nowrap',
+                lineHeight: '1.2'
               }}>
                 EchoDeed™ Schools
               </h1>
@@ -3538,8 +3536,10 @@ export default function Home() {
           {/* Test notification reset button - remove after testing */}
           <button 
             onClick={() => {
+              console.log('Test notifications clicked');
               localStorage.removeItem('echodeed_notification_setup_seen');
-              setShowNotificationSetup(true);
+              console.log('Notification setup will show:', !pushNotifications.isEnabled());
+              setTimeout(() => setShowNotificationSetup(true), 100);
             }}
             style={{ 
               margin: '10px auto 20px', 
@@ -3549,7 +3549,8 @@ export default function Home() {
               color: 'white',
               border: 'none',
               borderRadius: '6px',
-              fontSize: '12px'
+              fontSize: '12px',
+              cursor: 'pointer'
             }}
           >
             🔔 Test Notifications
