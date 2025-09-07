@@ -66,7 +66,7 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {[
             { step: '1', icon: '📝', title: 'Share Your Story', desc: 'Post about a kind act you did or witnessed - completely anonymous' },
-            { step: '2', icon: '💜', title: 'Inspire Others', desc: 'Your story joins a global feed of kindness that motivates others' },
+            { step: '2', icon: '⚡', title: 'Inspire Others', desc: 'Your story joins a global feed of kindness that motivates others' },
             { step: '3', icon: '🪙', title: 'Earn ECHO Tokens', desc: 'Get rewarded with tokens you can redeem for real gifts' },
             { step: '4', icon: '🌍', title: 'Make an Impact', desc: 'Watch the kindness counter grow as we build a more positive world' }
           ].map((step, index) => (

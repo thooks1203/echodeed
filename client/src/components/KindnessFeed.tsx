@@ -36,7 +36,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
     <main className="pb-20 bg-background">
       {posts.length === 0 ? (
         <div className="text-center py-12 px-4">
-          <span className="text-6xl mx-auto mb-4">⚡</span>
+          <div className="w-16 h-16 mx-auto mb-4" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='heart-grad-feed' cx='50%25' cy='50%25'%3E%3Cstop offset='0%25' style='stop-color:%23ff6633'/%3E%3Cstop offset='25%25' style='stop-color:%23ff33ff'/%3E%3Cstop offset='75%25' style='stop-color:%23a855f7'/%3E%3Cstop offset='100%25' style='stop-color:%233b82f6'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M100,30 C85,10 60,10 60,40 C60,70 100,100 100,100 S140,70 140,40 C140,10 115,10 100,30 Z' fill='url(%23heart-grad-feed)'/%3E%3C/svg%3E")`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}></div>
           <h3 className="text-lg font-medium text-foreground mb-2">No acts of kindness found</h3>
           <p className="text-muted-foreground">Be the first to share a kind deed in this area!</p>
         </div>

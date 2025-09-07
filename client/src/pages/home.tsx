@@ -487,7 +487,7 @@ export default function Home() {
               🎁 <strong>Collect $ECHO tokens</strong> and redeem real rewards for being kind
             </p>
             <p style={{ margin: '0 0 12px 0' }}>
-              ❤️ <strong>Heart = "I like this"</strong> • 🔁 <strong>Echo = "I'll do this too"</strong>
+              <span style={{display: 'inline-flex', alignItems: 'center', gap: '4px'}}><div style={{ width: '16px', height: '16px', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='heart-grad-heart' cx='50%25' cy='50%25'%3E%3Cstop offset='0%25' style='stop-color:%23ff6633'/%3E%3Cstop offset='25%25' style='stop-color:%23ff33ff'/%3E%3Cstop offset='75%25' style='stop-color:%23a855f7'/%3E%3Cstop offset='100%25' style='stop-color:%233b82f6'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M100,30 C85,10 60,10 60,40 C60,70 100,100 100,100 S140,70 140,40 C140,10 115,10 100,30 Z' fill='url(%23heart-grad-heart)'/%3E%3C/svg%3E")`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}></div> <strong>Heart = "I like this"</strong></span> • 🔁 <strong>Echo = "I'll do this too"</strong>
             </p>
             <p style={{ margin: '0' }}>
               ✨ <strong>For everyone:</strong> individuals seeking connection & teams building wellness
@@ -2772,7 +2772,7 @@ export default function Home() {
               fontSize: '12px',
               fontWeight: '600'
             }}>
-              💜 KINDNESS
+              <span style={{display: 'inline-flex', alignItems: 'center', gap: '8px'}}><div style={{ width: '16px', height: '16px', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='heart-grad-d' cx='50%25' cy='50%25'%3E%3Cstop offset='0%25' style='stop-color:%23ff6633'/%3E%3Cstop offset='25%25' style='stop-color:%23ff33ff'/%3E%3Cstop offset='75%25' style='stop-color:%23a855f7'/%3E%3Cstop offset='100%25' style='stop-color:%233b82f6'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M100,30 C85,10 60,10 60,40 C60,70 100,100 100,100 S140,70 140,40 C140,10 115,10 100,30 Z' fill='url(%23heart-grad-d)'/%3E%3C/svg%3E")`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}></div> KINDNESS</span>
             </div>
           </div>
           <p style={{ 
@@ -2795,7 +2795,7 @@ export default function Home() {
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
             textAlign: 'center'
           }}>
-            <div style={{ fontSize: '48px', marginBottom: '16px' }}>💜</div>
+            <div style={{ fontSize: '48px', marginBottom: '16px', width: '48px', height: '48px', margin: '0 auto 16px auto', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='heart-grad-a' cx='50%25' cy='50%25'%3E%3Cstop offset='0%25' style='stop-color:%23ff6633'/%3E%3Cstop offset='25%25' style='stop-color:%23ff33ff'/%3E%3Cstop offset='75%25' style='stop-color:%23a855f7'/%3E%3Cstop offset='100%25' style='stop-color:%233b82f6'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M100,30 C85,10 60,10 60,40 C60,70 100,100 100,100 S140,70 140,40 C140,10 115,10 100,30 Z' fill='url(%23heart-grad-a)'/%3E%3C/svg%3E")`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}></div>
             <h2 style={{ 
               fontSize: '20px', 
               fontWeight: '700',
@@ -3810,7 +3810,7 @@ export default function Home() {
         border: '1px solid rgba(139,92,246,0.1)',
         textAlign: 'center'
       }}>
-        <div style={{ fontSize: '24px', marginBottom: '8px' }}>💜</div>
+        <div style={{ fontSize: '24px', marginBottom: '8px', width: '24px', height: '24px', margin: '0 auto 8px auto', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='heart-grad-b' cx='50%25' cy='50%25'%3E%3Cstop offset='0%25' style='stop-color:%23ff6633'/%3E%3Cstop offset='25%25' style='stop-color:%23ff33ff'/%3E%3Cstop offset='75%25' style='stop-color:%23a855f7'/%3E%3Cstop offset='100%25' style='stop-color:%233b82f6'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M100,30 C85,10 60,10 60,40 C60,70 100,100 100,100 S140,70 140,40 C140,10 115,10 100,30 Z' fill='url(%23heart-grad-b)'/%3E%3C/svg%3E")`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}></div>
         <h3 style={{ 
           fontSize: '16px', 
           fontWeight: '700',
@@ -3880,7 +3880,7 @@ export default function Home() {
           }}
           data-testid="button-spread-kindness"
         >
-          ✨ Tap Here to Start Spreading Kindness! ❤️
+          ✨ Tap Here to Start Spreading Kindness! <span style={{display: 'inline-flex', alignItems: 'center', marginLeft: '4px'}}><div style={{ width: '16px', height: '16px', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='heart-grad-tap' cx='50%25' cy='50%25'%3E%3Cstop offset='0%25' style='stop-color:%23ff6633'/%3E%3Cstop offset='25%25' style='stop-color:%23ff33ff'/%3E%3Cstop offset='75%25' style='stop-color:%23a855f7'/%3E%3Cstop offset='100%25' style='stop-color:%233b82f6'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M100,30 C85,10 60,10 60,40 C60,70 100,100 100,100 S140,70 140,40 C140,10 115,10 100,30 Z' fill='url(%23heart-grad-tap)'/%3E%3C/svg%3E")`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}></div></span>
         </button>
       </div>
       
@@ -4062,7 +4062,7 @@ export default function Home() {
           marginBottom: '20px'
         }}>
           <div style={{ textAlign: 'center', marginBottom: '12px' }}>
-            <div style={{ fontSize: '32px', marginBottom: '8px' }}>💜</div>
+            <div style={{ fontSize: '32px', marginBottom: '8px', width: '32px', height: '32px', margin: '0 auto 8px auto', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='heart-grad-c' cx='50%25' cy='50%25'%3E%3Cstop offset='0%25' style='stop-color:%23ff6633'/%3E%3Cstop offset='25%25' style='stop-color:%23ff33ff'/%3E%3Cstop offset='75%25' style='stop-color:%23a855f7'/%3E%3Cstop offset='100%25' style='stop-color:%233b82f6'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M100,30 C85,10 60,10 60,40 C60,70 100,100 100,100 S140,70 140,40 C140,10 115,10 100,30 Z' fill='url(%23heart-grad-c)'/%3E%3C/svg%3E")`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}></div>
             <h3 style={{ 
               fontSize: '18px', 
               fontWeight: '700',
@@ -4380,7 +4380,7 @@ export default function Home() {
           </div>
         ) : posts.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px', color: '#6b7280' }}>
-            <div style={{ fontSize: '48px', marginBottom: '16px' }}>❤️</div>
+            <div style={{ fontSize: '48px', marginBottom: '16px', width: '48px', height: '48px', margin: '0 auto 16px auto', backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='heart-grad-e' cx='50%25' cy='50%25'%3E%3Cstop offset='0%25' style='stop-color:%23ff6633'/%3E%3Cstop offset='25%25' style='stop-color:%23ff33ff'/%3E%3Cstop offset='75%25' style='stop-color:%23a855f7'/%3E%3Cstop offset='100%25' style='stop-color:%233b82f6'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M100,30 C85,10 60,10 60,40 C60,70 100,100 100,100 S140,70 140,40 C140,10 115,10 100,30 Z' fill='url(%23heart-grad-e)'/%3E%3C/svg%3E")`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}></div>
             <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>No acts of kindness found</h3>
             <p>Be the first to share a kind deed in this area!</p>
           </div>
