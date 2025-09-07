@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Heart } from 'lucide-react';
-// import logoUrl from '@assets/ECHODEED_1757095612642.png';
+import logoUrl from '@assets/generated_images/Enhanced_Diverse_Heart_3fc9c4a4.png';
 
 interface OnboardingOverlayProps {
   onComplete: () => void;
@@ -27,8 +27,16 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
   return (
     <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center">
       <div className="bg-card p-8 rounded-lg mx-4 text-center shadow-xl max-w-sm">
-        <div className="w-16 h-16 bg-primary rounded-full mx-auto mb-4 flex items-center justify-center">
-          <Heart className="text-2xl text-primary-foreground" size={24} />
+        <div className="mx-auto mb-4 flex items-center justify-center">
+          <img 
+            src={logoUrl} 
+            alt="EchoDeed Logo"
+            className="w-16 h-16 animate-logoFloat"
+            style={{ 
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 4px 12px rgba(139, 92, 246, 0.4))'
+            }}
+          />
         </div>
         <h2 className="text-2xl font-bold text-foreground mb-3">Welcome to EchoDeed™</h2>
         <p className="text-muted-foreground mb-1 leading-relaxed">

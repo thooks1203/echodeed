@@ -11,7 +11,7 @@ import { AIDashboard } from '@/components/ai-dashboard-fixed';
 import { NotificationSetupModal } from '@/components/notification-setup-modal';
 import { useTabNavigation } from '@/hooks/useNavigation';
 import { BackButton } from '@/components/BackButton';
-import logoUrl from '@assets/ECHODEED_1757095612642.png';
+import logoUrl from '@assets/generated_images/Enhanced_Diverse_Heart_3fc9c4a4.png';
 import { WelcomeModal } from '@/components/WelcomeModal';
 import { MarketingDashboard } from '@/components/MarketingDashboard';
 import { KindnessNudgeSystem } from '@/components/KindnessNudgeSystem';
@@ -3657,9 +3657,11 @@ export default function Home() {
               src={logoUrl} 
               alt="EchoDeed Logo"
               style={{ 
-                width: '32px', 
-                height: '32px',
-                objectFit: 'contain'
+                width: '40px', 
+                height: '40px',
+                objectFit: 'contain',
+                filter: 'drop-shadow(0 2px 8px rgba(255, 255, 255, 0.3))',
+                animation: 'logoFloat 3s ease-in-out infinite'
               }}
             />
             <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™</h1>
