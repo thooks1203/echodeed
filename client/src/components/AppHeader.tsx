@@ -15,8 +15,8 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
           <div className="w-8"> {/* Spacer for balance */}
           </div>
           <div className="flex items-center space-x-3">
-            <div className="w-60 h-60 flex items-center justify-center animate-logoFloat">
-              <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" className="w-full h-full object-contain" />
+            <div className="w-60 h-60 flex items-center justify-center animate-logoFloat" style={{border: '2px solid red'}}>
+              <img src="/electric-heart-logo.png?v=FORCE-RELOAD" alt="EchoDeed Electric Heart" className="w-full h-full object-contain" style={{maxWidth: '240px', maxHeight: '240px'}} />
             </div>
             <h1 className="text-xl font-bold text-foreground" data-testid="text-app-title">EchoDeed™</h1>
           </div>
@@ -38,7 +38,7 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
             >
               {counter.count.toLocaleString()}
             </span>
-            <span className="ml-2 w-5 h-5 flex items-center justify-center text-xl animate-bounce-gentle" key="electric-counter">⚡</span>
+            <img src="/electric-heart-logo.png" alt="Electric Heart" className="ml-2 w-5 h-5 object-contain" />
           </div>
           <p className="text-primary-foreground/70 text-xs mt-1">acts of kindness shared</p>
         </div>
