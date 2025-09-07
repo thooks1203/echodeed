@@ -10,6 +10,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'ai', label: 'AI', icon: '🧠' },
     { id: 'badges', label: 'Badges', icon: '🏅' },
     { id: 'rewards', label: 'Rewards', icon: '🎁' },
+    { id: 'schools', label: 'Schools', icon: '🎓' },
     { id: 'corporate', label: 'Corporate', icon: '🏢' },
     { id: 'admin', label: 'Admin', icon: '⚙️' },
   ];
@@ -27,7 +28,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
       borderTop: '1px solid #e5e7eb',
       display: 'flex',
       justifyContent: 'space-around',
-      padding: '8px 0',
+      padding: '6px 0',
       zIndex: 100
     }}>
       {tabs.map((tab) => (
@@ -44,14 +45,14 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
             cursor: 'pointer',
             padding: '4px',
             borderRadius: '6px',
-            fontSize: '10px',
+            fontSize: '9px',
             fontWeight: '500',
             color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
             backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
           }}
           data-testid={`button-nav-${tab.id}`}
         >
-          <span style={{ fontSize: '16px' }}>{tab.icon}</span>
+          <span style={{ fontSize: '14px' }}>{tab.icon}</span>
           <span>{tab.label}</span>
         </button>
       ))}

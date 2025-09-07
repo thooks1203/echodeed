@@ -14,6 +14,7 @@ import { BackButton } from '@/components/BackButton';
 import logoUrl from '@assets/ECHODEED_1757095612642.png';
 import { WelcomeModal } from '@/components/WelcomeModal';
 import { MarketingDashboard } from '@/components/MarketingDashboard';
+import { SchoolsDashboard } from '@/components/SchoolsDashboard';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { pushNotifications } from '@/services/pushNotifications';
@@ -3405,6 +3406,95 @@ export default function Home() {
       </div>
     );
   }
+  // Show Schools tab if selected
+  if (activeTab === 'schools') {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        {/* Header */}
+        <div style={{ 
+          background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
+          color: 'white', 
+          padding: '20px', 
+          textAlign: 'center',
+          position: 'relative'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <img 
+                src={logoUrl} 
+                alt="EchoDeed Logo"
+                style={{ 
+                  width: '32px', 
+                  height: '32px',
+                  objectFit: 'contain',
+                  background: 'transparent',
+                  border: 'none',
+                  borderRadius: '0'
+                }}
+              />
+              <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™ Schools</h1>
+            </div>
+            
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {/* About Button */}
+              <button
+                onClick={showWelcomeAgain}
+                style={{
+                  backgroundColor: 'rgba(255,255,255,0.2)',
+                  border: 'none',
+                  borderRadius: '50%',
+                  width: '32px',
+                  height: '32px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: 'white',
+                  fontSize: '16px'
+                }}
+                title="About EchoDeed"
+                data-testid="button-about-echodeed"
+              >
+                ℹ️
+              </button>
+              
+              {/* $ECHO Balance */}
+              <div style={{ 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '6px',
+                backgroundColor: 'rgba(255,255,255,0.2)',
+                padding: '6px 12px',
+                borderRadius: '20px',
+                fontSize: '14px',
+                fontWeight: '600'
+              }}>
+                <span style={{ fontSize: '16px' }}>🪙</span>
+                <span>{tokens?.echoBalance || 0} $ECHO</span>
+              </div>
+            </div>
+          </div>
+          
+          <div style={{ fontSize: '14px', opacity: 0.8 }}>Social-Emotional Learning Platform</div>
+        </div>
+
+        {/* Schools Dashboard Content */}
+        <div style={{ paddingBottom: '100px' }}>
+          <SchoolsDashboard />
+        </div>
+        
+        {/* Bottom Navigation */}
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
+    );
+  }
+
   if (activeTab === 'admin') {
     return (
       <div style={{ 
