@@ -1,6 +1,6 @@
 import { Heart, Sliders } from 'lucide-react';
 import { KindnessCounter } from '@shared/schema';
-import logoUrl from '@assets/generated_images/Transparent_Background_Heart_00eaf618.png';
+import logoUrl from '@assets/generated_images/Rainbow_Heart_No_Background_90da4438.png';
 
 interface AppHeaderProps {
   counter: KindnessCounter;
