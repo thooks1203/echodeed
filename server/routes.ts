@@ -1573,6 +1573,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Webhook endpoints for partner fulfillment status updates
+  app.post('/api/webhooks/rewards/:partnerName', async (req, res) => {
+    try {
+      const { partnerName } = req.params;
+      const webhookPayload = req.body;
+      
+      // Get partner configuration
+      const partners = await storage.getRewardPartners({ partnerName });
+      if (!partners || partners.length === 0) {
+        return res.status(404).json({ message: 'Partner not found' });
+      }
+      
+      const partner = partners[0];
+      
+      // Process webhook through fulfillment service
+      const result = await fulfillmentService.handleWebhook(partnerName, webhookPayload, partner);
+      
+      if (result.processed && result.redemptionId && result.newStatus) {
+        // Update redemption status based on webhook
+        await storage.updateRedemptionStatus(result.redemptionId, result.newStatus);
+        
+        // Notify user via WebSocket if available
+        broadcast({
+          type: 'REDEMPTION_STATUS_UPDATED',
+          redemptionId: result.redemptionId,
+          status: result.newStatus
+        });
+      }
+      
+      res.status(200).json({ received: true, processed: result.processed });
+    } catch (error: any) {
+      console.error(`Webhook error for partner ${req.params.partnerName}:`, error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Stripe webhook handler (for cashback fulfillment)
+  app.post('/api/webhooks/stripe', async (req, res) => {
+    try {
+      const event = req.body;
+      
+      if (event.type === 'transfer.updated' || event.type === 'transfer.failed') {
+        const transfer = event.data.object;
+        const redemptionId = transfer.metadata?.redemption_id;
+        
+        if (redemptionId) {
+          const newStatus = transfer.status === 'paid' ? 'used' : 
+                          transfer.status === 'failed' ? 'failed' : 'active';
+          
+          await storage.updateRedemptionStatus(redemptionId, newStatus);
+          
+          broadcast({
+            type: 'REDEMPTION_STATUS_UPDATED',
+            redemptionId,
+            status: newStatus
+          });
+        }
+      }
+      
+      res.status(200).json({ received: true });
+    } catch (error: any) {
+      console.error('Stripe webhook error:', error);
+      res.status(400).json({ message: error.message });
+    }
+  });
+
+  // Manual fulfillment status check endpoint
+  app.post('/api/rewards/check-status/:redemptionId', isAuthenticated, async (req, res) => {
+    try {
+      const { redemptionId } = req.params;
+      const redemption = await storage.getRedemption(redemptionId);
+      
+      if (!redemption) {
+        return res.status(404).json({ message: 'Redemption not found' });
+      }
+      
+      // This would integrate with fulfillment service to check status
+      // For now, return current status
+      res.json({ 
+        redemptionId,
+        currentStatus: redemption.status,
+        lastChecked: new Date()
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Kindness Verification System
   app.post('/api/verification/submit', isAuthenticated, async (req: any, res) => {
     try {
