@@ -28,7 +28,7 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
             margin: '0 auto 20px auto'
           }}>
             <img 
-              src="/logo-final.png?v=1757267200&force=true" 
+              src="/heart-logo-new.png?v=NUCLEAR1757267450&refresh=NOW" 
               alt="EchoDeed Electric Heart" 
               style={{
                 width: '100%',
