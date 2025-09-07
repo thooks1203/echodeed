@@ -1360,108 +1360,248 @@ export class DatabaseStorage implements IStorage {
   // Sample corporate data initialization
   async initializeSampleCorporateData(): Promise<void> {
     try {
-      // Check if demo corporate account already exists
-      const existingAccount = await db.select()
+      // Check if demo corporate accounts already exist
+      const existingTechFlow = await db.select()
         .from(corporateAccounts)
         .where(eq(corporateAccounts.domain, 'techflow.com'));
       
-      if (existingAccount.length > 0) {
+      const existingWise = await db.select()
+        .from(corporateAccounts)
+        .where(eq(corporateAccounts.domain, 'wise.com'));
+      
+      if (existingTechFlow.length > 0 && existingWise.length > 0) {
         return; // Demo data already exists
       }
 
-      // Create sample corporate account - TechFlow Solutions
-      const [corporateAccount] = await db.insert(corporateAccounts).values({
-        companyName: 'TechFlow Solutions',
-        domain: 'techflow.com',
-        industry: 'Technology',
-        subscriptionTier: 'Enterprise',
-        primaryColor: '#8B5CF6',
-        companyLogo: null,
-        totalEmployees: 156,
-        contactEmail: 'hello@techflow.com',
-        isActive: 1
-      }).returning();
+      // Create sample corporate accounts
+      let techFlowAccount: any;
+      let wiseAccount: any;
 
-      // Create sample teams
-      const teams = [
-        { id: 'team-engineering', teamName: 'Engineering', department: 'Technology', currentSize: 24, targetSize: 30, monthlyKindnessGoal: 50 },
-        { id: 'team-design', teamName: 'Design', department: 'Product', currentSize: 8, targetSize: 10, monthlyKindnessGoal: 20 },
-        { id: 'team-marketing', teamName: 'Marketing', department: 'Marketing', currentSize: 12, targetSize: 15, monthlyKindnessGoal: 30 },
-        { id: 'team-sales', teamName: 'Sales', department: 'Sales', currentSize: 18, targetSize: 20, monthlyKindnessGoal: 40 },
-        { id: 'team-hr', teamName: 'People Operations', department: 'HR', currentSize: 6, targetSize: 8, monthlyKindnessGoal: 15 }
-      ];
-
-      for (const team of teams) {
-        await db.insert(corporateTeams).values({
-          ...team,
-          corporateAccountId: corporateAccount.id,
-          isActive: 1
-        });
+      // Create TechFlow Solutions if it doesn't exist
+      if (existingTechFlow.length === 0) {
+        [techFlowAccount] = await db.insert(corporateAccounts).values({
+          companyName: 'TechFlow Solutions',
+          domain: 'techflow.com',
+          industry: 'Technology',
+          companySize: 'medium',
+          subscriptionTier: 'pro',
+          maxEmployees: 200,
+          monthlyBudget: 2500,
+          primaryColor: '#8B5CF6',
+          companyLogo: null,
+          contactEmail: 'hello@techflow.com',
+          contactName: 'Sarah Chen',
+          isActive: 1,
+          billingStatus: 'active'
+        }).returning();
+      } else {
+        techFlowAccount = existingTechFlow[0];
       }
 
-      // Create sample employees
-      const employees = [
-        { id: 'emp-sarah-chen', displayName: 'Sarah Chen', employeeEmail: 'sarah@techflow.com', department: 'Technology', role: 'corporate_admin', teamId: 'team-engineering' },
-        { id: 'emp-mike-johnson', displayName: 'Mike Johnson', employeeEmail: 'mike@techflow.com', department: 'Technology', role: 'employee', teamId: 'team-engineering' },
-        { id: 'emp-elena-rodriguez', displayName: 'Elena Rodriguez', employeeEmail: 'elena@techflow.com', department: 'Product', role: 'team_lead', teamId: 'team-design' },
-        { id: 'emp-david-kim', displayName: 'David Kim', employeeEmail: 'david@techflow.com', department: 'Marketing', role: 'employee', teamId: 'team-marketing' },
-        { id: 'emp-jessica-wright', displayName: 'Jessica Wright', employeeEmail: 'jessica@techflow.com', department: 'HR', role: 'hr_admin', teamId: 'team-hr' }
-      ];
-
-      for (const employee of employees) {
-        await db.insert(corporateEmployees).values({
-          ...employee,
-          userId: employee.id,
-          corporateAccountId: corporateAccount.id,
-          isActive: 1
-        });
+      // Create Wise Inc if it doesn't exist
+      if (existingWise.length === 0) {
+        [wiseAccount] = await db.insert(corporateAccounts).values({
+          companyName: 'Wise Inc',
+          domain: 'wise.com',
+          industry: 'Financial Technology',
+          companySize: 'large',
+          subscriptionTier: 'enterprise',
+          maxEmployees: 500,
+          monthlyBudget: 5000,
+          primaryColor: '#00D4AA',
+          companyLogo: null,
+          contactEmail: 'wellness@wise.com',
+          contactName: 'Marcus Johnson',
+          isActive: 1,
+          billingStatus: 'active'
+        }).returning();
+      } else {
+        wiseAccount = existingWise[0];
       }
 
-      // Create sample challenges
-      const challenges = [
-        {
-          corporateAccountId: corporateAccount.id,
-          title: 'Coffee Chain Kindness',
-          content: 'Buy coffee for a colleague or stranger this week',
-          challengeType: 'individual',
-          echoReward: 150,
-          isActive: 1
-        },
-        {
-          corporateAccountId: corporateAccount.id,
-          title: 'Team Volunteer Day',
-          content: 'Organize a volunteer activity with your team',
-          challengeType: 'team',
-          echoReward: 500,
-          isActive: 1
+      // Create sample teams for TechFlow
+      if (existingTechFlow.length === 0) {
+        const techFlowTeams = [
+          { teamName: 'Engineering', department: 'Technology', currentSize: 24, targetSize: 30, monthlyKindnessGoal: 50 },
+          { teamName: 'Design', department: 'Product', currentSize: 8, targetSize: 10, monthlyKindnessGoal: 20 },
+          { teamName: 'Marketing', department: 'Marketing', currentSize: 12, targetSize: 15, monthlyKindnessGoal: 30 },
+          { teamName: 'Sales', department: 'Sales', currentSize: 18, targetSize: 20, monthlyKindnessGoal: 40 },
+          { teamName: 'People Operations', department: 'HR', currentSize: 6, targetSize: 8, monthlyKindnessGoal: 15 }
+        ];
+
+        for (const team of techFlowTeams) {
+          await db.insert(corporateTeams).values({
+            ...team,
+            corporateAccountId: techFlowAccount.id,
+            isActive: 1
+          });
         }
-      ];
-
-      for (const challenge of challenges) {
-        await db.insert(corporateChallenges).values(challenge);
       }
 
-      // Create sample analytics for the last 7 days
-      const analyticsData = [];
-      for (let i = 6; i >= 0; i--) {
-        const date = new Date();
-        date.setDate(date.getDate() - i);
-        
-        analyticsData.push({
-          id: `analytics-${corporateAccount.id}-${i}`,
-          corporateAccountId: corporateAccount.id,
-          analyticsDate: date,
-          activeEmployees: 45 + Math.floor(Math.random() * 15),
-          totalKindnessPosts: 8 + Math.floor(Math.random() * 12),
-          totalChallengesCompleted: 3 + Math.floor(Math.random() * 5),
-          totalEchoTokensEarned: 850 + Math.floor(Math.random() * 300),
-          averageEngagementScore: 75 + Math.floor(Math.random() * 15),
-          wellnessImpactScore: 80 + Math.floor(Math.random() * 10)
-        });
+      // Create sample teams for Wise Inc
+      if (existingWise.length === 0) {
+        const wiseTeams = [
+          { teamName: 'Product Engineering', department: 'Engineering', currentSize: 45, targetSize: 55, monthlyKindnessGoal: 80 },
+          { teamName: 'Data & Analytics', department: 'Engineering', currentSize: 22, targetSize: 28, monthlyKindnessGoal: 40 },
+          { teamName: 'Customer Success', department: 'Customer Operations', currentSize: 38, targetSize: 45, monthlyKindnessGoal: 65 },
+          { teamName: 'Design Systems', department: 'Product', currentSize: 15, targetSize: 18, monthlyKindnessGoal: 30 },
+          { teamName: 'Marketing & Growth', department: 'Marketing', currentSize: 25, targetSize: 30, monthlyKindnessGoal: 50 },
+          { teamName: 'Finance & Operations', department: 'Finance', currentSize: 18, targetSize: 20, monthlyKindnessGoal: 35 },
+          { teamName: 'People & Culture', department: 'HR', currentSize: 12, targetSize: 15, monthlyKindnessGoal: 25 }
+        ];
+
+        for (const team of wiseTeams) {
+          await db.insert(corporateTeams).values({
+            ...team,
+            corporateAccountId: wiseAccount.id,
+            isActive: 1
+          });
+        }
       }
 
-      for (const analytics of analyticsData) {
-        await db.insert(corporateAnalytics).values(analytics);
+      // Create sample employees for TechFlow
+      if (existingTechFlow.length === 0) {
+        const techFlowEmployees = [
+          { displayName: 'Sarah Chen', employeeEmail: 'sarah@techflow.com', department: 'Technology', role: 'corporate_admin' },
+          { displayName: 'Mike Johnson', employeeEmail: 'mike@techflow.com', department: 'Technology', role: 'employee' },
+          { displayName: 'Elena Rodriguez', employeeEmail: 'elena@techflow.com', department: 'Product', role: 'team_lead' },
+          { displayName: 'David Kim', employeeEmail: 'david@techflow.com', department: 'Marketing', role: 'employee' },
+          { displayName: 'Jessica Wright', employeeEmail: 'jessica@techflow.com', department: 'HR', role: 'hr_admin' }
+        ];
+
+        for (const employee of techFlowEmployees) {
+          await db.insert(corporateEmployees).values({
+            ...employee,
+            userId: `tf-${employee.employeeEmail.split('@')[0]}`,
+            corporateAccountId: techFlowAccount.id,
+            isActive: 1
+          });
+        }
+      }
+
+      // Create sample employees for Wise Inc
+      if (existingWise.length === 0) {
+        const wiseEmployees = [
+          { displayName: 'Marcus Johnson', employeeEmail: 'marcus@wise.com', department: 'HR', role: 'corporate_admin' },
+          { displayName: 'Priya Sharma', employeeEmail: 'priya@wise.com', department: 'Engineering', role: 'team_lead' },
+          { displayName: 'James Chen', employeeEmail: 'james@wise.com', department: 'Engineering', role: 'employee' },
+          { displayName: 'Sofia Martins', employeeEmail: 'sofia@wise.com', department: 'Product', role: 'employee' },
+          { displayName: 'Alex Thompson', employeeEmail: 'alex@wise.com', department: 'Customer Operations', role: 'team_lead' },
+          { displayName: 'Rachel Park', employeeEmail: 'rachel@wise.com', department: 'Marketing', role: 'employee' },
+          { displayName: 'Michael Brown', employeeEmail: 'michael@wise.com', department: 'Finance', role: 'employee' },
+          { displayName: 'Lisa Wang', employeeEmail: 'lisa@wise.com', department: 'HR', role: 'hr_admin' }
+        ];
+
+        for (const employee of wiseEmployees) {
+          await db.insert(corporateEmployees).values({
+            ...employee,
+            userId: `wise-${employee.employeeEmail.split('@')[0]}`,
+            corporateAccountId: wiseAccount.id,
+            isActive: 1
+          });
+        }
+      }
+
+      // Create sample challenges for TechFlow
+      if (existingTechFlow.length === 0) {
+        const techFlowChallenges = [
+          {
+            corporateAccountId: techFlowAccount.id,
+            title: 'Coffee Chain Kindness',
+            content: 'Buy coffee for a colleague or stranger this week',
+            challengeType: 'individual',
+            echoReward: 150,
+            isActive: 1
+          },
+          {
+            corporateAccountId: techFlowAccount.id,
+            title: 'Team Volunteer Day',
+            content: 'Organize a volunteer activity with your team',
+            challengeType: 'team',
+            echoReward: 500,
+            isActive: 1
+          }
+        ];
+
+        for (const challenge of techFlowChallenges) {
+          await db.insert(corporateChallenges).values(challenge);
+        }
+
+        // Create sample analytics for TechFlow (last 7 days)
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          
+          await db.insert(corporateAnalytics).values({
+            corporateAccountId: techFlowAccount.id,
+            analyticsDate: date,
+            activeEmployees: 45 + Math.floor(Math.random() * 15),
+            totalKindnessPosts: 8 + Math.floor(Math.random() * 12),
+            totalChallengesCompleted: 3 + Math.floor(Math.random() * 5),
+            totalEchoTokensEarned: 850 + Math.floor(Math.random() * 300),
+            averageEngagementScore: 75 + Math.floor(Math.random() * 15),
+            wellnessImpactScore: 80 + Math.floor(Math.random() * 10)
+          });
+        }
+      }
+
+      // Create sample challenges for Wise Inc
+      if (existingWise.length === 0) {
+        const wiseChallenges = [
+          {
+            corporateAccountId: wiseAccount.id,
+            title: 'Global Kindness Initiative',
+            content: 'Help a colleague from a different country or time zone this week',
+            challengeType: 'individual',
+            echoReward: 200,
+            isActive: 1
+          },
+          {
+            corporateAccountId: wiseAccount.id,
+            title: 'Financial Literacy Support',
+            content: 'Share financial tips or resources with someone who could benefit',
+            challengeType: 'individual',
+            echoReward: 175,
+            isActive: 1
+          },
+          {
+            corporateAccountId: wiseAccount.id,
+            title: 'Cross-Department Collaboration',
+            content: 'Work with another team to complete a kindness project together',
+            challengeType: 'team',
+            echoReward: 750,
+            isActive: 1
+          },
+          {
+            corporateAccountId: wiseAccount.id,
+            title: 'Customer Success Champion',
+            content: 'Go above and beyond to help a customer with their financial journey',
+            challengeType: 'individual',
+            echoReward: 300,
+            isActive: 1
+          }
+        ];
+
+        for (const challenge of wiseChallenges) {
+          await db.insert(corporateChallenges).values(challenge);
+        }
+
+        // Create sample analytics for Wise Inc (last 7 days)
+        for (let i = 6; i >= 0; i--) {
+          const date = new Date();
+          date.setDate(date.getDate() - i);
+          
+          await db.insert(corporateAnalytics).values({
+            corporateAccountId: wiseAccount.id,
+            analyticsDate: date,
+            activeEmployees: 175 + Math.floor(Math.random() * 25),
+            totalKindnessPosts: 25 + Math.floor(Math.random() * 15),
+            totalChallengesCompleted: 12 + Math.floor(Math.random() * 8),
+            totalEchoTokensEarned: 2250 + Math.floor(Math.random() * 500),
+            averageEngagementScore: 82 + Math.floor(Math.random() * 12),
+            wellnessImpactScore: 88 + Math.floor(Math.random() * 8)
+          });
+        }
       }
 
     } catch (error: any) {
