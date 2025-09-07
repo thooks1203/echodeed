@@ -536,7 +536,7 @@ export default function Home() {
           <button 
             onClick={() => setShowWelcome(false)}
             style={{
-              background: 'linear-gradient(135deg, #8b5cf6, #06b6d4, #10b981)',
+              background: 'linear-gradient(135deg, hsl(30, 100%, 60%), hsl(320, 100%, 65%), hsl(280, 100%, 65%), hsl(200, 100%, 60%))',
               backgroundSize: '200% 200%',
               color: 'white',
               border: 'none',
@@ -545,7 +545,7 @@ export default function Home() {
               fontSize: '18px',
               fontWeight: '700',
               cursor: 'pointer',
-              boxShadow: '0 8px 32px rgba(139,92,246,0.5), 0 0 0 1px rgba(255,255,255,0.2)',
+              boxShadow: '0 8px 32px rgba(255,102,51,0.4), 0 0 40px rgba(255,51,255,0.3)',
               animation: 'titleShimmer 3s ease-in-out infinite',
               transform: 'translateY(0)',
               transition: 'all 0.3s ease',
@@ -557,11 +557,11 @@ export default function Home() {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = 'translateY(-2px) scale(1.02)';
-              e.currentTarget.style.boxShadow = '0 12px 40px rgba(139,92,246,0.8), 0 0 0 1px rgba(255,255,255,0.3)';
+              e.currentTarget.style.boxShadow = '0 12px 40px rgba(255,51,255,0.6), 0 0 60px rgba(51,153,255,0.4)';
             }}
             onMouseLeave={(e) => {
               e.currentTarget.style.transform = 'translateY(0) scale(1)';
-              e.currentTarget.style.boxShadow = '0 8px 32px rgba(139,92,246,0.5), 0 0 0 1px rgba(255,255,255,0.2)';
+              e.currentTarget.style.boxShadow = '0 8px 32px rgba(255,102,51,0.4), 0 0 40px rgba(255,51,255,0.3)';
             }}
           >
             TAP HERE to start spreading kindness
