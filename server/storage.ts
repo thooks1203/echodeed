@@ -1470,9 +1470,19 @@ export class DatabaseStorage implements IStorage {
         ];
 
         for (const employee of techFlowEmployees) {
+          // First create a user record 
+          const userId = `tf-${employee.employeeEmail.split('@')[0]}`;
+          const [user] = await db.insert(users).values({
+            id: userId,
+            email: employee.employeeEmail,
+            name: employee.displayName,
+            createdAt: new Date()
+          }).onConflictDoNothing().returning();
+
+          // Then create the corporate employee record
           await db.insert(corporateEmployees).values({
             ...employee,
-            userId: `tf-${employee.employeeEmail.split('@')[0]}`,
+            userId: userId,
             corporateAccountId: techFlowAccount.id,
             isActive: 1
           });
@@ -1493,9 +1503,19 @@ export class DatabaseStorage implements IStorage {
         ];
 
         for (const employee of wiseEmployees) {
+          // First create a user record 
+          const userId = `wise-${employee.employeeEmail.split('@')[0]}`;
+          const [user] = await db.insert(users).values({
+            id: userId,
+            email: employee.employeeEmail,
+            name: employee.displayName,
+            createdAt: new Date()
+          }).onConflictDoNothing().returning();
+
+          // Then create the corporate employee record
           await db.insert(corporateEmployees).values({
             ...employee,
-            userId: `wise-${employee.employeeEmail.split('@')[0]}`,
+            userId: userId,
             corporateAccountId: wiseAccount.id,
             isActive: 1
           });
