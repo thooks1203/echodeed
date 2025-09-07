@@ -7,6 +7,8 @@ import { ESGImpactReporting } from "./ESGImpactReporting";
 import { KindnessImpactCertificates } from "./KindnessImpactCertificates";
 import { TimeLockedWellnessMessages } from "./TimeLockedWellnessMessages";
 import AISentimentAnalyzer from "./AISentimentAnalyzer";
+import { GlobalKindnessRippleMap } from "./GlobalKindnessRippleMap";
+import { AIKindnessSuggestions } from "./AIKindnessSuggestions";
 import { useState } from "react";
 
 interface WellnessInsights {
@@ -19,7 +21,7 @@ interface WellnessInsights {
 }
 
 export function AIDashboard() {
-  const [activeView, setActiveView] = useState<'analytics' | 'predictive' | 'predictions' | 'heatmap' | 'matching' | 'esg' | 'certificates' | 'messages' | 'sentiment'>('analytics');
+  const [activeView, setActiveView] = useState<'analytics' | 'predictive' | 'predictions' | 'heatmap' | 'matching' | 'esg' | 'certificates' | 'messages' | 'sentiment' | 'ripples' | 'suggestions'>('analytics');
 
   const { data: insights, isLoading } = useQuery<WellnessInsights>({
     queryKey: ['/api/ai/wellness-insights'],
@@ -274,6 +276,42 @@ export function AIDashboard() {
           >
             📈 Sentiment
           </button>
+          <button
+            onClick={() => setActiveView('ripples')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'ripples' ? '#06B6D4' : 'transparent',
+              color: activeView === 'ripples' ? 'white' : '#6b7280'
+            }}
+            data-testid="tab-kindness-ripples"
+          >
+            🌊 Ripples
+          </button>
+          <button
+            onClick={() => setActiveView('suggestions')}
+            style={{
+              flex: 1,
+              padding: '8px 16px',
+              borderRadius: '4px',
+              border: 'none',
+              fontSize: '12px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+              background: activeView === 'suggestions' ? '#8B5CF6' : 'transparent',
+              color: activeView === 'suggestions' ? 'white' : '#6b7280'
+            }}
+            data-testid="tab-ai-suggestions"
+          >
+            💡 Suggestions
+          </button>
         </div>
       </div>
 
@@ -294,6 +332,10 @@ export function AIDashboard() {
         <TimeLockedWellnessMessages />
       ) : activeView === 'sentiment' ? (
         <AISentimentAnalyzer />
+      ) : activeView === 'ripples' ? (
+        <GlobalKindnessRippleMap />
+      ) : activeView === 'suggestions' ? (
+        <AIKindnessSuggestions />
       ) : (
         <>
           {/* Wellness Overview */}
