@@ -16,6 +16,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Initialize surprise giveaway service
   const surpriseGiveawayService = new SurpriseGiveawayService(storage, fulfillmentService);
   
+  // Initialize sample subscription plans for revenue diversification
+  setTimeout(async () => {
+    try {
+      await storage.initializeSampleSubscriptionPlans();
+    } catch (error) {
+      console.error('Failed to initialize subscription plans:', error);
+    }
+  }, 1000);
+  
   // Auto-trigger a test surprise giveaway after 3 seconds in development
   if (process.env.NODE_ENV === 'development') {
     setTimeout(async () => {
@@ -41,6 +50,142 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error("Error fetching user:", error);
       res.status(500).json({ message: "Failed to fetch user" });
+    }
+  });
+
+  // PREMIUM SUBSCRIPTION ROUTES (Revenue Diversification)
+  app.get('/api/subscription/plans', async (req, res) => {
+    try {
+      const planType = req.query.planType as string;
+      const plans = await storage.getSubscriptionPlans(planType);
+      res.json(plans);
+    } catch (error) {
+      console.error('Failed to get subscription plans:', error);
+      res.status(500).json({ error: 'Failed to get subscription plans' });
+    }
+  });
+
+  app.post('/api/subscription/plans', isAuthenticated, async (req: any, res) => {
+    try {
+      const plan = await storage.createSubscriptionPlan(req.body);
+      res.json(plan);
+    } catch (error) {
+      console.error('Failed to create subscription plan:', error);
+      res.status(500).json({ error: 'Failed to create subscription plan' });
+    }
+  });
+
+  app.get('/api/subscription/status/:userId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const status = await storage.getUserSubscriptionStatus(userId);
+      res.json(status);
+    } catch (error) {
+      console.error('Failed to get subscription status:', error);
+      res.status(500).json({ error: 'Failed to get subscription status' });
+    }
+  });
+
+  app.put('/api/subscription/update/:userId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const { tier, status, endDate } = req.body;
+      const user = await storage.updateUserSubscription(userId, tier, status, endDate ? new Date(endDate) : undefined);
+      res.json(user);
+    } catch (error) {
+      console.error('Failed to update subscription:', error);
+      res.status(500).json({ error: 'Failed to update subscription' });
+    }
+  });
+
+  app.get('/api/subscription/feature-access/:userId/:feature', isAuthenticated, async (req: any, res) => {
+    try {
+      const { userId, feature } = req.params;
+      const hasAccess = await storage.checkFeatureAccess(userId, feature);
+      res.json({ hasAccess });
+    } catch (error) {
+      console.error('Failed to check feature access:', error);
+      res.status(500).json({ error: 'Failed to check feature access' });
+    }
+  });
+
+  // WORKPLACE WELLNESS ROUTES
+  app.post('/api/wellness/predictions', isAuthenticated, async (req: any, res) => {
+    try {
+      const prediction = await storage.createWellnessPrediction(req.body);
+      res.json(prediction);
+    } catch (error) {
+      console.error('Failed to create wellness prediction:', error);
+      res.status(500).json({ error: 'Failed to create wellness prediction' });
+    }
+  });
+
+  app.get('/api/wellness/predictions/user/:userId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const riskLevel = req.query.riskLevel as string;
+      const predictions = await storage.getUserWellnessPredictions(userId, riskLevel);
+      res.json(predictions);
+    } catch (error) {
+      console.error('Failed to get user wellness predictions:', error);
+      res.status(500).json({ error: 'Failed to get user wellness predictions' });
+    }
+  });
+
+  app.get('/api/wellness/predictions/corporate/:corporateAccountId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { corporateAccountId } = req.params;
+      const predictions = await storage.getCorporateWellnessRisks(corporateAccountId);
+      res.json(predictions);
+    } catch (error) {
+      console.error('Failed to get corporate wellness risks:', error);
+      res.status(500).json({ error: 'Failed to get corporate wellness risks' });
+    }
+  });
+
+  app.put('/api/wellness/predictions/:id/status', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      const prediction = await storage.updateWellnessPredictionStatus(id, status);
+      res.json(prediction);
+    } catch (error) {
+      console.error('Failed to update prediction status:', error);
+      res.status(500).json({ error: 'Failed to update prediction status' });
+    }
+  });
+
+  // WORKPLACE SENTIMENT ANALYSIS ROUTES (Anonymous)
+  app.post('/api/sentiment/record', isAuthenticated, async (req: any, res) => {
+    try {
+      const sentiment = await storage.recordWorkplaceSentiment(req.body);
+      res.json(sentiment);
+    } catch (error) {
+      console.error('Failed to record sentiment:', error);
+      res.status(500).json({ error: 'Failed to record sentiment' });
+    }
+  });
+
+  app.get('/api/sentiment/trends/:corporateAccountId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { corporateAccountId } = req.params;
+      const days = parseInt(req.query.days as string) || 30;
+      const trends = await storage.getCorporateSentimentTrends(corporateAccountId, days);
+      res.json(trends);
+    } catch (error) {
+      console.error('Failed to get sentiment trends:', error);
+      res.status(500).json({ error: 'Failed to get sentiment trends' });
+    }
+  });
+
+  app.get('/api/sentiment/insights/:corporateAccountId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { corporateAccountId } = req.params;
+      const insights = await storage.generateAnonymousSentimentInsights(corporateAccountId);
+      res.json(insights);
+    } catch (error) {
+      console.error('Failed to get sentiment insights:', error);
+      res.status(500).json({ error: 'Failed to get sentiment insights' });
     }
   });
   

@@ -19,6 +19,10 @@ import {
   badgeRewards,
   weeklyPrizes,
   prizeWinners,
+  subscriptionPlans,
+  workplaceSentimentData,
+  wellnessPredictions,
+  wellnessHeatmapData,
   type User,
   type UpsertUser,
   type KindnessPost,
@@ -58,6 +62,14 @@ import {
   type InsertWeeklyPrize,
   type PrizeWinner,
   type InsertPrizeWinner,
+  type SubscriptionPlan,
+  type InsertSubscriptionPlan,
+  type WorkplaceSentimentData,
+  type InsertWorkplaceSentimentData,
+  type WellnessPrediction,
+  type InsertWellnessPrediction,
+  type WellnessHeatmapData,
+  type InsertWellnessHeatmapData,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte } from "drizzle-orm";
@@ -258,6 +270,29 @@ export interface IStorage {
   
   // Sample data initialization
   initializeSampleCorporateData(): Promise<void>;
+
+  // PREMIUM SUBSCRIPTION SYSTEM (Revenue Diversification)
+  getSubscriptionPlans(planType?: string): Promise<SubscriptionPlan[]>;
+  createSubscriptionPlan(plan: InsertSubscriptionPlan): Promise<SubscriptionPlan>;
+  updateUserSubscription(userId: string, tier: string, status: string, endDate?: Date): Promise<User | undefined>;
+  getUserSubscriptionStatus(userId: string): Promise<{ tier: string; status: string; features: string[]; }>;
+  checkFeatureAccess(userId: string, feature: string): Promise<boolean>;
+  
+  // ANONYMOUS WORKPLACE WELLNESS FEATURES
+  createWellnessPrediction(prediction: InsertWellnessPrediction): Promise<WellnessPrediction>;
+  getUserWellnessPredictions(userId: string, riskLevel?: string): Promise<WellnessPrediction[]>;
+  getCorporateWellnessRisks(corporateAccountId: string): Promise<WellnessPrediction[]>;
+  updateWellnessPredictionStatus(id: string, status: string): Promise<WellnessPrediction | undefined>;
+  
+  // WORKPLACE SENTIMENT ANALYSIS (Anonymous Only)
+  recordWorkplaceSentiment(sentiment: InsertWorkplaceSentimentData): Promise<WorkplaceSentimentData>;
+  getCorporateSentimentTrends(corporateAccountId: string, days?: number): Promise<WorkplaceSentimentData[]>;
+  generateAnonymousSentimentInsights(corporateAccountId: string): Promise<{
+    overallSentiment: number;
+    departmentBreakdown: Array<{ department: string; sentimentScore: number; }>;
+    riskDepartments: string[];
+    positivityTrends: string[];
+  }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -1521,6 +1556,85 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Sample corporate data initialization
+  async initializeSampleSubscriptionPlans(): Promise<void> {
+    try {
+      // Check if subscription plans already exist
+      const existingPlans = await db.select().from(subscriptionPlans);
+      
+      if (existingPlans.length > 0) {
+        console.log('Subscription plans already exist, skipping initialization');
+        return;
+      }
+
+      // Individual Subscription Plans for Revenue Diversification
+      const individualPlans = [
+        {
+          planName: 'Free',
+          planType: 'individual',
+          monthlyPrice: 0,
+          yearlyPrice: 0,
+          features: ['basic_posting', 'view_feed', 'basic_filters', 'global_counter'],
+          limits: { postsPerMonth: 10, filtersPerDay: 5 },
+          isActive: 1,
+          sortOrder: 1,
+        },
+        {
+          planName: 'Basic',
+          planType: 'individual',
+          monthlyPrice: 999, // $9.99
+          yearlyPrice: 9990, // $99.90 (save 2 months)
+          features: [
+            'basic_posting', 'view_feed', 'basic_filters', 'global_counter',
+            'unlimited_posts', 'advanced_filters', 'kindness_analytics', 'personal_insights'
+          ],
+          limits: { postsPerMonth: -1, filtersPerDay: -1 },
+          isActive: 1,
+          sortOrder: 2,
+        },
+        {
+          planName: 'Premium',
+          planType: 'individual',
+          monthlyPrice: 1999, // $19.99
+          yearlyPrice: 19990, // $199.90 (save 2 months)
+          features: [
+            'basic_posting', 'view_feed', 'basic_filters', 'global_counter',
+            'unlimited_posts', 'advanced_filters', 'kindness_analytics', 'personal_insights',
+            'ai_wellness_predictions', 'burnout_alerts', 'sentiment_tracking', 'goal_setting',
+            'export_data', 'premium_support'
+          ],
+          limits: { postsPerMonth: -1, filtersPerDay: -1 },
+          isActive: 1,
+          sortOrder: 3,
+        },
+        {
+          planName: 'Pro',
+          planType: 'individual',
+          monthlyPrice: 4999, // $49.99
+          yearlyPrice: 49990, // $499.90 (save 2 months)
+          features: [
+            'basic_posting', 'view_feed', 'basic_filters', 'global_counter',
+            'unlimited_posts', 'advanced_filters', 'kindness_analytics', 'personal_insights',
+            'ai_wellness_predictions', 'burnout_alerts', 'sentiment_tracking', 'goal_setting',
+            'export_data', 'premium_support', 'workplace_analytics', 'team_insights',
+            'custom_challenges', 'priority_support', 'beta_features'
+          ],
+          limits: { postsPerMonth: -1, filtersPerDay: -1 },
+          isActive: 1,
+          sortOrder: 4,
+        }
+      ];
+
+      for (const plan of individualPlans) {
+        await db.insert(subscriptionPlans).values(plan);
+      }
+
+      console.log('✅ Individual subscription plans initialized successfully');
+
+    } catch (error) {
+      console.error('Failed to initialize subscription plans:', error);
+    }
+  }
+
   async initializeSampleCorporateData(): Promise<void> {
     try {
       // Check if demo corporate accounts already exist
@@ -1791,6 +1905,185 @@ export class DatabaseStorage implements IStorage {
       console.error('Failed to initialize sample corporate data:', error.message);
       throw error;
     }
+  }
+
+  // PREMIUM SUBSCRIPTION SYSTEM IMPLEMENTATIONS
+  async getSubscriptionPlans(planType?: string): Promise<SubscriptionPlan[]> {
+    let query = db.select().from(subscriptionPlans);
+    
+    if (planType) {
+      query = query.where(eq(subscriptionPlans.planType, planType));
+    }
+    
+    return await query.orderBy(subscriptionPlans.sortOrder);
+  }
+
+  async createSubscriptionPlan(plan: InsertSubscriptionPlan): Promise<SubscriptionPlan> {
+    const [newPlan] = await db.insert(subscriptionPlans).values(plan).returning();
+    return newPlan;
+  }
+
+  async updateUserSubscription(userId: string, tier: string, status: string, endDate?: Date): Promise<User | undefined> {
+    const [user] = await db
+      .update(users)
+      .set({
+        subscriptionTier: tier,
+        subscriptionStatus: status,
+        subscriptionEndDate: endDate || null,
+        updatedAt: new Date(),
+      })
+      .where(eq(users.id, userId))
+      .returning();
+    return user;
+  }
+
+  async getUserSubscriptionStatus(userId: string): Promise<{ tier: string; status: string; features: string[]; }> {
+    const [user] = await db.select().from(users).where(eq(users.id, userId));
+    
+    if (!user) {
+      return { tier: 'free', status: 'active', features: [] };
+    }
+
+    // Get plan features based on tier
+    const [plan] = await db.select()
+      .from(subscriptionPlans)
+      .where(eq(subscriptionPlans.planName, user.subscriptionTier || 'free'));
+
+    const features = plan ? (plan.features as string[]) : [];
+
+    return {
+      tier: user.subscriptionTier || 'free',
+      status: user.subscriptionStatus || 'active',
+      features,
+    };
+  }
+
+  async checkFeatureAccess(userId: string, feature: string): Promise<boolean> {
+    const subscription = await this.getUserSubscriptionStatus(userId);
+    
+    // Free tier features
+    const freeFeatures = ['basic_posting', 'view_feed', 'basic_filters'];
+    
+    if (freeFeatures.includes(feature)) {
+      return true;
+    }
+
+    // Check if user's subscription includes the feature
+    return subscription.features.includes(feature) && subscription.status === 'active';
+  }
+
+  // WORKPLACE WELLNESS IMPLEMENTATIONS
+  async createWellnessPrediction(prediction: InsertWellnessPrediction): Promise<WellnessPrediction> {
+    const [newPrediction] = await db.insert(wellnessPredictions).values(prediction).returning();
+    return newPrediction;
+  }
+
+  async getUserWellnessPredictions(userId: string, riskLevel?: string): Promise<WellnessPrediction[]> {
+    let query = db.select().from(wellnessPredictions).where(eq(wellnessPredictions.userId, userId));
+    
+    if (riskLevel) {
+      query = query.where(and(
+        eq(wellnessPredictions.userId, userId),
+        eq(wellnessPredictions.riskLevel, riskLevel)
+      ));
+    }
+    
+    return await query.orderBy(desc(wellnessPredictions.createdAt));
+  }
+
+  async getCorporateWellnessRisks(corporateAccountId: string): Promise<WellnessPrediction[]> {
+    return await db.select()
+      .from(wellnessPredictions)
+      .where(eq(wellnessPredictions.corporateAccountId, corporateAccountId))
+      .orderBy(desc(wellnessPredictions.createdAt));
+  }
+
+  async updateWellnessPredictionStatus(id: string, status: string): Promise<WellnessPrediction | undefined> {
+    const [prediction] = await db
+      .update(wellnessPredictions)
+      .set({ 
+        status,
+        resolvedAt: status === 'resolved' ? new Date() : null
+      })
+      .where(eq(wellnessPredictions.id, id))
+      .returning();
+    return prediction;
+  }
+
+  // WORKPLACE SENTIMENT ANALYSIS IMPLEMENTATIONS
+  async recordWorkplaceSentiment(sentiment: InsertWorkplaceSentimentData): Promise<WorkplaceSentimentData> {
+    const [newSentiment] = await db.insert(workplaceSentimentData).values(sentiment).returning();
+    return newSentiment;
+  }
+
+  async getCorporateSentimentTrends(corporateAccountId: string, days: number = 30): Promise<WorkplaceSentimentData[]> {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+    
+    return await db.select()
+      .from(workplaceSentimentData)
+      .where(and(
+        eq(workplaceSentimentData.corporateAccountId, corporateAccountId),
+        gte(workplaceSentimentData.dataDate, startDate)
+      ))
+      .orderBy(desc(workplaceSentimentData.dataDate));
+  }
+
+  async generateAnonymousSentimentInsights(corporateAccountId: string): Promise<{
+    overallSentiment: number;
+    departmentBreakdown: Array<{ department: string; sentimentScore: number; }>;
+    riskDepartments: string[];
+    positivityTrends: string[];
+  }> {
+    const recentData = await this.getCorporateSentimentTrends(corporateAccountId, 30);
+    
+    if (recentData.length === 0) {
+      return {
+        overallSentiment: 50,
+        departmentBreakdown: [],
+        riskDepartments: [],
+        positivityTrends: [],
+      };
+    }
+
+    // Calculate overall sentiment
+    const overallSentiment = Math.round(
+      recentData.reduce((sum, data) => sum + data.sentimentScore, 0) / recentData.length
+    );
+
+    // Group by department
+    const departmentMap = new Map<string, number[]>();
+    recentData.forEach(data => {
+      if (data.department) {
+        if (!departmentMap.has(data.department)) {
+          departmentMap.set(data.department, []);
+        }
+        departmentMap.get(data.department)!.push(data.sentimentScore);
+      }
+    });
+
+    // Calculate department breakdown
+    const departmentBreakdown = Array.from(departmentMap.entries()).map(([department, scores]) => ({
+      department,
+      sentimentScore: Math.round(scores.reduce((sum, score) => sum + score, 0) / scores.length),
+    }));
+
+    // Identify risk departments (below 40)
+    const riskDepartments = departmentBreakdown
+      .filter(dept => dept.sentimentScore < 40)
+      .map(dept => dept.department);
+
+    // Identify positive trends (above 70)
+    const positivityTrends = departmentBreakdown
+      .filter(dept => dept.sentimentScore > 70)
+      .map(dept => dept.department);
+
+    return {
+      overallSentiment,
+      departmentBreakdown,
+      riskDepartments,
+      positivityTrends,
+    };
   }
 }
 

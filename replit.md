@@ -37,6 +37,20 @@ The platform features a minimalist design with a custom color palette, consisten
 - **Content Filtering**: Ensures positive-only posts and manages content length.
 - **AI Integration**: AI is central to a predictive wellness engine (analyzing anonymous behavioral patterns to predict burnout), content intelligence (sentiment analysis, moderation, trend detection), and corporate analytics (team wellness scoring, anonymous employee satisfaction).
 
+### Revenue Diversification (Individual Subscriptions)
+- **Free Tier**: Basic posting (10/month), view feed, basic filters, global counter
+- **Basic ($9.99/month)**: Unlimited posts, advanced filters, kindness analytics, personal insights
+- **Premium ($19.99/month)**: AI wellness predictions, burnout alerts, sentiment tracking, goal setting, data export
+- **Pro ($49.99/month)**: Workplace analytics, team insights, custom challenges, priority support, beta features
+- **Revenue Projection**: With 10,000 users at mixed tiers, potential $100k+ monthly recurring revenue from individual subscriptions alone
+
+### Anonymous Workplace Wellness Features
+- **Predictive Analytics**: AI-powered burnout risk detection and wellness predictions
+- **Sentiment Analysis**: Anonymous department-level sentiment tracking without personal data
+- **Wellness Heatmaps**: Geographic and departmental wellness trend visualization
+- **Risk Alerts**: Proactive identification of at-risk teams or departments
+- **Privacy-First Design**: All wellness data anonymized to protect employee privacy while providing valuable insights
+
 ## External Dependencies
 
 - **React 18**: Frontend framework.

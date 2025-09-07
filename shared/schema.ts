@@ -26,6 +26,16 @@ export const users = pgTable("users", {
   referredBy: varchar("referred_by"),
   totalReferrals: integer("total_referrals").default(0),
   referralEarnings: integer("referral_earnings").default(0),
+  // PREMIUM TIER SYSTEM
+  subscriptionTier: varchar("subscription_tier", { length: 20 }).default("free").notNull(), // free, basic, premium, enterprise
+  subscriptionStatus: varchar("subscription_status", { length: 20 }).default("active").notNull(), // active, cancelled, suspended
+  subscriptionStartDate: timestamp("subscription_start_date"),
+  subscriptionEndDate: timestamp("subscription_end_date"),
+  // WORKPLACE-SPECIFIC FEATURES
+  workplaceId: varchar("workplace_id"), // Links to corporate account if applicable
+  anonymityLevel: varchar("anonymity_level", { length: 20 }).default("full").notNull(), // full, semi, public
+  wellnessTrackingEnabled: integer("wellness_tracking_enabled").default(1).notNull(),
+  burnoutAlertEnabled: integer("burnout_alert_enabled").default(0).notNull(), // Premium feature
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -451,6 +461,55 @@ export const marketingAnalytics = pgTable("marketing_analytics", {
   campaignId: varchar("campaign_id"), // Optional - for campaign attribution
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
+
+// INDIVIDUAL SUBSCRIPTION PLANS (Revenue Diversification)
+export const subscriptionPlans = pgTable("subscription_plans", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  planName: varchar("plan_name", { length: 50 }).notNull(), // Free, Basic, Premium, Enterprise
+  planType: varchar("plan_type", { length: 20 }).default("individual").notNull(), // individual, corporate
+  monthlyPrice: integer("monthly_price").default(0).notNull(), // Price in cents
+  yearlyPrice: integer("yearly_price").default(0).notNull(), // Price in cents (usually discounted)
+  features: jsonb("features").notNull(), // Array of features included
+  limits: jsonb("limits").notNull(), // Usage limits (posts per month, etc.)
+  isActive: integer("is_active").default(1).notNull(),
+  sortOrder: integer("sort_order").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ANONYMOUS WORKPLACE SENTIMENT (No Personal Data)
+export const workplaceSentimentData = pgTable("workplace_sentiment_data", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  corporateAccountId: varchar("corporate_account_id").notNull(),
+  department: varchar("department", { length: 100 }),
+  teamSize: varchar("team_size", { length: 20 }), // small, medium, large
+  sentimentScore: integer("sentiment_score").notNull(), // 0-100
+  stressIndicators: jsonb("stress_indicators"), // Anonymous patterns detected
+  positivityTrends: jsonb("positivity_trends"), // Upward/downward trends
+  riskFactors: jsonb("risk_factors"), // Warning signs without personal data
+  categoryBreakdown: jsonb("category_breakdown"), // Kindness categories by frequency
+  isAnonymized: integer("is_anonymized").default(1).notNull(), // Always 1 for privacy
+  dataDate: timestamp("data_date").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+
+// Individual Subscription Insert Schemas
+export const insertSubscriptionPlanSchema = createInsertSchema(subscriptionPlans).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Individual Subscription Insert Schemas
+export const insertWorkplaceSentimentDataSchema = createInsertSchema(workplaceSentimentData).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Type exports for the new subscription system
+export type SubscriptionPlan = typeof subscriptionPlans.$inferSelect;
+export type InsertSubscriptionPlan = z.infer<typeof insertSubscriptionPlanSchema>;
+export type WorkplaceSentimentData = typeof workplaceSentimentData.$inferSelect;
+export type InsertWorkplaceSentimentData = z.infer<typeof insertWorkplaceSentimentDataSchema>;
 
 // B2B SaaS Insert Schemas
 export const insertCorporateAccountSchema = createInsertSchema(corporateAccounts).omit({
