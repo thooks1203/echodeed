@@ -21,7 +21,7 @@ interface StudentKindnessPoint {
 }
 
 export function SchoolsDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'students' | 'assignments' | 'reports'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'student' | 'teacher' | 'admin'>('overview');
 
   // Fetch schools data
   const { data: schools = [] } = useQuery<School[]>({
@@ -131,9 +131,9 @@ export function SchoolsDashboard() {
       }}>
         {[
           { id: 'overview', label: '📊 Overview' },
-          { id: 'students', label: '👥 Students' },
-          { id: 'assignments', label: '📋 Assignments' },
-          { id: 'reports', label: '📈 Reports' }
+          { id: 'student', label: '👨‍🎓 Student View' },
+          { id: 'teacher', label: '👩‍🏫 Teacher View' },
+          { id: 'admin', label: '👩‍💼 Admin View' }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -232,8 +232,48 @@ export function SchoolsDashboard() {
         </div>
       )}
 
-      {activeTab === 'students' && (
+      {activeTab === 'student' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Student Profile Card */}
+          <div style={{
+            background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+            borderRadius: '12px',
+            padding: '20px',
+            color: 'white',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontSize: '48px', marginBottom: '8px' }}>👨‍🎓</div>
+            <h3 style={{ fontSize: '18px', fontWeight: '600', margin: 0, marginBottom: '4px' }}>
+              Emma Johnson
+            </h3>
+            <p style={{ fontSize: '14px', opacity: 0.9, margin: 0 }}>
+              5th Grade • Riverside Elementary
+            </p>
+          </div>
+
+          {/* My Kindness Stats */}
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '16px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}>
+            <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: '#7C3AED' }}>
+              📊 My Kindness Journey
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div style={{ textAlign: 'center', padding: '16px', background: '#f0f9ff', borderRadius: '8px' }}>
+                <div style={{ fontSize: '24px', fontWeight: '700', color: '#1e40af' }}>245</div>
+                <div style={{ fontSize: '12px', color: '#6b7280' }}>Total Kindness Points</div>
+              </div>
+              <div style={{ textAlign: 'center', padding: '16px', background: '#f0fdf4', borderRadius: '8px' }}>
+                <div style={{ fontSize: '24px', fontWeight: '700', color: '#166534' }}>15</div>
+                <div style={{ fontSize: '12px', color: '#6b7280' }}>This Week</div>
+              </div>
+            </div>
+          </div>
+
+          {/* My Recent Acts */}
           <div style={{
             background: 'white',
             borderRadius: '12px',
@@ -241,119 +281,281 @@ export function SchoolsDashboard() {
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
           }}>
             <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>
-              🏆 Top Students This Week
+              🌟 My Recent Kind Acts
             </h3>
-            
-            {sampleStudentPoints
-              .sort((a, b) => b.weeklyProgress - a.weeklyProgress)
-              .slice(0, 5)
-              .map((student, index) => (
+            {[
+              { act: 'Helped classmate with math homework', points: 5, date: 'Today' },
+              { act: 'Shared lunch with new student', points: 8, date: 'Yesterday' },
+              { act: 'Cleaned up classroom without being asked', points: 6, date: '2 days ago' }
+            ].map((item, index) => (
               <div
-                key={student.studentId}
+                key={index}
                 style={{
                   display: 'flex',
-                  alignItems: 'center',
                   justifyContent: 'space-between',
+                  alignItems: 'center',
                   padding: '12px',
                   borderRadius: '8px',
-                  background: index === 0 ? '#fef3c7' : index === 1 ? '#f3f4f6' : index === 2 ? '#fed7aa' : '#f9fafb',
+                  background: '#f9fafb',
                   border: '1px solid #e5e7eb',
                   marginBottom: '8px'
                 }}
               >
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div style={{
-                    width: '24px',
-                    height: '24px',
-                    borderRadius: '50%',
-                    background: index === 0 ? '#fbbf24' : index === 1 ? '#9ca3af' : index === 2 ? '#fb923c' : '#6b7280',
-                    color: 'white',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: '12px',
-                    fontWeight: '700'
-                  }}>
-                    {index + 1}
-                  </div>
-                  <div>
-                    <div style={{ fontSize: '14px', fontWeight: '600' }}>{student.studentName}</div>
-                    <div style={{ fontSize: '12px', color: '#6b7280' }}>
-                      {student.className} • {student.grade} Grade
-                    </div>
-                  </div>
+                <div>
+                  <div style={{ fontSize: '14px', fontWeight: '500' }}>{item.act}</div>
+                  <div style={{ fontSize: '12px', color: '#6b7280' }}>{item.date}</div>
                 </div>
-                <div style={{ textAlign: 'right' }}>
-                  <div style={{ fontSize: '16px', fontWeight: '700', color: '#7C3AED' }}>
-                    +{student.weeklyProgress}
-                  </div>
-                  <div style={{ fontSize: '10px', color: '#6b7280' }}>
-                    {student.totalPoints} total
-                  </div>
+                <div style={{
+                  background: '#7C3AED',
+                  color: 'white',
+                  padding: '4px 8px',
+                  borderRadius: '6px',
+                  fontSize: '12px',
+                  fontWeight: '600'
+                }}>
+                  +{item.points}
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      )}
 
-      {activeTab === 'assignments' && (
-        <div style={{
-          background: 'white',
-          borderRadius: '12px',
-          padding: '20px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '64px', marginBottom: '16px' }}>📋</div>
-          <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
-            Kindness Assignments
-          </h3>
-          <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '20px' }}>
-            Create and manage kindness challenges for your students
-          </p>
+          {/* New Kind Act Button */}
           <button style={{
             background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
             color: 'white',
             border: 'none',
-            borderRadius: '8px',
-            padding: '12px 24px',
-            fontSize: '14px',
+            borderRadius: '12px',
+            padding: '16px',
+            fontSize: '16px',
             fontWeight: '600',
-            cursor: 'pointer'
+            cursor: 'pointer',
+            textAlign: 'center'
           }}>
-            Create New Assignment
+            ✨ Record New Kind Act
           </button>
         </div>
       )}
 
-      {activeTab === 'reports' && (
-        <div style={{
-          background: 'white',
-          borderRadius: '12px',
-          padding: '20px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '64px', marginBottom: '16px' }}>📈</div>
-          <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
-            SEL Analytics & Reports
-          </h3>
-          <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '20px' }}>
-            Track social-emotional learning progress and kindness impact
-          </p>
-          <button style={{
-            background: 'linear-gradient(135deg, #7C3AED, #EC4899)',
+      {activeTab === 'teacher' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Teacher Profile */}
+          <div style={{
+            background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+            borderRadius: '12px',
+            padding: '20px',
             color: 'white',
-            border: 'none',
-            borderRadius: '8px',
-            padding: '12px 24px',
-            fontSize: '14px',
-            fontWeight: '600',
-            cursor: 'pointer'
+            textAlign: 'center'
           }}>
-            Generate Report
-          </button>
+            <div style={{ fontSize: '48px', marginBottom: '8px' }}>👩‍🏫</div>
+            <h3 style={{ fontSize: '18px', fontWeight: '600', margin: 0, marginBottom: '4px' }}>
+              Mrs. Sarah Davis
+            </h3>
+            <p style={{ fontSize: '14px', opacity: 0.9, margin: 0 }}>
+              5th Grade Teacher • Room 12A
+            </p>
+          </div>
+
+          {/* Class Statistics */}
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '16px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}>
+            <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: '#10b981' }}>
+              📚 My Class Overview
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+              <div style={{ textAlign: 'center', padding: '16px', background: '#f0fdf4', borderRadius: '8px' }}>
+                <div style={{ fontSize: '20px', fontWeight: '700', color: '#166534' }}>28</div>
+                <div style={{ fontSize: '12px', color: '#6b7280' }}>Students</div>
+              </div>
+              <div style={{ textAlign: 'center', padding: '16px', background: '#fef3c7', borderRadius: '8px' }}>
+                <div style={{ fontSize: '20px', fontWeight: '700', color: '#92400e' }}>156</div>
+                <div style={{ fontSize: '12px', color: '#6b7280' }}>Class Points</div>
+              </div>
+              <div style={{ textAlign: 'center', padding: '16px', background: '#f0f9ff', borderRadius: '8px' }}>
+                <div style={{ fontSize: '20px', fontWeight: '700', color: '#1e40af' }}>8.2</div>
+                <div style={{ fontSize: '12px', color: '#6b7280' }}>Avg Score</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Active Assignments */}
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '16px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}>
+            <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>
+              📋 Active Kindness Assignments
+            </h3>
+            {[
+              { title: 'Lunch Buddy Challenge', due: 'Dec 15', completed: 18, total: 28 },
+              { title: 'Compliment Chain', due: 'Dec 20', completed: 24, total: 28 },
+              { title: 'Helper of the Week', due: 'Dec 22', completed: 28, total: 28 }
+            ].map((assignment, index) => (
+              <div
+                key={index}
+                style={{
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  alignItems: 'center',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  background: '#f9fafb',
+                  border: '1px solid #e5e7eb',
+                  marginBottom: '8px'
+                }}
+              >
+                <div>
+                  <div style={{ fontSize: '14px', fontWeight: '600' }}>{assignment.title}</div>
+                  <div style={{ fontSize: '12px', color: '#6b7280' }}>Due: {assignment.due}</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '14px', fontWeight: '600', color: '#10b981' }}>
+                    {assignment.completed}/{assignment.total}
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#6b7280' }}>completed</div>
+                </div>
+              </div>
+            ))}
+            
+            <button style={{
+              background: '#10b981',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '12px 20px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              width: '100%',
+              marginTop: '12px'
+            }}>
+              + Create New Assignment
+            </button>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'admin' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          {/* Admin Profile */}
+          <div style={{
+            background: 'linear-gradient(135deg, #dc2626 0%, #991b1b 100%)',
+            borderRadius: '12px',
+            padding: '20px',
+            color: 'white',
+            textAlign: 'center'
+          }}>
+            <div style={{ fontSize: '48px', marginBottom: '8px' }}>👩‍💼</div>
+            <h3 style={{ fontSize: '18px', fontWeight: '600', margin: 0, marginBottom: '4px' }}>
+              Principal Johnson
+            </h3>
+            <p style={{ fontSize: '14px', opacity: 0.9, margin: 0 }}>
+              School Administrator • Riverside Elementary
+            </p>
+          </div>
+
+          {/* School-Wide Statistics */}
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '16px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}>
+            <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: '#dc2626' }}>
+              🏫 School-Wide Impact
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div style={{ textAlign: 'center', padding: '16px', background: '#fef2f2', borderRadius: '8px' }}>
+                <div style={{ fontSize: '24px', fontWeight: '700', color: '#dc2626' }}>345</div>
+                <div style={{ fontSize: '12px', color: '#6b7280' }}>Total Students</div>
+              </div>
+              <div style={{ textAlign: 'center', padding: '16px', background: '#f0fdf4', borderRadius: '8px' }}>
+                <div style={{ fontSize: '24px', fontWeight: '700', color: '#166534' }}>1247</div>
+                <div style={{ fontSize: '12px', color: '#6b7280' }}>Kind Acts This Month</div>
+              </div>
+              <div style={{ textAlign: 'center', padding: '16px', background: '#f0f9ff', borderRadius: '8px' }}>
+                <div style={{ fontSize: '24px', fontWeight: '700', color: '#1e40af' }}>28</div>
+                <div style={{ fontSize: '12px', color: '#6b7280' }}>Active Teachers</div>
+              </div>
+              <div style={{ textAlign: 'center', padding: '16px', background: '#fef3c7', borderRadius: '8px' }}>
+                <div style={{ fontSize: '24px', fontWeight: '700', color: '#92400e' }}>8.4</div>
+                <div style={{ fontSize: '12px', color: '#6b7280' }}>School Kindness Score</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Recent Highlights */}
+          <div style={{
+            background: 'white',
+            borderRadius: '12px',
+            padding: '16px',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+          }}>
+            <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>
+              ⭐ Recent Highlights
+            </h3>
+            {[
+              { event: 'School-wide Kindness Week completed', impact: '98% participation', date: 'Dec 10' },
+              { event: 'Anti-bullying program launch', impact: '100% teacher training', date: 'Dec 8' },
+              { event: 'Parent-Teacher kindness conference', impact: '85% attendance', date: 'Dec 5' }
+            ].map((item, index) => (
+              <div
+                key={index}
+                style={{
+                  padding: '12px',
+                  borderRadius: '8px',
+                  background: '#f9fafb',
+                  border: '1px solid #e5e7eb',
+                  marginBottom: '8px'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  <div>
+                    <div style={{ fontSize: '14px', fontWeight: '600' }}>{item.event}</div>
+                    <div style={{ fontSize: '12px', color: '#10b981', fontWeight: '500' }}>{item.impact}</div>
+                  </div>
+                  <div style={{ fontSize: '12px', color: '#6b7280' }}>{item.date}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Admin Actions */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: '1fr 1fr',
+            gap: '12px'
+          }}>
+            <button style={{
+              background: '#dc2626',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '12px 16px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}>
+              📊 Generate Report
+            </button>
+            <button style={{
+              background: '#7C3AED',
+              color: 'white',
+              border: 'none',
+              borderRadius: '8px',
+              padding: '12px 16px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}>
+              ⚙️ Manage Settings
+            </button>
+          </div>
         </div>
       )}
     </div>
