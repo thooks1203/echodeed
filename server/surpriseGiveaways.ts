@@ -18,7 +18,7 @@ export interface SurpriseGiveawayConfig {
   minSchoolActivityScore?: number;
   
   // Timing config
-  triggerFrequency: 'hourly' | 'daily' | 'weekly';
+  triggerFrequency: 'hourly' | 'daily' | 'weekly' | 'monthly' | 'quarterly';
   startDate: Date;
   endDate?: Date;
 }
@@ -65,29 +65,29 @@ export class SurpriseGiveawayService {
   }
 
   private initializeDefaultConfigs() {
-    // User gift card surprise config
+    // User gift card surprise config - SUSTAINABLE VERSION
     const userGiftCardConfig: SurpriseGiveawayConfig = {
-      id: 'daily-starbucks-surprise',
-      name: 'Daily Starbucks Surprise',
+      id: 'weekly-kindness-surprise',
+      name: 'Weekly Kindness Champion Surprise',
       isActive: true,
       giveawayType: 'user_gift_card',
       giftCardValue: 10,
       partnerId: undefined, // Will use first available partner
-      maxUsersPerDay: 3,
-      minActivityScore: 75, // High activity threshold
-      triggerFrequency: 'daily',
+      maxUsersPerDay: 1, // Reduced from 3 to 1 per week (sustainable)
+      minActivityScore: 85, // Raised threshold to 85 (more selective)
+      triggerFrequency: 'weekly', // Changed from daily to weekly (7x cost reduction)
       startDate: new Date()
     };
 
-    // School fee refund config
+    // School fee refund config - CONSERVATIVE VERSION
     const schoolRefundConfig: SurpriseGiveawayConfig = {
       id: 'quarterly-school-refund',
-      name: 'Quarterly School Fee Refund',
+      name: 'Quarterly Top School Recognition',
       isActive: true,
       giveawayType: 'school_fee_refund',
-      maxSchoolsPerPeriod: 5,
+      maxSchoolsPerPeriod: 3, // Reduced from 5 to 3 schools (more sustainable)
       refundPeriod: 'quarterly',
-      minSchoolActivityScore: 85,
+      minSchoolActivityScore: 90, // Raised threshold (top performers only)
       triggerFrequency: 'quarterly',
       startDate: new Date()
     };
@@ -226,9 +226,9 @@ export class SurpriseGiveawayService {
       try {
         // Create surprise gift card redemption - use sample data for now
         const offers = await this.storage.getRewardOffers({});
-        const offer = offers.find(o => o.offerValue === `$${config.giftCardValue}`);
+        const offer = offers.find((o: any) => o.offerValue === `$${config.giftCardValue}`);
         const allPartners = await this.storage.getRewardPartners();
-        const partner = allPartners.find(p => offer && p.id === offer.partnerId);
+        const partner = allPartners.find((p: any) => offer && p.id === offer.partnerId);
         
         if (offer && partner) {
           const redemption = await this.storage.redeemReward({
@@ -363,6 +363,10 @@ export class SurpriseGiveawayService {
         return new Date(now.getTime() + 24 * 60 * 60 * 1000);
       case 'weekly':
         return new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+      case 'monthly':
+        return new Date(now.getTime() + 30 * 24 * 60 * 60 * 1000);
+      case 'quarterly':
+        return new Date(now.getTime() + 90 * 24 * 60 * 60 * 1000);
       default:
         return new Date(now.getTime() + 24 * 60 * 60 * 1000);
     }
