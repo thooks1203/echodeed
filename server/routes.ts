@@ -8,9 +8,13 @@ import { aiAnalytics } from "./services/aiAnalytics";
 import { slackNotifications } from "./services/slackNotifications";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { fulfillmentService } from "./fulfillment";
+import { SurpriseGiveawayService } from './surpriseGiveaways';
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
+
+  // Initialize surprise giveaway service
+  const surpriseGiveawayService = new SurpriseGiveawayService(storage, fulfillmentService);
 
   // Auth middleware - Set up before routes
   await setupAuth(app);
@@ -1659,6 +1663,76 @@ export async function registerRoutes(app: Express): Promise<Server> {
         currentStatus: redemption.status,
         lastChecked: new Date()
       });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Surprise Giveaway System API Endpoints
+  
+  // Get active giveaway campaigns
+  app.get('/api/surprise-giveaways/campaigns', isAuthenticated, async (req, res) => {
+    try {
+      const campaigns = await surpriseGiveawayService.getActiveConfigs();
+      res.json(campaigns);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Run a surprise giveaway manually (admin only)
+  app.post('/api/surprise-giveaways/run/:campaignId', isAuthenticated, async (req, res) => {
+    try {
+      const { campaignId } = req.params;
+      const result = await surpriseGiveawayService.runSurpriseGiveaway(campaignId);
+      res.json(result);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get eligible users for surprise gift cards
+  app.get('/api/surprise-giveaways/eligible-users', isAuthenticated, async (req, res) => {
+    try {
+      const eligibleUsers = await surpriseGiveawayService.getEligibleUsers();
+      res.json(eligibleUsers);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get eligible schools for fee refunds
+  app.get('/api/surprise-giveaways/eligible-schools', isAuthenticated, async (req, res) => {
+    try {
+      const eligibleSchools = await surpriseGiveawayService.getEligibleSchools();
+      res.json(eligibleSchools);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Update giveaway campaign configuration
+  app.patch('/api/surprise-giveaways/campaigns/:campaignId', isAuthenticated, async (req, res) => {
+    try {
+      const { campaignId } = req.params;
+      const success = await surpriseGiveawayService.updateConfig(campaignId, req.body);
+      
+      if (!success) {
+        return res.status(404).json({ message: 'Campaign not found' });
+      }
+      
+      res.json({ success, campaignId, message: 'Campaign updated successfully' });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get user's activity score
+  app.get('/api/surprise-giveaways/my-activity-score', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const activityScore = await surpriseGiveawayService.calculateUserActivityScore(userId);
+      res.json(activityScore);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
