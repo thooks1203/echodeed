@@ -4389,13 +4389,13 @@ export default function Home() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px',
-                        padding: '12px 20px',
+                        gap: '6px',
+                        padding: '8px 14px',
                         backgroundColor: '#f8f9fa',
                         border: '2px solid #e5e7eb',
-                        borderRadius: '24px',
+                        borderRadius: '20px',
                         cursor: 'pointer',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         color: '#374151',
                         fontWeight: '600',
                         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -4416,7 +4416,7 @@ export default function Home() {
                         e.currentTarget.style.transform = 'scale(1)';
                       }}
                     >
-                      <span style={{ fontSize: '22px' }}>💜</span>
+                      <span style={{ fontSize: '16px' }}>💜</span>
                       <span>{post.heartsCount || 0}</span>
                     </button>
                     
@@ -4426,13 +4426,13 @@ export default function Home() {
                       style={{
                         display: 'flex',
                         alignItems: 'center',
-                        gap: '8px',
-                        padding: '12px 20px',
+                        gap: '6px',
+                        padding: '8px 14px',
                         backgroundColor: '#f8f9fa',
                         border: '2px solid #e5e7eb',
-                        borderRadius: '24px',
+                        borderRadius: '20px',
                         cursor: 'pointer',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         color: '#374151',
                         fontWeight: '600',
                         boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
@@ -4453,7 +4453,7 @@ export default function Home() {
                         e.currentTarget.style.transform = 'scale(1)';
                       }}
                     >
-                      <span style={{ fontSize: '22px' }}>🌊</span>
+                      <span style={{ fontSize: '16px' }}>🌊</span>
                       <span>{post.echoesCount || 0} Echo</span>
                     </button>
                   </div>
