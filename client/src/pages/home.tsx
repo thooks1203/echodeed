@@ -3502,7 +3502,7 @@ export default function Home() {
         </div>
 
         {/* Schools Dashboard Content */}
-        <div style={{ paddingBottom: '100px' }}>
+        <div style={{ padding: '20px', paddingBottom: '120px' }}>
           <SchoolsDashboard />
         </div>
         
