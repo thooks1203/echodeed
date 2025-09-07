@@ -18,7 +18,7 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
           <div className="flex items-center space-x-3">
             <div className="w-20 h-20 flex items-center justify-center animate-logoFloat">
               <img 
-                src="/electric-heart-logo.png?v=1757266534&bust=true" 
+                src="/echodeed-electric-new.png?v=1757267120" 
                 alt="EchoDeed Electric Heart" 
                 className="w-full h-full object-contain"
                 style={{
