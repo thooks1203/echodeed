@@ -120,6 +120,7 @@ export interface IStorage {
   
   // Corporate operations
   getCorporateAccount(id: string): Promise<CorporateAccount | undefined>;
+  getCorporateAccounts(): Promise<CorporateAccount[]>;
   createCorporateAccount(account: InsertCorporateAccount): Promise<CorporateAccount>;
   getCorporateEmployee(userId: string): Promise<CorporateEmployee | undefined>;
   enrollCorporateEmployee(employee: InsertCorporateEmployee): Promise<CorporateEmployee>;
@@ -500,6 +501,12 @@ export class DatabaseStorage implements IStorage {
   async getCorporateAccount(id: string): Promise<CorporateAccount | undefined> {
     const [account] = await db.select().from(corporateAccounts).where(eq(corporateAccounts.id, id));
     return account || undefined;
+  }
+
+  async getCorporateAccounts(): Promise<CorporateAccount[]> {
+    return await db.select().from(corporateAccounts)
+      .where(eq(corporateAccounts.isActive, 1))
+      .orderBy(desc(corporateAccounts.createdAt));
   }
 
   async createCorporateAccount(account: InsertCorporateAccount): Promise<CorporateAccount> {
