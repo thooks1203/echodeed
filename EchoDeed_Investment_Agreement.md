@@ -9,7 +9,7 @@
 - **Company**: EchoDeed™ (to be incorporated)
 - **Founder**: [Your Full Name]
 - **Investor**: [Friend's Full Name]
-- **Investment Amount**: $5,000
+- **Investment Amount**: $6,000
 - **Date**: _______________
 
 ---
@@ -18,7 +18,7 @@
 
 ### **OPTION A: CONVERTIBLE NOTE (RECOMMENDED)**
 
-**Principal Amount**: $5,000
+**Principal Amount**: $6,000
 **Interest Rate**: 6% annually
 **Maturity Date**: 24 months from signing
 **Conversion Terms**:
@@ -34,15 +34,15 @@
 
 ### **OPTION B: SIMPLE EQUITY AGREEMENT**
 
-**Investment**: $5,000 for **2% ownership** of EchoDeed™
-**Current Valuation**: $250,000 (implied)
+**Investment**: $6,000 for **2% ownership** of EchoDeed™
+**Current Valuation**: $300,000 (implied)
 **Vesting**: No vesting (immediate ownership)
 **Rights**: Minority investor rights, information sharing
 
 ### **OPTION C: REVENUE SHARE AGREEMENT**
 
-**Investment**: $5,000
-**Revenue Share**: **5% of gross revenue** until $15,000 repaid (3x return)
+**Investment**: $6,000
+**Revenue Share**: **5% of gross revenue** until $18,000 repaid (3x return)
 **Term**: Maximum 5 years
 **Monthly Reports**: Revenue and customer updates
 
@@ -50,16 +50,18 @@
 
 ## USE OF FUNDS (IMMEDIATE PRIORITIES)
 
-### **Patent Protection (60% - $3,000)**
-- Provisional patent applications filing fees: $1,600
-- Patent attorney consultation and preparation: $1,400
+### **Patent Protection (65% - $3,900)**
+- Provisional patent applications filing fees: $1,800
+- Patent attorney consultation and preparation: $2,100
+- Patent search and prior art analysis: $500
+- Contingency for additional patent costs: $500
 
-### **Customer Acquisition (40% - $2,000)**
-- Sales tools and CRM setup: $600
-- Professional marketing materials: $400
+### **Customer Acquisition (35% - $2,100)**
+- Sales tools and CRM setup: $700
+- Professional marketing materials: $500
 - LinkedIn Sales Navigator and outreach tools: $300
 - Demo environment hosting and setup: $300
-- Travel/meetings for customer discovery: $400
+- Travel/meetings for customer discovery: $300
 
 ---
 
@@ -140,7 +142,7 @@ Investor entitled to:
 Signature: _________________________________ Date: __________
 
 **I, [Friend's Name], as Investor, agree to:**
-- Invest $5,000 under the terms selected above
+- Invest $6,000 under the terms selected above
 - Maintain confidentiality of all business information
 - Support the founder's efforts to build the business
 - Understand the high-risk nature of this investment
