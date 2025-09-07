@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoDeed™ Early Stage Investment Agreement</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+            max-width: 8.5in;
+            margin: 0 auto;
+            padding: 1in;
+            background: white;
+            color: #333;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #ff6633;
+        }
+        .logo {
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 15px;
+            display: block;
+        }
+        .company-name {
+            font-size: 28px;
+            font-weight: bold;
+            color: #ff6633;
+            margin: 10px 0;
+            letter-spacing: 1px;
+        }
+        .tagline {
+            font-size: 14px;
+            color: #666;
+            font-style: italic;
+        }
+        .doc-title {
+            font-size: 24px;
+            font-weight: bold;
+            text-align: center;
+            margin: 30px 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .subtitle {
+            font-size: 16px;
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-style: italic;
+        }
+        .investment-box {
+            background: linear-gradient(135deg, #ff6633, #ff33ff);
+            color: white;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(255, 102, 51, 0.3);
+        }
+        .investment-amount {
+            font-size: 36px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .parties-box {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .section-header {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 25px 0 15px 0;
+            color: #ff6633;
+            border-bottom: 2px solid #ff6633;
+            padding-bottom: 5px;
+        }
+        .subsection {
+            font-size: 16px;
+            font-weight: bold;
+            margin: 20px 0 10px 0;
+            color: #333;
+        }
+        .option-box {
+            border: 2px solid #ff6633;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            background: #fff;
+        }
+        .option-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #ff6633;
+            margin-bottom: 15px;
+        }
+        .recommended {
+            background: linear-gradient(135deg, #fff, #fff3f0);
+            border-color: #ff6633;
+            position: relative;
+        }
+        .recommended::before {
+            content: "RECOMMENDED";
+            position: absolute;
+            top: -10px;
+            right: 20px;
+            background: #ff6633;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .clause {
+            margin: 15px 0;
+            text-align: justify;
+        }
+        .list-item {
+            margin: 8px 0 8px 30px;
+        }
+        .highlight-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 20px 0;
+        }
+        .funds-breakdown {
+            background: #f0f7ff;
+            border: 1px solid #b3d9ff;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+        .percentage-bar {
+            background: #e0e0e0;
+            height: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+        .percentage-fill-patent {
+            background: linear-gradient(90deg, #ff6633, #ff8a65);
+            height: 100%;
+            width: 65%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .percentage-fill-customer {
+            background: linear-gradient(90deg, #2196F3, #64b5f6);
+            height: 100%;
+            width: 35%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .signature-section {
+            margin-top: 50px;
+            page-break-inside: avoid;
+        }
+        .signature-box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            margin: 20px 0;
+            background: #fcfcfc;
+            border-radius: 5px;
+        }
+        .signature-line {
+            border-bottom: 1px solid #333;
+            display: inline-block;
+            width: 300px;
+            margin: 0 10px;
+        }
+        .date-line {
+            border-bottom: 1px solid #333;
+            display: inline-block;
+            width: 100px;
+            margin: 0 10px;
+        }
+        .checkbox {
+            width: 15px;
+            height: 15px;
+            border: 2px solid #ff6633;
+            display: inline-block;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+        .legal-notice {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            padding: 15px;
+            margin: 30px 0;
+            border-radius: 5px;
+            font-size: 12px;
+        }
+        .next-steps {
+            background: #f0fff4;
+            border: 1px solid #90ee90;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 30px 0;
+        }
+        @media print {
+            body { padding: 0.5in; font-size: 12px; }
+            .signature-section { page-break-before: always; }
+            .option-box { page-break-inside: avoid; }
+        }
+    </style>
+</head>
+<body>
+    
+    <div class="header">
+        <img src="@assets/echodeed_electric_logo.png" alt="EchoDeed Logo" class="logo">
+        <div class="company-name">EchoDeed™</div>
+        <div class="tagline">AI-Powered Workplace Wellness Platform</div>
+    </div>
+
+    <div class="doc-title">Early Stage Investment Agreement</div>
+    <div class="subtitle">Seed Funding for Patent Protection & Customer Acquisition</div>
+
+    <div class="investment-box">
+        <div style="font-size: 18px; margin-bottom: 10px;">INVESTMENT OPPORTUNITY</div>
+        <div class="investment-amount">$6,000</div>
+        <div style="font-size: 14px;">Seed funding to capture $65.25B market opportunity</div>
+    </div>
+
+    <div class="parties-box">
+        <strong>INVESTMENT DETAILS:</strong><br>
+        <strong>Company:</strong> EchoDeed™ (to be incorporated)<br>
+        <strong>Founder:</strong> ________________________________<br>
+        <strong>Investor:</strong> ________________________________<br>
+        <strong>Investment Amount:</strong> $6,000<br>
+        <strong>Date:</strong> ________________________________
+    </div>
+
+    <div class="section-header">INVESTMENT STRUCTURE OPTIONS</div>
+
+    <div class="option-box recommended">
+        <div class="option-header">OPTION A: CONVERTIBLE NOTE</div>
+        <strong>Principal Amount:</strong> $6,000<br>
+        <strong>Interest Rate:</strong> 6% annually<br>
+        <strong>Maturity Date:</strong> 24 months from signing<br>
+        <strong>Conversion Terms:</strong>
+        <div class="list-item">• Converts to equity upon next qualified financing round ($50K+ raised)</div>
+        <div class="list-item">• <strong>20% Discount</strong> to Series A price (reward for early risk)</div>
+        <div class="list-item">• <strong>Valuation Cap:</strong> $500,000 (maximum company value for conversion)</div>
+        
+        <div class="highlight-box">
+            <strong>What This Means:</strong> Your friend loans $6,000 now. Money converts to company shares when we raise our real funding round. Early investor discount rewards the risk of investing first. If company is worth $2M later, your friend converts at $500K cap (4x return potential).
+        </div>
+    </div>
+
+    <div class="option-box">
+        <div class="option-header">OPTION B: SIMPLE EQUITY AGREEMENT</div>
+        <strong>Investment:</strong> $6,000 for <strong>2% ownership</strong> of EchoDeed™<br>
+        <strong>Current Valuation:</strong> $300,000 (implied)<br>
+        <strong>Vesting:</strong> No vesting (immediate ownership)<br>
+        <strong>Rights:</strong> Minority investor rights, information sharing
+    </div>
+
+    <div class="option-box">
+        <div class="option-header">OPTION C: REVENUE SHARE AGREEMENT</div>
+        <strong>Investment:</strong> $6,000<br>
+        <strong>Revenue Share:</strong> <strong>5% of gross revenue</strong> until $18,000 repaid (3x return)<br>
+        <strong>Term:</strong> Maximum 5 years<br>
+        <strong>Monthly Reports:</strong> Revenue and customer updates
+    </div>
+
+    <div class="section-header">USE OF FUNDS (IMMEDIATE PRIORITIES)</div>
+
+    <div class="funds-breakdown">
+        <div class="subsection">Patent Protection (65% - $3,900)</div>
+        <div class="percentage-bar">
+            <div class="percentage-fill-patent">Patent Protection - $3,900</div>
+        </div>
+        <div class="list-item">• Provisional patent applications filing fees: $1,800</div>
+        <div class="list-item">• Patent attorney consultation and preparation: $2,100</div>
+        <div class="list-item">• Patent search and prior art analysis: $500</div>
+        <div class="list-item">• Contingency for additional patent costs: $500</div>
+
+        <div class="subsection">Customer Acquisition (35% - $2,100)</div>
+        <div class="percentage-bar">
+            <div class="percentage-fill-customer">Customer Acquisition - $2,100</div>
+        </div>
+        <div class="list-item">• Sales tools and CRM setup: $700</div>
+        <div class="list-item">• Professional marketing materials: $500</div>
+        <div class="list-item">• LinkedIn Sales Navigator and outreach tools: $300</div>
+        <div class="list-item">• Demo environment hosting and setup: $300</div>
+        <div class="list-item">• Travel/meetings for customer discovery: $300</div>
+    </div>
+
+    <div class="section-header">INVESTOR RIGHTS & PROTECTIONS</div>
+
+    <div class="subsection">Information Rights</div>
+    <div class="clause">Investor entitled to:</div>
+    <div class="list-item">• Monthly financial and progress updates</div>
+    <div class="list-item">• Quarterly business plan reviews</div>
+    <div class="list-item">• Access to customer metrics and key milestones</div>
+    <div class="list-item">• Right to review patent filing status and protection</div>
+
+    <div class="subsection">Pro-Rata Rights (Convertible Note & Equity)</div>
+    <div class="list-item">• Right to invest in future funding rounds to maintain ownership percentage</div>
+    <div class="list-item">• Minimum 30 days notice of future financing opportunities</div>
+
+    <div class="subsection">Anti-Dilution Protection (Convertible Note Only)</div>
+    <div class="list-item">• Valuation cap protects against excessive dilution</div>
+    <div class="list-item">• Conversion discount rewards early investment risk</div>
+
+    <div class="section-header">FOUNDER COMMITMENTS</div>
+
+    <div class="subsection">Business Milestones (Next 6 Months)</div>
+    <div class="list-item">1. <strong>Patent Protection:</strong> File 3 provisional patents within 45 days</div>
+    <div class="list-item">2. <strong>Customer Discovery:</strong> Complete 25+ customer interviews</div>
+    <div class="list-item">3. <strong>Pilot Programs:</strong> Launch 3+ enterprise pilot programs</div>
+    <div class="list-item">4. <strong>Revenue Generation:</strong> Target $50K+ in signed pilot commitments</div>
+
+    <div class="subsection">Reporting Requirements</div>
+    <div class="list-item">• <strong>Monthly Updates:</strong> Customer acquisition, revenue, key metrics</div>
+    <div class="list-item">• <strong>Quarterly Reviews:</strong> Financial statements, milestone progress</div>
+    <div class="list-item">• <strong>Annual Meeting:</strong> Strategy review and planning session</div>
+
+    <div class="section-header">LEGAL TERMS & CONDITIONS</div>
+
+    <div class="subsection">Representations & Warranties</div>
+    <div class="clause">
+        <strong>Founder represents:</strong>
+        <div class="list-item">• Sole ownership of all EchoDeed™ intellectual property</div>
+        <div class="list-item">• No existing legal obligations that conflict with this venture</div>
+        <div class="list-item">• Financial projections prepared in good faith with reasonable assumptions</div>
+    </div>
+    <div class="clause">
+        <strong>Investor acknowledges:</strong>
+        <div class="list-item">• This is a high-risk early-stage investment</div>
+        <div class="list-item">• No guarantee of returns or success</div>
+        <div class="list-item">• Potential for total loss of investment</div>
+    </div>
+
+    <div class="subsection">Governing Law & Dispute Resolution</div>
+    <div class="list-item">• <strong>Governing Law:</strong> _____________ corporate and securities law</div>
+    <div class="list-item">• <strong>Disputes:</strong> Mediation first, then binding arbitration</div>
+    <div class="list-item">• <strong>Attorney Fees:</strong> Prevailing party entitled to reasonable attorney fees</div>
+
+    <div class="signature-section">
+        <div class="section-header">SIGNATURES & ACCEPTANCE</div>
+
+        <div class="signature-box">
+            <strong>I, _________________________, as Founder of EchoDeed™, agree to:</strong>
+            <div class="list-item">• Use funds solely for stated business purposes</div>
+            <div class="list-item">• Provide regular updates and maintain transparency</div>
+            <div class="list-item">• Work full-time to build EchoDeed™ into a successful enterprise</div>
+            <div class="list-item">• File patent applications within 45 days of receiving funds</div>
+            <br>
+            <strong>Selected Investment Structure:</strong> 
+            <span class="checkbox"></span> Convertible Note 
+            <span class="checkbox"></span> Equity 
+            <span class="checkbox"></span> Revenue Share<br><br>
+            Signature: <span class="signature-line"></span> Date: <span class="date-line"></span>
+        </div>
+
+        <div class="signature-box">
+            <strong>I, _________________________, as Investor, agree to:</strong>
+            <div class="list-item">• Invest $6,000 under the terms selected above</div>
+            <div class="list-item">• Maintain confidentiality of all business information</div>
+            <div class="list-item">• Support the founder's efforts to build the business</div>
+            <div class="list-item">• Understand the high-risk nature of this investment</div>
+            <br>
+            <strong>Selected Investment Structure:</strong> 
+            <span class="checkbox"></span> Convertible Note 
+            <span class="checkbox"></span> Equity 
+            <span class="checkbox"></span> Revenue Share<br><br>
+            Signature: <span class="signature-line"></span> Date: <span class="date-line"></span>
+        </div>
+    </div>
+
+    <div class="section-header">PAYMENT INSTRUCTIONS</div>
+    <div class="parties-box">
+        <strong>Payment Method:</strong> <span class="checkbox"></span> Check <span class="checkbox"></span> Bank Transfer <span class="checkbox"></span> Other: ___________<br><br>
+        <strong>Business Account Details</strong> (Once incorporated):<br>
+        Account Name: EchoDeed™ LLC (or Inc.)<br>
+        Bank: ________________________________<br>
+        Account Number: _______________________<br>
+        Routing Number: _______________________<br><br>
+        <strong>Temporary Personal Account</strong> (If business not yet incorporated):<br>
+        Account Holder: ________________________________<br>
+        Bank: ________________________________<br>
+        Account Number: _______________________
+    </div>
+
+    <div class="next-steps">
+        <strong>NEXT STEPS AFTER SIGNING:</strong><br>
+        1. ✅ Execute NDA (protect confidential information)<br>
+        2. ✅ Sign Investment Agreement (formalize investment terms)<br>
+        3. ✅ Transfer funds (enable immediate patent filing)<br>
+        4. ✅ File provisional patents (protect intellectual property)<br>
+        5. ✅ Begin customer outreach (start revenue generation)
+    </div>
+
+    <div class="legal-notice">
+        <strong>IMPORTANT LEGAL NOTICES:</strong><br><br>
+        1. <strong>Securities Law Compliance:</strong> This investment may constitute a security. Both parties should consult qualified legal and tax advisors.<br>
+        2. <strong>Incorporation Timeline:</strong> Company will be formally incorporated within 60 days of receiving investment.<br>
+        3. <strong>Future Financing:</strong> Terms may be modified or superseded by future professional investment rounds.<br>
+        4. <strong>Professional Review Recommended:</strong> This agreement should be reviewed by qualified attorneys before signing.<br><br>
+        <em>This agreement protects both parties while enabling EchoDeed™ to take immediate action on the patent-protected $65.25B market opportunity.</em>
+    </div>
+
+</body>
+</html>
