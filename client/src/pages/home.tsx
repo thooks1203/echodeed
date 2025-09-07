@@ -3777,7 +3777,6 @@ export default function Home() {
           </div>
         </div>
         
-        <div style={{ marginBottom: '16px', display: 'flex', justifyContent: 'center' }}><img src="/electric-heart-logo.png" alt="Electric Heart" style={{width: '200px', height: '200px'}} /></div>
         <div style={{ 
           fontSize: '18px', 
           fontWeight: '600', 

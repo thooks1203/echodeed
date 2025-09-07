@@ -17,26 +17,24 @@ export function LandingPage() {
       <div style={{ textAlign: 'center', marginBottom: '40px' }}>
         <div style={{ 
           display: 'flex',
-          justifyContent: 'center',
           alignItems: 'center',
+          justifyContent: 'center',
           marginBottom: '16px',
-          width: '320px',
-          height: '320px',
-          margin: '0 auto 16px auto'
+          gap: '16px'
         }}>
-          <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{ width: '100%', height: '100%', objectFit: 'contain' }} />
+          <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{ width: '120px', height: '120px', objectFit: 'contain' }} />
+          <h1 style={{ 
+            fontSize: '48px', 
+            fontWeight: '700',
+            margin: '0',
+            background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)',
+            backgroundClip: 'text',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            EchoDeed™
+          </h1>
         </div>
-        <h1 style={{ 
-          fontSize: '36px', 
-          fontWeight: '700',
-          margin: '0 0 8px 0',
-          background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)',
-          backgroundClip: 'text',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
-        }}>
-          EchoDeed™
-        </h1>
         <p style={{ 
           fontSize: '18px', 
           color: '#6b7280',
