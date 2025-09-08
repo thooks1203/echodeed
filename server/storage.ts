@@ -623,6 +623,8 @@ export class DatabaseStorage implements IStorage {
       const totalPosts = userPosts.length;
       const totalEarned = userTokens?.totalEarned || 0;
       
+      console.log(`🎯 Achievement check for user ${userId}: ${totalPosts} posts, ${totalEarned} tokens earned`);
+      
       // Calculate category-specific posts
       const helpingPosts = userPosts.filter(p => p.category === 'Helping Others').length;
       const communityPosts = userPosts.filter(p => p.category === 'Community Action').length;

@@ -12,16 +12,19 @@ export class ContentFilterService {
   isContentAppropriate(content: string): { isValid: boolean; reason?: string } {
     const lowerContent = content.toLowerCase();
     
-    // Check for profanity
+    // Create word boundary regex for more precise matching
+    const words = lowerContent.match(/\b\w+\b/g) || [];
+    
+    // Check for profanity (exact word matches only)
     for (const word of this.profanityWords) {
-      if (lowerContent.includes(word.toLowerCase())) {
+      if (words.includes(word.toLowerCase())) {
         return { isValid: false, reason: 'Content contains inappropriate language' };
       }
     }
     
-    // Check for negative keywords
+    // Check for negative keywords (exact word matches only)
     for (const keyword of this.negativeKeywords) {
-      if (lowerContent.includes(keyword.toLowerCase())) {
+      if (words.includes(keyword.toLowerCase())) {
         return { isValid: false, reason: 'Content contains negative language. EchoDeed is for positive acts of kindness only.' };
       }
     }
