@@ -58,12 +58,43 @@ The main feed displays a live stream of anonymous kindness acts from your commun
 - **Risk Level**: Low/Medium/High wellness risk assessment
 - **Department Analysis**: (Corporate) Mood tracking by teams (Engineering, Sales, Marketing)
 
-**How It Works:**
-1. AI analyzes text patterns in recent kindness posts
-2. Identifies emotional keywords and sentiment indicators
-3. Correlates kindness activity with engagement patterns
-4. Generates predictions based on historical data
-5. Provides real-time alerts for concerning trends
+**How It Works - Sentiment Analysis Technology:**
+
+**Text Analysis Process:**
+1. **Keyword Detection**: Scans for 500+ emotional indicators:
+   - Positive: "grateful," "helped," "smile," "better," "hope"
+   - Negative: "difficult," "struggling," "hard," "tired," "alone"
+   - Stress: "overwhelmed," "pressure," "deadline," "worried"
+
+2. **Linguistic Pattern Recognition**:
+   - Sentence structure analysis (short sentences = stress)
+   - Punctuation patterns (excessive !!! or ... = emotional state)
+   - Word choice complexity (simple words = cognitive load)
+
+3. **Context Correlation**:
+   - Time-of-day posting patterns
+   - Category selection trends
+   - Posting frequency changes
+   - Response to challenges
+
+**Confidence Scoring Method:**
+- **60-69%**: Single indicator present
+- **70-79%**: Multiple indicators align
+- **80-89%**: Strong pattern consistency
+- **90%+**: Multiple data sources confirm
+
+**Department Analysis Algorithm:**
+1. Aggregates individual sentiment scores anonymously
+2. Identifies outlier departments (>2 standard deviations from mean)
+3. Tracks week-over-week trends
+4. Cross-references with productivity/engagement data
+5. Generates actionable insights and recommendations
+
+**Real-Time Alert Triggers:**
+- Department score drops >15% in 48 hours
+- Individual shows 3+ stress indicators simultaneously  
+- Company-wide sentiment trend declining for 7+ days
+- Cross-departmental collaboration scores drop significantly
 
 ### **Tab 2: Predictive Wellness Dashboard**
 
@@ -84,12 +115,44 @@ The main feed displays a live stream of anonymous kindness acts from your commun
   - Estimated time required (5-30 minutes)
   - Why this act would help right now
 
-**How It Works:**
-1. Tracks posting frequency, timing patterns, and content sentiment
-2. Identifies early warning signs (posting late at night = stress indicator)
-3. Compares individual patterns to baseline wellness metrics
-4. Generates intervention recommendations before crisis points
-5. Suggests specific kindness acts that address identified concerns
+**How It Works - The Science Behind Burnout Detection:**
+
+**Data Signals Analyzed:**
+1. **Posting Frequency Patterns**:
+   - Normal: 3-5 posts per week
+   - Warning: Sudden drop to <1 post per week OR frantic posting (>15 posts per week)
+   - Critical: Complete silence for 10+ days from previously active user
+
+2. **Timing Pattern Analysis**:
+   - Normal: Posts during 8am-8pm
+   - Warning: Regular posts after 10pm or before 6am
+   - Critical: Consistent posting between 11pm-5am (insomnia indicator)
+
+3. **Content Sentiment Shifts**:
+   - Normal: Mixed positive/neutral content
+   - Warning: 70%+ posts contain stress words ("overwhelmed," "exhausted," "stressed")
+   - Critical: Isolation language ("alone," "nobody understands," "giving up")
+
+4. **Engagement Pattern Changes**:
+   - Normal: Responds to challenges, varies categories
+   - Warning: Stops participating in challenges, only posts "helping others" (classic overgiving burnout)
+   - Critical: Posts become shorter (<20 words), repetitive themes
+
+**AI Algorithm Process:**
+1. **Baseline Establishment**: First 30 days creates individual wellness baseline
+2. **Pattern Recognition**: Machine learning identifies deviations from personal norms
+3. **Risk Scoring**: Weighted algorithm assigns 0-100 risk score:
+   - Timing patterns: 25% weight
+   - Frequency changes: 30% weight  
+   - Sentiment analysis: 35% weight
+   - Engagement drops: 10% weight
+4. **Confidence Calculation**: Cross-references multiple signals for accuracy
+5. **Intervention Timing**: Triggers alerts at 70% confidence to prevent false positives
+
+**Real-World Examples:**
+- **Sarah's Pattern**: Usually posts 4x/week at lunch. Suddenly posts only at 11pm with words like "exhausted" → 78% burnout risk
+- **Mike's Signal**: Stopped participating in challenges, posts only about helping others, frequency dropped 80% → 85% burnout risk
+- **Team Detection**: 6 people in Marketing all showing stress language simultaneously → Department-wide intervention recommended
 
 ### **Tab 3: AI Kindness Suggestions**
 
@@ -104,12 +167,43 @@ The main feed displays a live stream of anonymous kindness acts from your commun
   - **Personalized Reasoning**: "Based on your recent team interactions, a thank-you note would strengthen relationships"
   - **Context Factors**: Current location, time of day, recent activity
 
-**How It Works:**
-1. Analyzes your past kindness activities and preferences
-2. Considers current context (location, time, recent posts)
-3. Generates suggestions that match your style and availability
-4. Adapts recommendations based on completion feedback
-5. Refreshes with new suggestions when button is clicked
+**How It Works - Personalization Algorithm:**
+
+**User Profile Building:**
+1. **Activity History Analysis** (90-day window):
+   - Most frequently chosen categories
+   - Preferred difficulty levels
+   - Time-of-day posting patterns
+   - Completion rates by suggestion type
+
+2. **Context Awareness Engine**:
+   - **Location**: Office vs. home vs. public spaces
+   - **Time**: Morning energy vs. afternoon slump vs. evening wind-down
+   - **Recent Activity**: What you've done lately to avoid repetition
+   - **Mood Indicators**: Detected stress levels inform suggestion difficulty
+
+3. **Matching Algorithm**:
+   - **Personality Fit**: Introvert gets "write a note" vs. extrovert gets "organize group lunch"
+   - **Skill Level**: Beginners get simple acts, experienced users get complex challenges
+   - **Available Time**: Quick 5-min acts during busy periods, longer acts when available
+   - **Relationship Context**: Suggests acts that strengthen detected weak social connections
+
+**Suggestion Scoring System:**
+- **Relevance Score** (40%): How well it matches your preferences
+- **Context Score** (30%): Appropriateness for current situation  
+- **Impact Score** (20%): Predicted wellness benefit for you
+- **Novelty Score** (10%): Introduces new categories you haven't tried
+
+**Dynamic Learning:**
+- Tracks which suggestions you complete vs. skip
+- Adjusts difficulty based on your success patterns
+- Notes which times/contexts you're most receptive
+- Learns from similar user profiles for better recommendations
+
+**Example Personalization:**
+*User Profile*: Sarah, frequent "Helping Others" posts, usually active 12-1pm, prefers quick acts
+*Context*: Tuesday 12:30pm, office location, recent stress indicators detected
+*Generated Suggestion*: "Bring a colleague their favorite coffee" (Easy, 10 minutes, builds connections, matches stress relief need)
 
 ### **Tab 4: Global Wellness Heatmap**
 
