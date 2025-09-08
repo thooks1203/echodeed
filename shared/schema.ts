@@ -492,6 +492,37 @@ export const parentAccounts = pgTable("parent_accounts", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Administrator accounts for school management
+export const schoolAdministrators = pgTable("school_administrators", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  role: varchar("role", { length: 50 }).notNull(), // principal, vice_principal, district_admin, superintendent
+  schoolId: varchar("school_id"), // Link to corporate account representing school
+  districtId: varchar("district_id").notNull(), // Link to district
+  permissions: jsonb("permissions"), // JSON array of permission strings
+  isActive: integer("is_active").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Google Classroom integration table
+export const googleClassroomIntegrations = pgTable("google_classroom_integrations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolId: varchar("school_id").notNull(), // Link to school
+  teacherUserId: varchar("teacher_user_id").notNull().references(() => users.id),
+  googleClassroomId: varchar("google_classroom_id").notNull(),
+  courseName: varchar("course_name", { length: 255 }).notNull(),
+  section: varchar("section", { length: 100 }),
+  gradeLevel: varchar("grade_level", { length: 20 }),
+  studentCount: integer("student_count").default(0),
+  syncEnabled: integer("sync_enabled").default(1).notNull(),
+  lastSyncAt: timestamp("last_sync_at"),
+  accessToken: text("access_token"), // Encrypted Google access token
+  refreshToken: text("refresh_token"), // Encrypted Google refresh token
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Link students to their parents (COPPA compliance)
 export const studentParentLinks = pgTable("student_parent_links", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -623,6 +654,18 @@ export const insertSchoolContentReportSchema = createInsertSchema(schoolContentR
   createdAt: true,
 });
 
+export const insertSchoolAdministratorSchema = createInsertSchema(schoolAdministrators).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertGoogleClassroomIntegrationSchema = createInsertSchema(googleClassroomIntegrations).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 // Type exports for the subscription and school systems
 export type SubscriptionPlan = typeof subscriptionPlans.$inferSelect;
 export type InsertSubscriptionPlan = z.infer<typeof insertSubscriptionPlanSchema>;
@@ -642,6 +685,10 @@ export type ParentNotification = typeof parentNotifications.$inferSelect;
 export type InsertParentNotification = z.infer<typeof insertParentNotificationSchema>;
 export type SchoolContentReport = typeof schoolContentReports.$inferSelect;
 export type InsertSchoolContentReport = z.infer<typeof insertSchoolContentReportSchema>;
+export type SchoolAdministrator = typeof schoolAdministrators.$inferSelect;
+export type InsertSchoolAdministrator = z.infer<typeof insertSchoolAdministratorSchema>;
+export type GoogleClassroomIntegration = typeof googleClassroomIntegrations.$inferSelect;
+export type InsertGoogleClassroomIntegration = z.infer<typeof insertGoogleClassroomIntegrationSchema>;
 
 // B2B SaaS Insert Schemas
 export const insertCorporateAccountSchema = createInsertSchema(corporateAccounts).omit({

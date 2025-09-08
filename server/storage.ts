@@ -29,6 +29,8 @@ import {
   studentSelProgress,
   parentNotifications,
   schoolContentReports,
+  schoolAdministrators,
+  googleClassroomIntegrations,
   type User,
   type UpsertUser,
   type KindnessPost,
@@ -84,6 +86,10 @@ import {
   type InsertParentNotification,
   type SchoolContentReport,
   type InsertSchoolContentReport,
+  type SchoolAdministrator,
+  type InsertSchoolAdministrator,
+  type GoogleClassroomIntegration,
+  type InsertGoogleClassroomIntegration,
   type WellnessPrediction,
   type InsertWellnessPrediction,
   type WellnessHeatmapData,
@@ -311,6 +317,20 @@ export interface IStorage {
     riskDepartments: string[];
     positivityTrends: string[];
   }>;
+
+  // SCHOOL ADMINISTRATOR MANAGEMENT
+  createSchoolAdministrator(admin: InsertSchoolAdministrator): Promise<SchoolAdministrator>;
+  getSchoolAdministrator(id: string): Promise<SchoolAdministrator | undefined>;
+  getAdministratorsBySchool(schoolId: string): Promise<SchoolAdministrator[]>;
+  getAdministratorsByDistrict(districtId: string): Promise<SchoolAdministrator[]>;
+  updateAdministratorPermissions(id: string, permissions: string[]): Promise<SchoolAdministrator | undefined>;
+  
+  // GOOGLE CLASSROOM INTEGRATION
+  createGoogleClassroomIntegration(integration: InsertGoogleClassroomIntegration): Promise<GoogleClassroomIntegration>;
+  getGoogleClassroomIntegrations(schoolId: string): Promise<GoogleClassroomIntegration[]>;
+  getGoogleIntegrationByTeacher(teacherUserId: string): Promise<GoogleClassroomIntegration[]>;
+  updateGoogleIntegrationTokens(id: string, accessToken: string, refreshToken: string): Promise<GoogleClassroomIntegration | undefined>;
+  syncGoogleClassroomStudents(integrationId: string, studentCount: number): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -2303,6 +2323,96 @@ export class DatabaseStorage implements IStorage {
       console.error('Failed to initialize education subscription plans:', error.message);
       throw error;
     }
+  }
+
+  // SCHOOL ADMINISTRATOR MANAGEMENT
+  async createSchoolAdministrator(admin: InsertSchoolAdministrator): Promise<SchoolAdministrator> {
+    const [newAdmin] = await db.insert(schoolAdministrators).values(admin).returning();
+    return newAdmin;
+  }
+
+  async getSchoolAdministrator(id: string): Promise<SchoolAdministrator | undefined> {
+    const [admin] = await db.select()
+      .from(schoolAdministrators)
+      .where(eq(schoolAdministrators.id, id));
+    return admin || undefined;
+  }
+
+  async getAdministratorsBySchool(schoolId: string): Promise<SchoolAdministrator[]> {
+    return await db.select()
+      .from(schoolAdministrators)
+      .where(and(
+        eq(schoolAdministrators.schoolId, schoolId),
+        eq(schoolAdministrators.isActive, 1)
+      ))
+      .orderBy(schoolAdministrators.role);
+  }
+
+  async getAdministratorsByDistrict(districtId: string): Promise<SchoolAdministrator[]> {
+    return await db.select()
+      .from(schoolAdministrators)
+      .where(and(
+        eq(schoolAdministrators.districtId, districtId),
+        eq(schoolAdministrators.isActive, 1)
+      ))
+      .orderBy(schoolAdministrators.role, schoolAdministrators.schoolId);
+  }
+
+  async updateAdministratorPermissions(id: string, permissions: string[]): Promise<SchoolAdministrator | undefined> {
+    const [updatedAdmin] = await db.update(schoolAdministrators)
+      .set({ 
+        permissions: permissions,
+        updatedAt: new Date()
+      })
+      .where(eq(schoolAdministrators.id, id))
+      .returning();
+    return updatedAdmin || undefined;
+  }
+
+  // GOOGLE CLASSROOM INTEGRATION
+  async createGoogleClassroomIntegration(integration: InsertGoogleClassroomIntegration): Promise<GoogleClassroomIntegration> {
+    const [newIntegration] = await db.insert(googleClassroomIntegrations).values(integration).returning();
+    return newIntegration;
+  }
+
+  async getGoogleClassroomIntegrations(schoolId: string): Promise<GoogleClassroomIntegration[]> {
+    return await db.select()
+      .from(googleClassroomIntegrations)
+      .where(and(
+        eq(googleClassroomIntegrations.schoolId, schoolId),
+        eq(googleClassroomIntegrations.syncEnabled, 1)
+      ))
+      .orderBy(googleClassroomIntegrations.courseName);
+  }
+
+  async getGoogleIntegrationByTeacher(teacherUserId: string): Promise<GoogleClassroomIntegration[]> {
+    return await db.select()
+      .from(googleClassroomIntegrations)
+      .where(eq(googleClassroomIntegrations.teacherUserId, teacherUserId))
+      .orderBy(googleClassroomIntegrations.courseName);
+  }
+
+  async updateGoogleIntegrationTokens(id: string, accessToken: string, refreshToken: string): Promise<GoogleClassroomIntegration | undefined> {
+    const [updatedIntegration] = await db.update(googleClassroomIntegrations)
+      .set({ 
+        accessToken,
+        refreshToken,
+        lastSyncAt: new Date(),
+        updatedAt: new Date()
+      })
+      .where(eq(googleClassroomIntegrations.id, id))
+      .returning();
+    return updatedIntegration || undefined;
+  }
+
+  async syncGoogleClassroomStudents(integrationId: string, studentCount: number): Promise<void> {
+    await db.update(googleClassroomIntegrations)
+      .set({ 
+        studentCount,
+        lastSyncAt: new Date(),
+        updatedAt: new Date()
+      })
+      .where(eq(googleClassroomIntegrations.id, integrationId));
   }
 }
 
