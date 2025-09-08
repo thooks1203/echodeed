@@ -27,7 +27,11 @@ export default function Home() {
   const [pathname, navigate] = useLocation();
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
-  const { activeTab, setActiveTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation('feed');
+  
+  // Check URL parameters for initial tab
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialTab = urlParams.get('tab') || 'feed';
+  const { activeTab, setActiveTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation(initialTab);
   
   
   const [filters, setFilters] = useState<PostFilters>({});
@@ -40,6 +44,15 @@ export default function Home() {
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
 
   const { location } = useGeolocation();
+
+  // Clean up URL parameters after initial tab is set
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has('tab')) {
+      // Remove the tab parameter from URL to keep it clean
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
 
   // Initialize notification setup for new users
   useEffect(() => {
