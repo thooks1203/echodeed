@@ -9,7 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useNavigation } from '@/hooks/useNavigation';
 import { BackButton } from '@/components/BackButton';
-import { Shield, Star, Gift, ShoppingBag, Coffee, Music, Trophy, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
+import { Building2, Shield, Star, Gift, ShoppingBag, Coffee, Music, Trophy, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
 
 interface RewardOffer {
   id: string;
@@ -30,6 +30,12 @@ interface RewardOffer {
   termsAndConditions?: string;
   imageUrl?: string;
   expiresAt?: string;
+  // Corporate Sponsorship Fields
+  sponsorCompany?: string;
+  sponsorLogo?: string;
+  sponsorshipType?: 'full' | 'partial' | 'co-sponsor';
+  sponsorshipMessage?: string;
+  monthlySponsorship?: number;
 }
 
 interface RewardPartner {
@@ -260,6 +266,12 @@ export default function RewardsPage() {
                             <div>
                               <CardTitle className="text-lg">{offer.title}</CardTitle>
                               <p className="text-sm text-gray-600 dark:text-gray-400">{offer.partnerName}</p>
+                              {offer.sponsorCompany && (
+                                <div className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 font-medium mt-1">
+                                  <Building2 className="w-3 h-3" />
+                                  Sponsored by {offer.sponsorCompany}
+                                </div>
+                              )}
                             </div>
                           </div>
                           {getOfferIcon(offer.offerType)}
@@ -328,6 +340,12 @@ export default function RewardsPage() {
                           <div>
                             <CardTitle className="text-lg">{offer.title}</CardTitle>
                             <p className="text-sm text-gray-600 dark:text-gray-400">{offer.partnerName}</p>
+                            {offer.sponsorCompany && (
+                              <div className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 font-medium mt-1">
+                                <Building2 className="w-3 h-3" />
+                                Sponsored by {offer.sponsorCompany}
+                              </div>
+                            )}
                           </div>
                         </div>
                         {getOfferIcon(offer.offerType)}
