@@ -35,17 +35,16 @@ export default function Home() {
   
   // Handle target tab from localStorage - force immediate change
   useEffect(() => {
-    console.log('Home component effect - targetTab from localStorage:', targetTab, 'activeTab:', activeTab);
-    if (targetTab && targetTab !== activeTab) {
-      console.log('Setting tab from localStorage:', targetTab);
-      navigateToTab(targetTab);
-      // Clear the target tab after using it
-      localStorage.removeItem('echodeed_target_tab');
+    if (targetTab) {
+      alert(`Found target tab: ${targetTab}, current tab: ${activeTab}`);
+      if (targetTab !== activeTab) {
+        alert(`Switching to tab: ${targetTab}`);
+        navigateToTab(targetTab);
+        // Clear the target tab after using it
+        localStorage.removeItem('echodeed_target_tab');
+      }
     }
   }, [targetTab, activeTab, navigateToTab]);
-  
-  // Debug current tab
-  console.log('Home render - Current activeTab:', activeTab);
   
   
   const [filters, setFilters] = useState<PostFilters>({});

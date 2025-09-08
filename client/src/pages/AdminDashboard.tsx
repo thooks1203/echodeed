@@ -159,6 +159,7 @@ export default function AdminDashboard() {
             onClick={() => {
               // Store the target tab in localStorage
               localStorage.setItem('echodeed_target_tab', 'schools');
+              alert('Stored "schools" in localStorage, navigating to home...');
               // Navigate to home
               navigate('/');
             }}
