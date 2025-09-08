@@ -28,27 +28,23 @@ export default function Home() {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
   
-  // Check URL parameters, hash, and sessionStorage for initial tab
+  // Check URL parameters for initial tab
   const urlParams = new URLSearchParams(window.location.search);
-  const hashTab = window.location.hash.substring(1); // Remove the # symbol
-  const targetTab = sessionStorage.getItem('targetTab');
-  const initialTab = urlParams.get('tab') || hashTab || targetTab || 'feed';
+  const urlTab = urlParams.get('tab');
+  const initialTab = urlTab || 'feed';
   const { activeTab, setActiveTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation(initialTab);
   
-  // Handle tab navigation from different sources and clear them after use
+  // Handle tab changes from URL parameters
   useEffect(() => {
-    if (hashTab && hashTab !== activeTab) {
-      console.log('Setting tab from hash:', hashTab);
-      setActiveTab(hashTab);
-      // Clear the hash from URL after setting the tab
-      window.history.replaceState({}, '', window.location.pathname + window.location.search);
+    if (urlTab && urlTab !== activeTab) {
+      console.log('Setting tab from URL parameter:', urlTab);
+      setActiveTab(urlTab);
+      // Clean up URL after setting tab
+      setTimeout(() => {
+        window.history.replaceState({}, '', window.location.pathname);
+      }, 100);
     }
-    if (targetTab && targetTab !== activeTab) {
-      console.log('Setting tab from sessionStorage:', targetTab);
-      setActiveTab(targetTab);
-      sessionStorage.removeItem('targetTab');
-    }
-  }, [hashTab, targetTab, activeTab, setActiveTab]);
+  }, [urlTab, activeTab, setActiveTab]);
   
   
   const [filters, setFilters] = useState<PostFilters>({});

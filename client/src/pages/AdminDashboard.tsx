@@ -157,8 +157,8 @@ export default function AdminDashboard() {
             variant="outline"
             size="sm"
             onClick={() => {
-              // Use window.location with hash to force tab selection
-              window.location.assign('/#schools');
+              // Navigate using wouter with query parameter
+              navigate('/?tab=schools');
             }}
             className="flex items-center gap-2"
             data-testid="back-to-schools"
