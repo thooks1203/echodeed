@@ -1,4 +1,4 @@
-import { Heart, MapPin, Loader2 } from 'lucide-react';
+import { Heart, MapPin, Loader2, HandHeart, Users, Smile, Coffee, TreePine, Zap, TrendingUp, Star } from 'lucide-react';
 import { KindnessPost } from '@shared/schema';
 import { formatDistance } from 'date-fns';
 
@@ -8,17 +8,48 @@ interface KindnessFeedProps {
 }
 
 export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
-  const getCategoryStyle = (category: string) => {
+  const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'Helping Others':
-        return 'text-primary';
+        return HandHeart;
       case 'Spreading Positivity':
-        return 'text-accent';
+        return Smile;
       case 'Community Action':
-        return 'text-primary';
+        return Users;
+      case 'Environmental':
+        return TreePine;
+      case 'Random Acts':
+        return Coffee;
       default:
-        return 'text-primary';
+        return Zap;
     }
+  };
+
+  const getCategoryColor = (category: string) => {
+    switch (category) {
+      case 'Helping Others':
+        return 'from-emerald-400 to-teal-500';
+      case 'Spreading Positivity':
+        return 'from-yellow-400 to-orange-500';
+      case 'Community Action':
+        return 'from-blue-400 to-indigo-500';
+      case 'Environmental':
+        return 'from-green-400 to-emerald-500';
+      case 'Random Acts':
+        return 'from-purple-400 to-pink-500';
+      default:
+        return 'from-primary to-accent';
+    }
+  };
+
+  const getImpactLevel = (post: KindnessPost) => {
+    const engagement = (post.heartsCount || 0) + ((post.echoesCount || 0) * 2);
+    const impact = post.impactScore || 0;
+    const combined = engagement + (impact * 0.5);
+    
+    if (combined > 20) return 'high';
+    if (combined > 10) return 'medium';
+    return 'low';
   };
 
   if (isLoading) {
@@ -41,35 +72,80 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
           <p className="text-muted-foreground">Be the first to share a kind deed in this area!</p>
         </div>
       ) : (
-        posts.map((post, index) => (
-          <div key={post.id} className="px-4 py-3 border-b border-border bg-card relative">
-            <div className="flex items-start space-x-3">
-              <div className="w-8 h-8 bg-muted rounded-full flex items-center justify-center flex-shrink-0 mt-1">
-                <span className="text-sm">⚡</span>
-              </div>
-              <div className="flex-1 min-w-0">
-                <p className="text-foreground leading-relaxed" data-testid={`text-post-content-${index}`}>
-                  {post.content}
-                </p>
-                <div className="flex items-center mt-3 text-xs text-muted-foreground">
-                  <MapPin size={10} className="mr-1" />
-                  <span data-testid={`text-post-location-${index}`}>{post.location}</span>
-                  <span className="mx-2">•</span>
-                  <span data-testid={`text-post-time-${index}`}>
-                    {formatDistance(new Date(post.createdAt), new Date(), { addSuffix: true })}
-                  </span>
-                  <span className="mx-2">•</span>
-                  <span 
-                    className="px-2 py-1 bg-muted rounded-full text-xs"
-                    data-testid={`text-post-category-${index}`}
-                  >
-                    {post.category}
-                  </span>
+        posts.map((post, index) => {
+          const IconComponent = getCategoryIcon(post.category);
+          const impactLevel = getImpactLevel(post);
+          const isHighImpact = impactLevel === 'high';
+          const isTrending = (post.heartsCount || 0) > 5;
+          
+          return (
+            <div 
+              key={post.id} 
+              className={`px-4 py-4 border-b border-border relative transition-all duration-200 hover:shadow-sm ${
+                isHighImpact ? 'bg-gradient-to-r from-background to-primary/5' : 'bg-card'
+              }`}
+            >
+              {/* Trending indicator */}
+              {isTrending && (
+                <div className="absolute top-2 right-2 flex items-center gap-1 text-xs text-orange-500">
+                  <TrendingUp size={10} />
+                  <span className="font-medium">Trending</span>
+                </div>
+              )}
+              
+              <div className="flex items-start space-x-3">
+                {/* Dynamic category icon with gradient */}
+                <div className={`w-10 h-10 bg-gradient-to-br ${getCategoryColor(post.category)} rounded-xl flex items-center justify-center flex-shrink-0 mt-1 shadow-sm`}>
+                  <IconComponent size={18} className="text-white" />
+                </div>
+                
+                <div className="flex-1 min-w-0">
+                  <p className="text-foreground leading-relaxed text-[15px]" data-testid={`text-post-content-${index}`}>
+                    {post.content}
+                  </p>
+                  
+                  {/* Engagement indicators */}
+                  <div className="flex items-center gap-4 mt-3 mb-2">
+                    {(post.heartsCount || 0) > 0 && (
+                      <div className="flex items-center gap-1 text-red-500">
+                        <Heart size={12} fill="currentColor" />
+                        <span className="text-xs font-medium">{post.heartsCount}</span>
+                      </div>
+                    )}
+                    {(post.echoesCount || 0) > 0 && (
+                      <div className="flex items-center gap-1 text-blue-500">
+                        <Zap size={12} />
+                        <span className="text-xs font-medium">{post.echoesCount}</span>
+                      </div>
+                    )}
+                    {(post.impactScore || 0) > 75 && (
+                      <div className="flex items-center gap-1 text-amber-500">
+                        <Star size={12} fill="currentColor" />
+                        <span className="text-xs font-medium">High Impact</span>
+                      </div>
+                    )}
+                  </div>
+                  
+                  <div className="flex items-center mt-2 text-xs text-muted-foreground">
+                    <MapPin size={10} className="mr-1" />
+                    <span data-testid={`text-post-location-${index}`}>{post.location}</span>
+                    <span className="mx-2">•</span>
+                    <span data-testid={`text-post-time-${index}`}>
+                      {formatDistance(new Date(post.createdAt), new Date(), { addSuffix: true })}
+                    </span>
+                    <span className="mx-2">•</span>
+                    <span 
+                      className={`px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${getCategoryColor(post.category)} text-white shadow-sm`}
+                      data-testid={`text-post-category-${index}`}
+                    >
+                      {post.category}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))
+          );
+        })
       )}
       
       {posts.length > 0 && (
