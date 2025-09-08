@@ -4479,6 +4479,145 @@ async function generateDataGovernanceReport(corporateAccountId: string) {
   }
 }
 
+  // SCHOOL-SPECIFIC API ROUTES
+  
+  // Parent account management (COPPA compliance)
+  app.post('/api/school/parents', async (req, res) => {
+    try {
+      const parent = await storage.createParentAccount(req.body);
+      res.json(parent);
+    } catch (error: any) {
+      console.error('Failed to create parent account:', error);
+      res.status(500).json({ error: 'Failed to create parent account' });
+    }
+  });
+
+  app.get('/api/school/parents/email/:email', async (req, res) => {
+    try {
+      const { email } = req.params;
+      const parent = await storage.getParentAccountByEmail(email);
+      if (!parent) {
+        return res.status(404).json({ error: 'Parent account not found' });
+      }
+      res.json(parent);
+    } catch (error: any) {
+      console.error('Failed to get parent account:', error);
+      res.status(500).json({ error: 'Failed to get parent account' });
+    }
+  });
+
+  app.put('/api/school/parents/:parentId/verify', async (req, res) => {
+    try {
+      const { parentId } = req.params;
+      const parent = await storage.verifyParentAccount(parentId);
+      res.json(parent);
+    } catch (error: any) {
+      console.error('Failed to verify parent account:', error);
+      res.status(500).json({ error: 'Failed to verify parent account' });
+    }
+  });
+
+  // Student-parent linking (COPPA compliance)
+  app.post('/api/school/parent-links', isAuthenticated, async (req: any, res) => {
+    try {
+      const link = await storage.linkStudentToParent(req.body);
+      res.json(link);
+    } catch (error: any) {
+      console.error('Failed to link student to parent:', error);
+      res.status(500).json({ error: 'Failed to link student to parent' });
+    }
+  });
+
+  app.get('/api/school/students/:studentId/parents', isAuthenticated, async (req: any, res) => {
+    try {
+      const { studentId } = req.params;
+      const parents = await storage.getParentsForStudent(studentId);
+      res.json(parents);
+    } catch (error: any) {
+      console.error('Failed to get parents for student:', error);
+      res.status(500).json({ error: 'Failed to get parents for student' });
+    }
+  });
+
+  // SEL Standards management
+  app.post('/api/school/sel-standards', isAuthenticated, async (req: any, res) => {
+    try {
+      const standard = await storage.createSelStandard(req.body);
+      res.json(standard);
+    } catch (error: any) {
+      console.error('Failed to create SEL standard:', error);
+      res.status(500).json({ error: 'Failed to create SEL standard' });
+    }
+  });
+
+  app.get('/api/school/sel-standards/grade/:gradeLevel', async (req, res) => {
+    try {
+      const { gradeLevel } = req.params;
+      const standards = await storage.getSelStandardsByGrade(gradeLevel);
+      res.json(standards);
+    } catch (error: any) {
+      console.error('Failed to get SEL standards:', error);
+      res.status(500).json({ error: 'Failed to get SEL standards' });
+    }
+  });
+
+  // Parent notifications
+  app.post('/api/school/parent-notifications', isAuthenticated, async (req: any, res) => {
+    try {
+      const notification = await storage.createParentNotification(req.body);
+      res.json(notification);
+    } catch (error: any) {
+      console.error('Failed to create parent notification:', error);
+      res.status(500).json({ error: 'Failed to create parent notification' });
+    }
+  });
+
+  app.get('/api/school/parent-notifications/:parentId', async (req, res) => {
+    try {
+      const { parentId } = req.params;
+      const limit = parseInt(req.query.limit as string) || 20;
+      const notifications = await storage.getParentNotifications(parentId, limit);
+      res.json(notifications);
+    } catch (error: any) {
+      console.error('Failed to get parent notifications:', error);
+      res.status(500).json({ error: 'Failed to get parent notifications' });
+    }
+  });
+
+  // School content reporting and safety
+  app.post('/api/school/content-reports', isAuthenticated, async (req: any, res) => {
+    try {
+      const report = await storage.createSchoolContentReport(req.body);
+      res.json(report);
+    } catch (error: any) {
+      console.error('Failed to create content report:', error);
+      res.status(500).json({ error: 'Failed to create content report' });
+    }
+  });
+
+  app.get('/api/school/content-reports/:corporateAccountId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { corporateAccountId } = req.params;
+      const status = req.query.status as string;
+      const reports = await storage.getSchoolContentReports(corporateAccountId, status);
+      res.json(reports);
+    } catch (error: any) {
+      console.error('Failed to get content reports:', error);
+      res.status(500).json({ error: 'Failed to get content reports' });
+    }
+  });
+
+  // Education subscription plans endpoint (separate from regular plans)
+  app.get('/api/school/subscription-plans', async (req, res) => {
+    try {
+      const plans = await storage.getSubscriptionPlans('education');
+      res.json(plans);
+    } catch (error: any) {
+      console.error('Failed to get education subscription plans:', error);
+      res.status(500).json({ error: 'Failed to get education subscription plans' });
+    }
+  });
+
 // Helper functions for sentiment analysis
 function analyzeSlackSentiment(text: string) {
   // Simplified sentiment analysis for demo

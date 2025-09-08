@@ -3,6 +3,7 @@ import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeSampleData } from "./initData";
 import { initializeSampleRewardData } from "./sampleRewardData";
+import { storage } from "./storage";
 
 const app = express();
 app.use(express.json());
@@ -63,6 +64,7 @@ app.use((req, res, next) => {
     try {
       await initializeSampleData();
       await initializeSampleRewardData();
+      await storage.initializeEducationSubscriptionPlans();
       log('✓ Sample data initialization completed');
     } catch (error) {
       log(`✗ Sample data initialization failed: ${error}`);
