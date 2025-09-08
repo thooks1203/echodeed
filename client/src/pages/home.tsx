@@ -33,7 +33,12 @@ export default function Home() {
   
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(() => {
+    // Check if user has already been to the platform
+    const hasSeenWelcome = localStorage.getItem('echodeed_has_seen_welcome');
+    const hasUsedPlatform = localStorage.getItem('echodeed_platform_used');
+    return !hasSeenWelcome && !hasUsedPlatform;
+  });
   
   const [showNotificationSetup, setShowNotificationSetup] = useState(false);
   const [tokenEarning, setTokenEarning] = useState<TokenEarning | null>(null);
@@ -573,7 +578,11 @@ export default function Home() {
         {/* Start Button */}
         <div style={{ padding: '30px 20px', textAlign: 'center' }}>
           <button 
-            onClick={() => setShowWelcome(false)}
+            onClick={() => {
+              setShowWelcome(false);
+              localStorage.setItem('echodeed_platform_used', 'true');
+              localStorage.setItem('echodeed_has_seen_welcome', 'true');
+            }}
             style={{
               background: 'linear-gradient(135deg, hsl(30, 100%, 60%), hsl(320, 100%, 65%), hsl(280, 100%, 65%), hsl(200, 100%, 60%))',
               backgroundSize: '200% 200%',
