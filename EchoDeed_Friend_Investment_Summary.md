@@ -22,15 +22,16 @@ I've built **the world's first AI system that predicts employee burnout 2-8 week
 
 ## Why This is Urgent (Patent Protection)
 
-I've developed **3 breakthrough innovations** that need patent protection immediately:
+I've developed **4 breakthrough innovations** that need patent protection immediately:
 
 1. **AI Burnout Prediction Algorithm** - No one else can predict burnout 2-8 weeks in advance
-2. **Anonymous Organizational Analytics** - Gets insights without compromising employee privacy  
-3. **Real-time Intervention System** - Automatically alerts managers when someone needs help
+2. **Anonymous Organizational Analytics** - Gets insights without compromising employee privacy
+3. **Network Effects Benchmarking** - Platform becomes more valuable as more companies join
+4. **Educational Wellness with SEL Integration** - Predictive student wellness for schools
 
 **The window is closing fast.** I need to file provisional patents within 30 days before I can talk to customers or investors. Once filed, I have 12 months of protection while I validate the market.
 
-**Patent filing cost: $3,000-5,000 total**
+**Patent filing cost: $6,000-8,000 total (4 patents)**
 
 ---
 
@@ -76,10 +77,10 @@ I've developed **3 breakthrough innovations** that need patent protection immedi
 
 ## What I Need & What You Get
 
-### Immediate Need: $5,000
+### Immediate Need: $10,000
 **Use of funds:**
-- $3,000-5,000: Patent filing (3 provisional patents)
-- $1,000-2,000: Legal entity setup and initial legal costs
+- $6,000-8,000: Patent filing (4 provisional patents)
+- $2,000-4,000: Legal entity setup and initial legal costs
 
 ### Why Now is Critical:
 - **Patent deadline:** Must file before any customer conversations
@@ -89,17 +90,17 @@ I've developed **3 breakthrough innovations** that need patent protection immedi
 ### What You Get in Return:
 
 **Option 1: Loan with Interest**
-- $5,000 loan at 8-12% annual interest
+- $10,000 loan at 8-12% annual interest
 - Repaid within 12 months from first customer revenue
 - Simple, clean transaction
 
 **Option 2: Equity Investment**
-- $5,000 for 2-5% equity (company valued at $100K-250K pre-money)
-- Potential returns: $75K-750K+ if we hit our projections
+- $10,000 for 2-4% equity (company valued at $250K-500K pre-money)
+- Potential returns: $150K-1.5M+ if we hit our projections
 - Participate in future funding rounds
 
 **Option 3: Convertible Note**
-- $5,000 converts to equity at next funding round
+- $10,000 converts to equity at next funding round
 - 20% discount on future valuation
 - Best of both worlds - protects you, helps me
 
@@ -110,12 +111,12 @@ I've developed **3 breakthrough innovations** that need patent protection immedi
 **Conservative Scenario (Year 3):**
 - $30M revenue company
 - 5x-10x revenue multiple = $150M-300M valuation
-- Your $5,000 → $15K-75K return
+- Your $10,000 → $30K-150K return
 
 **Strategic Acquisition Scenario:**
 - Microsoft, Oracle, or UnitedHealth acquires us
 - Could be worth $500M-1B+ with our patent portfolio
-- Your $5,000 → $50K-500K+ return
+- Your $10,000 → $100K-1M+ return
 
 **Why I believe this works:**
 - I've already built the core technology that works
@@ -165,7 +166,7 @@ I've developed **3 breakthrough innovations** that need patent protection immedi
 
 ## The Ask
 
-**I'm asking for $5,000 to protect the intellectual property that could become a billion-dollar business.**
+**I'm asking for $10,000 to protect the intellectual property that could become a billion-dollar business.**
 
 This isn't just about the money - it's about believing in a solution that could prevent millions of people from experiencing workplace burnout and mental health crises.
 

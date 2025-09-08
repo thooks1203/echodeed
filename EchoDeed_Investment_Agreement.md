@@ -9,7 +9,7 @@
 - **Company**: EchoDeed™ (to be incorporated)
 - **Founder**: [Your Full Name]
 - **Investor**: [Friend's Full Name]
-- **Investment Amount**: $6,000
+- **Investment Amount**: $10,000
 - **Date**: _______________
 
 ---
@@ -18,7 +18,7 @@
 
 ### **OPTION A: CONVERTIBLE NOTE (RECOMMENDED)**
 
-**Principal Amount**: $6,000
+**Principal Amount**: $10,000
 **Interest Rate**: 6% annually
 **Maturity Date**: 24 months from signing
 **Conversion Terms**:
@@ -27,22 +27,22 @@
 - **Valuation Cap**: $500,000 (maximum company value for conversion)
 
 **What This Means**:
-- Your friend loans $5,000 now
+- Your friend loans $10,000 now
 - Money converts to company shares when we raise our real funding round
 - Early investor discount rewards the risk of investing first
 - If company is worth $2M later, your friend converts at $500K cap (4x return potential)
 
 ### **OPTION B: SIMPLE EQUITY AGREEMENT**
 
-**Investment**: $6,000 for **2% ownership** of EchoDeed™
-**Current Valuation**: $300,000 (implied)
+**Investment**: $10,000 for **2% ownership** of EchoDeed™
+**Current Valuation**: $500,000 (implied)
 **Vesting**: No vesting (immediate ownership)
 **Rights**: Minority investor rights, information sharing
 
 ### **OPTION C: REVENUE SHARE AGREEMENT**
 
-**Investment**: $6,000
-**Revenue Share**: **5% of gross revenue** until $18,000 repaid (3x return)
+**Investment**: $10,000
+**Revenue Share**: **5% of gross revenue** until $30,000 repaid (3x return)
 **Term**: Maximum 5 years
 **Monthly Reports**: Revenue and customer updates
 
@@ -50,13 +50,13 @@
 
 ## USE OF FUNDS (IMMEDIATE PRIORITIES)
 
-### **Patent Protection (65% - $3,900)**
-- Provisional patent applications filing fees: $1,800
-- Patent attorney consultation and preparation: $2,100
+### **Patent Protection (65% - $6,500)**
+- Provisional patent applications filing fees: $3,200 (4 patents)
+- Patent attorney consultation and preparation: $2,800
 - Patent search and prior art analysis: $500
-- Contingency for additional patent costs: $500
+- Contingency for additional patent costs: $0
 
-### **Customer Acquisition (35% - $2,100)**
+### **Customer Acquisition (35% - $3,500)**
 - Sales tools and CRM setup: $700
 - Professional marketing materials: $500
 - LinkedIn Sales Navigator and outreach tools: $300
@@ -87,7 +87,7 @@ Investor entitled to:
 ## FOUNDER COMMITMENTS
 
 ### **Business Milestones (Next 6 Months)**
-1. **Patent Protection**: File 3 provisional patents within 45 days
+1. **Patent Protection**: File 4 provisional patents within 45 days
 2. **Customer Discovery**: Complete 25+ customer interviews
 3. **Pilot Programs**: Launch 3+ enterprise pilot programs
 4. **Revenue Generation**: Target $50K+ in signed pilot commitments
@@ -142,7 +142,7 @@ Investor entitled to:
 Signature: _________________________________ Date: __________
 
 **I, [Friend's Name], as Investor, agree to:**
-- Invest $6,000 under the terms selected above
+- Invest $10,000 under the terms selected above
 - Maintain confidentiality of all business information
 - Support the founder's efforts to build the business
 - Understand the high-risk nature of this investment
