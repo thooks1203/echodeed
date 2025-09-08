@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Heart, Star, Calendar, Bell, TrendingUp, Award, BookOpen, Users } from 'lucide-react';
+import { Heart, Star, Calendar, Bell, TrendingUp, Award, BookOpen, Users, ArrowLeft } from 'lucide-react';
 
 interface ParentNotification {
   id: string;
@@ -33,6 +34,7 @@ interface KindnessPost {
 
 export default function ParentDashboard() {
   const [selectedChild, setSelectedChild] = useState<string>('');
+  const [, navigate] = useLocation();
   
   // Mock parent account ID for demo (in real app this would come from auth)
   const parentId = 'parent-demo-id';
@@ -139,13 +141,25 @@ export default function ParentDashboard() {
     <div className="container mx-auto p-6 space-y-6" data-testid="parent-dashboard">
       {/* Header */}
       <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-white" data-testid="dashboard-title">
-            Parent Dashboard
-          </h1>
-          <p className="text-gray-600 dark:text-gray-300 mt-2">
-            Track your children's kindness journey and character development
-          </p>
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2"
+            data-testid="back-to-schools"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Schools
+          </Button>
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white" data-testid="dashboard-title">
+              Parent Dashboard
+            </h1>
+            <p className="text-gray-600 dark:text-gray-300 mt-2">
+              Track your children's kindness journey and character development
+            </p>
+          </div>
         </div>
         <div className="flex items-center gap-3">
           <Badge variant="secondary" className="px-3 py-1">
