@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import Home from "@/pages/home";
 import AdminDashboard from "@/pages/admin-dashboard";
 import RewardsPage from "@/pages/rewards";
+import ParentDashboard from "@/pages/ParentDashboard";
 import { LandingPage } from "@/components/landing-page";
 import NotFound from "@/pages/not-found";
 import PWAInstall from "@/components/PWAInstall";
@@ -22,6 +23,7 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/rewards" component={RewardsPage} />
       <Route path="/admin" component={AdminDashboard} />
+      <Route path="/parent" component={ParentDashboard} />
       <Route component={NotFound} />
     </Switch>
   );
