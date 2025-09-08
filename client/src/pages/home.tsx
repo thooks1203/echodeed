@@ -28,24 +28,21 @@ export default function Home() {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
   
-  // Check URL parameters for initial tab
-  const urlParams = new URLSearchParams(window.location.search);
-  const urlTab = urlParams.get('tab');
-  const initialTab = urlTab || 'feed';
+  // Check localStorage for target tab
+  const targetTab = localStorage.getItem('echodeed_target_tab');
+  const initialTab = targetTab || 'feed';
   const { activeTab, setActiveTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation(initialTab);
   
-  // Handle tab changes from URL parameters - force immediate change
+  // Handle target tab from localStorage - force immediate change
   useEffect(() => {
-    console.log('Home component effect - urlTab:', urlTab, 'activeTab:', activeTab);
-    if (urlTab && urlTab !== activeTab) {
-      console.log('Setting tab from URL parameter:', urlTab);
-      navigateToTab(urlTab); // Use navigateToTab instead of setActiveTab
-      // Clean up URL after setting tab
-      setTimeout(() => {
-        window.history.replaceState({}, '', window.location.pathname);
-      }, 100);
+    console.log('Home component effect - targetTab from localStorage:', targetTab, 'activeTab:', activeTab);
+    if (targetTab && targetTab !== activeTab) {
+      console.log('Setting tab from localStorage:', targetTab);
+      navigateToTab(targetTab);
+      // Clear the target tab after using it
+      localStorage.removeItem('echodeed_target_tab');
     }
-  }, [urlTab, activeTab, navigateToTab]);
+  }, [targetTab, activeTab, navigateToTab]);
   
   // Debug current tab
   console.log('Home render - Current activeTab:', activeTab);

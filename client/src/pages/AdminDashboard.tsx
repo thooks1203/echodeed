@@ -157,8 +157,10 @@ export default function AdminDashboard() {
             variant="outline"
             size="sm"
             onClick={() => {
-              // Navigate using wouter with query parameter
-              navigate('/?tab=schools');
+              // Store the target tab in localStorage
+              localStorage.setItem('echodeed_target_tab', 'schools');
+              // Navigate to home
+              navigate('/');
             }}
             className="flex items-center gap-2"
             data-testid="back-to-schools"
