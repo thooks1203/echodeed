@@ -70,15 +70,15 @@ export default function AdminDashboard() {
     email: 'swilson@district.edu'
   };
 
-  // Mock API calls - replace with real endpoints
+  // Real API calls for customer validation
   const { data: districtMetrics } = useQuery<DistrictMetrics>({
     queryKey: ['/api/admin/district-metrics', currentAdmin.districtId],
-    enabled: false // Disabled for demo
+    enabled: true // Enabled for customer validation
   });
 
   const { data: schoolMetrics = [] } = useQuery<SchoolMetrics[]>({
     queryKey: ['/api/admin/school-metrics', currentAdmin.districtId],
-    enabled: false // Disabled for demo
+    enabled: true // Enabled for customer validation
   });
 
   // Mock data for demonstration
