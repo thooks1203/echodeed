@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 
 interface School {
   id: string;
@@ -21,7 +22,8 @@ interface StudentKindnessPoint {
 }
 
 export function SchoolsDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'student' | 'teacher' | 'admin'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'student' | 'teacher' | 'admin' | 'parent'>('overview');
+  const [, navigate] = useLocation();
 
   // Fetch schools data
   const { data: schools = [] } = useQuery<School[]>({
@@ -133,11 +135,18 @@ export function SchoolsDashboard() {
           { id: 'overview', label: '📊 Overview' },
           { id: 'student', label: '👨‍🎓 Student View' },
           { id: 'teacher', label: '👩‍🏫 Teacher View' },
-          { id: 'admin', label: '👩‍💼 Admin View' }
+          { id: 'admin', label: '👩‍💼 Admin View' },
+          { id: 'parent', label: '👨‍👩‍👧‍👦 Parent Portal' }
         ].map((tab) => (
           <button
             key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
+            onClick={() => {
+              if (tab.id === 'parent') {
+                navigate('/parent');
+              } else {
+                setActiveTab(tab.id as any);
+              }
+            }}
             style={{
               flex: 1,
               padding: '8px 16px',
