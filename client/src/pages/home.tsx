@@ -35,16 +35,20 @@ export default function Home() {
   const initialTab = urlParams.get('tab') || hashTab || targetTab || 'feed';
   const { activeTab, setActiveTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation(initialTab);
   
-  // Clear the targetTab from sessionStorage and hash from URL after using them
+  // Handle tab navigation from different sources and clear them after use
   useEffect(() => {
-    if (targetTab) {
-      sessionStorage.removeItem('targetTab');
-    }
-    if (hashTab) {
+    if (hashTab && hashTab !== activeTab) {
+      console.log('Setting tab from hash:', hashTab);
+      setActiveTab(hashTab);
       // Clear the hash from URL after setting the tab
       window.history.replaceState({}, '', window.location.pathname + window.location.search);
     }
-  }, [targetTab, hashTab]);
+    if (targetTab && targetTab !== activeTab) {
+      console.log('Setting tab from sessionStorage:', targetTab);
+      setActiveTab(targetTab);
+      sessionStorage.removeItem('targetTab');
+    }
+  }, [hashTab, targetTab, activeTab, setActiveTab]);
   
   
   const [filters, setFilters] = useState<PostFilters>({});
