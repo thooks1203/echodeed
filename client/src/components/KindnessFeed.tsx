@@ -81,9 +81,12 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
           return (
             <div 
               key={post.id} 
-              className={`px-4 py-4 border-b border-border relative transition-all duration-200 hover:shadow-sm ${
-                isHighImpact ? 'bg-gradient-to-r from-background to-primary/5' : 'bg-card'
+              className={`px-4 py-4 border-b border-border relative transition-all duration-300 hover:shadow-md hover:bg-primary/5 hover:scale-[1.01] cursor-pointer group ${
+                isHighImpact ? 'bg-gradient-to-r from-background to-primary/5 shadow-sm' : 'bg-card'
               }`}
+              style={{
+                animation: `fadeInUp 0.4s ease-out ${index * 0.05}s both`
+              }}
             >
               {/* Trending indicator */}
               {isTrending && (
@@ -95,8 +98,8 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
               
               <div className="flex items-start space-x-3">
                 {/* Dynamic category icon with gradient */}
-                <div className={`w-10 h-10 bg-gradient-to-br ${getCategoryColor(post.category)} rounded-xl flex items-center justify-center flex-shrink-0 mt-1 shadow-sm`}>
-                  <IconComponent size={18} className="text-white" />
+                <div className={`w-10 h-10 bg-gradient-to-br ${getCategoryColor(post.category)} rounded-xl flex items-center justify-center flex-shrink-0 mt-1 shadow-sm transition-transform duration-200 group-hover:scale-110 group-hover:shadow-md`}>
+                  <IconComponent size={18} className="text-white transition-transform duration-200 group-hover:rotate-6" />
                 </div>
                 
                 <div className="flex-1 min-w-0">

@@ -1,4 +1,4 @@
-import { Globe, MapPin, HandHeart, Users, Smile } from 'lucide-react';
+import { Globe, MapPin, HandHeart, Users, Smile, TreePine, Coffee } from 'lucide-react';
 import { PostFilters } from '@/lib/types';
 import { LocationData } from '@/lib/types';
 
@@ -61,6 +61,24 @@ export function FilterBar({ activeFilter, location, onFilterChange }: FilterBarP
         >
           <Smile size={12} className="mr-1" />
           Positivity
+        </button>
+        
+        <button 
+          className={`filter-chip ${activeFilter === 'environmental' ? 'active' : ''}`}
+          onClick={() => handleFilterClick('environmental', { category: 'Environmental' })}
+          data-testid="filter-environmental"
+        >
+          <TreePine size={12} className="mr-1" />
+          Environmental
+        </button>
+        
+        <button 
+          className={`filter-chip ${activeFilter === 'random' ? 'active' : ''}`}
+          onClick={() => handleFilterClick('random', { category: 'Random Acts' })}
+          data-testid="filter-random"
+        >
+          <Coffee size={12} className="mr-1" />
+          Random Acts
         </button>
       </div>
     </div>
