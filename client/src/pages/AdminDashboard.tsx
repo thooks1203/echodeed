@@ -153,18 +153,20 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => {
-              setActiveTab('overview');
-            }}
-            className="flex items-center gap-2"
-            data-testid="back-to-overview"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Overview
-          </Button>
+          {activeTab !== 'overview' && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setActiveTab('overview');
+              }}
+              className="flex items-center gap-2"
+              data-testid="back-to-overview"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back to Overview
+            </Button>
+          )}
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white" data-testid="admin-dashboard-title">
               Administrator Dashboard
