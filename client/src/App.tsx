@@ -5,7 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import Home from "@/pages/home";
-import AdminDashboard from "@/pages/admin-dashboard";
+import AdminDashboard from "@/pages/AdminDashboard";
 import RewardsPage from "@/pages/rewards";
 import ParentDashboard from "@/pages/ParentDashboard";
 import { LandingPage } from "@/components/landing-page";
