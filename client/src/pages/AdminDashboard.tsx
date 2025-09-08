@@ -156,12 +156,12 @@ export default function AdminDashboard() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/?tab=schools')}
             className="flex items-center gap-2"
-            data-testid="back-to-home"
+            data-testid="back-to-schools"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Home
+            Back to Schools
           </Button>
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white" data-testid="admin-dashboard-title">

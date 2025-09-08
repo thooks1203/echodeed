@@ -144,6 +144,8 @@ export function SchoolsDashboard() {
             onClick={() => {
               if (tab.id === 'parent') {
                 navigate('/parent');
+              } else if (tab.id === 'admin') {
+                navigate('/admin');
               } else {
                 setActiveTab(tab.id as any);
               }
@@ -247,9 +249,27 @@ export function SchoolsDashboard() {
             borderRadius: '12px',
             padding: '20px'
           }}>
-            <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px', color: '#7C3AED' }}>
-              📊 District Overview
-            </h3>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0, color: '#7C3AED' }}>
+                📊 Lincoln Unified School District
+              </h3>
+              <button
+                onClick={() => navigate('/admin')}
+                style={{
+                  background: '#7C3AED',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  padding: '6px 12px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+                data-testid="district-admin-access"
+              >
+                👩‍💼 District Admin
+              </button>
+            </div>
             <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
               <div style={{ textAlign: 'center' }}>
                 <div style={{ fontSize: '24px', fontWeight: '700', color: '#7C3AED' }}>
