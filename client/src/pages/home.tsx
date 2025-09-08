@@ -4627,8 +4627,8 @@ export default function Home() {
         }}>
           <span style={{ fontSize: '18px' }}>🪙</span>
           <div>
-            <div>+{tokenEarning.amount} $ECHO</div>
-            <div style={{ fontSize: '12px', opacity: 0.9 }}>{tokenEarning.reason}</div>
+            <div>+{tokenEarning?.amount} $ECHO</div>
+            <div style={{ fontSize: '12px', opacity: 0.9 }}>{tokenEarning?.reason}</div>
           </div>
         </div>
       )}
