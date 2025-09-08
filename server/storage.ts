@@ -23,6 +23,12 @@ import {
   workplaceSentimentData,
   wellnessPredictions,
   wellnessHeatmapData,
+  parentAccounts,
+  studentParentLinks,
+  selStandards,
+  studentSelProgress,
+  parentNotifications,
+  schoolContentReports,
   type User,
   type UpsertUser,
   type KindnessPost,
@@ -66,6 +72,18 @@ import {
   type InsertSubscriptionPlan,
   type WorkplaceSentimentData,
   type InsertWorkplaceSentimentData,
+  type ParentAccount,
+  type InsertParentAccount,
+  type StudentParentLink,
+  type InsertStudentParentLink,
+  type SelStandard,
+  type InsertSelStandard,
+  type StudentSelProgress,
+  type InsertStudentSelProgress,
+  type ParentNotification,
+  type InsertParentNotification,
+  type SchoolContentReport,
+  type InsertSchoolContentReport,
   type WellnessPrediction,
   type InsertWellnessPrediction,
   type WellnessHeatmapData,
@@ -2084,6 +2102,207 @@ export class DatabaseStorage implements IStorage {
       riskDepartments,
       positivityTrends,
     };
+  }
+
+  // SCHOOL-SPECIFIC FUNCTIONALITY
+  
+  // Parent account management (COPPA compliance)
+  async createParentAccount(parent: InsertParentAccount): Promise<ParentAccount> {
+    const [newParent] = await db.insert(parentAccounts).values(parent).returning();
+    return newParent;
+  }
+
+  async getParentAccountByEmail(email: string): Promise<ParentAccount | undefined> {
+    const [parent] = await db.select().from(parentAccounts).where(eq(parentAccounts.parentEmail, email));
+    return parent;
+  }
+
+  async verifyParentAccount(parentId: string): Promise<ParentAccount | undefined> {
+    const [parent] = await db
+      .update(parentAccounts)
+      .set({ isVerified: 1, verificationCode: null })
+      .where(eq(parentAccounts.id, parentId))
+      .returning();
+    return parent;
+  }
+
+  // Student-parent linking (COPPA compliance)
+  async linkStudentToParent(link: InsertStudentParentLink): Promise<StudentParentLink> {
+    const [newLink] = await db.insert(studentParentLinks).values(link).returning();
+    return newLink;
+  }
+
+  async getParentsForStudent(studentUserId: string): Promise<ParentAccount[]> {
+    return await db.select({
+      id: parentAccounts.id,
+      parentEmail: parentAccounts.parentEmail,
+      parentName: parentAccounts.parentName,
+      phoneNumber: parentAccounts.phoneNumber,
+      preferredContact: parentAccounts.preferredContact,
+      isVerified: parentAccounts.isVerified,
+      verificationCode: parentAccounts.verificationCode,
+      consentGiven: parentAccounts.consentGiven,
+      consentDate: parentAccounts.consentDate,
+      notificationsEnabled: parentAccounts.notificationsEnabled,
+      createdAt: parentAccounts.createdAt,
+    })
+    .from(parentAccounts)
+    .innerJoin(studentParentLinks, eq(parentAccounts.id, studentParentLinks.parentAccountId))
+    .where(eq(studentParentLinks.studentUserId, studentUserId));
+  }
+
+  // SEL Standards management
+  async createSelStandard(standard: InsertSelStandard): Promise<SelStandard> {
+    const [newStandard] = await db.insert(selStandards).values(standard).returning();
+    return newStandard;
+  }
+
+  async getSelStandardsByGrade(gradeLevel: string): Promise<SelStandard[]> {
+    return await db.select()
+      .from(selStandards)
+      .where(and(
+        eq(selStandards.gradeLevel, gradeLevel),
+        eq(selStandards.isActive, 1)
+      ))
+      .orderBy(selStandards.competencyArea, selStandards.standardCode);
+  }
+
+  // Parent notifications
+  async createParentNotification(notification: InsertParentNotification): Promise<ParentNotification> {
+    const [newNotification] = await db.insert(parentNotifications).values(notification).returning();
+    return newNotification;
+  }
+
+  async getParentNotifications(parentAccountId: string, limit: number = 20): Promise<ParentNotification[]> {
+    return await db.select()
+      .from(parentNotifications)
+      .where(eq(parentNotifications.parentAccountId, parentAccountId))
+      .orderBy(desc(parentNotifications.createdAt))
+      .limit(limit);
+  }
+
+  // School content reporting and safety
+  async createSchoolContentReport(report: InsertSchoolContentReport): Promise<SchoolContentReport> {
+    const [newReport] = await db.insert(schoolContentReports).values(report).returning();
+    return newReport;
+  }
+
+  async getSchoolContentReports(corporateAccountId: string, status?: string): Promise<SchoolContentReport[]> {
+    let query = db.select()
+      .from(schoolContentReports)
+      .where(eq(schoolContentReports.corporateAccountId, corporateAccountId));
+
+    if (status) {
+      query = query.where(and(
+        eq(schoolContentReports.corporateAccountId, corporateAccountId),
+        eq(schoolContentReports.status, status)
+      ));
+    }
+
+    return await query.orderBy(desc(schoolContentReports.createdAt));
+  }
+
+  // Education subscription plan initialization
+  async initializeEducationSubscriptionPlans(): Promise<void> {
+    try {
+      // Check if education plans already exist
+      const existingPlans = await db.select()
+        .from(subscriptionPlans)
+        .where(eq(subscriptionPlans.planType, 'education'));
+
+      if (existingPlans.length > 0) {
+        console.log('Education subscription plans already exist, skipping initialization');
+        return;
+      }
+
+      const educationPlans = [
+        {
+          planName: 'Education Basic',
+          planType: 'education',
+          monthlyPrice: 0, // Free for basic schools
+          yearlyPrice: 0,
+          features: [
+            'basic_posting',
+            'view_feed',
+            'basic_filters',
+            'classroom_assignments',
+            'basic_parent_reports',
+            'content_moderation',
+            'student_safety_features'
+          ],
+          limits: {
+            postsPerMonth: 1000,
+            studentsPerClass: 35,
+            classrooms: 10
+          },
+          isActive: 1,
+          sortOrder: 10
+        },
+        {
+          planName: 'Education Standard',
+          planType: 'education',
+          monthlyPrice: 300, // $3/month for 100 students
+          yearlyPrice: 3000, // $30/year (2 months free)
+          features: [
+            'unlimited_posting',
+            'advanced_filters',
+            'sel_standards_tracking',
+            'parent_engagement_portal',
+            'weekly_parent_reports',
+            'teacher_analytics',
+            'anti_bullying_monitoring',
+            'content_moderation',
+            'student_safety_features'
+          ],
+          limits: {
+            postsPerMonth: -1, // unlimited
+            studentsPerClass: 35,
+            classrooms: 50
+          },
+          isActive: 1,
+          sortOrder: 11
+        },
+        {
+          planName: 'Education Premium',
+          planType: 'education',
+          monthlyPrice: 800, // $8/month for 100 students  
+          yearlyPrice: 8000, // $80/year (2 months free)
+          features: [
+            'unlimited_posting',
+            'advanced_filters',
+            'sel_standards_tracking',
+            'parent_engagement_portal',
+            'real_time_parent_notifications',
+            'teacher_analytics',
+            'principal_dashboard',
+            'ai_wellness_insights',
+            'predictive_student_support',
+            'anti_bullying_monitoring',
+            'content_moderation',
+            'student_safety_features',
+            'district_level_analytics',
+            'compliance_reporting'
+          ],
+          limits: {
+            postsPerMonth: -1, // unlimited
+            studentsPerClass: -1, // unlimited
+            classrooms: -1 // unlimited
+          },
+          isActive: 1,
+          sortOrder: 12
+        }
+      ];
+
+      for (const plan of educationPlans) {
+        await db.insert(subscriptionPlans).values(plan);
+      }
+
+      console.log('✅ Education subscription plans initialized successfully');
+
+    } catch (error: any) {
+      console.error('Failed to initialize education subscription plans:', error.message);
+      throw error;
+    }
   }
 }
 

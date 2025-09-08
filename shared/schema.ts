@@ -465,14 +465,101 @@ export const marketingAnalytics = pgTable("marketing_analytics", {
 // INDIVIDUAL SUBSCRIPTION PLANS (Revenue Diversification)
 export const subscriptionPlans = pgTable("subscription_plans", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  planName: varchar("plan_name", { length: 50 }).notNull(), // Free, Basic, Premium, Enterprise
-  planType: varchar("plan_type", { length: 20 }).default("individual").notNull(), // individual, corporate
+  planName: varchar("plan_name", { length: 50 }).notNull(), // Free, Basic, Premium, Enterprise, Education
+  planType: varchar("plan_type", { length: 20 }).default("individual").notNull(), // individual, corporate, education
   monthlyPrice: integer("monthly_price").default(0).notNull(), // Price in cents
   yearlyPrice: integer("yearly_price").default(0).notNull(), // Price in cents (usually discounted)
   features: jsonb("features").notNull(), // Array of features included
   limits: jsonb("limits").notNull(), // Usage limits (posts per month, etc.)
   isActive: integer("is_active").default(1).notNull(),
   sortOrder: integer("sort_order").default(0).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// SCHOOL-SPECIFIC FEATURES
+// Parent engagement system for schools
+export const parentAccounts = pgTable("parent_accounts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  parentEmail: varchar("parent_email", { length: 200 }).notNull().unique(),
+  parentName: varchar("parent_name", { length: 100 }).notNull(),
+  phoneNumber: varchar("phone_number", { length: 20 }),
+  preferredContact: varchar("preferred_contact", { length: 20 }).default("email").notNull(), // email, sms, both
+  isVerified: integer("is_verified").default(0).notNull(),
+  verificationCode: varchar("verification_code", { length: 10 }),
+  consentGiven: integer("consent_given").default(0).notNull(), // COPPA compliance
+  consentDate: timestamp("consent_date"),
+  notificationsEnabled: integer("notifications_enabled").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Link students to their parents (COPPA compliance)
+export const studentParentLinks = pgTable("student_parent_links", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentUserId: varchar("student_user_id").notNull().references(() => users.id),
+  parentAccountId: varchar("parent_account_id").notNull().references(() => parentAccounts.id),
+  relationshipType: varchar("relationship_type", { length: 20 }).default("parent").notNull(), // parent, guardian, caregiver
+  isPrimary: integer("is_primary").default(0).notNull(), // Primary contact parent
+  canViewActivity: integer("can_view_activity").default(1).notNull(),
+  canReceiveReports: integer("can_receive_reports").default(1).notNull(),
+  linkedAt: timestamp("linked_at").defaultNow().notNull(),
+});
+
+// SEL (Social-Emotional Learning) standards alignment
+export const selStandards = pgTable("sel_standards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  standardCode: varchar("standard_code", { length: 20 }).notNull().unique(), // SEL.1A, SEL.2B, etc.
+  competencyArea: varchar("competency_area", { length: 50 }).notNull(), // self_awareness, self_management, social_awareness, relationship_skills, responsible_decision_making
+  gradeLevel: varchar("grade_level", { length: 20 }).notNull(), // K-2, 3-5, 6-8, 9-12
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description").notNull(),
+  kindnessCategories: jsonb("kindness_categories"), // Which kindness categories map to this standard
+  isActive: integer("is_active").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Track student progress on SEL standards
+export const studentSelProgress = pgTable("student_sel_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentUserId: varchar("student_user_id").notNull().references(() => users.id),
+  corporateAccountId: varchar("corporate_account_id").notNull(), // School/District ID
+  selStandardId: varchar("sel_standard_id").notNull().references(() => selStandards.id),
+  progressLevel: varchar("progress_level", { length: 20 }).default("beginning").notNull(), // beginning, developing, proficient, advanced
+  evidenceCount: integer("evidence_count").default(0).notNull(), // Number of kindness posts supporting this standard
+  lastActivityDate: timestamp("last_activity_date"),
+  teacherNotes: text("teacher_notes"),
+  isVisible: integer("is_visible").default(1).notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Parent notifications and reports
+export const parentNotifications = pgTable("parent_notifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  parentAccountId: varchar("parent_account_id").notNull().references(() => parentAccounts.id),
+  studentUserId: varchar("student_user_id").notNull().references(() => users.id),
+  notificationType: varchar("notification_type", { length: 30 }).notNull(), // weekly_report, achievement, milestone, concern
+  title: varchar("title", { length: 200 }).notNull(),
+  message: text("message").notNull(),
+  relatedData: jsonb("related_data"), // Achievement details, report data, etc.
+  isRead: integer("is_read").default(0).notNull(),
+  isSent: integer("is_sent").default(0).notNull(),
+  sentAt: timestamp("sent_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// School safety and content monitoring (enhanced for schools)
+export const schoolContentReports = pgTable("school_content_reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  corporateAccountId: varchar("corporate_account_id").notNull(), // School ID
+  postId: varchar("post_id").references(() => kindnessPosts.id),
+  reporterUserId: varchar("reporter_user_id").references(() => users.id), // Who reported it
+  reportType: varchar("report_type", { length: 30 }).notNull(), // inappropriate, bullying, concerning, urgent
+  description: text("description"),
+  moderatorNotes: text("moderator_notes"),
+  actionTaken: varchar("action_taken", { length: 50 }), // removed, flagged, cleared, escalated
+  priority: varchar("priority", { length: 20 }).default("normal").notNull(), // low, normal, high, urgent
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, reviewed, resolved
+  reviewedBy: varchar("reviewed_by"), // Teacher/admin who reviewed
+  reviewedAt: timestamp("reviewed_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -505,11 +592,56 @@ export const insertWorkplaceSentimentDataSchema = createInsertSchema(workplaceSe
   createdAt: true,
 });
 
-// Type exports for the new subscription system
+// School system insert schemas
+export const insertParentAccountSchema = createInsertSchema(parentAccounts).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertStudentParentLinkSchema = createInsertSchema(studentParentLinks).omit({
+  id: true,
+  linkedAt: true,
+});
+
+export const insertSelStandardSchema = createInsertSchema(selStandards).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertStudentSelProgressSchema = createInsertSchema(studentSelProgress).omit({
+  id: true,
+  updatedAt: true,
+});
+
+export const insertParentNotificationSchema = createInsertSchema(parentNotifications).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSchoolContentReportSchema = createInsertSchema(schoolContentReports).omit({
+  id: true,
+  createdAt: true,
+});
+
+// Type exports for the subscription and school systems
 export type SubscriptionPlan = typeof subscriptionPlans.$inferSelect;
 export type InsertSubscriptionPlan = z.infer<typeof insertSubscriptionPlanSchema>;
 export type WorkplaceSentimentData = typeof workplaceSentimentData.$inferSelect;
 export type InsertWorkplaceSentimentData = z.infer<typeof insertWorkplaceSentimentDataSchema>;
+
+// School system types
+export type ParentAccount = typeof parentAccounts.$inferSelect;
+export type InsertParentAccount = z.infer<typeof insertParentAccountSchema>;
+export type StudentParentLink = typeof studentParentLinks.$inferSelect;
+export type InsertStudentParentLink = z.infer<typeof insertStudentParentLinkSchema>;
+export type SelStandard = typeof selStandards.$inferSelect;
+export type InsertSelStandard = z.infer<typeof insertSelStandardSchema>;
+export type StudentSelProgress = typeof studentSelProgress.$inferSelect;
+export type InsertStudentSelProgress = z.infer<typeof insertStudentSelProgressSchema>;
+export type ParentNotification = typeof parentNotifications.$inferSelect;
+export type InsertParentNotification = z.infer<typeof insertParentNotificationSchema>;
+export type SchoolContentReport = typeof schoolContentReports.$inferSelect;
+export type InsertSchoolContentReport = z.infer<typeof insertSchoolContentReportSchema>;
 
 // B2B SaaS Insert Schemas
 export const insertCorporateAccountSchema = createInsertSchema(corporateAccounts).omit({
