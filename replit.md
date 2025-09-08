@@ -46,8 +46,8 @@ The platform features a minimalist design with a custom color palette, consisten
 - **Founder Execution**: Priority matrix, delegation framework, bandwidth management, burnout prevention.
 - **Cultural Messaging**: Strategies for conservative, liberal, privacy-concerned, and diverse communities.
 
-### Revenue Diversification (Individual Subscriptions & Enterprise)
-The platform offers tiered individual subscriptions (Free, Basic, Premium, Pro) and targets the K-8 education market (schools) and corporate wellness market with enterprise solutions.
+### Revenue Diversification (Education Proof-of-Concept + Corporate Focus)
+The platform uses affordable K-8 school implementations (max $5K annually) as customer validation and proof-of-concept, with primary revenue from corporate wellness market ($8-15/employee/month). Education market provides credibility and case studies for enterprise sales.
 
 ### Anonymous Workplace Wellness Features
 AI-powered predictive analytics for burnout risk, sentiment analysis, wellness heatmaps, and risk alerts, all designed with a privacy-first approach using anonymized data.

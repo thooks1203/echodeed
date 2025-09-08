@@ -16,12 +16,12 @@ EchoDeed™ is the world's first **anonymous AI-powered wellness platform** that
 - **K-8 Market Leadership**: Only anonymous wellness platform designed for critical developmental years (ages 9-14)
 - **Predictive AI Engine**: Advanced algorithms for wellness insights and social-emotional learning enhancement with 78-87% accuracy
 - **True Anonymity**: Complete privacy protection with developmental insights for educators and employers
-- **Dual Market ROI**: $25K+ per student (lifetime wellness) + $15K-25K per employee (burnout prevention)
+- **Strategic Market Approach**: $2-5K per school (proof-of-concept) + $8-15/employee/month (primary revenue)
 - **Patent Protection**: 4 USPTO-ready patents covering AI wellness prediction, anonymous analytics, and educational integration
 - **Competitive Moat**: Proven K-8 results create significant advantage for corporate wellness market entry
 
 ### AI Technology & Liability Framework
-- **Accuracy Standards**: AI predictions achieve 78-87% confidence with continuous model improvement
+- **Accuracy Standards**: AI early warning suggestions achieve 60-70% confidence, improving to 75%+ over time
 - **Decision Support**: AI provides insights and recommendations, not medical diagnoses or definitive predictions
 - **Human Oversight**: All high-risk alerts require human intervention and professional judgment
 - **Liability Protection**: Comprehensive legal framework protects customers while ensuring ethical AI use
@@ -29,7 +29,7 @@ EchoDeed™ is the world's first **anonymous AI-powered wellness platform** that
 
 ### Financial Overview (Updated K-8 Strategy)
 - **Current Valuation**: $1.5-3M (pre-pilot) to $25-50M (proven K-8 + corporate traction)
-- **Revenue Projections**: $750K ARR Year 1 → $4.2M Year 2 → $30M Year 3
+- **Revenue Projections**: $200K ARR Year 1 → $1.2M Year 2 → $8M Year 3 (education + corporate combined)
 - **Market Opportunity**: $68B+ TAM ($3B+ K-8 education + $65.25B corporate wellness)
 - **Business Model**: Dual-market SaaS ($25-60K/school annually + $8-15/employee/month corporate)
 
@@ -113,13 +113,12 @@ EchoDeed™ is the world's first **anonymous AI-powered wellness platform** that
 ## Business Model & Revenue Strategy
 
 ### Revenue Streams (Updated K-8 First Strategy)
-1. **K-8 Education Subscriptions** (60% of revenue Years 1-2, 40% Year 3+)
-   - Private Middle Schools: $15K-40K annually (grades 6-8)
-   - Private Elementary Schools: $10K-25K annually (grades 4-5)
-   - K-8 Private Schools: $25K-60K annually (complete solution)
-   - Public School Districts: $50K-150K annually (larger scale)
+1. **K-8 Education Subscriptions** (20% of revenue - proof of concept focus)
+   - Private Schools: $2-5K annually (market validation pricing)
+   - Public School Pilots: $3-8K annually (district partnerships)
+   - Focus: Customer validation, case studies, credibility building
 
-2. **Corporate Wellness Subscriptions** (30% of revenue Years 1-2, 50% Year 3+)
+2. **Corporate Wellness Subscriptions** (80% of revenue - primary focus)
    - EchoDeed Professional: $8/month/employee (100-1000 employees)
    - EchoDeed Enterprise: $12/month/employee (1000-10000 employees)
    - EchoDeed Premium: $15/month/employee (10000+ employees)
