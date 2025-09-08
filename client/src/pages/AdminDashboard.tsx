@@ -156,7 +156,10 @@ export default function AdminDashboard() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate('/?tab=schools')}
+            onClick={() => {
+              // Navigate to home with schools tab parameter
+              window.location.href = '/?tab=schools';
+            }}
             className="flex items-center gap-2"
             data-testid="back-to-schools"
           >
