@@ -157,13 +157,13 @@ export default function AdminDashboard() {
             variant="outline"
             size="sm"
             onClick={() => {
-              navigate('/?tab=schools');
+              setActiveTab('overview');
             }}
             className="flex items-center gap-2"
-            data-testid="back-to-schools"
+            data-testid="back-to-overview"
           >
             <ArrowLeft className="w-4 h-4" />
-            Back to Schools
+            Back to Overview
           </Button>
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white" data-testid="admin-dashboard-title">
