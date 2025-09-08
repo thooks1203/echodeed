@@ -157,11 +157,8 @@ export default function AdminDashboard() {
             variant="outline"
             size="sm"
             onClick={() => {
-              // Store the target tab in localStorage
-              localStorage.setItem('echodeed_target_tab', 'schools');
-              alert('Stored "schools" in localStorage, navigating to home...');
-              // Navigate to home
-              navigate('/');
+              // Navigate directly to home with schools tab parameter
+              window.location.href = '/?schools=true';
             }}
             className="flex items-center gap-2"
             data-testid="back-to-schools"

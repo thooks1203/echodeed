@@ -28,23 +28,20 @@ export default function Home() {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
   
-  // Check localStorage for target tab
-  const targetTab = localStorage.getItem('echodeed_target_tab');
-  const initialTab = targetTab || 'feed';
+  // Check for schools parameter in URL
+  const urlParams = new URLSearchParams(window.location.search);
+  const shouldShowSchools = urlParams.get('schools') === 'true';
+  const initialTab = shouldShowSchools ? 'schools' : 'feed';
   const { activeTab, setActiveTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation(initialTab);
   
-  // Handle target tab from localStorage - force immediate change
+  // Clean up URL parameter after setting tab
   useEffect(() => {
-    if (targetTab) {
-      alert(`Found target tab: ${targetTab}, current tab: ${activeTab}`);
-      if (targetTab !== activeTab) {
-        alert(`Switching to tab: ${targetTab}`);
-        navigateToTab(targetTab);
-        // Clear the target tab after using it
-        localStorage.removeItem('echodeed_target_tab');
-      }
+    if (shouldShowSchools) {
+      // Remove the schools parameter from URL to keep it clean
+      const newUrl = window.location.pathname;
+      window.history.replaceState({}, '', newUrl);
     }
-  }, [targetTab, activeTab, navigateToTab]);
+  }, [shouldShowSchools]);
   
   
   const [filters, setFilters] = useState<PostFilters>({});
