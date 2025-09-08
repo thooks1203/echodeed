@@ -147,7 +147,7 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     try {
       await storage.upsertUser({
         id: sessionId,
-        email: 'demo@echodeed.com',
+        email: `demo+${sessionId}@echodeed.com`, // Unique email per session
         firstName: 'Demo',
         lastName: 'User'
       });
