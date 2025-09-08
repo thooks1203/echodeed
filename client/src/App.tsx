@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/useAuth";
 import Home from "@/pages/home";
 import AdminDashboard from "@/pages/AdminDashboard";
+import CorporateDashboard from "@/pages/CorporateDashboard";
 import RewardsPage from "@/pages/rewards";
 import ParentDashboard from "@/pages/ParentDashboard";
 import { LandingPage } from "@/components/landing-page";
@@ -24,6 +25,8 @@ function Router() {
       <Route path="/rewards" component={RewardsPage} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin-dashboard" component={AdminDashboard} />
+      <Route path="/corporate" component={CorporateDashboard} />
+      <Route path="/corporate-dashboard" component={CorporateDashboard} />
       <Route path="/parent" component={ParentDashboard} />
       <Route component={NotFound} />
     </Switch>
