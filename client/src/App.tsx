@@ -7,6 +7,7 @@ import { useAuth } from "@/hooks/useAuth";
 import Home from "@/pages/home";
 import AdminDashboard from "@/pages/AdminDashboard";
 import CorporateDashboard from "@/pages/CorporateDashboard";
+import TrialSignup from "@/pages/TrialSignup";
 import RewardsPage from "@/pages/rewards";
 import ParentDashboard from "@/pages/ParentDashboard";
 import { LandingPage } from "@/components/landing-page";
@@ -23,6 +24,8 @@ function Router() {
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/rewards" component={RewardsPage} />
+      <Route path="/trial" component={TrialSignup} />
+      <Route path="/trial-signup" component={TrialSignup} />
       <Route path="/admin" component={AdminDashboard} />
       <Route path="/admin-dashboard" component={AdminDashboard} />
       <Route path="/corporate" component={CorporateDashboard} />
