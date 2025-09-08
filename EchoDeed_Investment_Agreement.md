@@ -7,7 +7,7 @@
 
 **INVESTMENT DETAILS:**
 - **Company**: EchoDeed™ (to be incorporated)
-- **Founder**: [Your Full Name]
+- **Founder**: Tavores Vanhook
 - **Investor**: [Friend's Full Name]
 - **Investment Amount**: $10,000
 - **Date**: _______________
@@ -50,18 +50,17 @@
 
 ## USE OF FUNDS (IMMEDIATE PRIORITIES)
 
-### **Patent Protection (65% - $6,500)**
-- Provisional patent applications filing fees: $3,200 (4 patents)
-- Patent attorney consultation and preparation: $2,800
-- Patent search and prior art analysis: $500
-- Contingency for additional patent costs: $0
+### **Patent Protection (80% - $8,000)**
+- Provisional patent applications filing fees: $4,000 (4 breakthrough patents)
+- Patent attorney consultation and preparation: $3,200
+- Patent search and prior art analysis: $800
+- USPTO filing and administrative costs: $0
 
-### **Customer Acquisition (35% - $3,500)**
-- Sales tools and CRM setup: $700
-- Professional marketing materials: $500
+### **Customer Acquisition (20% - $2,000)**
+- Sales tools and CRM setup: $800
+- Professional marketing materials and presentations: $600
 - LinkedIn Sales Navigator and outreach tools: $300
 - Demo environment hosting and setup: $300
-- Travel/meetings for customer discovery: $300
 
 ---
 
@@ -131,7 +130,7 @@ Investor entitled to:
 
 ## SIGNATURES & ACCEPTANCE
 
-**I, [Your Name], as Founder of EchoDeed™, agree to:**
+**I, Tavores Vanhook, as Founder of EchoDeed™, agree to:**
 - Use funds solely for stated business purposes
 - Provide regular updates and maintain transparency
 - Work full-time to build EchoDeed™ into a successful enterprise
@@ -164,7 +163,7 @@ Signature: _________________________________ Date: __________
 - Routing Number: _______________________
 
 **Temporary Personal Account** (If business not yet incorporated):
-- Account Holder: [Your Name]
+- Account Holder: Tavores Vanhook
 - Bank: ________________________________
 - Account Number: _______________________
 
