@@ -28,10 +28,18 @@ export default function Home() {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
   
-  // Check URL parameters for initial tab
+  // Check URL parameters and sessionStorage for initial tab
   const urlParams = new URLSearchParams(window.location.search);
-  const initialTab = urlParams.get('tab') || 'feed';
+  const targetTab = sessionStorage.getItem('targetTab');
+  const initialTab = urlParams.get('tab') || targetTab || 'feed';
   const { activeTab, setActiveTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation(initialTab);
+  
+  // Clear the targetTab from sessionStorage after using it
+  useEffect(() => {
+    if (targetTab) {
+      sessionStorage.removeItem('targetTab');
+    }
+  }, [targetTab]);
   
   
   const [filters, setFilters] = useState<PostFilters>({});
