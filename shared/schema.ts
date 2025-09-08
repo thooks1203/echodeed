@@ -302,6 +302,12 @@ export const rewardOffers = pgTable("reward_offers", {
   expiresAt: timestamp("expires_at"),
   termsAndConditions: text("terms_and_conditions"),
   imageUrl: text("image_url"), // Offer banner image
+  // Corporate Sponsorship Fields
+  sponsorCompany: varchar("sponsor_company", { length: 200 }), // Company sponsoring this reward
+  sponsorLogo: text("sponsor_logo"), // Sponsor's logo URL
+  sponsorshipType: varchar("sponsorship_type", { length: 50 }).default("full").notNull(), // full, partial, co-sponsor
+  sponsorshipMessage: text("sponsorship_message"), // Custom message from sponsor
+  monthlySponsorship: integer("monthly_sponsorship").default(0), // Monthly sponsorship revenue in cents
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
