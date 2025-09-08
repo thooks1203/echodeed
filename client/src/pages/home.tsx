@@ -225,13 +225,13 @@ export default function Home() {
   });
 
   // Fetch corporate accounts for admin panel
-  const { data: corporateAccounts = [] } = useQuery({
+  const { data: corporateAccounts = [] } = useQuery<any[]>({
     queryKey: ['/api/corporate/accounts'],
     enabled: activeTab === 'admin' // Only fetch when admin tab is active
   });
 
   // Fetch challenge templates for corporate dashboard
-  const { data: challengeTemplates = [] } = useQuery({
+  const { data: challengeTemplates = [] } = useQuery<ChallengeTemplate[]>({
     queryKey: ['/api/corporate/challenge-templates'],
     enabled: activeTab === 'corporate' && !!corporateDashboard // Only fetch when corporate tab is active and dashboard is loaded
   });
@@ -260,7 +260,7 @@ export default function Home() {
             pushNotifications.sendAchievementNotification({
               title: achievement.title,
               description: achievement.description,
-              badge: achievement.badgeImage || '',
+              badge: achievement.badge || '',
               echoReward: achievement.echoReward,
               tier: achievement.tier || 'bronze'
             });
@@ -290,20 +290,11 @@ export default function Home() {
     } else if (message.type === 'POST_UPDATE') {
       refetchPosts(); // Refetch posts to get updated counts
       refetchTokens(); // Refetch tokens to get updated balance
-    } else if (message.type === 'SURPRISE_GIVEAWAY') {
-      // Handle surprise giveaway notification
-      if (message.giftCard) {
-        pushNotifications.sendSurpriseGiveawayNotification({
-          type: 'gift_card',
-          value: message.giftCard.value,
-          redemptionCode: message.giftCard.redemptionCode,
-          partnerName: message.giftCard.partnerName
-        });
-        
-        // Refetch user redemptions to show the new gift card
-        // This would refetch rewards data if we had that query
-        console.log('🎉 Surprise giveaway received:', message.giftCard);
-      }
+    } else if (message.type === 'CHALLENGE_COMPLETED' || message.type === 'ACHIEVEMENTS_UNLOCKED') {
+      // Handle challenge completion and achievement notifications
+      console.log('🎉 Challenge/Achievement notification:', message);
+      refetchTokens();
+      checkAchievements();
     }
   }, [refetchPosts, refetchCounter, refetchTokens]);
 
@@ -407,7 +398,7 @@ export default function Home() {
   const defaultCounter: KindnessCounter = {
     id: 'global',
     count: 243876,
-    updatedAt: new Date().toISOString()
+    updatedAt: new Date()
   };
 
   // Welcome Page - Check at the very beginning
@@ -1153,10 +1144,7 @@ export default function Home() {
                   boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
                   border: `1px solid ${template.color}20`,
                   cursor: 'pointer',
-                  transition: 'transform 0.2s ease',
-                  ':hover': {
-                    transform: 'translateY(-2px)'
-                  }
+                  transition: 'transform 0.2s ease'
                 }} onClick={() => {
                   alert(`Create "${template.title}" Challenge?\n\n${template.description}\n\nReward: ${template.echoReward} $ECHO\nDuration: ${template.suggestedDuration} days\nTarget: ${template.participationGoal}% participation\n\n(Challenge creation will be implemented in the next phase)`);
                 }}>
@@ -1213,7 +1201,7 @@ export default function Home() {
                   border: '1px dashed #d1d5db',
                   cursor: 'pointer'
                 }} onClick={() => {
-                  alert(`View All Templates\n\n${challengeTemplates.length} total templates available:\n\n${challengeTemplates.map(t => `${t.icon} ${t.title} (${t.category})`).join('\n')}\n\n(Full template browser coming soon!)`);
+                  alert(`View All Templates\n\n${challengeTemplates.length} total templates available:\n\n${(challengeTemplates as any[]).map((t: any) => `${t.icon} ${t.title} (${t.category})`).join('\n')}\n\n(Full template browser coming soon!)`);
                 }}>
                   <div style={{ fontSize: '12px', color: '#6b7280', fontWeight: '500' }}>
                     View All {challengeTemplates.length} Templates →
@@ -2217,7 +2205,10 @@ export default function Home() {
                 onError={(e) => {
                   console.log('Logo failed to load, using fallback');
                   e.currentTarget.style.display = 'none';
-                  e.currentTarget.parentElement.innerHTML = '<div style="font-size: 80px; background: linear-gradient(135deg, hsl(30, 100%, 60%), hsl(320, 100%, 65%), hsl(280, 100%, 65%), hsl(200, 100%, 60%)); background-size: 300% 300%; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientShift 4s ease-in-out infinite;">⚡</div>';
+                  const parent = e.currentTarget.parentElement;
+                  if (parent) {
+                    parent.innerHTML = '<div style="font-size: 80px; background: linear-gradient(135deg, hsl(30, 100%, 60%), hsl(320, 100%, 65%), hsl(280, 100%, 65%), hsl(200, 100%, 60%)); background-size: 300% 300%; background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: gradientShift 4s ease-in-out infinite;">⚡</div>';
+                  }
                 }}
               />
             </div>
@@ -2679,7 +2670,7 @@ export default function Home() {
               fontSize: '12px',
               fontWeight: '600'
             }}>
-              {tokens?.balance || 0} $ECHO
+              {tokens?.echoBalance || 0} $ECHO
             </div>
           </div>
           <p style={{ 
@@ -2712,7 +2703,7 @@ export default function Home() {
               Your $ECHO Balance
             </h3>
             <div style={{ fontSize: '36px', fontWeight: '700', color: '#1f2937', marginBottom: '8px' }}>
-              {tokens?.balance || 0}
+              {tokens?.echoBalance || 0}
             </div>
             <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
               Earned through acts of kindness
@@ -2738,9 +2729,9 @@ export default function Home() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {[
                 { icon: '☕️', title: '$5 Coffee Gift Card', cost: 50, available: true },
-                { icon: '🎬', title: '$10 Movie Ticket', cost: 100, available: (tokens?.balance || 0) >= 100 },
-                { icon: '🛍️', title: '$25 Shopping Voucher', cost: 250, available: (tokens?.balance || 0) >= 250 },
-                { icon: '🍽️', title: '$50 Restaurant Credit', cost: 500, available: (tokens?.balance || 0) >= 500 }
+                { icon: '🎬', title: '$10 Movie Ticket', cost: 100, available: (tokens?.echoBalance || 0) >= 100 },
+                { icon: '🛍️', title: '$25 Shopping Voucher', cost: 250, available: (tokens?.echoBalance || 0) >= 250 },
+                { icon: '🍽️', title: '$50 Restaurant Credit', cost: 500, available: (tokens?.echoBalance || 0) >= 500 }
               ].map((reward, index) => (
                 <div key={index} style={{
                   display: 'flex',
@@ -3647,8 +3638,8 @@ export default function Home() {
           }}>
             <span style={{ fontSize: '18px' }}>🪙</span>
             <div>
-              <div>+{tokenEarning.amount} $ECHO</div>
-              <div style={{ fontSize: '12px', opacity: 0.9 }}>{tokenEarning.reason}</div>
+              <div>+{tokenEarning?.amount} $ECHO</div>
+              <div style={{ fontSize: '12px', opacity: 0.9 }}>{tokenEarning?.reason}</div>
             </div>
           </div>
         )}
@@ -3736,8 +3727,8 @@ export default function Home() {
           }}>
             <span style={{ fontSize: '18px' }}>🪙</span>
             <div>
-              <div>+{tokenEarning.amount} $ECHO</div>
-              <div style={{ fontSize: '12px', opacity: 0.9 }}>{tokenEarning.reason}</div>
+              <div>+{tokenEarning?.amount} $ECHO</div>
+              <div style={{ fontSize: '12px', opacity: 0.9 }}>{tokenEarning?.reason}</div>
             </div>
           </div>
         )}
