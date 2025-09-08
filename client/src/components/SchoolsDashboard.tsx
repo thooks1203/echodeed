@@ -124,7 +124,8 @@ export function SchoolsDashboard() {
 
       {/* Tab Navigation */}
       <div style={{
-        display: 'flex',
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))',
         background: '#f3f4f6',
         borderRadius: '8px',
         padding: '4px',
@@ -133,10 +134,10 @@ export function SchoolsDashboard() {
       }}>
         {[
           { id: 'overview', label: '📊 Overview' },
-          { id: 'student', label: '👨‍🎓 Student View' },
-          { id: 'teacher', label: '👩‍🏫 Teacher View' },
-          { id: 'admin', label: '👩‍💼 Admin View' },
-          { id: 'parent', label: '👨‍👩‍👧‍👦 Parent Portal' }
+          { id: 'student', label: '👨‍🎓 Student' },
+          { id: 'teacher', label: '👩‍🏫 Teacher' },
+          { id: 'admin', label: '👩‍💼 Admin' },
+          { id: 'parent', label: '👨‍👩‍👧‍👦 Parents' }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -148,21 +149,53 @@ export function SchoolsDashboard() {
               }
             }}
             style={{
-              flex: 1,
-              padding: '8px 16px',
+              padding: '8px 12px',
               borderRadius: '4px',
               border: 'none',
-              fontSize: '12px',
+              fontSize: '11px',
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
               background: activeTab === tab.id ? '#7C3AED' : 'transparent',
-              color: activeTab === tab.id ? 'white' : '#6b7280'
+              color: activeTab === tab.id ? 'white' : '#6b7280',
+              whiteSpace: 'nowrap',
+              textAlign: 'center'
             }}
+            data-testid={`school-tab-${tab.id}`}
           >
             {tab.label}
           </button>
         ))}
+      </div>
+
+      {/* Direct Parent Portal Access */}
+      <div style={{ 
+        background: '#EEF2FF', 
+        border: '1px solid #C7D2FE', 
+        borderRadius: '8px', 
+        padding: '12px', 
+        marginBottom: '24px',
+        textAlign: 'center'
+      }}>
+        <p style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#4338CA' }}>
+          👨‍👩‍👧‍👦 Are you a parent? Track your child's kindness journey
+        </p>
+        <button
+          onClick={() => navigate('/parent')}
+          style={{
+            background: '#7C3AED',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            padding: '8px 16px',
+            fontSize: '14px',
+            fontWeight: '600',
+            cursor: 'pointer'
+          }}
+          data-testid="parent-portal-access"
+        >
+          Access Parent Dashboard
+        </button>
       </div>
 
       {/* Tab Content */}
