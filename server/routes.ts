@@ -4363,6 +4363,145 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // SCHOOL ADMINISTRATOR DASHBOARD ROUTES
+  app.post('/api/administrators', isAuthenticated, async (req: any, res) => {
+    try {
+      const administrator = await storage.createSchoolAdministrator(req.body);
+      res.json(administrator);
+    } catch (error) {
+      console.error('Failed to create administrator:', error);
+      res.status(500).json({ error: 'Failed to create administrator' });
+    }
+  });
+
+  app.get('/api/administrators/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const administrator = await storage.getSchoolAdministrator(id);
+      if (!administrator) {
+        return res.status(404).json({ error: 'Administrator not found' });
+      }
+      res.json(administrator);
+    } catch (error) {
+      console.error('Failed to get administrator:', error);
+      res.status(500).json({ error: 'Failed to get administrator' });
+    }
+  });
+
+  app.get('/api/administrators/school/:schoolId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      const administrators = await storage.getAdministratorsBySchool(schoolId);
+      res.json(administrators);
+    } catch (error) {
+      console.error('Failed to get administrators by school:', error);
+      res.status(500).json({ error: 'Failed to get administrators by school' });
+    }
+  });
+
+  app.get('/api/administrators/district/:districtId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { districtId } = req.params;
+      const administrators = await storage.getAdministratorsByDistrict(districtId);
+      res.json(administrators);
+    } catch (error) {
+      console.error('Failed to get administrators by district:', error);
+      res.status(500).json({ error: 'Failed to get administrators by district' });
+    }
+  });
+
+  app.put('/api/administrators/:id/permissions', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { permissions } = req.body;
+      const administrator = await storage.updateAdministratorPermissions(id, permissions);
+      if (!administrator) {
+        return res.status(404).json({ error: 'Administrator not found' });
+      }
+      res.json(administrator);
+    } catch (error) {
+      console.error('Failed to update administrator permissions:', error);
+      res.status(500).json({ error: 'Failed to update administrator permissions' });
+    }
+  });
+
+  // GOOGLE CLASSROOM INTEGRATION ROUTES
+  app.post('/api/google-classroom/integrations', isAuthenticated, async (req: any, res) => {
+    try {
+      const integration = await storage.createGoogleClassroomIntegration(req.body);
+      res.json(integration);
+    } catch (error) {
+      console.error('Failed to create Google Classroom integration:', error);
+      res.status(500).json({ error: 'Failed to create Google Classroom integration' });
+    }
+  });
+
+  app.get('/api/google-classroom/integrations/school/:schoolId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      const integrations = await storage.getGoogleClassroomIntegrations(schoolId);
+      res.json(integrations);
+    } catch (error) {
+      console.error('Failed to get Google Classroom integrations:', error);
+      res.status(500).json({ error: 'Failed to get Google Classroom integrations' });
+    }
+  });
+
+  app.get('/api/google-classroom/integrations/teacher/:teacherUserId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { teacherUserId } = req.params;
+      const integrations = await storage.getGoogleIntegrationByTeacher(teacherUserId);
+      res.json(integrations);
+    } catch (error) {
+      console.error('Failed to get teacher Google integrations:', error);
+      res.status(500).json({ error: 'Failed to get teacher Google integrations' });
+    }
+  });
+
+  app.put('/api/google-classroom/integrations/:id/tokens', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { accessToken, refreshToken } = req.body;
+      const integration = await storage.updateGoogleIntegrationTokens(id, accessToken, refreshToken);
+      if (!integration) {
+        return res.status(404).json({ error: 'Integration not found' });
+      }
+      res.json(integration);
+    } catch (error) {
+      console.error('Failed to update Google integration tokens:', error);
+      res.status(500).json({ error: 'Failed to update Google integration tokens' });
+    }
+  });
+
+  app.post('/api/google-classroom/integrations/:id/sync', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { studentCount } = req.body;
+      await storage.syncGoogleClassroomStudents(id, studentCount);
+      res.json({ success: true, message: 'Students synced successfully' });
+    } catch (error) {
+      console.error('Failed to sync Google Classroom students:', error);
+      res.status(500).json({ error: 'Failed to sync Google Classroom students' });
+    }
+  });
+
+  // OAUTH CONFIGURATION FOR GOOGLE CLASSROOM
+  app.get('/api/google-classroom/oauth/config', async (req, res) => {
+    try {
+      // Return Google OAuth configuration for frontend
+      const config = {
+        clientId: process.env.GOOGLE_CLIENT_ID, 
+        redirectUri: process.env.GOOGLE_REDIRECT_URI || `${req.protocol}://${req.get('host')}/auth/google/callback`,
+        scope: 'https://www.googleapis.com/auth/classroom.readonly https://www.googleapis.com/auth/classroom.rosters',
+        authUrl: 'https://accounts.google.com/o/oauth2/v2/auth'
+      };
+      res.json(config);
+    } catch (error) {
+      console.error('Failed to get Google OAuth config:', error);
+      res.status(500).json({ error: 'Failed to get Google OAuth config' });
+    }
+  });
+
   return httpServer;
 }
 
