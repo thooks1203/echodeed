@@ -34,17 +34,21 @@ export default function Home() {
   const initialTab = urlTab || 'feed';
   const { activeTab, setActiveTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation(initialTab);
   
-  // Handle tab changes from URL parameters
+  // Handle tab changes from URL parameters - force immediate change
   useEffect(() => {
+    console.log('Home component effect - urlTab:', urlTab, 'activeTab:', activeTab);
     if (urlTab && urlTab !== activeTab) {
       console.log('Setting tab from URL parameter:', urlTab);
-      setActiveTab(urlTab);
+      navigateToTab(urlTab); // Use navigateToTab instead of setActiveTab
       // Clean up URL after setting tab
       setTimeout(() => {
         window.history.replaceState({}, '', window.location.pathname);
       }, 100);
     }
-  }, [urlTab, activeTab, setActiveTab]);
+  }, [urlTab, activeTab, navigateToTab]);
+  
+  // Debug current tab
+  console.log('Home render - Current activeTab:', activeTab);
   
   
   const [filters, setFilters] = useState<PostFilters>({});
