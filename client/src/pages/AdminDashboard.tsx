@@ -157,9 +157,8 @@ export default function AdminDashboard() {
             variant="outline"
             size="sm"
             onClick={() => {
-              // Store the target tab in sessionStorage for the home page to pick up
-              sessionStorage.setItem('targetTab', 'schools');
-              navigate('/');
+              // Use window.location with hash to force tab selection
+              window.location.assign('/#schools');
             }}
             className="flex items-center gap-2"
             data-testid="back-to-schools"
