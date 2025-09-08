@@ -177,6 +177,15 @@ export default function AdminDashboard() {
           </div>
         </div>
         <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            onClick={() => navigate('/')}
+            className="flex items-center gap-2"
+            data-testid="back-to-platform"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Platform
+          </Button>
           <Badge variant="secondary" className="px-3 py-1">
             <Building2 className="w-4 h-4 mr-1" />
             {mockDistrictMetrics.totalSchools} Schools
