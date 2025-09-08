@@ -128,6 +128,36 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
+  // Demo mode: Allow access with session ID header in development
+  if (process.env.NODE_ENV === 'development' && req.headers['x-session-id']) {
+    const sessionId = req.headers['x-session-id'] as string;
+    
+    // Create mock user for smooth demo experience
+    req.user = {
+      claims: { 
+        sub: sessionId,
+        email: 'demo@echodeed.com',
+        first_name: 'Demo',
+        last_name: 'User'
+      },
+      expires_at: Math.floor(Date.now() / 1000) + 3600 // 1 hour from now
+    };
+    
+    // Ensure demo user exists in database
+    try {
+      await storage.upsertUser({
+        id: sessionId,
+        email: 'demo@echodeed.com',
+        firstName: 'Demo',
+        lastName: 'User'
+      });
+    } catch (error) {
+      console.error('Failed to create demo user:', error);
+    }
+    
+    return next();
+  }
+
   const user = req.user as any;
 
   if (!req.isAuthenticated() || !user.expires_at) {
