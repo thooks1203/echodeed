@@ -1569,14 +1569,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get user's unlocked achievements
-  app.get('/api/achievements/user', async (req, res) => {
+  app.get('/api/achievements/user', isAuthenticated, async (req: any, res) => {
     try {
-      const sessionId = req.headers['x-session-id'] as string;
-      if (!sessionId) {
-        return res.status(400).json({ message: 'Session ID required' });
+      const userId = req.user.claims.sub;
+      if (!userId) {
+        return res.status(400).json({ message: 'User ID required' });
       }
       
-      const userAchievements = await storage.getUserAchievements(sessionId);
+      const userAchievements = await storage.getUserAchievements(userId);
       res.json(userAchievements);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
@@ -1584,21 +1584,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Check for new achievements (called when user performs actions)
-  app.post('/api/achievements/check', async (req, res) => {
+  app.post('/api/achievements/check', isAuthenticated, async (req: any, res) => {
     try {
-      const sessionId = req.headers['x-session-id'] as string;
-      if (!sessionId) {
-        return res.status(400).json({ message: 'Session ID required' });
+      const userId = req.user.claims.sub;
+      if (!userId) {
+        return res.status(400).json({ message: 'User ID required' });
       }
       
-      const newAchievements = await storage.checkAndUnlockAchievements(req.user.claims.sub);
+      const newAchievements = await storage.checkAndUnlockAchievements(userId);
       
       // Broadcast new achievements to WebSocket clients
       if (newAchievements.length > 0) {
         broadcast({
           type: 'ACHIEVEMENTS_UNLOCKED',
           achievements: newAchievements,
-          sessionId
+          userId
         });
       }
       
