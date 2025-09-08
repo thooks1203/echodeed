@@ -42,14 +42,16 @@ export default function Home() {
 
   const { location } = useGeolocation();
 
-  // Clean up URL parameters after initial tab is set
+  // Handle URL parameters for tab navigation
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
-    if (urlParams.has('tab')) {
+    const tabParam = urlParams.get('tab');
+    if (tabParam && ['feed', 'schools', 'ai', 'marketing'].includes(tabParam)) {
+      setActiveTab(tabParam);
       // Remove the tab parameter from URL to keep it clean
       window.history.replaceState({}, '', window.location.pathname);
     }
-  }, []);
+  }, [setActiveTab]);
 
   // Initialize notification setup for new users
   useEffect(() => {

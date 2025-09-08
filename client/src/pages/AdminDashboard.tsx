@@ -157,7 +157,7 @@ export default function AdminDashboard() {
             variant="outline"
             size="sm"
             onClick={() => {
-              navigate('/');
+              navigate('/?tab=schools');
             }}
             className="flex items-center gap-2"
             data-testid="back-to-schools"
