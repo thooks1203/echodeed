@@ -179,7 +179,10 @@ export default function AdminDashboard() {
         <div className="flex items-center gap-3">
           <Button
             variant="outline"
-            onClick={() => navigate('/?tab=feed')}
+            onClick={() => {
+              // Navigate to root and reload to ensure clean state
+              window.location.href = '/';
+            }}
             className="flex items-center gap-2"
             data-testid="back-to-platform"
           >
