@@ -28,20 +28,7 @@ export default function Home() {
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
   
-  // Check for schools parameter in URL
-  const urlParams = new URLSearchParams(window.location.search);
-  const shouldShowSchools = urlParams.get('schools') === 'true';
-  const initialTab = shouldShowSchools ? 'schools' : 'feed';
-  const { activeTab, setActiveTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation(initialTab);
-  
-  // Clean up URL parameter after setting tab
-  useEffect(() => {
-    if (shouldShowSchools) {
-      // Remove the schools parameter from URL to keep it clean
-      const newUrl = window.location.pathname;
-      window.history.replaceState({}, '', newUrl);
-    }
-  }, [shouldShowSchools]);
+  const { activeTab, setActiveTab, canGoBackInTabs, navigateToTab, goBackInTabs } = useTabNavigation('feed');
   
   
   const [filters, setFilters] = useState<PostFilters>({});

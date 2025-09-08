@@ -157,8 +157,7 @@ export default function AdminDashboard() {
             variant="outline"
             size="sm"
             onClick={() => {
-              // Navigate directly to home with schools tab parameter
-              window.location.href = '/?schools=true';
+              navigate('/');
             }}
             className="flex items-center gap-2"
             data-testid="back-to-schools"
