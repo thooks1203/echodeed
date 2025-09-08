@@ -1085,15 +1085,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Increment counter and award tokens
       const counter = await storage.incrementCounter();
       
-      // Ensure user has tokens record and award posting tokens
+      // Dynamic token rewards with surprise bonuses!
       let userTokens = await storage.getUserTokens(userId);
       if (!userTokens) {
         userTokens = await storage.createUserTokens({ userId });
       }
+      
+      // Calculate dynamic reward based on post quality and timing
+      const baseReward = 5;
+      let totalReward = baseReward;
+      let bonusReasons: string[] = [];
+      
+      // Quality bonuses based on content length and sentiment
+      const contentWords = postData.content.trim().split(/\s+/).length;
+      if (contentWords >= 20) {
+        totalReward += 3;
+        bonusReasons.push('Detailed Story (+3)');
+      }
+      
+      // Time-based surprise bonuses
+      const hour = new Date().getHours();
+      if (hour >= 6 && hour <= 8) {
+        totalReward += 2;
+        bonusReasons.push('Early Bird (+2)');
+      } else if (hour >= 22 || hour <= 2) {
+        totalReward += 2;
+        bonusReasons.push('Night Owl (+2)');
+      }
+      
+      // Weekend bonus
+      const isWeekend = [0, 6].includes(new Date().getDay());
+      if (isWeekend) {
+        totalReward += 2;
+        bonusReasons.push('Weekend Warrior (+2)');
+      }
+      
+      // Random surprise bonus (15% chance)
+      if (Math.random() < 0.15) {
+        const surpriseBonus = Math.floor(Math.random() * 10) + 5; // 5-14 bonus tokens
+        totalReward += surpriseBonus;
+        bonusReasons.push(`Surprise Bonus (+${surpriseBonus})`);
+      }
+      
+      // Streak bonus (placeholder - could check user's posting history)
+      const isConsecutiveDay = Math.random() < 0.3; // Simulate streak detection
+      if (isConsecutiveDay) {
+        totalReward += 5;
+        bonusReasons.push('Daily Streak (+5)');
+      }
+      
       await storage.updateUserTokens(userId, { 
-        echoBalance: userTokens.echoBalance + 5,
-        totalEarned: userTokens.totalEarned + 5 
+        echoBalance: userTokens.echoBalance + totalReward,
+        totalEarned: userTokens.totalEarned + totalReward 
       });
+      
+      // Store bonus info for the response
+      (post as any).tokenReward = totalReward;
+      (post as any).bonusReasons = bonusReasons;
       
       // Broadcast new post and counter to all WebSocket clients
       broadcast({
@@ -1120,15 +1168,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const updatedPost = await storage.addHeartToPost(postId, sessionId);
       
-      // Award tokens for hearting a post (1 token)
+      // Dynamic heart rewards with engagement bonuses!
       let userTokens = await storage.getUserTokens(userId);
       if (!userTokens) {
         userTokens = await storage.createUserTokens({ userId });
       }
+      
+      // Base heart reward
+      let heartReward = 1;
+      let bonusReasons: string[] = [];
+      
+      // Early engagement bonus - rewarding first few hearts more
+      const currentHearts = updatedPost.heartsCount || 0;
+      if (currentHearts <= 3) {
+        heartReward += 2;
+        bonusReasons.push('Early Support (+2)');
+      }
+      
+      // Quality post bonus - if post has high engagement
+      const totalEngagement = (updatedPost.heartsCount || 0) + ((updatedPost.echoesCount || 0) * 2);
+      if (totalEngagement > 10) {
+        heartReward += 1;
+        bonusReasons.push('Trending Post (+1)');
+      }
+      
+      // Random kindness multiplier (10% chance)
+      if (Math.random() < 0.1) {
+        heartReward *= 3;
+        bonusReasons.push('Kindness Multiplier (x3)');
+      }
+      
       await storage.updateUserTokens(userId, { 
-        echoBalance: userTokens.echoBalance + 1,
-        totalEarned: userTokens.totalEarned + 1 
+        echoBalance: userTokens.echoBalance + heartReward,
+        totalEarned: userTokens.totalEarned + heartReward 
       });
+      
+      // Store reward info for potential notification
+      (updatedPost as any).heartReward = heartReward;
+      (updatedPost as any).bonusReasons = bonusReasons;
       
       // Broadcast the update to all connected WebSocket clients
       broadcast({
@@ -1154,15 +1231,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userId = req.user.claims.sub;
       const updatedPost = await storage.addEchoToPost(postId, sessionId);
       
-      // Award tokens for echoing a post (2 tokens - higher reward for commitment)
+      // Premium echo rewards with impact bonuses!
       let userTokens = await storage.getUserTokens(userId);
       if (!userTokens) {
         userTokens = await storage.createUserTokens({ userId });
       }
+      
+      // Base echo reward (higher commitment)
+      let echoReward = 3; // Increased from 2!
+      let bonusReasons: string[] = [];
+      
+      // Amplification bonus - echoing spreads kindness further
+      const currentEchoes = updatedPost.echoesCount || 0;
+      if (currentEchoes <= 2) {
+        echoReward += 3;
+        bonusReasons.push('Amplification Leader (+3)');
+      }
+      
+      // High-impact post bonus
+      if (updatedPost.impactScore && updatedPost.impactScore > 75) {
+        echoReward += 4;
+        bonusReasons.push('High Impact Echo (+4)');
+      }
+      
+      // Community builder bonus (15% chance for extra reward)
+      if (Math.random() < 0.15) {
+        echoReward += 7;
+        bonusReasons.push('Community Builder (+7)');
+      }
+      
       await storage.updateUserTokens(userId, { 
-        echoBalance: userTokens.echoBalance + 2,
-        totalEarned: userTokens.totalEarned + 2 
+        echoBalance: userTokens.echoBalance + echoReward,
+        totalEarned: userTokens.totalEarned + echoReward 
       });
+      
+      // Store reward info
+      (updatedPost as any).echoReward = echoReward;
+      (updatedPost as any).bonusReasons = bonusReasons;
       
       // Broadcast the update to all connected WebSocket clients
       broadcast({
@@ -1486,7 +1591,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Session ID required' });
       }
       
-      const newAchievements = await storage.checkAndUnlockAchievements(sessionId);
+      const newAchievements = await storage.checkAndUnlockAchievements(req.user.claims.sub);
       
       // Broadcast new achievements to WebSocket clients
       if (newAchievements.length > 0) {

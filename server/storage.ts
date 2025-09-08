@@ -154,7 +154,7 @@ export interface IStorage {
   getAchievements(): Promise<Achievement[]>;
   getUserAchievements(userId: string): Promise<UserAchievement[]>;
   unlockUserAchievement(achievement: InsertUserAchievement): Promise<UserAchievement>;
-  checkAndUnlockAchievements(sessionId: string): Promise<UserAchievement[]>;
+  checkAndUnlockAchievements(userId: string): Promise<UserAchievement[]>;
   
   // Corporate operations
   getCorporateAccount(id: string): Promise<CorporateAccount | undefined>;
@@ -609,10 +609,131 @@ export class DatabaseStorage implements IStorage {
     return newAchievement;
   }
 
-  async checkAndUnlockAchievements(sessionId: string): Promise<UserAchievement[]> {
-    // For now, return empty array to fix the error
-    // This can be expanded later with actual achievement checking logic
-    return [];
+  async checkAndUnlockAchievements(userId: string): Promise<UserAchievement[]> {
+    const unlockedAchievements: UserAchievement[] = [];
+    
+    try {
+      // Get user's current achievements to avoid duplicates
+      const existingAchievements = await this.getUserAchievements(userId);
+      const existingIds = existingAchievements.map(a => a.achievementId);
+      
+      // Get user's stats for checking requirements
+      const userTokens = await this.getUserTokens(userId);
+      const userPosts = await db.select().from(kindnessPosts).where(eq(kindnessPosts.userId, userId));
+      const totalPosts = userPosts.length;
+      const totalEarned = userTokens?.totalEarned || 0;
+      
+      // Calculate category-specific posts
+      const helpingPosts = userPosts.filter(p => p.category === 'Helping Others').length;
+      const communityPosts = userPosts.filter(p => p.category === 'Community Action').length;
+      const positivityPosts = userPosts.filter(p => p.category === 'Spreading Positivity').length;
+      
+      // Calculate total engagement received
+      const totalHearts = userPosts.reduce((sum, p) => sum + (p.heartsCount || 0), 0);
+      const totalEchoes = userPosts.reduce((sum, p) => sum + (p.echoesCount || 0), 0);
+      
+      // Define achievements to check
+      const achievementsToCheck = [
+        {
+          id: 'first_post',
+          title: '🌟 First Spark',
+          description: 'Shared your first act of kindness',
+          category: 'milestones',
+          tier: 'bronze',
+          echoReward: 25,
+          condition: () => totalPosts >= 1
+        },
+        {
+          id: 'kindness_streak_5',
+          title: '🔥 Kindness Streak',
+          description: 'Shared 5 acts of kindness',
+          category: 'streaks',
+          tier: 'silver',
+          echoReward: 50,
+          condition: () => totalPosts >= 5
+        },
+        {
+          id: 'helping_hero',
+          title: '🤝 Helping Hero',
+          description: 'Shared 10 acts focused on helping others',
+          category: 'kindness',
+          tier: 'gold',
+          echoReward: 100,
+          condition: () => helpingPosts >= 10
+        },
+        {
+          id: 'community_builder',
+          title: '🏘️ Community Builder',
+          description: 'Shared 15 community action posts',
+          category: 'kindness',
+          tier: 'gold',
+          echoReward: 100,
+          condition: () => communityPosts >= 15
+        },
+        {
+          id: 'inspiration_source',
+          title: '✨ Inspiration Source',
+          description: 'Received 50 total hearts on your posts',
+          category: 'social',
+          tier: 'platinum',
+          echoReward: 200,
+          condition: () => totalHearts >= 50
+        },
+        {
+          id: 'echo_champion',
+          title: '📢 Echo Champion',
+          description: 'Received 25 echoes - your kindness resonates!',
+          category: 'social',
+          tier: 'platinum',
+          echoReward: 200,
+          condition: () => totalEchoes >= 25
+        }
+      ];
+      
+      // Check each achievement
+      for (const achievement of achievementsToCheck) {
+        if (!existingIds.includes(achievement.id) && achievement.condition()) {
+          try {
+            // Create the achievement if it doesn't exist
+            const existing = await db.select().from(achievements).where(eq(achievements.id, achievement.id)).limit(1);
+            if (existing.length === 0) {
+              await db.insert(achievements).values({
+                id: achievement.id,
+                title: achievement.title,
+                description: achievement.description,
+                badge: achievement.title.split(' ')[0], // Extract emoji
+                category: achievement.category,
+                tier: achievement.tier,
+                requirement: JSON.stringify({ condition: 'dynamic' }),
+                echoReward: achievement.echoReward,
+              });
+            }
+            
+            // Unlock for user
+            const userAchievement = await this.unlockUserAchievement({
+              userId,
+              achievementId: achievement.id
+            });
+            
+            // Award bonus tokens
+            if (userTokens) {
+              await this.updateUserTokens(userId, {
+                echoBalance: userTokens.echoBalance + achievement.echoReward,
+                totalEarned: userTokens.totalEarned + achievement.echoReward
+              });
+            }
+            
+            unlockedAchievements.push(userAchievement);
+          } catch (error) {
+            console.error('Error unlocking achievement:', achievement.id, error);
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error checking achievements:', error);
+    }
+    
+    return unlockedAchievements;
   }
   
   // Corporate operations
