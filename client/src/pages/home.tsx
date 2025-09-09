@@ -4323,6 +4323,127 @@ export default function Home() {
             </button>
           </div>
         </div>
+
+        {/* Unique Features Section */}
+        <div style={{
+          margin: '0 20px 20px',
+          padding: '20px',
+          backgroundColor: '#f8fafc',
+          borderRadius: '16px',
+          border: '2px solid #e2e8f0'
+        }}>
+          <h2 style={{
+            fontSize: '18px',
+            fontWeight: 'bold',
+            color: '#1e293b',
+            marginBottom: '8px',
+            textAlign: 'center'
+          }}>
+            🌟 Unique Features
+          </h2>
+          <p style={{
+            fontSize: '14px',
+            color: '#64748b',
+            textAlign: 'center',
+            marginBottom: '16px'
+          }}>
+            Groundbreaking features you won't find anywhere else!
+          </p>
+          
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))',
+            gap: '12px'
+          }}>
+            {[
+              { 
+                emoji: '🌟', 
+                title: 'Community Impact', 
+                subtitle: 'See real-world results',
+                path: '/community-impact'
+              },
+              { 
+                emoji: '📚', 
+                title: 'Teacher Dashboard', 
+                subtitle: 'Professional classroom tools',
+                path: '/teacher-dashboard'
+              },
+              { 
+                emoji: '🌊', 
+                title: 'Ripple Tracker', 
+                subtitle: 'How kindness spreads',
+                path: '/ripple-tracker'
+              },
+              { 
+                emoji: '🕵️', 
+                title: 'Kindness Detective', 
+                subtitle: 'Solve good deed mysteries',
+                path: '/kindness-detective'
+              },
+              { 
+                emoji: '⏰', 
+                title: 'Time Capsule', 
+                subtitle: 'Letters to future you',
+                path: '/time-capsule'
+              },
+              { 
+                emoji: '🌤️', 
+                title: 'Weather Map', 
+                subtitle: 'Kindness climate tracker',
+                path: '/weather-map'
+              },
+              { 
+                emoji: '📖', 
+                title: 'Story Chain', 
+                subtitle: 'Collaborative storytelling',
+                path: '/story-chain'
+              }
+            ].map((feature, index) => (
+              <button
+                key={index}
+                onClick={() => navigate(feature.path)}
+                style={{
+                  background: 'white',
+                  border: '1px solid #e2e8f0',
+                  borderRadius: '12px',
+                  padding: '12px 8px',
+                  cursor: 'pointer',
+                  textAlign: 'center',
+                  transition: 'all 0.2s ease',
+                  boxShadow: '0 1px 3px rgba(0,0,0,0.1)'
+                }}
+                onMouseOver={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                }}
+                onMouseOut={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.1)';
+                }}
+                data-testid={`button-feature-${feature.path.replace('/', '')}`}
+              >
+                <div style={{ fontSize: '24px', marginBottom: '4px' }}>
+                  {feature.emoji}
+                </div>
+                <div style={{
+                  fontSize: '12px',
+                  fontWeight: 'bold',
+                  color: '#1e293b',
+                  marginBottom: '2px'
+                }}>
+                  {feature.title}
+                </div>
+                <div style={{
+                  fontSize: '10px',
+                  color: '#64748b',
+                  lineHeight: '1.2'
+                }}>
+                  {feature.subtitle}
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
         
         {/* Brand Challenges Section */}
         {challenges.length > 0 && (
