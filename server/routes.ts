@@ -2353,7 +2353,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         offerType: offerType as string,
         badgeRequirement: badgeRequirement as string
       });
-      res.json(offers);
+      
+      // Enrich offers with partner information including logos
+      const partners = await storage.getRewardPartners({});
+      const enrichedOffers = offers.map(offer => {
+        const partner = partners.find(p => p.id === offer.partnerId);
+        return {
+          ...offer,
+          partnerName: partner?.partnerName,
+          partnerLogo: partner?.partnerLogo,
+          partnerType: partner?.partnerType,
+        };
+      });
+      
+      res.json(enrichedOffers);
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
