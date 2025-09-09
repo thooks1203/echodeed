@@ -5048,6 +5048,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ====== SUMMER CHALLENGE PROGRAM API ROUTES ======
+  
+  // Get current summer week and theme
+  app.get('/api/summer/current-week', async (req, res) => {
+    try {
+      const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
+      const currentWeek = summerChallengeEngine.getCurrentSummerWeek();
+      const theme = summerChallengeEngine.getWeekTheme(currentWeek);
+      res.json({ week: currentWeek, theme });
+    } catch (error) {
+      console.error('Error getting current week:', error);
+      res.status(500).json({ message: 'Failed to get current week' });
+    }
+  });
+
+  // Get challenges for specific age group
+  app.get('/api/summer/challenges/:ageGroup', async (req, res) => {
+    try {
+      const { ageGroup } = req.params as { ageGroup: 'k-2' | '3-5' | '6-8' };
+      const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
+      const challenges = await summerChallengeEngine.getCurrentWeekChallenges(ageGroup);
+      res.json(challenges);
+    } catch (error) {
+      console.error('Error fetching challenges:', error);
+      res.status(500).json({ message: 'Failed to fetch challenges' });
+    }
+  });
+
+  // Get activities for a specific challenge
+  app.get('/api/summer/activities/:challengeId', async (req, res) => {
+    try {
+      const { challengeId } = req.params;
+      const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
+      const activities = await summerChallengeEngine.getChallengeActivities(challengeId);
+      res.json(activities);
+    } catch (error) {
+      console.error('Error fetching activities:', error);
+      res.status(500).json({ message: 'Failed to fetch activities' });
+    }
+  });
+
+  // Complete a challenge
+  app.post('/api/summer/complete', async (req, res) => {
+    try {
+      const { userId, challengeId, notes } = req.body;
+      const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
+      const completion = await summerChallengeEngine.completeChallenge(userId, challengeId, notes);
+      res.json(completion);
+    } catch (error) {
+      console.error('Error completing challenge:', error);
+      res.status(500).json({ message: 'Failed to complete challenge' });
+    }
+  });
+
   return httpServer;
 }
 
