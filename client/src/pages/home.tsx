@@ -669,9 +669,7 @@ export default function Home() {
     }
   };
 
-  // Corporate Dashboard tab content
-  const renderCorporateTab = () => {
-    if (!corporateDashboard) {
+  // Removed corporate dashboard - focusing on school market
       return (
         <div style={{ padding: '40px 20px', textAlign: 'center' }}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>🏢</div>
@@ -2397,66 +2395,7 @@ export default function Home() {
     );
   }
 
-  if (activeTab === 'ai') {
-    return (
-      <div style={{ 
-        maxWidth: '430px', 
-        margin: '0 auto', 
-        backgroundColor: '#f8f9fa',
-        minHeight: '100vh',
-        position: 'relative'
-      }}>
-        {/* Header */}
-        <div style={{ 
-          background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-          color: 'white',
-          padding: '16px 20px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          borderBottomLeftRadius: '16px',
-          borderBottomRightRadius: '16px'
-        }}>
-          <div style={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            marginBottom: '8px'
-          }}>
-            <h1 style={{ 
-              fontSize: '20px', 
-              fontWeight: '700',
-              margin: 0
-            }}>
-              AI-Powered Analytics
-            </h1>
-            <div style={{
-              background: 'rgba(255,255,255,0.2)',
-              padding: '4px 12px',
-              borderRadius: '20px',
-              fontSize: '12px',
-              fontWeight: '600'
-            }}>
-              LIVE ✨
-            </div>
-          </div>
-          <p style={{ 
-            fontSize: '14px', 
-            opacity: 0.9, 
-            margin: 0 
-          }}>
-            Real-time kindness impact measurement
-          </p>
-        </div>
-        
-        {/* AI Dashboard Content */}
-        <div style={{ padding: '20px' }}>
-          <AIDashboard />
-        </div>
-        
-        {/* Bottom Navigation */}
-        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
-      </div>
-    );
-  }
+  // AI tab removed - focusing on school market
 
   // Show Local tab if selected
   if (activeTab === 'local') {
@@ -3417,90 +3356,7 @@ export default function Home() {
     );
   }
 
-  // Show Corporate tab if selected
-  if (activeTab === 'corporate') {
-    return (
-      <div style={{ 
-        maxWidth: '430px', 
-        margin: '0 auto', 
-        backgroundColor: '#f8f9fa',
-        minHeight: '100vh',
-        position: 'relative'
-      }}>
-        {/* Header */}
-        <div style={{ 
-          background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
-          color: 'white', 
-          padding: '20px', 
-          textAlign: 'center',
-          position: 'relative'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{ 
-                width: '32px', 
-                height: '32px', 
-                backgroundColor: 'rgba(255,255,255,0.2)', 
-                borderRadius: '50%', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center' 
-              }}>
-                🏢
-              </div>
-              <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™ B2B</h1>
-            </div>
-            
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              {/* About Button */}
-              <button
-                onClick={showWelcomeAgain}
-                style={{
-                  backgroundColor: 'rgba(255,255,255,0.2)',
-                  border: 'none',
-                  borderRadius: '50%',
-                  width: '32px',
-                  height: '32px',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  color: 'white',
-                  fontSize: '16px'
-                }}
-                title="About EchoDeed"
-                data-testid="button-about-echodeed"
-              >
-                ℹ️
-              </button>
-              
-              {/* $ECHO Balance */}
-              <div style={{ 
-                display: 'flex', 
-                alignItems: 'center', 
-                gap: '6px',
-                backgroundColor: 'rgba(255,255,255,0.2)',
-                padding: '6px 12px',
-                borderRadius: '20px',
-                fontSize: '14px',
-                fontWeight: '600'
-              }}>
-                <span style={{ fontSize: '16px' }}>🪙</span>
-                <span>{tokens?.echoBalance || 0} $ECHO</span>
-              </div>
-            </div>
-          </div>
-          
-          <div style={{ fontSize: '14px', opacity: 0.8 }}>Corporate Wellness & Kindness Platform</div>
-        </div>
-
-        {renderCorporateTab()}
-
-        {/* Bottom Navigation */}
-        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
-      </div>
-    );
-  }
+  // Corporate tab removed - focusing on school market
 
   // Show Admin tab if selected
   if (activeTab === 'marketing') {
@@ -3709,92 +3565,7 @@ export default function Home() {
     );
   }
 
-  if (activeTab === 'admin') {
-    return (
-      <div style={{ 
-        maxWidth: '430px', 
-        margin: '0 auto', 
-        backgroundColor: '#f8f9fa',
-        minHeight: '100vh',
-        position: 'relative'
-      }}>
-        {/* Header */}
-        <div style={{ 
-          background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
-          color: 'white', 
-          padding: '20px', 
-          textAlign: 'center',
-          position: 'relative'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '15px' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <div style={{ 
-                width: '32px', 
-                height: '32px', 
-                backgroundColor: 'rgba(255,255,255,0.2)', 
-                borderRadius: '50%', 
-                display: 'flex', 
-                alignItems: 'center', 
-                justifyContent: 'center' 
-              }}>
-                ⚙️
-              </div>
-              <h1 style={{ margin: '0', fontSize: '20px' }}>EchoDeed™ Admin</h1>
-            </div>
-            
-            {/* $ECHO Balance */}
-            <div style={{ 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '6px',
-              backgroundColor: 'rgba(255,255,255,0.2)',
-              padding: '6px 12px',
-              borderRadius: '20px',
-              fontSize: '14px',
-              fontWeight: '600'
-            }}>
-              <span style={{ fontSize: '16px' }}>🪙</span>
-              <span>{tokens?.echoBalance || 0} $ECHO</span>
-            </div>
-          </div>
-          
-          <div style={{ fontSize: '14px', opacity: 0.8 }}>Platform Management Dashboard</div>
-        </div>
-
-        {renderAdminTab()}
-
-        {/* Bottom Navigation */}
-        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
-        
-        {/* Token Earning Popup */}
-        {false && tokenEarning && (
-          <div style={{
-            position: 'fixed',
-            top: '80px',
-            right: '20px',
-            backgroundColor: '#10B981',
-            color: 'white',
-            padding: '12px 16px',
-            borderRadius: '12px',
-            fontSize: '14px',
-            fontWeight: '600',
-            boxShadow: '0 8px 25px rgba(16, 185, 129, 0.3)',
-            zIndex: 1000,
-            animation: 'slideIn 0.3s ease-out',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '8px'
-          }}>
-            <span style={{ fontSize: '18px' }}>🪙</span>
-            <div>
-              <div>+{tokenEarning?.amount} $ECHO</div>
-              <div style={{ fontSize: '12px', opacity: 0.9 }}>{tokenEarning?.reason}</div>
-            </div>
-          </div>
-        )}
-      </div>
-    );
-  }
+  // Admin tab removed - focusing on school market
 
   // Show Partners tab if selected
   if (activeTab === 'partners') {
