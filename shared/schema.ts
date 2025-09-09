@@ -1020,6 +1020,125 @@ export type InsertWeeklyPrize = z.infer<typeof insertWeeklyPrizeSchema>;
 export type PrizeWinner = typeof prizeWinners.$inferSelect;
 export type InsertPrizeWinner = z.infer<typeof insertPrizeWinnerSchema>;
 
+// PREMIUM SPONSOR ANALYTICS & TRACKING SYSTEM
+
+// Sponsor analytics tracking
+export const sponsorAnalytics = pgTable("sponsor_analytics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sponsorCompany: varchar("sponsor_company", { length: 200 }).notNull(),
+  offerId: varchar("offer_id"), // Links to specific reward offer
+  eventType: varchar("event_type", { length: 50 }).notNull(), // impression, click, redemption, conversion
+  userId: varchar("user_id").references(() => users.id),
+  sessionId: varchar("session_id", { length: 100 }),
+  location: text("location"), // User location for geographic analytics
+  userAgent: text("user_agent"), // Device/browser info
+  referrerUrl: text("referrer_url"), // Where they came from
+  targetUrl: text("target_url"), // Sponsor website visited
+  engagementDuration: integer("engagement_duration").default(0), // Time spent viewing
+  conversionValue: integer("conversion_value").default(0), // Business value generated
+  metadata: jsonb("metadata"), // Additional tracking data
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Enhanced sponsor profiles with custom branding
+export const sponsorProfiles = pgTable("sponsor_profiles", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  companyName: varchar("company_name", { length: 200 }).notNull(),
+  logoUrl: text("logo_url"),
+  logoAltText: varchar("logo_alt_text", { length: 100 }),
+  websiteUrl: text("website_url").notNull(),
+  primaryColor: varchar("primary_color", { length: 7 }).default("#3b82f6"), // Brand hex color
+  secondaryColor: varchar("secondary_color", { length: 7 }).default("#8b5cf6"),
+  brandMessage: text("brand_message"), // Custom tagline
+  description: text("description"), // Company description
+  industry: varchar("industry", { length: 100 }),
+  companySize: varchar("company_size", { length: 50 }), // startup, small, medium, large, enterprise
+  sponsorshipTier: varchar("sponsorship_tier", { length: 50 }).default("basic").notNull(), // basic, premium, enterprise
+  monthlyBudget: integer("monthly_budget").default(2000).notNull(), // Monthly sponsorship budget in cents
+  targetGeography: jsonb("target_geography"), // Countries, states, cities to target
+  targetDemographics: jsonb("target_demographics"), // Age, interests, user types
+  socialMediaLinks: jsonb("social_media_links"), // Twitter, LinkedIn, etc.
+  contactEmail: varchar("contact_email", { length: 200 }),
+  accountManagerName: varchar("account_manager_name", { length: 100 }),
+  isActive: integer("is_active").default(1).notNull(),
+  contractStartDate: timestamp("contract_start_date"),
+  contractEndDate: timestamp("contract_end_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Sponsor impact reporting
+export const sponsorImpactReports = pgTable("sponsor_impact_reports", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sponsorCompany: varchar("sponsor_company", { length: 200 }).notNull(),
+  reportPeriodStart: timestamp("report_period_start").notNull(),
+  reportPeriodEnd: timestamp("report_period_end").notNull(),
+  totalImpressions: integer("total_impressions").default(0),
+  totalClicks: integer("total_clicks").default(0),
+  totalRedemptions: integer("total_redemptions").default(0),
+  clickThroughRate: real("click_through_rate").default(0), // CTR percentage
+  conversionRate: real("conversion_rate").default(0), // Redemption rate
+  kindnessActsEnabled: integer("kindness_acts_enabled").default(0), // Acts sponsored enabled
+  usersReached: integer("users_reached").default(0), // Unique users who saw sponsorship
+  engagementScore: integer("engagement_score").default(0), // 0-100 engagement rating
+  brandSentiment: integer("brand_sentiment").default(0), // 0-100 positive sentiment
+  costPerEngagement: integer("cost_per_engagement").default(0), // Cost in cents
+  roi: real("roi").default(0), // Return on investment percentage
+  reportData: jsonb("report_data"), // Detailed analytics JSON
+  generatedAt: timestamp("generated_at").defaultNow().notNull(),
+});
+
+// Sponsor campaign management
+export const sponsorCampaigns = pgTable("sponsor_campaigns", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sponsorCompany: varchar("sponsor_company", { length: 200 }).notNull(),
+  campaignName: varchar("campaign_name", { length: 200 }).notNull(),
+  campaignType: varchar("campaign_type", { length: 50 }).default("reward_sponsorship").notNull(), // reward_sponsorship, challenge_sponsorship, branded_content
+  targetAudience: jsonb("target_audience"), // Demographics, geography, interests
+  campaignMessage: text("campaign_message"),
+  specialOffers: jsonb("special_offers"), // Holiday promotions, limited time offers
+  budget: integer("budget").notNull(), // Campaign budget in cents
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  isActive: integer("is_active").default(1).notNull(),
+  priority: integer("priority").default(1), // 1-10 priority level
+  successMetrics: jsonb("success_metrics"), // KPIs and goals
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Newsletter and communication tracking
+export const sponsorCommunications = pgTable("sponsor_communications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sponsorCompany: varchar("sponsor_company", { length: 200 }).notNull(),
+  communicationType: varchar("communication_type", { length: 50 }).notNull(), // newsletter, social_media, push_notification, email
+  subject: varchar("subject", { length: 200 }),
+  content: text("content"),
+  targetAudience: jsonb("target_audience"), // Who received the communication
+  recipientCount: integer("recipient_count").default(0),
+  openRate: real("open_rate").default(0), // Email open rate
+  clickRate: real("click_rate").default(0), // Click-through rate
+  sentAt: timestamp("sent_at").defaultNow().notNull(),
+});
+
+// Create insert schemas for new tables
+export const insertSponsorAnalyticsSchema = createInsertSchema(sponsorAnalytics);
+export const insertSponsorProfileSchema = createInsertSchema(sponsorProfiles);
+export const insertSponsorImpactReportSchema = createInsertSchema(sponsorImpactReports);
+export const insertSponsorCampaignSchema = createInsertSchema(sponsorCampaigns);
+export const insertSponsorCommunicationSchema = createInsertSchema(sponsorCommunications);
+
+// Type exports for new tables
+export type SponsorAnalytics = typeof sponsorAnalytics.$inferSelect;
+export type InsertSponsorAnalytics = z.infer<typeof insertSponsorAnalyticsSchema>;
+export type SponsorProfile = typeof sponsorProfiles.$inferSelect;
+export type InsertSponsorProfile = z.infer<typeof insertSponsorProfileSchema>;
+export type SponsorImpactReport = typeof sponsorImpactReports.$inferSelect;
+export type InsertSponsorImpactReport = z.infer<typeof insertSponsorImpactReportSchema>;
+export type SponsorCampaign = typeof sponsorCampaigns.$inferSelect;
+export type InsertSponsorCampaign = z.infer<typeof insertSponsorCampaignSchema>;
+export type SponsorCommunication = typeof sponsorCommunications.$inferSelect;
+export type InsertSponsorCommunication = z.infer<typeof insertSponsorCommunicationSchema>;
+
 // User relations for better query performance
 export const usersRelations = relations(users, ({ many }) => ({
   posts: many(kindnessPosts),
