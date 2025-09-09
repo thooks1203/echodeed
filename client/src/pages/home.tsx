@@ -2693,6 +2693,36 @@ export default function Home() {
         
         {/* Rewards Content */}
         <div style={{ padding: '20px', paddingBottom: '100px' }}>
+          {/* Track sponsor impressions when component loads */}
+          {React.useEffect(() => {
+            const trackImpressions = async () => {
+              const rewards = [
+                { sponsor: 'Local Coffee Co', offerId: 'home-reward-0' },
+                { sponsor: 'ABC Construction', offerId: 'home-reward-1' },
+                { sponsor: 'TechFlow Inc', offerId: 'home-reward-2' },
+                { sponsor: 'WellCore Fitness', offerId: 'home-reward-3' }
+              ];
+              
+              for (const reward of rewards) {
+                try {
+                  await fetch('/api/sponsors/track/impression', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                      sponsorCompany: reward.sponsor,
+                      offerId: reward.offerId,
+                      userId: localStorage.getItem('userId') || 'anonymous'
+                    })
+                  });
+                } catch (error) {
+                  console.error('Impression tracking failed:', error);
+                }
+              }
+            };
+            
+            trackImpressions();
+          }, [])}
+
           {/* $ECHO Balance */}
           <div style={{
             background: 'white',
@@ -2758,7 +2788,23 @@ export default function Home() {
                       <div style={{ fontSize: '11px', color: '#6b7280' }}>{reward.cost} $ECHO tokens</div>
                       {reward.sponsor && (
                         <div 
-                          onClick={() => reward.website && window.open(reward.website, '_blank')}
+                          onClick={() => {
+                            if (reward.website) {
+                              // Track sponsor click
+                              fetch('/api/sponsors/track/click', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                  sponsorCompany: reward.sponsor,
+                                  offerId: 'home-reward-' + index,
+                                  targetUrl: reward.website,
+                                  userId: localStorage.getItem('userId') || 'anonymous'
+                                })
+                              }).catch(console.error);
+                              
+                              window.open(reward.website, '_blank');
+                            }
+                          }}
                           style={{ 
                             fontSize: '12px', 
                             color: '#3b82f6', 
