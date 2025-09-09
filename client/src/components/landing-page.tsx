@@ -4,6 +4,7 @@ import { ElectricHeart } from './ElectricHeart';
 
 export function LandingPage() {
   const [, navigate] = useLocation();
+  const [showFullContent, setShowFullContent] = useState(false);
 
   const handleGetStarted = () => {
     navigate('/app?tab=schools');
@@ -21,6 +22,124 @@ export function LandingPage() {
     navigate('/parent-dashboard');
   };
 
+  const handleReveal = () => {
+    setShowFullContent(true);
+  };
+
+  if (!showFullContent) {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: '20px',
+        color: 'white',
+        textAlign: 'center'
+      }}>
+        {/* Hero Section */}
+        <div style={{ marginBottom: '60px', animation: 'fadeInUp 1s ease-out' }}>
+          <h1 style={{ 
+            fontSize: '42px', 
+            fontWeight: '800',
+            margin: '0 0 24px 0',
+            lineHeight: '1.2',
+            textShadow: '0 4px 8px rgba(0,0,0,0.3)'
+          }}>
+            What if every act of kindness could change the world?
+          </h1>
+          <p style={{ 
+            fontSize: '20px', 
+            opacity: '0.9',
+            margin: '0 0 40px 0',
+            lineHeight: '1.6'
+          }}>
+            Imagine a place where anonymous kindness spreads like wildfire...
+          </p>
+          <p style={{ 
+            fontSize: '18px', 
+            opacity: '0.8',
+            margin: '0 0 50px 0',
+            fontStyle: 'italic'
+          }}>
+            Where every good deed creates ripples of compassion that reach far beyond what you can see...
+          </p>
+        </div>
+
+        {/* Emotional Hook */}
+        <div style={{ 
+          background: 'rgba(255,255,255,0.1)', 
+          borderRadius: '20px', 
+          padding: '32px', 
+          marginBottom: '50px',
+          backdropFilter: 'blur(10px)',
+          border: '1px solid rgba(255,255,255,0.2)'
+        }}>
+          <p style={{ 
+            fontSize: '24px', 
+            fontWeight: '600',
+            margin: '0 0 20px 0',
+            color: '#FFE4B5'
+          }}>
+            ✨ The Secret is About to Be Revealed ✨
+          </p>
+          <p style={{ 
+            fontSize: '16px', 
+            opacity: '0.9',
+            margin: 0,
+            lineHeight: '1.5'
+          }}>
+            A revolutionary platform that transforms how children learn empathy, kindness, and character... 
+            <br/><br/>
+            Are you ready to discover something amazing?
+          </p>
+        </div>
+
+        {/* Call to Action */}
+        <button 
+          onClick={handleReveal}
+          style={{
+            background: 'linear-gradient(135deg, #FF6B6B, #FF8E8E)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '50px',
+            padding: '20px 40px',
+            fontSize: '20px',
+            fontWeight: '700',
+            cursor: 'pointer',
+            boxShadow: '0 8px 25px rgba(255,107,107,0.4)',
+            transition: 'all 0.3s ease',
+            textTransform: 'uppercase',
+            letterSpacing: '1px'
+          }}
+          onMouseOver={(e) => {
+            (e.target as HTMLButtonElement).style.transform = 'translateY(-3px) scale(1.05)';
+            (e.target as HTMLButtonElement).style.boxShadow = '0 12px 35px rgba(255,107,107,0.6)';
+          }}
+          onMouseOut={(e) => {
+            (e.target as HTMLButtonElement).style.transform = 'translateY(0) scale(1)';
+            (e.target as HTMLButtonElement).style.boxShadow = '0 8px 25px rgba(255,107,107,0.4)';
+          }}
+        >
+          🚀 Discover EchoDeed™
+        </button>
+
+        <p style={{ 
+          fontSize: '14px', 
+          opacity: '0.7',
+          margin: '30px 0 0 0',
+          fontStyle: 'italic'
+        }}>
+          Something extraordinary is waiting inside...
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div style={{ 
       maxWidth: '430px', 
@@ -33,8 +152,12 @@ export function LandingPage() {
       justifyContent: 'center',
       padding: '20px'
     }}>
-      {/* Logo/Brand */}
-      <div style={{ textAlign: 'center', marginBottom: '40px' }}>
+      {/* Dramatic Reveal */}
+      <div style={{ 
+        textAlign: 'center', 
+        marginBottom: '40px',
+        animation: 'fadeInUp 1.5s ease-out'
+      }}>
         <div style={{ 
           display: 'flex',
           alignItems: 'center',
@@ -55,13 +178,36 @@ export function LandingPage() {
             EchoDeed™
           </h1>
         </div>
+        <div style={{
+          background: 'linear-gradient(135deg, #667eea, #764ba2)',
+          color: 'white',
+          padding: '20px',
+          borderRadius: '16px',
+          marginBottom: '24px',
+          boxShadow: '0 8px 25px rgba(102,126,234,0.3)'
+        }}>
+          <p style={{ 
+            fontSize: '22px', 
+            fontWeight: '700',
+            margin: '0 0 8px 0'
+          }}>
+            🎉 Welcome to the Future of Character Education! 🎉
+          </p>
+          <p style={{ 
+            fontSize: '16px', 
+            margin: 0,
+            opacity: '0.95'
+          }}>
+            Where K-8 students discover the power of anonymous kindness
+          </p>
+        </div>
         <p style={{ 
           fontSize: '18px', 
           color: '#6b7280',
           margin: '0 0 8px 0',
           fontWeight: '600'
         }}>
-          Character Education for K-8 Schools
+          Revolutionary Anonymous Kindness Platform
         </p>
         <p style={{ 
           fontSize: '14px', 
@@ -69,7 +215,7 @@ export function LandingPage() {
           margin: 0,
           fontStyle: 'italic'
         }}>
-          Anonymous kindness platform designed for classroom character development and social-emotional learning
+          Real rewards • Real impact • Real character development
         </p>
       </div>
 
