@@ -826,14 +826,15 @@ export default function Home() {
       <AppHeader counter={counter || { count: 0 }} isPulse={counterPulse} />
       <FilterBar 
         activeFilter={activeFilter} 
-        onFilterChange={setActiveFilter}
-        onFiltersChange={setFilters}
+        location={location}
+        onFilterChange={(filter: string, filters: any) => {
+          setActiveFilter(filter);
+          setFilters(filters);
+        }}
       />
       <KindnessFeed 
         posts={posts} 
         isLoading={postsLoading} 
-        counter={counter || { id: 'global', count: 0, updatedAt: new Date() }}
-        counterPulse={counterPulse}
       />
       <FloatingActionButton onClick={() => setIsPostModalOpen(true)} />
       <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
