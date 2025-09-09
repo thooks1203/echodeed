@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Separator } from '@/components/ui/separator';
 import { 
   Users, 
   TrendingUp, 
@@ -21,7 +23,14 @@ import {
   BarChart3,
   BookOpen,
   UserCheck,
-  Settings
+  Settings,
+  Bell,
+  Eye,
+  Heart,
+  MessageSquare,
+  Clock,
+  CheckCircle,
+  XCircle
 } from 'lucide-react';
 
 interface SchoolAdmin {
@@ -57,8 +66,425 @@ interface DistrictMetrics {
   complianceStatus: 'compliant' | 'partial' | 'non_compliant';
 }
 
+interface SafetyAlert {
+  id: string;
+  type: 'bullying_risk' | 'emotional_distress' | 'crisis_indicator' | 'safety_concern';
+  severity: 'low' | 'medium' | 'high' | 'critical';
+  studentUserId: string;
+  postId?: string;
+  title: string;
+  description: string;
+  riskFactors: string[];
+  recommendedActions: string[];
+  requiresParentNotification: boolean;
+  requiresCounselorAlert: boolean;
+  requiresAdminEscalation: boolean;
+  confidence: number;
+  createdAt: string;
+  status: 'active' | 'reviewed' | 'resolved';
+  postContent?: string;
+}
+
+interface AdminSafetyStats {
+  totalAlerts: number;
+  criticalAlerts: number;
+  studentsAtRisk: number;
+  postsToday: number;
+  resolutionRate: number;
+  averageResponseTime: number;
+}
+
+function SafetyMonitoringContent() {
+  const [selectedAlert, setSelectedAlert] = useState<SafetyAlert | null>(null);
+  const [statusFilter, setStatusFilter] = useState<string>('active');
+
+  // Mock data for demonstration - in production, these would be real API calls
+  const mockSafetyStats: AdminSafetyStats = {
+    totalAlerts: 3,
+    criticalAlerts: 1,
+    studentsAtRisk: 2,
+    postsToday: 47,
+    resolutionRate: 94,
+    averageResponseTime: 12
+  };
+
+  const mockAlerts: SafetyAlert[] = [
+    {
+      id: 'alert-001',
+      type: 'bullying_risk',
+      severity: 'high',
+      studentUserId: 'student-001',
+      postId: 'post-001',
+      title: 'Potential Bullying Language Detected',
+      description: 'AI detected language patterns suggesting bullying behavior toward another student',
+      riskFactors: ['Exclusion language', 'Repetitive targeting', 'Negative peer interaction'],
+      recommendedActions: ['Immediate counselor intervention', 'Parent notification', 'Peer mediation'],
+      requiresParentNotification: true,
+      requiresCounselorAlert: true,
+      requiresAdminEscalation: false,
+      confidence: 87,
+      createdAt: new Date().toISOString(),
+      status: 'active',
+      postContent: 'I helped my friend with their homework when everyone else was being mean to them'
+    },
+    {
+      id: 'alert-002',
+      type: 'emotional_distress',
+      severity: 'medium',
+      studentUserId: 'student-002',
+      title: 'Emotional Distress Indicators',
+      description: 'Student content shows signs of emotional stress or anxiety',
+      riskFactors: ['Isolation indicators', 'Low self-esteem language'],
+      recommendedActions: ['Wellness check-in', 'Monitor student closely'],
+      requiresParentNotification: false,
+      requiresCounselorAlert: true,
+      requiresAdminEscalation: false,
+      confidence: 72,
+      createdAt: new Date(Date.now() - 3600000).toISOString(),
+      status: 'active'
+    }
+  ];
+
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'critical': return 'destructive';
+      case 'high': return 'destructive';
+      case 'medium': return 'secondary';
+      case 'low': return 'outline';
+      default: return 'outline';
+    }
+  };
+
+  const getSeverityIcon = (severity: string) => {
+    switch (severity) {
+      case 'critical': return <AlertTriangle className="h-4 w-4 text-red-600" />;
+      case 'high': return <AlertTriangle className="h-4 w-4 text-orange-600" />;
+      case 'medium': return <Eye className="h-4 w-4 text-yellow-600" />;
+      case 'low': return <Shield className="h-4 w-4 text-blue-600" />;
+      default: return <Shield className="h-4 w-4" />;
+    }
+  };
+
+  const handleMarkAsReviewed = async (alertId: string) => {
+    console.log('Marking alert as reviewed:', alertId);
+    // In production: API call to update alert status
+  };
+
+  const handleResolveAlert = async (alertId: string) => {
+    console.log('Resolving alert:', alertId);
+    // In production: API call to resolve alert
+  };
+
+  return (
+    <div className="space-y-6">
+      {/* Safety Statistics */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <Bell className="h-5 w-5 text-blue-600" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Total Alerts</p>
+                <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                  {mockSafetyStats.totalAlerts}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <AlertTriangle className="h-5 w-5 text-red-600" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Critical</p>
+                <p className="text-2xl font-bold text-red-600">
+                  {mockSafetyStats.criticalAlerts}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <Users className="h-5 w-5 text-orange-600" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">At Risk</p>
+                <p className="text-2xl font-bold text-orange-600">
+                  {mockSafetyStats.studentsAtRisk}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <MessageSquare className="h-5 w-5 text-green-600" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Posts Today</p>
+                <p className="text-2xl font-bold text-green-600">
+                  {mockSafetyStats.postsToday}
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5 text-blue-600" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Resolution</p>
+                <p className="text-2xl font-bold text-blue-600">
+                  {mockSafetyStats.resolutionRate}%
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="p-4">
+            <div className="flex items-center gap-2">
+              <Clock className="h-5 w-5 text-purple-600" />
+              <div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">Avg Response</p>
+                <p className="text-2xl font-bold text-purple-600">
+                  {mockSafetyStats.averageResponseTime}m
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Alerts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Alerts List */}
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+              🚨 Active Safety Alerts ({mockAlerts.length})
+            </h3>
+            <select 
+              value={statusFilter} 
+              onChange={(e) => setStatusFilter(e.target.value)}
+              className="px-3 py-1 border rounded-md text-sm bg-white dark:bg-gray-800"
+              data-testid="select-alert-status"
+            >
+              <option value="active">Active</option>
+              <option value="reviewed">Reviewed</option>
+              <option value="resolved">Resolved</option>
+            </select>
+          </div>
+          
+          {mockAlerts.length === 0 ? (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <Shield className="h-12 w-12 mx-auto mb-4 text-green-600" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  All Clear! 🎉
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  No active safety alerts. Our AI monitoring is keeping students safe.
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            mockAlerts.map((alert) => (
+              <Card 
+                key={alert.id}
+                className={`cursor-pointer transition-all hover:shadow-md ${
+                  selectedAlert?.id === alert.id ? 'ring-2 ring-blue-500' : ''
+                } ${alert.severity === 'critical' ? 'border-red-200 bg-red-50 dark:bg-red-900/10' : ''}`}
+                onClick={() => setSelectedAlert(alert)}
+                data-testid={`alert-card-${alert.id}`}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-start gap-3 flex-1">
+                      {getSeverityIcon(alert.severity)}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <Badge variant={getSeverityColor(alert.severity)}>
+                            {alert.severity.toUpperCase()}
+                          </Badge>
+                          <Badge variant="outline">
+                            {alert.type.replace('_', ' ').toUpperCase()}
+                          </Badge>
+                        </div>
+                        <h4 className="font-medium text-gray-900 dark:text-white mb-1">
+                          {alert.title}
+                        </h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                          {alert.description}
+                        </p>
+                        <div className="flex items-center gap-4 text-xs text-gray-500">
+                          <span>Student: {alert.studentUserId.slice(0, 8)}...</span>
+                          <span>Confidence: {alert.confidence}%</span>
+                          <span>{new Date(alert.createdAt).toLocaleTimeString()}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))
+          )}
+        </div>
+
+        {/* Alert Details */}
+        <div>
+          {selectedAlert ? (
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    {getSeverityIcon(selectedAlert.severity)}
+                    Alert Details
+                  </CardTitle>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => handleMarkAsReviewed(selectedAlert.id)}
+                      variant="outline"
+                      size="sm"
+                      data-testid="button-mark-reviewed"
+                    >
+                      <Eye className="h-4 w-4 mr-1" />
+                      Mark Reviewed
+                    </Button>
+                    <Button
+                      onClick={() => handleResolveAlert(selectedAlert.id)}
+                      variant="default"
+                      size="sm"
+                      data-testid="button-resolve-alert"
+                    >
+                      <CheckCircle className="h-4 w-4 mr-1" />
+                      Resolve
+                    </Button>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Risk Factors */}
+                <div>
+                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                    Risk Factors Detected
+                  </h4>
+                  <div className="space-y-1">
+                    {selectedAlert.riskFactors.map((factor, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <XCircle className="h-4 w-4 text-red-500" />
+                        <span className="text-sm text-gray-700 dark:text-gray-300">
+                          {factor}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Recommended Actions */}
+                <div>
+                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                    Recommended Actions
+                  </h4>
+                  <div className="space-y-1">
+                    {selectedAlert.recommendedActions.map((action, index) => (
+                      <div key={index} className="flex items-center gap-2">
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <span className="text-sm text-gray-700 dark:text-gray-300">
+                          {action}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <Separator />
+
+                {/* Escalation Requirements */}
+                <div>
+                  <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                    Required Actions
+                  </h4>
+                  <div className="space-y-2">
+                    {selectedAlert.requiresParentNotification && (
+                      <Alert>
+                        <Bell className="h-4 w-4" />
+                        <AlertTitle>Parent Notification Required</AlertTitle>
+                        <AlertDescription>
+                          Parents should be notified about this safety concern.
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                    {selectedAlert.requiresCounselorAlert && (
+                      <Alert>
+                        <Heart className="h-4 w-4" />
+                        <AlertTitle>Counselor Alert</AlertTitle>
+                        <AlertDescription>
+                          School counselor should be informed for immediate support.
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                    {selectedAlert.requiresAdminEscalation && (
+                      <Alert>
+                        <AlertTriangle className="h-4 w-4" />
+                        <AlertTitle>Administrative Escalation</AlertTitle>
+                        <AlertDescription>
+                          This situation requires immediate principal involvement.
+                        </AlertDescription>
+                      </Alert>
+                    )}
+                  </div>
+                </div>
+
+                {/* Post Content (if available) */}
+                {selectedAlert.postContent && (
+                  <>
+                    <Separator />
+                    <div>
+                      <h4 className="font-medium text-gray-900 dark:text-white mb-2">
+                        Original Post Content
+                      </h4>
+                      <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md">
+                        <p className="text-sm text-gray-700 dark:text-gray-300">
+                          "{selectedAlert.postContent}"
+                        </p>
+                      </div>
+                    </div>
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          ) : (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <Eye className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  Select an Alert
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Click on any alert from the list to view detailed information and take action.
+                </p>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'schools' | 'analytics' | 'compliance' | 'integrations'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'schools' | 'analytics' | 'compliance' | 'safety' | 'integrations'>('overview');
   const [, navigate] = useLocation();
   
   // Mock admin data (in production, get from auth context)
@@ -198,11 +624,12 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="schools">Schools</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
           <TabsTrigger value="compliance">Compliance</TabsTrigger>
+          <TabsTrigger value="safety">Safety Monitor</TabsTrigger>
           <TabsTrigger value="integrations">Integrations</TabsTrigger>
         </TabsList>
 
@@ -507,6 +934,11 @@ export default function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Safety Monitoring Tab */}
+        <TabsContent value="safety" className="space-y-6">
+          <SafetyMonitoringContent />
         </TabsContent>
 
         {/* Integrations Tab */}
