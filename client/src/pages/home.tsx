@@ -823,7 +823,7 @@ export default function Home() {
       minHeight: '100vh',
       position: 'relative'
     }}>
-      <AppHeader onBack={canGoBackInTabs ? goBackInTabs : undefined} />
+      <AppHeader counter={counter || { count: 0 }} isPulse={counterPulse} />
       <FilterBar 
         activeFilter={activeFilter} 
         onFilterChange={setActiveFilter}
