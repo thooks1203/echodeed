@@ -172,15 +172,13 @@ export default function RewardsPage() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8 relative">
-          {canGoBack && (
-            <div className="absolute left-0 top-0">
-              <BackButton 
-                onClick={goBack}
-                variant="minimal"
-                style={{ color: '#6b7280' }}
-              />
-            </div>
-          )}
+          <div className="absolute left-0 top-0">
+            <BackButton 
+              onClick={() => window.location.href = '/'}
+              variant="minimal"
+              style={{ color: '#6b7280' }}
+            />
+          </div>
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             💎 Rewards Marketplace
           </h1>
