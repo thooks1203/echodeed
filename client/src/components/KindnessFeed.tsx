@@ -1,6 +1,8 @@
 import { Heart, MapPin, Loader2, HandHeart, Users, Smile, Coffee, TreePine, Zap, TrendingUp, Star } from 'lucide-react';
 import { KindnessPost } from '@shared/schema';
 import { formatDistance } from 'date-fns';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 
 interface KindnessFeedProps {
   posts: KindnessPost[];
@@ -8,6 +10,62 @@ interface KindnessFeedProps {
 }
 
 export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
+  const queryClient = useQueryClient();
+  const [clickedPosts, setClickedPosts] = useState<Set<string>>(new Set());
+
+  const heartMutation = useMutation({
+    mutationFn: async (postId: string) => {
+      const response = await fetch(`/api/posts/${postId}/heart`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (!response.ok) throw new Error('Failed to heart post');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/posts'] });
+    }
+  });
+
+  const echoMutation = useMutation({
+    mutationFn: async (postId: string) => {
+      const response = await fetch(`/api/posts/${postId}/echo`, {
+        method: 'POST', 
+        headers: { 'Content-Type': 'application/json' }
+      });
+      if (!response.ok) throw new Error('Failed to echo post');
+      return response.json();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/posts'] });
+    }
+  });
+
+  const handleHeart = (postId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setClickedPosts(prev => new Set(prev).add(postId));
+    heartMutation.mutate(postId);
+    setTimeout(() => {
+      setClickedPosts(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(postId);
+        return newSet;
+      });
+    }, 1000);
+  };
+
+  const handleEcho = (postId: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    setClickedPosts(prev => new Set(prev).add(postId));
+    echoMutation.mutate(postId);
+    setTimeout(() => {
+      setClickedPosts(prev => {
+        const newSet = new Set(prev);
+        newSet.delete(postId);
+        return newSet;
+      });
+    }, 1000);
+  };
   const getCategoryIcon = (category: string) => {
     switch (category) {
       case 'Helping Others':
@@ -108,22 +166,40 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
                   </p>
                   
                   {/* Engagement indicators */}
-                  <div className="flex items-center gap-4 mt-3 mb-2">
-                    {(post.heartsCount || 0) > 0 && (
-                      <div className="flex items-center gap-1 text-red-500">
-                        <Heart size={12} fill="currentColor" />
-                        <span className="text-xs font-medium">{post.heartsCount}</span>
-                      </div>
-                    )}
-                    {(post.echoesCount || 0) > 0 && (
-                      <div className="flex items-center gap-1 text-blue-500">
-                        <Zap size={12} />
-                        <span className="text-xs font-medium">{post.echoesCount}</span>
-                      </div>
-                    )}
+                  <div className="flex items-center gap-6 mt-3 mb-2">
+                    <button
+                      onClick={(e) => handleHeart(post.id, e)}
+                      className={`flex items-center gap-1.5 transition-all duration-200 hover:scale-110 active:scale-95 ${
+                        clickedPosts.has(post.id) ? 'animate-pulse' : ''
+                      } ${(post.heartsCount || 0) > 0 ? 'text-red-500' : 'text-gray-400 hover:text-red-500'}`}
+                      data-testid={`button-heart-${post.id}`}
+                    >
+                      <Heart 
+                        size={20} 
+                        fill={(post.heartsCount || 0) > 0 ? "currentColor" : "none"}
+                        className="transition-all duration-200 hover:drop-shadow-sm"
+                      />
+                      <span className="text-sm font-medium">{post.heartsCount || 0}</span>
+                    </button>
+                    
+                    <button
+                      onClick={(e) => handleEcho(post.id, e)}
+                      className={`flex items-center gap-1.5 transition-all duration-200 hover:scale-110 active:scale-95 ${
+                        clickedPosts.has(post.id) ? 'animate-pulse' : ''
+                      } ${(post.echoesCount || 0) > 0 ? 'text-blue-500' : 'text-gray-400 hover:text-blue-500'}`}
+                      data-testid={`button-echo-${post.id}`}
+                    >
+                      <Zap 
+                        size={20}
+                        fill={(post.echoesCount || 0) > 0 ? "currentColor" : "none"}
+                        className="transition-all duration-200 hover:drop-shadow-sm"
+                      />
+                      <span className="text-sm font-medium">{post.echoesCount || 0}</span>
+                    </button>
+                    
                     {(post.impactScore || 0) > 75 && (
                       <div className="flex items-center gap-1 text-amber-500">
-                        <Star size={12} fill="currentColor" />
+                        <Star size={16} fill="currentColor" />
                         <span className="text-xs font-medium">High Impact</span>
                       </div>
                     )}
