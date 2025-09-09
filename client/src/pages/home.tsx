@@ -19,6 +19,15 @@ import { KindnessPost, KindnessCounter, UserTokens } from '@shared/schema';
 import { PostFilters, WebSocketMessage, TokenEarning } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
+interface RewardOffer {
+  id: string;
+  title: string;
+  echoCost: number;
+  description: string;
+  partnerName: string;
+  isDualReward?: boolean;
+}
+
 export default function Home() {
   const queryClient = useQueryClient();
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
@@ -60,6 +69,12 @@ export default function Home() {
   const { data: tokens } = useQuery<UserTokens>({
     queryKey: ['/api/tokens'],
     queryFn: () => fetch('/api/tokens').then(r => r.json())
+  });
+
+  // Fetch real Burlington/Alamance County rewards
+  const { data: realRewards = [] } = useQuery<RewardOffer[]>({
+    queryKey: ['/api/rewards/offers/all/all'],
+    queryFn: () => fetch('/api/rewards/offers/all/all').then(r => r.json())
   });
 
   // WebSocket for real-time updates
@@ -314,13 +329,26 @@ export default function Home() {
               Available Rewards
             </h3>
             
-            {[
-              { name: 'Starbucks Coffee', cost: 500, icon: '☕', description: '$5 gift card' },
-              { name: 'Amazon Gift Card', cost: 1000, icon: '🛒', description: '$10 gift card' },
-              { name: 'Netflix Subscription', cost: 1500, icon: '🎬', description: '1 month free' },
-              { name: 'Charity Donation', cost: 750, icon: '💝', description: '$7.50 to charity' },
-            ].map((reward, index) => (
-              <div key={index} style={{
+            {realRewards.slice(0, 8).map((reward, index) => {
+              // Get appropriate icons for Burlington/Alamance County rewards
+              const getRewardIcon = (partnerName: string, title: string) => {
+                if (partnerName?.includes('Carousel')) return '🎠';
+                if (partnerName?.includes('Theater') || title?.includes('Movie')) return '🎬';
+                if (partnerName?.includes('Museum')) return '🏛️';
+                if (partnerName?.includes('Custard') || partnerName?.includes('Ice Cream')) return '🍦';
+                if (partnerName?.includes('Putt-Putt') || title?.includes('Mini Golf')) return '⛳';
+                if (partnerName?.includes('Baseball') || partnerName?.includes('Sock Puppets')) return '⚾';
+                if (partnerName?.includes('Pizza')) return '🍕';
+                if (partnerName?.includes('Chick-fil-A')) return '🐔';
+                if (partnerName?.includes('Libraries') || title?.includes('Reading')) return '📚';
+                if (partnerName?.includes('Diner')) return '🥞';
+                if (partnerName?.includes('Bowling') || partnerName?.includes('Buffaloe')) return '🎳';
+                if (reward.isDualReward) return '🎁';
+                return '🎯';
+              };
+              
+              return (
+                <div key={index} style={{
                 backgroundColor: 'white',
                 borderRadius: '12px',
                 padding: '16px',
@@ -329,34 +357,43 @@ export default function Home() {
                 alignItems: 'center',
                 gap: '16px'
               }}>
-                <div style={{ fontSize: '32px' }}>{reward.icon}</div>
+                <div style={{ fontSize: '32px' }}>{getRewardIcon(reward.partnerName, reward.title)}</div>
                 <div style={{ flex: 1 }}>
                   <h4 style={{ fontSize: '16px', fontWeight: '600', margin: '0 0 4px 0' }}>
-                    {reward.name}
+                    {reward.title}
                   </h4>
                   <p style={{ fontSize: '12px', color: '#6b7280', margin: 0 }}>
-                    {reward.description}
+                    {reward.partnerName} - {reward.description.substring(0, 50)}...
                   </p>
+                  {reward.isDualReward && (
+                    <p style={{ fontSize: '10px', color: '#8B5CF6', margin: '2px 0 0 0', fontWeight: '600' }}>
+                      🚀 DUAL REWARD - Kid + Parent!
+                    </p>
+                  )}
                 </div>
                 <div style={{ textAlign: 'right' }}>
                   <div style={{ fontSize: '14px', fontWeight: '700', color: '#8B5CF6', marginBottom: '8px' }}>
-                    {reward.cost} $ECHO
+                    {reward.echoCost} $ECHO
                   </div>
-                  <button style={{
-                    backgroundColor: (tokens?.echoBalance || 0) >= reward.cost ? '#10B981' : '#e5e7eb',
-                    color: (tokens?.echoBalance || 0) >= reward.cost ? 'white' : '#9ca3af',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '6px 12px',
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    cursor: (tokens?.echoBalance || 0) >= reward.cost ? 'pointer' : 'not-allowed'
-                  }}>
-                    {(tokens?.echoBalance || 0) >= reward.cost ? 'Redeem' : 'Need More'}
+                  <button 
+                    onClick={() => window.location.href = '/rewards'}
+                    style={{
+                      backgroundColor: (tokens?.echoBalance || 0) >= reward.echoCost ? '#10B981' : '#e5e7eb',
+                      color: (tokens?.echoBalance || 0) >= reward.echoCost ? 'white' : '#9ca3af',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '6px 12px',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    {(tokens?.echoBalance || 0) >= reward.echoCost ? 'Redeem' : 'Need More'}
                   </button>
                 </div>
-              </div>
-            ))}
+                </div>
+              );
+            })}
           </div>
         </div>
         
