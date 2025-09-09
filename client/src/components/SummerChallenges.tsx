@@ -132,7 +132,7 @@ export function SummerChallenges() {
           textAlign: 'center'
         }}>
           <div style={{ fontSize: '14px', opacity: 0.9, marginBottom: '8px' }}>
-            Week {currentWeek.week} • Summer 2024
+            Week {currentWeek.week} • Summer 2026
           </div>
           <h1 style={{ fontSize: '24px', fontWeight: '700', marginBottom: '8px' }}>
             {currentWeek.theme.theme}
