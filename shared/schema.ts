@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, jsonb, index, real } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, jsonb, index, real, boolean } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { relations } from "drizzle-orm";
 import { z } from "zod";
@@ -1231,6 +1231,89 @@ export type BullyingPrediction = typeof bullyingPredictions.$inferSelect;
 export type InsertBullyingPrediction = z.infer<typeof insertBullyingPredictionSchema>;
 export type KindnessExchange = typeof kindnessExchanges.$inferSelect;
 export type InsertKindnessExchange = z.infer<typeof insertKindnessExchangeSchema>;
+
+// Summer Engagement Program Tables
+export const summerChallenges = pgTable("summer_challenges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  week: integer("week").notNull(), // Week 1-12 for summer
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description").notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // "kindness", "family", "creativity", "community"
+  difficulty: varchar("difficulty", { length: 20 }).notNull(), // "easy", "medium", "hard"
+  points: integer("points").default(10),
+  ageGroup: varchar("age_group", { length: 20 }).notNull(), // "k-2", "3-5", "6-8"
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const userSummerProgress = pgTable("user_summer_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  challengeId: varchar("challenge_id").notNull().references(() => summerChallenges.id),
+  completedAt: timestamp("completed_at"),
+  pointsEarned: integer("points_earned").default(0),
+  parentApproved: boolean("parent_approved").default(false),
+  notes: text("notes"), // Student reflection on the activity
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const summerActivities = pgTable("summer_activities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  challengeId: varchar("challenge_id").notNull().references(() => summerChallenges.id),
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description").notNull(),
+  timeEstimate: integer("time_estimate_minutes").default(30), // in minutes
+  materialsNeeded: text("materials_needed"), // comma-separated list
+  instructions: text("instructions").notNull(),
+  parentInvolvement: boolean("parent_involvement").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const summerNotifications = pgTable("summer_notifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  parentId: varchar("parent_id").notNull(),
+  studentId: varchar("student_id").notNull(),
+  type: varchar("type", { length: 50 }).notNull(), // "activity_reminder", "progress_update", "weekly_summary"
+  title: varchar("title", { length: 200 }).notNull(),
+  message: text("message").notNull(),
+  isRead: boolean("is_read").default(false),
+  scheduledFor: timestamp("scheduled_for"),
+  sentAt: timestamp("sent_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const familyChallenges = pgTable("family_challenges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description").notNull(),
+  category: varchar("category", { length: 50 }).notNull(),
+  difficulty: varchar("difficulty", { length: 20 }).notNull(),
+  estimatedTime: integer("estimated_time_minutes").default(60),
+  parentChildActivity: boolean("parent_child_activity").default(true),
+  pointsForFamily: integer("points_for_family").default(25),
+  weekAvailable: integer("week_available"), // Which summer week this becomes available
+  isActive: boolean("is_active").default(true),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Summer Engagement insert schemas
+export const insertSummerChallengeSchema = createInsertSchema(summerChallenges);
+export const insertUserSummerProgressSchema = createInsertSchema(userSummerProgress);
+export const insertSummerActivitySchema = createInsertSchema(summerActivities);
+export const insertSummerNotificationSchema = createInsertSchema(summerNotifications);
+export const insertFamilyChallengeSchema = createInsertSchema(familyChallenges);
+
+// Summer Engagement type exports
+export type SummerChallenge = typeof summerChallenges.$inferSelect;
+export type InsertSummerChallenge = z.infer<typeof insertSummerChallengeSchema>;
+export type UserSummerProgress = typeof userSummerProgress.$inferSelect;
+export type InsertUserSummerProgress = z.infer<typeof insertUserSummerProgressSchema>;
+export type SummerActivity = typeof summerActivities.$inferSelect;
+export type InsertSummerActivity = z.infer<typeof insertSummerActivitySchema>;
+export type SummerNotification = typeof summerNotifications.$inferSelect;
+export type InsertSummerNotification = z.infer<typeof insertSummerNotificationSchema>;
+export type FamilyChallenge = typeof familyChallenges.$inferSelect;
+export type InsertFamilyChallenge = z.infer<typeof insertFamilyChallengeSchema>;
 
 // User relations for better query performance
 export const usersRelations = relations(users, ({ many }) => ({
