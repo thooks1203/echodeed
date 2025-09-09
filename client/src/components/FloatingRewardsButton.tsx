@@ -11,7 +11,6 @@ interface UserTokens {
 }
 
 export function FloatingRewardsButton({ onRewardsClick }: FloatingRewardsButtonProps) {
-  const [isVisible, setIsVisible] = useState(true);
   const [isPulsing, setIsPulsing] = useState(false);
 
   // Fetch user tokens to show balance
@@ -28,8 +27,6 @@ export function FloatingRewardsButton({ onRewardsClick }: FloatingRewardsButtonP
 
     return () => clearInterval(interval);
   }, []);
-
-  if (!isVisible) return null;
 
   return (
     <div
@@ -80,32 +77,6 @@ export function FloatingRewardsButton({ onRewardsClick }: FloatingRewardsButtonP
         ✨
       </div>
 
-      {/* Close button */}
-      <button
-        onClick={(e) => {
-          e.stopPropagation();
-          setIsVisible(false);
-        }}
-        style={{
-          position: 'absolute',
-          top: '-8px',
-          right: '-8px',
-          background: 'rgba(255, 255, 255, 0.9)',
-          border: 'none',
-          borderRadius: '50%',
-          width: '20px',
-          height: '20px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          fontSize: '12px',
-          cursor: 'pointer',
-          color: '#666'
-        }}
-        data-testid="close-floating-rewards"
-      >
-        ×
-      </button>
 
       <style>
         {`
