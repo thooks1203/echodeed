@@ -7,9 +7,9 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
   const tabs = [
     { id: 'feed', label: 'Feed', icon: '🏠' },
     { id: 'schools', label: 'Schools', icon: '🎓' },
+    { id: 'summer', label: 'Summer', icon: '☀️' },
     { id: 'ai-safety', label: 'AI Safety', icon: '🛡️' },
     { id: 'rewards', label: 'Rewards', icon: '🎁' },
-    { id: 'badges', label: 'Badges', icon: '🏅' },
   ];
 
   return (

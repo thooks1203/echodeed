@@ -8,6 +8,7 @@ import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { WelcomeModal } from '@/components/WelcomeModal';
 import { SchoolsDashboard } from '@/components/SchoolsDashboard';
+import { SummerChallenges } from '@/components/SummerChallenges';
 import { ConflictReportModal } from '@/components/ConflictReportModal';
 import { BullyingPreventionDashboard } from '@/components/BullyingPreventionDashboard';
 import { KindnessExchangeModal } from '@/components/KindnessExchangeModal';
@@ -254,6 +255,15 @@ export default function Home() {
       <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
         <AppHeader counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} isPulse={counterPulse} />
         <BullyingPreventionDashboard />
+        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
+    );
+  }
+
+  if (activeTab === 'summer') {
+    return (
+      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+        <SummerChallenges />
         <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
     );
