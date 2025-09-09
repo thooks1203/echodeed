@@ -5102,6 +5102,60 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Parent approval of challenge completion
+  app.post('/api/summer/approve/:progressId', async (req, res) => {
+    try {
+      const { progressId } = req.params;
+      const { pointsAwarded } = req.body;
+      const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
+      const approved = await summerChallengeEngine.approveCompletion(progressId, pointsAwarded);
+      res.json(approved);
+    } catch (error) {
+      console.error('Error approving completion:', error);
+      res.status(500).json({ message: 'Failed to approve completion' });
+    }
+  });
+
+  // Get parent notifications
+  app.get('/api/summer/notifications/:parentId', async (req, res) => {
+    try {
+      const { parentId } = req.params;
+      
+      // Demo notifications - in real app, fetch from database
+      const notifications = [
+        {
+          id: 'notif-1',
+          parentId,
+          studentId: 'demo-user',
+          type: 'progress_update',
+          title: '🎉 Challenge Completed!',
+          message: 'Your child completed "Little Helper Hero" challenge. Review their work to approve points.',
+          isRead: false,
+          scheduledFor: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 hours ago
+          sentAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+          createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString()
+        },
+        {
+          id: 'notif-2',
+          parentId,
+          studentId: 'demo-user',
+          type: 'weekly_summary',
+          title: '📅 New Week Starting',
+          message: 'Week 2: Family Appreciation starts tomorrow! New challenges are now available.',
+          isRead: false,
+          scheduledFor: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
+          sentAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+          createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+        }
+      ];
+      
+      res.json(notifications);
+    } catch (error) {
+      console.error('Error fetching notifications:', error);
+      res.status(500).json({ message: 'Failed to fetch notifications' });
+    }
+  });
+
   return httpServer;
 }
 

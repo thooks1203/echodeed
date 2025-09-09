@@ -5,7 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Heart, Star, Calendar, Bell, TrendingUp, Award, BookOpen, Users, ArrowLeft } from 'lucide-react';
+import { Heart, Star, Calendar, Bell, TrendingUp, Award, BookOpen, Users, ArrowLeft, Sun } from 'lucide-react';
+import { ParentDashboard as SummerParentDashboard } from '@/components/ParentDashboard';
 
 interface ParentNotification {
   id: string;
@@ -195,9 +196,10 @@ export default function ParentDashboard() {
 
       {selectedStudent && selectedStudentData && (
         <Tabs defaultValue="overview" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="activity">Recent Activity</TabsTrigger>
+            <TabsTrigger value="summer">☀️ Summer</TabsTrigger>
             <TabsTrigger value="progress">SEL Progress</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
           </TabsList>
@@ -322,6 +324,13 @@ export default function ParentDashboard() {
                 ))}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Summer Program Tab */}
+          <TabsContent value="summer" className="space-y-6">
+            <div style={{ padding: '0', marginTop: '-24px' }}>
+              <SummerParentDashboard />
+            </div>
           </TabsContent>
 
           {/* SEL Progress Tab */}
