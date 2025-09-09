@@ -157,7 +157,7 @@ export default function RewardsPage() {
   const enrichedOffers = offers.map((offer: RewardOffer) => {
     const partner = partners.find((p: RewardPartner) => p.id === offer.partnerId);
     return {
-      ...offer,
+      ...offer, // This preserves ALL fields including sponsorCompany, sponsorshipMessage, etc.
       partnerName: partner?.partnerName,
       partnerLogo: partner?.partnerLogo,
     };
