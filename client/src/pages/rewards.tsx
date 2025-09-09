@@ -9,7 +9,8 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useNavigation } from '@/hooks/useNavigation';
 import { BackButton } from '@/components/BackButton';
-import { Building2, Shield, Star, Gift, ShoppingBag, Coffee, Music, Trophy, CheckCircle2, AlertCircle, Clock } from 'lucide-react';
+import { Building2, Shield, Star, Gift, ShoppingBag, Coffee, Music, Trophy, CheckCircle2, AlertCircle, Clock, Bell } from 'lucide-react';
+import { testRewardProximity } from '@/components/RewardNotificationManager';
 
 interface RewardOffer {
   id: string;
@@ -220,6 +221,18 @@ export default function RewardsPage() {
                     ))}
                   </SelectContent>
                 </Select>
+                
+                {/* Test Proximity Notifications */}
+                <Button
+                  onClick={() => testRewardProximity.testWithMockData()}
+                  variant="outline"
+                  size="sm"
+                  className="bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 hidden md:flex"
+                  data-testid="test-proximity-notifications"
+                >
+                  <Bell className="w-4 h-4 mr-1" />
+                  Test Alerts
+                </Button>
 
                 <Select value={selectedOfferType} onValueChange={setSelectedOfferType}>
                   <SelectTrigger className="w-48" data-testid="filter-offer-type">
