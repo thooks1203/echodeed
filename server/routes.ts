@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema, insertSupportPostSchema } from "@shared/schema";
+import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema, insertSupportPostSchema, insertWellnessCheckInSchema, insertPushSubscriptionSchema } from "@shared/schema";
 import { nanoid } from 'nanoid';
 import { contentFilter } from "./services/contentFilter";
 import { aiAnalytics } from "./services/aiAnalytics";
@@ -1423,6 +1423,107 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(escalations);
     } catch (error: any) {
       console.error('Failed to get crisis escalations:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // ===== DAILY WELLNESS CHECK-IN ROUTES - Proactive mental health monitoring =====
+  
+  // Create wellness check-in (anonymous - triggered by daily notification)
+  app.post("/api/wellness-checkin", async (req, res) => {
+    try {
+      const checkInData = insertWellnessCheckInSchema.parse(req.body);
+      
+      console.log(`📊 Wellness check-in for Grade ${checkInData.gradeLevel} at ${checkInData.schoolId}:`, {
+        mood: checkInData.mood,
+        moodScore: checkInData.moodScore,
+        stressLevel: checkInData.stressLevel
+      });
+      
+      const checkIn = await storage.createWellnessCheckIn(checkInData);
+      
+      // Log concerning scores for demonstration
+      if (checkIn.moodScore <= 2) {
+        console.log(`⚠️ CONCERNING MOOD SCORE detected in Grade ${checkIn.gradeLevel}: ${checkIn.mood} (${checkIn.moodScore}/5)`);
+      }
+      
+      res.json(checkIn);
+    } catch (error: any) {
+      console.error('Failed to create wellness check-in:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get wellness check-ins for analytics
+  app.get("/api/wellness-checkins", async (req, res) => {
+    try {
+      const { schoolId, gradeLevel, startDate, endDate } = req.query;
+      
+      const filters: any = {};
+      if (schoolId) filters.schoolId = schoolId as string;
+      if (gradeLevel) filters.gradeLevel = gradeLevel as string;
+      if (startDate && endDate) {
+        filters.dateRange = {
+          start: new Date(startDate as string),
+          end: new Date(endDate as string)
+        };
+      }
+      
+      const checkIns = await storage.getWellnessCheckIns(Object.keys(filters).length > 0 ? filters : undefined);
+      res.json(checkIns);
+    } catch (error: any) {
+      console.error('Failed to get wellness check-ins:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get wellness trends for school administrators
+  app.get("/api/wellness-trends/:schoolId", async (req, res) => {
+    try {
+      const { schoolId } = req.params;
+      const { gradeLevel } = req.query;
+      
+      const trends = await storage.getWellnessTrends(schoolId, gradeLevel as string);
+      res.json(trends);
+    } catch (error: any) {
+      console.error('Failed to get wellness trends:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Subscribe to push notifications for daily check-ins
+  app.post("/api/push-subscribe", async (req, res) => {
+    try {
+      const subscriptionData = insertPushSubscriptionSchema.parse(req.body);
+      
+      console.log(`🔔 New push notification subscription for Grade ${subscriptionData.gradeLevel} at ${subscriptionData.schoolId}`);
+      
+      const subscription = await storage.subscribeToPushNotifications(subscriptionData);
+      res.json(subscription);
+    } catch (error: any) {
+      console.error('Failed to subscribe to push notifications:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Send test push notification (for development)
+  app.post("/api/push-test/:schoolId", async (req, res) => {
+    try {
+      const { schoolId } = req.params;
+      const { gradeLevel } = req.query;
+      
+      const subscriptions = await storage.getPushSubscriptions(schoolId, gradeLevel as string);
+      
+      // In a real implementation, this would send actual push notifications
+      console.log(`📱 Would send "How are you feeling today?" notification to ${subscriptions.length} Grade ${gradeLevel || 'all'} students`);
+      
+      res.json({ 
+        message: 'Test notification sent',
+        subscriptions: subscriptions.length,
+        targetGrade: gradeLevel || 'all grades 6-8'
+      });
+    } catch (error: any) {
+      console.error('Failed to send test notification:', error);
       res.status(500).json({ message: error.message });
     }
   });

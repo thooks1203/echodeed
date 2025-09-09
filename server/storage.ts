@@ -125,6 +125,14 @@ import {
   type InsertCrisisEscalation,
   type LicensedCounselor,
   type InsertLicensedCounselor,
+  wellnessCheckIns,
+  pushSubscriptions,
+  wellnessTrends,
+  type WellnessCheckIn,
+  type InsertWellnessCheckIn,
+  type PushSubscription,
+  type InsertPushSubscription,
+  type WellnessTrend,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte } from "drizzle-orm";
@@ -405,6 +413,13 @@ export interface IStorage {
   createCrisisEscalation(escalation: InsertCrisisEscalation): Promise<CrisisEscalation>;
   getCrisisEscalations(filters?: { status?: string; }): Promise<CrisisEscalation[]>;
   getLicensedCounselors(filters?: { schoolId?: string; isActive?: boolean; }): Promise<LicensedCounselor[]>;
+
+  // Daily wellness check-in operations - Proactive mental health monitoring
+  createWellnessCheckIn(checkIn: InsertWellnessCheckIn): Promise<WellnessCheckIn>;
+  getWellnessCheckIns(filters?: { schoolId?: string; gradeLevel?: string; dateRange?: { start: Date; end: Date; }; }): Promise<WellnessCheckIn[]>;
+  getWellnessTrends(schoolId: string, gradeLevel?: string): Promise<WellnessTrend[]>;
+  subscribeToPushNotifications(subscription: InsertPushSubscription): Promise<PushSubscription>;
+  getPushSubscriptions(schoolId: string, gradeLevel?: string): Promise<PushSubscription[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -3001,6 +3016,155 @@ export class DatabaseStorage implements IStorage {
     }
 
     return query.orderBy(licensedCounselors.displayName);
+  }
+
+  // Daily wellness check-in operations - Proactive mental health monitoring
+  async createWellnessCheckIn(checkIn: InsertWellnessCheckIn): Promise<WellnessCheckIn> {
+    const [newCheckIn] = await db.insert(wellnessCheckIns).values({
+      ...checkIn,
+      triggeredByNotification: 1,
+      notificationTime: new Date(),
+    }).returning();
+
+    // Generate wellness trend analytics if this is a concerning score
+    if (checkIn.moodScore <= 2 || (checkIn.stressLevel && checkIn.stressLevel >= 4)) {
+      await this.updateWellnessTrends(checkIn.schoolId, checkIn.gradeLevel);
+    }
+
+    return newCheckIn;
+  }
+
+  async getWellnessCheckIns(filters?: { schoolId?: string; gradeLevel?: string; dateRange?: { start: Date; end: Date; }; }): Promise<WellnessCheckIn[]> {
+    let query = db.select().from(wellnessCheckIns);
+    
+    const conditions = [];
+    if (filters?.schoolId) {
+      conditions.push(eq(wellnessCheckIns.schoolId, filters.schoolId));
+    }
+    if (filters?.gradeLevel) {
+      conditions.push(eq(wellnessCheckIns.gradeLevel, filters.gradeLevel));
+    }
+    if (filters?.dateRange) {
+      conditions.push(gte(wellnessCheckIns.checkInDate, filters.dateRange.start));
+      conditions.push(eq(wellnessCheckIns.checkInDate, filters.dateRange.end));
+    }
+
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any;
+    }
+
+    return query.orderBy(desc(wellnessCheckIns.checkInDate)).limit(100);
+  }
+
+  async getWellnessTrends(schoolId: string, gradeLevel?: string): Promise<WellnessTrend[]> {
+    let query = db.select().from(wellnessTrends);
+    
+    const conditions = [eq(wellnessTrends.schoolId, schoolId)];
+    if (gradeLevel) {
+      conditions.push(eq(wellnessTrends.gradeLevel, gradeLevel));
+    }
+
+    return query.where(and(...conditions)).orderBy(desc(wellnessTrends.analysisDate));
+  }
+
+  async subscribeToPushNotifications(subscription: InsertPushSubscription): Promise<PushSubscription> {
+    // Check if subscription already exists for this device
+    const existing = await db.select().from(pushSubscriptions)
+      .where(eq(pushSubscriptions.deviceId, subscription.deviceId))
+      .limit(1);
+
+    if (existing.length > 0) {
+      // Update existing subscription
+      const [updated] = await db.update(pushSubscriptions)
+        .set({
+          endpoint: subscription.endpoint,
+          p256dh: subscription.p256dh,
+          auth: subscription.auth,
+          isActive: 1,
+          updatedAt: new Date(),
+        })
+        .where(eq(pushSubscriptions.deviceId, subscription.deviceId))
+        .returning();
+      return updated;
+    } else {
+      // Create new subscription
+      const [newSubscription] = await db.insert(pushSubscriptions).values(subscription).returning();
+      return newSubscription;
+    }
+  }
+
+  async getPushSubscriptions(schoolId: string, gradeLevel?: string): Promise<PushSubscription[]> {
+    let query = db.select().from(pushSubscriptions);
+    
+    const conditions = [
+      eq(pushSubscriptions.schoolId, schoolId),
+      eq(pushSubscriptions.isActive, 1)
+    ];
+    if (gradeLevel) {
+      conditions.push(eq(pushSubscriptions.gradeLevel, gradeLevel));
+    }
+
+    return query.where(and(...conditions));
+  }
+
+  // Helper method to update wellness trends for analytics
+  private async updateWellnessTrends(schoolId: string, gradeLevel: string): Promise<void> {
+    const today = new Date();
+    const startOfWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - today.getDay());
+    
+    // Get this week's check-ins for the grade level
+    const weeklyCheckIns = await db.select().from(wellnessCheckIns)
+      .where(and(
+        eq(wellnessCheckIns.schoolId, schoolId),
+        eq(wellnessCheckIns.gradeLevel, gradeLevel),
+        gte(wellnessCheckIns.checkInDate, startOfWeek)
+      ));
+
+    if (weeklyCheckIns.length === 0) return;
+
+    const totalCheckIns = weeklyCheckIns.length;
+    const averageMoodScore = weeklyCheckIns.reduce((sum, c) => sum + c.moodScore, 0) / totalCheckIns;
+    const averageStressLevel = weeklyCheckIns.reduce((sum, c) => sum + (c.stressLevel || 0), 0) / totalCheckIns;
+    const criticalConcerns = weeklyCheckIns.filter(c => c.moodScore <= 2).length;
+    const positiveReports = weeklyCheckIns.filter(c => c.moodScore >= 4).length;
+
+    const alertLevel = criticalConcerns >= 3 ? 'critical' :
+                     criticalConcerns >= 2 ? 'concern' :
+                     averageMoodScore < 2.5 ? 'watch' : 'normal';
+
+    const recommendations = alertLevel !== 'normal' ? [
+      'Consider individual check-ins with students showing concerning patterns',
+      'Review current stress factors and academic workload',
+      'Increase positive peer interaction activities',
+      'Schedule counselor availability for support'
+    ] : [];
+
+    // Insert or update trend record
+    await db.insert(wellnessTrends).values({
+      schoolId,
+      gradeLevel,
+      analysisDate: today,
+      totalCheckIns,
+      averageMoodScore: averageMoodScore.toString(),
+      averageStressLevel: averageStressLevel.toString(),
+      criticalConcerns,
+      positiveReports,
+      trendDirection: 'stable', // Could be calculated based on historical data
+      alertLevel,
+      recommendations,
+    }).onConflictDoUpdate({
+      target: [wellnessTrends.schoolId, wellnessTrends.gradeLevel, wellnessTrends.analysisDate],
+      set: {
+        totalCheckIns,
+        averageMoodScore: averageMoodScore.toString(),
+        averageStressLevel: averageStressLevel.toString(),
+        criticalConcerns,
+        positiveReports,
+        alertLevel,
+        recommendations,
+        generatedAt: new Date(),
+      }
+    });
   }
 }
 

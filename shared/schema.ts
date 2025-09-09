@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, jsonb, index, real, boolean } from "drizzle-orm/pg-core";
+import { pgTable, text, varchar, timestamp, integer, jsonb, index, real, boolean, decimal } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { relations } from "drizzle-orm";
 import { z } from "zod";
@@ -440,6 +440,66 @@ export const licensedCounselors = pgTable("licensed_counselors", {
   verifiedBy: varchar("verified_by"), // Admin who verified credentials
   verifiedAt: timestamp("verified_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// ===== DAILY WELLNESS CHECK-INS FOR GRADES 6-8 =====
+
+// Daily wellness check-ins with mood tracking and proactive monitoring
+export const wellnessCheckIns = pgTable("wellness_check_ins", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolId: varchar("school_id").notNull(),
+  gradeLevel: varchar("grade_level").notNull(), // "6", "7", "8"
+  studentId: varchar("student_id"), // Anonymous identifier, optional
+  mood: varchar("mood").notNull(), // "great", "good", "okay", "struggling", "terrible"
+  moodScore: integer("mood_score").notNull(), // 1-5 scale (5=great, 1=terrible)
+  selectedEmoji: varchar("selected_emoji"), // 😄😊😐😔😢
+  stressLevel: integer("stress_level"), // 1-5 scale (1=no stress, 5=very stressed)
+  sleepQuality: integer("sleep_quality"), // 1-5 scale (1=terrible, 5=excellent)
+  socialConnection: integer("social_connection"), // 1-5 scale (1=isolated, 5=very connected)
+  academicPressure: integer("academic_pressure"), // 1-5 scale (1=none, 5=overwhelming)
+  homeEnvironment: integer("home_environment"), // 1-5 scale (1=difficult, 5=supportive)
+  notes: text("notes"), // Optional additional thoughts
+  triggeredByNotification: integer("triggered_by_notification").default(1),
+  notificationTime: timestamp("notification_time"),
+  responseTime: timestamp("response_time").defaultNow(),
+  completedAt: timestamp("completed_at").defaultNow(),
+  checkInDate: timestamp("check_in_date").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Push notification subscriptions for daily wellness check-ins
+export const pushSubscriptions = pgTable("push_subscriptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolId: varchar("school_id").notNull(),
+  gradeLevel: varchar("grade_level").notNull(), // "6", "7", "8"
+  deviceId: varchar("device_id").notNull(), // Unique device identifier
+  endpoint: text("endpoint").notNull(), // Web Push endpoint URL
+  p256dh: text("p256dh").notNull(), // Public key for encryption
+  auth: text("auth").notNull(), // Auth secret for encryption
+  isActive: integer("is_active").default(1),
+  preferredTime: varchar("preferred_time").default("09:00"), // "HH:MM" format
+  timezone: varchar("timezone").default("America/New_York"),
+  lastNotificationSent: timestamp("last_notification_sent"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Wellness trend analytics for school administrators
+export const wellnessTrends = pgTable("wellness_trends", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolId: varchar("school_id").notNull(),
+  gradeLevel: varchar("grade_level").notNull(),
+  analysisDate: timestamp("analysis_date").defaultNow(),
+  totalCheckIns: integer("total_check_ins").default(0),
+  averageMoodScore: decimal("average_mood_score", { precision: 3, scale: 2 }),
+  averageStressLevel: decimal("average_stress_level", { precision: 3, scale: 2 }),
+  criticalConcerns: integer("critical_concerns").default(0), // Mood score 1-2
+  positiveReports: integer("positive_reports").default(0), // Mood score 4-5
+  trendDirection: varchar("trend_direction"), // "improving", "declining", "stable"
+  alertLevel: varchar("alert_level").default("normal"), // "normal", "watch", "concern", "critical"
+  recommendations: jsonb("recommendations"), // Array of automated recommendations
+  generatedAt: timestamp("generated_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 export const badgeRewards = pgTable("badge_rewards", {
@@ -1414,6 +1474,25 @@ export const insertSupportPostSchema = createInsertSchema(supportPosts).omit({
   resolvedAt: true,
 });
 
+// Wellness check-in insert schemas for daily mood tracking
+export const insertWellnessCheckInSchema = createInsertSchema(wellnessCheckIns).omit({
+  id: true,
+  triggeredByNotification: true,
+  notificationTime: true,
+  responseTime: true,
+  completedAt: true,
+  checkInDate: true,
+  createdAt: true,
+});
+
+export const insertPushSubscriptionSchema = createInsertSchema(pushSubscriptions).omit({
+  id: true,
+  isActive: true,
+  lastNotificationSent: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export const insertSupportResponseSchema = createInsertSchema(supportResponses).omit({
   id: true,
   createdAt: true,
@@ -1454,6 +1533,13 @@ export type CrisisEscalation = typeof crisisEscalations.$inferSelect;
 export type InsertLicensedCounselor = z.infer<typeof insertLicensedCounselorSchema>;
 export type LicensedCounselor = typeof licensedCounselors.$inferSelect;
 export type SchoolSupportAnalytics = typeof schoolSupportAnalytics.$inferSelect;
+
+// Wellness check-in types for daily mood tracking
+export type WellnessCheckIn = typeof wellnessCheckIns.$inferSelect;
+export type InsertWellnessCheckIn = z.infer<typeof insertWellnessCheckInSchema>;
+export type PushSubscription = typeof pushSubscriptions.$inferSelect;
+export type InsertPushSubscription = z.infer<typeof insertPushSubscriptionSchema>;
+export type WellnessTrend = typeof wellnessTrends.$inferSelect;
 
 // User relations for better query performance
 export const usersRelations = relations(users, ({ many }) => ({
