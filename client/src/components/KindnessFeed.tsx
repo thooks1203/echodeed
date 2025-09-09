@@ -146,9 +146,9 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
                 animation: `fadeInUp 0.4s ease-out ${index * 0.05}s both`
               }}
             >
-              {/* Trending indicator - moved to avoid overlap */}
+              {/* Trending indicator - properly positioned below content */}
               {isTrending && (
-                <div className="absolute top-2 left-16 flex items-center gap-1 text-xs text-orange-500 bg-orange-50 px-2 py-1 rounded-full">
+                <div className="absolute bottom-2 left-16 flex items-center gap-1 text-xs text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-full border border-orange-200 dark:border-orange-700">
                   <TrendingUp size={10} />
                   <span className="font-medium">Trending</span>
                 </div>
@@ -168,8 +168,8 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
                       </p>
                     </div>
                     
-                    {/* Right side info - with margin to avoid trending overlap */}
-                    <div className={`flex flex-col items-end gap-1 flex-shrink-0 text-right ${isTrending ? 'mt-8' : 'mt-0'}`}>
+                    {/* Right side info - clean positioning */}
+                    <div className="flex flex-col items-end gap-1 flex-shrink-0 text-right">
                       <span 
                         className={`px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r ${getCategoryColor(post.category)} text-white shadow-sm whitespace-nowrap`}
                         data-testid={`text-post-category-${index}`}
