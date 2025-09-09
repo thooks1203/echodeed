@@ -7,7 +7,7 @@ import { KindnessFeed } from '@/components/KindnessFeed';
 import { PostDeedModal } from '@/components/PostDeedModal';
 import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { BottomNavigation } from '@/components/BottomNavigation';
-import { AIDashboard } from '@/components/ai-dashboard-fixed';
+// Removed AI dashboard import - focusing on school market
 import { NotificationSetupModal } from '@/components/notification-setup-modal';
 import { useTabNavigation } from '@/hooks/useNavigation';
 import { BackButton } from '@/components/BackButton';
@@ -222,24 +222,7 @@ export default function Home() {
     queryKey: ['/api/achievements/user'],
   });
 
-  // Fetch corporate dashboard data (sample company for demo)
-  const { data: corporateDashboard } = useQuery<CorporateDashboardData>({
-    queryKey: ['/api/corporate/accounts/demo/dashboard'],
-    retry: false, // Don't retry if no corporate account
-    enabled: activeTab === 'corporate' // Only fetch when corporate tab is active
-  });
-
-  // Fetch corporate accounts for admin panel
-  const { data: corporateAccounts = [] } = useQuery<any[]>({
-    queryKey: ['/api/corporate/accounts'],
-    enabled: activeTab === 'admin' // Only fetch when admin tab is active
-  });
-
-  // Fetch challenge templates for corporate dashboard
-  const { data: challengeTemplates = [] } = useQuery<ChallengeTemplate[]>({
-    queryKey: ['/api/corporate/challenge-templates'],
-    enabled: activeTab === 'corporate' && !!corporateDashboard // Only fetch when corporate tab is active and dashboard is loaded
-  });
+  // Removed corporate data fetching - focusing on school market
 
   // Achievement checking helper
   const checkAchievements = useCallback(async () => {
