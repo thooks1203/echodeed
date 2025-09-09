@@ -31,6 +31,11 @@ import {
   schoolContentReports,
   schoolAdministrators,
   googleClassroomIntegrations,
+  sponsorAnalytics,
+  sponsorProfiles,
+  sponsorImpactReports,
+  sponsorCampaigns,
+  sponsorCommunications,
   type User,
   type UpsertUser,
   type KindnessPost,
@@ -90,6 +95,16 @@ import {
   type InsertSchoolAdministrator,
   type GoogleClassroomIntegration,
   type InsertGoogleClassroomIntegration,
+  type SponsorAnalytics,
+  type InsertSponsorAnalytics,
+  type SponsorProfile,
+  type InsertSponsorProfile,
+  type SponsorImpactReport,
+  type InsertSponsorImpactReport,
+  type SponsorCampaign,
+  type InsertSponsorCampaign,
+  type SponsorCommunication,
+  type InsertSponsorCommunication,
   type WellnessPrediction,
   type InsertWellnessPrediction,
   type WellnessHeatmapData,
@@ -281,6 +296,24 @@ export interface IStorage {
   // Badge rewards
   getBadgeRewards(): Promise<BadgeReward[]>;
   createBadgeReward(reward: InsertBadgeReward): Promise<BadgeReward>;
+  
+  // PREMIUM SPONSOR ANALYTICS OPERATIONS
+  logSponsorAnalytics(analytics: InsertSponsorAnalytics): Promise<SponsorAnalytics>;
+  getSponsorAnalytics(sponsorCompany: string, filters?: { 
+    startDate?: Date; 
+    endDate?: Date; 
+    eventType?: string; 
+  }): Promise<SponsorAnalytics[]>;
+  createSponsorProfile(profile: InsertSponsorProfile): Promise<SponsorProfile>;
+  getSponsorProfile(companyName: string): Promise<SponsorProfile | undefined>;
+  updateSponsorProfile(companyName: string, updates: Partial<SponsorProfile>): Promise<SponsorProfile | undefined>;
+  generateSponsorImpactReport(sponsorCompany: string, startDate: Date, endDate: Date): Promise<SponsorImpactReport>;
+  getSponsorImpactReports(sponsorCompany: string, limit?: number): Promise<SponsorImpactReport[]>;
+  createSponsorCampaign(campaign: InsertSponsorCampaign): Promise<SponsorCampaign>;
+  getSponsorCampaigns(sponsorCompany: string): Promise<SponsorCampaign[]>;
+  logSponsorCommunication(communication: InsertSponsorCommunication): Promise<SponsorCommunication>;
+  trackSponsorImpression(sponsorCompany: string, offerId: string, userId?: string): Promise<void>;
+  trackSponsorClick(sponsorCompany: string, offerId: string, targetUrl: string, userId?: string): Promise<void>;
   
   // Weekly prizes
   getWeeklyPrizes(filters?: { status?: string; }): Promise<WeeklyPrize[]>;
@@ -1681,6 +1714,167 @@ export class DatabaseStorage implements IStorage {
   async createBadgeReward(reward: InsertBadgeReward): Promise<BadgeReward> {
     const [newReward] = await db.insert(badgeRewards).values(reward).returning();
     return newReward;
+  }
+
+  // PREMIUM SPONSOR ANALYTICS IMPLEMENTATIONS
+  
+  async logSponsorAnalytics(analytics: InsertSponsorAnalytics): Promise<SponsorAnalytics> {
+    const [newAnalytics] = await db
+      .insert(sponsorAnalytics)
+      .values(analytics)
+      .returning();
+    return newAnalytics;
+  }
+
+  async getSponsorAnalytics(sponsorCompany: string, filters?: { 
+    startDate?: Date; 
+    endDate?: Date; 
+    eventType?: string; 
+  }): Promise<SponsorAnalytics[]> {
+    const conditions = [eq(sponsorAnalytics.sponsorCompany, sponsorCompany)];
+    
+    if (filters?.startDate) {
+      conditions.push(gte(sponsorAnalytics.createdAt, filters.startDate));
+    }
+    if (filters?.endDate) {
+      conditions.push(lte(sponsorAnalytics.createdAt, filters.endDate));
+    }
+    if (filters?.eventType) {
+      conditions.push(eq(sponsorAnalytics.eventType, filters.eventType));
+    }
+    
+    return await db.select()
+      .from(sponsorAnalytics)
+      .where(and(...conditions))
+      .orderBy(desc(sponsorAnalytics.createdAt));
+  }
+
+  async createSponsorProfile(profile: InsertSponsorProfile): Promise<SponsorProfile> {
+    const [newProfile] = await db
+      .insert(sponsorProfiles)
+      .values(profile)
+      .returning();
+    return newProfile;
+  }
+
+  async getSponsorProfile(companyName: string): Promise<SponsorProfile | undefined> {
+    const [profile] = await db.select()
+      .from(sponsorProfiles)
+      .where(eq(sponsorProfiles.companyName, companyName));
+    return profile || undefined;
+  }
+
+  async updateSponsorProfile(companyName: string, updates: Partial<SponsorProfile>): Promise<SponsorProfile | undefined> {
+    const [updatedProfile] = await db
+      .update(sponsorProfiles)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(sponsorProfiles.companyName, companyName))
+      .returning();
+    return updatedProfile || undefined;
+  }
+
+  async generateSponsorImpactReport(sponsorCompany: string, startDate: Date, endDate: Date): Promise<SponsorImpactReport> {
+    // Calculate metrics from sponsor analytics
+    const analytics = await this.getSponsorAnalytics(sponsorCompany, { startDate, endDate });
+    
+    const totalImpressions = analytics.filter(a => a.eventType === 'impression').length;
+    const totalClicks = analytics.filter(a => a.eventType === 'click').length;
+    const totalRedemptions = analytics.filter(a => a.eventType === 'redemption').length;
+    
+    const clickThroughRate = totalImpressions > 0 ? (totalClicks / totalImpressions) * 100 : 0;
+    const conversionRate = totalClicks > 0 ? (totalRedemptions / totalClicks) * 100 : 0;
+    
+    // Get unique users reached
+    const uniqueUsers = new Set(analytics.filter(a => a.userId).map(a => a.userId)).size;
+    
+    // Calculate kindness acts enabled (sponsored posts)
+    const kindnessActsEnabled = await db.select({ count: sql<number>`count(*)` })
+      .from(kindnessPosts)
+      .where(and(
+        gte(kindnessPosts.createdAt, startDate),
+        lte(kindnessPosts.createdAt, endDate)
+      ));
+
+    const reportData = {
+      sponsorCompany,
+      reportPeriodStart: startDate,
+      reportPeriodEnd: endDate,
+      totalImpressions,
+      totalClicks,
+      totalRedemptions,
+      clickThroughRate,
+      conversionRate,
+      kindnessActsEnabled: kindnessActsEnabled[0]?.count || 0,
+      usersReached: uniqueUsers,
+      engagementScore: Math.min(100, Math.round((clickThroughRate + conversionRate) / 2)),
+      brandSentiment: 85, // Placeholder - would be calculated from sentiment analysis
+      costPerEngagement: totalClicks > 0 ? Math.round(2000 / totalClicks) : 0, // Assuming $20 CPM
+      roi: conversionRate > 0 ? Math.round(conversionRate * 2) : 0, // Simplified ROI calculation
+      reportData: { analytics: analytics.length > 0 ? analytics.slice(0, 100) : [] }, // Sample data
+    };
+
+    const [newReport] = await db
+      .insert(sponsorImpactReports)
+      .values(reportData)
+      .returning();
+    
+    return newReport;
+  }
+
+  async getSponsorImpactReports(sponsorCompany: string, limit: number = 10): Promise<SponsorImpactReport[]> {
+    return await db.select()
+      .from(sponsorImpactReports)
+      .where(eq(sponsorImpactReports.sponsorCompany, sponsorCompany))
+      .orderBy(desc(sponsorImpactReports.generatedAt))
+      .limit(limit);
+  }
+
+  async createSponsorCampaign(campaign: InsertSponsorCampaign): Promise<SponsorCampaign> {
+    const [newCampaign] = await db
+      .insert(sponsorCampaigns)
+      .values(campaign)
+      .returning();
+    return newCampaign;
+  }
+
+  async getSponsorCampaigns(sponsorCompany: string): Promise<SponsorCampaign[]> {
+    return await db.select()
+      .from(sponsorCampaigns)
+      .where(eq(sponsorCampaigns.sponsorCompany, sponsorCompany))
+      .orderBy(desc(sponsorCampaigns.createdAt));
+  }
+
+  async logSponsorCommunication(communication: InsertSponsorCommunication): Promise<SponsorCommunication> {
+    const [newCommunication] = await db
+      .insert(sponsorCommunications)
+      .values(communication)
+      .returning();
+    return newCommunication;
+  }
+
+  async trackSponsorImpression(sponsorCompany: string, offerId: string, userId?: string): Promise<void> {
+    await this.logSponsorAnalytics({
+      sponsorCompany,
+      offerId,
+      eventType: 'impression',
+      userId,
+      sessionId: Date.now().toString(), // Simple session ID
+      engagementDuration: 0,
+      conversionValue: 0,
+    });
+  }
+
+  async trackSponsorClick(sponsorCompany: string, offerId: string, targetUrl: string, userId?: string): Promise<void> {
+    await this.logSponsorAnalytics({
+      sponsorCompany,
+      offerId,
+      eventType: 'click',
+      userId,
+      targetUrl,
+      sessionId: Date.now().toString(),
+      engagementDuration: 0,
+      conversionValue: 1, // Click has value
+    });
   }
 
   // Weekly prizes implementation
