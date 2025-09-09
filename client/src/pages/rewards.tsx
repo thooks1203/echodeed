@@ -99,9 +99,24 @@ export default function RewardsPage() {
     queryKey: ['/api/rewards/partners'],
   });
 
-  // Fetch reward offers
+  // Fetch reward offers - using the correct endpoint that has Burlington rewards
   const { data: offers = [] } = useQuery<RewardOffer[]>({
     queryKey: ['/api/rewards/offers', selectedPartner, selectedOfferType],
+    queryFn: async () => {
+      // Build the URL with filters if needed
+      if (selectedPartner === 'all' && selectedOfferType === 'all') {
+        // Use the endpoint that has our Burlington/Alamance County rewards
+        const response = await fetch('/api/rewards/offers/all/all');
+        return response.json();
+      } else {
+        // Use the filtered endpoint for specific selections
+        const params = new URLSearchParams();
+        if (selectedPartner !== 'all') params.append('partnerId', selectedPartner);
+        if (selectedOfferType !== 'all') params.append('offerType', selectedOfferType);
+        const response = await fetch(`/api/rewards/offers?${params}`);
+        return response.json();
+      }
+    }
   });
 
   // Fetch user redemptions
@@ -356,7 +371,7 @@ export default function RewardsPage() {
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">All Rewards</h2>
               {enrichedOffers.length === 0 ? (
                 <div className="text-center py-8">
-                  <p className="text-gray-500 dark:text-gray-400">Loading amazing Burlington & Alamance County rewards...</p>
+                  <p className="text-gray-500 dark:text-gray-400">No rewards available - check filters above</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
