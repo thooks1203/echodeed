@@ -7,6 +7,7 @@ import { PostDeedModal } from '@/components/PostDeedModal';
 import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { WelcomeModal } from '@/components/WelcomeModal';
+import { SchoolsDashboard } from '@/components/SchoolsDashboard';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { KindnessPost, KindnessCounter, UserTokens } from '@shared/schema';
@@ -17,7 +18,7 @@ export default function Home() {
   const queryClient = useQueryClient();
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
-  const [activeTab, setActiveTab] = useState('feed');
+  const [activeTab, setActiveTab] = useState('schools');
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(() => {
@@ -94,6 +95,10 @@ export default function Home() {
   };
 
   // Show different content based on active tab
+  if (activeTab === 'schools') {
+    return <SchoolsDashboard />;
+  }
+
   if (activeTab === 'rewards') {
     return (
       <div style={{ 
