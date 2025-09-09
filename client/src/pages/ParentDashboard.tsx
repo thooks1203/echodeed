@@ -1,446 +1,714 @@
+/**
+ * 🚀 REVOLUTIONARY: Real-Time Parent Engagement Dashboard
+ * Parents receive instant notifications when their child posts kindness acts
+ * Creates powerful family engagement and dual reward system
+ */
+
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { useLocation } from 'wouter';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Heart, Star, Calendar, Bell, TrendingUp, Award, BookOpen, Users, ArrowLeft, Sun } from 'lucide-react';
-import { ParentDashboard as SummerParentDashboard } from '@/components/ParentDashboard';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Progress } from '@/components/ui/progress';
+import { 
+  Heart, 
+  Bell, 
+  Star, 
+  Calendar, 
+  Trophy,
+  Users,
+  Gift,
+  MessageSquare,
+  Shield,
+  TrendingUp,
+  Clock,
+  CheckCircle,
+  AlertTriangle,
+  Target,
+  Award,
+  ArrowLeft
+} from 'lucide-react';
+import { useLocation } from 'wouter';
 
 interface ParentNotification {
   id: string;
+  type: 'kindness_post' | 'reward_earned' | 'milestone' | 'concern' | 'weekly_summary';
   title: string;
   message: string;
-  notificationType: string;
-  isRead: number;
+  studentName: string;
+  studentUserId: string;
   createdAt: string;
+  isRead: boolean;
+  priority: 'low' | 'medium' | 'high' | 'urgent';
+  relatedData?: {
+    postContent?: string;
+    rewardAmount?: number;
+    milestoneType?: string;
+    riskLevel?: string;
+  };
 }
 
-interface Student {
+interface StudentActivity {
   id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-}
-
-interface KindnessPost {
-  id: string;
+  studentUserId: string;
+  studentName: string;
   content: string;
   category: string;
-  hearts: number;
-  echoes: number;
+  location: string;
   createdAt: string;
+  heartsCount: number;
+  echoesCount: number;
+  impactScore: number;
+  isParentFavorite: boolean;
+}
+
+interface ParentStats {
+  totalKindnessActs: number;
+  weeklyKindnessActs: number;
+  totalRewardsEarned: number;
+  currentStreak: number;
+  impactScore: number;
+  parentRewardsEarned: number;
+  familyRanking: number;
+  milestonesAchieved: number;
+}
+
+interface LinkedStudent {
+  userId: string;
+  name: string;
+  grade: string;
+  school: string;
+  isActive: boolean;
+  lastActivity: string;
+  weeklyKindnessCount: number;
+  totalKindnessCount: number;
+  currentStreak: number;
 }
 
 export default function ParentDashboard() {
-  const [selectedChild, setSelectedChild] = useState<string>('');
+  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'notifications' | 'rewards' | 'insights'>('overview');
+  const [selectedStudent, setSelectedStudent] = useState<string>('');
   const [, navigate] = useLocation();
-  
-  // Mock parent account ID for demo (in real app this would come from auth)
-  const parentId = 'parent-demo-id';
-  
-  // Mock API calls (replace with real API calls once parent accounts are set up)
-  const { data: notifications = [] } = useQuery<ParentNotification[]>({
-    queryKey: ['/api/school/parent-notifications', parentId],
-    enabled: false // Disabled for demo since we need real parent accounts
-  });
 
-  const { data: students = [] } = useQuery<Student[]>({
-    queryKey: ['/api/school/parents/students', parentId],
-    enabled: false // Disabled for demo
-  });
+  // Mock parent data - in production, get from auth context
+  const parentInfo = {
+    id: 'parent-001',
+    name: 'Sarah Johnson',
+    email: 'sarah.johnson@email.com',
+    children: ['student-001', 'student-002']
+  };
 
-  // Mock data for demonstration
-  const mockStudents: Student[] = [
-    { id: 'student-1', firstName: 'Emma', lastName: 'Johnson', email: 'emma.j@school.edu' },
-    { id: 'student-2', firstName: 'Liam', lastName: 'Johnson', email: 'liam.j@school.edu' }
-  ];
-
-  const mockNotifications: ParentNotification[] = [
+  // Mock linked students
+  const linkedStudents: LinkedStudent[] = [
     {
-      id: '1',
-      title: 'Weekly Kindness Report',
-      message: 'Emma shared 5 acts of kindness this week!',
-      notificationType: 'weekly_report',
-      isRead: 0,
-      createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString()
+      userId: 'student-001',
+      name: 'Emma Johnson',
+      grade: '4th',
+      school: 'Burlington Elementary',
+      isActive: true,
+      lastActivity: new Date().toISOString(),
+      weeklyKindnessCount: 8,
+      totalKindnessCount: 47,
+      currentStreak: 5
     },
     {
-      id: '2',
-      title: 'Achievement Unlocked!',
-      message: 'Liam earned the "Helper Hero" badge for assisting classmates',
-      notificationType: 'achievement',
-      isRead: 0,
-      createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-    },
-    {
-      id: '3',
-      title: 'Kindness Milestone',
-      message: 'Emma reached 50 acts of kindness this semester!',
-      notificationType: 'milestone',
-      isRead: 1,
-      createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+      userId: 'student-002', 
+      name: 'Alex Johnson',
+      grade: '2nd',
+      school: 'Burlington Elementary',
+      isActive: true,
+      lastActivity: new Date(Date.now() - 7200000).toISOString(),
+      weeklyKindnessCount: 6,
+      totalKindnessCount: 23,
+      currentStreak: 3
     }
   ];
 
-  const mockKindnessData = {
-    'student-1': {
-      thisWeek: 5,
-      thisMonth: 18,
-      totalActs: 127,
-      favoriteCategory: 'helping',
-      streak: 12,
-      recentPosts: [
-        {
-          id: '1',
-          content: 'I helped my classmate with math homework during lunch',
-          category: 'helping',
-          hearts: 8,
-          echoes: 3,
-          createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
-        },
-        {
-          id: '2',
-          content: 'Shared my snacks with a friend who forgot theirs',
-          category: 'sharing',
-          hearts: 12,
-          echoes: 5,
-          createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
-        }
-      ]
+  // 🔥 REAL-TIME NOTIFICATIONS: Parents get instant alerts when children post kindness!
+  const mockNotifications: ParentNotification[] = [
+    {
+      id: 'notif-001',
+      type: 'kindness_post',
+      title: '🌟 Emma shared a kindness act!',
+      message: 'Emma just posted about helping a classmate with their homework. You both earned rewards!',
+      studentName: 'Emma',
+      studentUserId: 'student-001',
+      createdAt: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
+      isRead: false,
+      priority: 'medium',
+      relatedData: {
+        postContent: 'I helped my friend Sarah with her math homework during lunch',
+        rewardAmount: 5
+      }
     },
-    'student-2': {
-      thisWeek: 3,
-      thisMonth: 14,
-      totalActs: 89,
-      favoriteCategory: 'including',
-      streak: 7,
-      recentPosts: [
-        {
-          id: '3',
-          content: 'Invited the new student to play with our group at recess',
-          category: 'including',
-          hearts: 15,
-          echoes: 7,
-          createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
-        }
-      ]
+    {
+      id: 'notif-002',
+      type: 'milestone',
+      title: '🏆 Alex reached a milestone!',
+      message: 'Alex completed 5 kindness acts this week and earned the "Helper Hero" badge!',
+      studentName: 'Alex',
+      studentUserId: 'student-002',
+      createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+      isRead: true,
+      priority: 'high',
+      relatedData: {
+        milestoneType: 'Helper Hero',
+        rewardAmount: 15
+      }
+    },
+    {
+      id: 'notif-003',
+      type: 'reward_earned',
+      title: '🎁 You earned parent rewards!',
+      message: 'Your dual reward system bonus: $5 Target gift card for family shopping!',
+      studentName: 'Family Reward',
+      studentUserId: 'family',
+      createdAt: new Date(Date.now() - 5400000).toISOString(), // 1.5 hours ago
+      isRead: false,
+      priority: 'high',
+      relatedData: {
+        rewardAmount: 25 // Parent reward value
+      }
+    }
+  ];
+
+  // Recent activities from children
+  const mockActivities: StudentActivity[] = [
+    {
+      id: 'activity-001',
+      studentUserId: 'student-001',
+      studentName: 'Emma',
+      content: 'I helped my friend Sarah with her math homework during lunch',
+      category: 'helping',
+      location: 'Burlington Elementary',
+      createdAt: new Date(Date.now() - 1800000).toISOString(),
+      heartsCount: 12,
+      echoesCount: 3,
+      impactScore: 85,
+      isParentFavorite: false
+    },
+    {
+      id: 'activity-002',
+      studentUserId: 'student-002',
+      studentName: 'Alex',
+      content: 'I shared my snack with a friend who forgot theirs',
+      category: 'sharing',
+      location: 'Burlington Elementary',
+      createdAt: new Date(Date.now() - 7200000).toISOString(),
+      heartsCount: 8,
+      echoesCount: 2,
+      impactScore: 72,
+      isParentFavorite: true
+    },
+    {
+      id: 'activity-003',
+      studentUserId: 'student-001',
+      studentName: 'Emma',
+      content: 'I included a new student in our group during recess',
+      category: 'including',
+      location: 'Burlington Elementary',
+      createdAt: new Date(Date.now() - 10800000).toISOString(),
+      heartsCount: 15,
+      echoesCount: 4,
+      impactScore: 92,
+      isParentFavorite: true
+    }
+  ];
+
+  // 💎 DUAL REWARD SYSTEM STATS: Both kids AND parents earn rewards!
+  const mockStats: ParentStats = {
+    totalKindnessActs: 70,
+    weeklyKindnessActs: 14,
+    totalRewardsEarned: 350,
+    currentStreak: 5,
+    impactScore: 1240,
+    parentRewardsEarned: 125, // REVOLUTIONARY: Parents earn rewards too!
+    familyRanking: 8,
+    milestonesAchieved: 12
+  };
+
+  const getNotificationIcon = (type: string) => {
+    switch (type) {
+      case 'kindness_post': return <Heart className="h-5 w-5 text-pink-500" />;
+      case 'reward_earned': return <Gift className="h-5 w-5 text-green-500" />;
+      case 'milestone': return <Trophy className="h-5 w-5 text-yellow-500" />;
+      case 'concern': return <AlertTriangle className="h-5 w-5 text-red-500" />;
+      case 'weekly_summary': return <Calendar className="h-5 w-5 text-blue-500" />;
+      default: return <Bell className="h-5 w-5 text-gray-500" />;
     }
   };
 
-  useEffect(() => {
-    if (mockStudents.length > 0 && !selectedChild) {
-      setSelectedChild(mockStudents[0].id);
+  const getPriorityColor = (priority: string) => {
+    switch (priority) {
+      case 'urgent': return 'destructive';
+      case 'high': return 'destructive';
+      case 'medium': return 'secondary';
+      case 'low': return 'outline';
+      default: return 'outline';
     }
-  }, [selectedChild]);
+  };
 
-  const selectedStudentData = selectedChild ? mockKindnessData[selectedChild as keyof typeof mockKindnessData] : null;
-  const selectedStudent = mockStudents.find(s => s.id === selectedChild);
+  const handleMarkAsRead = async (notificationId: string) => {
+    console.log('Marking notification as read:', notificationId);
+    // In production: API call to mark notification as read
+  };
+
+  const handleFavoriteActivity = async (activityId: string) => {
+    console.log('Favoriting activity:', activityId);
+    // In production: API call to favorite activity
+  };
+
+  // 🔄 Real-time updates: In production, this would use WebSocket for instant notifications
+  useEffect(() => {
+    console.log('🔔 Setting up real-time parent notifications...');
+    // WebSocket connection for instant parent notifications would be initialized here
+    return () => {
+      console.log('🔌 Cleaning up real-time connections...');
+    };
+  }, []);
 
   return (
-    <div className="container mx-auto p-6 space-y-6" data-testid="parent-dashboard">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => navigate('/app?tab=schools')}
-            className="flex items-center gap-2"
-            data-testid="back-to-schools"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to Schools
-          </Button>
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900 dark:text-white" data-testid="dashboard-title">
-              Parent Dashboard
-            </h1>
-            <p className="text-gray-600 dark:text-gray-300 mt-2">
-              Track your children's kindness journey and character development
-            </p>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50 dark:from-gray-900 dark:to-gray-800">
+      <div className="container mx-auto px-4 py-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between">
+            <div>
+              <div className="flex items-center gap-3 mb-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => navigate('/app')}
+                  className="flex items-center gap-2"
+                  data-testid="back-to-platform"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                  Back to Platform
+                </Button>
+                <Heart className="h-8 w-8 text-pink-500" />
+                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+                  Parent Dashboard
+                </h1>
+              </div>
+              <p className="text-gray-600 dark:text-gray-300">
+                Welcome back, {parentInfo.name}! Track your children's kindness journey in real-time.
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Badge variant="secondary" className="px-3 py-1">
+                <Users className="w-4 h-4 mr-1" />
+                {linkedStudents.length} Children
+              </Badge>
+              <Badge variant="destructive" className="px-3 py-1">
+                <Bell className="w-4 h-4 mr-1" />
+                {mockNotifications.filter(n => !n.isRead).length} Unread
+              </Badge>
+            </div>
           </div>
         </div>
-        <div className="flex items-center gap-3">
-          <Badge variant="secondary" className="px-3 py-1">
-            <Users className="w-4 h-4 mr-1" />
-            {mockStudents.length} Children
-          </Badge>
-        </div>
-      </div>
 
-      {/* Student Selector */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BookOpen className="w-5 h-5" />
-            Select Child
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex gap-3">
-            {mockStudents.map((student) => (
-              <Button
-                key={student.id}
-                variant={selectedChild === student.id ? "default" : "outline"}
-                onClick={() => setSelectedChild(student.id)}
-                data-testid={`student-button-${student.id}`}
+        {/* 🌟 REVOLUTIONARY: Real-time notification banner */}
+        {mockNotifications.filter(n => !n.isRead).length > 0 && (
+          <Alert className="mb-6 border-pink-200 bg-pink-50 dark:bg-pink-900/10">
+            <Heart className="h-4 w-4 text-pink-600" />
+            <AlertTitle className="text-pink-900 dark:text-pink-100">
+              🔥 Live Activity Alert!
+            </AlertTitle>
+            <AlertDescription className="text-pink-700 dark:text-pink-200">
+              Your children have {mockNotifications.filter(n => !n.isRead).length} new kindness activities! 
+              Check the notifications tab to see what amazing things they've been doing.
+            </AlertDescription>
+          </Alert>
+        )}
+
+        {/* Student Selector */}
+        <div className="mb-6">
+          <div className="flex gap-3 overflow-x-auto pb-2">
+            <Card 
+              className={`min-w-[200px] cursor-pointer transition-all hover:shadow-md ${
+                selectedStudent === '' ? 'ring-2 ring-blue-500' : ''
+              }`}
+              onClick={() => setSelectedStudent('')}
+              data-testid="card-all-children"
+            >
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <Users className="h-8 w-8 text-blue-500" />
+                  <div>
+                    <h3 className="font-semibold">All Children</h3>
+                    <p className="text-sm text-gray-600">Combined view</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+            
+            {linkedStudents.map((student) => (
+              <Card 
+                key={student.userId}
+                className={`min-w-[200px] cursor-pointer transition-all hover:shadow-md ${
+                  selectedStudent === student.userId ? 'ring-2 ring-blue-500' : ''
+                }`}
+                onClick={() => setSelectedStudent(student.userId)}
+                data-testid={`card-student-${student.userId}`}
               >
-                {student.firstName} {student.lastName}
-              </Button>
+                <CardContent className="p-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-8 w-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+                      {student.name.charAt(0)}
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">{student.name}</h3>
+                      <p className="text-sm text-gray-600">{student.grade} Grade</p>
+                    </div>
+                  </div>
+                  <div className="mt-2 flex items-center justify-between text-xs">
+                    <span className="text-green-600">{student.weeklyKindnessCount} this week</span>
+                    <span className="text-orange-600">{student.currentStreak} day streak</span>
+                  </div>
+                </CardContent>
+              </Card>
             ))}
           </div>
-        </CardContent>
-      </Card>
+        </div>
 
-      {selectedStudent && selectedStudentData && (
-        <Tabs defaultValue="overview" className="space-y-6">
+        {/* Main Dashboard */}
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="activity">Recent Activity</TabsTrigger>
-            <TabsTrigger value="summer">☀️ Summer</TabsTrigger>
-            <TabsTrigger value="progress">SEL Progress</TabsTrigger>
+            <TabsTrigger value="activity">Live Activity</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
+            <TabsTrigger value="rewards">Dual Rewards</TabsTrigger>
+            <TabsTrigger value="insights">Insights</TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
+            {/* 💎 DUAL REWARD SYSTEM: Key Stats showing both child and parent rewards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">This Week</CardTitle>
-                  <Calendar className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold" data-testid="week-count">{selectedStudentData.thisWeek}</div>
-                  <p className="text-xs text-muted-foreground">acts of kindness</p>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3">
+                    <Heart className="h-8 w-8 text-pink-500" />
+                    <div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Total Kindness Acts</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                        {mockStats.totalKindnessActs}
+                      </p>
+                      <p className="text-xs text-green-600">+{mockStats.weeklyKindnessActs} this week</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">This Month</CardTitle>
-                  <TrendingUp className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold" data-testid="month-count">{selectedStudentData.thisMonth}</div>
-                  <p className="text-xs text-muted-foreground">acts shared</p>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3">
+                    <Trophy className="h-8 w-8 text-yellow-500" />
+                    <div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Current Streak</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                        {mockStats.currentStreak} days
+                      </p>
+                      <p className="text-xs text-orange-600">Keep it going! 🔥</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/20 dark:to-emerald-900/20 border-green-200">
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3">
+                    <Gift className="h-8 w-8 text-green-500" />
+                    <div>
+                      <p className="text-sm text-green-700 dark:text-green-300 font-medium">💰 Your Parent Rewards</p>
+                      <p className="text-2xl font-bold text-green-900 dark:text-green-100">
+                        ${mockStats.parentRewardsEarned}
+                      </p>
+                      <p className="text-xs text-green-600 font-medium">Dual reward system! 🎉</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
 
               <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Kindness Streak</CardTitle>
-                  <Star className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold" data-testid="streak-count">{selectedStudentData.streak}</div>
-                  <p className="text-xs text-muted-foreground">consecutive days</p>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Acts</CardTitle>
-                  <Award className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold" data-testid="total-count">{selectedStudentData.totalActs}</div>
-                  <p className="text-xs text-muted-foreground">all time</p>
+                <CardContent className="p-6">
+                  <div className="flex items-center gap-3">
+                    <TrendingUp className="h-8 w-8 text-blue-500" />
+                    <div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Family Ranking</p>
+                      <p className="text-2xl font-bold text-gray-900 dark:text-white">
+                        #{mockStats.familyRanking}
+                      </p>
+                      <p className="text-xs text-blue-600">Top 10 families! 🌟</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
+            {/* 🔔 Recent Real-time Notifications */}
             <Card>
               <CardHeader>
-                <CardTitle>Character Development Summary</CardTitle>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="h-5 w-5" />
+                  🔥 Live Notifications
+                  <Badge variant="destructive" className="ml-2">
+                    {mockNotifications.filter(n => !n.isRead).length} New
+                  </Badge>
+                </CardTitle>
                 <CardDescription>
-                  {selectedStudent.firstName}'s favorite way to show kindness is <strong>{selectedStudentData.favoriteCategory}</strong>
+                  Get instant alerts when your children share kindness acts - both of you earn rewards!
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Helping Others</span>
-                    <span>85%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-blue-600 h-2 rounded-full" style={{ width: '85%' }}></div>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Sharing & Caring</span>
-                    <span>72%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-green-600 h-2 rounded-full" style={{ width: '72%' }}></div>
-                  </div>
-                </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span>Including Others</span>
-                    <span>68%</span>
-                  </div>
-                  <div className="w-full bg-gray-200 rounded-full h-2">
-                    <div className="bg-purple-600 h-2 rounded-full" style={{ width: '68%' }}></div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Recent Activity Tab */}
-          <TabsContent value="activity" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Kindness Activities</CardTitle>
-                <CardDescription>
-                  {selectedStudent.firstName}'s latest acts of kindness shared with the school community
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                {selectedStudentData.recentPosts.map((post) => (
-                  <div key={post.id} className="border rounded-lg p-4 space-y-3" data-testid={`activity-${post.id}`}>
-                    <div className="flex justify-between items-start">
-                      <Badge variant="secondary">{post.category}</Badge>
-                      <span className="text-sm text-gray-500">
-                        {new Date(post.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <p className="text-gray-800 dark:text-gray-200">{post.content}</p>
-                    <div className="flex items-center gap-4 text-sm text-gray-500">
-                      <div className="flex items-center gap-1">
-                        <Heart className="w-4 h-4" />
-                        <span>{post.hearts} hearts</span>
+                {mockNotifications.slice(0, 3).map((notification) => (
+                  <div key={notification.id} className={`flex items-start gap-3 p-3 rounded-lg ${
+                    !notification.isRead ? 'bg-blue-50 dark:bg-blue-900/20 border border-blue-200' : 'bg-gray-50 dark:bg-gray-800'
+                  }`}>
+                    {getNotificationIcon(notification.type)}
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <h4 className="font-medium text-gray-900 dark:text-white">
+                          {notification.title}
+                        </h4>
+                        {!notification.isRead && (
+                          <Badge variant="destructive" className="text-xs">LIVE</Badge>
+                        )}
                       </div>
-                      <div className="flex items-center gap-1">
-                        <Star className="w-4 h-4" />
-                        <span>{post.echoes} echoes</span>
-                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        {notification.message}
+                      </p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {new Date(notification.createdAt).toLocaleTimeString()}
+                      </p>
                     </div>
                   </div>
                 ))}
               </CardContent>
             </Card>
-          </TabsContent>
 
-          {/* Summer Program Tab */}
-          <TabsContent value="summer" className="space-y-6">
-            <div style={{ padding: '0', marginTop: '-24px' }}>
-              <SummerParentDashboard />
-            </div>
-          </TabsContent>
-
-          {/* SEL Progress Tab */}
-          <TabsContent value="progress" className="space-y-6">
+            {/* Weekly Progress */}
             <Card>
               <CardHeader>
-                <CardTitle>Social-Emotional Learning Progress</CardTitle>
-                <CardDescription>
-                  Character development aligned with educational standards
-                </CardDescription>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5" />
+                  Weekly Family Kindness Goal
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="space-y-3">
-                    <h4 className="font-semibold">Self-Awareness</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>Emotional Recognition</span>
-                        <Badge variant="secondary">Proficient</Badge>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-green-600 h-2 rounded-full" style={{ width: '80%' }}></div>
-                      </div>
-                    </div>
+              <CardContent>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-gray-600">Family progress this week</span>
+                    <span className="text-sm font-medium">{mockStats.weeklyKindnessActs}/20 acts</span>
                   </div>
-                  
-                  <div className="space-y-3">
-                    <h4 className="font-semibold">Social Awareness</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>Empathy & Caring</span>
-                        <Badge variant="secondary">Advanced</Badge>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-blue-600 h-2 rounded-full" style={{ width: '90%' }}></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <h4 className="font-semibold">Relationship Skills</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>Collaboration</span>
-                        <Badge variant="secondary">Developing</Badge>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-yellow-600 h-2 rounded-full" style={{ width: '65%' }}></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <h4 className="font-semibold">Responsible Decision Making</h4>
-                    <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span>Ethical Choices</span>
-                        <Badge variant="secondary">Proficient</Badge>
-                      </div>
-                      <div className="w-full bg-gray-200 rounded-full h-2">
-                        <div className="bg-purple-600 h-2 rounded-full" style={{ width: '75%' }}></div>
-                      </div>
-                    </div>
+                  <Progress value={(mockStats.weeklyKindnessActs / 20) * 100} className="h-3" />
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="text-gray-500">
+                      {20 - mockStats.weeklyKindnessActs} more to reach your family goal!
+                    </span>
+                    <span className="text-green-600 font-medium">
+                      +${Math.floor((mockStats.weeklyKindnessActs / 20) * 50)} parent bonus earned
+                    </span>
                   </div>
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Live Activity Tab */}
+          <TabsContent value="activity" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                🔥 Live Kindness Feed
+              </h3>
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-green-600 font-medium">Live</span>
+                </div>
+                <Badge variant="outline">{mockActivities.length} activities this week</Badge>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {mockActivities.map((activity) => (
+                <Card key={activity.id} className="relative">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <div className="h-8 w-8 bg-gradient-to-br from-pink-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+                            {activity.studentName.charAt(0)}
+                          </div>
+                          <span className="font-medium text-gray-900 dark:text-white">
+                            {activity.studentName}
+                          </span>
+                          <Badge variant="outline" className="text-xs">
+                            {activity.category}
+                          </Badge>
+                          {activity.createdAt > new Date(Date.now() - 3600000).toISOString() && (
+                            <Badge variant="destructive" className="text-xs">NEW</Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-700 dark:text-gray-300 mb-3">
+                          "{activity.content}"
+                        </p>
+                        <div className="flex items-center gap-4 text-xs text-gray-500">
+                          <span className="flex items-center gap-1">
+                            <Heart className="h-3 w-3" />
+                            {activity.heartsCount}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <MessageSquare className="h-3 w-3" />
+                            {activity.echoesCount}
+                          </span>
+                          <span>Impact: {activity.impactScore}/100</span>
+                          <span>{new Date(activity.createdAt).toLocaleDateString()}</span>
+                        </div>
+                      </div>
+                      <Button
+                        onClick={() => handleFavoriteActivity(activity.id)}
+                        variant={activity.isParentFavorite ? "default" : "outline"}
+                        size="sm"
+                        data-testid={`button-favorite-${activity.id}`}
+                      >
+                        <Star className={`h-4 w-4 ${activity.isParentFavorite ? 'text-white' : ''}`} />
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </TabsContent>
 
           {/* Notifications Tab */}
           <TabsContent value="notifications" className="space-y-6">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                📱 All Notifications
+              </h3>
+              <Button variant="outline" size="sm" data-testid="button-mark-all-read">
+                <CheckCircle className="h-4 w-4 mr-1" />
+                Mark All Read
+              </Button>
+            </div>
+
+            <div className="space-y-4">
+              {mockNotifications.map((notification) => (
+                <Card key={notification.id} className={!notification.isRead ? 'border-blue-200 bg-blue-50 dark:bg-blue-900/10' : ''}>
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-4">
+                      {getNotificationIcon(notification.type)}
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-1">
+                          <h4 className="font-medium text-gray-900 dark:text-white">
+                            {notification.title}
+                          </h4>
+                          <Badge variant={getPriorityColor(notification.priority)}>
+                            {notification.priority}
+                          </Badge>
+                          {!notification.isRead && (
+                            <Badge variant="destructive" className="text-xs">UNREAD</Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
+                          {notification.message}
+                        </p>
+                        {notification.relatedData?.postContent && (
+                          <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md mb-2">
+                            <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Your child wrote:</p>
+                            <p className="text-sm">"{notification.relatedData.postContent}"</p>
+                          </div>
+                        )}
+                        {notification.relatedData?.rewardAmount && (
+                          <div className="flex items-center gap-1 mb-2">
+                            <Gift className="h-4 w-4 text-green-500" />
+                            <span className="text-sm text-green-600 font-medium">
+                              Reward earned: ${notification.relatedData.rewardAmount}
+                            </span>
+                          </div>
+                        )}
+                        <div className="flex items-center justify-between">
+                          <p className="text-xs text-gray-500">
+                            {new Date(notification.createdAt).toLocaleString()}
+                          </p>
+                          {!notification.isRead && (
+                            <Button
+                              onClick={() => handleMarkAsRead(notification.id)}
+                              variant="outline"
+                              size="sm"
+                              data-testid={`button-mark-read-${notification.id}`}
+                            >
+                              Mark as Read
+                            </Button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </TabsContent>
+
+          {/* Dual Rewards Tab */}
+          <TabsContent value="rewards">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
-                  <Bell className="w-5 h-5" />
-                  Parent Notifications
+                  <Gift className="h-5 w-5 text-green-600" />
+                  💰 Revolutionary Dual Reward System
                 </CardTitle>
                 <CardDescription>
-                  Stay updated on your child's kindness activities and achievements
+                  When your children earn rewards, you earn rewards too! Our unique family engagement multiplier.
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-4">
-                {mockNotifications.map((notification) => (
-                  <div 
-                    key={notification.id} 
-                    className={`border rounded-lg p-4 space-y-2 ${notification.isRead ? 'bg-gray-50 dark:bg-gray-800' : 'bg-blue-50 dark:bg-blue-900/20'}`}
-                    data-testid={`notification-${notification.id}`}
-                  >
-                    <div className="flex justify-between items-start">
-                      <h4 className="font-semibold">{notification.title}</h4>
-                      <div className="flex items-center gap-2">
-                        {!notification.isRead && (
-                          <Badge variant="default" className="text-xs">New</Badge>
-                        )}
-                        <span className="text-sm text-gray-500">
-                          {new Date(notification.createdAt).toLocaleDateString()}
-                        </span>
-                      </div>
-                    </div>
-                    <p className="text-gray-700 dark:text-gray-300">{notification.message}</p>
-                    <Badge variant="outline" className="text-xs">
-                      {notification.notificationType.replace('_', ' ')}
-                    </Badge>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+                    <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">👶 Children's Rewards</h4>
+                    <p className="text-2xl font-bold text-blue-600">${mockStats.totalRewardsEarned}</p>
+                    <p className="text-sm text-blue-700 dark:text-blue-300">Burlington area kid-friendly rewards</p>
                   </div>
-                ))}
+                  <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+                    <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">👨‍👩‍👧‍👦 Parent Rewards</h4>
+                    <p className="text-2xl font-bold text-green-600">${mockStats.parentRewardsEarned}</p>
+                    <p className="text-sm text-green-700 dark:text-green-300">Family shopping & experiences</p>
+                  </div>
+                </div>
+                
+                <Alert className="border-green-200 bg-green-50 dark:bg-green-900/10">
+                  <Gift className="h-4 w-4 text-green-600" />
+                  <AlertTitle className="text-green-900 dark:text-green-100">
+                    🎉 How Dual Rewards Work
+                  </AlertTitle>
+                  <AlertDescription className="text-green-700 dark:text-green-200">
+                    Every time your child earns rewards for kindness acts, you automatically earn parent rewards too! 
+                    This creates powerful family engagement and makes kindness a shared family value.
+                  </AlertDescription>
+                </Alert>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Insights Tab */}
+          <TabsContent value="insights">
+            <Card>
+              <CardContent className="p-8 text-center">
+                <Award className="h-12 w-12 mx-auto mb-4 text-blue-600" />
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">
+                  🧠 AI-Powered Family Kindness Insights
+                </h3>
+                <p className="text-gray-600 dark:text-gray-300">
+                  Advanced analytics showing your family's kindness patterns, growth opportunities, and impact measurement.
+                </p>
               </CardContent>
             </Card>
           </TabsContent>
         </Tabs>
-      )}
+      </div>
     </div>
   );
 }

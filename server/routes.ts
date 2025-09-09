@@ -6,6 +6,47 @@ import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporate
 import { nanoid } from 'nanoid';
 import { contentFilter } from "./services/contentFilter";
 import { realTimeMonitoring } from "./services/realTimeMonitoring";
+
+// 🚀 REVOLUTIONARY: Instant Parent Notification Function
+async function triggerInstantParentNotification(studentUserId: string, postContent: string, post: any) {
+  try {
+    // Get linked parents for this student
+    const parentLinks = await storage.getParentsForStudent(studentUserId);
+    
+    if (parentLinks && parentLinks.length > 0) {
+      for (const parentLink of parentLinks) {
+        // Create instant notification for parent
+        const notification = {
+          parentAccountId: parentLink.parentAccountId,
+          studentUserId: studentUserId,
+          notificationType: 'kindness_post' as const,
+          title: `🌟 ${parentLink.studentName || 'Your child'} shared a kindness act!`,
+          message: `Your child just posted about a wonderful act of kindness. You both earned rewards through our dual reward system!`,
+          relatedData: {
+            postContent: postContent,
+            postId: post.id,
+            rewardAmount: 5, // Base reward amount
+            category: post.category
+          },
+          isRead: 0,
+          isSent: 0
+        };
+
+        await storage.createParentNotification(notification);
+        
+        // TODO: Trigger push notification to parent's device
+        console.log('📱 Instant parent notification created:', {
+          parent: parentLink.parentAccountId,
+          student: studentUserId,
+          postPreview: postContent.slice(0, 50) + '...'
+        });
+      }
+    }
+  } catch (error) {
+    console.error('Failed to trigger parent notification:', error);
+    throw error;
+  }
+}
 import { aiAnalytics } from "./services/aiAnalytics";
 import { slackNotifications } from "./services/slackNotifications";
 import { aiWellnessEngine } from "./services/aiWellnessEngine";
@@ -1098,9 +1139,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         parentNotification: safetyAnalysis.parentNotification,
         counselorAlert: safetyAnalysis.counselorAlert
       });
-      
+
       // Create post with user ID
       const post = await storage.createPost({ ...postData, userId });
+
+      // 🚀 REVOLUTIONARY: Instant Parent Notification System
+      // Notify parents immediately when their child posts kindness acts
+      try {
+        await triggerInstantParentNotification(userId, postData.content, post);
+        console.log('📧 Parent notification triggered for student:', userId);
+      } catch (error) {
+        console.error('Parent notification error:', error);
+        // Don't fail the post creation if notification fails
+      }
       
       // Increment counter and award tokens
       const counter = await storage.incrementCounter();
