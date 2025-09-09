@@ -2737,10 +2737,10 @@ export default function Home() {
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {[
-                { icon: '☕️', title: '$5 Coffee Gift Card', cost: 50, available: true, sponsor: null },
-                { icon: '🎬', title: '$10 Movie Ticket', cost: 100, available: (tokens?.echoBalance || 0) >= 100, sponsor: 'ABC Construction' },
-                { icon: '🛍️', title: '$25 Shopping Voucher', cost: 250, available: (tokens?.echoBalance || 0) >= 250, sponsor: 'TechFlow Inc' },
-                { icon: '🍽️', title: '$50 Restaurant Credit', cost: 500, available: (tokens?.echoBalance || 0) >= 500, sponsor: 'WellCore Fitness' }
+                { icon: '☕️', title: '$5 Coffee Gift Card', cost: 50, available: true, sponsor: 'Local Coffee Co', website: 'https://localcoffee.com' },
+                { icon: '🎬', title: '$10 Movie Ticket', cost: 100, available: (tokens?.echoBalance || 0) >= 100, sponsor: 'ABC Construction', website: 'https://abcconstruction.com' },
+                { icon: '🛍️', title: '$25 Shopping Voucher', cost: 250, available: (tokens?.echoBalance || 0) >= 250, sponsor: 'TechFlow Inc', website: 'https://techflow.com' },
+                { icon: '🍽️', title: '$50 Restaurant Credit', cost: 500, available: (tokens?.echoBalance || 0) >= 500, sponsor: 'WellCore Fitness', website: 'https://wellcorefitness.com' }
               ].map((reward, index) => (
                 <div key={index} style={{
                   display: 'flex',
@@ -2757,16 +2757,32 @@ export default function Home() {
                       <div style={{ fontWeight: '600', color: '#1f2937', fontSize: '13px' }}>{reward.title}</div>
                       <div style={{ fontSize: '11px', color: '#6b7280' }}>{reward.cost} $ECHO tokens</div>
                       {reward.sponsor && (
-                        <div style={{ 
-                          fontSize: '10px', 
-                          color: '#3b82f6', 
-                          fontWeight: '600',
-                          background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
-                          WebkitBackgroundClip: 'text',
-                          WebkitTextFillColor: 'transparent',
-                          marginTop: '2px'
-                        }}>
-                          🏢 Sponsored by {reward.sponsor}
+                        <div 
+                          onClick={() => reward.website && window.open(reward.website, '_blank')}
+                          style={{ 
+                            fontSize: '12px', 
+                            color: '#3b82f6', 
+                            fontWeight: '700',
+                            background: 'linear-gradient(135deg, #3b82f6, #8b5cf6)',
+                            WebkitBackgroundClip: 'text',
+                            WebkitTextFillColor: 'transparent',
+                            marginTop: '4px',
+                            cursor: reward.website ? 'pointer' : 'default',
+                            textDecoration: reward.website ? 'underline' : 'none',
+                            lineHeight: '1.4'
+                          }}
+                        >
+                          🏢 Proudly sponsored by {reward.sponsor}
+                          {reward.website && (
+                            <div style={{ 
+                              fontSize: '10px',
+                              fontWeight: '600', 
+                              marginTop: '1px',
+                              color: '#059669'
+                            }}>
+                              📍 Please visit their website →
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
