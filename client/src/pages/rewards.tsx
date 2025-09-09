@@ -248,10 +248,28 @@ export default function RewardsPage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {featuredOffers.map((offer: RewardOffer) => (
                     <Card key={offer.id} className="relative overflow-hidden bg-gradient-to-br from-yellow-50 via-orange-50 to-red-50 dark:from-yellow-900/20 dark:via-orange-900/20 dark:to-red-900/20 border border-yellow-200 dark:border-yellow-700/30 hover:shadow-lg transition-all">
-                      <Badge className="absolute top-3 right-3 bg-yellow-500 text-yellow-900">
-                        <Star className="w-3 h-3 mr-1" />
-                        Featured
-                      </Badge>
+                      {offer.sponsorCompany ? (
+                        <div className="absolute top-3 right-3 flex flex-col gap-1">
+                          <Badge className="bg-yellow-500 text-yellow-900">
+                            <Star className="w-3 h-3 mr-1" />
+                            Featured
+                          </Badge>
+                          <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-3 py-1.5 rounded-lg shadow-lg border border-blue-500/30">
+                            <div className="flex items-center gap-1.5 text-xs font-bold">
+                              <Building2 className="w-3.5 h-3.5" />
+                              SPONSORED BY
+                            </div>
+                            <div className="text-xs font-medium mt-0.5 text-blue-100">
+                              {offer.sponsorCompany}
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <Badge className="absolute top-3 right-3 bg-yellow-500 text-yellow-900">
+                          <Star className="w-3 h-3 mr-1" />
+                          Featured
+                        </Badge>
+                      )}
                       
                       {offer.imageUrl && (
                         <div className="h-32 bg-cover bg-center" style={{ backgroundImage: `url(${offer.imageUrl})` }} />
@@ -266,10 +284,11 @@ export default function RewardsPage() {
                             <div>
                               <CardTitle className="text-lg">{offer.title}</CardTitle>
                               <p className="text-sm text-gray-600 dark:text-gray-400">{offer.partnerName}</p>
-                              {offer.sponsorCompany && (
-                                <div className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 font-medium mt-1">
-                                  <Building2 className="w-3 h-3" />
-                                  Sponsored by {offer.sponsorCompany}
+                              {offer.sponsorCompany && offer.sponsorshipMessage && (
+                                <div className="mt-2 p-2 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 rounded-lg border border-blue-200 dark:border-blue-800">
+                                  <div className="text-xs font-medium text-blue-700 dark:text-blue-300">
+                                    💼 {offer.sponsorshipMessage}
+                                  </div>
                                 </div>
                               )}
                             </div>
@@ -341,9 +360,16 @@ export default function RewardsPage() {
                             <CardTitle className="text-lg">{offer.title}</CardTitle>
                             <p className="text-sm text-gray-600 dark:text-gray-400">{offer.partnerName}</p>
                             {offer.sponsorCompany && (
-                              <div className="flex items-center gap-1 text-xs text-blue-600 dark:text-blue-400 font-medium mt-1">
-                                <Building2 className="w-3 h-3" />
-                                Sponsored by {offer.sponsorCompany}
+                              <div className="mt-2">
+                                <div className="inline-flex items-center gap-1.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white px-2.5 py-1 rounded-full text-xs font-bold shadow-sm">
+                                  <Building2 className="w-3 h-3" />
+                                  SPONSORED BY {offer.sponsorCompany.toUpperCase()}
+                                </div>
+                                {offer.sponsorshipMessage && (
+                                  <div className="mt-1.5 text-xs text-blue-600 dark:text-blue-400 font-medium italic">
+                                    💼 {offer.sponsorshipMessage}
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>
