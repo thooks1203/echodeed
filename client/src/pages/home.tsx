@@ -653,160 +653,6 @@ export default function Home() {
   };
 
   // Removed corporate dashboard - focusing on school market
-      return (
-        <div style={{ padding: '40px 20px', textAlign: 'center' }}>
-          <div style={{ fontSize: '48px', marginBottom: '16px' }}>🏢</div>
-          <h3 style={{ fontSize: '20px', color: '#374151', marginBottom: '8px' }}>
-            Corporate Wellness
-          </h3>
-          <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '24px' }}>
-            Connect your corporate account to view team analytics and manage employee wellness programs.
-          </p>
-          
-          {/* Employee Enrollment Form */}
-          <div style={{
-            backgroundColor: 'white',
-            borderRadius: '16px',
-            padding: '20px',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-            marginBottom: '20px',
-            textAlign: 'left'
-          }}>
-            <h4 style={{ fontSize: '16px', fontWeight: 'bold', marginBottom: '12px', color: '#1f2937' }}>
-              Employee Enrollment
-            </h4>
-            <p style={{ fontSize: '12px', color: '#6b7280', marginBottom: '16px' }}>
-              Join your company's kindness and wellness program
-            </p>
-            
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.target as HTMLFormElement);
-              const email = formData.get('email') as string;
-              const company = formData.get('company') as string;
-              
-              // Simple enrollment simulation
-              alert(`Enrollment request sent!\n\nEmail: ${email}\nCompany: ${company}\n\nYour HR team will activate your account within 24 hours.`);
-            }}>
-              <div style={{ marginBottom: '12px' }}>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', color: '#374151', marginBottom: '4px' }}>
-                  Work Email Address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  required
-                  placeholder="you@company.com"
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '6px',
-                    fontSize: '14px',
-                    backgroundColor: '#f9fafb'
-                  }}
-                />
-              </div>
-              
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ display: 'block', fontSize: '12px', fontWeight: '500', color: '#374151', marginBottom: '4px' }}>
-                  Company Domain
-                </label>
-                <select
-                  name="company"
-                  required
-                  style={{
-                    width: '100%',
-                    padding: '8px 12px',
-                    border: '1px solid #d1d5db',
-                    borderRadius: '6px',
-                    fontSize: '14px',
-                    backgroundColor: '#f9fafb'
-                  }}
-                >
-                  <option value="">Select your company...</option>
-                  <option value="techflow.com">Winners Institute for Successful Empowerment</option>
-                  <option value="wellnesscorp.com">Wellness Corp</option>
-                  <option value="other">Other (Contact HR)</option>
-                </select>
-              </div>
-              
-              <button
-                type="submit"
-                style={{
-                  width: '100%',
-                  backgroundColor: '#8B5CF6',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '10px 16px',
-                  fontSize: '14px',
-                  fontWeight: '600',
-                  cursor: 'pointer'
-                }}
-              >
-                Request Access
-              </button>
-            </form>
-          </div>
-          
-          {/* Demo Access */}
-          <div style={{
-            backgroundColor: '#f0f9ff',
-            border: '1px solid #0ea5e9',
-            borderRadius: '12px',
-            padding: '16px',
-            textAlign: 'center'
-          }}>
-            <div style={{ fontSize: '16px', marginBottom: '8px' }}>💼</div>
-            <div style={{ fontSize: '14px', fontWeight: '600', color: '#0369a1', marginBottom: '4px' }}>
-              View Demo Dashboard
-            </div>
-            <div style={{ fontSize: '12px', color: '#075985', marginBottom: '12px' }}>
-              See how Winners Institute for Successful Empowerment uses EchoDeed™
-            </div>
-            <button 
-              onClick={() => {
-                // Force refresh the corporate dashboard query to load demo data
-                queryClient.invalidateQueries({ queryKey: ['/api/corporate/accounts/demo/dashboard'] });
-              }}
-              style={{
-                backgroundColor: '#8B5CF6',
-                color: 'white',
-                border: 'none',
-                borderRadius: '12px',
-                padding: '14px 24px',
-                fontSize: '16px',
-                fontWeight: '700',
-                cursor: 'pointer',
-                width: '100%',
-                boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
-                transition: 'all 0.2s ease',
-                marginTop: '4px',
-                marginBottom: '100px'
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.backgroundColor = '#7C3AED';
-                e.currentTarget.style.transform = 'translateY(-1px)';
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.backgroundColor = '#8B5CF6';
-                e.currentTarget.style.transform = 'translateY(0px)';
-              }}
-              data-testid="button-view-demo-dashboard"
-            >
-              🚀 View Demo Dashboard
-            </button>
-          </div>
-        </div>
-      );
-    }
-
-    const { account, overview, teams, employees, recentChallenges, analytics } = corporateDashboard;
-    
-    // Calculate trends (simplified)
-    const lastWeekEngagement = analytics.length >= 7 ? analytics[analytics.length - 7].averageEngagementScore : overview.engagementScore;
-    const engagementTrend = overview.engagementScore - lastWeekEngagement;
     
     const metrics: CorporateMetric[] = [
       {
@@ -2108,8 +1954,10 @@ export default function Home() {
     </div>
   );
 
-  // Show Welcome page if selected
-  if (activeTab === 'welcome') {
+  // Welcome functionality moved to beginning of function - orphaned code removed
+
+  // Check if we're in the main function for conditional returns
+  if (activeTab === 'badges') {
     return (
       <div style={{ 
         maxWidth: '430px', 
