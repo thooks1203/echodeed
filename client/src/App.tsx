@@ -28,6 +28,10 @@ function Router() {
       <Route path="/community-impact" component={lazy(() => import('./components/CommunityImpactHub').then(m => ({ default: m.CommunityImpactHub })))} />
       <Route path="/teacher-dashboard" component={lazy(() => import('./components/TeacherDashboard').then(m => ({ default: m.TeacherDashboard })))} />
       <Route path="/ripple-tracker" component={lazy(() => import('./components/KindnessRippleTracker').then(m => ({ default: m.KindnessRippleTracker })))} />
+      <Route path="/kindness-detective" component={lazy(() => import('./components/KindnessDetective').then(m => ({ default: m.KindnessDetective })))} />
+      <Route path="/time-capsule" component={lazy(() => import('./components/KindnessTimeCapsule').then(m => ({ default: m.KindnessTimeCapsule })))} />
+      <Route path="/weather-map" component={lazy(() => import('./components/KindnessWeatherMap').then(m => ({ default: m.KindnessWeatherMap })))} />
+      <Route path="/story-chain" component={lazy(() => import('./components/StoryChainBuilder').then(m => ({ default: m.StoryChainBuilder })))} />
       <Route path="/trial" component={TrialSignup} />
       <Route path="/trial-signup" component={TrialSignup} />
       <Route path="/admin" component={AdminDashboard} />
