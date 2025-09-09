@@ -139,21 +139,13 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
           return (
             <div 
               key={post.id} 
-              className={`px-4 py-4 border-b border-border relative transition-all duration-300 hover:shadow-md hover:bg-primary/5 hover:scale-[1.01] cursor-pointer group ${
+              className={`px-4 py-4 border-b border-border transition-all duration-300 hover:shadow-md hover:bg-primary/5 hover:scale-[1.01] cursor-pointer group ${
                 isHighImpact ? 'bg-gradient-to-r from-background to-primary/5 shadow-sm' : 'bg-card'
               }`}
               style={{
                 animation: `fadeInUp 0.4s ease-out ${index * 0.05}s both`
               }}
             >
-              {/* Trending indicator - properly positioned below content */}
-              {isTrending && (
-                <div className="absolute bottom-2 left-16 flex items-center gap-1 text-xs text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-2 py-1 rounded-full border border-orange-200 dark:border-orange-700">
-                  <TrendingUp size={10} />
-                  <span className="font-medium">Trending</span>
-                </div>
-              )}
-              
               <div className="flex items-start space-x-3">
                 {/* Dynamic category icon with gradient */}
                 <div className={`w-10 h-10 bg-gradient-to-br ${getCategoryColor(post.category)} rounded-xl flex items-center justify-center flex-shrink-0 mt-1 shadow-sm transition-transform duration-200 group-hover:scale-110 group-hover:shadow-md`}>
@@ -161,31 +153,37 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <div className="flex justify-between items-start gap-4">
+                  {/* Top row: Content and Category/Time */}
+                  <div className="flex gap-3 mb-3">
                     <div className="flex-1 min-w-0">
-                      <p className="text-foreground leading-relaxed text-[15px]" data-testid={`text-post-content-${index}`}>
+                      <p className="text-foreground leading-relaxed text-[15px] pr-2" data-testid={`text-post-content-${index}`}>
                         {post.content}
                       </p>
                     </div>
                     
-                    {/* Right side info - clean positioning */}
-                    <div className="flex flex-col items-end gap-1 flex-shrink-0 text-right">
+                    {/* Right side info - properly spaced */}
+                    <div className="flex flex-col items-end gap-1 flex-shrink-0 min-w-0 w-24">
                       <span 
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r ${getCategoryColor(post.category)} text-white shadow-sm whitespace-nowrap`}
+                        className={`px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${getCategoryColor(post.category)} text-white shadow-sm text-center`}
                         data-testid={`text-post-category-${index}`}
+                        style={{ fontSize: '10px', lineHeight: '12px' }}
                       >
                         {post.category}
                       </span>
-                      <div className="text-xs text-muted-foreground">
-                        <div className="flex items-center gap-1 justify-end" data-testid={`text-post-time-${index}`}>
-                          {formatDistance(new Date(post.createdAt), new Date(), { addSuffix: true })}
-                        </div>
+                      <div className="text-xs text-muted-foreground text-right" data-testid={`text-post-time-${index}`}>
+                        {formatDistance(new Date(post.createdAt), new Date(), { addSuffix: true })}
                       </div>
+                      {isTrending && (
+                        <div className="flex items-center gap-1 text-xs text-orange-500 bg-orange-50 dark:bg-orange-900/20 px-1.5 py-0.5 rounded border border-orange-200 dark:border-orange-700">
+                          <TrendingUp size={8} />
+                          <span className="font-medium" style={{ fontSize: '9px' }}>Trending</span>
+                        </div>
+                      )}
                     </div>
                   </div>
                   
-                  {/* Engagement indicators */}
-                  <div className="flex items-center justify-between mt-3">
+                  {/* Bottom row: Engagement and Location */}
+                  <div className="flex items-center justify-between">
                     <div className="flex items-center gap-6">
                       <button
                         onClick={(e) => handleHeart(post.id, e)}

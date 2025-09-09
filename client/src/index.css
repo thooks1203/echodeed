@@ -242,6 +242,8 @@
 
 .filter-chip {
   @apply flex items-center px-3 py-2 bg-muted text-muted-foreground rounded-full text-sm font-medium whitespace-nowrap transition-colors hover:bg-secondary;
+  min-width: fit-content;
+  flex-shrink: 0;
 }
 
 .filter-chip.active {
