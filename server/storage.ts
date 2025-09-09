@@ -40,6 +40,10 @@ import {
   conflictResolutions,
   bullyingPredictions,
   kindnessExchanges,
+  supportPosts,
+  supportResponses,
+  crisisEscalations,
+  licensedCounselors,
   type User,
   type UpsertUser,
   type KindnessPost,
@@ -113,6 +117,14 @@ import {
   type InsertWellnessPrediction,
   type WellnessHeatmapData,
   type InsertWellnessHeatmapData,
+  type SupportPost,
+  type InsertSupportPost,
+  type SupportResponse,
+  type InsertSupportResponse,
+  type CrisisEscalation,
+  type InsertCrisisEscalation,
+  type LicensedCounselor,
+  type InsertLicensedCounselor,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte } from "drizzle-orm";
@@ -383,6 +395,16 @@ export interface IStorage {
   createKindnessExchange(exchange: any): Promise<void>;
   getKindnessExchanges(schoolId: string): Promise<any[]>;
   getAllKindnessExchanges(): Promise<any[]>;
+
+  // Support Circle operations - Anonymous peer support for grades 6-8
+  getSupportPosts(filters?: { schoolId?: string; category?: string; gradeLevel?: string; }): Promise<SupportPost[]>;
+  createSupportPost(post: InsertSupportPost): Promise<SupportPost>;
+  heartSupportPost(postId: string): Promise<SupportPost>;
+  getSupportResponses(postId: string): Promise<SupportResponse[]>;
+  createSupportResponse(response: InsertSupportResponse): Promise<SupportResponse>;
+  createCrisisEscalation(escalation: InsertCrisisEscalation): Promise<CrisisEscalation>;
+  getCrisisEscalations(filters?: { status?: string; }): Promise<CrisisEscalation[]>;
+  getLicensedCounselors(filters?: { schoolId?: string; isActive?: boolean; }): Promise<LicensedCounselor[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -2862,6 +2884,123 @@ export class DatabaseStorage implements IStorage {
   async getAllKindnessExchanges(): Promise<any[]> {
     return await db.select().from(kindnessExchanges)
       .orderBy(desc(kindnessExchanges.createdAt));
+  }
+
+  // Support Circle operations - Anonymous peer support for grades 6-8
+  async getSupportPosts(filters?: { schoolId?: string; category?: string; gradeLevel?: string; }): Promise<SupportPost[]> {
+    let query = db.select().from(supportPosts);
+    
+    const conditions = [];
+    if (filters?.schoolId) {
+      conditions.push(eq(supportPosts.schoolId, filters.schoolId));
+    }
+    if (filters?.category) {
+      conditions.push(eq(supportPosts.category, filters.category));
+    }
+    if (filters?.gradeLevel) {
+      conditions.push(eq(supportPosts.gradeLevel, filters.gradeLevel));
+    }
+
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any;
+    }
+
+    return query.orderBy(desc(supportPosts.createdAt)).limit(50);
+  }
+
+  async createSupportPost(post: InsertSupportPost): Promise<SupportPost> {
+    // Crisis detection algorithm
+    const crisisKeywords = [
+      'suicide', 'kill myself', 'end it all', 'want to die', 'hurt myself', 'cut myself',
+      'abuse', 'abused', 'hitting me', 'touching me', 'unsafe at home',
+      'drugs', 'drinking', 'high', 'pills', 'overdose',
+      'can\'t take it', 'hopeless', 'worthless', 'nobody cares', 'hate myself',
+      'bullying', 'bullied', 'threatening me', 'scared to go to school'
+    ];
+
+    const content = post.content.toLowerCase();
+    const detectedKeywords = crisisKeywords.filter(keyword => content.includes(keyword));
+    const isCrisis = detectedKeywords.length > 0;
+    const crisisScore = Math.min(detectedKeywords.length * 25, 100); // Max 100
+
+    const urgencyLevel = crisisScore >= 75 ? 'critical' : 
+                        crisisScore >= 50 ? 'high' : 
+                        crisisScore >= 25 ? 'medium' : 'low';
+
+    const [newPost] = await db.insert(supportPosts).values({
+      ...post,
+      isCrisis: isCrisis ? 1 : 0,
+      crisisKeywords: detectedKeywords.length > 0 ? detectedKeywords : null,
+      crisisScore,
+      urgencyLevel,
+      flaggedAt: isCrisis ? new Date() : null,
+    }).returning();
+
+    return newPost;
+  }
+
+  async heartSupportPost(postId: string): Promise<SupportPost> {
+    await db.update(supportPosts)
+      .set({ 
+        heartsCount: sql`${supportPosts.heartsCount} + 1`,
+        viewCount: sql`${supportPosts.viewCount} + 1`
+      })
+      .where(eq(supportPosts.id, postId));
+
+    const [updatedPost] = await db.select().from(supportPosts).where(eq(supportPosts.id, postId));
+    return updatedPost;
+  }
+
+  async getSupportResponses(postId: string): Promise<SupportResponse[]> {
+    return db.select().from(supportResponses)
+      .where(eq(supportResponses.supportPostId, postId))
+      .orderBy(desc(supportResponses.createdAt));
+  }
+
+  async createSupportResponse(response: InsertSupportResponse): Promise<SupportResponse> {
+    const [newResponse] = await db.insert(supportResponses).values(response).returning();
+
+    // Update the support post to show it has a response
+    await db.update(supportPosts)
+      .set({ 
+        hasResponse: 1,
+        responseCount: sql`${supportPosts.responseCount} + 1`,
+        lastResponseAt: new Date(),
+        assignedCounselorId: response.counselorId,
+      })
+      .where(eq(supportPosts.id, response.supportPostId));
+
+    return newResponse;
+  }
+
+  async createCrisisEscalation(escalation: InsertCrisisEscalation): Promise<CrisisEscalation> {
+    const [newEscalation] = await db.insert(crisisEscalations).values(escalation).returning();
+    return newEscalation;
+  }
+
+  async getCrisisEscalations(filters?: { status?: string; }): Promise<CrisisEscalation[]> {
+    let query = db.select().from(crisisEscalations);
+    
+    if (filters?.status) {
+      query = query.where(eq(crisisEscalations.status, filters.status)) as any;
+    }
+
+    return query.orderBy(desc(crisisEscalations.escalatedAt));
+  }
+
+  async getLicensedCounselors(filters?: { schoolId?: string; isActive?: boolean; }): Promise<LicensedCounselor[]> {
+    let query = db.select().from(licensedCounselors);
+    
+    const conditions = [];
+    if (filters?.isActive !== undefined) {
+      conditions.push(eq(licensedCounselors.isActive, filters.isActive ? 1 : 0));
+    }
+
+    if (conditions.length > 0) {
+      query = query.where(and(...conditions)) as any;
+    }
+
+    return query.orderBy(licensedCounselors.displayName);
   }
 }
 

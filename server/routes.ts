@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema } from "@shared/schema";
+import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema, insertSupportPostSchema } from "@shared/schema";
 import { nanoid } from 'nanoid';
 import { contentFilter } from "./services/contentFilter";
 import { aiAnalytics } from "./services/aiAnalytics";
@@ -1298,6 +1298,131 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(userTokens);
     } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // ===== SUPPORT CIRCLE ROUTES - Anonymous peer support for grades 6-8 =====
+  
+  // Get support posts with optional filters
+  app.get("/api/support-posts", async (req, res) => {
+    try {
+      const { schoolId, category, gradeLevel } = req.query;
+      const filters = {
+        schoolId: schoolId as string,
+        category: category as string,
+        gradeLevel: gradeLevel as string,
+      };
+      
+      // Remove undefined filters
+      Object.keys(filters).forEach(key => {
+        if (!filters[key as keyof typeof filters]) {
+          delete filters[key as keyof typeof filters];
+        }
+      });
+      
+      const posts = await storage.getSupportPosts(Object.keys(filters).length > 0 ? filters : undefined);
+      res.json(posts);
+    } catch (error: any) {
+      console.error('Failed to get support posts:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Create new support post - Anonymous (no auth required for safety)
+  app.post("/api/support-posts", async (req, res) => {
+    try {
+      const postData = insertSupportPostSchema.parse(req.body);
+      
+      // Content filtering for safety
+      const contentValidation = contentFilter.isContentAppropriate(postData.content);
+      if (!contentValidation.isValid) {
+        return res.status(400).json({ message: contentValidation.reason });
+      }
+      
+      // Create support post with crisis detection
+      const post = await storage.createSupportPost(postData);
+      
+      // If crisis detected, send immediate notification to school counselors
+      if (post.isCrisis) {
+        console.log(`🚨 CRISIS DETECTED in support post ${post.id} at ${post.schoolId}:`, {
+          keywords: post.crisisKeywords,
+          score: post.crisisScore,
+          urgency: post.urgencyLevel
+        });
+        
+        // In production, this would trigger real notifications to school counselors
+        // For now, we log it for demonstration
+      }
+      
+      res.json(post);
+    } catch (error: any) {
+      console.error('Failed to create support post:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Heart a support post (show support)
+  app.post("/api/support-posts/:id/heart", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const post = await storage.heartSupportPost(id);
+      res.json(post);
+    } catch (error: any) {
+      console.error('Failed to heart support post:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get professional responses for a support post (Phase 2)
+  app.get("/api/support-posts/:id/responses", async (req, res) => {
+    try {
+      const { id } = req.params;
+      const responses = await storage.getSupportResponses(id);
+      res.json(responses);
+    } catch (error: any) {
+      console.error('Failed to get support responses:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Create professional response (Phase 2 - Licensed counselors only)
+  app.post("/api/support-posts/:id/responses", isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.claims.sub;
+      
+      // Check if user is a licensed counselor (Phase 2 implementation)
+      // For now, we'll allow any authenticated user to respond
+      
+      const responseData = {
+        supportPostId: id,
+        counselorId: userId,
+        counselorName: "School Counselor", // Would be from licensed counselor profile
+        counselorCredentials: "Licensed Professional Counselor",
+        responseContent: req.body.content,
+        responseType: req.body.type || "support",
+        includedResources: req.body.resources || [],
+        isPrivate: req.body.isPrivate || 0,
+      };
+      
+      const response = await storage.createSupportResponse(responseData);
+      res.json(response);
+    } catch (error: any) {
+      console.error('Failed to create support response:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get crisis escalations (Admin/Counselor view - Phase 2)
+  app.get("/api/crisis-escalations", isAuthenticated, async (req: any, res) => {
+    try {
+      const { status } = req.query;
+      const filters = status ? { status: status as string } : undefined;
+      const escalations = await storage.getCrisisEscalations(filters);
+      res.json(escalations);
+    } catch (error: any) {
+      console.error('Failed to get crisis escalations:', error);
       res.status(500).json({ message: error.message });
     }
   });
