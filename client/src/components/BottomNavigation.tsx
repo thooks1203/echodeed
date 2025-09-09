@@ -9,7 +9,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'schools', label: 'Schools', icon: '🎓' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'summer', label: 'Summer', icon: '☀️' },
-    { id: 'rewards', label: 'Rewards', icon: '🎁' },
+    { id: 'rewards', label: '🔥 Rewards', icon: '💎' },
   ];
 
   return (

@@ -1,4 +1,4 @@
-import { Switch, Route } from "wouter";
+import { Switch, Route, useLocation } from "wouter";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,20 +11,33 @@ import { TeacherDashboard } from "@/components/TeacherDashboard";
 import { LandingPage } from "@/components/landing-page";
 import PWAInstall from "@/components/PWAInstall";
 import WellnessCheckInPage from "@/pages/wellness-checkin";
+import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 
 function Router() {
+  const [location, setLocation] = useLocation();
+  const showFloatingButton = location !== '/rewards' && location !== '/' && location !== '/teacher-dashboard' && location !== '/admin' && location !== '/admin-dashboard' && location !== '/parent' && location !== '/parent-dashboard';
+
   return (
-    <Switch>
-      <Route path="/teacher-dashboard" component={TeacherDashboard} />
-      <Route path="/admin" component={AdminDashboard} />
-      <Route path="/admin-dashboard" component={AdminDashboard} />
-      <Route path="/parent" component={ParentDashboard} />
-      <Route path="/parent-dashboard" component={ParentDashboard} />
-      <Route path="/rewards" component={RewardsPage} />
-      <Route path="/wellness-checkin" component={WellnessCheckInPage} />
-      <Route path="/app" component={Home} />
-      <Route path="/" component={LandingPage} />
-    </Switch>
+    <>
+      <Switch>
+        <Route path="/teacher-dashboard" component={TeacherDashboard} />
+        <Route path="/admin" component={AdminDashboard} />
+        <Route path="/admin-dashboard" component={AdminDashboard} />
+        <Route path="/parent" component={ParentDashboard} />
+        <Route path="/parent-dashboard" component={ParentDashboard} />
+        <Route path="/rewards" component={RewardsPage} />
+        <Route path="/wellness-checkin" component={WellnessCheckInPage} />
+        <Route path="/app" component={Home} />
+        <Route path="/" component={LandingPage} />
+      </Switch>
+      
+      {/* Floating Rewards Button - Always Visible for Better Engagement */}
+      {showFloatingButton && (
+        <FloatingRewardsButton 
+          onRewardsClick={() => setLocation('/rewards')}
+        />
+      )}
+    </>
   );
 }
 
