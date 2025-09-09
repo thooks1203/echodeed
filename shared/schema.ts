@@ -347,6 +347,101 @@ export const kindnessVerifications = pgTable("kindness_verifications", {
   reviewedAt: timestamp("reviewed_at"),
 });
 
+// SUPPORT CIRCLE FEATURE - Anonymous peer support for grades 6-8
+export const supportPosts = pgTable("support_posts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id), // Optional link to authenticated user
+  content: text("content").notNull(), // The struggle/challenge being shared
+  category: varchar("category", { length: 50 }).notNull(), // academic, social, family, emotional, physical, other
+  schoolId: varchar("school_id"), // School identifier for filtering (Phase 1: text field)
+  city: text("city"),
+  state: text("state"), 
+  country: text("country"),
+  gradeLevel: varchar("grade_level", { length: 10 }), // "6", "7", "8" for age-appropriate filtering
+  isAnonymous: integer("is_anonymous").default(1).notNull(), // Always anonymous for safety
+  heartsCount: integer("hearts_count").default(0).notNull(), // Support reactions
+  // Crisis Detection Fields
+  isCrisis: integer("is_crisis").default(0).notNull(), // 1 = flagged as crisis
+  crisisKeywords: jsonb("crisis_keywords"), // Array of detected crisis keywords
+  crisisScore: integer("crisis_score").default(0), // 0-100 AI-determined crisis severity
+  urgencyLevel: varchar("urgency_level", { length: 20 }).default("low").notNull(), // low, medium, high, critical
+  flaggedAt: timestamp("flagged_at"), // When crisis was first detected
+  // Professional Response Fields
+  hasResponse: integer("has_response").default(0).notNull(), // 1 = professional has responded
+  responseCount: integer("response_count").default(0).notNull(), // Number of professional responses
+  lastResponseAt: timestamp("last_response_at"), // Most recent professional response
+  assignedCounselorId: varchar("assigned_counselor_id"), // Counselor handling this case
+  // Aggregation & Analytics
+  viewCount: integer("view_count").default(0).notNull(), // How many times viewed
+  reportCount: integer("report_count").default(0).notNull(), // Times reported as inappropriate
+  isResolved: integer("is_resolved").default(0).notNull(), // 1 = student marked as resolved
+  resolutionNote: text("resolution_note"), // Student's follow-up on how they're doing
+  resolvedAt: timestamp("resolved_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Professional responses to support posts
+export const supportResponses = pgTable("support_responses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  supportPostId: varchar("support_post_id").notNull().references(() => supportPosts.id),
+  counselorId: varchar("counselor_id").notNull(), // Professional responder ID
+  counselorName: varchar("counselor_name", { length: 100 }), // Display name (e.g., "Ms. Johnson, School Counselor")
+  counselorCredentials: varchar("counselor_credentials", { length: 200 }), // "Licensed Professional Counselor"
+  responseContent: text("response_content").notNull(), // The professional's supportive response
+  responseType: varchar("response_type", { length: 50 }).default("support").notNull(), // support, resource, referral, follow_up
+  includedResources: jsonb("included_resources"), // Array of helpful resources/links
+  isPrivate: integer("is_private").default(0).notNull(), // 1 = private response (direct message style)
+  heartsCount: integer("hearts_count").default(0).notNull(), // Student appreciation reactions
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Crisis escalation tracking
+export const crisisEscalations = pgTable("crisis_escalations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  supportPostId: varchar("support_post_id").notNull().references(() => supportPosts.id),
+  escalatedBy: varchar("escalated_by").notNull(), // Counselor or admin who escalated
+  escalationLevel: varchar("escalation_level", { length: 50 }).notNull(), // principal, parent, emergency, external
+  escalationReason: text("escalation_reason").notNull(), // Why it was escalated
+  actionsTaken: text("actions_taken"), // What steps were taken
+  contactedParties: jsonb("contacted_parties"), // Who was contacted
+  status: varchar("status", { length: 50 }).default("active").notNull(), // active, resolved, transferred
+  resolution: text("resolution"), // How the crisis was resolved
+  escalatedAt: timestamp("escalated_at").defaultNow().notNull(),
+  resolvedAt: timestamp("resolved_at"),
+});
+
+// School-level support analytics for administrators
+export const schoolSupportAnalytics = pgTable("school_support_analytics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolId: varchar("school_id").notNull(), // School identifier
+  analyticsDate: timestamp("analytics_date").notNull(), // Daily snapshot
+  totalSupportPosts: integer("total_support_posts").default(0),
+  activeCrises: integer("active_crises").default(0),
+  resolvedSupportCases: integer("resolved_support_cases").default(0),
+  topConcernCategory: varchar("top_concern_category", { length: 50 }), // Most common struggle category
+  averageResponseTime: integer("average_response_time_hours").default(0), // Professional response time
+  suggestedInterventions: jsonb("suggested_interventions"), // AI-suggested school-wide activities
+  wellbeingScore: integer("wellbeing_score").default(75), // 0-100 overall school wellbeing
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Licensed professional credentials (Phase 2 - keeping for structure)
+export const licensedCounselors = pgTable("licensed_counselors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id), // Optional link to user account
+  displayName: varchar("display_name", { length: 100 }).notNull(), // "Ms. Johnson"
+  credentials: varchar("credentials", { length: 200 }).notNull(), // "Licensed Professional Counselor"
+  licenseNumber: varchar("license_number", { length: 100 }),
+  licenseState: varchar("license_state", { length: 50 }),
+  specializations: jsonb("specializations"), // Array of specialization areas
+  schoolsAuthorized: jsonb("schools_authorized"), // Which schools they can respond at
+  isActive: integer("is_active").default(1).notNull(),
+  verificationStatus: varchar("verification_status", { length: 50 }).default("pending").notNull(), // pending, verified, rejected
+  verifiedBy: varchar("verified_by"), // Admin who verified credentials
+  verifiedAt: timestamp("verified_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const badgeRewards = pgTable("badge_rewards", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   badgeId: varchar("badge_id").notNull(), // Links to achievement ID
@@ -1303,6 +1398,40 @@ export const insertSummerActivitySchema = createInsertSchema(summerActivities);
 export const insertSummerNotificationSchema = createInsertSchema(summerNotifications);
 export const insertFamilyChallengeSchema = createInsertSchema(familyChallenges);
 
+// Support Circle Feature Schema Exports
+export const insertSupportPostSchema = createInsertSchema(supportPosts).omit({
+  id: true,
+  createdAt: true,
+  heartsCount: true,
+  isCrisis: true,
+  flaggedAt: true,
+  hasResponse: true,
+  responseCount: true,
+  lastResponseAt: true,
+  viewCount: true,
+  reportCount: true,
+  isResolved: true,
+  resolvedAt: true,
+});
+
+export const insertSupportResponseSchema = createInsertSchema(supportResponses).omit({
+  id: true,
+  createdAt: true,
+  heartsCount: true,
+});
+
+export const insertCrisisEscalationSchema = createInsertSchema(crisisEscalations).omit({
+  id: true,
+  escalatedAt: true,
+  resolvedAt: true,
+});
+
+export const insertLicensedCounselorSchema = createInsertSchema(licensedCounselors).omit({
+  id: true,
+  createdAt: true,
+  verifiedAt: true,
+});
+
 // Summer Engagement type exports
 export type SummerChallenge = typeof summerChallenges.$inferSelect;
 export type InsertSummerChallenge = z.infer<typeof insertSummerChallengeSchema>;
@@ -1314,6 +1443,17 @@ export type SummerNotification = typeof summerNotifications.$inferSelect;
 export type InsertSummerNotification = z.infer<typeof insertSummerNotificationSchema>;
 export type FamilyChallenge = typeof familyChallenges.$inferSelect;
 export type InsertFamilyChallenge = z.infer<typeof insertFamilyChallengeSchema>;
+
+// Support Circle Feature Type Exports
+export type InsertSupportPost = z.infer<typeof insertSupportPostSchema>;
+export type SupportPost = typeof supportPosts.$inferSelect;
+export type InsertSupportResponse = z.infer<typeof insertSupportResponseSchema>;
+export type SupportResponse = typeof supportResponses.$inferSelect;
+export type InsertCrisisEscalation = z.infer<typeof insertCrisisEscalationSchema>;
+export type CrisisEscalation = typeof crisisEscalations.$inferSelect;
+export type InsertLicensedCounselor = z.infer<typeof insertLicensedCounselorSchema>;
+export type LicensedCounselor = typeof licensedCounselors.$inferSelect;
+export type SchoolSupportAnalytics = typeof schoolSupportAnalytics.$inferSelect;
 
 // User relations for better query performance
 export const usersRelations = relations(users, ({ many }) => ({
