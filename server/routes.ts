@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema } from "@shared/schema";
+import { nanoid } from 'nanoid';
 import { contentFilter } from "./services/contentFilter";
 import { aiAnalytics } from "./services/aiAnalytics";
 import { slackNotifications } from "./services/slackNotifications";
@@ -4800,6 +4801,250 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Failed to get Google OAuth config:', error);
       res.status(500).json({ error: 'Failed to get Google OAuth config' });
+    }
+  });
+
+  // ========== REVOLUTIONARY FEATURES API ROUTES ==========
+  // Import revolutionary AI services
+  const { ConflictResolutionAI } = await import('./services/conflictResolutionAI');
+  const { BullyingPreventionAI } = await import('./services/bullyingPreventionAI');  
+  const { KindnessExchangeAI } = await import('./services/kindnessExchangeAI');
+
+  // REVOLUTIONARY #1: AI-Powered Anonymous Conflict Resolution
+  app.post('/api/conflicts/report', async (req, res) => {
+    try {
+      const { conflictType, conflictDescription, location, gradeLevel, involvedParties, isAnonymous, severityLevel } = req.body;
+      
+      // AI Analysis
+      const aiAnalysis = ConflictResolutionAI.analyzeConflict(conflictDescription, location, involvedParties);
+      
+      // Store conflict report
+      const conflictReport = {
+        id: nanoid(),
+        reporterId: isAnonymous ? null : req.user?.id,
+        conflictType,
+        conflictDescription,
+        involvedParties,
+        location,
+        severityLevel: aiAnalysis.severity,
+        emotionalImpact: aiAnalysis.emotionalImpact,
+        aiAnalysis: aiAnalysis.aiInsights,
+        status: aiAnalysis.teacherAlertRequired ? 'teacher_alerted' : 'ai_processing',
+        schoolId: 'washington-elementary', // Default school
+        gradeLevel,
+        isAnonymous: isAnonymous ? 1 : 0,
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      
+      await storage.createConflictReport(conflictReport);
+      
+      // Create AI resolution
+      const resolution = {
+        id: nanoid(),
+        conflictReportId: conflictReport.id,
+        resolutionType: 'ai_mediated',
+        resolutionSteps: JSON.stringify(aiAnalysis.resolutionSteps),
+        aiMediationScript: aiAnalysis.mediationScript,
+        outcomeTracking: null,
+        effectivenessScore: null,
+        teacherNotified: aiAnalysis.teacherAlertRequired ? 1 : 0,
+        isSuccessful: null,
+        followUpScheduled: aiAnalysis.teacherAlertRequired ? new Date(Date.now() + 24 * 60 * 60 * 1000) : null,
+        createdAt: new Date(),
+        completedAt: null
+      };
+      
+      await storage.createConflictResolution(resolution);
+      
+      res.json({
+        success: true,
+        conflictId: conflictReport.id,
+        aiAnalysis,
+        teacherAlerted: aiAnalysis.teacherAlertRequired
+      });
+      
+    } catch (error) {
+      console.error('Error creating conflict report:', error);
+      res.status(500).json({ error: 'Failed to create conflict report' });
+    }
+  });
+
+  app.get('/api/conflicts', async (req, res) => {
+    try {
+      const schoolId = req.query.schoolId as string || 'washington-elementary';
+      const conflicts = await storage.getConflictReports(schoolId);
+      res.json(conflicts);
+    } catch (error) {
+      console.error('Error fetching conflicts:', error);
+      res.status(500).json({ error: 'Failed to fetch conflicts' });
+    }
+  });
+
+  // REVOLUTIONARY #2: Predictive Bullying Prevention Analytics
+  app.get('/api/bullying/predictions', async (req, res) => {
+    try {
+      const schoolId = req.query.schoolId as string || 'washington-elementary';
+      
+      // Get recent data for analysis
+      const recentConflicts = await storage.getConflictReports(schoolId);
+      const recentPosts = await storage.getKindnessPosts({ schoolId, limit: 50 });
+      
+      // Generate AI predictions for each grade
+      const predictions = [];
+      const grades = ['K', '1', '2', '3', '4', '5'];
+      
+      for (const grade of grades) {
+        const gradeConflicts = recentConflicts.filter(c => c.gradeLevel === grade);
+        const gradePosts = recentPosts.filter(p => p.metadata?.gradeLevel === grade);
+        
+        if (gradeConflicts.length > 0 || gradePosts.length > 2) {
+          const prediction = BullyingPreventionAI.analyzeBullyingRisk(
+            schoolId,
+            grade,
+            gradeConflicts,
+            gradePosts
+          );
+          
+          // Store prediction
+          const predictionRecord = {
+            id: nanoid(),
+            schoolId,
+            gradeLevel: grade,
+            riskLevel: prediction.riskLevel,
+            predictionConfidence: prediction.confidence,
+            riskFactors: JSON.stringify(prediction.riskFactors),
+            socialDynamicsScore: prediction.socialDynamicsScore,
+            interventionSuggestions: JSON.stringify(prediction.interventionStrategies),
+            predictedTimeframe: prediction.timeframe,
+            teacherAlerted: prediction.riskLevel === 'high' || prediction.riskLevel === 'critical' ? 1 : 0,
+            preventionActionsCount: prediction.preventionActions.length,
+            actualIncidentOccurred: null,
+            createdAt: new Date(),
+            validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days
+          };
+          
+          await storage.createBullyingPrediction(predictionRecord);
+          predictions.push(predictionRecord);
+        }
+      }
+      
+      res.json(predictions);
+      
+    } catch (error) {
+      console.error('Error generating bullying predictions:', error);
+      res.status(500).json({ error: 'Failed to generate predictions' });
+    }
+  });
+
+  app.post('/api/bullying/intervention', async (req, res) => {
+    try {
+      const { predictionId, actionTaken, effectiveness } = req.body;
+      
+      // Record intervention outcome for ML improvement
+      BullyingPreventionAI.recordPredictionOutcome(predictionId, false, effectiveness);
+      
+      res.json({ success: true });
+    } catch (error) {
+      console.error('Error recording intervention:', error);
+      res.status(500).json({ error: 'Failed to record intervention' });
+    }
+  });
+
+  // REVOLUTIONARY #3: Cross-School Anonymous Kindness Exchange  
+  app.post('/api/kindness/exchange', async (req, res) => {
+    try {
+      const { kindnessType, kindnessMessage, targetPreference, gradePreference, isUrgent } = req.body;
+      
+      // Mock recipient schools for demo
+      const mockRecipients = [
+        { schoolId: 'maple-elementary-canada', gradeLevel: '3', country: 'Canada', timezone: 'America/Toronto' },
+        { schoolId: 'sunshine-primary-australia', gradeLevel: '4', country: 'Australia', timezone: 'Australia/Sydney' },
+        { schoolId: 'riverside-school-uk', gradeLevel: '5', country: 'United Kingdom', timezone: 'Europe/London' },
+        { schoolId: 'mountain-view-japan', gradeLevel: '2', country: 'Japan', timezone: 'Asia/Tokyo' }
+      ];
+      
+      // Find best match using AI
+      const match = KindnessExchangeAI.findKindnessMatch(
+        'washington-elementary',
+        '3', // sender grade
+        kindnessMessage,
+        kindnessType,
+        mockRecipients
+      );
+      
+      if (!match) {
+        return res.status(404).json({ error: 'No suitable recipient found' });
+      }
+      
+      // Enhance message with AI
+      const enhancedMessage = KindnessExchangeAI.enhanceKindnessMessage(
+        kindnessMessage,
+        kindnessType,
+        'United States',
+        mockRecipients.find(r => r.schoolId === match.recipientSchoolId)?.country || 'Unknown',
+        Math.floor(Math.random() * 10000) + 1000 // Mock distance
+      );
+      
+      // Create kindness exchange record
+      const exchange = {
+        id: nanoid(),
+        senderSchoolId: 'washington-elementary',
+        recipientSchoolId: match.recipientSchoolId,
+        senderGrade: '3',
+        recipientGrade: mockRecipients.find(r => r.schoolId === match.recipientSchoolId)?.gradeLevel || '3',
+        kindnessMessage: enhancedMessage,
+        kindnessType,
+        isMatched: 1,
+        matchingScore: match.matchingScore,
+        deliveryStatus: isUrgent ? 'delivered' : 'pending',
+        impactRating: null,
+        crossCulturalFlag: match.recipientSchoolId.includes('canada') || match.recipientSchoolId.includes('australia') ? 1 : 0,
+        distanceKm: Math.floor(Math.random() * 10000) + 1000,
+        languageFrom: 'English',
+        languageTo: 'English',
+        aiTranslated: 0,
+        createdAt: new Date(),
+        deliveredAt: isUrgent ? new Date() : null,
+        acknowledgedAt: null
+      };
+      
+      await storage.createKindnessExchange(exchange);
+      
+      res.json({
+        success: true,
+        exchangeId: exchange.id,
+        recipientCountry: mockRecipients.find(r => r.schoolId === match.recipientSchoolId)?.country,
+        matchingScore: match.matchingScore,
+        enhancedMessage,
+        deliveryStatus: exchange.deliveryStatus
+      });
+      
+    } catch (error) {
+      console.error('Error creating kindness exchange:', error);
+      res.status(500).json({ error: 'Failed to create kindness exchange' });
+    }
+  });
+
+  app.get('/api/kindness/exchanges', async (req, res) => {
+    try {
+      const schoolId = req.query.schoolId as string || 'washington-elementary';
+      const exchanges = await storage.getKindnessExchanges(schoolId);
+      res.json(exchanges);
+    } catch (error) {
+      console.error('Error fetching kindness exchanges:', error);
+      res.status(500).json({ error: 'Failed to fetch exchanges' });
+    }
+  });
+
+  app.get('/api/kindness/global-impact', async (req, res) => {
+    try {
+      const allExchanges = await storage.getAllKindnessExchanges();
+      const impact = KindnessExchangeAI.calculateGlobalImpact(allExchanges);
+      res.json(impact);
+    } catch (error) {
+      console.error('Error calculating global impact:', error);
+      res.status(500).json({ error: 'Failed to calculate global impact' });
     }
   });
 

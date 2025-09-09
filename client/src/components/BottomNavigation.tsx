@@ -6,10 +6,10 @@ interface BottomNavigationProps {
 export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationProps) {
   const tabs = [
     { id: 'feed', label: 'Feed', icon: '🏠' },
-    { id: 'local', label: 'Local', icon: '📍' },
-    { id: 'badges', label: 'Badges', icon: '🏅' },
-    { id: 'rewards', label: 'Rewards', icon: '🎁' },
     { id: 'schools', label: 'Schools', icon: '🎓' },
+    { id: 'ai-safety', label: 'AI Safety', icon: '🛡️' },
+    { id: 'rewards', label: 'Rewards', icon: '🎁' },
+    { id: 'badges', label: 'Badges', icon: '🏅' },
   ];
 
   return (

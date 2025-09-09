@@ -8,6 +8,9 @@ import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { WelcomeModal } from '@/components/WelcomeModal';
 import { SchoolsDashboard } from '@/components/SchoolsDashboard';
+import { ConflictReportModal } from '@/components/ConflictReportModal';
+import { BullyingPreventionDashboard } from '@/components/BullyingPreventionDashboard';
+import { KindnessExchangeModal } from '@/components/KindnessExchangeModal';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { KindnessPost, KindnessCounter, UserTokens } from '@shared/schema';
@@ -26,6 +29,10 @@ export default function Home() {
     return !hasSeenWelcome;
   });
   const [tokenEarning, setTokenEarning] = useState<TokenEarning | null>(null);
+  
+  // Revolutionary Features Modal States
+  const [showConflictModal, setShowConflictModal] = useState(false);
+  const [showKindnessExchangeModal, setShowKindnessExchangeModal] = useState(false);
   const { toast } = useToast();
   
   const { location } = useGeolocation();
@@ -101,6 +108,154 @@ export default function Home() {
         onNavigateToTab={navigateToTab} 
         activeBottomTab={activeTab}
       />
+    );
+  }
+
+  if (activeTab === 'ai-safety') {
+    return (
+      <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+        <AppHeader />
+        <div style={{ 
+          background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)', 
+          color: 'white', 
+          padding: '32px 20px', 
+          textAlign: 'center'
+        }}>
+          <h1 style={{ fontSize: '28px', fontWeight: '700', marginBottom: '16px' }}>
+            🛡️ AI-Powered School Safety Revolution
+          </h1>
+          <p style={{ fontSize: '16px', opacity: 0.9, maxWidth: '600px', margin: '0 auto' }}>
+            Three groundbreaking AI systems that no other platform has in the world
+          </p>
+        </div>
+        
+        <div style={{ padding: '24px 20px', maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ 
+            display: 'grid', 
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+            gap: '24px',
+            marginBottom: '32px'
+          }}>
+            <button
+              onClick={() => setShowConflictModal(true)}
+              style={{
+                background: 'white',
+                border: '2px solid #E5E7EB',
+                borderRadius: '16px',
+                padding: '24px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                textAlign: 'left',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
+              }}
+              onMouseOver={(e) => {
+                (e.target as HTMLElement).style.borderColor = '#8B5CF6';
+                (e.target as HTMLElement).style.transform = 'translateY(-2px)';
+              }}
+              onMouseOut={(e) => {
+                (e.target as HTMLElement).style.borderColor = '#E5E7EB';
+                (e.target as HTMLElement).style.transform = 'translateY(0)';
+              }}
+              data-testid="conflict-resolution-button"
+            >
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🛡️</div>
+              <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '12px', color: '#1F2937' }}>
+                Anonymous Conflict Resolution
+              </h3>
+              <p style={{ fontSize: '14px', color: '#6B7280', lineHeight: '1.5' }}>
+                World's first AI-powered anonymous conflict reporting system with real-time mediation 
+                and teacher alert integration. Report conflicts safely and get immediate AI guidance.
+              </p>
+            </button>
+
+            <button
+              onClick={() => setActiveTab('bullying-prevention')}
+              style={{
+                background: 'white',
+                border: '2px solid #E5E7EB',
+                borderRadius: '16px',
+                padding: '24px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                textAlign: 'left',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
+              }}
+              onMouseOver={(e) => {
+                (e.target as HTMLElement).style.borderColor = '#8B5CF6';
+                (e.target as HTMLElement).style.transform = 'translateY(-2px)';
+              }}
+              onMouseOut={(e) => {
+                (e.target as HTMLElement).style.borderColor = '#E5E7EB';
+                (e.target as HTMLElement).style.transform = 'translateY(0)';
+              }}
+              data-testid="bullying-prevention-button"
+            >
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔮</div>
+              <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '12px', color: '#1F2937' }}>
+                Predictive Bullying Prevention
+              </h3>
+              <p style={{ fontSize: '14px', color: '#6B7280', lineHeight: '1.5' }}>
+                Revolutionary AI that predicts potential bullying incidents before they happen using 
+                behavioral analysis and social dynamics. Prevent problems before they start.
+              </p>
+            </button>
+
+            <button
+              onClick={() => setShowKindnessExchangeModal(true)}
+              style={{
+                background: 'white',
+                border: '2px solid #E5E7EB',
+                borderRadius: '16px',
+                padding: '24px',
+                cursor: 'pointer',
+                transition: 'all 0.3s ease',
+                textAlign: 'left',
+                boxShadow: '0 4px 6px rgba(0,0,0,0.05)'
+              }}
+              onMouseOver={(e) => {
+                (e.target as HTMLElement).style.borderColor = '#8B5CF6';
+                (e.target as HTMLElement).style.transform = 'translateY(-2px)';
+              }}
+              onMouseOut={(e) => {
+                (e.target as HTMLElement).style.borderColor = '#E5E7EB';
+                (e.target as HTMLElement).style.transform = 'translateY(0)';
+              }}
+              data-testid="kindness-exchange-button"
+            >
+              <div style={{ fontSize: '48px', marginBottom: '16px' }}>🌍</div>
+              <h3 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '12px', color: '#1F2937' }}>
+                Global Kindness Exchange
+              </h3>
+              <p style={{ fontSize: '14px', color: '#6B7280', lineHeight: '1.5' }}>
+                Send anonymous kindness messages to students worldwide with AI-powered cultural 
+                matching and translation. Build global empathy one message at a time.
+              </p>
+            </button>
+          </div>
+        </div>
+
+        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+        
+        {/* Revolutionary Features Modals */}
+        <ConflictReportModal 
+          isOpen={showConflictModal} 
+          onClose={() => setShowConflictModal(false)} 
+        />
+        <KindnessExchangeModal 
+          isOpen={showKindnessExchangeModal} 
+          onClose={() => setShowKindnessExchangeModal(false)} 
+        />
+      </div>
+    );
+  }
+
+  if (activeTab === 'bullying-prevention') {
+    return (
+      <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+        <AppHeader />
+        <BullyingPreventionDashboard />
+        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
     );
   }
 
