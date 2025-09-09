@@ -1148,6 +1148,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       try {
         await triggerInstantParentNotification(userId, postData.content, post);
         console.log('📧 Parent notification triggered for student:', userId);
+        
+        // 📱 REVOLUTIONARY: Trigger instant push notification to parent's mobile device
+        const { pushNotificationService } = await import('./services/pushNotifications');
+        await pushNotificationService.triggerRealTimeParentAlert(
+          'parent-' + userId, // Mock parent ID
+          'Student Name', // In production, get actual student name
+          postData.content
+        );
       } catch (error) {
         console.error('Parent notification error:', error);
         // Don't fail the post creation if notification fails

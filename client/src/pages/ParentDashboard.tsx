@@ -31,6 +31,7 @@ import {
   ArrowLeft
 } from 'lucide-react';
 import { useLocation } from 'wouter';
+import PushNotificationSetup from '@/components/PushNotificationSetup';
 
 interface ParentNotification {
   id: string;
@@ -447,6 +448,15 @@ export default function ParentDashboard() {
                 </CardContent>
               </Card>
             </div>
+
+            {/* 📱 Push Notification Setup */}
+            <PushNotificationSetup 
+              userId={parentInfo.id}
+              userType="parent"
+              onSubscriptionChange={(isSubscribed) => {
+                console.log('Push notification subscription changed:', isSubscribed);
+              }}
+            />
 
             {/* 🔔 Recent Real-time Notifications */}
             <Card>
