@@ -18,26 +18,49 @@ export async function initializeSampleData() {
     const existingPosts = await storage.getPosts();
     const existingCounter = await storage.getCounter();
     
-    // If we have posts AND a high counter AND the right categories, then we're fully initialized
-    const hasNewCategories = existingPosts.some(p => p.category === 'Community Action' || p.category === 'Spreading Positivity');
-    if (existingPosts.length > 0 && existingCounter.count > 1000 && hasNewCategories) {
-      log('Sample data already exists with new categories, skipping initialization');
+    // Check if we need to refresh with kid-friendly posts
+    const hasAdultContent = existingPosts.some(p => 
+      p.content.includes('coffee') || 
+      p.content.includes('coworker') || 
+      p.content.includes('parking meter') ||
+      p.content.includes('$20 tip')
+    );
+    
+    // Check if we have kid-friendly content already
+    const hasKidFriendlyContent = existingPosts.some(p =>
+      p.content.includes('locker') ||
+      p.content.includes('classmate') ||
+      p.content.includes('playground') ||
+      p.content.includes('teacher')
+    );
+    
+    if (hasAdultContent) {
+      log('Found adult content in posts, will add kid-friendly posts...');
+      // Continue to add kid-friendly posts rather than trying to delete
+    } else if (hasKidFriendlyContent && existingPosts.length > 15) {
+      // If we have kid-friendly content and a good number of posts, we're done
+      log('Sample data already has kid-friendly content, skipping initialization');
       return;
+    } else {
+      // If we have posts AND a high counter AND the right categories, then we're fully initialized
+      const hasNewCategories = existingPosts.some(p => p.category === 'Community Action' || p.category === 'Spreading Positivity');
+      if (existingPosts.length > 0 && existingCounter.count > 1000 && hasNewCategories && !hasAdultContent) {
+        log('Sample data already exists, skipping initialization');
+        return;
+      }
     }
     
     // If we have some posts but counter is way off (indicating duplicate initialization), reset it
     if (existingPosts.length > 0 && existingCounter.count > 400000) {
-      log(`Found duplicate initialization - counter at ${existingCounter.count}, resetting to 243,876...`);
-      await storage.setCounter(243876);
-      log(`✓ Reset counter to 243,876 for existing deployment`);
+      log(`Found duplicate initialization - counter at ${existingCounter.count}, using existing count...`);
+      log(`✓ Using existing counter for deployment`);
       return;
     }
     
     // If we have some posts but low counter, we need to fix the counter
     if (existingPosts.length > 0 && existingCounter.count < 243876) {
-      log(`Found ${existingPosts.length} posts but counter only at ${existingCounter.count}, updating counter...`);
-      await storage.setCounter(243876);
-      log(`✓ Set counter to 243,876 for existing deployment`);
+      log(`Found ${existingPosts.length} posts but counter only at ${existingCounter.count}, using existing count...`);
+      log(`✓ Using existing counter for deployment`);
       return;
     }
 
@@ -45,277 +68,277 @@ export async function initializeSampleData() {
     const samplePosts = [
       // Random Acts
       {
-        content: "Bought coffee for the person behind me in line at the local café. Their smile made my whole day! ☕️",
+        content: "Left a kind note in someone's locker today. Hope it made them smile! 📝",
         category: "Random Acts",
-        location: "San Francisco, California",
-        city: "San Francisco",
-        state: "California",
+        location: "Burlington, North Carolina",
+        city: "Burlington",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Paid for a stranger's parking meter when I saw it was about to expire. Small gesture, big relief for them! 🅿️",
+        content: "Gave my extra pencils to a classmate who forgot theirs for the big test today! ✏️",
         category: "Random Acts",
-        location: "Chicago, Illinois",
-        city: "Chicago", 
-        state: "Illinois",
+        location: "Graham, North Carolina",
+        city: "Graham", 
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Left a $20 tip for the barista who looked like they were having a rough morning. Hope it brightened their day! ☀️",
+        content: "Shared my lunch with the new kid who forgot theirs. Making friends is important! 🥪",
         category: "Random Acts",
-        location: "Los Angeles, California",
-        city: "Los Angeles",
-        state: "California",
+        location: "Mebane, North Carolina",
+        city: "Mebane",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Gave my umbrella to someone running in the rain. Got soaked but seeing them stay dry was worth it! 🌧️",
+        content: "Picked up trash on the playground during recess. Our school should be clean for everyone! 🗑️",
         category: "Random Acts",
-        location: "Portland, Oregon",
-        city: "Portland",
-        state: "Oregon",
+        location: "Elon, North Carolina",
+        city: "Elon",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Anonymously paid for a family's dinner at a restaurant after overhearing they were celebrating a birthday on a tight budget! 🎂",
+        content: "Drew pictures for all the teachers on Teacher Appreciation Day. They work so hard for us! 🎨",
         category: "Random Acts",
-        location: "Dallas, Texas",
-        city: "Dallas",
-        state: "Texas",
+        location: "Alamance County, North Carolina",
+        city: "Burlington",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       // Helping Others
       {
-        content: "Helped an elderly neighbor carry groceries up three flights of stairs. Small acts, big impact! 🛍️",
+        content: "Helped some kids with their homework today! Math is easier when we work together. 📚",
         category: "Helping Others",
-        location: "New York, NY",
-        city: "New York",
-        state: "New York", 
+        location: "Burlington, North Carolina",
+        city: "Burlington",
+        state: "North Carolina", 
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Spent 2 hours teaching my neighbor's kid how to ride a bike. The joy on their face when they finally got it! 🚲",
+        content: "Taught my little brother how to tie his shoes. He was so proud when he finally got it! 👟",
         category: "Helping Others",
-        location: "Phoenix, Arizona",
-        city: "Phoenix",
-        state: "Arizona",
+        location: "Graham, North Carolina",
+        city: "Graham",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Helped a lost tourist find their hotel and even walked them there. Sometimes we all need a helping hand! 🗺️",
+        content: "Helped a classmate find their lost backpack. It was in the library the whole time! 🎒",
         category: "Helping Others",
-        location: "Miami, Florida",
-        city: "Miami",
-        state: "Florida",
+        location: "Mebane, North Carolina",
+        city: "Mebane",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Assisted a mom with a stroller up the subway stairs during rush hour. Teamwork makes the dream work! 🚇",
+        content: "Stayed after school to help Mrs. Johnson clean up the art room. Teamwork makes everything better! 🎨",
         category: "Helping Others",
-        location: "Boston, Massachusetts",
-        city: "Boston",
-        state: "Massachusetts",
+        location: "Elon, North Carolina",
+        city: "Elon",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Helped my coworker finish their project when they were overwhelmed. We're all in this together! 💼",
+        content: "Helped a kindergartener who was crying find their teacher during lunch. Big kids help little kids! 🤗",
         category: "Helping Others",
-        location: "Atlanta, Georgia",
-        city: "Atlanta",
-        state: "Georgia",
+        location: "Alamance County, North Carolina",
+        city: "Burlington",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       // Encouragement  
       {
-        content: "Left encouraging sticky notes in library books for future readers to find. Spreading positivity one page at a time! 📚",
+        content: "Left encouraging sticky notes in library books for other students to find. Reading is amazing! 📚",
         category: "Encouragement",
-        location: "Austin, Texas",
-        city: "Austin",
-        state: "Texas",
+        location: "Burlington, North Carolina",
+        city: "Burlington",
+        state: "North Carolina",
         country: "United States", 
         isAnonymous: 1
       },
       {
-        content: "Sent anonymous flowers to a colleague who's been working extra hard lately. Everyone deserves recognition! 🌸",
+        content: "Made a get-well card for a classmate who's been sick. Hope they feel better soon! 🌸",
         category: "Encouragement",
-        location: "Denver, Colorado",
-        city: "Denver",
-        state: "Colorado",
+        location: "Graham, North Carolina",
+        city: "Graham",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Left positive chalk messages on sidewalks throughout my neighborhood. Spreading smiles one step at a time! 🌈",
+        content: "Drew happy chalk pictures on the sidewalk for people to see on their way to school! 🌈",
         category: "Encouragement",
-        location: "Nashville, Tennessee",
-        city: "Nashville",
-        state: "Tennessee",
+        location: "Mebane, North Carolina",
+        city: "Mebane",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Wrote heartfelt thank you letters to teachers at my local school. They shape our future every day! ✏️",
+        content: "Wrote thank you notes to all my teachers because they help us learn every day! ✏️",
         category: "Encouragement",
-        location: "Sacramento, California",
-        city: "Sacramento",
-        state: "California",
+        location: "Elon, North Carolina",
+        city: "Elon",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Created care packages with encouraging notes for hospital staff. Heroes deserve to feel appreciated! 🏥",
+        content: "Cheered really loud for my friend's soccer game even though I don't like sports. Friends support friends! ⚽️",
         category: "Encouragement",
-        location: "Houston, Texas",
-        city: "Houston",
-        state: "Texas",
+        location: "Alamance County, North Carolina",
+        city: "Burlington",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       // Charity
       {
-        content: "Donated my old winter coats to a homeless shelter. Hope they keep someone warm this season! 🧥",
+        content: "Gave my old toys to kids who don't have many. Sharing makes everyone happy! 🧥",
         category: "Charity",
-        location: "Seattle, Washington",
-        city: "Seattle",
-        state: "Washington",
-        country: "United States",
-        isAnonymous: 1
-      },
-      {
-        content: "Spent my lunch break volunteering at the local animal shelter. Those puppies deserve all the love! 🐕",
-        category: "Charity",
-        location: "San Diego, California",
-        city: "San Diego",
-        state: "California",
-        country: "United States",
-        isAnonymous: 1
-      },
-      {
-        content: "Organized a neighborhood food drive and collected 200+ items for the local food bank! 🍲",
-        category: "Charity",
-        location: "Minneapolis, Minnesota",
-        city: "Minneapolis",
-        state: "Minnesota",
-        country: "United States",
-        isAnonymous: 1
-      },
-      {
-        content: "Donated blood and encouraged 5 friends to do the same. Every donation can save up to 3 lives! 🩸",
-        category: "Charity",
-        location: "Charlotte, North Carolina",
-        city: "Charlotte",
+        location: "Burlington, North Carolina",
+        city: "Burlington",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Volunteered to read to kids at the children's hospital. Their smiles heal more than any medicine! 📖",
+        content: "Helped at the animal shelter by playing with the puppies and kittens. They need love too! 🐕",
         category: "Charity",
-        location: "Salt Lake City, Utah",
-        city: "Salt Lake City",
-        state: "Utah",
+        location: "Graham, North Carolina",
+        city: "Graham",
+        state: "North Carolina",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Brought canned food from home for our school food drive. My class collected 50 cans! 🍲",
+        category: "Charity",
+        location: "Mebane, North Carolina",
+        city: "Mebane",
+        state: "North Carolina",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Made blankets for animal shelters in our after-school club. Puppies need to stay warm! 🐶",
+        category: "Charity",
+        location: "Elon, North Carolina",
+        city: "Elon",
+        state: "North Carolina",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Read books to little kids at the library. Story time is the best time! 📖",
+        category: "Charity",
+        location: "Alamance County, North Carolina",
+        city: "Burlington",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       // Community Action
       {
-        content: "Organized a neighborhood cleanup day and 30 volunteers showed up! Together we collected 15 bags of trash. 🌟",
+        content: "Organized a playground cleanup with my class! We collected 8 bags of trash together. 🌟",
         category: "Community Action",
-        location: "Portland, Oregon",
-        city: "Portland",
-        state: "Oregon",
-        country: "United States",
-        isAnonymous: 1
-      },
-      {
-        content: "Started a community garden in an empty lot. Now families have fresh vegetables and a place to connect! 🌱",
-        category: "Community Action",
-        location: "Detroit, Michigan",
-        city: "Detroit",
-        state: "Michigan",
-        country: "United States",
-        isAnonymous: 1
-      },
-      {
-        content: "Coordinated a tool lending library for neighbors. Why buy when you can share and build community? 🔨",
-        category: "Community Action",
-        location: "Burlington, Vermont",
+        location: "Burlington, North Carolina",
         city: "Burlington",
-        state: "Vermont",
-        country: "United States",
-        isAnonymous: 1
-      },
-      {
-        content: "Organized free community skill-sharing workshops. Teaching photography, cooking, and guitar lessons! 📸",
-        category: "Community Action",
-        location: "Asheville, North Carolina",
-        city: "Asheville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Started a neighborhood book exchange in old phone booth. Now everyone has access to free books! 📚",
+        content: "Started a classroom garden where we grow flowers and vegetables for everyone to enjoy! 🌱",
         category: "Community Action",
-        location: "Madison, Wisconsin",
-        city: "Madison",
-        state: "Wisconsin",
+        location: "Graham, North Carolina",
+        city: "Graham",
+        state: "North Carolina",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Made a Little Free Library box with my dad for our neighborhood. Now kids can share books! 📚",
+        category: "Community Action",
+        location: "Mebane, North Carolina",
+        city: "Mebane",
+        state: "North Carolina",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Organized a talent show at school to raise money for new playground equipment! 🎤",
+        category: "Community Action",
+        location: "Elon, North Carolina",
+        city: "Elon",
+        state: "North Carolina",
+        country: "United States",
+        isAnonymous: 1
+      },
+      {
+        content: "Started a recycling club at school. We've collected 200 bottles and cans so far! ♾️",
+        category: "Community Action",
+        location: "Alamance County, North Carolina",
+        city: "Burlington",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       // Spreading Positivity
       {
-        content: "Left rainbow chalk art with inspiring quotes on sidewalks throughout my town. Color makes everything better! 🌈",
+        content: "Drew rainbow chalk art with happy messages on the school sidewalk. Smiles make everything better! 🌈",
         category: "Spreading Positivity",
-        location: "Santa Fe, New Mexico",
-        city: "Santa Fe",
-        state: "New Mexico",
+        location: "Burlington, North Carolina",
+        city: "Burlington",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Started a compliment chain at work - each person has to genuinely compliment someone new daily! 😊",
+        content: "Started a compliment circle in my class - we each say something nice about someone every day! 😊",
         category: "Spreading Positivity",
-        location: "Richmond, Virginia",
-        city: "Richmond",
-        state: "Virginia",
+        location: "Graham, North Carolina",
+        city: "Graham",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Created handmade gratitude cards and left them randomly in coffee shops, libraries, and bus stops! 💌",
+        content: "Made handmade cards with happy messages and left them in the school library for others to find! 💌",
         category: "Spreading Positivity",
-        location: "Eugene, Oregon",
-        city: "Eugene",
-        state: "Oregon",
+        location: "Mebane, North Carolina",
+        city: "Mebane",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Started a social media campaign sharing one positive local business story daily. Spreading good vibes! ✨",
+        content: "Told jokes during lunch to make my friends laugh when they were having a bad day! ✨",
         category: "Spreading Positivity",
-        location: "Savannah, Georgia",
-        city: "Savannah",
-        state: "Georgia",
+        location: "Elon, North Carolina",
+        city: "Elon",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       },
       {
-        content: "Organized a community gratitude circle in the park. 20 strangers sharing what they're thankful for! 🙏",
+        content: "Started a gratitude journal club where we write what we're thankful for every day! 🙏",
         category: "Spreading Positivity",
-        location: "Boulder, Colorado",
-        city: "Boulder",
-        state: "Colorado",
+        location: "Alamance County, North Carolina",
+        city: "Burlington",
+        state: "North Carolina",
         country: "United States",
         isAnonymous: 1
       }
@@ -326,11 +349,9 @@ export async function initializeSampleData() {
       await storage.createPost(post);
     }
 
-    // Set the global counter to a high number to show platform popularity
-    // For fresh deployments, set to our target high number
-    await storage.setCounter(243876);
-    log(`✓ Set global counter to 243,876 for fresh deployment`);
+    // The global counter will automatically increment as posts are added
     log(`✓ Added ${samplePosts.length} sample posts`);
+    log(`✓ Counter will reflect actual post count`);
 
     // Initialize sample reward partners
     const existingPartners = await storage.getRewardPartners();
