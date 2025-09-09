@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema, insertSupportPostSchema, insertWellnessCheckInSchema, insertPushSubscriptionSchema } from "@shared/schema";
 import { nanoid } from 'nanoid';
 import { contentFilter } from "./services/contentFilter";
+import { realTimeMonitoring } from "./services/realTimeMonitoring";
 import { aiAnalytics } from "./services/aiAnalytics";
 import { slackNotifications } from "./services/slackNotifications";
 import { aiWellnessEngine } from "./services/aiWellnessEngine";
@@ -1079,6 +1080,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!contentValidation.isValid) {
         return res.status(400).json({ message: contentValidation.reason });
       }
+      
+      // 🚨 REVOLUTIONARY: Real-Time AI Safety Monitoring
+      // Analyze post for bullying, emotional distress, and safety concerns
+      const safetyAnalysis = await realTimeMonitoring.analyzeStudentContent(
+        postData.content,
+        userId,
+        'default-school', // TODO: Get actual school ID from user context
+        'unknown' // TODO: Get actual grade level from user profile
+      );
+      
+      console.log('🛡️ Safety Analysis Result:', {
+        userId,
+        riskLevel: safetyAnalysis.riskLevel,
+        isSafe: safetyAnalysis.isSafe,
+        concerns: safetyAnalysis.concerns.length,
+        parentNotification: safetyAnalysis.parentNotification,
+        counselorAlert: safetyAnalysis.counselorAlert
+      });
       
       // Create post with user ID
       const post = await storage.createPost({ ...postData, userId });
