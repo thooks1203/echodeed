@@ -161,64 +161,75 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
                 </div>
                 
                 <div className="flex-1 min-w-0">
-                  <p className="text-foreground leading-relaxed text-[15px]" data-testid={`text-post-content-${index}`}>
-                    {post.content}
-                  </p>
-                  
-                  {/* Engagement indicators */}
-                  <div className="flex items-center gap-6 mt-3 mb-2">
-                    <button
-                      onClick={(e) => handleHeart(post.id, e)}
-                      className={`flex items-center gap-1.5 transition-all duration-200 hover:scale-110 active:scale-95 ${
-                        clickedPosts.has(post.id) ? 'animate-pulse' : ''
-                      } ${(post.heartsCount || 0) > 0 ? 'text-red-500' : 'text-gray-400 hover:text-red-500'}`}
-                      data-testid={`button-heart-${post.id}`}
-                    >
-                      <Heart 
-                        size={20} 
-                        fill={(post.heartsCount || 0) > 0 ? "currentColor" : "none"}
-                        className="transition-all duration-200 hover:drop-shadow-sm"
-                      />
-                      <span className="text-sm font-medium">{post.heartsCount || 0}</span>
-                    </button>
+                  <div className="flex justify-between items-start gap-4">
+                    <div className="flex-1 min-w-0">
+                      <p className="text-foreground leading-relaxed text-[15px]" data-testid={`text-post-content-${index}`}>
+                        {post.content}
+                      </p>
+                    </div>
                     
-                    <button
-                      onClick={(e) => handleEcho(post.id, e)}
-                      className={`flex items-center gap-1.5 transition-all duration-200 hover:scale-110 active:scale-95 ${
-                        clickedPosts.has(post.id) ? 'animate-pulse' : ''
-                      } ${(post.echoesCount || 0) > 0 ? 'text-blue-500' : 'text-gray-400 hover:text-blue-500'}`}
-                      data-testid={`button-echo-${post.id}`}
-                    >
-                      <Zap 
-                        size={20}
-                        fill={(post.echoesCount || 0) > 0 ? "currentColor" : "none"}
-                        className="transition-all duration-200 hover:drop-shadow-sm"
-                      />
-                      <span className="text-sm font-medium">{post.echoesCount || 0}</span>
-                    </button>
-                    
-                    {(post.impactScore || 0) > 75 && (
-                      <div className="flex items-center gap-1 text-amber-500">
-                        <Star size={16} fill="currentColor" />
-                        <span className="text-xs font-medium">High Impact</span>
+                    {/* Right side info */}
+                    <div className="flex flex-col items-end gap-1 flex-shrink-0 text-right">
+                      <span 
+                        className={`px-3 py-1.5 rounded-full text-xs font-medium bg-gradient-to-r ${getCategoryColor(post.category)} text-white shadow-sm whitespace-nowrap`}
+                        data-testid={`text-post-category-${index}`}
+                      >
+                        {post.category}
+                      </span>
+                      <div className="text-xs text-muted-foreground">
+                        <div className="flex items-center gap-1 justify-end" data-testid={`text-post-time-${index}`}>
+                          {formatDistance(new Date(post.createdAt), new Date(), { addSuffix: true })}
+                        </div>
                       </div>
-                    )}
+                    </div>
                   </div>
                   
-                  <div className="flex items-center mt-2 text-xs text-muted-foreground">
-                    <MapPin size={10} className="mr-1" />
-                    <span data-testid={`text-post-location-${index}`}>{post.location}</span>
-                    <span className="mx-2">•</span>
-                    <span data-testid={`text-post-time-${index}`}>
-                      {formatDistance(new Date(post.createdAt), new Date(), { addSuffix: true })}
-                    </span>
-                    <span className="mx-2">•</span>
-                    <span 
-                      className={`px-2 py-1 rounded-full text-xs font-medium bg-gradient-to-r ${getCategoryColor(post.category)} text-white shadow-sm`}
-                      data-testid={`text-post-category-${index}`}
-                    >
-                      {post.category}
-                    </span>
+                  {/* Engagement indicators */}
+                  <div className="flex items-center justify-between mt-3">
+                    <div className="flex items-center gap-6">
+                      <button
+                        onClick={(e) => handleHeart(post.id, e)}
+                        className={`flex items-center gap-1.5 transition-all duration-200 hover:scale-110 active:scale-95 ${
+                          clickedPosts.has(post.id) ? 'animate-pulse' : ''
+                        } ${(post.heartsCount || 0) > 0 ? 'text-red-500' : 'text-gray-400 hover:text-red-500'}`}
+                        data-testid={`button-heart-${post.id}`}
+                      >
+                        <Heart 
+                          size={20} 
+                          fill={(post.heartsCount || 0) > 0 ? "currentColor" : "none"}
+                          className="transition-all duration-200 hover:drop-shadow-sm"
+                        />
+                        <span className="text-sm font-medium">{post.heartsCount || 0}</span>
+                      </button>
+                      
+                      <button
+                        onClick={(e) => handleEcho(post.id, e)}
+                        className={`flex items-center gap-1.5 transition-all duration-200 hover:scale-110 active:scale-95 ${
+                          clickedPosts.has(post.id) ? 'animate-pulse' : ''
+                        } ${(post.echoesCount || 0) > 0 ? 'text-blue-500' : 'text-gray-400 hover:text-blue-500'}`}
+                        data-testid={`button-echo-${post.id}`}
+                      >
+                        <Zap 
+                          size={20}
+                          fill={(post.echoesCount || 0) > 0 ? "currentColor" : "none"}
+                          className="transition-all duration-200 hover:drop-shadow-sm"
+                        />
+                        <span className="text-sm font-medium">{post.echoesCount || 0}</span>
+                      </button>
+                      
+                      {(post.impactScore || 0) > 75 && (
+                        <div className="flex items-center gap-1 text-amber-500">
+                          <Star size={16} fill="currentColor" />
+                          <span className="text-xs font-medium">High Impact</span>
+                        </div>
+                      )}
+                    </div>
+                    
+                    {/* Location on the right */}
+                    <div className="flex items-center text-xs text-muted-foreground">
+                      <MapPin size={12} className="mr-1" />
+                      <span data-testid={`text-post-location-${index}`}>{post.location}</span>
+                    </div>
                   </div>
                 </div>
               </div>
