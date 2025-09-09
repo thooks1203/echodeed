@@ -12,6 +12,7 @@ import { LandingPage } from "@/components/landing-page";
 import PWAInstall from "@/components/PWAInstall";
 import WellnessCheckInPage from "@/pages/wellness-checkin";
 import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
+import { RewardNotificationManager } from "@/components/RewardNotificationManager";
 
 function Router() {
   const [location, setLocation] = useLocation();
@@ -48,6 +49,7 @@ function App() {
         <Toaster />
         <Router />
         <PWAInstall />
+        <RewardNotificationManager />
       </TooltipProvider>
     </QueryClientProvider>
   );
