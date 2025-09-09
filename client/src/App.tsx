@@ -10,6 +10,7 @@ import RewardsPage from "@/pages/rewards";
 import { TeacherDashboard } from "@/components/TeacherDashboard";
 import { LandingPage } from "@/components/landing-page";
 import PWAInstall from "@/components/PWAInstall";
+import WellnessCheckInPage from "@/pages/wellness-checkin";
 
 function Router() {
   return (
@@ -20,6 +21,7 @@ function Router() {
       <Route path="/parent" component={ParentDashboard} />
       <Route path="/parent-dashboard" component={ParentDashboard} />
       <Route path="/rewards" component={RewardsPage} />
+      <Route path="/wellness-checkin" component={WellnessCheckInPage} />
       <Route path="/app" component={Home} />
       <Route path="/" component={LandingPage} />
     </Switch>
