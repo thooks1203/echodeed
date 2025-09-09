@@ -14,11 +14,13 @@ export interface PushNotificationPayload {
     icon?: string;
   }>;
   data?: {
-    type: 'wellness_alert' | 'kindness_reminder' | 'achievement' | 'team_challenge' | 'prescription' | 'feed_update' | 'surprise_giveaway';
+    type: 'wellness_alert' | 'kindness_reminder' | 'achievement' | 'team_challenge' | 'prescription' | 'feed_update' | 'surprise_giveaway' | 'reward_proximity';
     url?: string;
     actionRequired?: boolean;
     giftCardValue?: number;
     redemptionCode?: string;
+    tokensNeeded?: number;
+    rewardTitle?: string;
   };
 }
 
