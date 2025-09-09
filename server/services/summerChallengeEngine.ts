@@ -394,6 +394,23 @@ export class SummerChallengeEngine {
       parentApprovalNeeded: weekProgress.filter(p => p.progress.completedAt && !p.progress.parentApproved).length
     };
   }
+
+  // Approve a completed challenge and award points
+  async approveCompletion(progressId: string, pointsAwarded: number) {
+    try {
+      const [updatedProgress] = await db.update(userSummerProgress)
+        .set({
+          parentApproved: true,
+          pointsEarned: pointsAwarded
+        })
+        .where(eq(userSummerProgress.id, progressId))
+        .returning();
+
+      return updatedProgress;
+    } catch (error) {
+      throw new Error('Failed to approve challenge completion');
+    }
+  }
 }
 
 export const summerChallengeEngine = new SummerChallengeEngine();
