@@ -114,7 +114,7 @@ export default function Home() {
   if (activeTab === 'ai-safety') {
     return (
       <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
-        <AppHeader />
+        <AppHeader counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} isPulse={counterPulse} />
         <div style={{ 
           background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)', 
           color: 'white', 
@@ -252,7 +252,7 @@ export default function Home() {
   if (activeTab === 'bullying-prevention') {
     return (
       <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
-        <AppHeader />
+        <AppHeader counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} isPulse={counterPulse} />
         <BullyingPreventionDashboard />
         <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
