@@ -246,6 +246,16 @@
   flex-shrink: 0;
 }
 
+/* Ensure scrollbar doesn't interfere with content */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
 .filter-chip.active {
   @apply bg-primary text-primary-foreground;
 }
