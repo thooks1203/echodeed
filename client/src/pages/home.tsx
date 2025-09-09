@@ -652,43 +652,212 @@ export default function Home() {
     }
   };
 
-  // Corporate dashboard removed - focusing on school market
-
+  // Show Rewards tab if selected
+  if (activeTab === 'rewards') {
     return (
-      <div style={{ padding: '20px', paddingBottom: '100px' }}>
-        <h2 style={{ 
-          fontSize: '24px', 
-          fontWeight: 'bold', 
-          marginBottom: '8px', 
-          textAlign: 'center',
-          background: `linear-gradient(135deg, ${account.primaryColor}, #06B6D4)`,
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent'
-        }}>
-          {canGoBackInTabs && (
-            <div style={{ position: 'absolute', left: '20px', top: '20px' }}>
-              <BackButton 
-                onClick={goBackInTabs}
-                variant="default"
-                label=""
-              />
-            </div>
-          )}
-          {account.companyName} Dashboard
-        </h2>
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        <AppHeader 
+          title="🎁 Rewards & Partners"
+          onBack={canGoBackInTabs ? goBackInTabs : undefined}
+        />
         
-        <div style={{ fontSize: '14px', textAlign: 'center', marginBottom: '24px', color: '#6b7280' }}>
-          Employee Wellness & Kindness Analytics • {account.subscriptionTier.charAt(0).toUpperCase() + account.subscriptionTier.slice(1)} Plan
-        </div>
+        <div style={{ padding: '20px', paddingBottom: '100px' }}>
+          <h2 style={{ 
+            fontSize: '24px', 
+            fontWeight: 'bold', 
+            marginBottom: '16px', 
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #8B5CF6, #06B6D4)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            🎁 Rewards & Partners
+          </h2>
+          
+          <p style={{ 
+            textAlign: 'center', 
+            color: '#6b7280', 
+            marginBottom: '24px',
+            fontSize: '14px'
+          }}>
+            Redeem your $ECHO tokens for real rewards from our partner companies
+          </p>
 
-        {/* Key Metrics Grid */}
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(2, 1fr)', 
-          gap: '12px', 
-          marginBottom: '24px' 
-        }}>
-          {metrics.map((metric, index) => (
+          {/* Sample Rewards */}
+          <div style={{ marginBottom: '32px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '16px', color: '#374151' }}>
+              Available Rewards
+            </h3>
+            
+            {[
+              { name: 'Starbucks Coffee', cost: '500 $ECHO', icon: '☕', company: 'Starbucks', description: '$5 gift card for your favorite drink' },
+              { name: 'Amazon Gift Card', cost: '1000 $ECHO', icon: '🛒', company: 'Amazon', description: '$10 gift card for anything you need' },
+              { name: 'Netflix Subscription', cost: '1500 $ECHO', icon: '🎬', company: 'Netflix', description: '1 month free streaming' },
+              { name: 'Charity Donation', cost: '750 $ECHO', icon: '💝', company: 'Various', description: '$7.50 donated to charity of your choice' },
+              { name: 'Local Restaurant', cost: '800 $ECHO', icon: '🍕', company: 'Local Partners', description: '$8 voucher for local dining' },
+              { name: 'Fitness Class', cost: '600 $ECHO', icon: '🧘', company: 'Wellness Partners', description: 'Free yoga or fitness class' }
+            ].map((reward, index) => (
+              <div key={index} style={{
+                backgroundColor: 'white',
+                borderRadius: '12px',
+                padding: '16px',
+                marginBottom: '12px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                border: '1px solid #e5e7eb',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '16px'
+              }}>
+                <div style={{
+                  fontSize: '32px',
+                  width: '48px',
+                  height: '48px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  backgroundColor: '#f3f4f6',
+                  borderRadius: '12px'
+                }}>
+                  {reward.icon}
+                </div>
+                <div style={{ flex: 1 }}>
+                  <h4 style={{ fontSize: '16px', fontWeight: '600', margin: '0 0 4px 0', color: '#1f2937' }}>
+                    {reward.name}
+                  </h4>
+                  <p style={{ fontSize: '12px', color: '#6b7280', margin: '0 0 8px 0' }}>
+                    {reward.description}
+                  </p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span style={{ 
+                      fontSize: '12px', 
+                      fontWeight: '600',
+                      color: '#8B5CF6',
+                      backgroundColor: '#f3f4f6',
+                      padding: '2px 8px',
+                      borderRadius: '8px'
+                    }}>
+                      {reward.company}
+                    </span>
+                    <span style={{ fontSize: '14px', fontWeight: '700', color: '#10B981' }}>
+                      {reward.cost}
+                    </span>
+                  </div>
+                </div>
+                <button style={{
+                  backgroundColor: (tokens?.echoBalance || 0) >= parseInt(reward.cost) ? '#10B981' : '#e5e7eb',
+                  color: (tokens?.echoBalance || 0) >= parseInt(reward.cost) ? 'white' : '#9ca3af',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '8px 16px',
+                  fontSize: '12px',
+                  fontWeight: '600',
+                  cursor: (tokens?.echoBalance || 0) >= parseInt(reward.cost) ? 'pointer' : 'not-allowed'
+                }}>
+                  {(tokens?.echoBalance || 0) >= parseInt(reward.cost) ? 'Redeem' : 'Need More'}
+                </button>
+              </div>
+            ))}
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {challenges.map((challenge) => (
+              <div key={challenge.id} style={{
+                backgroundColor: 'white',
+                borderRadius: '16px',
+                padding: '20px',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                border: '2px solid #f3f4f6'
+              }}>
+                <div style={{ 
+                  display: 'flex', 
+                  alignItems: 'center', 
+                  marginBottom: '12px'
+                }}>
+                  <span style={{ fontSize: '32px', marginRight: '12px' }}>
+                    {challenge.brandLogo}
+                  </span>
+                  <div>
+                    <h3 style={{ 
+                      fontSize: '18px', 
+                      fontWeight: 'bold', 
+                      margin: 0,
+                      color: '#1f2937'
+                    }}>
+                      {challenge.brandName}
+                    </h3>
+                    <div style={{
+                      fontSize: '12px',
+                      backgroundColor: '#10B981',
+                      color: 'white',
+                      padding: '2px 8px',
+                      borderRadius: '10px',
+                      display: 'inline-block',
+                      marginTop: '4px'
+                    }}>
+                      Partner Sponsor
+                    </div>
+                  </div>
+                </div>
+                
+                <p style={{ 
+                  color: '#4b5563', 
+                  fontSize: '14px', 
+                  lineHeight: '1.5',
+                  margin: '0 0 12px 0'
+                }}>
+                  Supporting kindness through: <strong>{challenge.category}</strong>
+                </p>
+                
+                <div style={{
+                  backgroundColor: '#f9fafb',
+                  padding: '12px',
+                  borderRadius: '8px',
+                  fontSize: '12px',
+                  color: '#6b7280'
+                }}>
+                  <strong>Current Challenge:</strong> {challenge.title}
+                  <br />
+                  <strong>Type:</strong> {challenge.challengeType} 
+                  {challenge.difficulty && <span> • <strong>Difficulty:</strong> {challenge.difficulty}</span>}
+                  <br />
+                  <strong>Reward:</strong> {challenge.echoReward} $ECHO
+                  {challenge.bonusReward && challenge.bonusReward > 0 && (
+                    <span style={{ color: '#10B981' }}> + {challenge.bonusReward} bonus</span>
+                  )}
+                  <br />
+                  <strong>Completions:</strong> {challenge.completionCount} kindness acts inspired
+                </div>
+              </div>
+            ))}
+          </div>
+          
+          <div style={{
+            marginTop: '24px',
+            padding: '16px',
+            backgroundColor: '#fef3c7',
+            borderRadius: '12px',
+            textAlign: 'center'
+          }}>
+            <h4 style={{ fontSize: '16px', fontWeight: 'bold', margin: '0 0 8px 0' }}>
+              Interested in Partnering?
+            </h4>
+            <p style={{ fontSize: '12px', color: '#92400e', margin: 0 }}>
+              Contact us to sponsor kindness challenges and support positive community impact
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Show Badges tab if selected
+  if (activeTab === 'badges') {
             <div key={index} style={{
               backgroundColor: 'white',
               borderRadius: '12px',
