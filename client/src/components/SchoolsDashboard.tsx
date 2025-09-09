@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
+import { BottomNavigation } from '@/components/BottomNavigation';
 
 interface School {
   id: string;
@@ -21,7 +22,12 @@ interface StudentKindnessPoint {
   weeklyProgress: number;
 }
 
-export function SchoolsDashboard() {
+interface SchoolsDashboardProps {
+  onNavigateToTab?: (tab: string) => void;
+  activeBottomTab?: string;
+}
+
+export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' }: SchoolsDashboardProps) {
   const [activeTab, setActiveTab] = useState<'overview' | 'student' | 'teacher' | 'admin' | 'parent'>('overview');
   const [, navigate] = useLocation();
 
@@ -618,6 +624,16 @@ export function SchoolsDashboard() {
               ⚙️ Manage Settings
             </button>
           </div>
+        </div>
+      )}
+      
+      {/* Bottom Navigation */}
+      {onNavigateToTab && (
+        <div style={{ paddingBottom: '100px' }}>
+          <BottomNavigation 
+            activeTab={activeBottomTab} 
+            onTabChange={onNavigateToTab}
+          />
         </div>
       )}
     </div>

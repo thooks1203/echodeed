@@ -145,7 +145,7 @@ export default function ParentDashboard() {
           <Button
             variant="outline"
             size="sm"
-            onClick={() => navigate('/?tab=schools')}
+            onClick={() => navigate('/app?tab=schools')}
             className="flex items-center gap-2"
             data-testid="back-to-schools"
           >

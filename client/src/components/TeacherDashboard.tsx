@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -18,7 +19,8 @@ import {
   Settings,
   BarChart3,
   Clock,
-  CheckCircle
+  CheckCircle,
+  ArrowLeft
 } from 'lucide-react';
 
 interface ClassroomStats {
@@ -147,6 +149,7 @@ const sampleLessonPlans: LessonPlan[] = [
 export function TeacherDashboard() {
   const [selectedTab, setSelectedTab] = useState<string>('overview');
   const [filterNeedsEncouragement, setFilterNeedsEncouragement] = useState<boolean>(false);
+  const [, navigate] = useLocation();
 
   const stats = sampleClassroomStats;
   const students = filterNeedsEncouragement 
@@ -159,13 +162,25 @@ export function TeacherDashboard() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                📚 Teacher Dashboard
-              </h1>
-              <p className="text-gray-600">
-                Mrs. Johnson's 3rd Grade Class • Character Education & Kindness Tracking
-              </p>
+            <div className="flex items-center gap-3">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => navigate('/app')}
+                className="flex items-center gap-2"
+                data-testid="back-to-platform"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Back to Platform
+              </Button>
+              <div>
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  📚 Teacher Dashboard
+                </h1>
+                <p className="text-gray-600">
+                  Mrs. Johnson's 3rd Grade Class • Character Education & Kindness Tracking
+                </p>
+              </div>
             </div>
             <div className="flex gap-2">
               <Button variant="outline" size="sm">

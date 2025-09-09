@@ -1,6 +1,26 @@
+import { useState } from 'react';
+import { useLocation } from 'wouter';
 import { ElectricHeart } from './ElectricHeart';
 
 export function LandingPage() {
+  const [, navigate] = useLocation();
+
+  const handleGetStarted = () => {
+    navigate('/app?tab=schools');
+  };
+
+  const handleTeacherLogin = () => {
+    navigate('/teacher-dashboard');
+  };
+
+  const handleAdminLogin = () => {
+    navigate('/admin-dashboard');
+  };
+
+  const handleParentLogin = () => {
+    navigate('/parent-dashboard');
+  };
+
   return (
     <div style={{ 
       maxWidth: '430px', 
@@ -41,7 +61,7 @@ export function LandingPage() {
           margin: '0 0 8px 0',
           fontWeight: '600'
         }}>
-          Your Kindness, Amplified
+          Character Education for K-8 Schools
         </p>
         <p style={{ 
           fontSize: '14px', 
@@ -49,17 +69,18 @@ export function LandingPage() {
           margin: 0,
           fontStyle: 'italic'
         }}>
-          Anonymous kindness platform designed to inspire and track acts of kindness through a community-driven feed
+          Anonymous kindness platform designed for classroom character development and social-emotional learning
         </p>
       </div>
 
-      {/* Value Proposition */}
+      {/* School Role Selection */}
       <div style={{
         background: 'white',
         borderRadius: '16px',
         padding: '24px',
         marginBottom: '32px',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+        width: '100%'
       }}>
         <h2 style={{ 
           fontSize: '20px', 
@@ -68,87 +89,204 @@ export function LandingPage() {
           color: '#1f2937',
           textAlign: 'center'
         }}>
-          🚀 Revolutionary Features
+          🏫 Choose Your Role
+        </h2>
+        
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          <button 
+            onClick={handleTeacherLogin}
+            style={{
+              backgroundColor: '#8B5CF6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#7C3AED';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#8B5CF6';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>👩‍🏫</span>
+            Teacher Dashboard
+          </button>
+
+          <button 
+            onClick={handleAdminLogin}
+            style={{
+              backgroundColor: '#10B981',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#059669';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#10B981';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>👨‍💼</span>
+            Administrator Dashboard
+          </button>
+
+          <button 
+            onClick={handleParentLogin}
+            style={{
+              backgroundColor: '#3B82F6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#2563EB';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#3B82F6';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>👨‍👩‍👧‍👦</span>
+            Parent Dashboard
+          </button>
+
+          <button 
+            onClick={handleGetStarted}
+            style={{
+              backgroundColor: 'white',
+              color: '#6b7280',
+              border: '2px solid #e5e7eb',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.borderColor = '#8B5CF6';
+              (e.target as HTMLButtonElement).style.color = '#8B5CF6';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.borderColor = '#e5e7eb';
+              (e.target as HTMLButtonElement).style.color = '#6b7280';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>🏠</span>
+            Student Feed
+          </button>
+        </div>
+      </div>
+
+      {/* School Features Preview */}
+      <div style={{
+        background: 'white',
+        borderRadius: '16px',
+        padding: '24px',
+        marginBottom: '32px',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+        width: '100%'
+      }}>
+        <h2 style={{ 
+          fontSize: '20px', 
+          fontWeight: '600',
+          margin: '0 0 16px 0',
+          color: '#1f2937',
+          textAlign: 'center'
+        }}>
+          ✨ K-8 Character Education Features
         </h2>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {[
-            { icon: '🧠', title: 'AI Wellness Predictions', desc: '87% accuracy in predicting employee burnout' },
-            { icon: '🔔', title: 'Smart Notifications', desc: 'Real-time wellness alerts and kindness reminders' },
-            { icon: '📊', title: 'Impact Analytics', desc: 'Track emotional uplift and community wellness scores' },
-            { icon: '🏆', title: 'Achievement System', desc: 'Unlock badges and earn $ECHO tokens for kindness' }
+            { icon: '📚', title: 'Curriculum Integration', desc: 'Aligned with SEL standards for K-8 character education' },
+            { icon: '👩‍🏫', title: 'Teacher Tools', desc: 'Classroom management and student progress tracking' },
+            { icon: '🏅', title: 'Student Achievements', desc: 'Badge system and kindness point rewards' },
+            { icon: '👨‍👩‍👧‍👦', title: 'Parent Communication', desc: 'Weekly reports and progress updates' },
+            { icon: '📊', title: 'School Analytics', desc: 'District-wide character development insights' },
+            { icon: '🔒', title: 'Anonymous & Safe', desc: 'FERPA/COPPA compliant with privacy protection' }
           ].map((feature, index) => (
             <div key={index} style={{
               display: 'flex',
               alignItems: 'center',
-              gap: '12px',
-              padding: '8px 0'
+              padding: '12px',
+              backgroundColor: '#f9fafb',
+              borderRadius: '8px',
+              gap: '12px'
             }}>
               <span style={{ fontSize: '24px' }}>{feature.icon}</span>
               <div>
-                <div style={{ fontSize: '14px', fontWeight: '600', color: '#1f2937' }}>
+                <h3 style={{ 
+                  fontSize: '14px', 
+                  fontWeight: '600',
+                  margin: '0 0 4px 0',
+                  color: '#1f2937'
+                }}>
                   {feature.title}
-                </div>
-                <div style={{ fontSize: '12px', color: '#6b7280' }}>
+                </h3>
+                <p style={{ 
+                  fontSize: '12px', 
+                  color: '#6b7280',
+                  margin: 0
+                }}>
                   {feature.desc}
-                </div>
+                </p>
               </div>
             </div>
           ))}
         </div>
       </div>
 
-      {/* CTA Section */}
-      <div style={{
-        background: 'linear-gradient(135deg, #8B5CF6 0%, #3B82F6 100%)',
-        borderRadius: '16px',
-        padding: '24px',
-        color: 'white',
-        textAlign: 'center',
-        marginBottom: '24px',
-        width: '100%',
-        maxWidth: '360px'
-      }}>
-        <h3 style={{ 
-          fontSize: '18px', 
-          fontWeight: '600',
-          margin: '0 0 12px 0'
-        }}>
-          Ready to Transform Your Workplace?
-        </h3>
-        <p style={{ 
-          fontSize: '14px', 
-          opacity: 0.9,
-          margin: '0 0 20px 0'
-        }}>
-          Join thousands of companies using AI-powered kindness to boost employee wellness and reduce turnover by 25%.
-        </p>
-        <a 
-          href="/api/login"
-          style={{
-            display: 'inline-block',
-            background: 'white',
-            color: '#8B5CF6',
-            padding: '12px 32px',
-            borderRadius: '8px',
-            textDecoration: 'none',
-            fontSize: '16px',
-            fontWeight: '600',
-            transition: 'all 0.2s ease',
-            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-          }}
-        >
-          🚀 Sign In with Replit
-        </a>
-      </div>
-
       {/* Footer */}
-      <div style={{ textAlign: 'center', color: '#9ca3af', fontSize: '12px' }}>
-        <p style={{ margin: '0 0 8px 0' }}>
-          ✨ <strong>Featured:</strong> $4.5B Corporate Wellness Market Leader
+      <div style={{ 
+        textAlign: 'center',
+        color: '#9ca3af',
+        fontSize: '12px'
+      }}>
+        <p style={{ margin: '0 0 4px 0' }}>
+          Trusted by K-8 schools nationwide
         </p>
         <p style={{ margin: 0 }}>
-          🎯 <strong>Results:</strong> 340% ROI • 87% AI Accuracy • 25% Turnover Reduction
+          FERPA & COPPA Compliant • Anonymous & Safe
         </p>
       </div>
     </div>

@@ -179,7 +179,7 @@ export default function AdminDashboard() {
         <div className="flex items-center gap-3">
           <Button
             variant="outline"
-            onClick={() => navigate('/')}
+            onClick={() => navigate('/app')}
             className="flex items-center gap-2"
             data-testid="back-to-platform"
           >

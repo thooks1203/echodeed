@@ -55,15 +55,15 @@ export default function Home() {
 
   // WebSocket for real-time updates
   useWebSocket((message: WebSocketMessage) => {
-    if (message.type === 'kindness_post') {
+    if (message.type === 'NEW_POST') {
       queryClient.invalidateQueries({ queryKey: ['/api/posts'] });
       queryClient.invalidateQueries({ queryKey: ['/api/counter'] });
       setCounterPulse(true);
       setTimeout(() => setCounterPulse(false), 1000);
-    } else if (message.type === 'token_earned') {
-      setTokenEarning(message.data);
-      queryClient.invalidateQueries({ queryKey: ['/api/tokens'] });
-      setTimeout(() => setTokenEarning(null), 3000);
+    } else if (message.type === 'COUNTER_UPDATE') {
+      queryClient.invalidateQueries({ queryKey: ['/api/counter'] });
+      setCounterPulse(true);
+      setTimeout(() => setCounterPulse(false), 1000);
     }
   });
 
@@ -96,7 +96,12 @@ export default function Home() {
 
   // Show different content based on active tab
   if (activeTab === 'schools') {
-    return <SchoolsDashboard />;
+    return (
+      <SchoolsDashboard 
+        onNavigateToTab={navigateToTab} 
+        activeBottomTab={activeTab}
+      />
+    );
   }
 
   if (activeTab === 'rewards') {
@@ -108,7 +113,7 @@ export default function Home() {
         minHeight: '100vh',
         position: 'relative'
       }}>
-        <AppHeader counter={counter || { count: 0 }} isPulse={counterPulse} />
+        <AppHeader counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} isPulse={counterPulse} />
         
         <div style={{ padding: '20px', paddingBottom: '100px' }}>
           <h2 style={{ 
@@ -203,7 +208,7 @@ export default function Home() {
         minHeight: '100vh',
         position: 'relative'
       }}>
-        <AppHeader counter={counter || { count: 0 }} isPulse={counterPulse} />
+        <AppHeader counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} isPulse={counterPulse} />
         
         <div style={{ padding: '20px', paddingBottom: '100px' }}>
           <h2 style={{ 
@@ -284,7 +289,7 @@ export default function Home() {
       minHeight: '100vh',
       position: 'relative'
     }}>
-      <AppHeader counter={counter || { count: 0 }} isPulse={counterPulse} />
+      <AppHeader counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} isPulse={counterPulse} />
       
       <div style={{ paddingBottom: '100px' }}>
         <FilterBar 
