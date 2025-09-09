@@ -2767,10 +2767,49 @@ export default function Home() {
             </h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               {[
-                { icon: '☕️', title: '$5 Coffee Gift Card', cost: 50, available: true, sponsor: 'Local Coffee Co', website: 'https://localcoffee.com' },
-                { icon: '🎬', title: '$10 Movie Ticket', cost: 100, available: (tokens?.echoBalance || 0) >= 100, sponsor: 'ABC Construction', website: 'https://abcconstruction.com' },
-                { icon: '🛍️', title: '$25 Shopping Voucher', cost: 250, available: (tokens?.echoBalance || 0) >= 250, sponsor: 'TechFlow Inc', website: 'https://techflow.com' },
-                { icon: '🍽️', title: '$50 Restaurant Credit', cost: 500, available: (tokens?.echoBalance || 0) >= 500, sponsor: 'WellCore Fitness', website: 'https://wellcorefitness.com' }
+                { 
+                  icon: '☕️', 
+                  title: '$5 Coffee Gift Card', 
+                  cost: 50, 
+                  available: true, 
+                  sponsor: 'Local Coffee Co', 
+                  website: 'https://localcoffee.com',
+                  brandColors: { primary: 'linear-gradient(135deg, #8B4513, #D2691E)', text: 'white' },
+                  customMessage: 'Supporting Community Kindness ☕️',
+                  sponsorTagline: 'Brewing kindness, one cup at a time'
+                },
+                { 
+                  icon: '🎬', 
+                  title: '$10 Movie Ticket', 
+                  cost: 100, 
+                  available: (tokens?.echoBalance || 0) >= 100, 
+                  sponsor: 'ABC Construction', 
+                  website: 'https://abcconstruction.com',
+                  brandColors: { primary: 'linear-gradient(135deg, #FF6600, #FF8533)', text: 'white' },
+                  customMessage: 'Building Communities Together 🏗️'
+                },
+                { 
+                  icon: '🛍️', 
+                  title: '$25 Shopping Voucher', 
+                  cost: 250, 
+                  available: (tokens?.echoBalance || 0) >= 250, 
+                  sponsor: 'TechFlow Inc', 
+                  website: 'https://techflow.com',
+                  brandColors: { primary: 'linear-gradient(135deg, #4F46E5, #7C3AED)', text: 'white' },
+                  customMessage: 'Empowering Through Technology 💻',
+                  sponsorTagline: 'Innovation meets compassion'
+                },
+                { 
+                  icon: '🍽️', 
+                  title: '$50 Restaurant Credit', 
+                  cost: 500, 
+                  available: (tokens?.echoBalance || 0) >= 500, 
+                  sponsor: 'WellCore Fitness', 
+                  website: 'https://wellcorefitness.com',
+                  brandColors: { primary: 'linear-gradient(135deg, #059669, #10B981)', text: 'white' },
+                  customMessage: 'Wellness & Kindness United 💪',
+                  sponsorTagline: 'Strong bodies, stronger communities'
+                }
               ].map((reward, index) => (
                 <div key={index} style={{
                   display: 'flex',
@@ -2818,15 +2857,41 @@ export default function Home() {
                             lineHeight: '1.4'
                           }}
                         >
-                          🏢 Proudly sponsored by {reward.sponsor}
+                          <div style={{
+                            background: reward.brandColors?.primary || 'linear-gradient(135deg, #3b82f6, #1d4ed8)',
+                            color: 'white',
+                            padding: '6px 8px',
+                            borderRadius: '4px',
+                            fontSize: '10px',
+                            fontWeight: '600',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            marginTop: '-2px'
+                          }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                              {reward.sponsorLogo ? (
+                                <img 
+                                  src={reward.sponsorLogo} 
+                                  alt={`${reward.sponsor} logo`}
+                                  style={{ width: '12px', height: '12px', borderRadius: '2px' }}
+                                />
+                              ) : (
+                                <span style={{ fontSize: '10px' }}>🏢</span>
+                              )}
+                              <span>Sponsored by {reward.sponsor}</span>
+                            </div>
+                            <span style={{ fontSize: '8px' }}>↗️</span>
+                          </div>
                           {reward.website && (
                             <div style={{ 
-                              fontSize: '10px',
-                              fontWeight: '600', 
-                              marginTop: '1px',
-                              color: '#059669'
+                              fontSize: '9px',
+                              fontWeight: '500', 
+                              marginTop: '2px',
+                              color: '#059669',
+                              textAlign: 'center'
                             }}>
-                              📍 Please visit their website →
+                              {reward.customMessage || '💫 Visit website to show support'}
                             </div>
                           )}
                         </div>
