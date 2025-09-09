@@ -92,6 +92,99 @@ export async function initializeSampleRewardData() {
         contactEmail: 'manager@cfaburlington.com',
         location: 'Burlington, NC'
       },
+      // GRAHAM, NC PARTNERS - County Seat & Education Hub
+      {
+        partnerName: 'Children\'s Museum of Alamance County',
+        partnerLogo: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400',
+        partnerType: 'educational',
+        websiteUrl: 'http://www.childrensmuseumofalamance.org',
+        description: 'Award-winning interactive museum with hands-on exhibits for kids in Graham.',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 120, // 120 $ECHO = museum admission ($5)
+        maxRedemptionAmount: 500, // 500 $ECHO = family pass
+        contactEmail: 'info@childrensmuseumofalamance.org',
+        location: 'Graham, NC'
+      },
+      {
+        partnerName: 'Graham Theater',
+        partnerLogo: 'https://images.unsplash.com/photo-1489185078292-8e1c85e20335?w=400',
+        partnerType: 'entertainment',
+        websiteUrl: 'https://grahamtheater.com',
+        description: 'Family-owned theater with $4 tickets and free popcorn refills for kids.',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 100, // 100 $ECHO = movie ticket
+        maxRedemptionAmount: 400, // 400 $ECHO = family movie night
+        contactEmail: 'info@grahamtheater.com',
+        location: 'Graham, NC'
+      },
+      {
+        partnerName: 'The Verdict on the Square',
+        partnerLogo: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://theverdictonthesquare.com',
+        description: 'Downtown Graham restaurant with family atmosphere and patio seating.',
+        isActive: 1,
+        isFeatured: 0,
+        minRedemptionAmount: 300, // 300 $ECHO = family meal credit
+        maxRedemptionAmount: 1200, // 1200 $ECHO = full family dinner
+        contactEmail: 'info@theverdictonthesquare.com',
+        location: 'Graham, NC'
+      },
+      {
+        partnerName: 'Whit\'s Frozen Custard Graham',
+        partnerLogo: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.whitscustard.com',
+        description: 'Premium frozen custard treats perfect for family rewards in Graham.',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 150, // 150 $ECHO = custard treat
+        maxRedemptionAmount: 600, // 600 $ECHO = family dessert night
+        contactEmail: 'graham@whitscustard.com',
+        location: 'Graham, NC'
+      },
+      // MEBANE, NC PARTNERS - Shopping & Entertainment Hub
+      {
+        partnerName: 'Blue Ribbon Diner Mebane',
+        partnerLogo: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://blueribbondiner.com',
+        description: 'Retro diner with jukebox and comfort food that kids love in Mebane.',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 200, // 200 $ECHO = kids meal
+        maxRedemptionAmount: 800, // 800 $ECHO = family diner experience
+        contactEmail: 'info@blueribbondiner.com',
+        location: 'Mebane, NC'
+      },
+      {
+        partnerName: 'Buffaloe Lanes Mebane',
+        partnerLogo: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
+        partnerType: 'entertainment',
+        websiteUrl: 'https://www.buffaloe.com',
+        description: 'Bowling alley with arcade games perfect for family entertainment.',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 250, // 250 $ECHO = bowling game
+        maxRedemptionAmount: 1000, // 1000 $ECHO = family bowling party
+        contactEmail: 'mebane@buffaloe.com',
+        location: 'Mebane, NC'
+      },
+      {
+        partnerName: 'Muffin\'s Ice Cream Shoppe',
+        partnerLogo: 'https://images.unsplash.com/photo-1576506295286-5cda18df43e7?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://muffinsicecream.com',
+        description: 'Local ice cream shop favorite for families in Mebane.',
+        isActive: 1,
+        isFeatured: 0,
+        minRedemptionAmount: 120, // 120 $ECHO = ice cream treat
+        maxRedemptionAmount: 500, // 500 $ECHO = family ice cream outing
+        contactEmail: 'info@muffinsicecream.com',
+        location: 'Mebane, NC'
+      },
       // NATIONAL KID-FRIENDLY PARTNERS
       {
         partnerName: 'Scholastic Books',
@@ -266,9 +359,130 @@ export async function initializeSampleRewardData() {
         imageUrl: 'https://via.placeholder.com/300/E91E63/FFFFFF?text=CFA+Kids+Meal'
       },
 
+      // GRAHAM, NC OFFERS
+      {
+        partnerId: createdPartners[6].id, // Children's Museum
+        offerType: 'educational',
+        title: 'Museum Discovery Pass',
+        description: 'Admission to Children\'s Museum of Alamance County with hands-on exhibits!',
+        offerValue: 'Museum Pass',
+        echoCost: 120,
+        maxRedemptions: 100,
+        currentRedemptions: 15,
+        isActive: 1,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid Tuesday-Saturday 10am-5pm. Kids 12 and under.',
+        imageUrl: 'https://via.placeholder.com/300/9C27B0/FFFFFF?text=Museum+Pass'
+      },
+
+      {
+        partnerId: createdPartners[7].id, // Graham Theater
+        offerType: 'entertainment',
+        title: 'Family Movie Experience',
+        description: 'Movie ticket with free popcorn refills at family-owned Graham Theater!',
+        offerValue: 'Movie + Popcorn',
+        echoCost: 100,
+        maxRedemptions: 80,
+        currentRedemptions: 22,
+        isActive: 1,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'G-rated films recommended for kids. Free popcorn refills included.',
+        imageUrl: 'https://via.placeholder.com/300/FF6B9D/FFFFFF?text=Movie+Night'
+      },
+
+      {
+        partnerId: createdPartners[8].id, // The Verdict on the Square
+        offerType: 'meal',
+        title: 'Family Meal Credit',
+        description: 'Dining credit at downtown Graham\'s popular family restaurant!',
+        offerValue: '$10 Credit',
+        echoCost: 300,
+        maxRedemptions: 50,
+        currentRedemptions: 8,
+        isActive: 1,
+        isFeatured: 0,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid for food and non-alcoholic beverages. Patio seating available.',
+        imageUrl: 'https://via.placeholder.com/300/FF5722/FFFFFF?text=Family+Meal'
+      },
+
+      {
+        partnerId: createdPartners[9].id, // Whit's Frozen Custard
+        offerType: 'treat',
+        title: 'Premium Custard Treat',
+        description: 'Delicious frozen custard treat at Whit\'s in Graham!',
+        offerValue: 'Custard Treat',
+        echoCost: 150,
+        maxRedemptions: 120,
+        currentRedemptions: 35,
+        isActive: 1,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Choice of flavors and toppings. Perfect for celebrating kindness!',
+        imageUrl: 'https://via.placeholder.com/300/00BCD4/FFFFFF?text=Custard+Treat'
+      },
+
+      // MEBANE, NC OFFERS
+      {
+        partnerId: createdPartners[10].id, // Blue Ribbon Diner
+        offerType: 'meal',
+        title: 'Retro Diner Kids Meal',
+        description: 'Classic kids meal with jukebox entertainment at Blue Ribbon Diner!',
+        offerValue: 'Kids Meal',
+        echoCost: 200,
+        maxRedemptions: 75,
+        currentRedemptions: 18,
+        isActive: 1,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Includes drink and choice of sides. Jukebox entertainment included.',
+        imageUrl: 'https://via.placeholder.com/300/E91E63/FFFFFF?text=Retro+Meal'
+      },
+
+      {
+        partnerId: createdPartners[11].id, // Buffaloe Lanes
+        offerType: 'entertainment',
+        title: 'Family Bowling Fun',
+        description: 'Bowling game with arcade access at Buffaloe Lanes Mebane!',
+        offerValue: 'Bowling Game',
+        echoCost: 250,
+        maxRedemptions: 60,
+        currentRedemptions: 12,
+        isActive: 1,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Includes shoe rental and access to arcade games.',
+        imageUrl: 'https://via.placeholder.com/300/FF9800/FFFFFF?text=Bowling+Fun'
+      },
+
+      {
+        partnerId: createdPartners[12].id, // Muffin's Ice Cream
+        offerType: 'treat',
+        title: 'Local Ice Cream Favorite',
+        description: 'Ice cream treat at Mebane\'s beloved Muffin\'s Ice Cream Shoppe!',
+        offerValue: 'Ice Cream',
+        echoCost: 120,
+        maxRedemptions: 100,
+        currentRedemptions: 28,
+        isActive: 1,
+        isFeatured: 0,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Choice of flavors and toppings. Local family favorite since 1985.',
+        imageUrl: 'https://via.placeholder.com/300/4CAF50/FFFFFF?text=Ice+Cream'
+      },
+
       // DUAL REWARD OFFERS - National Partners
       {
-        partnerId: createdPartners[6].id, // Scholastic Books
+        partnerId: createdPartners[13].id, // Scholastic Books
         offerType: 'dual_reward',
         title: 'Book Bundle + Parent Amazon Credit',
         description: 'Kid gets $10 Scholastic book bundle, parent gets $10 Amazon gift card!',
@@ -288,7 +502,7 @@ export async function initializeSampleRewardData() {
       },
 
       {
-        partnerId: createdPartners[7].id, // Target Education
+        partnerId: createdPartners[14].id, // Target Education
         offerType: 'dual_reward',
         title: 'School Supplies + Parent Target Credit',
         description: 'Kid gets school supply bundle, parent gets $15 Target gift card!',
@@ -308,7 +522,7 @@ export async function initializeSampleRewardData() {
       },
 
       {
-        partnerId: createdPartners[8].id, // LEGO Education
+        partnerId: createdPartners[15].id, // LEGO Education
         offerType: 'dual_reward',
         title: 'LEGO Set + Parent Amazon Credit',
         description: 'Kid gets educational LEGO set, parent gets $20 Amazon gift card!',
@@ -328,7 +542,7 @@ export async function initializeSampleRewardData() {
       },
 
       {
-        partnerId: createdPartners[9].id, // Amazon Family
+        partnerId: createdPartners[16].id, // Amazon Family
         offerType: 'dual_reward',
         title: 'Educational Book + Parent Credit',
         description: 'Kid gets educational book, parent gets $8 Amazon credit!',

@@ -15,7 +15,7 @@ import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 
 function Router() {
   const [location, setLocation] = useLocation();
-  const showFloatingButton = location !== '/rewards' && location !== '/' && location !== '/teacher-dashboard' && location !== '/admin' && location !== '/admin-dashboard' && location !== '/parent' && location !== '/parent-dashboard';
+  const showFloatingButton = location !== '/rewards' && location !== '/';
 
   return (
     <>
