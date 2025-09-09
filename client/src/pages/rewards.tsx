@@ -354,8 +354,13 @@ export default function RewardsPage() {
             {/* All Offers */}
             <div className="space-y-4">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">All Rewards</h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {enrichedOffers.map((offer: RewardOffer) => (
+              {enrichedOffers.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-500 dark:text-gray-400">Loading amazing Burlington & Alamance County rewards...</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {enrichedOffers.map((offer: RewardOffer) => (
                   <Card key={offer.id} className="hover:shadow-lg transition-all bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-700/20">
                     {offer.imageUrl && (
                       <div className="h-32 bg-cover bg-center rounded-t-lg" style={{ backgroundImage: `url(${offer.imageUrl})` }} />
@@ -428,7 +433,8 @@ export default function RewardsPage() {
                     </CardContent>
                   </Card>
                 ))}
-              </div>
+                </div>
+              )}
             </div>
           </TabsContent>
 
