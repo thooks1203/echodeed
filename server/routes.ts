@@ -2975,6 +2975,81 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // PREMIUM SPONSOR ANALYTICS ENDPOINTS
+
+  // Track sponsor impressions
+  app.post('/api/sponsors/track/impression', async (req, res) => {
+    try {
+      const { sponsorCompany, offerId, userId } = req.body;
+      await storage.trackSponsorImpression(sponsorCompany, offerId, userId);
+      res.status(200).json({ success: true, message: 'Impression tracked' });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Track sponsor clicks
+  app.post('/api/sponsors/track/click', async (req, res) => {
+    try {
+      const { sponsorCompany, offerId, targetUrl, userId } = req.body;
+      await storage.trackSponsorClick(sponsorCompany, offerId, targetUrl, userId);
+      res.status(200).json({ success: true, message: 'Click tracked' });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get sponsor analytics
+  app.get('/api/sponsors/:sponsorCompany/analytics', async (req, res) => {
+    try {
+      const { sponsorCompany } = req.params;
+      const { startDate, endDate, eventType } = req.query;
+      
+      const filters: any = {};
+      if (startDate) filters.startDate = new Date(startDate as string);
+      if (endDate) filters.endDate = new Date(endDate as string);
+      if (eventType) filters.eventType = eventType as string;
+
+      const analytics = await storage.getSponsorAnalytics(sponsorCompany, filters);
+      res.json(analytics);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Generate sponsor impact report
+  app.post('/api/sponsors/:sponsorCompany/reports', async (req, res) => {
+    try {
+      const { sponsorCompany } = req.params;
+      const { startDate, endDate } = req.body;
+      
+      const report = await storage.generateSponsorImpactReport(
+        sponsorCompany,
+        new Date(startDate),
+        new Date(endDate)
+      );
+      res.status(201).json(report);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get sponsor impact reports
+  app.get('/api/sponsors/:sponsorCompany/reports', async (req, res) => {
+    try {
+      const { sponsorCompany } = req.params;
+      const { limit } = req.query;
+      
+      const reports = await storage.getSponsorImpactReports(
+        sponsorCompany,
+        limit ? parseInt(limit as string) : 10
+      );
+      res.json(reports);
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Marketing & Viral Growth API Endpoints
   app.get('/api/marketing/metrics', isAuthenticated, async (req, res) => {
     try {
