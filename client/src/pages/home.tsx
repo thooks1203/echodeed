@@ -12,6 +12,7 @@ import { SummerChallenges } from '@/components/SummerChallenges';
 import { ConflictReportModal } from '@/components/ConflictReportModal';
 import { BullyingPreventionDashboard } from '@/components/BullyingPreventionDashboard';
 import { KindnessExchangeModal } from '@/components/KindnessExchangeModal';
+import { SupportCircle } from '@/components/SupportCircle';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { KindnessPost, KindnessCounter, UserTokens } from '@shared/schema';
@@ -360,6 +361,16 @@ export default function Home() {
         </div>
         
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
+    );
+  }
+
+  if (activeTab === 'support') {
+    return (
+      <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+        <AppHeader counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} isPulse={counterPulse} />
+        <SupportCircle />
+        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
     );
   }
