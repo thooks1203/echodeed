@@ -182,6 +182,9 @@ export function ParentDashboard() {
               {totalPointsEarned}
             </div>
             <div style={{ fontSize: '12px', color: '#6B7280' }}>Total Points</div>
+            <div style={{ fontSize: '10px', color: '#8B5CF6', marginTop: '4px' }}>
+              {totalPointsEarned >= 100 ? '🎁 Milestone reached!' : `${250 - totalPointsEarned} to next reward`}
+            </div>
           </div>
           
           <div style={{
@@ -521,6 +524,33 @@ export function ParentDashboard() {
               </h3>
               
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {/* Partner Milestone Reward */}
+                <div style={{
+                  padding: '16px',
+                  background: 'linear-gradient(135deg, #FDF2F8, #F3E8FF)',
+                  borderRadius: '8px',
+                  border: '2px solid #E879F9'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'flex-start' }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <img 
+                          src="https://logos-world.net/wp-content/uploads/2020/09/Starbucks-Logo.png" 
+                          alt="Starbucks" 
+                          style={{ width: '20px', height: '20px', objectFit: 'contain' }}
+                        />
+                        <div style={{ fontSize: '14px', fontWeight: '600', color: '#7C3AED' }}>
+                          🎁 Milestone Reward Earned!
+                        </div>
+                      </div>
+                      <div style={{ fontSize: '13px', color: '#6B46C1' }}>
+                        Your child earned a $5 Starbucks Gift Card for reaching 100 summer kindness points! Code: STAR-KND-A7B9
+                      </div>
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#6B7280' }}>30m ago</div>
+                  </div>
+                </div>
+
                 {/* Demo notifications - in real app, these would come from API */}
                 <div style={{
                   padding: '16px',
@@ -557,6 +587,33 @@ export function ParentDashboard() {
                       </div>
                     </div>
                     <div style={{ fontSize: '11px', color: '#6B7280' }}>1d ago</div>
+                  </div>
+                </div>
+
+                {/* Upcoming Milestone Reward */}
+                <div style={{
+                  padding: '16px',
+                  background: '#FFF7ED',
+                  borderRadius: '8px',
+                  border: '1px solid #FDBA74'
+                }}>
+                  <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'flex-start' }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '4px' }}>
+                        <img 
+                          src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" 
+                          alt="Amazon" 
+                          style={{ width: '20px', height: '20px', objectFit: 'contain' }}
+                        />
+                        <div style={{ fontSize: '14px', fontWeight: '600', color: '#EA580C' }}>
+                          🎯 Next Milestone: 150 points left
+                        </div>
+                      </div>
+                      <div style={{ fontSize: '13px', color: '#C2410C' }}>
+                        Your child is 150 points away from earning a $10 Amazon Gift Card! Keep up the great kindness work!
+                      </div>
+                    </div>
+                    <div style={{ fontSize: '11px', color: '#6B7280' }}>Active</div>
                   </div>
                 </div>
 
