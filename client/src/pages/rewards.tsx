@@ -166,6 +166,16 @@ export default function RewardsPage() {
   // Filter featured offers
   const featuredOffers = enrichedOffers.filter((offer: RewardOffer) => offer.isFeatured);
   const featuredPartners = partners.filter((partner: RewardPartner) => partner.isFeatured);
+  
+  // DEBUG: Log sponsorship data
+  console.log('🎯 DEBUG: Featured offers with sponsorship data:', 
+    featuredOffers.map(offer => ({
+      title: offer.title,
+      sponsorCompany: offer.sponsorCompany,
+      sponsorshipMessage: offer.sponsorshipMessage,
+      hasSponsorship: !!offer.sponsorCompany
+    }))
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-green-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-green-950/20 p-4 md:p-8">
