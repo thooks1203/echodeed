@@ -6,6 +6,7 @@ import { queryClient } from "./lib/queryClient";
 import Home from "@/pages/home";
 import AdminDashboard from "@/pages/AdminDashboard";
 import ParentDashboard from "@/pages/ParentDashboard";
+import RewardsPage from "@/pages/rewards";
 import { TeacherDashboard } from "@/components/TeacherDashboard";
 import { LandingPage } from "@/components/landing-page";
 import PWAInstall from "@/components/PWAInstall";
@@ -18,6 +19,7 @@ function Router() {
       <Route path="/admin-dashboard" component={AdminDashboard} />
       <Route path="/parent" component={ParentDashboard} />
       <Route path="/parent-dashboard" component={ParentDashboard} />
+      <Route path="/rewards" component={RewardsPage} />
       <Route path="/app" component={Home} />
       <Route path="/" component={LandingPage} />
     </Switch>
