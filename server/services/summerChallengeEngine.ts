@@ -406,9 +406,72 @@ export class SummerChallengeEngine {
         .where(eq(userSummerProgress.id, progressId))
         .returning();
 
+      // Check if user qualifies for bonus partner reward based on progress
+      await this.checkForBonusReward(updatedProgress.userId, pointsAwarded);
+
       return updatedProgress;
     } catch (error) {
       throw new Error('Failed to approve challenge completion');
+    }
+  }
+
+  // Check if user qualifies for a bonus partner reward
+  private async checkForBonusReward(userId: string, pointsEarned: number) {
+    try {
+      // Get user's total approved summer points
+      const userTotalProgress = await db.select()
+        .from(userSummerProgress)
+        .where(and(
+          eq(userSummerProgress.userId, userId),
+          eq(userSummerProgress.parentApproved, true)
+        ));
+
+      const totalPoints = userTotalProgress.reduce((sum, p) => sum + (p.pointsEarned || 0), 0);
+      
+      // Award partner rewards at milestone achievements
+      const milestones = [
+        { points: 100, partner: 'Starbucks', reward: '$5 Gift Card' },
+        { points: 250, partner: 'Amazon', reward: '$10 Gift Card' },
+        { points: 500, partner: 'Target', reward: '$15 Gift Card' },
+        { points: 750, partner: 'Starbucks', reward: '$20 Gift Card' }
+      ];
+
+      const qualifiedMilestone = milestones.find(m => 
+        totalPoints >= m.points && 
+        (totalPoints - pointsEarned) < m.points // Just crossed this milestone
+      );
+
+      if (qualifiedMilestone) {
+        await this.awardMilestoneReward(userId, qualifiedMilestone);
+      }
+    } catch (error) {
+      console.error('Error checking for bonus reward:', error);
+    }
+  }
+
+  // Award milestone reward from specific partner
+  private async awardMilestoneReward(userId: string, milestone: { points: number, partner: string, reward: string }) {
+    try {
+      console.log(`🎁 MILESTONE REWARD! User ${userId} earned ${milestone.reward} from ${milestone.partner} for reaching ${milestone.points} summer points!`);
+      
+      // In real implementation, this would:
+      // 1. Find the partner offer in the database
+      // 2. Create a redemption record
+      // 3. Use the fulfillment service to generate actual redemption codes
+      // 4. Send notification to parent and child
+      
+      this.parentNotifications.push({
+        id: `milestone_${Date.now()}`,
+        parentId: 'demo-parent',
+        studentId: userId,
+        type: 'milestone_reward',
+        title: `🎉 Milestone Reward Earned!`,
+        message: `Your child earned a ${milestone.reward} from ${milestone.partner} for reaching ${milestone.points} summer kindness points!`,
+        isRead: false,
+        scheduledFor: new Date()
+      });
+    } catch (error) {
+      console.error('Error awarding milestone reward:', error);
     }
   }
 }
