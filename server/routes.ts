@@ -17,10 +17,10 @@ async function triggerInstantParentNotification(studentUserId: string, postConte
       for (const parentLink of parentLinks) {
         // Create instant notification for parent
         const notification = {
-          parentAccountId: parentLink.parentAccountId,
+          parentAccountId: parentLink.id,
           studentUserId: studentUserId,
           notificationType: 'kindness_post' as const,
-          title: `🌟 ${parentLink.studentName || 'Your child'} shared a kindness act!`,
+          title: `🌟 Your child shared a kindness act!`,
           message: `Your child just posted about a wonderful act of kindness. You both earned rewards through our dual reward system!`,
           relatedData: {
             postContent: postContent,
@@ -36,7 +36,7 @@ async function triggerInstantParentNotification(studentUserId: string, postConte
         
         // TODO: Trigger push notification to parent's device
         console.log('📱 Instant parent notification created:', {
-          parent: parentLink.parentAccountId,
+          parent: parentLink.id,
           student: studentUserId,
           postPreview: postContent.slice(0, 50) + '...'
         });
@@ -5288,7 +5288,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get recent data for analysis
       const recentConflicts = await storage.getConflictReports(schoolId);
-      const recentPosts = await storage.getKindnessPosts({ schoolId, limit: 50 });
+      const recentPosts = await storage.getPosts({ schoolId, limit: 50 });
       
       // Generate AI predictions for each grade
       const predictions = [];
