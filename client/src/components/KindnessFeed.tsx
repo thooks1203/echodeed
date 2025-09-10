@@ -206,7 +206,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
                         className={`flex items-center gap-1.5 transition-all duration-200 hover:scale-110 active:scale-95 ${
                           clickedPosts.has(post.id) ? 'animate-pulse' : ''
                         } ${(post.echoesCount || 0) > 0 ? 'text-blue-500' : 'text-gray-400 hover:text-blue-500'}`}
-                        title="⚡ Echo this kindness to amplify its impact and spread positivity"
+                        title="⚡ Echo = 'I want to try this kindness too!' Your goal is to do this same act yourself!"
                         data-testid={`button-echo-${post.id}`}
                       >
                         <Zap 

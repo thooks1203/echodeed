@@ -40,6 +40,18 @@ export function AppHeader({ counter, isPulse }: AppHeaderProps) {
           </div>
           <p className="text-primary-foreground/70 text-xs mt-1">acts of kindness shared</p>
         </div>
+        
+        {/* Echo Explanation for Kids */}
+        <div className="mt-3 bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg border border-blue-200 dark:border-blue-800">
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-blue-600 dark:text-blue-400 text-sm">⚡</span>
+            <h3 className="text-blue-800 dark:text-blue-300 text-sm font-semibold">What does "Echo" mean?</h3>
+          </div>
+          <p className="text-blue-700 dark:text-blue-300 text-xs leading-relaxed">
+            When you <strong>echo</strong> someone's post, you're saying <strong>"I want to try this kindness too!"</strong> 
+            Your goal is to do the same act of kindness yourself and then share your own story! 💝
+          </p>
+        </div>
       </div>
     </header>
   );
