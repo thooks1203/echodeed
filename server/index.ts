@@ -4,6 +4,7 @@ import { setupVite, serveStatic, log } from "./vite";
 import { initializeSampleData } from "./initData";
 import { initializeSampleRewardData } from "./sampleRewardData";
 import { initializeMentorBadges } from "./mentorBadgeData";
+import { initializeMentorTraining } from "./mentorTrainingData";
 import { storage } from "./storage";
 
 const app = express();
@@ -67,6 +68,7 @@ app.use((req, res, next) => {
       await initializeSampleRewardData();
       await storage.initializeEducationSubscriptionPlans();
       await initializeMentorBadges();
+      await initializeMentorTraining();
       log('✓ Sample data initialization completed');
 
       // Initialize Summer Challenge Program

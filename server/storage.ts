@@ -145,6 +145,8 @@ import {
   userMentorBadges,
   mentorTraining,
   userMentorTraining,
+  mentorScenarios,
+  mentorConversations,
   mentorPreferences,
   mentorStats,
   type YearRoundFamilyChallenge,
@@ -3705,6 +3707,81 @@ export class DatabaseStorage implements IStorage {
     });
 
     return eligibleBadges;
+  }
+
+  // Mentor Training Operations
+  async createMentorTraining(training: InsertMentorTraining): Promise<MentorTraining> {
+    const [createdTraining] = await db
+      .insert(mentorTraining)
+      .values(training)
+      .returning();
+    return createdTraining;
+  }
+
+  async getMentorTrainingByTitle(title: string): Promise<MentorTraining | undefined> {
+    const [training] = await db
+      .select()
+      .from(mentorTraining)
+      .where(eq(mentorTraining.title, title));
+    return training;
+  }
+
+  async getAllMentorTraining(): Promise<MentorTraining[]> {
+    return await db
+      .select()
+      .from(mentorTraining)
+      .where(eq(mentorTraining.isActive, true))
+      .orderBy(mentorTraining.sortOrder);
+  }
+
+  // Mentor Scenario Operations
+  async createMentorScenario(scenario: InsertMentorScenario): Promise<MentorScenario> {
+    const [createdScenario] = await db
+      .insert(mentorScenarios)
+      .values(scenario)
+      .returning();
+    return createdScenario;
+  }
+
+  async getMentorScenarioByTitle(title: string): Promise<MentorScenario | undefined> {
+    const [scenario] = await db
+      .select()
+      .from(mentorScenarios)
+      .where(eq(mentorScenarios.title, title));
+    return scenario;
+  }
+
+  async getAllMentorScenarios(): Promise<MentorScenario[]> {
+    return await db
+      .select()
+      .from(mentorScenarios)
+      .where(eq(mentorScenarios.isActive, true))
+      .orderBy(mentorScenarios.sortOrder);
+  }
+
+  // Mentor Conversation Operations
+  async createMentorConversation(conversation: InsertMentorConversation): Promise<MentorConversation> {
+    const [createdConversation] = await db
+      .insert(mentorConversations)
+      .values(conversation)
+      .returning();
+    return createdConversation;
+  }
+
+  async getMentorConversationByTitle(title: string): Promise<MentorConversation | undefined> {
+    const [conversation] = await db
+      .select()
+      .from(mentorConversations)
+      .where(eq(mentorConversations.title, title));
+    return conversation;
+  }
+
+  async getAllMentorConversations(): Promise<MentorConversation[]> {
+    return await db
+      .select()
+      .from(mentorConversations)
+      .where(eq(mentorConversations.isActive, true))
+      .orderBy(mentorConversations.sortOrder);
   }
 
   // Mentor preferences and matching

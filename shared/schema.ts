@@ -1669,6 +1669,36 @@ export const mentorPreferences = pgTable("mentor_preferences", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Mentor Training Scenarios - Practice Situations  
+export const mentorScenarios = pgTable("mentor_scenarios", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title", { length: 200 }).notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // connection, guidance, challenges
+  difficulty: varchar("difficulty", { length: 20 }).notNull(),
+  description: text("description").notNull(),
+  scenario: text("scenario").notNull(), // full scenario description
+  learningPoints: jsonb("learning_points").notNull(), // key learning outcomes
+  suggestedApproaches: jsonb("suggested_approaches").notNull(), // recommended strategies
+  extensionActivities: jsonb("extension_activities").notNull(), // follow-up activities
+  isActive: boolean("is_active").default(true).notNull(),
+  sortOrder: integer("sort_order").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Sample Mentor Conversations - Training Examples
+export const mentorConversations = pgTable("mentor_conversations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title", { length: 200 }).notNull(),
+  category: varchar("category", { length: 50 }).notNull(),
+  description: text("description").notNull(),
+  participants: jsonb("participants").notNull(), // array of participant descriptions
+  conversationFlow: jsonb("conversation_flow").notNull(), // detailed conversation with notes
+  learningPoints: jsonb("learning_points").notNull(), // key takeaways
+  isActive: boolean("is_active").default(true).notNull(),
+  sortOrder: integer("sort_order").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Mentor Performance Analytics
 export const mentorStats = pgTable("mentor_stats", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -1710,6 +1740,12 @@ export type MentorPreferences = typeof mentorPreferences.$inferSelect;
 export type InsertMentorPreferences = typeof mentorPreferences.$inferInsert;
 export type MentorStats = typeof mentorStats.$inferSelect;
 export type InsertMentorStats = typeof mentorStats.$inferInsert;
+export type MentorTraining = typeof mentorTraining.$inferSelect;
+export type InsertMentorTraining = typeof mentorTraining.$inferInsert;
+export type MentorScenario = typeof mentorScenarios.$inferSelect;
+export type InsertMentorScenario = typeof mentorScenarios.$inferInsert;
+export type MentorConversation = typeof mentorConversations.$inferSelect;
+export type InsertMentorConversation = typeof mentorConversations.$inferInsert;
 
 export type YearRoundFamilyChallenge = typeof yearRoundFamilyChallenges.$inferSelect;
 export type InsertYearRoundFamilyChallenge = typeof yearRoundFamilyChallenges.$inferInsert;
