@@ -147,6 +147,10 @@ import {
   userMentorTraining,
   mentorScenarios,
   mentorConversations,
+  curriculumLessons,
+  curriculumProgress,
+  studentCurriculumResponses,
+  curriculumResources,
   mentorPreferences,
   mentorStats,
   type YearRoundFamilyChallenge,
@@ -168,6 +172,16 @@ import {
   type MentorPreferences,
   type InsertMentorPreferences,
   type MentorStats,
+  type MentorTraining,
+  type InsertMentorTraining,
+  type CurriculumLesson,
+  type InsertCurriculumLesson,
+  type CurriculumProgress,
+  type InsertCurriculumProgress,
+  type StudentCurriculumResponse,
+  type InsertStudentCurriculumResponse,
+  type CurriculumResource,
+  type InsertCurriculumResource,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte } from "drizzle-orm";
@@ -3870,6 +3884,154 @@ export class DatabaseStorage implements IStorage {
     // If schoolId provided, filter by school (this would require linking users to schools)
     const result = await query;
     return result.filter(r => r.user && r.stats) as Array<{ user: User; stats: MentorStats; }>;
+  }
+
+  // Curriculum operations
+  async getCurriculumLessons(filters?: {
+    gradeLevel?: string;
+    subject?: string;
+    kindnessTheme?: string;
+    difficulty?: string;
+    limit?: number;
+  }): Promise<CurriculumLesson[]> {
+    let query = db.select().from(curriculumLessons).where(eq(curriculumLessons.isActive, true));
+
+    if (filters?.gradeLevel) {
+      query = query.where(eq(curriculumLessons.gradeLevel, filters.gradeLevel));
+    }
+    if (filters?.subject) {
+      query = query.where(eq(curriculumLessons.subject, filters.subject));
+    }
+    if (filters?.kindnessTheme) {
+      query = query.where(eq(curriculumLessons.kindnessTheme, filters.kindnessTheme));
+    }
+    if (filters?.difficulty) {
+      query = query.where(eq(curriculumLessons.difficulty, filters.difficulty));
+    }
+
+    if (filters?.limit) {
+      query = query.limit(filters.limit);
+    }
+
+    return await query.orderBy(curriculumLessons.gradeLevel, curriculumLessons.title);
+  }
+
+  async getCurriculumLessonById(id: string): Promise<CurriculumLesson | undefined> {
+    const [lesson] = await db
+      .select()
+      .from(curriculumLessons)
+      .where(eq(curriculumLessons.id, id));
+    return lesson;
+  }
+
+  async createCurriculumLesson(lesson: InsertCurriculumLesson): Promise<CurriculumLesson> {
+    const [created] = await db
+      .insert(curriculumLessons)
+      .values(lesson)
+      .returning();
+    return created;
+  }
+
+  async updateCurriculumLesson(id: string, updates: Partial<InsertCurriculumLesson>): Promise<CurriculumLesson> {
+    const [updated] = await db
+      .update(curriculumLessons)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(curriculumLessons.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Teacher progress tracking
+  async getCurriculumProgress(teacherId: string): Promise<CurriculumProgress[]> {
+    return await db
+      .select()
+      .from(curriculumProgress)
+      .where(eq(curriculumProgress.teacherId, teacherId))
+      .orderBy(desc(curriculumProgress.implementedAt));
+  }
+
+  async createCurriculumProgress(progress: InsertCurriculumProgress): Promise<CurriculumProgress> {
+    const [created] = await db
+      .insert(curriculumProgress)
+      .values(progress)
+      .returning();
+    return created;
+  }
+
+  async updateCurriculumProgress(id: string, updates: Partial<InsertCurriculumProgress>): Promise<CurriculumProgress> {
+    const [updated] = await db
+      .update(curriculumProgress)
+      .set({ ...updates })
+      .where(eq(curriculumProgress.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Student responses
+  async getStudentCurriculumResponses(filters?: {
+    studentId?: string;
+    lessonId?: string;
+    progressId?: string;
+  }): Promise<StudentCurriculumResponse[]> {
+    let query = db.select().from(studentCurriculumResponses);
+
+    if (filters?.studentId) {
+      query = query.where(eq(studentCurriculumResponses.studentId, filters.studentId));
+    }
+    if (filters?.lessonId) {
+      query = query.where(eq(studentCurriculumResponses.lessonId, filters.lessonId));
+    }
+    if (filters?.progressId) {
+      query = query.where(eq(studentCurriculumResponses.progressId, filters.progressId));
+    }
+
+    return await query.orderBy(desc(studentCurriculumResponses.createdAt));
+  }
+
+  async createStudentCurriculumResponse(response: InsertStudentCurriculumResponse): Promise<StudentCurriculumResponse> {
+    const [created] = await db
+      .insert(studentCurriculumResponses)
+      .values(response)
+      .returning();
+    return created;
+  }
+
+  async updateStudentCurriculumResponse(id: string, updates: Partial<InsertStudentCurriculumResponse>): Promise<StudentCurriculumResponse> {
+    const [updated] = await db
+      .update(studentCurriculumResponses)
+      .set({ ...updates })
+      .where(eq(studentCurriculumResponses.id, id))
+      .returning();
+    return updated;
+  }
+
+  // Curriculum resources
+  async getCurriculumResources(filters?: {
+    lessonId?: string;
+    resourceType?: string;
+    gradeLevel?: string;
+  }): Promise<CurriculumResource[]> {
+    let query = db.select().from(curriculumResources);
+
+    if (filters?.lessonId) {
+      query = query.where(eq(curriculumResources.lessonId, filters.lessonId));
+    }
+    if (filters?.resourceType) {
+      query = query.where(eq(curriculumResources.resourceType, filters.resourceType));
+    }
+    if (filters?.gradeLevel) {
+      query = query.where(eq(curriculumResources.gradeLevel, filters.gradeLevel));
+    }
+
+    return await query.orderBy(curriculumResources.title);
+  }
+
+  async createCurriculumResource(resource: InsertCurriculumResource): Promise<CurriculumResource> {
+    const [created] = await db
+      .insert(curriculumResources)
+      .values(resource)
+      .returning();
+    return created;
   }
 }
 
