@@ -136,12 +136,18 @@ import {
   yearRoundFamilyChallenges,
   familyProgress,
   familyActivities,
+  schoolFundraisers,
+  familyDonations,
   type YearRoundFamilyChallenge,
   type InsertYearRoundFamilyChallenge,
   type FamilyProgress,
   type InsertFamilyProgress,
   type FamilyActivity,
   type InsertFamilyActivity,
+  type SchoolFundraiser,
+  type InsertSchoolFundraiser,
+  type FamilyDonation,
+  type InsertFamilyDonation,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte } from "drizzle-orm";
@@ -439,6 +445,15 @@ export interface IStorage {
   completeFamilyChallenge(progress: InsertFamilyProgress): Promise<FamilyProgress>;
   getFamilyProgress(studentId: string, challengeId?: string): Promise<FamilyProgress[]>;
   approveFamilyChallenge(progressId: string, teacherApproved: boolean): Promise<FamilyProgress | undefined>;
+
+  // School Fundraiser operations - DOUBLE TOKEN REWARDS!
+  createSchoolFundraiser(fundraiser: InsertSchoolFundraiser): Promise<SchoolFundraiser>;
+  getActiveFundraisers(schoolName?: string): Promise<SchoolFundraiser[]>;
+  getFundraiserById(id: string): Promise<SchoolFundraiser | undefined>;
+  updateFundraiserAmount(id: string, donationAmount: number): Promise<SchoolFundraiser | undefined>;
+  createFamilyDonation(donation: InsertFamilyDonation): Promise<FamilyDonation>;
+  getDonationsByUser(userTokenId: string): Promise<FamilyDonation[]>;
+  verifyDonation(donationId: string): Promise<FamilyDonation | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -3385,6 +3400,76 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return updated;
+  }
+
+  // School Fundraiser operations - DOUBLE TOKEN REWARDS! 🎯💰
+  async createSchoolFundraiser(fundraiser: InsertSchoolFundraiser): Promise<SchoolFundraiser> {
+    const [newFundraiser] = await db
+      .insert(schoolFundraisers)
+      .values(fundraiser)
+      .returning();
+    return newFundraiser;
+  }
+
+  async getActiveFundraisers(schoolName?: string): Promise<SchoolFundraiser[]> {
+    const now = new Date();
+    let query = db
+      .select()
+      .from(schoolFundraisers)
+      .where(and(
+        eq(schoolFundraisers.isActive, true),
+        gte(schoolFundraisers.endDate, now)
+      ));
+
+    if (schoolName) {
+      query = query.where(eq(schoolFundraisers.schoolName, schoolName));
+    }
+
+    return await query;
+  }
+
+  async getFundraiserById(id: string): Promise<SchoolFundraiser | undefined> {
+    const [fundraiser] = await db
+      .select()
+      .from(schoolFundraisers)
+      .where(eq(schoolFundraisers.id, id));
+    return fundraiser || undefined;
+  }
+
+  async updateFundraiserAmount(id: string, donationAmount: number): Promise<SchoolFundraiser | undefined> {
+    const [fundraiser] = await db
+      .update(schoolFundraisers)
+      .set({ 
+        currentAmount: sql`${schoolFundraisers.currentAmount} + ${donationAmount}` 
+      })
+      .where(eq(schoolFundraisers.id, id))
+      .returning();
+    return fundraiser || undefined;
+  }
+
+  async createFamilyDonation(donation: InsertFamilyDonation): Promise<FamilyDonation> {
+    const [newDonation] = await db
+      .insert(familyDonations)
+      .values(donation)
+      .returning();
+    return newDonation;
+  }
+
+  async getDonationsByUser(userTokenId: string): Promise<FamilyDonation[]> {
+    return await db
+      .select()
+      .from(familyDonations)
+      .where(eq(familyDonations.userTokenId, userTokenId))
+      .orderBy(desc(familyDonations.donationDate));
+  }
+
+  async verifyDonation(donationId: string): Promise<FamilyDonation | undefined> {
+    const [donation] = await db
+      .update(familyDonations)
+      .set({ isVerified: true })
+      .where(eq(familyDonations.id, donationId))
+      .returning();
+    return donation || undefined;
   }
 }
 
