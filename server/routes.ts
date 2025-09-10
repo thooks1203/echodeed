@@ -5542,13 +5542,26 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
-      // Create school administrator user
-      const adminUser = await storage.upsertUser({
-        email: principalEmail,
-        firstName: principalName.split(' ')[0],
-        lastName: principalName.split(' ').slice(1).join(' '),
-        workplaceId: schoolAccount.id,
-      });
+      // Create or get existing school administrator user
+      let adminUser;
+      try {
+        adminUser = await storage.upsertUser({
+          email: principalEmail,
+          firstName: principalName.split(' ')[0],
+          lastName: principalName.split(' ').slice(1).join(' '),
+          workplaceId: schoolAccount.id,
+        });
+      } catch (userError: any) {
+        // If user already exists, get the existing user
+        if (userError.code === '23505' && userError.constraint === 'users_email_unique') {
+          adminUser = await storage.getUserByEmail(principalEmail);
+          if (!adminUser) {
+            throw new Error('Failed to find or create administrator user');
+          }
+        } else {
+          throw userError;
+        }
+      }
 
       // Create school administrator record
       const schoolAdmin = await storage.createSchoolAdministrator({
