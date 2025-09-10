@@ -1548,10 +1548,168 @@ export const insertSchoolFundraiserSchema = createInsertSchema(schoolFundraisers
   });
 export const insertFamilyDonationSchema = createInsertSchema(familyDonations);
 
+// ===============================
+// 🎓 KINDNESS MENTORS SYSTEM - PEER GUIDANCE & RECOGNITION! 
+// ===============================
+
+// Mentor-Mentee Relationships
+export const mentorships = pgTable("mentorships", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  mentorUserId: varchar("mentor_user_id").notNull().references(() => users.id),
+  menteeUserId: varchar("mentee_user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id"), // For school-based mentoring programs
+  mentorAgeGroup: varchar("mentor_age_group", { length: 20 }).notNull(), // 6-8, 9-12, teen, adult
+  menteeAgeGroup: varchar("mentee_age_group", { length: 20 }).notNull(), // k-2, 3-5, 6-8
+  status: varchar("status", { length: 20 }).default("active").notNull(), // active, paused, completed, discontinued
+  matchingReason: text("matching_reason"), // Why they were matched
+  startDate: timestamp("start_date").defaultNow().notNull(),
+  expectedEndDate: timestamp("expected_end_date"), // Mentoring program duration
+  totalSessions: integer("total_sessions").default(0).notNull(),
+  mentorRating: real("mentor_rating"), // 1-5 rating from mentee/parent
+  menteeProgress: integer("mentee_progress").default(0).notNull(), // 0-100 kindness growth
+  specialNotes: text("special_notes"), // Any special considerations
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Mentoring Session Activities
+export const mentorActivities = pgTable("mentor_activities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  mentorshipId: varchar("mentorship_id").notNull().references(() => mentorships.id),
+  activityType: varchar("activity_type", { length: 50 }).notNull(), // guidance, challenge_together, skill_share, reflection
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description").notNull(),
+  sessionDate: timestamp("session_date").notNull(),
+  durationMinutes: integer("duration_minutes").default(30).notNull(),
+  mentorReflection: text("mentor_reflection"), // What the mentor learned
+  menteeReflection: text("mentee_reflection"), // What the mentee learned
+  kindnessActsCompleted: integer("kindness_acts_completed").default(0).notNull(),
+  skillsShared: jsonb("skills_shared"), // Array of skills taught/learned
+  mentorTokensEarned: integer("mentor_tokens_earned").default(0).notNull(),
+  menteeTokensEarned: integer("mentee_tokens_earned").default(0).notNull(),
+  parentApproval: boolean("parent_approval").default(false).notNull(),
+  isCompleted: boolean("is_completed").default(false).notNull(),
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Mentor Badge System
+export const mentorBadges = pgTable("mentor_badges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  badgeName: varchar("badge_name", { length: 100 }).notNull(),
+  badgeIcon: varchar("badge_icon", { length: 10 }).notNull(), // Emoji for badge
+  description: text("description").notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // leadership, compassion, growth, impact, special
+  tier: varchar("tier", { length: 20 }).default("bronze").notNull(), // bronze, silver, gold, platinum, legendary
+  requirements: jsonb("requirements").notNull(), // Complex requirements object
+  tokenReward: integer("token_reward").default(50).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+  rarity: varchar("rarity", { length: 20 }).default("common").notNull(), // common, rare, epic, legendary
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// User's Earned Mentor Badges
+export const userMentorBadges = pgTable("user_mentor_badges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  badgeId: varchar("badge_id").notNull().references(() => mentorBadges.id),
+  mentorshipId: varchar("mentorship_id").references(() => mentorships.id), // Which mentorship earned this
+  earnedAt: timestamp("earned_at").defaultNow().notNull(),
+  isDisplayed: boolean("is_displayed").default(true).notNull(), // Show on profile
+  celebrationViewed: boolean("celebration_viewed").default(false).notNull(),
+});
+
+// Mentor Training & Certification
+export const mentorTraining = pgTable("mentor_training", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description").notNull(),
+  trainingType: varchar("training_type", { length: 50 }).notNull(), // orientation, skills, safety, advanced
+  ageGroupFocus: varchar("age_group_focus", { length: 20 }).notNull(), // k-2, 3-5, 6-8, all
+  durationMinutes: integer("duration_minutes").default(30).notNull(),
+  isRequired: boolean("is_required").default(false).notNull(),
+  prerequisites: jsonb("prerequisites"), // Array of required training IDs
+  content: jsonb("content").notNull(), // Training modules/activities
+  completionCriteria: jsonb("completion_criteria").notNull(),
+  certificateReward: integer("certificate_reward").default(25).notNull(), // Tokens for completion
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
+});
+
+// User Training Progress
+export const userMentorTraining = pgTable("user_mentor_training", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  trainingId: varchar("training_id").notNull().references(() => mentorTraining.id),
+  startedAt: timestamp("started_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+  progressPercentage: integer("progress_percentage").default(0).notNull(),
+  currentModule: integer("current_module").default(1).notNull(),
+  timeSpent: integer("time_spent").default(0).notNull(), // Minutes
+  passed: boolean("passed").default(false).notNull(),
+  certificateIssued: boolean("certificate_issued").default(false).notNull(),
+});
+
+// Mentor Matching Preferences
+export const mentorPreferences = pgTable("mentor_preferences", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique().references(() => users.id),
+  availableAsMentor: boolean("available_as_mentor").default(false).notNull(),
+  seekingMentor: boolean("seeking_mentor").default(false).notNull(),
+  preferredMenteeAgeGroups: jsonb("preferred_mentee_age_groups"), // Array of age groups
+  interests: jsonb("interests"), // Array of interests/skills
+  mentorStyle: varchar("mentor_style", { length: 50 }).default("encouraging").notNull(), // encouraging, structured, creative, patient
+  availabilityDays: jsonb("availability_days"), // Array of days available
+  maxMentees: integer("max_mentees").default(2).notNull(),
+  experienceLevel: varchar("experience_level", { length: 20 }).default("beginner").notNull(),
+  specialSkills: jsonb("special_skills"), // What they can teach
+  communicationStyle: varchar("communication_style", { length: 20 }).default("friendly").notNull(),
+  parentPermission: boolean("parent_permission").default(false).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Mentor Performance Analytics
+export const mentorStats = pgTable("mentor_stats", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique().references(() => users.id),
+  totalMentees: integer("total_mentees").default(0).notNull(),
+  activeMentorships: integer("active_mentorships").default(0).notNull(),
+  completedMentorships: integer("completed_mentorships").default(0).notNull(),
+  totalSessions: integer("total_sessions").default(0).notNull(),
+  avgMenteeGrowth: real("avg_mentee_growth").default(0).notNull(), // Average mentee progress
+  avgRating: real("avg_rating").default(0).notNull(), // Average mentor rating
+  totalKindnessActsGuided: integer("total_kindness_acts_guided").default(0).notNull(),
+  totalTokensEarned: integer("total_tokens_earned").default(0).notNull(),
+  badgesEarned: integer("badges_earned").default(0).notNull(),
+  mentorLevel: integer("mentor_level").default(1).notNull(), // Gamification level
+  nextLevelProgress: integer("next_level_progress").default(0).notNull(), // 0-100
+  impactScore: integer("impact_score").default(0).notNull(), // Overall impact rating
+  lastActiveAt: timestamp("last_active_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export type SchoolFundraiser = typeof schoolFundraisers.$inferSelect;
 export type InsertSchoolFundraiser = typeof schoolFundraisers.$inferInsert;
 export type FamilyDonation = typeof familyDonations.$inferSelect;
 export type InsertFamilyDonation = typeof familyDonations.$inferInsert;
+
+// Kindness Mentors types
+export const insertMentorshipSchema = createInsertSchema(mentorships);
+export const insertMentorActivitySchema = createInsertSchema(mentorActivities);
+export const insertMentorBadgeSchema = createInsertSchema(mentorBadges);
+export const insertMentorPreferencesSchema = createInsertSchema(mentorPreferences);
+
+export type Mentorship = typeof mentorships.$inferSelect;
+export type InsertMentorship = typeof mentorships.$inferInsert;
+export type MentorActivity = typeof mentorActivities.$inferSelect;
+export type InsertMentorActivity = typeof mentorActivities.$inferInsert;
+export type MentorBadge = typeof mentorBadges.$inferSelect;
+export type InsertMentorBadge = typeof mentorBadges.$inferInsert;
+export type MentorPreferences = typeof mentorPreferences.$inferSelect;
+export type InsertMentorPreferences = typeof mentorPreferences.$inferInsert;
+export type MentorStats = typeof mentorStats.$inferSelect;
+export type InsertMentorStats = typeof mentorStats.$inferInsert;
 
 export type YearRoundFamilyChallenge = typeof yearRoundFamilyChallenges.$inferSelect;
 export type InsertYearRoundFamilyChallenge = typeof yearRoundFamilyChallenges.$inferInsert;
