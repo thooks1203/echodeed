@@ -248,20 +248,50 @@ export default function FamilyChallenges() {
                             {challenge.difficulty}
                           </Badge>
                         </div>
-                        <p className="text-gray-600 text-sm mb-3">{challenge.description}</p>
-                        <div className="flex items-center gap-4 text-xs text-gray-500">
-                          <div className="flex items-center gap-1">
-                            <Trophy className="h-3 w-3" />
-                            <span>Kid: {challenge.kidPoints} pts</span>
+                        <p className="text-gray-600 text-sm mb-4">{challenge.description}</p>
+                        
+                        {/* ENHANCED REWARDS SECTION - Large and Colorful! */}
+                        <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-4 border-2 border-dashed border-purple-300 mb-3">
+                          <div className="text-center mb-2">
+                            <span className="text-sm font-semibold text-purple-700 bg-white px-3 py-1 rounded-full">
+                              🎁 DUAL REWARDS EARNED! 🎁
+                            </span>
                           </div>
-                          <div className="flex items-center gap-1">
-                            <Trophy className="h-3 w-3" />
-                            <span>Parent: {challenge.parentPoints} pts</span>
+                          <div className="flex items-center justify-center gap-6">
+                            <div className="text-center bg-blue-100 px-4 py-3 rounded-lg border-2 border-blue-300">
+                              <div className="flex items-center justify-center gap-2 mb-1">
+                                <span className="text-2xl">🧒</span>
+                                <Trophy className="h-6 w-6 text-blue-600" />
+                              </div>
+                              <div className="text-lg font-bold text-blue-700">
+                                {challenge.kidPoints}
+                              </div>
+                              <div className="text-xs font-semibold text-blue-600 uppercase tracking-wide">
+                                Kid Points
+                              </div>
+                            </div>
+                            
+                            <div className="text-4xl animate-pulse">+</div>
+                            
+                            <div className="text-center bg-purple-100 px-4 py-3 rounded-lg border-2 border-purple-300">
+                              <div className="flex items-center justify-center gap-2 mb-1">
+                                <span className="text-2xl">👨‍👩‍👧‍👦</span>
+                                <Trophy className="h-6 w-6 text-purple-600" />
+                              </div>
+                              <div className="text-lg font-bold text-purple-700">
+                                {challenge.parentPoints}
+                              </div>
+                              <div className="text-xs font-semibold text-purple-600 uppercase tracking-wide">
+                                Parent Points
+                              </div>
+                            </div>
                           </div>
-                          <div className="flex items-center gap-1">
-                            <Calendar className="h-3 w-3" />
-                            <span>Week {challenge.week}</span>
-                          </div>
+                        </div>
+                        
+                        {/* Week indicator - smaller and subtle */}
+                        <div className="flex items-center gap-1 text-xs text-gray-500">
+                          <Calendar className="h-3 w-3" />
+                          <span>Week {challenge.week}</span>
                         </div>
                       </div>
                     </div>
