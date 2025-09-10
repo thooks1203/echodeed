@@ -2140,14 +2140,22 @@ export class DatabaseStorage implements IStorage {
       const existingWise = await db.select()
         .from(corporateAccounts)
         .where(eq(corporateAccounts.domain, 'wise.com'));
+
+      // Check for Burlington Christian Academy
+      const existingBCA = await db.select()
+        .from(corporateAccounts)
+        .where(eq(corporateAccounts.domain, 'bcaroyals.com'));
       
-      if (existingTechFlow.length > 0 && existingWise.length > 0) {
+      if (existingTechFlow.length > 0 && existingWise.length > 0 && existingBCA.length > 0) {
         return; // Demo data already exists
       }
 
       // Create sample corporate accounts
       let techFlowAccount: any;
       let wiseAccount: any;
+      let bcaAccount: any;
+      let jeffersonAccount: any;
+      let easternAccount: any;
 
       // Create Winners Institute for Successful Empowerment if it doesn't exist
       if (existingTechFlow.length === 0) {
@@ -2189,6 +2197,62 @@ export class DatabaseStorage implements IStorage {
         }).returning();
       } else {
         wiseAccount = existingWise[0];
+      }
+
+      // Create Burlington Christian Academy if it doesn't exist
+      if (existingBCA.length === 0) {
+        [bcaAccount] = await db.insert(corporateAccounts).values({
+          companyName: 'Burlington Christian Academy',
+          domain: 'bcaroyals.com',
+          industry: 'education',
+          companySize: 'small',
+          subscriptionTier: 'basic',
+          maxEmployees: 350, // Students + staff
+          monthlyBudget: 0, // Pilot program
+          primaryColor: '#1E40AF', // Royal blue
+          companyLogo: null,
+          contactEmail: 'info@bcaroyals.com',
+          contactName: 'Principal Administrator',
+          isActive: 1,
+          billingStatus: 'trial',
+          trialEndsAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000) // 90 day trial
+        }).returning();
+
+        // Create Jefferson Middle School
+        [jeffersonAccount] = await db.insert(corporateAccounts).values({
+          companyName: 'Jefferson Middle School',
+          domain: 'jefferson.alamance.k12.nc.us',
+          industry: 'education',
+          companySize: 'medium',
+          subscriptionTier: 'basic',
+          maxEmployees: 650, // Students + staff
+          monthlyBudget: 0,
+          primaryColor: '#059669', // Green
+          companyLogo: null,
+          contactEmail: 'principal@jefferson.alamance.k12.nc.us',
+          contactName: 'Jefferson Principal',
+          isActive: 1,
+          billingStatus: 'trial',
+          trialEndsAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
+        }).returning();
+
+        // Create Eastern Alamance Middle School
+        [easternAccount] = await db.insert(corporateAccounts).values({
+          companyName: 'Eastern Alamance Middle School',
+          domain: 'eastern.alamance.k12.nc.us',
+          industry: 'education',
+          companySize: 'medium',
+          subscriptionTier: 'basic',
+          maxEmployees: 580, // Students + staff
+          monthlyBudget: 0,
+          primaryColor: '#7C3AED', // Purple
+          companyLogo: null,
+          contactEmail: 'principal@eastern.alamance.k12.nc.us',
+          contactName: 'Eastern Principal',
+          isActive: 1,
+          billingStatus: 'trial',
+          trialEndsAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000)
+        }).returning();
       }
 
       // Create sample teams for Winners Institute
