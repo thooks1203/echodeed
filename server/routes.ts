@@ -5559,6 +5559,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 🔒 SECURE: Update school information - Only for school administrators
+  app.put('/api/schools/:schoolId', isAuthenticated, requireSchoolAccess, requireSpecificSchoolAccess('schoolId'), async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      const updates = req.body;
+      
+      // Validate that user has admin access to this school
+      const userSchools = req.userSchools || [];
+      const userSchool = userSchools.find((school: any) => school.schoolId === schoolId);
+      
+      if (!userSchool || userSchool.accessLevel !== 'admin') {
+        return res.status(403).json({ message: 'Administrator access required to edit school information' });
+      }
+      
+      // Sanitize updates - only allow school-specific fields
+      const allowedFields = {
+        companyName: updates.schoolName,
+        contactEmail: updates.principalEmail,
+        contactName: updates.principalName,
+        maxEmployees: updates.studentCount ? parseInt(updates.studentCount) + 50 : undefined,
+        // Don't allow changes to domain, billing, or security fields
+      };
+      
+      // Remove undefined fields
+      Object.keys(allowedFields).forEach(key => {
+        if (allowedFields[key as keyof typeof allowedFields] === undefined) {
+          delete allowedFields[key as keyof typeof allowedFields];
+        }
+      });
+      
+      if (Object.keys(allowedFields).length === 0) {
+        return res.status(400).json({ message: 'No valid fields to update' });
+      }
+      
+      const updatedSchool = await storage.updateCorporateAccount(schoolId, allowedFields);
+      
+      res.json({
+        message: 'School information updated successfully',
+        school: {
+          id: updatedSchool.id,
+          name: updatedSchool.companyName,
+          principalName: updatedSchool.contactName,
+          principalEmail: updatedSchool.contactEmail,
+          studentCount: updatedSchool.maxEmployees ? updatedSchool.maxEmployees - 50 : 0
+        }
+      });
+    } catch (error: any) {
+      console.error('Failed to update school:', error);
+      res.status(500).json({ message: 'Failed to update school information' });
+    }
+  });
+
+  // 🔒 SECURE: Get specific school details for editing - Only for school administrators
+  app.get('/api/schools/:schoolId/edit', isAuthenticated, requireSchoolAccess, requireSpecificSchoolAccess('schoolId'), async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      
+      // Validate that user has admin access to this school
+      const userSchools = req.userSchools || [];
+      const userSchool = userSchools.find((school: any) => school.schoolId === schoolId);
+      
+      if (!userSchool || userSchool.accessLevel !== 'admin') {
+        return res.status(403).json({ message: 'Administrator access required' });
+      }
+      
+      const school = await storage.getCorporateAccount(schoolId);
+      if (!school) {
+        return res.status(404).json({ message: 'School not found' });
+      }
+      
+      // Return school data in editable format
+      res.json({
+        id: school.id,
+        schoolName: school.companyName,
+        principalName: school.contactName,
+        principalEmail: school.contactEmail,
+        studentCount: school.maxEmployees ? school.maxEmployees - 50 : 0,
+        domain: school.domain,
+        industry: school.industry,
+        billingStatus: school.billingStatus,
+        isActive: school.isActive
+      });
+    } catch (error: any) {
+      console.error('Failed to get school for editing:', error);
+      res.status(500).json({ message: 'Failed to get school information' });
+    }
+  });
+
   // School Registration Route - Public for pilot signups
   app.post('/api/schools/register', async (req, res) => {
     try {
