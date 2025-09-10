@@ -11,7 +11,7 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
     kindnessTheme: "Gratitude",
     difficulty: "Easy", 
     duration: 30,
-    objectives: [
+    learningObjectives: [
       "Students will understand what gratitude means and feels like",
       "Students will identify 3 things they are thankful for each day",
       "Students will practice saying thank you with eye contact and sincerity",
@@ -22,7 +22,11 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "Thank You Card Creation (15 min): Students create colorful thank you cards for school helpers like custodians and cafeteria workers.",
       "Gratitude Walk (5 min): Take a brief walk to deliver thank you cards and practice expressing gratitude in person."
     ],
-    assessment: "Observation checklist: Student explains gratitude, identifies thankful moments, makes eye contact when saying thank you, shows enthusiasm.",
+    reflectionQuestions: [
+      "How did it feel to thank someone today?",
+      "What are you most grateful for?",
+      "How can we show gratitude every day?"
+    ],
     materials: [
       "Gratitude bear or special object",
       "Construction paper (various colors)",
@@ -50,7 +54,7 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
     kindnessTheme: "Inclusion",
     difficulty: "Easy",
     duration: 35,
-    objectives: [
+    learningObjectives: [
       "Students will identify signs that someone feels left out",
       "Students will use the 'magic inclusion words' to invite others to play",
       "Students will modify games to include everyone",
@@ -61,7 +65,11 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "Magic Inclusion Words Practice (10 min): Learn and practice phrases like 'Want to play with us?' and 'Come sit by me!'",
       "Playground Problem Solving (15 min): Modify games to include everyone, even those with different abilities."
     ],
-    assessment: "Role-play assessment: Student uses inclusion words, notices exclusion, modifies activities, understands inclusion benefits.",
+    reflectionQuestions: [
+      "How does it feel when you're left out?",
+      "What can we do to include everyone?",
+      "Why is inclusion important?"
+    ],
     materials: [
       "Picture book about inclusion/exclusion",
       "Emotion cards with faces",
@@ -91,7 +99,7 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
     kindnessTheme: "Empathy",
     difficulty: "Medium",
     duration: 45,
-    objectives: [
+    learningObjectives: [
       "Students will identify at least 5 different emotions through body language",
       "Students will practice perspective-taking in various scenarios",
       "Students will demonstrate empathetic responses to others' feelings",
@@ -102,7 +110,11 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "Perspective-Taking Theater (20 min): Role-play scenarios from different characters' perspectives to understand varied feelings.",
       "Empathy Action Plan Creation (10 min): Create practical strategies for showing empathy in daily classroom situations."
     ],
-    assessment: "Performance assessment: Student identifies emotions, demonstrates perspective-taking, suggests empathetic responses.",
+    reflectionQuestions: [
+      "How did it feel to see someone else's perspective?",
+      "When do you need empathy most?",
+      "How can empathy help solve problems?"
+    ],
     materials: [
       "Emotion cards with various feelings",
       "Detective badges",
@@ -132,7 +144,7 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
     kindnessTheme: "Community Service", 
     difficulty: "Medium",
     duration: 60,
-    objectives: [
+    learningObjectives: [
       "Students will identify at least 8 different community helpers and their roles",
       "Students will research how community helpers serve others",
       "Students will plan and execute a community service project",
@@ -143,7 +155,11 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "Service Project Planning (25 min): Design and plan realistic community service projects to help community helpers.",
       "Kindness in Action Implementation (15 min): Begin implementing service projects by creating thank you items."
     ],
-    assessment: "Project-based assessment: Student completes research, contributes to planning, participates in implementation.",
+    reflectionQuestions: [
+      "How do community helpers make our lives better?",
+      "What service project made the biggest impact?",
+      "How can young people serve their community?"
+    ],
     materials: [
       "Community helper research books",
       "Research worksheet templates",
@@ -175,7 +191,7 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
     kindnessTheme: "Inclusion",
     difficulty: "Hard",
     duration: 90,
-    objectives: [
+    learningObjectives: [
       "Students will identify different types of diversity in their school and community",
       "Students will recognize unconscious biases and their impact on others",
       "Students will develop strategies for creating inclusive environments",
@@ -186,7 +202,11 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "Unconscious Bias Investigation (30 min): Learn about bias through scenarios and analyze bias in media and daily life.",
       "Inclusive Campaign Creation (30 min): Design campaigns promoting inclusion using digital tools and posters."
     ],
-    assessment: "Portfolio assessment: Student demonstrates diversity understanding, identifies biases, creates inclusive campaigns.",
+    reflectionQuestions: [
+      "What did you learn about your own identity?",
+      "How can we challenge unfair treatment?",
+      "What makes a truly inclusive community?"
+    ],
     materials: [
       "Identity wheel worksheets",
       "Privilege reflection questions",
@@ -218,7 +238,7 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
     kindnessTheme: "Digital Kindness",
     difficulty: "Hard",
     duration: 75,
-    objectives: [
+    learningObjectives: [
       "Students will identify characteristics of positive digital citizenship",
       "Students will develop strategies for responding to cyberbullying",
       "Students will create digital content that promotes kindness and inclusion",
@@ -229,7 +249,11 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "Cyberbullying Response Training (25 min): Learn STOP-BLOCK-TELL strategy and practice responding to cyberbullying scenarios.",
       "Kindness Content Creation (25 min): Create positive digital content like videos or campaigns promoting kindness online."
     ],
-    assessment: "Digital portfolio assessment: Student understands digital citizenship, responds to cyberbullying, creates kindness content.",
+    reflectionQuestions: [
+      "How can we spread kindness online?",
+      "What's your responsibility as a digital citizen?",
+      "How do your online actions affect others?"
+    ],
     materials: [
       "Computers/tablets with internet access",
       "Digital footprint example materials",
@@ -259,7 +283,7 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
     kindnessTheme: "Conflict Resolution",
     difficulty: "Hard", 
     duration: 80,
-    objectives: [
+    learningObjectives: [
       "Students will understand restorative vs. punitive approaches to conflict",
       "Students will practice using restorative circle processes",
       "Students will develop skills for taking responsibility and making amends",
@@ -270,7 +294,11 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "Restorative Circle Practice (30 min): Practice facilitating circles using role-play scenarios and talking pieces.",
       "Classroom Agreement Creation (25 min): Collaboratively create classroom agreements based on restorative principles."
     ],
-    assessment: "Authentic assessment: Student understands restorative justice, participates in circles, takes responsibility.",
+    reflectionQuestions: [
+      "How can we repair harm when someone is hurt?",
+      "What does taking responsibility mean to you?",
+      "How do circles help heal relationships?"
+    ],
     materials: [
       "Restorative justice educational materials",
       "Circle guidelines poster",
