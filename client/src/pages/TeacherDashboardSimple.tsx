@@ -5,10 +5,11 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Search } from 'lucide-react';
+import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Search, ArrowLeft } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { useLocation } from 'wouter';
 
 interface CurriculumLesson {
   id: string;
@@ -52,6 +53,7 @@ interface TeacherDashboardProps {
 export default function TeacherDashboard({ teacherId = "teacher-demo" }: TeacherDashboardProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
   
   // Search state
   const [searchTerm, setSearchTerm] = useState('');
@@ -232,6 +234,19 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-4">
       <div className="max-w-7xl mx-auto">
+        {/* Back Button */}
+        <div className="mb-6">
+          <Button
+            variant="ghost"
+            onClick={() => setLocation('/')}
+            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            data-testid="button-back"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Home
+          </Button>
+        </div>
+        
         <header className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-3 rounded-full">
