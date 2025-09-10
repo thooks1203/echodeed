@@ -69,6 +69,11 @@ app.use((req, res, next) => {
       await storage.initializeEducationSubscriptionPlans();
       await initializeMentorBadges();
       await initializeMentorTraining();
+      
+      // Initialize curriculum lessons
+      const { initializeCurriculumLessons } = await import('./curriculumLessonData');
+      await initializeCurriculumLessons(storage);
+      
       log('✓ Sample data initialization completed');
 
       // Initialize Summer Challenge Program
