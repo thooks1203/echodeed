@@ -171,6 +171,10 @@ export function SupportCircle() {
                       setShowSearchResults(true);
                     }}
                     onFocus={() => setShowSearchResults(true)}
+                    onBlur={() => {
+                      // Delay hiding results to allow clicks
+                      setTimeout(() => setShowSearchResults(false), 200);
+                    }}
                     data-testid="input-school-search"
                   />
                 </div>
@@ -181,8 +185,14 @@ export function SupportCircle() {
                     {searchResults.map((school: any) => (
                       <button
                         key={school.id}
-                        className="w-full text-left p-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                        type="button"
+                        className="w-full text-left p-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0 focus:bg-purple-50 focus:outline-none"
+                        onMouseDown={(e) => {
+                          // Prevent input blur
+                          e.preventDefault();
+                        }}
                         onClick={() => {
+                          console.log('School selected:', school.name, school.id);
                           setSchoolId(school.id);
                           setSchoolName(school.name);
                           setSearchQuery(school.name);
@@ -201,9 +211,17 @@ export function SupportCircle() {
                 {showSearchResults && searchQuery.length >= 2 && searchResults.length === 0 && (
                   <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1 shadow-lg p-3">
                     <div className="text-gray-500 text-center">
-                      No schools found. Your school may not be registered yet.
+                      No schools found matching "{searchQuery}". Your school may not be registered yet.
                     </div>
                   </div>
+                )}
+
+                {/* Click outside to close dropdown */}
+                {showSearchResults && (
+                  <div
+                    className="fixed inset-0 z-5"
+                    onClick={() => setShowSearchResults(false)}
+                  />
                 )}
               </div>
               
