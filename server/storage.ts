@@ -184,7 +184,7 @@ import {
   type InsertCurriculumResource,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, sql, desc, and, count, or, gte } from "drizzle-orm";
+import { eq, sql, desc, and, count, or, gte, lte } from "drizzle-orm";
 
 // Storage interface for all operations
 export interface IStorage {

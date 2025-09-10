@@ -1901,7 +1901,7 @@ export type SummerActivity = typeof summerActivities.$inferSelect;
 export type InsertSummerActivity = z.infer<typeof insertSummerActivitySchema>;
 export type SummerNotification = typeof summerNotifications.$inferSelect;
 export type InsertSummerNotification = z.infer<typeof insertSummerNotificationSchema>;
-export type FamilyChallenge = typeof familyChallenges.$inferSelect;
+export type FamilyChallenge = typeof legacyFamilyChallenges.$inferSelect;
 export type InsertFamilyChallenge = z.infer<typeof insertFamilyChallengeSchema>;
 
 // Support Circle Feature Type Exports
