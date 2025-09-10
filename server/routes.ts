@@ -1140,8 +1140,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get kindness posts with optional filters
-  // 🔒 SECURE: School-restricted posts API
-  app.get("/api/posts", isAuthenticated, requireSchoolAccess, async (req: any, res) => {
+  // Get kindness posts with optional filters - Allow public access for now
+  app.get("/api/posts", async (req, res) => {
     try {
       const { category, city, state, country } = req.query;
       const filters = {
@@ -1149,7 +1149,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
         city: city as string, 
         state: state as string,
         country: country as string,
-        schoolId: req.primarySchoolId // Only show posts from user's school
       };
       
       // Remove undefined filters
