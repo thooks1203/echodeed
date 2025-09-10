@@ -127,7 +127,7 @@ export default function MentorDashboard() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-green-50 p-4">
       <div className="container mx-auto max-w-7xl">
-        <BackButton />
+        <BackButton onClick={() => setLocation('/')} />
         
         {/* Header */}
         <div className="mb-8">
