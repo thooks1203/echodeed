@@ -1425,6 +1425,53 @@ export const summerActivities = pgTable("summer_activities", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// Family Kindness Challenges - Year-round family engagement system  
+export const yearRoundFamilyChallenges = pgTable("year_round_family_challenges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  week: integer("week").notNull(), // Week 1-52 for year-round
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description").notNull(),
+  theme: varchar("theme", { length: 50 }).notNull(), // "family_gratitude", "community_helper", "kindness_coach", etc.
+  difficulty: varchar("difficulty", { length: 20 }).notNull(), // "easy", "medium", "hard"
+  kidPoints: integer("kid_points").default(10), // Points for kids
+  parentPoints: integer("parent_points").default(5), // Points for parents (dual reward system)
+  ageGroup: varchar("age_group", { length: 20 }).notNull(), // "k-2", "3-5", "6-8", "family"
+  isActive: boolean("is_active").default(true),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Family challenge participation tracking
+export const familyProgress = pgTable("family_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  challengeId: varchar("challenge_id").notNull().references(() => yearRoundFamilyChallenges.id),
+  studentId: varchar("student_id").notNull(), // The child participant
+  parentId: varchar("parent_id"), // Optional parent participant
+  completedAt: timestamp("completed_at"),
+  kidPointsEarned: integer("kid_points_earned").default(0),
+  parentPointsEarned: integer("parent_points_earned").default(0),
+  familyReflection: text("family_reflection"), // Family reflection on the activity
+  photoSubmitted: boolean("photo_submitted").default(false),
+  teacherApproved: boolean("teacher_approved").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Family challenge activities (detailed instructions)
+export const familyActivities = pgTable("family_activities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  challengeId: varchar("challenge_id").notNull().references(() => yearRoundFamilyChallenges.id),
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description").notNull(),
+  kidInstructions: text("kid_instructions").notNull(), // Instructions for the child
+  parentInstructions: text("parent_instructions"), // Instructions for the parent
+  timeEstimate: integer("time_estimate_minutes").default(30),
+  materialsNeeded: text("materials_needed"),
+  locationSuggestion: varchar("location_suggestion", { length: 100 }), // "home", "school", "community", "outdoors"
+  discussionPrompts: text("discussion_prompts"), // Family discussion questions
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const summerNotifications = pgTable("summer_notifications", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   parentId: varchar("parent_id").notNull(),
@@ -1438,7 +1485,8 @@ export const summerNotifications = pgTable("summer_notifications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
-export const familyChallenges = pgTable("family_challenges", {
+// Legacy family challenges (keeping for compatibility)
+export const legacyFamilyChallenges = pgTable("family_challenges", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   title: varchar("title", { length: 200 }).notNull(),
   description: text("description").notNull(),
@@ -1457,7 +1505,19 @@ export const insertSummerChallengeSchema = createInsertSchema(summerChallenges);
 export const insertUserSummerProgressSchema = createInsertSchema(userSummerProgress);
 export const insertSummerActivitySchema = createInsertSchema(summerActivities);
 export const insertSummerNotificationSchema = createInsertSchema(summerNotifications);
-export const insertFamilyChallengeSchema = createInsertSchema(familyChallenges);
+export const insertFamilyChallengeSchema = createInsertSchema(legacyFamilyChallenges);
+
+// New Family Kindness Challenge types
+export const insertYearRoundFamilyChallengeSchema = createInsertSchema(yearRoundFamilyChallenges);
+export const insertFamilyProgressSchema = createInsertSchema(familyProgress);
+export const insertFamilyActivitySchema = createInsertSchema(familyActivities);
+
+export type YearRoundFamilyChallenge = typeof yearRoundFamilyChallenges.$inferSelect;
+export type InsertYearRoundFamilyChallenge = typeof yearRoundFamilyChallenges.$inferInsert;
+export type FamilyProgress = typeof familyProgress.$inferSelect;
+export type InsertFamilyProgress = typeof familyProgress.$inferInsert;
+export type FamilyActivity = typeof familyActivities.$inferSelect;
+export type InsertFamilyActivity = typeof familyActivities.$inferInsert;
 
 // Support Circle Feature Schema Exports
 export const insertSupportPostSchema = createInsertSchema(supportPosts).omit({

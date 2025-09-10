@@ -5516,6 +5516,85 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ================================
+  // 👨‍👩‍👧‍👦 FAMILY KINDNESS CHALLENGES API
+  // ================================
+  
+  // Get current week and theme for family challenges
+  app.get('/api/family-challenges/current-week', async (req, res) => {
+    try {
+      const { familyChallengeEngine } = await import('./services/familyChallengeEngine');
+      const currentWeek = familyChallengeEngine.getCurrentWeek();
+      const theme = familyChallengeEngine.getWeekTheme(currentWeek);
+      res.json({ week: currentWeek, theme });
+    } catch (error) {
+      console.error('Error getting current family week:', error);
+      res.status(500).json({ message: 'Failed to get current week' });
+    }
+  });
+
+  // Get family challenges for a specific age group  
+  app.get('/api/family-challenges/challenges/:ageGroup', async (req, res) => {
+    try {
+      const { ageGroup } = req.params as { ageGroup: 'k-2' | '3-5' | '6-8' | 'family' };
+      const { familyChallengeEngine } = await import('./services/familyChallengeEngine');
+      const challenges = await familyChallengeEngine.getCurrentWeekChallenges(ageGroup);
+      res.json(challenges);
+    } catch (error) {
+      console.error('Error fetching family challenges:', error);
+      res.status(500).json({ message: 'Failed to fetch family challenges' });
+    }
+  });
+
+  // Get activities for a specific family challenge
+  app.get('/api/family-challenges/activities/:challengeId', async (req, res) => {
+    try {
+      const { challengeId } = req.params;
+      const { familyChallengeEngine } = await import('./services/familyChallengeEngine');
+      const activities = await familyChallengeEngine.getChallengeActivities(challengeId);
+      res.json(activities);
+    } catch (error) {
+      console.error('Error fetching family activities:', error);
+      res.status(500).json({ message: 'Failed to fetch family activities' });
+    }
+  });
+
+  // Complete a family challenge (dual reward tracking)
+  app.post('/api/family-challenges/complete', async (req, res) => {
+    try {
+      const { studentId, parentId, challengeId, familyReflection, photoSubmitted } = req.body;
+      
+      // Insert family progress record with dual reward tracking
+      const progressRecord = await storage.completeFamilyChallenge({
+        studentId,
+        parentId,
+        challengeId,
+        familyReflection,
+        photoSubmitted: photoSubmitted || false,
+        completedAt: new Date(),
+        kidPointsEarned: 0, // Will be set based on challenge
+        parentPointsEarned: 0 // Will be set based on challenge
+      });
+      
+      res.json(progressRecord);
+    } catch (error) {
+      console.error('Error completing family challenge:', error);
+      res.status(500).json({ message: 'Failed to complete family challenge' });
+    }
+  });
+
+  // Initialize family challenge program
+  app.post('/api/family-challenges/initialize', async (req, res) => {
+    try {
+      const { familyChallengeEngine } = await import('./services/familyChallengeEngine');
+      await familyChallengeEngine.initializeFamilyProgram();
+      res.json({ message: 'Family challenge program initialized successfully' });
+    } catch (error) {
+      console.error('Error initializing family program:', error);
+      res.status(500).json({ message: 'Failed to initialize family program' });
+    }
+  });
+
   // Get parent notifications
   app.get('/api/summer/notifications/:parentId', async (req, res) => {
     try {

@@ -1,5 +1,5 @@
 import { db } from '../db';
-import { summerChallenges, summerActivities, userSummerProgress, familyChallenges, summerNotifications } from '@shared/schema';
+import { summerChallenges, summerActivities, userSummerProgress, legacyFamilyChallenges, summerNotifications } from '@shared/schema';
 import { eq, and, sql } from 'drizzle-orm';
 
 export interface WeeklyChallengeTheme {
@@ -281,11 +281,11 @@ export class SummerChallengeEngine {
 
     for (const template of familyChallengeTemplates) {
       const existing = await db.select()
-        .from(familyChallenges)
-        .where(eq(familyChallenges.title, template.title));
+        .from(legacyFamilyChallenges)
+        .where(eq(legacyFamilyChallenges.title, template.title));
 
       if (existing.length === 0) {
-        await db.insert(familyChallenges).values(template);
+        await db.insert(legacyFamilyChallenges).values(template);
       }
     }
   }

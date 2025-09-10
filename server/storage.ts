@@ -133,6 +133,15 @@ import {
   type PushSubscription,
   type InsertPushSubscription,
   type WellnessTrend,
+  yearRoundFamilyChallenges,
+  familyProgress,
+  familyActivities,
+  type YearRoundFamilyChallenge,
+  type InsertYearRoundFamilyChallenge,
+  type FamilyProgress,
+  type InsertFamilyProgress,
+  type FamilyActivity,
+  type InsertFamilyActivity,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte } from "drizzle-orm";
@@ -422,6 +431,14 @@ export interface IStorage {
   getWellnessTrends(schoolId: string, gradeLevel?: string): Promise<WellnessTrend[]>;
   subscribeToPushNotifications(subscription: InsertPushSubscription): Promise<PushSubscription>;
   getPushSubscriptions(schoolId: string, gradeLevel?: string): Promise<PushSubscription[]>;
+  
+  // Family Kindness Challenge operations
+  getFamilyChallenges(week?: number, ageGroup?: string): Promise<YearRoundFamilyChallenge[]>;
+  getFamilyChallenge(id: string): Promise<YearRoundFamilyChallenge | undefined>;
+  getFamilyActivities(challengeId: string): Promise<FamilyActivity[]>;
+  completeFamilyChallenge(progress: InsertFamilyProgress): Promise<FamilyProgress>;
+  getFamilyProgress(studentId: string, challengeId?: string): Promise<FamilyProgress[]>;
+  approveFamilyChallenge(progressId: string, teacherApproved: boolean): Promise<FamilyProgress | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -3286,6 +3303,88 @@ export class DatabaseStorage implements IStorage {
         generatedAt: new Date(),
       }
     });
+  }
+
+  // ================================
+  // 👨‍👩‍👧‍👦 FAMILY KINDNESS CHALLENGE OPERATIONS
+  // ================================
+
+  async getFamilyChallenges(week?: number, ageGroup?: string): Promise<YearRoundFamilyChallenge[]> {
+    const filters = [];
+    if (week) filters.push(eq(yearRoundFamilyChallenges.week, week));
+    if (ageGroup) filters.push(eq(yearRoundFamilyChallenges.ageGroup, ageGroup));
+    
+    return await db
+      .select()
+      .from(yearRoundFamilyChallenges)
+      .where(filters.length > 0 ? and(...filters) : undefined)
+      .orderBy(desc(yearRoundFamilyChallenges.createdAt));
+  }
+
+  async getFamilyChallenge(id: string): Promise<YearRoundFamilyChallenge | undefined> {
+    const [challenge] = await db
+      .select()
+      .from(yearRoundFamilyChallenges)
+      .where(eq(yearRoundFamilyChallenges.id, id));
+    return challenge;
+  }
+
+  async getFamilyActivities(challengeId: string): Promise<FamilyActivity[]> {
+    return await db
+      .select()
+      .from(familyActivities)
+      .where(eq(familyActivities.challengeId, challengeId));
+  }
+
+  async completeFamilyChallenge(progress: InsertFamilyProgress): Promise<FamilyProgress> {
+    // Get the challenge to determine points
+    const challenge = await this.getFamilyChallenge(progress.challengeId);
+    
+    const [newProgress] = await db
+      .insert(familyProgress)
+      .values({
+        ...progress,
+        kidPointsEarned: challenge?.kidPoints || 0,
+        parentPointsEarned: challenge?.parentPoints || 0,
+        completedAt: new Date(),
+      })
+      .returning();
+    
+    // Update user tokens for both student and parent (dual reward system)
+    if (progress.studentId) {
+      await this.updateUserTokens(progress.studentId, { 
+        kindnessTokens: sql`kindness_tokens + ${challenge?.kidPoints || 0}` 
+      });
+    }
+    
+    if (progress.parentId) {
+      await this.updateUserTokens(progress.parentId, { 
+        kindnessTokens: sql`kindness_tokens + ${challenge?.parentPoints || 0}` 
+      });
+    }
+    
+    return newProgress;
+  }
+
+  async getFamilyProgress(studentId: string, challengeId?: string): Promise<FamilyProgress[]> {
+    const filters = [eq(familyProgress.studentId, studentId)];
+    if (challengeId) filters.push(eq(familyProgress.challengeId, challengeId));
+    
+    return await db
+      .select()
+      .from(familyProgress)
+      .where(and(...filters))
+      .orderBy(desc(familyProgress.createdAt));
+  }
+
+  async approveFamilyChallenge(progressId: string, teacherApproved: boolean): Promise<FamilyProgress | undefined> {
+    const [updated] = await db
+      .update(familyProgress)
+      .set({ teacherApproved })
+      .where(eq(familyProgress.id, progressId))
+      .returning();
+    
+    return updated;
   }
 }
 
