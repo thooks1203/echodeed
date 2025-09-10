@@ -80,7 +80,7 @@ type TrainingModule = {
 };
 
 export default function MentorDashboard() {
-  const [selectedTab, setSelectedTab] = useState("overview");
+  const [selectedTab, setSelectedTab] = useState("training");
   const queryClient = useQueryClient();
 
   // Fetch mentor data
@@ -138,6 +138,37 @@ export default function MentorDashboard() {
             <div>
               <h1 className="text-3xl font-bold text-gray-900">Mentor Dashboard</h1>
               <p className="text-gray-600">Guide young hearts to spread kindness everywhere</p>
+            </div>
+          </div>
+          
+          {/* Quick Instructions for New Mentors */}
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 border border-blue-200 rounded-lg p-4 mb-4">
+            <div className="flex items-start gap-3">
+              <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <BookOpen className="h-4 w-4 text-white" />
+              </div>
+              <div>
+                <h3 className="font-semibold text-blue-900 mb-1">New to Mentoring? Start Here! 🎯</h3>
+                <p className="text-blue-700 text-sm mb-2">
+                  Complete your training modules first, then you'll be ready to guide other students in spreading kindness.
+                </p>
+                <div className="flex gap-2">
+                  <Button 
+                    size="sm" 
+                    onClick={() => setSelectedTab("training")}
+                    className="bg-blue-500 hover:bg-blue-600"
+                  >
+                    Start Training
+                  </Button>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    onClick={() => setSelectedTab("overview")}
+                  >
+                    View Overview
+                  </Button>
+                </div>
+              </div>
             </div>
           </div>
           

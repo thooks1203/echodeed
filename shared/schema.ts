@@ -247,6 +247,91 @@ export const upsertUserSchema = createInsertSchema(users);
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
+// ==========================================
+// CURRICULUM INTEGRATION TABLES
+// ==========================================
+
+// Curriculum lesson plans and activities
+export const curriculumLessons = pgTable("curriculum_lessons", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: varchar("title").notNull(),
+  description: text("description").notNull(),
+  gradeLevel: varchar("grade_level").notNull(), // K, 1, 2, 3, 4, 5, 6, 7, 8
+  subject: varchar("subject").notNull(), // "Character Education", "Social Studies", "Language Arts"
+  duration: integer("duration_minutes").notNull(), // 30, 45, 60 minutes
+  kindnessTheme: varchar("kindness_theme").notNull(), // "Empathy", "Inclusion", "Helping Others"
+  learningObjectives: text("learning_objectives").array().notNull(),
+  materials: text("materials").array().notNull(),
+  activities: text("activities").array().notNull(),
+  reflectionQuestions: text("reflection_questions").array().notNull(),
+  assessmentRubric: text("assessment_rubric"),
+  extensionActivities: text("extension_activities").array(),
+  crossCurricularConnections: text("cross_curricular_connections").array(),
+  difficulty: varchar("difficulty").notNull().default("beginner"), // beginner, intermediate, advanced
+  tags: text("tags").array(),
+  isActive: boolean("is_active").notNull().default(true),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Teacher curriculum progress and implementation
+export const curriculumProgress = pgTable("curriculum_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  teacherId: varchar("teacher_id").notNull(),
+  lessonId: varchar("lesson_id").notNull().references(() => curriculumLessons.id),
+  classId: varchar("class_id"), // Optional class identifier
+  implementedAt: timestamp("implemented_at").notNull(),
+  studentCount: integer("student_count").notNull(),
+  engagementScore: integer("engagement_score"), // 1-10 teacher rating
+  effectivenessScore: integer("effectiveness_score"), // 1-10 teacher rating
+  teacherNotes: text("teacher_notes"),
+  adaptations: text("adaptations"), // How teacher modified the lesson
+  studentFeedback: text("student_feedback"),
+  wouldRecommend: boolean("would_recommend"),
+  completionStatus: varchar("completion_status").notNull().default("completed"), // planned, in_progress, completed, cancelled
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Student individual responses to curriculum activities
+export const studentCurriculumResponses = pgTable("student_curriculum_responses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentId: varchar("student_id").notNull(),
+  progressId: varchar("progress_id").notNull().references(() => curriculumProgress.id),
+  lessonId: varchar("lesson_id").notNull().references(() => curriculumLessons.id),
+  activityType: varchar("activity_type").notNull(), // "reflection", "role_play", "creative", "discussion"
+  response: text("response"),
+  kindnessAction: text("kindness_action"), // What kindness act did they commit to?
+  completedAction: boolean("completed_action").default(false),
+  actionReflection: text("action_reflection"),
+  peerFeedback: text("peer_feedback"),
+  teacherFeedback: text("teacher_feedback"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Curriculum resource library (videos, worksheets, etc.)
+export const curriculumResources = pgTable("curriculum_resources", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  lessonId: varchar("lesson_id").references(() => curriculumLessons.id),
+  title: varchar("title").notNull(),
+  resourceType: varchar("resource_type").notNull(), // "video", "worksheet", "book", "website", "app"
+  url: varchar("url"),
+  description: text("description"),
+  gradeLevel: varchar("grade_level"),
+  isRequired: boolean("is_required").default(false),
+  downloadCount: integer("download_count").default(0),
+  rating: decimal("rating", { precision: 3, scale: 2 }),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type CurriculumLesson = typeof curriculumLessons.$inferSelect;
+export type InsertCurriculumLesson = typeof curriculumLessons.$inferInsert;
+export type CurriculumProgress = typeof curriculumProgress.$inferSelect;
+export type InsertCurriculumProgress = typeof curriculumProgress.$inferInsert;
+export type StudentCurriculumResponse = typeof studentCurriculumResponses.$inferSelect;
+export type InsertStudentCurriculumResponse = typeof studentCurriculumResponses.$inferInsert;
+export type CurriculumResource = typeof curriculumResources.$inferSelect;
+export type InsertCurriculumResource = typeof curriculumResources.$inferInsert;
+
 export const insertBrandChallengeSchema = createInsertSchema(brandChallenges).omit({
   id: true,
   createdAt: true,
