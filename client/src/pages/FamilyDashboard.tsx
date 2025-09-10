@@ -181,12 +181,12 @@ export default function FamilyDashboard({
         </header>
 
         {/* Current Week Banner */}
-        {currentWeek && (
+        {currentWeek && typeof currentWeek === 'object' && 'week' in currentWeek && (
           <Card className="mb-8 bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold mb-2">Week {currentWeek.week}: {currentWeek.theme}</h2>
+                  <h2 className="text-2xl font-bold mb-2">Week {(currentWeek as any).week}: {typeof (currentWeek as any).theme === 'object' ? JSON.stringify((currentWeek as any).theme) : (currentWeek as any).theme}</h2>
                   <p className="text-blue-100">This week's family kindness theme</p>
                 </div>
                 <Calendar className="h-12 w-12 text-blue-200" />
@@ -235,7 +235,7 @@ export default function FamilyDashboard({
           {/* Current Challenges Tab */}
           <TabsContent value="challenges" className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {challenges?.map((challenge: FamilyChallenge) => (
+              {Array.isArray(challenges) && challenges.map((challenge: FamilyChallenge) => (
                 <Card key={challenge.id} className="hover:shadow-lg transition-shadow cursor-pointer">
                   <CardHeader>
                     <div className="flex justify-between items-start">
@@ -319,7 +319,7 @@ export default function FamilyDashboard({
                     </div>
                   ) : (
                     <div className="space-y-6">
-                      {activities?.map((activity: FamilyActivity) => (
+                      {Array.isArray(activities) && activities.map((activity: FamilyActivity) => (
                         <div key={activity.id} className="border rounded-lg p-4">
                           <h4 className="font-semibold mb-2">{activity.title}</h4>
                           <p className="text-gray-600 mb-4">{activity.description}</p>
