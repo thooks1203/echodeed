@@ -13,6 +13,7 @@ import PWAInstall from "@/components/PWAInstall";
 import WellnessCheckInPage from "@/pages/wellness-checkin";
 import FamilyChallenges from "@/pages/FamilyChallenges";
 import MentorDashboard from "@/pages/MentorDashboard";
+import FamilyDashboard from "@/pages/FamilyDashboard";
 import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 import { RewardNotificationManager } from "@/components/RewardNotificationManager";
 import { SchoolRegistration } from "@/components/SchoolRegistration";
@@ -32,6 +33,7 @@ function Router() {
         <Route path="/rewards" component={RewardsPage} />
         <Route path="/wellness-checkin" component={WellnessCheckInPage} />
         <Route path="/family-challenges" component={FamilyChallenges} />
+        <Route path="/family-dashboard" component={FamilyDashboard} />
         <Route path="/mentor-dashboard" component={MentorDashboard} />
         <Route path="/school-register">
           <SchoolRegistration />
