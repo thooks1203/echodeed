@@ -34,6 +34,10 @@ export function LandingPage() {
     navigate('/school-register');
   };
 
+  const handleStudentSignup = () => {
+    navigate('/student-signup');
+  };
+
   const handleReveal = () => {
     setShowFullContent(true);
   };
@@ -429,6 +433,36 @@ export function LandingPage() {
           >
             <span style={{ fontSize: '20px' }}>📊</span>
             Student Analytics Dashboard
+          </button>
+
+          <button 
+            onClick={handleStudentSignup}
+            style={{
+              backgroundColor: '#10B981',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#059669';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#10B981';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>🎓</span>
+            Student Sign Up
           </button>
 
           <button 

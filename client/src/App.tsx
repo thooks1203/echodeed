@@ -15,6 +15,7 @@ import FamilyChallenges from "@/pages/FamilyChallenges";
 import MentorDashboard from "@/pages/MentorDashboard";
 import FamilyDashboard from "@/pages/FamilyDashboard";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
+import StudentSignup from "@/pages/StudentSignup";
 import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 import { RewardNotificationManager } from "@/components/RewardNotificationManager";
 import { SchoolRegistration } from "@/components/SchoolRegistration";
@@ -40,6 +41,7 @@ function Router() {
         <Route path="/school-register">
           <SchoolRegistration />
         </Route>
+        <Route path="/student-signup" component={StudentSignup} />
         <Route path="/app" component={Home} />
         <Route path="/" component={LandingPage} />
       </Switch>
