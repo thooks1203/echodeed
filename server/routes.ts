@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema, insertSupportPostSchema, insertWellnessCheckInSchema, insertPushSubscriptionSchema } from "@shared/schema";
+import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema, insertSupportPostSchema, insertWellnessCheckInSchema, insertPushSubscriptionSchema, insertSchoolFundraiserSchema, insertFamilyDonationSchema } from "@shared/schema";
 import { nanoid } from 'nanoid';
 import { contentFilter } from "./services/contentFilter";
 import { realTimeMonitoring } from "./services/realTimeMonitoring";
@@ -5592,6 +5592,139 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error initializing family program:', error);
       res.status(500).json({ message: 'Failed to initialize family program' });
+    }
+  });
+
+  // ===============================
+  // 🎯 SCHOOL FUNDRAISER ENDPOINTS - DOUBLE TOKEN REWARDS! 
+  // ===============================
+
+  // Create a new school fundraiser campaign
+  app.post('/api/fundraisers', async (req, res) => {
+    try {
+      // Parse dates properly
+      const data = {
+        ...req.body,
+        startDate: new Date(req.body.startDate),
+        endDate: new Date(req.body.endDate)
+      };
+      const fundraiserData = insertSchoolFundraiserSchema.parse(data);
+      const fundraiser = await storage.createSchoolFundraiser(fundraiserData);
+      console.log('💰 New fundraiser created:', fundraiser.campaignName);
+      res.json(fundraiser);
+    } catch (error) {
+      console.error('Error creating fundraiser:', error);
+      res.status(400).json({ message: 'Failed to create fundraiser', error: (error as Error).message });
+    }
+  });
+
+  // Get active fundraisers for a school
+  app.get('/api/fundraisers/active/:schoolName?', async (req, res) => {
+    try {
+      const { schoolName } = req.params;
+      const fundraisers = await storage.getActiveFundraisers(schoolName);
+      res.json(fundraisers);
+    } catch (error) {
+      console.error('Error getting fundraisers:', error);
+      res.status(500).json({ message: 'Failed to get fundraisers' });
+    }
+  });
+
+  // Make a donation with DOUBLE token rewards!
+  app.post('/api/fundraisers/:fundraiserId/donate', async (req, res) => {
+    try {
+      const { fundraiserId } = req.params;
+      const { donationAmount, userTokenId } = req.body;
+
+      // Get fundraiser details
+      const fundraiser = await storage.getFundraiserById(fundraiserId);
+      if (!fundraiser) {
+        return res.status(404).json({ message: 'Fundraiser not found' });
+      }
+
+      // Calculate double token rewards based on donation
+      const baseKidTokens = Math.floor(donationAmount / 10); // $10 = 1 kid token normally
+      const baseParentTokens = Math.floor(donationAmount / 15); // $15 = 1 parent token normally
+      
+      const kidTokensEarned = baseKidTokens * (fundraiser.tokenMultiplier || 2); // DOUBLE!
+      const parentTokensEarned = baseParentTokens * (fundraiser.tokenMultiplier || 2); // DOUBLE!
+
+      // Create donation record
+      const donationData = {
+        fundraiserId,
+        userTokenId,
+        donationAmount: donationAmount * 100, // Convert to cents
+        kidTokensEarned,
+        parentTokensEarned,
+        isVerified: false // Require manual verification
+      };
+
+      const donation = await storage.createFamilyDonation(donationData);
+      
+      // Update fundraiser total
+      await storage.updateFundraiserAmount(fundraiserId, donationAmount * 100);
+
+      console.log('🎉 DOUBLE TOKEN DONATION PROCESSED!', {
+        amount: donationAmount,
+        kidTokens: kidTokensEarned,
+        parentTokens: parentTokensEarned,
+        multiplier: fundraiser.tokenMultiplier
+      });
+
+      res.json({
+        donation,
+        rewards: {
+          kidTokensEarned,
+          parentTokensEarned,
+          multiplier: fundraiser.tokenMultiplier,
+          message: `🎉 DOUBLE REWARDS! You earned ${kidTokensEarned} kid tokens and ${parentTokensEarned} parent tokens!`
+        }
+      });
+    } catch (error) {
+      console.error('Error processing donation:', error);
+      res.status(400).json({ message: 'Failed to process donation', error: (error as Error).message });
+    }
+  });
+
+  // Get user's donation history
+  app.get('/api/fundraisers/donations/:userTokenId', async (req, res) => {
+    try {
+      const { userTokenId } = req.params;
+      const donations = await storage.getDonationsByUser(userTokenId);
+      res.json(donations);
+    } catch (error) {
+      console.error('Error getting donations:', error);
+      res.status(500).json({ message: 'Failed to get donations' });
+    }
+  });
+
+  // Verify a donation (admin only)
+  app.post('/api/fundraisers/donations/:donationId/verify', async (req, res) => {
+    try {
+      const { donationId } = req.params;
+      const donation = await storage.verifyDonation(donationId);
+      
+      if (!donation) {
+        return res.status(404).json({ message: 'Donation not found' });
+      }
+
+      // Award tokens to user after verification
+      const userTokens = await storage.getUserTokens(donation.userTokenId);
+      if (userTokens) {
+        await storage.updateUserTokens(donation.userTokenId, {
+          kindnessTokens: (userTokens.kindnessTokens || 0) + donation.kidTokensEarned + donation.parentTokensEarned
+        });
+      }
+
+      console.log('✅ Donation verified and tokens awarded:', {
+        donationId,
+        tokensAwarded: donation.kidTokensEarned + donation.parentTokensEarned
+      });
+
+      res.json({ donation, message: 'Donation verified and tokens awarded!' });
+    } catch (error) {
+      console.error('Error verifying donation:', error);
+      res.status(500).json({ message: 'Failed to verify donation' });
     }
   });
 

@@ -1541,7 +1541,11 @@ export const insertFamilyProgressSchema = createInsertSchema(familyProgress);
 export const insertFamilyActivitySchema = createInsertSchema(familyActivities);
 
 // School Fundraiser types - DOUBLE TOKEN REWARDS!
-export const insertSchoolFundraiserSchema = createInsertSchema(schoolFundraisers);
+export const insertSchoolFundraiserSchema = createInsertSchema(schoolFundraisers)
+  .extend({
+    startDate: z.coerce.date(),
+    endDate: z.coerce.date()
+  });
 export const insertFamilyDonationSchema = createInsertSchema(familyDonations);
 
 export type SchoolFundraiser = typeof schoolFundraisers.$inferSelect;
