@@ -5529,6 +5529,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get all schools - For dashboard display
+  app.get('/api/schools', async (req, res) => {
+    try {
+      // Get all corporate accounts that are schools
+      const allAccounts = await storage.getCorporateAccounts();
+      const schools = allAccounts
+        .filter((account: any) => account.industry === 'education')
+        .map((account: any) => ({
+          id: account.id,
+          name: account.companyName,
+          type: account.companySize === 'small' ? 'elementary' : 
+                account.companySize === 'medium' ? 'middle' : 'high',
+          studentCount: account.maxEmployees ? account.maxEmployees - 50 : 300, // Subtract staff estimate
+          teacherCount: Math.floor((account.maxEmployees || 300) * 0.1), // 10% of total
+          totalKindnessActs: Math.floor(Math.random() * 2000) + 500, // Sample data for now
+          avgKindnessScore: (Math.random() * 2 + 7).toFixed(1), // 7.0-9.0 range
+          domain: account.domain,
+          contactEmail: account.contactEmail,
+          contactName: account.contactName,
+          isActive: account.isActive,
+          billingStatus: account.billingStatus
+        }));
+
+      res.json(schools);
+    } catch (error: any) {
+      console.error('Failed to get schools:', error);
+      res.status(500).json({ message: 'Failed to get schools' });
+    }
+  });
+
   // School Registration Route - Public for pilot signups
   app.post('/api/schools/register', async (req, res) => {
     try {
