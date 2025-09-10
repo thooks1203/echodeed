@@ -153,6 +153,7 @@ export interface IStorage {
     country?: string;
     limit?: number;
     userId?: string; // For user-specific posts
+    schoolId?: string; // For school-specific posts
   }): Promise<KindnessPost[]>;
   createPost(post: InsertKindnessPost): Promise<KindnessPost>;
   addHeartToPost(postId: string, sessionId: string): Promise<KindnessPost>;
@@ -482,6 +483,7 @@ export class DatabaseStorage implements IStorage {
     country?: string;
     limit?: number;
     userId?: string;
+    schoolId?: string;
   }): Promise<KindnessPost[]> {
     let query = db.select().from(kindnessPosts);
     
@@ -500,6 +502,9 @@ export class DatabaseStorage implements IStorage {
     }
     if (filters?.userId) {
       conditions.push(eq(kindnessPosts.userId, filters.userId));
+    }
+    if (filters?.schoolId) {
+      conditions.push(eq(kindnessPosts.schoolId, filters.schoolId));
     }
     
     if (conditions.length > 0) {

@@ -43,6 +43,7 @@ export const users = pgTable("users", {
 export const kindnessPosts = pgTable("kindness_posts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").references(() => users.id), // Link to authenticated user
+  schoolId: varchar("school_id"), // Link to school for school-specific feeds
   content: text("content").notNull(),
   category: varchar("category", { length: 50 }).notNull(),
   location: text("location").notNull(),

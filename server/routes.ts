@@ -5473,6 +5473,72 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // School Registration Route - Public for pilot signups
+  app.post('/api/schools/register', async (req, res) => {
+    try {
+      const {
+        schoolName,
+        principalName,
+        principalEmail,
+        principalPhone,
+        schoolAddress,
+        city,
+        state,
+        studentCount,
+        gradeRange,
+        schoolType,
+        goals
+      } = req.body;
+
+      // Validate required fields
+      if (!schoolName || !principalName || !principalEmail || !schoolAddress || !city || !state || !studentCount || !gradeRange || !schoolType) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
+
+      // Create corporate account for the school
+      const schoolAccount = await storage.createCorporateAccount({
+        companyName: schoolName,
+        domain: principalEmail.split('@')[1], // Extract domain from principal email
+        industry: 'education',
+        companySize: studentCount <= 300 ? 'small' : studentCount <= 600 ? 'medium' : 'large',
+        subscriptionTier: 'basic', // Start with basic tier for pilot
+        maxEmployees: studentCount + 50, // Students + staff estimate
+        contactEmail: principalEmail,
+        contactName: principalName,
+        isActive: 1,
+        billingStatus: 'trial', // Start as trial for pilot
+        trialEndsAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000), // 90 day trial
+      });
+
+      // Create school administrator user
+      const adminUser = await storage.upsertUser({
+        email: principalEmail,
+        firstName: principalName.split(' ')[0],
+        lastName: principalName.split(' ').slice(1).join(' '),
+        workplaceId: schoolAccount.id,
+      });
+
+      // Create school administrator record
+      const schoolAdmin = await storage.createSchoolAdministrator({
+        userId: adminUser.id,
+        role: 'principal',
+        schoolId: schoolAccount.id,
+        districtId: schoolAccount.id, // For pilot, use same ID
+        permissions: ['manage_students', 'view_analytics', 'manage_parents', 'safety_monitoring'],
+      });
+
+      res.status(201).json({
+        message: 'School registered successfully',
+        schoolId: schoolAccount.id,
+        adminId: schoolAdmin.id,
+        trialEndsAt: schoolAccount.trialEndsAt,
+      });
+    } catch (error: any) {
+      console.error('School registration failed:', error);
+      res.status(500).json({ message: 'Registration failed. Please try again.' });
+    }
+  });
+
   return httpServer;
 }
 
