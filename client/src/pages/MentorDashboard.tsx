@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
 import { useState } from "react";
+import { useLocation } from "wouter";
 
 type Mentorship = {
   id: string;
@@ -81,6 +82,7 @@ type TrainingModule = {
 
 export default function MentorDashboard() {
   const [selectedTab, setSelectedTab] = useState("training");
+  const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
 
   // Fetch mentor data
