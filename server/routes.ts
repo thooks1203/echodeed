@@ -5995,6 +5995,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===== MENTOR TRAINING ENDPOINTS =====
+  
+  // Get all mentor training modules
+  app.get('/api/mentor/training', async (req, res) => {
+    try {
+      const training = await storage.getAllMentorTraining();
+      res.json(training);
+    } catch (error) {
+      console.error('Error getting mentor training:', error);
+      res.status(500).json({ message: 'Failed to get mentor training' });
+    }
+  });
+
+  // Get mentor scenarios for practice
+  app.get('/api/mentor/scenarios', async (req, res) => {
+    try {
+      const scenarios = await storage.getAllMentorScenarios();
+      res.json(scenarios);
+    } catch (error) {
+      console.error('Error getting mentor scenarios:', error);
+      res.status(500).json({ message: 'Failed to get mentor scenarios' });
+    }
+  });
+
+  // Get mentor conversation examples
+  app.get('/api/mentor/conversations', async (req, res) => {
+    try {
+      const conversations = await storage.getAllMentorConversations();
+      res.json(conversations);
+    } catch (error) {
+      console.error('Error getting mentor conversations:', error);
+      res.status(500).json({ message: 'Failed to get mentor conversations' });
+    }
+  });
+
   // Get parent notifications
   app.get('/api/summer/notifications/:parentId', async (req, res) => {
     try {
