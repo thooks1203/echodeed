@@ -488,6 +488,7 @@ export interface IStorage {
   completeMentorActivity(activityId: string, reflections: { mentorReflection?: string; menteeReflection?: string; }): Promise<MentorActivity | undefined>;
   
   // Mentor badges and recognition
+  createMentorBadge(badge: InsertMentorBadge): Promise<MentorBadge>;
   getMentorBadges(): Promise<MentorBadge[]>;
   getUserMentorBadges(userId: string): Promise<MentorBadge[]>;
   awardMentorBadge(userId: string, badgeId: string, mentorshipId?: string): Promise<void>;
@@ -3635,6 +3636,14 @@ export class DatabaseStorage implements IStorage {
   }
 
   // Mentor badges and recognition
+  async createMentorBadge(badge: InsertMentorBadge): Promise<MentorBadge> {
+    const [newBadge] = await db
+      .insert(mentorBadges)
+      .values(badge)
+      .returning();
+    return newBadge;
+  }
+
   async getMentorBadges(): Promise<MentorBadge[]> {
     return await db
       .select()
