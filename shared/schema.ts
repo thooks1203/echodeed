@@ -1472,6 +1472,34 @@ export const familyActivities = pgTable("family_activities", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// School fundraising campaigns - DOUBLE TOKEN REWARDS FOR DONATIONS! 
+export const schoolFundraisers = pgTable("school_fundraisers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolName: varchar("school_name").notNull(),
+  campaignName: varchar("campaign_name").notNull(),
+  description: text("description").notNull(),
+  goalAmount: integer("goal_amount").notNull(), // in cents
+  currentAmount: integer("current_amount").default(0), // in cents
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  isActive: boolean("is_active").default(true),
+  tokenMultiplier: integer("token_multiplier").default(2), // 2x = double tokens!
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Track family donations to school fundraisers
+export const familyDonations = pgTable("family_donations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  fundraiserId: varchar("fundraiser_id").notNull().references(() => schoolFundraisers.id),
+  userTokenId: varchar("user_token_id").notNull().references(() => userTokens.id),
+  donationAmount: integer("donation_amount").notNull(), // in cents
+  kidTokensEarned: integer("kid_tokens_earned").notNull(),
+  parentTokensEarned: integer("parent_tokens_earned").notNull(),
+  isVerified: boolean("is_verified").default(false),
+  donationDate: timestamp("donation_date").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 export const summerNotifications = pgTable("summer_notifications", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   parentId: varchar("parent_id").notNull(),
@@ -1511,6 +1539,15 @@ export const insertFamilyChallengeSchema = createInsertSchema(legacyFamilyChalle
 export const insertYearRoundFamilyChallengeSchema = createInsertSchema(yearRoundFamilyChallenges);
 export const insertFamilyProgressSchema = createInsertSchema(familyProgress);
 export const insertFamilyActivitySchema = createInsertSchema(familyActivities);
+
+// School Fundraiser types - DOUBLE TOKEN REWARDS!
+export const insertSchoolFundraiserSchema = createInsertSchema(schoolFundraisers);
+export const insertFamilyDonationSchema = createInsertSchema(familyDonations);
+
+export type SchoolFundraiser = typeof schoolFundraisers.$inferSelect;
+export type InsertSchoolFundraiser = typeof schoolFundraisers.$inferInsert;
+export type FamilyDonation = typeof familyDonations.$inferSelect;
+export type InsertFamilyDonation = typeof familyDonations.$inferInsert;
 
 export type YearRoundFamilyChallenge = typeof yearRoundFamilyChallenges.$inferSelect;
 export type InsertYearRoundFamilyChallenge = typeof yearRoundFamilyChallenges.$inferInsert;
