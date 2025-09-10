@@ -13,6 +13,7 @@ import PWAInstall from "@/components/PWAInstall";
 import WellnessCheckInPage from "@/pages/wellness-checkin";
 import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 import { RewardNotificationManager } from "@/components/RewardNotificationManager";
+import { SchoolRegistration } from "@/components/SchoolRegistration";
 
 function Router() {
   const [location, setLocation] = useLocation();
@@ -28,6 +29,9 @@ function Router() {
         <Route path="/parent-dashboard" component={ParentDashboard} />
         <Route path="/rewards" component={RewardsPage} />
         <Route path="/wellness-checkin" component={WellnessCheckInPage} />
+        <Route path="/school-register">
+          <SchoolRegistration />
+        </Route>
         <Route path="/app" component={Home} />
         <Route path="/" component={LandingPage} />
       </Switch>

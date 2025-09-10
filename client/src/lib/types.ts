@@ -21,6 +21,7 @@ export interface PostFilters {
   city?: string;
   state?: string;
   country?: string;
+  schoolId?: string;
 }
 
 export interface TokenEarning {

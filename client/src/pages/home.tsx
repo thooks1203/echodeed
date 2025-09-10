@@ -55,6 +55,7 @@ export default function Home() {
       const params = new URLSearchParams();
       if (filters.city) params.append('city', filters.city);
       if (filters.category) params.append('category', filters.category);
+      if (filters.schoolId) params.append('schoolId', filters.schoolId);
       
       const response = await fetch(`/api/posts?${params}`);
       return response.json();
