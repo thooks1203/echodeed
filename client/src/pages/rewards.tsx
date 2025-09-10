@@ -179,6 +179,12 @@ export default function RewardsPage() {
     };
   });
 
+  // Debug logging to see what data we're getting
+  console.log('🔍 Rewards Debug Info:');
+  console.log('Raw offers from API:', offers);
+  console.log('Partners from API:', partners);
+  console.log('Enriched offers:', enrichedOffers);
+
   // Filter featured offers
   const featuredOffers = enrichedOffers.filter((offer: RewardOffer) => offer.isFeatured);
   const featuredPartners = partners.filter((partner: RewardPartner) => partner.isFeatured);
