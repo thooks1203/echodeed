@@ -2702,7 +2702,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Reward Offers
+  // Get ALL reward offers (for the rewards page)
+  app.get('/api/rewards/offers/all/all', async (req, res) => {
+    try {
+      console.log('🎁 Fetching all reward offers...');
+      const offers = await storage.getRewardOffers({
+        isActive: true, // Only show active offers
+      });
+
+      // Enrich offers with partner information including logos
+      const partners = await storage.getRewardPartners({});
+      const enrichedOffers = offers.map(offer => {
+        const partner = partners.find(p => p.id === offer.partnerId);
+        return {
+          ...offer,
+          partnerName: partner?.partnerName,
+          partnerLogo: partner?.partnerLogo,
+          partnerType: partner?.partnerType,
+        };
+      });
+
+      console.log(`🎁 Found ${enrichedOffers.length} active reward offers`);
+      res.json(enrichedOffers);
+    } catch (error: any) {
+      console.error('Failed to get all reward offers:', error);
+      res.status(500).json({ message: 'Failed to get all reward offers' });
+    }
+  });
+
+  // Reward Offers (with filters)
   app.get('/api/rewards/offers', async (req, res) => {
     try {
       const { partnerId, isActive, offerType, badgeRequirement } = req.query;
