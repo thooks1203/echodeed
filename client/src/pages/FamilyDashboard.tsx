@@ -186,7 +186,13 @@ export default function FamilyDashboard({
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <h2 className="text-2xl font-bold mb-2">Week {(currentWeek as any).week}: {typeof (currentWeek as any).theme === 'object' ? JSON.stringify((currentWeek as any).theme) : (currentWeek as any).theme}</h2>
+                  <h2 className="text-2xl font-bold mb-2">
+                    Week {(currentWeek as any).week}: {
+                      typeof (currentWeek as any).theme === 'object' && (currentWeek as any).theme?.theme
+                        ? `${(currentWeek as any).theme.emoji || '🌟'} ${(currentWeek as any).theme.theme}`
+                        : (currentWeek as any).theme || 'Kindness Week'
+                    }
+                  </h2>
                   <p className="text-blue-100">This week's family kindness theme</p>
                 </div>
                 <Calendar className="h-12 w-12 text-blue-200" />
