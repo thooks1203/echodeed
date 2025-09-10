@@ -3745,7 +3745,7 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(mentorTraining)
       .where(eq(mentorTraining.isActive, true))
-      .orderBy(mentorTraining.sortOrder);
+      .orderBy(mentorTraining.createdAt);
   }
 
   // Mentor Scenario Operations
@@ -3770,7 +3770,7 @@ export class DatabaseStorage implements IStorage {
       .select()
       .from(mentorScenarios)
       .where(eq(mentorScenarios.isActive, true))
-      .orderBy(mentorScenarios.sortOrder);
+      .orderBy(mentorScenarios.createdAt);
   }
 
   // Mentor Conversation Operations
