@@ -182,6 +182,14 @@ import {
   type InsertStudentCurriculumResponse,
   type CurriculumResource,
   type InsertCurriculumResource,
+  type StudentAccount,
+  type InsertStudentAccount,
+  type ParentalConsentRequest,
+  type InsertParentalConsentRequest,
+  type ParentAccount,
+  type InsertParentAccount,
+  type StudentParentLink,
+  type InsertStudentParentLink,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte, lte } from "drizzle-orm";
@@ -520,6 +528,25 @@ export interface IStorage {
   getMentorStats(userId: string): Promise<MentorStats | undefined>;
   updateMentorStats(userId: string, updates: Partial<MentorStats>): Promise<void>;
   getMentorLeaderboard(schoolId?: string, limit?: number): Promise<Array<{ user: User; stats: MentorStats; }>>;
+  
+  // 🎓 COPPA-compliant student registration and parent operations
+  createParentAccount(parent: InsertParentAccount): Promise<ParentAccount>;
+  getParentAccountByEmail(email: string): Promise<ParentAccount | undefined>;
+  verifyParentAccount(parentId: string): Promise<ParentAccount | undefined>;
+  createStudentAccount(student: InsertStudentAccount): Promise<StudentAccount>;
+  getStudentAccount(userId: string): Promise<StudentAccount | undefined>;
+  getStudentAccountByEmail(email: string): Promise<StudentAccount | undefined>;
+  updateStudentParentalConsent(studentId: string, consentData: {
+    status: string;
+    method: string;
+    parentEmail?: string;
+    ipAddress?: string;
+  }): Promise<StudentAccount>;
+  createParentalConsentRequest(request: InsertParentalConsentRequest): Promise<ParentalConsentRequest>;
+  getParentalConsentRequest(verificationCode: string): Promise<ParentalConsentRequest | undefined>;
+  updateParentalConsentStatus(requestId: string, status: string, ipAddress?: string): Promise<ParentalConsentRequest>;
+  linkStudentToParent(link: InsertStudentParentLink): Promise<StudentParentLink>;
+  getParentsForStudent(studentUserId: string): Promise<ParentAccount[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -2828,6 +2855,74 @@ export class DatabaseStorage implements IStorage {
     .from(parentAccounts)
     .innerJoin(studentParentLinks, eq(parentAccounts.id, studentParentLinks.parentAccountId))
     .where(eq(studentParentLinks.studentUserId, studentUserId));
+  }
+
+  // 🎓 COPPA-compliant student registration methods
+  async createStudentAccount(student: InsertStudentAccount): Promise<StudentAccount> {
+    const [newStudent] = await db.insert(studentAccounts).values(student).returning();
+    return newStudent;
+  }
+
+  async getStudentAccount(userId: string): Promise<StudentAccount | undefined> {
+    const [student] = await db.select().from(studentAccounts).where(eq(studentAccounts.userId, userId));
+    return student;
+  }
+
+  async getStudentAccountByEmail(email: string): Promise<StudentAccount | undefined> {
+    // Note: Students don't have direct email, we'd need to look up via parent notification email
+    const [student] = await db.select().from(studentAccounts).where(eq(studentAccounts.parentNotificationEmail, email));
+    return student;
+  }
+
+  async updateStudentParentalConsent(studentId: string, consentData: {
+    status: string;
+    method: string;
+    parentEmail?: string;
+    ipAddress?: string;
+  }): Promise<StudentAccount> {
+    const [updatedStudent] = await db
+      .update(studentAccounts)
+      .set({
+        parentalConsentStatus: consentData.status,
+        parentalConsentMethod: consentData.method,
+        parentalConsentDate: new Date(),
+        parentalConsentIP: consentData.ipAddress,
+        isAccountActive: consentData.status === 'approved' ? 1 : 0,
+        parentNotificationEmail: consentData.parentEmail,
+        updatedAt: new Date()
+      })
+      .where(eq(studentAccounts.id, studentId))
+      .returning();
+    return updatedStudent;
+  }
+
+  async createParentalConsentRequest(request: InsertParentalConsentRequest): Promise<ParentalConsentRequest> {
+    const [newRequest] = await db.insert(parentalConsentRequests).values({
+      ...request,
+      expiredAt: new Date(Date.now() + 72 * 60 * 60 * 1000) // 72 hours from now
+    }).returning();
+    return newRequest;
+  }
+
+  async getParentalConsentRequest(verificationCode: string): Promise<ParentalConsentRequest | undefined> {
+    const [request] = await db.select()
+      .from(parentalConsentRequests)
+      .where(eq(parentalConsentRequests.verificationCode, verificationCode));
+    return request;
+  }
+
+  async updateParentalConsentStatus(requestId: string, status: string, ipAddress?: string): Promise<ParentalConsentRequest> {
+    const [updatedRequest] = await db
+      .update(parentalConsentRequests)
+      .set({
+        consentStatus: status,
+        ...(status === 'clicked' && { clickedAt: new Date() }),
+        ...(status === 'approved' && { consentedAt: new Date() }),
+        ...(ipAddress && { ipAddress })
+      })
+      .where(eq(parentalConsentRequests.id, requestId))
+      .returning();
+    return updatedRequest;
   }
 
   // SEL Standards management

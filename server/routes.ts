@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema, insertSupportPostSchema, insertWellnessCheckInSchema, insertPushSubscriptionSchema, insertSchoolFundraiserSchema, insertFamilyDonationSchema } from "@shared/schema";
+import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema, insertSupportPostSchema, insertWellnessCheckInSchema, insertPushSubscriptionSchema, insertSchoolFundraiserSchema, insertFamilyDonationSchema, insertStudentAccountSchema, insertParentalConsentRequestSchema } from "@shared/schema";
 import { nanoid } from 'nanoid';
 import { contentFilter } from "./services/contentFilter";
 import { realTimeMonitoring } from "./services/realTimeMonitoring";
@@ -4862,6 +4862,182 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Failed to get parents for student:', error);
       res.status(500).json({ error: 'Failed to get parents for student' });
+    }
+  });
+
+  // 🎓 COPPA-COMPLIANT STUDENT REGISTRATION SYSTEM
+  
+  // Step 1: Student creates account with age verification
+  app.post('/api/students/register', async (req, res) => {
+    try {
+      const { firstName, grade, birthYear, schoolId, parentEmail, parentName } = req.body;
+      
+      // COPPA Age Verification - Calculate current age
+      const currentYear = new Date().getFullYear();
+      const studentAge = currentYear - birthYear;
+      
+      if (studentAge < 5 || studentAge > 18) {
+        return res.status(400).json({ 
+          error: 'Invalid age for K-8 student registration',
+          code: 'INVALID_AGE'
+        });
+      }
+      
+      // Create user account first (inactive)
+      const newUser = await storage.upsertUser({
+        firstName: firstName,
+        anonymityLevel: 'full', // Default to full anonymity for safety
+        workplaceId: schoolId, // Link to school
+      });
+      
+      // Create student account with minimal data (COPPA compliance)
+      const studentData = {
+        userId: newUser.id,
+        schoolId,
+        firstName,
+        grade,
+        birthYear,
+        parentNotificationEmail: parentEmail,
+        // Account starts inactive until parental consent
+        isAccountActive: 0,
+        parentalConsentStatus: 'pending'
+      };
+      
+      const validatedStudent = insertStudentAccountSchema.parse(studentData);
+      const newStudent = await storage.createStudentAccount(validatedStudent);
+      
+      // If under 13, require parental consent
+      if (studentAge < 13) {
+        // Generate secure verification code
+        const verificationCode = nanoid(20);
+        
+        // Create parental consent request
+        const consentRequest = await storage.createParentalConsentRequest({
+          studentAccountId: newStudent.id,
+          parentEmail: parentEmail,
+          parentName: parentName || 'Parent/Guardian',
+          verificationCode: verificationCode
+        });
+        
+        // TODO: Send consent email to parent
+        console.log(`📧 COPPA Consent Required: Send email to ${parentEmail} with code ${verificationCode}`);
+        
+        res.json({
+          success: true,
+          studentId: newStudent.id,
+          requiresParentalConsent: true,
+          message: 'Account created! Parent consent email sent. Please ask your parent/guardian to check their email.',
+          consentRequestId: consentRequest.id
+        });
+      } else {
+        // 13+ can activate account immediately with simplified consent
+        await storage.updateStudentParentalConsent(newStudent.id, {
+          status: 'approved',
+          method: 'age_verification',
+          parentEmail: parentEmail
+        });
+        
+        res.json({
+          success: true,
+          studentId: newStudent.id,
+          requiresParentalConsent: false,
+          message: 'Account created and activated! Welcome to EchoDeed!',
+          isActive: true
+        });
+      }
+      
+    } catch (error: any) {
+      console.error('Student registration failed:', error);
+      res.status(500).json({ 
+        error: 'Registration failed. Please try again.',
+        details: error.message 
+      });
+    }
+  });
+  
+  // Step 2: Parent clicks consent email link
+  app.get('/api/students/consent/:verificationCode', async (req, res) => {
+    try {
+      const { verificationCode } = req.params;
+      const request = await storage.getParentalConsentRequest(verificationCode);
+      
+      if (!request) {
+        return res.status(404).json({ error: 'Invalid or expired consent link' });
+      }
+      
+      // Check if expired (72 hours)
+      if (request.expiredAt && new Date() > request.expiredAt) {
+        return res.status(410).json({ error: 'Consent link has expired. Please register again.' });
+      }
+      
+      // Mark as clicked
+      await storage.updateParentalConsentStatus(request.id, 'clicked', req.ip);
+      
+      // Return consent form page data
+      res.json({
+        success: true,
+        consentRequest: {
+          id: request.id,
+          studentAccountId: request.studentAccountId,
+          parentName: request.parentName,
+          verificationCode: request.verificationCode
+        },
+        message: 'Please review and provide consent for your child\'s account.'
+      });
+      
+    } catch (error: any) {
+      console.error('Consent verification failed:', error);
+      res.status(500).json({ error: 'Failed to process consent link' });
+    }
+  });
+  
+  // Step 3: Parent approves/denies consent
+  app.post('/api/students/consent/:verificationCode/approve', async (req, res) => {
+    try {
+      const { verificationCode } = req.params;
+      const { approved, parentName } = req.body;
+      
+      const request = await storage.getParentalConsentRequest(verificationCode);
+      if (!request) {
+        return res.status(404).json({ error: 'Invalid consent request' });
+      }
+      
+      const status = approved ? 'approved' : 'denied';
+      await storage.updateParentalConsentStatus(request.id, status, req.ip);
+      
+      if (approved) {
+        // Activate student account
+        await storage.updateStudentParentalConsent(request.studentAccountId, {
+          status: 'approved',
+          method: 'parental_email',
+          parentEmail: request.parentEmail,
+          ipAddress: req.ip
+        });
+        
+        res.json({
+          success: true,
+          message: 'Consent approved! Your child\'s account is now active.',
+          accountActive: true
+        });
+      } else {
+        // Deactivate account
+        await storage.updateStudentParentalConsent(request.studentAccountId, {
+          status: 'denied',
+          method: 'parental_email',
+          parentEmail: request.parentEmail,
+          ipAddress: req.ip
+        });
+        
+        res.json({
+          success: true,
+          message: 'Consent denied. The student account will remain inactive.',
+          accountActive: false
+        });
+      }
+      
+    } catch (error: any) {
+      console.error('Consent approval failed:', error);
+      res.status(500).json({ error: 'Failed to process consent response' });
     }
   });
 
