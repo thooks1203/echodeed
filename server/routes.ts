@@ -4885,9 +4885,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Get school name for email
-      const schools = await storage.getSchools();
-      const school = schools.find((s: any) => s.id === schoolId);
-      const schoolName = school?.name || 'Your School';
+      let schoolName = 'Your School';
+      try {
+        const school = await storage.getCorporateAccount(schoolId);
+        if (school?.name) {
+          schoolName = school.name;
+        }
+      } catch (error) {
+        console.log('Could not fetch school name, using fallback');
+      }
 
       // Create user account first (inactive)
       const newUser = await storage.upsertUser({
