@@ -5728,6 +5728,273 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===============================
+  // 🎓 KINDNESS MENTORS SYSTEM - PEER GUIDANCE & RECOGNITION!
+  // ===============================
+
+  // Create a new mentorship relationship
+  app.post('/api/mentors/mentorship', async (req, res) => {
+    try {
+      const mentorshipData = {
+        ...req.body,
+        id: nanoid(),
+        status: 'pending',
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      const mentorship = await storage.createMentorship(mentorshipData);
+      console.log('🎓 New mentorship created:', { mentor: mentorship.mentorUserId, mentee: mentorship.menteeUserId });
+      res.json(mentorship);
+    } catch (error) {
+      console.error('Error creating mentorship:', error);
+      res.status(400).json({ message: 'Failed to create mentorship', error: (error as Error).message });
+    }
+  });
+
+  // Get mentorships for a specific mentor
+  app.get('/api/mentors/by-mentor/:mentorUserId', async (req, res) => {
+    try {
+      const { mentorUserId } = req.params;
+      const mentorships = await storage.getMentorshipsByMentor(mentorUserId);
+      res.json(mentorships);
+    } catch (error) {
+      console.error('Error getting mentor mentorships:', error);
+      res.status(500).json({ message: 'Failed to get mentorships' });
+    }
+  });
+
+  // Get mentorships for a specific mentee
+  app.get('/api/mentors/by-mentee/:menteeUserId', async (req, res) => {
+    try {
+      const { menteeUserId } = req.params;
+      const mentorships = await storage.getMentorshipsByMentee(menteeUserId);
+      res.json(mentorships);
+    } catch (error) {
+      console.error('Error getting mentee mentorships:', error);
+      res.status(500).json({ message: 'Failed to get mentorships' });
+    }
+  });
+
+  // Find mentor matches for a mentee
+  app.get('/api/mentors/matches/:menteeUserId/:ageGroup', async (req, res) => {
+    try {
+      const { menteeUserId, ageGroup } = req.params;
+      const matches = await storage.findMentorMatches(menteeUserId, ageGroup);
+      res.json(matches);
+    } catch (error) {
+      console.error('Error finding mentor matches:', error);
+      res.status(500).json({ message: 'Failed to find mentor matches' });
+    }
+  });
+
+  // Update mentorship status
+  app.put('/api/mentors/mentorship/:id/status', async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      const mentorship = await storage.updateMentorshipStatus(id, status);
+      
+      if (!mentorship) {
+        return res.status(404).json({ message: 'Mentorship not found' });
+      }
+      
+      console.log('🎓 Mentorship status updated:', { id, status });
+      res.json(mentorship);
+    } catch (error) {
+      console.error('Error updating mentorship status:', error);
+      res.status(500).json({ message: 'Failed to update mentorship status' });
+    }
+  });
+
+  // Create mentor activity/session
+  app.post('/api/mentors/activity', async (req, res) => {
+    try {
+      const activityData = {
+        ...req.body,
+        id: nanoid(),
+        isCompleted: false,
+        createdAt: new Date()
+      };
+      const activity = await storage.createMentorActivity(activityData);
+      console.log('🎓 Mentor activity created:', activity.activityType);
+      res.json(activity);
+    } catch (error) {
+      console.error('Error creating mentor activity:', error);
+      res.status(400).json({ message: 'Failed to create mentor activity', error: (error as Error).message });
+    }
+  });
+
+  // Get mentor activities for a mentorship
+  app.get('/api/mentors/activities/:mentorshipId', async (req, res) => {
+    try {
+      const { mentorshipId } = req.params;
+      const activities = await storage.getMentorActivities(mentorshipId);
+      res.json(activities);
+    } catch (error) {
+      console.error('Error getting mentor activities:', error);
+      res.status(500).json({ message: 'Failed to get mentor activities' });
+    }
+  });
+
+  // Complete mentor activity with reflections
+  app.put('/api/mentors/activity/:activityId/complete', async (req, res) => {
+    try {
+      const { activityId } = req.params;
+      const { mentorReflection, menteeReflection } = req.body;
+      
+      const activity = await storage.completeMentorActivity(activityId, {
+        mentorReflection,
+        menteeReflection
+      });
+      
+      if (!activity) {
+        return res.status(404).json({ message: 'Activity not found' });
+      }
+      
+      console.log('🎓 Mentor activity completed:', activityId);
+      res.json(activity);
+    } catch (error) {
+      console.error('Error completing mentor activity:', error);
+      res.status(500).json({ message: 'Failed to complete mentor activity' });
+    }
+  });
+
+  // Get all mentor badges
+  app.get('/api/mentors/badges', async (req, res) => {
+    try {
+      const badges = await storage.getMentorBadges();
+      res.json(badges);
+    } catch (error) {
+      console.error('Error getting mentor badges:', error);
+      res.status(500).json({ message: 'Failed to get mentor badges' });
+    }
+  });
+
+  // Get user's mentor badges
+  app.get('/api/mentors/badges/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const badges = await storage.getUserMentorBadges(userId);
+      res.json(badges);
+    } catch (error) {
+      console.error('Error getting user mentor badges:', error);
+      res.status(500).json({ message: 'Failed to get user badges' });
+    }
+  });
+
+  // Check badge eligibility for user
+  app.get('/api/mentors/badges/eligible/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const eligibleBadges = await storage.checkMentorBadgeEligibility(userId);
+      res.json(eligibleBadges);
+    } catch (error) {
+      console.error('Error checking badge eligibility:', error);
+      res.status(500).json({ message: 'Failed to check badge eligibility' });
+    }
+  });
+
+  // Award mentor badge to user
+  app.post('/api/mentors/badges/award', async (req, res) => {
+    try {
+      const { userId, badgeId, mentorshipId } = req.body;
+      await storage.awardMentorBadge(userId, badgeId, mentorshipId);
+      
+      console.log('🏆 Mentor badge awarded:', { userId, badgeId });
+      res.json({ message: 'Badge awarded successfully' });
+    } catch (error) {
+      console.error('Error awarding mentor badge:', error);
+      res.status(500).json({ message: 'Failed to award badge' });
+    }
+  });
+
+  // Get/create mentor preferences
+  app.get('/api/mentors/preferences/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const preferences = await storage.getMentorPreferences(userId);
+      res.json(preferences || null);
+    } catch (error) {
+      console.error('Error getting mentor preferences:', error);
+      res.status(500).json({ message: 'Failed to get mentor preferences' });
+    }
+  });
+
+  app.post('/api/mentors/preferences', async (req, res) => {
+    try {
+      const preferencesData = {
+        ...req.body,
+        id: nanoid(),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      };
+      const preferences = await storage.createMentorPreferences(preferencesData);
+      console.log('🎓 Mentor preferences created for user:', preferences.userId);
+      res.json(preferences);
+    } catch (error) {
+      console.error('Error creating mentor preferences:', error);
+      res.status(400).json({ message: 'Failed to create mentor preferences', error: (error as Error).message });
+    }
+  });
+
+  app.put('/api/mentors/preferences/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const preferences = await storage.updateMentorPreferences(userId, req.body);
+      
+      if (!preferences) {
+        return res.status(404).json({ message: 'Preferences not found' });
+      }
+      
+      console.log('🎓 Mentor preferences updated for user:', userId);
+      res.json(preferences);
+    } catch (error) {
+      console.error('Error updating mentor preferences:', error);
+      res.status(500).json({ message: 'Failed to update mentor preferences' });
+    }
+  });
+
+  // Get available mentors with filtering
+  app.get('/api/mentors/available', async (req, res) => {
+    try {
+      const { ageGroup, interests } = req.query;
+      const interestArray = interests ? (interests as string).split(',') : undefined;
+      
+      const mentors = await storage.getAvailableMentors(ageGroup as string, interestArray);
+      res.json(mentors);
+    } catch (error) {
+      console.error('Error getting available mentors:', error);
+      res.status(500).json({ message: 'Failed to get available mentors' });
+    }
+  });
+
+  // Get mentor stats
+  app.get('/api/mentors/stats/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const stats = await storage.getMentorStats(userId);
+      res.json(stats || null);
+    } catch (error) {
+      console.error('Error getting mentor stats:', error);
+      res.status(500).json({ message: 'Failed to get mentor stats' });
+    }
+  });
+
+  // Get mentor leaderboard
+  app.get('/api/mentors/leaderboard', async (req, res) => {
+    try {
+      const { schoolId, limit } = req.query;
+      const leaderboard = await storage.getMentorLeaderboard(
+        schoolId as string, 
+        limit ? parseInt(limit as string) : 10
+      );
+      res.json(leaderboard);
+    } catch (error) {
+      console.error('Error getting mentor leaderboard:', error);
+      res.status(500).json({ message: 'Failed to get mentor leaderboard' });
+    }
+  });
+
   // Get parent notifications
   app.get('/api/summer/notifications/:parentId', async (req, res) => {
     try {
