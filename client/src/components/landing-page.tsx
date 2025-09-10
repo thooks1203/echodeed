@@ -26,6 +26,10 @@ export function LandingPage() {
     navigate('/mentor-dashboard');
   };
 
+  const handleFamilyLogin = () => {
+    navigate('/family-dashboard');
+  };
+
   const handleSchoolRegistration = () => {
     navigate('/school-register');
   };
@@ -365,6 +369,36 @@ export function LandingPage() {
           >
             <span style={{ fontSize: '20px' }}>👨‍👩‍👧‍👦</span>
             Parent Dashboard
+          </button>
+
+          <button 
+            onClick={handleFamilyLogin}
+            style={{
+              backgroundColor: '#EC4899',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#DB2777';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#EC4899';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>💕</span>
+            Family Kindness Hub
           </button>
 
           <button 
