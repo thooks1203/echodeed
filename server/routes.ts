@@ -58,6 +58,60 @@ import { setupAuth, isAuthenticated } from "./replitAuth";
 import { fulfillmentService } from "./fulfillment";
 import { SurpriseGiveawayService } from './surpriseGiveaways';
 
+// 🔒 SECURITY: School Access Control Middleware
+const requireSchoolAccess = async (req: any, res: any, next: any) => {
+  try {
+    if (!req.user?.claims?.sub) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    const userId = req.user.claims.sub;
+    const user = await storage.getUser(userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check if user is associated with a school (via registration or admin role)
+    const userSchools = await storage.getUserSchools(userId);
+    
+    if (!userSchools || userSchools.length === 0) {
+      return res.status(403).json({ error: 'No school access found' });
+    }
+
+    // Add school info to request for downstream use
+    req.userSchools = userSchools;
+    req.primarySchoolId = userSchools[0].schoolId;
+    
+    next();
+  } catch (error) {
+    console.error('School access check failed:', error);
+    res.status(500).json({ error: 'Access validation failed' });
+  }
+};
+
+// 🔒 SECURITY: Specific school data access middleware
+const requireSpecificSchoolAccess = (schoolIdParam: string = 'schoolId') => {
+  return async (req: any, res: any, next: any) => {
+    try {
+      const requestedSchoolId = req.params[schoolIdParam];
+      const userSchools = req.userSchools || [];
+      
+      // Check if user has access to the requested school
+      const hasAccess = userSchools.some((school: any) => school.schoolId === requestedSchoolId);
+      
+      if (!hasAccess) {
+        return res.status(403).json({ error: 'Access denied to this school\'s data' });
+      }
+      
+      next();
+    } catch (error) {
+      console.error('Specific school access check failed:', error);
+      res.status(500).json({ error: 'Access validation failed' });
+    }
+  };
+};
+
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
 
@@ -1086,7 +1140,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get kindness posts with optional filters
-  app.get("/api/posts", async (req, res) => {
+  // 🔒 SECURE: School-restricted posts API
+  app.get("/api/posts", isAuthenticated, requireSchoolAccess, async (req: any, res) => {
     try {
       const { category, city, state, country } = req.query;
       const filters = {
@@ -1094,6 +1149,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         city: city as string, 
         state: state as string,
         country: country as string,
+        schoolId: req.primarySchoolId // Only show posts from user's school
       };
       
       // Remove undefined filters
@@ -1110,8 +1166,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create new kindness post - Protected route
-  app.post("/api/posts", isAuthenticated, async (req: any, res) => {
+  // 🔒 SECURE: Create new kindness post - School-restricted route
+  app.post("/api/posts", isAuthenticated, requireSchoolAccess, async (req: any, res) => {
     try {
       const postData = insertKindnessPostSchema.parse(req.body);
       const userId = req.user.claims.sub;

@@ -2466,6 +2466,46 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  // 🔒 SECURITY: Get schools associated with a user (for access control)
+  async getUserSchools(userId: string): Promise<any[]> {
+    try {
+      // Check if user is a school administrator
+      const adminSchools = await db.select()
+        .from(schoolAdministrators)
+        .leftJoin(corporateAccounts, eq(schoolAdministrators.schoolId, corporateAccounts.id))
+        .where(eq(schoolAdministrators.userId, userId));
+
+      if (adminSchools.length > 0) {
+        return adminSchools.map(row => ({
+          schoolId: row.school_administrators?.schoolId,
+          schoolName: row.corporate_accounts?.companyName,
+          role: row.school_administrators?.role,
+          accessLevel: 'admin'
+        }));
+      }
+
+      // Check if user is a registered school principal by email match
+      const schools = await db.select()
+        .from(corporateAccounts)
+        .where(eq(corporateAccounts.contactEmail, userId));
+
+      if (schools.length > 0) {
+        return schools.map(school => ({
+          schoolId: school.id,
+          schoolName: school.companyName,
+          role: 'principal',
+          accessLevel: 'admin'
+        }));
+      }
+
+      // For now, return empty array - in production you'd check student/parent associations
+      return [];
+    } catch (error) {
+      console.error('Failed to get user schools:', error);
+      return [];
+    }
+  }
+
   // PREMIUM SUBSCRIPTION SYSTEM IMPLEMENTATIONS
   async getSubscriptionPlans(planType?: string): Promise<SubscriptionPlan[]> {
     let query = db.select().from(subscriptionPlans);
