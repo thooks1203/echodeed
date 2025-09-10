@@ -54,6 +54,7 @@ export class FamilyChallengeEngine {
     const theme = this.getWeekTheme(week);
     const challengeTemplates = this.getChallengeTemplatesForAge(theme.theme, ageGroup);
     
+    
     for (const template of challengeTemplates) {
       // Check if challenge already exists
       const existingChallenge = await db.select()
@@ -176,6 +177,92 @@ export class FamilyChallengeEngine {
                 materials: "Small bags, homemade treats or store-bought snacks, handmade cards",
                 location: "community",
                 discussionPrompts: "How do you think our neighbors felt receiving these? What other ways can we help our community?"
+              }
+            ]
+          }
+        ]
+      },
+      'Environmental Care': {
+        'family': [
+          {
+            title: "Earth Guardian Family Mission",
+            description: "Work together to care for the environment and teach others",
+            difficulty: "medium",
+            kidPoints: 20,
+            parentPoints: 15,
+            activities: [
+              {
+                title: "Family Eco-Heroes Challenge",
+                description: "Become environmental heroes together as a family",
+                kidInstructions: "Choose one way to help the Earth this week: pick up litter, start a recycling project, plant something, or save water. Teach a friend about it!",
+                parentInstructions: "Guide your child in choosing an age-appropriate environmental action. Help them understand why it matters and how to share their knowledge with others.",
+                timeEstimate: 90,
+                materials: "Gloves for cleanup, seeds for planting, recycling containers, or conservation tracking sheet",
+                location: "outdoors",
+                discussionPrompts: "Why is it important to take care of our Earth? How can we inspire other families to help the environment too?"
+              }
+            ]
+          }
+        ],
+        'k-2': [
+          {
+            title: "Little Earth Helper",
+            description: "Simple ways young kids can help our planet",
+            difficulty: "easy",
+            kidPoints: 15,
+            parentPoints: 10,
+            activities: [
+              {
+                title: "Nature's Friend Project",
+                description: "Help take care of nature around you",
+                kidInstructions: "Pick up trash in your yard or at the park. Turn off lights when you leave a room. Give water to plants or birds.",
+                parentInstructions: "Make this fun by turning it into a game. Count pieces of trash together, make it a 'lights off' race, or let them be the 'water helper.'",
+                timeEstimate: 30,
+                materials: "Small trash bag, watering can or cup",
+                location: "home",
+                discussionPrompts: "How do you think the Earth feels when we help take care of it? What animals might be happy when we clean up?"
+              }
+            ]
+          }
+        ],
+        '3-5': [
+          {
+            title: "Environmental Detective",
+            description: "Discover and solve environmental problems around you",
+            difficulty: "medium",
+            kidPoints: 18,
+            parentPoints: 12,
+            activities: [
+              {
+                title: "Green Detective Mission",
+                description: "Find environmental problems and create solutions",
+                kidInstructions: "Look around your school and neighborhood for environmental problems. Pick one to solve with your family, like starting a recycling program or organizing a cleanup.",
+                parentInstructions: "Help your child observe and think critically about environmental issues. Support their solution by helping them plan and execute their idea.",
+                timeEstimate: 60,
+                materials: "Notebook for observations, cleanup supplies, or recycling materials",
+                location: "community",
+                discussionPrompts: "What environmental problems did you notice? How do you think your solution will help? Who else could join your effort?"
+              }
+            ]
+          }
+        ],
+        '6-8': [
+          {
+            title: "Climate Action Leader",
+            description: "Lead environmental change in your community",
+            difficulty: "hard",
+            kidPoints: 25,
+            parentPoints: 15,
+            activities: [
+              {
+                title: "Environmental Leadership Project",
+                description: "Create a project that educates and inspires others about environmental care",
+                kidInstructions: "Research an environmental issue and create a presentation, video, or project to teach others. Organize friends or classmates to take action together.",
+                parentInstructions: "Support your child's research and help them develop leadership skills. Provide guidance on how to effectively communicate their message and organize others.",
+                timeEstimate: 120,
+                materials: "Research materials, presentation supplies, poster board, or video equipment",
+                location: "school",
+                discussionPrompts: "What did you learn about this environmental issue? How can young people like you make a real difference? What was the impact of your project?"
               }
             ]
           }
