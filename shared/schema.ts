@@ -771,6 +771,34 @@ export const googleClassroomIntegrations = pgTable("google_classroom_integration
 });
 
 // Link students to their parents (COPPA compliance)
+// 🎓 COPPA-Compliant Student Accounts
+export const studentAccounts = pgTable("student_accounts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique().references(() => users.id), // Links to main users table
+  schoolId: varchar("school_id").notNull(), // School restriction for safety
+  // COPPA-compliant minimal data collection
+  firstName: varchar("first_name", { length: 50 }).notNull(),
+  grade: varchar("grade", { length: 5 }).notNull(), // K, 1, 2, 3, 4, 5, 6, 7, 8
+  birthYear: integer("birth_year").notNull(), // For age verification, not birth date
+  // Parental consent tracking
+  parentalConsentStatus: varchar("parental_consent_status", { length: 20 }).default("pending").notNull(), // pending, approved, denied
+  parentalConsentMethod: varchar("parental_consent_method", { length: 20 }), // email, phone, in_person
+  parentalConsentDate: timestamp("parental_consent_date"),
+  parentalConsentIP: varchar("parental_consent_ip"),
+  consentVerificationCode: varchar("consent_verification_code"),
+  // Privacy and safety
+  isAccountActive: integer("is_account_active").default(0).notNull(), // Inactive until parental consent
+  allowDirectMessages: integer("allow_direct_messages").default(0).notNull(), // Disabled by default
+  allowPublicProfile: integer("allow_public_profile").default(0).notNull(), // Anonymous by default
+  // Parent notification preferences  
+  parentNotificationEmail: varchar("parent_notification_email"),
+  parentNotificationPhone: varchar("parent_notification_phone"),
+  // Account safety
+  lastActiveAt: timestamp("last_active_at"),
+  accountCreatedAt: timestamp("account_created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const studentParentLinks = pgTable("student_parent_links", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   studentUserId: varchar("student_user_id").notNull().references(() => users.id),
@@ -780,6 +808,22 @@ export const studentParentLinks = pgTable("student_parent_links", {
   canViewActivity: integer("can_view_activity").default(1).notNull(),
   canReceiveReports: integer("can_receive_reports").default(1).notNull(),
   linkedAt: timestamp("linked_at").defaultNow().notNull(),
+});
+
+// 📧 Parental Consent Tracking for COPPA Compliance
+export const parentalConsentRequests = pgTable("parental_consent_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentAccountId: varchar("student_account_id").notNull().references(() => studentAccounts.id),
+  parentEmail: varchar("parent_email", { length: 200 }).notNull(),
+  parentName: varchar("parent_name", { length: 100 }),
+  verificationCode: varchar("verification_code", { length: 20 }).notNull(),
+  consentStatus: varchar("consent_status", { length: 20 }).default("sent").notNull(), // sent, clicked, approved, denied, expired
+  requestedAt: timestamp("requested_at").defaultNow().notNull(),
+  clickedAt: timestamp("clicked_at"),
+  consentedAt: timestamp("consented_at"),
+  expiredAt: timestamp("expired_at"), // 72-hour expiration for security
+  ipAddress: varchar("ip_address"),
+  userAgent: text("user_agent"),
 });
 
 // SEL (Social-Emotional Learning) standards alignment
@@ -876,6 +920,20 @@ export const insertParentAccountSchema = createInsertSchema(parentAccounts).omit
   createdAt: true,
 });
 
+export const insertStudentAccountSchema = createInsertSchema(studentAccounts).omit({
+  id: true,
+  accountCreatedAt: true,
+  updatedAt: true,
+  isAccountActive: true,
+  parentalConsentStatus: true,
+});
+
+export const insertParentalConsentRequestSchema = createInsertSchema(parentalConsentRequests).omit({
+  id: true,
+  requestedAt: true,
+  consentStatus: true,
+});
+
 export const insertStudentParentLinkSchema = createInsertSchema(studentParentLinks).omit({
   id: true,
   linkedAt: true,
@@ -922,6 +980,10 @@ export type InsertWorkplaceSentimentData = z.infer<typeof insertWorkplaceSentime
 // School system types
 export type ParentAccount = typeof parentAccounts.$inferSelect;
 export type InsertParentAccount = z.infer<typeof insertParentAccountSchema>;
+export type StudentAccount = typeof studentAccounts.$inferSelect;
+export type InsertStudentAccount = z.infer<typeof insertStudentAccountSchema>;
+export type ParentalConsentRequest = typeof parentalConsentRequests.$inferSelect;
+export type InsertParentalConsentRequest = z.infer<typeof insertParentalConsentRequestSchema>;
 export type StudentParentLink = typeof studentParentLinks.$inferSelect;
 export type InsertStudentParentLink = z.infer<typeof insertStudentParentLinkSchema>;
 export type SelStandard = typeof selStandards.$inferSelect;
