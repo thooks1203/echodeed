@@ -5495,20 +5495,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Missing required fields' });
       }
 
-      // Create corporate account for the school
-      const schoolAccount = await storage.createCorporateAccount({
-        companyName: schoolName,
-        domain: principalEmail.split('@')[1], // Extract domain from principal email
-        industry: 'education',
-        companySize: studentCount <= 300 ? 'small' : studentCount <= 600 ? 'medium' : 'large',
-        subscriptionTier: 'basic', // Start with basic tier for pilot
-        maxEmployees: studentCount + 50, // Students + staff estimate
-        contactEmail: principalEmail,
-        contactName: principalName,
-        isActive: 1,
-        billingStatus: 'trial', // Start as trial for pilot
-        trialEndsAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000), // 90 day trial
-      });
+      // Check if school domain already exists
+      const emailDomain = principalEmail.split('@')[1];
+      let schoolAccount;
+      
+      try {
+        // Try to create a new corporate account
+        schoolAccount = await storage.createCorporateAccount({
+          companyName: schoolName,
+          domain: emailDomain,
+          industry: 'education',
+          companySize: studentCount <= 300 ? 'small' : studentCount <= 600 ? 'medium' : 'large',
+          subscriptionTier: 'basic', // Start with basic tier for pilot
+          maxEmployees: studentCount + 50, // Students + staff estimate
+          contactEmail: principalEmail,
+          contactName: principalName,
+          isActive: 1,
+          billingStatus: 'trial', // Start as trial for pilot
+          trialEndsAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000), // 90 day trial
+        });
+      } catch (error: any) {
+        // If domain already exists, find the existing account
+        if (error.code === '23505' && error.constraint === 'corporate_accounts_domain_unique') {
+          const existingAccounts = await storage.getCorporateAccountsByDomain(emailDomain);
+          if (existingAccounts && existingAccounts.length > 0) {
+            schoolAccount = existingAccounts[0];
+          } else {
+            // Create account with unique domain by adding timestamp
+            const uniqueDomain = `${emailDomain}-${Date.now()}`;
+            schoolAccount = await storage.createCorporateAccount({
+              companyName: schoolName,
+              domain: uniqueDomain,
+              industry: 'education',
+              companySize: studentCount <= 300 ? 'small' : studentCount <= 600 ? 'medium' : 'large',
+              subscriptionTier: 'basic',
+              maxEmployees: studentCount + 50,
+              contactEmail: principalEmail,
+              contactName: principalName,
+              isActive: 1,
+              billingStatus: 'trial',
+              trialEndsAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+            });
+          }
+        } else {
+          throw error; // Re-throw if it's a different error
+        }
+      }
 
       // Create school administrator user
       const adminUser = await storage.upsertUser({

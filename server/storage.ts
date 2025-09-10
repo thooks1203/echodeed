@@ -844,6 +844,12 @@ export class DatabaseStorage implements IStorage {
       .orderBy(desc(corporateAccounts.createdAt));
   }
 
+  async getCorporateAccountsByDomain(domain: string): Promise<CorporateAccount[]> {
+    return await db.select()
+      .from(corporateAccounts)
+      .where(eq(corporateAccounts.domain, domain));
+  }
+
   async createCorporateAccount(account: InsertCorporateAccount): Promise<CorporateAccount> {
     const [newAccount] = await db
       .insert(corporateAccounts)
