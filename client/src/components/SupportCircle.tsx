@@ -7,8 +7,13 @@ import { Heart, AlertTriangle, Send, BookOpen, Users, Home, Brain, Shield, Searc
 export function SupportCircle() {
   const [newPost, setNewPost] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('emotional');
-  const [schoolId, setSchoolId] = useState(''); // Selected school ID
-  const [schoolName, setSchoolName] = useState(''); // Selected school name
+  // Load school connection from localStorage on component mount
+  const [schoolId, setSchoolId] = useState(() => 
+    typeof window !== 'undefined' ? localStorage.getItem('supportCircle_schoolId') || '' : ''
+  );
+  const [schoolName, setSchoolName] = useState(() => 
+    typeof window !== 'undefined' ? localStorage.getItem('supportCircle_schoolName') || '' : ''
+  );
   const [searchQuery, setSearchQuery] = useState(''); // Search input
   const [showSearchResults, setShowSearchResults] = useState(false);
   const { toast } = useToast();
@@ -192,11 +197,13 @@ export function SupportCircle() {
                           e.preventDefault();
                         }}
                         onClick={() => {
-                          console.log('School selected:', school.name, school.id);
                           setSchoolId(school.id);
                           setSchoolName(school.name);
                           setSearchQuery(school.name);
                           setShowSearchResults(false);
+                          // Save to localStorage for persistence across tabs and sessions
+                          localStorage.setItem('supportCircle_schoolId', school.id);
+                          localStorage.setItem('supportCircle_schoolName', school.name);
                         }}
                         data-testid={`school-option-${school.id}`}
                       >
@@ -243,6 +250,9 @@ export function SupportCircle() {
                   setSchoolId('');
                   setSchoolName('');
                   setSearchQuery('');
+                  // Clear localStorage when disconnecting
+                  localStorage.removeItem('supportCircle_schoolId');
+                  localStorage.removeItem('supportCircle_schoolName');
                 }}
                 className="ml-auto text-green-600 hover:text-green-800 text-sm underline"
               >
