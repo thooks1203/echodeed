@@ -4930,7 +4930,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           parentEmail: parentEmail,
           parentName: parentName || 'Parent/Guardian',
           studentFirstName: firstName,
-          schoolName: schoolName
+          schoolName: schoolName,
           verificationCode: verificationCode,
           baseUrl: `${req.protocol}://${req.get('host')}`
         });
