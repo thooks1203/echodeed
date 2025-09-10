@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
+import { useLocation } from "wouter";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +38,7 @@ export function SchoolRegistration({ onSuccess }: SchoolRegistrationProps) {
   const [step, setStep] = useState(1);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, navigate] = useLocation();
 
   const form = useForm<SchoolRegistrationForm>({
     resolver: zodResolver(schoolRegistrationSchema),
@@ -79,6 +81,11 @@ export function SchoolRegistration({ onSuccess }: SchoolRegistrationProps) {
       });
       queryClient.invalidateQueries({ queryKey: ["/api/schools"] });
       onSuccess?.(result.schoolId);
+      
+      // Redirect to the main app after successful registration
+      setTimeout(() => {
+        navigate('/app');
+      }, 2000); // Give time for the user to see the success message
     },
     onError: (error: Error) => {
       toast({
