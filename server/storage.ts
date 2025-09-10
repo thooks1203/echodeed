@@ -138,6 +138,15 @@ import {
   familyActivities,
   schoolFundraisers,
   familyDonations,
+  // Kindness Mentors
+  mentorships,
+  mentorActivities,
+  mentorBadges,
+  userMentorBadges,
+  mentorTraining,
+  userMentorTraining,
+  mentorPreferences,
+  mentorStats,
   type YearRoundFamilyChallenge,
   type InsertYearRoundFamilyChallenge,
   type FamilyProgress,
@@ -148,6 +157,15 @@ import {
   type InsertSchoolFundraiser,
   type FamilyDonation,
   type InsertFamilyDonation,
+  type Mentorship,
+  type InsertMentorship,
+  type MentorActivity,
+  type InsertMentorActivity,
+  type MentorBadge,
+  type InsertMentorBadge,
+  type MentorPreferences,
+  type InsertMentorPreferences,
+  type MentorStats,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte } from "drizzle-orm";
@@ -454,6 +472,37 @@ export interface IStorage {
   createFamilyDonation(donation: InsertFamilyDonation): Promise<FamilyDonation>;
   getDonationsByUser(userTokenId: string): Promise<FamilyDonation[]>;
   verifyDonation(donationId: string): Promise<FamilyDonation | undefined>;
+
+  // 🎓 KINDNESS MENTORS SYSTEM - PEER GUIDANCE & RECOGNITION!
+  // Mentorship management
+  createMentorship(mentorship: InsertMentorship): Promise<Mentorship>;
+  getMentorshipsByMentor(mentorUserId: string): Promise<Mentorship[]>;
+  getMentorshipsByMentee(menteeUserId: string): Promise<Mentorship[]>;
+  getActiveMentorships(schoolId?: string): Promise<Mentorship[]>;
+  updateMentorshipStatus(id: string, status: string): Promise<Mentorship | undefined>;
+  findMentorMatches(menteeUserId: string, ageGroup: string): Promise<User[]>;
+  
+  // Mentor activities and sessions
+  createMentorActivity(activity: InsertMentorActivity): Promise<MentorActivity>;
+  getMentorActivities(mentorshipId: string): Promise<MentorActivity[]>;
+  completeMentorActivity(activityId: string, reflections: { mentorReflection?: string; menteeReflection?: string; }): Promise<MentorActivity | undefined>;
+  
+  // Mentor badges and recognition
+  getMentorBadges(): Promise<MentorBadge[]>;
+  getUserMentorBadges(userId: string): Promise<MentorBadge[]>;
+  awardMentorBadge(userId: string, badgeId: string, mentorshipId?: string): Promise<void>;
+  checkMentorBadgeEligibility(userId: string): Promise<MentorBadge[]>;
+  
+  // Mentor preferences and matching
+  createMentorPreferences(preferences: InsertMentorPreferences): Promise<MentorPreferences>;
+  getMentorPreferences(userId: string): Promise<MentorPreferences | undefined>;
+  updateMentorPreferences(userId: string, updates: Partial<MentorPreferences>): Promise<MentorPreferences | undefined>;
+  getAvailableMentors(ageGroup?: string, interests?: string[]): Promise<User[]>;
+  
+  // Mentor analytics and progress
+  getMentorStats(userId: string): Promise<MentorStats | undefined>;
+  updateMentorStats(userId: string, updates: Partial<MentorStats>): Promise<void>;
+  getMentorLeaderboard(schoolId?: string, limit?: number): Promise<Array<{ user: User; stats: MentorStats; }>>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -3470,6 +3519,271 @@ export class DatabaseStorage implements IStorage {
       .where(eq(familyDonations.id, donationId))
       .returning();
     return donation || undefined;
+  }
+
+  // ===============================
+  // 🎓 KINDNESS MENTORS IMPLEMENTATION - PEER GUIDANCE & RECOGNITION!
+  // ===============================
+
+  // Mentorship management
+  async createMentorship(mentorship: InsertMentorship): Promise<Mentorship> {
+    const [newMentorship] = await db
+      .insert(mentorships)
+      .values(mentorship)
+      .returning();
+    return newMentorship;
+  }
+
+  async getMentorshipsByMentor(mentorUserId: string): Promise<Mentorship[]> {
+    return await db
+      .select()
+      .from(mentorships)
+      .where(eq(mentorships.mentorUserId, mentorUserId))
+      .orderBy(desc(mentorships.createdAt));
+  }
+
+  async getMentorshipsByMentee(menteeUserId: string): Promise<Mentorship[]> {
+    return await db
+      .select()
+      .from(mentorships)
+      .where(eq(mentorships.menteeUserId, menteeUserId))
+      .orderBy(desc(mentorships.createdAt));
+  }
+
+  async getActiveMentorships(schoolId?: string): Promise<Mentorship[]> {
+    let query = db
+      .select()
+      .from(mentorships)
+      .where(eq(mentorships.status, 'active'));
+    
+    if (schoolId) {
+      query = query.where(eq(mentorships.schoolId, schoolId));
+    }
+    
+    return await query.orderBy(desc(mentorships.createdAt));
+  }
+
+  async updateMentorshipStatus(id: string, status: string): Promise<Mentorship | undefined> {
+    const [mentorship] = await db
+      .update(mentorships)
+      .set({ status, updatedAt: new Date() })
+      .where(eq(mentorships.id, id))
+      .returning();
+    return mentorship;
+  }
+
+  async findMentorMatches(menteeUserId: string, ageGroup: string): Promise<User[]> {
+    // Smart matching algorithm based on age groups and preferences
+    const mentorAgeGroups = ageGroup === 'k-2' ? ['3-5', '6-8'] : 
+                           ageGroup === '3-5' ? ['6-8', 'teen'] : 
+                           ['teen', 'adult'];
+    
+    // Find users who are available as mentors with appropriate age groups
+    const availableMentors = await db
+      .select({ userId: mentorPreferences.userId })
+      .from(mentorPreferences)
+      .where(
+        and(
+          eq(mentorPreferences.availableAsMentor, true),
+          eq(mentorPreferences.parentPermission, true),
+          or(...mentorAgeGroups.map(group => 
+            sql`${mentorPreferences.preferredMenteeAgeGroups}::jsonb ? ${group}`
+          ))
+        )
+      );
+
+    if (availableMentors.length === 0) return [];
+
+    // Get full user data for matched mentors
+    return await db
+      .select()
+      .from(users)
+      .where(or(...availableMentors.map(m => eq(users.id, m.userId))));
+  }
+
+  // Mentor activities and sessions
+  async createMentorActivity(activity: InsertMentorActivity): Promise<MentorActivity> {
+    const [newActivity] = await db
+      .insert(mentorActivities)
+      .values(activity)
+      .returning();
+    return newActivity;
+  }
+
+  async getMentorActivities(mentorshipId: string): Promise<MentorActivity[]> {
+    return await db
+      .select()
+      .from(mentorActivities)
+      .where(eq(mentorActivities.mentorshipId, mentorshipId))
+      .orderBy(desc(mentorActivities.sessionDate));
+  }
+
+  async completeMentorActivity(
+    activityId: string, 
+    reflections: { mentorReflection?: string; menteeReflection?: string; }
+  ): Promise<MentorActivity | undefined> {
+    const [activity] = await db
+      .update(mentorActivities)
+      .set({
+        isCompleted: true,
+        completedAt: new Date(),
+        ...reflections
+      })
+      .where(eq(mentorActivities.id, activityId))
+      .returning();
+    return activity;
+  }
+
+  // Mentor badges and recognition
+  async getMentorBadges(): Promise<MentorBadge[]> {
+    return await db
+      .select()
+      .from(mentorBadges)
+      .where(eq(mentorBadges.isActive, true))
+      .orderBy(mentorBadges.tier, mentorBadges.category);
+  }
+
+  async getUserMentorBadges(userId: string): Promise<MentorBadge[]> {
+    const userBadges = await db
+      .select({ badge: mentorBadges })
+      .from(userMentorBadges)
+      .leftJoin(mentorBadges, eq(userMentorBadges.badgeId, mentorBadges.id))
+      .where(eq(userMentorBadges.userId, userId))
+      .orderBy(desc(userMentorBadges.earnedAt));
+    
+    return userBadges.map(ub => ub.badge).filter(Boolean) as MentorBadge[];
+  }
+
+  async awardMentorBadge(userId: string, badgeId: string, mentorshipId?: string): Promise<void> {
+    await db
+      .insert(userMentorBadges)
+      .values({
+        userId,
+        badgeId,
+        mentorshipId,
+        earnedAt: new Date(),
+        isDisplayed: true,
+        celebrationViewed: false
+      });
+  }
+
+  async checkMentorBadgeEligibility(userId: string): Promise<MentorBadge[]> {
+    // Get user's mentor stats
+    const stats = await this.getMentorStats(userId);
+    if (!stats) return [];
+
+    // Get all available badges
+    const allBadges = await this.getMentorBadges();
+    
+    // Get badges user already has
+    const userBadges = await this.getUserMentorBadges(userId);
+    const userBadgeIds = userBadges.map(b => b.id);
+
+    // Filter badges user doesn't have and check eligibility
+    const eligibleBadges = allBadges.filter(badge => {
+      if (userBadgeIds.includes(badge.id)) return false;
+      
+      // Parse requirements and check if user meets them
+      const requirements = badge.requirements as any;
+      
+      // Example requirement checks
+      if (requirements.totalMentees && stats.totalMentees < requirements.totalMentees) return false;
+      if (requirements.completedMentorships && stats.completedMentorships < requirements.completedMentorships) return false;
+      if (requirements.avgRating && stats.avgRating < requirements.avgRating) return false;
+      if (requirements.totalSessions && stats.totalSessions < requirements.totalSessions) return false;
+      
+      return true;
+    });
+
+    return eligibleBadges;
+  }
+
+  // Mentor preferences and matching
+  async createMentorPreferences(preferences: InsertMentorPreferences): Promise<MentorPreferences> {
+    const [newPreferences] = await db
+      .insert(mentorPreferences)
+      .values(preferences)
+      .returning();
+    return newPreferences;
+  }
+
+  async getMentorPreferences(userId: string): Promise<MentorPreferences | undefined> {
+    const [preferences] = await db
+      .select()
+      .from(mentorPreferences)
+      .where(eq(mentorPreferences.userId, userId));
+    return preferences;
+  }
+
+  async updateMentorPreferences(userId: string, updates: Partial<MentorPreferences>): Promise<MentorPreferences | undefined> {
+    const [preferences] = await db
+      .update(mentorPreferences)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(mentorPreferences.userId, userId))
+      .returning();
+    return preferences;
+  }
+
+  async getAvailableMentors(ageGroup?: string, interests?: string[]): Promise<User[]> {
+    let query = db
+      .select({ user: users })
+      .from(mentorPreferences)
+      .leftJoin(users, eq(mentorPreferences.userId, users.id))
+      .where(
+        and(
+          eq(mentorPreferences.availableAsMentor, true),
+          eq(mentorPreferences.parentPermission, true)
+        )
+      );
+
+    if (ageGroup) {
+      query = query.where(
+        sql`${mentorPreferences.preferredMenteeAgeGroups}::jsonb ? ${ageGroup}`
+      );
+    }
+
+    if (interests && interests.length > 0) {
+      query = query.where(
+        or(...interests.map(interest => 
+          sql`${mentorPreferences.interests}::jsonb ? ${interest}`
+        ))
+      );
+    }
+
+    const result = await query;
+    return result.map(r => r.user).filter(Boolean) as User[];
+  }
+
+  // Mentor analytics and progress
+  async getMentorStats(userId: string): Promise<MentorStats | undefined> {
+    const [stats] = await db
+      .select()
+      .from(mentorStats)
+      .where(eq(mentorStats.userId, userId));
+    return stats;
+  }
+
+  async updateMentorStats(userId: string, updates: Partial<MentorStats>): Promise<void> {
+    await db
+      .insert(mentorStats)
+      .values({ userId, ...updates, updatedAt: new Date() })
+      .onConflictDoUpdate({
+        target: mentorStats.userId,
+        set: { ...updates, updatedAt: new Date() }
+      });
+  }
+
+  async getMentorLeaderboard(schoolId?: string, limit: number = 10): Promise<Array<{ user: User; stats: MentorStats; }>> {
+    let query = db
+      .select({ user: users, stats: mentorStats })
+      .from(mentorStats)
+      .leftJoin(users, eq(mentorStats.userId, users.id))
+      .orderBy(desc(mentorStats.impactScore), desc(mentorStats.totalTokensEarned))
+      .limit(limit);
+
+    // If schoolId provided, filter by school (this would require linking users to schools)
+    const result = await query;
+    return result.filter(r => r.user && r.stats) as Array<{ user: User; stats: MentorStats; }>;
   }
 }
 
