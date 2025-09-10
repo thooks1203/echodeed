@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { SupportPost, InsertSupportPost } from '@shared/schema';
 import { Heart, AlertTriangle, Send, BookOpen, Users, Home, Brain, Shield, Search } from 'lucide-react';
+import { BackButton } from '@/components/BackButton';
 
 export function SupportCircle() {
   const [newPost, setNewPost] = useState('');
@@ -145,8 +146,15 @@ export function SupportCircle() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 p-4">
       <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-6">
+        {/* Header with Back Button */}
+        <div className="text-center mb-6 relative">
+          <div className="absolute left-0 top-0">
+            <BackButton 
+              onClick={() => window.location.href = '/'}
+              variant="minimal"
+              style={{ color: '#6b7280' }}
+            />
+          </div>
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
               <Heart className="w-6 h-6 text-white" />
