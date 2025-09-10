@@ -2,14 +2,29 @@ import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { SupportPost, InsertSupportPost } from '@shared/schema';
-import { Heart, AlertTriangle, Send, BookOpen, Users, Home, Brain, Shield } from 'lucide-react';
+import { Heart, AlertTriangle, Send, BookOpen, Users, Home, Brain, Shield, Search } from 'lucide-react';
 
 export function SupportCircle() {
   const [newPost, setNewPost] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('emotional');
-  const [schoolId, setSchoolId] = useState(''); // For Phase 1: simple text input
+  const [schoolId, setSchoolId] = useState(''); // Selected school ID
+  const [schoolName, setSchoolName] = useState(''); // Selected school name
+  const [searchQuery, setSearchQuery] = useState(''); // Search input
+  const [showSearchResults, setShowSearchResults] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // School search functionality
+  const { data: searchResults = [] } = useQuery({
+    queryKey: ['/api/schools/search', searchQuery],
+    queryFn: async () => {
+      if (!searchQuery.trim() || searchQuery.length < 2) return [];
+      const response = await fetch(`/api/schools/search?query=${encodeURIComponent(searchQuery)}`);
+      if (!response.ok) throw new Error('Failed to search schools');
+      return response.json();
+    },
+    enabled: searchQuery.length >= 2,
+  });
 
   // Fetch support posts for this school
   const { data: supportPosts = [], isLoading } = useQuery<SupportPost[]>({
@@ -138,22 +153,83 @@ export function SupportCircle() {
           </p>
         </div>
 
-        {/* School Selection (Phase 1: Simple Input) */}
+        {/* School Selection with Search */}
         {!schoolId && (
           <div className="bg-white rounded-xl p-6 mb-6 shadow-sm border border-gray-100">
             <h3 className="text-lg font-semibold mb-4 text-gray-800">Connect to Your School</h3>
             <div className="space-y-4">
-              <input
-                type="text"
-                placeholder="Enter your school name (e.g., Roosevelt Middle School)"
-                className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                value={schoolId}
-                onChange={(e) => setSchoolId(e.target.value)}
-                data-testid="input-school-name"
-              />
+              <div className="relative">
+                <div className="relative">
+                  <Search className="w-5 h-5 absolute left-3 top-3 text-gray-400" />
+                  <input
+                    type="text"
+                    placeholder="Search for your school (e.g., Burlington Christian Academy)"
+                    className="w-full pl-10 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    value={searchQuery}
+                    onChange={(e) => {
+                      setSearchQuery(e.target.value);
+                      setShowSearchResults(true);
+                    }}
+                    onFocus={() => setShowSearchResults(true)}
+                    data-testid="input-school-search"
+                  />
+                </div>
+                
+                {/* Search Results Dropdown */}
+                {showSearchResults && searchResults.length > 0 && (
+                  <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1 shadow-lg max-h-60 overflow-y-auto">
+                    {searchResults.map((school: any) => (
+                      <button
+                        key={school.id}
+                        className="w-full text-left p-3 hover:bg-gray-50 border-b border-gray-100 last:border-b-0"
+                        onClick={() => {
+                          setSchoolId(school.id);
+                          setSchoolName(school.name);
+                          setSearchQuery(school.name);
+                          setShowSearchResults(false);
+                        }}
+                        data-testid={`school-option-${school.id}`}
+                      >
+                        <div className="font-medium text-gray-900">{school.name}</div>
+                        <div className="text-sm text-gray-500">{school.domain}</div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                
+                {/* No results message */}
+                {showSearchResults && searchQuery.length >= 2 && searchResults.length === 0 && (
+                  <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-lg mt-1 shadow-lg p-3">
+                    <div className="text-gray-500 text-center">
+                      No schools found. Your school may not be registered yet.
+                    </div>
+                  </div>
+                )}
+              </div>
+              
               <p className="text-sm text-gray-500">
                 💡 Your posts will only be visible to counselors at your school
               </p>
+            </div>
+          </div>
+        )}
+
+        {/* Connected School Display */}
+        {schoolId && (
+          <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-6">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+              <span className="text-green-800 font-medium">Connected to {schoolName}</span>
+              <button
+                onClick={() => {
+                  setSchoolId('');
+                  setSchoolName('');
+                  setSearchQuery('');
+                }}
+                className="ml-auto text-green-600 hover:text-green-800 text-sm underline"
+              >
+                Change school
+              </button>
             </div>
           </div>
         )}

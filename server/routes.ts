@@ -5529,6 +5529,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // School lookup/search - For student school connection
+  app.get('/api/schools/search', async (req, res) => {
+    try {
+      const { query } = req.query;
+      
+      if (!query || typeof query !== 'string') {
+        return res.json([]);
+      }
+      
+      // Get all corporate accounts that are schools
+      const allAccounts = await storage.getCorporateAccounts();
+      const schools = allAccounts
+        .filter((account: any) => account.industry === 'education')
+        .filter((account: any) => 
+          account.companyName.toLowerCase().includes(query.toLowerCase())
+        )
+        .map((account: any) => ({
+          id: account.id,
+          name: account.companyName,
+          domain: account.domain
+        }))
+        .slice(0, 10); // Limit to 10 results
+
+      res.json(schools);
+    } catch (error: any) {
+      console.error('Failed to search schools:', error);
+      res.status(500).json({ message: 'Failed to search schools' });
+    }
+  });
+
   // Get all schools - For dashboard display
   app.get('/api/schools', async (req, res) => {
     try {
