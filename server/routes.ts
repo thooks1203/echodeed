@@ -6,6 +6,7 @@ import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporate
 import { nanoid } from 'nanoid';
 import { contentFilter } from "./services/contentFilter";
 import { realTimeMonitoring } from "./services/realTimeMonitoring";
+import { emailService } from "./services/emailService";
 
 // 🚀 REVOLUTIONARY: Instant Parent Notification Function
 async function triggerInstantParentNotification(studentUserId: string, postContent: string, post: any) {
@@ -4883,6 +4884,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
+      // Get school name for email
+      const schools = await storage.getSchools();
+      const school = schools.find((s: any) => s.id === schoolId);
+      const schoolName = school?.name || 'Your School';
+
       // Create user account first (inactive)
       const newUser = await storage.upsertUser({
         firstName: firstName,
@@ -4919,8 +4925,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
           verificationCode: verificationCode
         });
         
-        // TODO: Send consent email to parent
-        console.log(`📧 COPPA Consent Required: Send email to ${parentEmail} with code ${verificationCode}`);
+        // Send parental consent email
+        const emailSent = await emailService.sendParentalConsentEmail({
+          parentEmail: parentEmail,
+          parentName: parentName || 'Parent/Guardian',
+          studentFirstName: firstName,
+          schoolName: schoolName
+          verificationCode: verificationCode,
+          baseUrl: `${req.protocol}://${req.get('host')}`
+        });
+        
+        if (!emailSent) {
+          console.error('⚠️ Failed to send consent email, but continuing with registration');
+        }
         
         res.json({
           success: true,

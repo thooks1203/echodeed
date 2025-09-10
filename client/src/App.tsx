@@ -16,6 +16,7 @@ import MentorDashboard from "@/pages/MentorDashboard";
 import FamilyDashboard from "@/pages/FamilyDashboard";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import StudentSignup from "@/pages/StudentSignup";
+import ParentConsent from "@/pages/ParentConsent";
 import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 import { RewardNotificationManager } from "@/components/RewardNotificationManager";
 import { SchoolRegistration } from "@/components/SchoolRegistration";
@@ -42,6 +43,7 @@ function Router() {
           <SchoolRegistration />
         </Route>
         <Route path="/student-signup" component={StudentSignup} />
+        <Route path="/parent-consent/:verificationCode" component={ParentConsent} />
         <Route path="/app" component={Home} />
         <Route path="/" component={LandingPage} />
       </Switch>
