@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { BackButton } from '@/components/BackButton';
 import { Heart, Users, Calendar, Clock, Target, Trophy, Camera, MessageSquare } from 'lucide-react';
+import { useLocation } from 'wouter';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 
@@ -54,6 +55,7 @@ export default function FamilyChallenges() {
   const [photoSubmitted, setPhotoSubmitted] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const [, setLocation] = useLocation();
 
   // Get current week and theme
   const { data: currentWeek } = useQuery({
@@ -132,7 +134,11 @@ export default function FamilyChallenges() {
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
-          <BackButton />
+          <BackButton 
+            onClick={() => setLocation('/')} 
+            label="Back to Home"
+            variant="minimal"
+          />
           <div className="flex-1">
             <h1 className="text-3xl font-bold text-gray-900 mb-2" data-testid="header-title">
               👨‍👩‍👧‍👦 Family Kindness Challenges
