@@ -22,6 +22,10 @@ export function LandingPage() {
     navigate('/parent-dashboard');
   };
 
+  const handleMentorLogin = () => {
+    navigate('/mentor-dashboard');
+  };
+
   const handleSchoolRegistration = () => {
     navigate('/school-register');
   };
@@ -271,6 +275,36 @@ export function LandingPage() {
           >
             <span style={{ fontSize: '20px' }}>👩‍🏫</span>
             Teacher Dashboard
+          </button>
+
+          <button 
+            onClick={handleMentorLogin}
+            style={{
+              backgroundColor: '#F59E0B',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '12px',
+              transition: 'all 0.2s ease',
+              justifyContent: 'center'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#D97706';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#F59E0B';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>🎓</span>
+            Mentor Dashboard
           </button>
 
           <button 
