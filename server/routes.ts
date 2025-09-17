@@ -156,6 +156,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // CURRICULUM LESSONS API ROUTES
+  app.get('/api/curriculum/lessons', async (req, res) => {
+    try {
+      const { gradeLevel, subject, kindnessTheme, difficulty } = req.query;
+      const lessons = await storage.getCurriculumLessons({
+        gradeLevel: gradeLevel as string,
+        subject: subject as string,
+        kindnessTheme: kindnessTheme as string,
+        difficulty: difficulty as string,
+        limit: 50
+      });
+      res.json(lessons);
+    } catch (error) {
+      console.error('Failed to get curriculum lessons:', error);
+      res.status(500).json({ error: 'Failed to get curriculum lessons' });
+    }
+  });
+
   // PREMIUM SUBSCRIPTION ROUTES (Revenue Diversification)
   app.get('/api/subscription/plans', async (req, res) => {
     try {
