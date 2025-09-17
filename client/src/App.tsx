@@ -28,7 +28,7 @@ function Router() {
   return (
     <>
       <Switch>
-        <Route path="/teacher-dashboard" component={TeacherDashboard} />
+        <Route path="/teacher-dashboard"><TeacherDashboard /></Route>
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/admin-dashboard" component={AdminDashboard} />
         <Route path="/parent" component={ParentDashboard} />
@@ -36,8 +36,8 @@ function Router() {
         <Route path="/rewards" component={RewardsPage} />
         <Route path="/wellness-checkin" component={WellnessCheckInPage} />
         <Route path="/family-challenges" component={FamilyChallenges} />
-        <Route path="/family-dashboard" component={FamilyDashboard} />
-        <Route path="/analytics-dashboard" component={AnalyticsDashboard} />
+        <Route path="/family-dashboard"><FamilyDashboard /></Route>
+        <Route path="/analytics-dashboard"><AnalyticsDashboard /></Route>
         <Route path="/mentor-dashboard" component={MentorDashboard} />
         <Route path="/school-register">
           <SchoolRegistration />

@@ -2,22 +2,46 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover" />
     
-    <!-- Force mobile view for K-8 platform -->
+    <!-- K-8 Responsive Design - Mobile-first but scales appropriately -->
     <style>
       html, body {
-        max-width: 430px;
-        margin: 0 auto;
+        margin: 0;
+        padding: 0;
         background: #f8fafc;
         overflow-x: hidden;
+        font-family: 'Inter', system-ui, sans-serif;
       }
       
-      /* Ensure mobile-first display */
-      @media (min-width: 768px) {
-        html, body {
-          max-width: 430px; /* Keep mobile width even on desktop */
-          box-shadow: 0 0 20px rgba(0,0,0,0.1);
+      /* Container for centering and responsive layout */
+      #root {
+        min-height: 100vh;
+        max-width: 100%;
+      }
+      
+      /* Mobile phones: full width */
+      @media (max-width: 480px) {
+        #root {
+          padding: 0;
+        }
+      }
+      
+      /* Tablets and small laptops: comfortable padding */
+      @media (min-width: 481px) and (max-width: 1024px) {
+        #root {
+          max-width: 768px;
+          margin: 0 auto;
+          padding: 20px;
+        }
+      }
+      
+      /* Larger screens: centered with max width for readability */
+      @media (min-width: 1025px) {
+        #root {
+          max-width: 900px;
+          margin: 0 auto;
+          padding: 20px;
         }
       }
     </style>
