@@ -78,7 +78,7 @@ export default function FamilyDashboard({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'k-2' | '3-5' | '6-8' | 'family'>('family');
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'6-8' | 'family'>('family');
   const [selectedChallenge, setSelectedChallenge] = useState<FamilyChallenge | null>(null);
 
   // Fetch current week and theme
@@ -214,7 +214,7 @@ export default function FamilyDashboard({
           </CardHeader>
           <CardContent>
             <div className="flex gap-4 flex-wrap">
-              {(['k-2', '3-5', '6-8', 'family'] as const).map((age) => (
+              {(['6-8', 'family'] as const).map((age) => (
                 <Button
                   key={age}
                   variant={selectedAgeGroup === age ? "default" : "outline"}

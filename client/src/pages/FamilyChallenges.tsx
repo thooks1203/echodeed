@@ -49,7 +49,7 @@ interface FamilyActivity {
 }
 
 export default function FamilyChallenges() {
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'k-2' | '3-5' | '6-8' | 'family'>('family');
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'6-8' | 'family'>('family');
   const [selectedChallenge, setSelectedChallenge] = useState<FamilyChallenge | null>(null);
   const [familyReflection, setFamilyReflection] = useState('');
   const [photoSubmitted, setPhotoSubmitted] = useState(false);
@@ -183,8 +183,6 @@ export default function FamilyChallenges() {
           <CardContent>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
               {[
-                { value: 'k-2', label: 'K-2nd Grade', icon: '🧸' },
-                { value: '3-5', label: '3rd-5th Grade', icon: '📚' },
                 { value: '6-8', label: '6th-8th Grade', icon: '🎯' },
                 { value: 'family', label: 'All Family', icon: '👨‍👩‍👧‍👦' },
               ].map((group) => (
