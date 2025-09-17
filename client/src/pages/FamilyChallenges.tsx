@@ -135,7 +135,7 @@ export default function FamilyChallenges() {
         {/* Header */}
         <div className="flex items-center gap-4">
           <BackButton 
-            onClick={() => setLocation('/#roles')} 
+            onClick={() => setLocation('/?show=roles')} 
             label="Back to Home"
             variant="minimal"
           />

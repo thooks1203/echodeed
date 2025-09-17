@@ -6,13 +6,13 @@ export function LandingPage() {
   const [, navigate] = useLocation();
   const [showFullContent, setShowFullContent] = useState(false);
 
-  // Check URL hash to determine if we should show full content
+  // Check URL parameters to determine if we should show full content
   useEffect(() => {
-    const hash = window.location.hash;
-    if (hash === '#roles' || hash === '#content') {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('show') === 'roles' || urlParams.get('show') === 'content') {
       setShowFullContent(true);
       // Scroll to roles section after content loads
-      if (hash === '#roles') {
+      if (urlParams.get('show') === 'roles') {
         setTimeout(() => {
           const rolesElement = document.getElementById('roles');
           if (rolesElement) {
