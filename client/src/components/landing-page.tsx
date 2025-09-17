@@ -406,7 +406,7 @@ export function LandingPage() {
           </button>
 
           <button 
-            onClick={() => setLocation('/analytics-dashboard')}
+            onClick={() => navigate('/analytics-dashboard')}
             style={{
               backgroundColor: '#2563EB',
               color: 'white',
