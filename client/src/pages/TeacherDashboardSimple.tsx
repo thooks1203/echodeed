@@ -291,16 +291,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
         <div className="mb-6">
           <Button
             variant="ghost"
-            onClick={() => {
-              setLocation('/');
-              // Scroll to roles section after navigation
-              setTimeout(() => {
-                const rolesElement = document.getElementById('roles');
-                if (rolesElement) {
-                  rolesElement.scrollIntoView({ behavior: 'smooth' });
-                }
-              }, 100);
-            }}
+            onClick={() => setLocation('/#roles')}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
             data-testid="button-back"
           >

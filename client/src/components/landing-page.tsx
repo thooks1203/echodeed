@@ -1,10 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { ElectricHeart } from './ElectricHeart';
 
 export function LandingPage() {
   const [, navigate] = useLocation();
   const [showFullContent, setShowFullContent] = useState(false);
+
+  // Check URL hash to determine if we should show full content
+  useEffect(() => {
+    const hash = window.location.hash;
+    if (hash === '#roles' || hash === '#content') {
+      setShowFullContent(true);
+      // Scroll to roles section after content loads
+      if (hash === '#roles') {
+        setTimeout(() => {
+          const rolesElement = document.getElementById('roles');
+          if (rolesElement) {
+            rolesElement.scrollIntoView({ behavior: 'smooth' });
+          }
+        }, 100);
+      }
+    }
+  }, []);
 
   const handleGetStarted = () => {
     navigate('/app?tab=schools');
