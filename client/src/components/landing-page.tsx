@@ -236,7 +236,7 @@ export function LandingPage() {
       </div>
 
       {/* School Role Selection */}
-      <div style={{
+      <div id="roles" style={{
         background: 'white',
         borderRadius: '16px',
         padding: '24px',

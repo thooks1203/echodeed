@@ -156,7 +156,7 @@ export default function FamilyDashboard({
         <div className="mb-6">
           <Button
             variant="ghost"
-            onClick={() => setLocation('/')}
+            onClick={() => setLocation('/#roles')}
             className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
             data-testid="button-back"
           >
