@@ -135,7 +135,15 @@ export default function FamilyChallenges() {
         {/* Header */}
         <div className="flex items-center gap-4">
           <BackButton 
-            onClick={() => setLocation('/#roles')} 
+            onClick={() => {
+              setLocation('/');
+              setTimeout(() => {
+                const rolesElement = document.getElementById('roles');
+                if (rolesElement) {
+                  rolesElement.scrollIntoView({ behavior: 'smooth' });
+                }
+              }, 100);
+            }} 
             label="Back to Home"
             variant="minimal"
           />
