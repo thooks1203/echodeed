@@ -82,11 +82,11 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
   ];
 
   const sampleStudentPoints: StudentKindnessPoint[] = studentPoints.length > 0 ? studentPoints : [
-    { studentId: '1', studentName: 'Emma Johnson', className: '5A', grade: '5th', totalPoints: 245, weeklyProgress: 15 },
-    { studentId: '2', studentName: 'Liam Smith', className: '5A', grade: '5th', totalPoints: 198, weeklyProgress: 12 },
-    { studentId: '3', studentName: 'Olivia Davis', className: '5B', grade: '5th', totalPoints: 267, weeklyProgress: 18 },
-    { studentId: '4', studentName: 'Noah Wilson', className: '6A', grade: '6th', totalPoints: 189, weeklyProgress: 9 },
-    { studentId: '5', studentName: 'Sophia Brown', className: '6A', grade: '6th', totalPoints: 321, weeklyProgress: 22 }
+    { studentId: '1', studentName: 'Emma Johnson', className: '6A', grade: '6th', totalPoints: 245, weeklyProgress: 15 },
+    { studentId: '2', studentName: 'Liam Smith', className: '6B', grade: '6th', totalPoints: 198, weeklyProgress: 12 },
+    { studentId: '3', studentName: 'Olivia Davis', className: '7A', grade: '7th', totalPoints: 267, weeklyProgress: 18 },
+    { studentId: '4', studentName: 'Noah Wilson', className: '7B', grade: '7th', totalPoints: 189, weeklyProgress: 9 },
+    { studentId: '5', studentName: 'Sophia Brown', className: '8A', grade: '8th', totalPoints: 321, weeklyProgress: 22 }
   ];
 
   const getSchoolIcon = (type: string) => {

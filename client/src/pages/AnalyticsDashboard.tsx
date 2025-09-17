@@ -75,7 +75,7 @@ export default function AnalyticsDashboard({
   });
 
   const { data: selStandards, isLoading: selLoading } = useQuery({
-    queryKey: [`/api/school/sel-standards/grade/${selectedGrade !== 'all' ? selectedGrade : 'K-2'}`],
+    queryKey: [`/api/school/sel-standards/grade/${selectedGrade !== 'all' ? selectedGrade : '6-8'}`],
     retry: false,
   });
 

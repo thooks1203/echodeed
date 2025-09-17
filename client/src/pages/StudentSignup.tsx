@@ -27,12 +27,6 @@ const studentSignupSchema = z.object({
 type StudentSignupForm = z.infer<typeof studentSignupSchema>;
 
 const gradeOptions = [
-  { value: "K", label: "Kindergarten" },
-  { value: "1", label: "1st Grade" },
-  { value: "2", label: "2nd Grade" },
-  { value: "3", label: "3rd Grade" },
-  { value: "4", label: "4th Grade" },
-  { value: "5", label: "5th Grade" },
   { value: "6", label: "6th Grade" },
   { value: "7", label: "7th Grade" },
   { value: "8", label: "8th Grade" }

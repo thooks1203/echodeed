@@ -335,12 +335,7 @@ export function SchoolRegistration({ onSuccess }: SchoolRegistrationProps) {
                         <SelectValue placeholder="Select grade range" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="K-2">K-2nd Grade</SelectItem>
-                        <SelectItem value="3-5">3rd-5th Grade</SelectItem>
-                        <SelectItem value="K-5">K-5th Grade</SelectItem>
-                        <SelectItem value="6-8">6th-8th Grade</SelectItem>
-                        <SelectItem value="9-12">9th-12th Grade</SelectItem>
-                        <SelectItem value="K-12">K-12th Grade</SelectItem>
+                        <SelectItem value="6-8">6th-8th Grade (Middle School)</SelectItem>
                       </SelectContent>
                     </Select>
                     {form.formState.errors.gradeRange && (
