@@ -43,8 +43,6 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "impact assessment - measuring the effects of your actions",
       "stakeholder - person or group affected by community issues"
     ],
-    kindnessSkills: ["Community service", "Appreciation", "Planning", "Collaboration"],
-    selStandards: ["Social Awareness", "Responsible Decision Making", "Relationship Skills"],
     isActive: true
   },
 
@@ -90,8 +88,6 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "inclusion - actively welcoming and valuing all people",
       "equity - fairness that takes different needs into account"
     ],
-    kindnessSkills: ["Inclusion", "Cultural awareness", "Bias recognition", "Advocacy"],
-    selStandards: ["Self-Awareness", "Social Awareness", "Responsible Decision Making"],
     isActive: true
   },
 
@@ -136,8 +132,6 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "digital citizenship - responsible and ethical use of technology and online resources",
       "digital empathy - understanding and caring about others' feelings in online interactions"
     ],
-    kindnessSkills: ["Digital citizenship", "Upstander behavior", "Online communication", "Content creation"],
-    selStandards: ["Self-Management", "Social Awareness", "Responsible Decision Making"],
     isActive: true
   },
 
@@ -182,8 +176,6 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "circle keeper - the person who facilitates a restorative circle discussion",
       "community agreements - shared expectations created together for how to treat each other"
     ],
-    kindnessSkills: ["Conflict resolution", "Accountability", "Empathy", "Community building"],
-    selStandards: ["Self-Management", "Social Awareness", "Relationship Skills", "Responsible Decision Making"],
     isActive: true
   },
 
@@ -228,8 +220,6 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "social awareness - understanding group dynamics and social cues",
       "compassionate response - taking action to help based on understanding others' needs"
     ],
-    kindnessSkills: ["Empathy", "Perspective-taking", "Emotional awareness", "Program design"],
-    selStandards: ["Self-Awareness", "Social Awareness", "Relationship Skills"],
     isActive: true
   }
 ];
