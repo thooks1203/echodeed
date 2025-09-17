@@ -264,6 +264,7 @@ export const curriculumLessons = pgTable("curriculum_lessons", {
   materials: text("materials").array().notNull(),
   activities: text("activities").array().notNull(),
   reflectionQuestions: text("reflection_questions").array().notNull(),
+  vocabulary: text("vocabulary").array(), // Key terms and definitions for the lesson
   assessmentRubric: text("assessment_rubric"),
   extensionActivities: text("extension_activities").array(),
   crossCurricularConnections: text("cross_curricular_connections").array(),

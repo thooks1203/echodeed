@@ -36,12 +36,20 @@
         }
       }
       
-      /* Larger screens: centered with max width for readability */
+      /* Larger screens: better utilization of space */
       @media (min-width: 1025px) {
         #root {
-          max-width: 900px;
+          max-width: 1200px; /* Increased from 900px */
           margin: 0 auto;
-          padding: 20px;
+          padding: 20px 40px; /* More horizontal padding for comfortable reading */
+        }
+      }
+      
+      /* Ultra-wide screens: maximum comfortable width */
+      @media (min-width: 1400px) {
+        #root {
+          max-width: 1400px;
+          padding: 20px 60px;
         }
       }
     </style>

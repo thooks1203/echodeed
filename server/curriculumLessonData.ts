@@ -1,159 +1,25 @@
 import type { InsertCurriculumLesson } from '@shared/schema';
 
-// Comprehensive K-8 Kindness Curriculum Lesson Templates
+// Middle School Kindness Curriculum (Grades 6-8) - Character Education for Ages 11-14
 export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
-  // KINDERGARTEN - GRADE 2 LESSONS (Ages 5-8)
   {
-    title: "The Power of Thank You",
-    description: "Students discover the joy of gratitude and learn to express thanks in meaningful ways to family, friends, and community helpers.",
-    gradeLevel: "K-2",
-    subject: "Character Education",
-    kindnessTheme: "Gratitude",
-    difficulty: "Easy", 
-    duration: 30,
-    learningObjectives: [
-      "Students will understand what gratitude means and feels like",
-      "Students will identify 3 things they are thankful for each day",
-      "Students will practice saying thank you with eye contact and sincerity",
-      "Students will create thank you cards for people who help them"
-    ],
-    activities: [
-      "Gratitude Circle Time (10 min): Students sit in a circle and share one thing they're thankful for today using a gratitude bear.",
-      "Thank You Card Creation (15 min): Students create colorful thank you cards for school helpers like custodians and cafeteria workers.",
-      "Gratitude Walk (5 min): Take a brief walk to deliver thank you cards and practice expressing gratitude in person."
-    ],
-    reflectionQuestions: [
-      "How did it feel to thank someone today?",
-      "What are you most grateful for?",
-      "How can we show gratitude every day?"
-    ],
-    materials: [
-      "Gratitude bear or special object",
-      "Construction paper (various colors)",
-      "Crayons and markers", 
-      "Stickers",
-      "Child-safe scissors",
-      "Circle time carpet"
-    ],
-    vocabulary: [
-      "grateful - feeling thankful for something good",
-      "thankful - happy about something someone did for you", 
-      "appreciate - to value something or someone",
-      "kindness - being friendly and helpful"
-    ],
-    kindnessSkills: ["Gratitude", "Expression", "Recognition", "Appreciation"],
-    selStandards: ["Self-Awareness", "Social Skills", "Relationship Building"],
-    isActive: true
-  },
-
-  {
-    title: "Including Everyone at Play",
-    description: "Students learn to recognize when someone feels left out and practice specific strategies to include others in games and activities.",
-    gradeLevel: "K-2", 
-    subject: "Social Studies",
-    kindnessTheme: "Inclusion",
-    difficulty: "Easy",
-    duration: 35,
-    learningObjectives: [
-      "Students will identify signs that someone feels left out",
-      "Students will use the 'magic inclusion words' to invite others to play",
-      "Students will modify games to include everyone",
-      "Students will understand how inclusion makes everyone feel good"
-    ],
-    activities: [
-      "Sad Sam Story (10 min): Read a picture book about inclusion and discuss feelings when left out.",
-      "Magic Inclusion Words Practice (10 min): Learn and practice phrases like 'Want to play with us?' and 'Come sit by me!'",
-      "Playground Problem Solving (15 min): Modify games to include everyone, even those with different abilities."
-    ],
-    reflectionQuestions: [
-      "How does it feel when you're left out?",
-      "What can we do to include everyone?",
-      "Why is inclusion important?"
-    ],
-    materials: [
-      "Picture book about inclusion/exclusion",
-      "Emotion cards with faces",
-      "Magic wand prop",
-      "Magic inclusion phrase cards",
-      "Game scenario cards",
-      "Chart paper for poster",
-      "Inclusion wizard badges"
-    ],
-    vocabulary: [
-      "include - to let someone join in",
-      "exclude - to leave someone out", 
-      "belong - to feel like you fit in",
-      "friendship - caring about each other"
-    ],
-    kindnessSkills: ["Inclusion", "Empathy", "Problem-solving", "Friendship"],
-    selStandards: ["Social Awareness", "Relationship Skills", "Responsible Decision Making"],
-    isActive: true
-  },
-
-  // GRADES 3-5 LESSONS (Ages 8-11)
-  {
-    title: "Empathy Detectives",
-    description: "Students develop empathy skills by learning to read body language, tone of voice, and facial expressions to understand how others feel.",
-    gradeLevel: "3-5",
-    subject: "Character Education", 
-    kindnessTheme: "Empathy",
-    difficulty: "Medium",
-    duration: 45,
-    learningObjectives: [
-      "Students will identify at least 5 different emotions through body language",
-      "Students will practice perspective-taking in various scenarios",
-      "Students will demonstrate empathetic responses to others' feelings",
-      "Students will create an empathy action plan for their classroom"
-    ],
-    activities: [
-      "Body Language Detective Game (15 min): Students act out emotions using only body language while others guess and explain clues.",
-      "Perspective-Taking Theater (20 min): Role-play scenarios from different characters' perspectives to understand varied feelings.",
-      "Empathy Action Plan Creation (10 min): Create practical strategies for showing empathy in daily classroom situations."
-    ],
-    reflectionQuestions: [
-      "How did it feel to see someone else's perspective?",
-      "When do you need empathy most?",
-      "How can empathy help solve problems?"
-    ],
-    materials: [
-      "Emotion cards with various feelings",
-      "Detective badges",
-      "Observation recording sheets", 
-      "Scenario role-play cards",
-      "Simple costume props",
-      "Action plan templates",
-      "Markers and colored pencils",
-      "Poster board"
-    ],
-    vocabulary: [
-      "empathy - understanding and sharing someone else's feelings",
-      "perspective - how someone else sees or experiences something",
-      "body language - communicating through posture and gestures",
-      "compassion - caring about others' suffering and wanting to help"
-    ],
-    kindnessSkills: ["Empathy", "Perspective-taking", "Emotional awareness", "Compassionate response"],
-    selStandards: ["Self-Awareness", "Social Awareness", "Relationship Skills"],
-    isActive: true
-  },
-
-  {
-    title: "Community Kindness Champions",
-    description: "Students research local community helpers and design a service project to show appreciation for people who make their community better.",
-    gradeLevel: "3-5",
-    subject: "Social Studies",
+    title: "Community Impact Research & Action",
+    description: "Students conduct research on local community issues, interview stakeholders, and develop data-driven service projects that create measurable positive impact in their community.",
+    gradeLevel: "6-8",
+    subject: "Social Studies", 
     kindnessTheme: "Community Service", 
-    difficulty: "Medium",
-    duration: 60,
+    difficulty: "Advanced",
+    duration: 90,
     learningObjectives: [
-      "Students will identify at least 8 different community helpers and their roles",
-      "Students will research how community helpers serve others",
-      "Students will plan and execute a community service project",
-      "Students will reflect on how their actions impact the community"
+      "Students will identify and research 3 specific community issues using data sources",
+      "Students will conduct stakeholder interviews to understand community needs",
+      "Students will design evidence-based service projects with measurable outcomes",
+      "Students will present their findings and recommendations to community leaders"
     ],
     activities: [
-      "Community Helper Research (20 min): Research different community helpers using books, videos, and interviews.",
-      "Service Project Planning (25 min): Design and plan realistic community service projects to help community helpers.",
-      "Kindness in Action Implementation (15 min): Begin implementing service projects by creating thank you items."
+      "Community Issue Data Analysis (30 min): Research community challenges using census data, local news, and municipal reports.",
+      "Stakeholder Interview Project (35 min): Conduct structured interviews with community members, officials, and service providers.",
+      "Evidence-Based Solution Design (25 min): Develop service projects with clear goals, success metrics, and implementation timelines."
     ],
     reflectionQuestions: [
       "How do community helpers make our lives better?",
@@ -172,17 +38,16 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "Reflection journals"
     ],
     vocabulary: [
-      "community - a group of people living in the same area",
-      "service - work done to help others",
-      "appreciation - recognizing and valuing someone's efforts",
-      "impact - the effect your actions have on others"
+      "community service - organized activity to help solve community problems",
+      "civic responsibility - duty to participate in community improvement",
+      "impact assessment - measuring the effects of your actions",
+      "stakeholder - person or group affected by community issues"
     ],
     kindnessSkills: ["Community service", "Appreciation", "Planning", "Collaboration"],
     selStandards: ["Social Awareness", "Responsible Decision Making", "Relationship Skills"],
     isActive: true
   },
 
-  // GRADES 6-8 LESSONS (Ages 11-14)
   {
     title: "Breaking Down Barriers: Understanding Differences",
     description: "Students explore diversity, unconscious bias, and privilege while developing strategies to create inclusive environments for all classmates.",
@@ -265,10 +130,11 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
       "Online safety guidelines"
     ],
     vocabulary: [
-      "digital footprint - the trail of data you leave when using the internet",
-      "cyberbullying - using technology to hurt, embarrass, or threaten someone",
-      "upstander - someone who speaks up when they see bullying",
-      "digital citizenship - responsible and appropriate use of technology"
+      "digital footprint - the permanent trail of data you leave when using the internet",
+      "cyberbullying - using technology to hurt, embarrass, or threaten someone repeatedly",
+      "upstander - someone who speaks up when they see bullying or injustice",
+      "digital citizenship - responsible and ethical use of technology and online resources",
+      "digital empathy - understanding and caring about others' feelings in online interactions"
     ],
     kindnessSkills: ["Digital citizenship", "Upstander behavior", "Online communication", "Content creation"],
     selStandards: ["Self-Management", "Social Awareness", "Responsible Decision Making"],
@@ -311,12 +177,59 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
     ],
     vocabulary: [
       "restorative justice - focusing on healing and repairing harm rather than punishment",
-      "accountability - taking responsibility for your actions",
-      "amends - actions taken to repair harm you've caused",
-      "circle keeper - the person who facilitates a restorative circle"
+      "accountability - taking full responsibility for your actions and their consequences",
+      "amends - concrete actions taken to repair harm you've caused",
+      "circle keeper - the person who facilitates a restorative circle discussion",
+      "community agreements - shared expectations created together for how to treat each other"
     ],
     kindnessSkills: ["Conflict resolution", "Accountability", "Empathy", "Community building"],
     selStandards: ["Self-Management", "Social Awareness", "Relationship Skills", "Responsible Decision Making"],
+    isActive: true
+  },
+
+  {
+    title: "Emotional Intelligence & Advanced Empathy Skills",
+    description: "Students develop sophisticated emotional intelligence by analyzing complex social situations, practicing advanced perspective-taking, and creating comprehensive empathy action plans.",
+    gradeLevel: "6-8",
+    subject: "Character Education",
+    kindnessTheme: "Empathy Development",
+    difficulty: "Intermediate",
+    duration: 75,
+    learningObjectives: [
+      "Students will identify complex emotions through subtle nonverbal cues",
+      "Students will analyze multi-perspective scenarios involving social conflicts",
+      "Students will demonstrate sophisticated empathetic responses to peer challenges",
+      "Students will design and implement school-wide empathy initiatives"
+    ],
+    activities: [
+      "Advanced Emotion Recognition (25 min): Analyze video scenarios to identify layered emotions and motivations behind behavior.",
+      "Multi-Perspective Conflict Analysis (25 min): Examine school conflicts from all stakeholders' perspectives using case studies.",
+      "Empathy Initiative Design (25 min): Create school programs to build empathy culture using data and feedback systems."
+    ],
+    reflectionQuestions: [
+      "How do unmet needs drive difficult behaviors?",
+      "When is empathy most challenging for you?",
+      "How can empathy transform school culture?"
+    ],
+    materials: [
+      "Video scenario library",
+      "Emotion analysis worksheets", 
+      "Multi-perspective case studies",
+      "Conflict mapping templates",
+      "Program design materials",
+      "Data collection tools",
+      "Presentation equipment",
+      "Reflection journals"
+    ],
+    vocabulary: [
+      "empathy - understanding and sharing someone else's feelings deeply",
+      "perspective-taking - actively considering how someone else views a situation",
+      "emotional regulation - managing your emotions in healthy ways",
+      "social awareness - understanding group dynamics and social cues",
+      "compassionate response - taking action to help based on understanding others' needs"
+    ],
+    kindnessSkills: ["Empathy", "Perspective-taking", "Emotional awareness", "Program design"],
+    selStandards: ["Self-Awareness", "Social Awareness", "Relationship Skills"],
     isActive: true
   }
 ];
@@ -324,7 +237,7 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
 // Initialize curriculum lessons in database
 export async function initializeCurriculumLessons(storage: any) {
   try {
-    console.log('🎓 Initializing Kindness Curriculum Lessons...');
+    console.log('🎓 Initializing Middle School Kindness Curriculum...');
     
     // Check if lessons already exist
     const existingLessons = await storage.getCurriculumLessons();
@@ -338,10 +251,10 @@ export async function initializeCurriculumLessons(storage: any) {
       await storage.createCurriculumLesson(lesson);
     }
 
-    console.log(`✅ Curriculum initialized with ${kindnessLessonTemplates.length} kindness lessons!`);
-    console.log('📚 Lessons span K-8 with age-appropriate activities');
-    console.log('🎯 Themes include: Gratitude, Inclusion, Empathy, Community Service, Digital Kindness, Conflict Resolution');
-    console.log('📖 Ready to transform classrooms with research-based character education!');
+    console.log(`✅ Middle School Curriculum initialized with ${kindnessLessonTemplates.length} lessons!`);
+    console.log('📚 All lessons designed specifically for grades 6-8 (ages 11-14)');
+    console.log('🎯 Themes: Community Service, Inclusion, Digital Kindness, Conflict Resolution, Empathy');
+    console.log('🏫 Ready to transform middle school classrooms with evidence-based character education!');
     
   } catch (error: any) {
     console.error('Failed to initialize curriculum lessons:', error.message);
