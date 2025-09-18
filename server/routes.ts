@@ -5222,12 +5222,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // If under 13, require parental consent
       if (studentAge < 13) {
-        // Generate secure verification code
-        const verificationCode = nanoid(20);
+        // Generate secure verification code (high-entropy for Burlington policy)
+        const verificationCode = nanoid(32);
         
-        // Create parental consent request
+        // Create parental consent request with enhanced fields
         const consentRequest = await storage.createParentalConsentRequest({
           studentAccountId: newStudent.id,
+          schoolId: schoolId, // Add school scoping
           parentEmail: parentEmail,
           parentName: parentName || 'Parent/Guardian',
           verificationCode: verificationCode
@@ -5290,7 +5291,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ error: 'Invalid or expired consent link' });
       }
       
-      // Check if expired (72 hours)
+      // Check if expired (14 days for Burlington policy)
       if (request.expiredAt && new Date() > request.expiredAt) {
         return res.status(410).json({ error: 'Consent link has expired. Please register again.' });
       }
@@ -5316,7 +5317,199 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Step 3: Parent approves/denies consent
+  // Step 3: Parent processes consent (simplified endpoint for form submission)
+  app.post('/api/students/consent/:code', rateLimiter.createGenericLimiter({ maxRequests: 3, windowMs: 300000 }), async (req, res) => {
+    try {
+      const { code } = req.params;
+      const { approved, signerFullName, finalConsentConfirmed } = req.body;
+      const ipAddress = req.ip || req.connection.remoteAddress;
+      const userAgent = req.get('User-Agent') || '';
+      
+      // Get consent request by verification code
+      const request = await storage.getParentalConsentRequest(code);
+      if (!request) {
+        return res.status(404).json({ 
+          error: 'Invalid or expired consent link',
+          code: 'INVALID_CONSENT_CODE'
+        });
+      }
+      
+      // Check if expired (14 days for Burlington policy)
+      if (request.expiredAt && new Date() > request.expiredAt) {
+        return res.status(410).json({ 
+          error: 'Consent link has expired. Please contact your school to register again.',
+          code: 'CONSENT_EXPIRED'
+        });
+      }
+      
+      // Check if already processed
+      if (request.consentStatus === 'approved' || request.consentStatus === 'denied') {
+        return res.status(409).json({ 
+          error: 'Consent has already been processed',
+          code: 'ALREADY_PROCESSED'
+        });
+      }
+      
+      const status = approved ? 'approved' : 'denied';
+      
+      // Update consent request status
+      await storage.updateParentalConsentStatus(request.id, status, ipAddress);
+      
+      // Update student account based on consent decision
+      if (approved) {
+        // Activate student account
+        await storage.updateStudentParentalConsent(request.studentAccountId, {
+          status: 'approved',
+          method: 'parental_email_consent',
+          parentEmail: request.parentEmail,
+          ipAddress: ipAddress
+        });
+        
+        // Create audit trail
+        await storage.createConsentAuditEvent({
+          studentUserId: request.studentAccountId,
+          schoolId: request.schoolId,
+          eventType: 'consent_approved',
+          details: {
+            verificationCode: code,
+            signerFullName: signerFullName || request.parentName,
+            ipAddress,
+            userAgent,
+            finalConsentConfirmed
+          },
+          actorRole: 'parent'
+        });
+        
+        res.json({
+          success: true,
+          message: 'Consent approved successfully! Your child\'s account is now active and they can begin using EchoDeed.',
+          studentAccountActivated: true,
+          nextSteps: 'Your child can now sign in and start sharing acts of kindness!'
+        });
+      } else {
+        // Keep account inactive
+        await storage.updateStudentParentalConsent(request.studentAccountId, {
+          status: 'denied',
+          method: 'parental_email_consent',
+          parentEmail: request.parentEmail,
+          ipAddress: ipAddress
+        });
+        
+        // Create audit trail
+        await storage.createConsentAuditEvent({
+          studentUserId: request.studentAccountId,
+          schoolId: request.schoolId,
+          eventType: 'consent_denied',
+          details: {
+            verificationCode: code,
+            signerFullName: signerFullName || request.parentName,
+            ipAddress,
+            userAgent
+          },
+          actorRole: 'parent'
+        });
+        
+        res.json({
+          success: true,
+          message: 'Consent denied. The student account will remain inactive per your decision.',
+          studentAccountActivated: false,
+          note: 'You can contact the school if you change your mind about consent.'
+        });
+      }
+      
+    } catch (error: any) {
+      console.error('Consent processing failed:', error);
+      res.status(500).json({ 
+        error: 'Failed to process consent response. Please try again.',
+        code: 'CONSENT_PROCESSING_FAILED'
+      });
+    }
+  });
+  
+  // Resend consent email (for admins/teachers)
+  app.post('/api/consent/:id/resend', isAuthenticated, requireTeacherRole, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.claims.sub;
+      
+      // Get consent request
+      const request = await storage.getParentalConsentRequest(id);
+      if (!request) {
+        return res.status(404).json({ 
+          error: 'Consent request not found',
+          code: 'REQUEST_NOT_FOUND'
+        });
+      }
+      
+      // Verify school access - ensure teacher can only resend for their school
+      const user = await storage.getUser(userId);
+      if (user?.schoolId !== request.schoolId) {
+        return res.status(403).json({
+          error: 'Access denied. You can only resend emails for your school.',
+          code: 'SCHOOL_ACCESS_DENIED'
+        });
+      }
+      
+      // Check if already approved/denied
+      if (request.consentStatus === 'approved' || request.consentStatus === 'denied') {
+        return res.status(409).json({ 
+          error: 'Cannot resend - consent has already been processed',
+          code: 'ALREADY_PROCESSED'
+        });
+      }
+      
+      // Check if expired
+      if (request.expiredAt && new Date() > request.expiredAt) {
+        return res.status(410).json({ 
+          error: 'Cannot resend - consent request has expired',
+          code: 'REQUEST_EXPIRED'
+        });
+      }
+      
+      // Get school and student information for email
+      const school = await storage.getCorporateAccount(request.schoolId);
+      const student = await storage.getStudentAccount(request.studentAccountId);
+      
+      const schoolName = school?.companyName || 'Your School';
+      const studentFirstName = student?.firstName || 'Your Child';
+      
+      // Mark reminder as sent
+      await storage.markReminderSent(request.id, 'manual');
+      
+      // Resend email
+      const emailSent = await emailService.sendParentalConsentEmail({
+        parentEmail: request.parentEmail,
+        parentName: request.parentName || 'Parent/Guardian',
+        studentFirstName: studentFirstName,
+        schoolName: schoolName,
+        verificationCode: request.verificationCode,
+        baseUrl: `${req.protocol}://${req.get('host')}`
+      });
+      
+      if (emailSent) {
+        res.json({
+          success: true,
+          message: 'Consent email resent successfully',
+          emailSentTo: request.parentEmail,
+          remindersSent: request.reminderCount + 1
+        });
+      } else {
+        res.status(500).json({
+          error: 'Failed to send email. Please try again later.',
+          code: 'EMAIL_SEND_FAILED'
+        });
+      }
+      
+    } catch (error: any) {
+      console.error('Consent email resend failed:', error);
+      res.status(500).json({ 
+        error: 'Failed to resend consent email',
+        code: 'RESEND_FAILED'
+      });
+    }
+  });
+  
+  // Step 3 (Legacy): Parent approves/denies consent
   app.post('/api/students/consent/:verificationCode/approve', async (req, res) => {
     try {
       const { verificationCode } = req.params;

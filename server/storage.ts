@@ -579,6 +579,20 @@ export interface IStorage {
   linkStudentToParent(link: InsertStudentParentLink): Promise<StudentParentLink>;
   getParentsForStudent(studentUserId: string): Promise<ParentAccount[]>;
   
+  // 🔄 WORKFLOW ORCHESTRATION METHODS - For seamless integration
+  upsertStudentAccount(student: InsertStudentAccount | Partial<StudentAccount>): Promise<StudentAccount>;
+  createParentAccountIfMissing(parentEmail: string, parentName: string): Promise<ParentAccount>;
+  markReminderSent(requestId: string, reminderType: 'day3' | 'day7'): Promise<ParentalConsentRequest>;
+  listPendingConsentBySchool(schoolId: string, filters?: {
+    olderThanDays?: number;
+    needsReminder?: boolean;
+    limit?: number;
+  }): Promise<Array<ParentalConsentRequest & {
+    studentFirstName: string;
+    studentGrade: string;
+    daysSinceRequest: number;
+  }>>;
+  
   // 🛡️ ENHANCED COPPA CONSENT OPERATIONS - PRODUCTION COMPLIANCE
   createConsentRecord(record: InsertParentalConsentRecord): Promise<ParentalConsentRecord>;
   getConsentRecord(recordId: string): Promise<ParentalConsentRecord | undefined>;
@@ -3038,7 +3052,7 @@ export class DatabaseStorage implements IStorage {
   async createParentalConsentRequest(request: InsertParentalConsentRequest): Promise<ParentalConsentRequest> {
     const [newRequest] = await db.insert(parentalConsentRequests).values({
       ...request,
-      expiredAt: new Date(Date.now() + 72 * 60 * 60 * 1000) // 72 hours from now
+      expiredAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000) // 14 days from now (Burlington policy)
     }).returning();
     return newRequest;
   }
@@ -3062,6 +3076,156 @@ export class DatabaseStorage implements IStorage {
       .where(eq(parentalConsentRequests.id, requestId))
       .returning();
     return updatedRequest;
+  }
+
+  async linkStudentToParent(link: InsertStudentParentLink): Promise<StudentParentLink> {
+    const [newLink] = await db.insert(studentParentLinks).values(link).returning();
+    return newLink;
+  }
+
+  async getParentsForStudent(studentUserId: string): Promise<ParentAccount[]> {
+    return await db
+      .select({
+        id: parentAccounts.id,
+        email: parentAccounts.email,
+        firstName: parentAccounts.firstName,
+        lastName: parentAccounts.lastName,
+        phone: parentAccounts.phone,
+        relationshipToStudent: parentAccounts.relationshipToStudent,
+        isVerified: parentAccounts.isVerified,
+        preferredContactMethod: parentAccounts.preferredContactMethod,
+        timezone: parentAccounts.timezone,
+        createdAt: parentAccounts.createdAt,
+      })
+      .from(studentParentLinks)
+      .innerJoin(parentAccounts, eq(studentParentLinks.parentAccountId, parentAccounts.id))
+      .where(eq(studentParentLinks.studentUserId, studentUserId));
+  }
+
+  // 🔄 WORKFLOW ORCHESTRATION METHODS - For seamless integration
+  async upsertStudentAccount(student: InsertStudentAccount | Partial<StudentAccount>): Promise<StudentAccount> {
+    if ('id' in student && student.id) {
+      // Update existing student account
+      const [updatedStudent] = await db
+        .update(studentAccounts)
+        .set({
+          ...student,
+          updatedAt: new Date()
+        })
+        .where(eq(studentAccounts.id, student.id))
+        .returning();
+      return updatedStudent;
+    } else {
+      // Create new student account
+      const [newStudent] = await db
+        .insert(studentAccounts)
+        .values(student as InsertStudentAccount)
+        .returning();
+      return newStudent;
+    }
+  }
+
+  async createParentAccountIfMissing(parentEmail: string, parentName: string): Promise<ParentAccount> {
+    // Check if parent account already exists
+    const existingParent = await this.getParentAccountByEmail(parentEmail);
+    if (existingParent) {
+      return existingParent;
+    }
+
+    // Create new parent account
+    const parentData: InsertParentAccount = {
+      email: parentEmail,
+      firstName: parentName.split(' ')[0] || parentName,
+      lastName: parentName.split(' ').slice(1).join(' ') || '',
+      relationshipToStudent: 'parent',
+      isVerified: 0,
+      preferredContactMethod: 'email'
+    };
+
+    return await this.createParentAccount(parentData);
+  }
+
+  async markReminderSent(requestId: string, reminderType: 'day3' | 'day7'): Promise<ParentalConsentRequest> {
+    const [updatedRequest] = await db
+      .update(parentalConsentRequests)
+      .set({
+        reminderCount: sql`${parentalConsentRequests.reminderCount} + 1`,
+        lastReminderAt: new Date()
+      })
+      .where(eq(parentalConsentRequests.id, requestId))
+      .returning();
+    return updatedRequest;
+  }
+
+  async listPendingConsentBySchool(schoolId: string, filters?: {
+    olderThanDays?: number;
+    needsReminder?: boolean;
+    limit?: number;
+  }): Promise<Array<ParentalConsentRequest & {
+    studentFirstName: string;
+    studentGrade: string;
+    daysSinceRequest: number;
+  }>> {
+    const conditions = [
+      eq(parentalConsentRequests.schoolId, schoolId),
+      eq(parentalConsentRequests.consentStatus, 'sent')
+    ];
+
+    if (filters?.olderThanDays) {
+      const cutoffDate = new Date();
+      cutoffDate.setDate(cutoffDate.getDate() - filters.olderThanDays);
+      conditions.push(lte(parentalConsentRequests.requestedAt, cutoffDate));
+    }
+
+    if (filters?.needsReminder) {
+      // Find requests that need reminders (3+ days old with no reminder, or 7+ days old with only one reminder)
+      const threeDaysAgo = new Date();
+      threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      
+      conditions.push(
+        or(
+          and(
+            lte(parentalConsentRequests.requestedAt, threeDaysAgo),
+            eq(parentalConsentRequests.reminderCount, 0)
+          ),
+          and(
+            lte(parentalConsentRequests.requestedAt, sevenDaysAgo),
+            eq(parentalConsentRequests.reminderCount, 1)
+          )
+        )
+      );
+    }
+
+    const results = await db
+      .select({
+        id: parentalConsentRequests.id,
+        studentAccountId: parentalConsentRequests.studentAccountId,
+        schoolId: parentalConsentRequests.schoolId,
+        parentEmail: parentalConsentRequests.parentEmail,
+        parentName: parentalConsentRequests.parentName,
+        verificationCode: parentalConsentRequests.verificationCode,
+        consentStatus: parentalConsentRequests.consentStatus,
+        requestedAt: parentalConsentRequests.requestedAt,
+        clickedAt: parentalConsentRequests.clickedAt,
+        consentedAt: parentalConsentRequests.consentedAt,
+        expiredAt: parentalConsentRequests.expiredAt,
+        reminderCount: parentalConsentRequests.reminderCount,
+        lastReminderAt: parentalConsentRequests.lastReminderAt,
+        ipAddress: parentalConsentRequests.ipAddress,
+        userAgent: parentalConsentRequests.userAgent,
+        studentFirstName: studentAccounts.firstName,
+        studentGrade: studentAccounts.grade,
+        daysSinceRequest: sql<number>`EXTRACT(DAY FROM NOW() - ${parentalConsentRequests.requestedAt})::integer`
+      })
+      .from(parentalConsentRequests)
+      .innerJoin(studentAccounts, eq(parentalConsentRequests.studentAccountId, studentAccounts.id))
+      .where(and(...conditions))
+      .orderBy(desc(parentalConsentRequests.requestedAt))
+      .limit(filters?.limit || 50);
+
+    return results;
   }
 
   // 🛡️ ENHANCED COPPA CONSENT OPERATIONS - PRODUCTION COMPLIANCE

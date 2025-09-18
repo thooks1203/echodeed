@@ -832,14 +832,17 @@ export const studentParentLinks = pgTable("student_parent_links", {
 export const parentalConsentRequests = pgTable("parental_consent_requests", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   studentAccountId: varchar("student_account_id").notNull().references(() => studentAccounts.id),
+  schoolId: varchar("school_id").notNull(), // Links to school for compliance reporting
   parentEmail: varchar("parent_email", { length: 200 }).notNull(),
   parentName: varchar("parent_name", { length: 100 }),
-  verificationCode: varchar("verification_code", { length: 20 }).notNull(),
+  verificationCode: varchar("verification_code", { length: 32 }).notNull(), // Increased length for high-entropy codes
   consentStatus: varchar("consent_status", { length: 20 }).default("sent").notNull(), // sent, clicked, approved, denied, expired
   requestedAt: timestamp("requested_at").defaultNow().notNull(),
   clickedAt: timestamp("clicked_at"),
   consentedAt: timestamp("consented_at"),
-  expiredAt: timestamp("expired_at"), // 72-hour expiration for security
+  expiredAt: timestamp("expired_at"), // 14-day expiration for Burlington policy
+  reminderCount: integer("reminder_count").default(0).notNull(), // Track number of reminders sent
+  lastReminderAt: timestamp("last_reminder_at"), // When last reminder was sent
   ipAddress: varchar("ip_address"),
   userAgent: text("user_agent"),
 });
@@ -1034,6 +1037,8 @@ export const insertParentalConsentRequestSchema = createInsertSchema(parentalCon
   id: true,
   requestedAt: true,
   consentStatus: true,
+  reminderCount: true,
+  expiredAt: true,
 });
 
 // 🛡️ ENHANCED COPPA CONSENT VALIDATION - SERVER-SIDE ONLY

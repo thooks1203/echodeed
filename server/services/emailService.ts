@@ -36,11 +36,33 @@ interface ConsentRevocationEmailData {
   revokedReason: string;
 }
 
+interface ConsentReminderEmailData {
+  parentEmail: string;
+  parentName: string;
+  studentFirstName: string;
+  schoolName: string;
+  verificationCode: string;
+  baseUrl: string;
+  reminderType: '3day' | '7day';
+  daysSinceRequest: number;
+  expiresInDays: number;
+}
+
+interface ConsentDenialEmailData {
+  parentEmail: string;
+  parentName: string;
+  studentFirstName: string;
+  schoolName: string;
+  deniedAt: Date;
+}
+
 interface EmailService {
   sendParentalConsentEmail(data: ConsentEmailData): Promise<boolean>;
   sendEnhancedParentalConsentEmail(data: EnhancedConsentEmailData): Promise<boolean>;
   sendConsentConfirmationEmail(data: ConsentConfirmationEmailData): Promise<boolean>;
   sendConsentRevocationConfirmation(data: ConsentRevocationEmailData): Promise<boolean>;
+  sendConsentReminderEmail(data: ConsentReminderEmailData): Promise<boolean>;
+  sendConsentDenialConfirmation(data: ConsentDenialEmailData): Promise<boolean>;
 }
 
 class NodemailerEmailService implements EmailService {
@@ -270,6 +292,110 @@ class NodemailerEmailService implements EmailService {
     }
   }
 
+  async sendConsentReminderEmail(data: ConsentReminderEmailData): Promise<boolean> {
+    const { parentEmail, parentName, studentFirstName, schoolName, verificationCode, baseUrl, reminderType, daysSinceRequest, expiresInDays } = data;
+    
+    const consentUrl = `${baseUrl}/parent-consent/${verificationCode}`;
+    
+    const htmlContent = this.generateConsentReminderEmailHTML({
+      parentName,
+      studentFirstName,
+      schoolName,
+      consentUrl,
+      verificationCode,
+      reminderType,
+      daysSinceRequest,
+      expiresInDays
+    });
+
+    const textContent = this.generateConsentReminderEmailText({
+      parentName,
+      studentFirstName,
+      schoolName,
+      consentUrl,
+      reminderType,
+      daysSinceRequest,
+      expiresInDays
+    });
+
+    const reminderTypeText = reminderType === '3day' ? '3-Day' : '7-Day';
+    const mailOptions = {
+      from: process.env.SMTP_FROM || 'Burlington Middle School EchoDeed <noreply@echodeed.com>',
+      to: parentEmail,
+      subject: `⏰ ${reminderTypeText} Reminder: Parental Consent Still Needed - ${studentFirstName}'s EchoDeed Account`,
+      text: textContent,
+      html: htmlContent
+    };
+
+    try {
+      if (this.transporter) {
+        const info = await this.transporter.sendMail(mailOptions);
+        console.log(`📧 ${reminderTypeText} consent reminder email sent successfully:`, info.messageId);
+        return true;
+      } else {
+        console.log(`\n📧 ==== ${reminderTypeText.toUpperCase()} CONSENT REMINDER EMAIL (DEVELOPMENT MODE) ====`);
+        console.log(`To: ${parentEmail}`);
+        console.log(`Subject: ${mailOptions.subject}`);
+        console.log(`Consent URL: ${consentUrl}`);
+        console.log(`Days Since Request: ${daysSinceRequest}`);
+        console.log(`Expires In: ${expiresInDays} days`);
+        console.log('=================================================\n');
+        console.log(textContent);
+        console.log('\n=================================================');
+        return true;
+      }
+    } catch (error) {
+      console.error(`❌ Failed to send ${reminderTypeText} consent reminder email:`, error);
+      return false;
+    }
+  }
+
+  async sendConsentDenialConfirmation(data: ConsentDenialEmailData): Promise<boolean> {
+    const { parentEmail, parentName, studentFirstName, schoolName, deniedAt } = data;
+    
+    const htmlContent = this.generateConsentDenialHTML({
+      parentName,
+      studentFirstName,
+      schoolName,
+      deniedAt
+    });
+
+    const textContent = this.generateConsentDenialText({
+      parentName,
+      studentFirstName,
+      schoolName,
+      deniedAt
+    });
+
+    const mailOptions = {
+      from: process.env.SMTP_FROM || 'Burlington Middle School EchoDeed <noreply@echodeed.com>',
+      to: parentEmail,
+      subject: `❌ Parental Consent Denied - ${studentFirstName}'s EchoDeed Account Status`,
+      text: textContent,
+      html: htmlContent
+    };
+
+    try {
+      if (this.transporter) {
+        const info = await this.transporter.sendMail(mailOptions);
+        console.log('📧 Consent denial confirmation email sent successfully:', info.messageId);
+        return true;
+      } else {
+        console.log('\n📧 ==== CONSENT DENIAL CONFIRMATION EMAIL (DEVELOPMENT MODE) ====');
+        console.log(`To: ${parentEmail}`);
+        console.log(`Subject: ${mailOptions.subject}`);
+        console.log(`Denied At: ${deniedAt.toISOString()}`);
+        console.log('=================================================\n');
+        console.log(textContent);
+        console.log('\n=================================================');
+        return true;
+      }
+    } catch (error) {
+      console.error('❌ Failed to send consent denial confirmation email:', error);
+      return false;
+    }
+  }
+
   private generateConsentEmailHTML(data: {
     parentName: string;
     studentFirstName: string;
@@ -349,7 +475,7 @@ class NodemailerEmailService implements EmailService {
             </div>
 
             <p style="font-size: 14px; color: #6b7280;">
-                <strong>Important:</strong> This consent link will expire in 72 hours. If you do not provide consent within this time, your child will need to register again.
+                <strong>Important:</strong> This consent link will expire in 14 days per Burlington Middle School policy. If you do not provide consent within this time, your child will need to register again.
             </p>
 
             <p>If you have any questions about EchoDeed or need assistance, please contact your child's school or reply to this email.</p>
@@ -404,7 +530,7 @@ YOUR CHILD'S SAFETY & PRIVACY:
 TO APPROVE YOUR CHILD'S ACCOUNT:
 Click this link: ${data.consentUrl}
 
-This consent link will expire in 72 hours.
+This consent link will expire in 14 days per Burlington Middle School policy.
 
 If you have any questions, please contact your child's school.
 
@@ -510,6 +636,291 @@ FERPA & COPPA Compliant • Anonymous & Safe
     </div>
 </body>
 </html>
+    `;
+  }
+
+  private generateConsentReminderEmailHTML(data: {
+    parentName: string;
+    studentFirstName: string;
+    schoolName: string;
+    consentUrl: string;
+    verificationCode: string;
+    reminderType: '3day' | '7day';
+    daysSinceRequest: number;
+    expiresInDays: number;
+  }) {
+    const isUrgent = data.reminderType === '7day';
+    const urgencyColor = isUrgent ? '#dc2626' : '#d97706';
+    const urgencyBg = isUrgent ? '#fef2f2' : '#fffbeb';
+    const reminderText = data.reminderType === '3day' ? '3-Day Reminder' : 'Final 7-Day Reminder';
+    
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${reminderText}: Parental Consent Required - EchoDeed</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8f9fa; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, ${urgencyColor} 0%, #dc2626 100%); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 700; }
+        .header p { margin: 10px 0 0 0; font-size: 16px; opacity: 0.9; }
+        .content { padding: 30px; }
+        .urgency-box { background: ${urgencyBg}; border: 2px solid ${urgencyColor}; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .urgency-box h3 { margin: 0 0 10px 0; color: ${urgencyColor}; font-size: 18px; }
+        .consent-button { display: block; background: linear-gradient(135deg, #10b981, #059669); color: white; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 18px; text-align: center; margin: 25px 0; transition: transform 0.2s; }
+        .consent-button:hover { transform: translateY(-1px); }
+        .burlington-info { background: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 15px; margin: 20px 0; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 14px; color: #6b7280; border-top: 1px solid #e5e7eb; }
+        .code-box { background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 16px; text-align: center; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⏰ ${reminderText}</h1>
+            <p>Parental Consent Still Required</p>
+        </div>
+        
+        <div class="content">
+            <p>Dear <strong>${data.parentName}</strong>,</p>
+            
+            <div class="urgency-box">
+                <h3>🚨 Action Required</h3>
+                <p>This is a ${data.reminderType === '3day' ? 'gentle' : 'final'} reminder that your child <strong>${data.studentFirstName}</strong> is still waiting for parental consent to use EchoDeed through <strong>${data.schoolName}</strong>.</p>
+                <ul>
+                    <li><strong>Request sent:</strong> ${data.daysSinceRequest} days ago</li>
+                    <li><strong>Expires in:</strong> ${data.expiresInDays} days</li>
+                    <li><strong>Status:</strong> Waiting for your response</li>
+                </ul>
+            </div>
+
+            <div class="burlington-info">
+                <p><strong>🏫 Burlington Middle School COPPA Compliance Notice:</strong></p>
+                <p>As part of Burlington Middle School's commitment to student digital safety, all students require explicit parental consent before accessing online educational platforms like EchoDeed. This consent process ensures:</p>
+                <ul>
+                    <li>Full transparency about data collection and use</li>
+                    <li>Compliance with federal COPPA regulations</li>
+                    <li>Parent control over their child's digital footprint</li>
+                    <li>Enhanced safety measures for student online activities</li>
+                </ul>
+            </div>
+
+            <p><strong>To provide consent for your child's EchoDeed account:</strong></p>
+            
+            <a href="${data.consentUrl}" class="consent-button">
+                ✅ Give Consent Now
+            </a>
+            
+            <div class="code-box">
+                <strong>Verification Code:</strong> ${data.verificationCode}
+            </div>
+
+            <p style="font-size: 14px; color: #6b7280;">
+                <strong>${data.reminderType === '7day' ? '⚠️ Final Notice:' : '📅 Important:'}</strong> 
+                ${data.reminderType === '7day' ? 
+                  `This is your final reminder. The consent request will expire in ${data.expiresInDays} days. After expiration, your child will need to register again.` :
+                  `You have ${data.expiresInDays} days remaining to provide consent. We'll send one more reminder in 4 days.`
+                }
+            </p>
+
+            <p>If you have any questions about this process, please contact Burlington Middle School directly or reply to this email.</p>
+            
+            <p>Thank you for your attention to this important matter!</p>
+            
+            <p>Best regards,<br><strong>Burlington Middle School<br>EchoDeed Implementation Team</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>EchoDeed™ - Building Character Through Kindness</p>
+            <p>Burlington Middle School • COPPA Compliant • Safe for Students</p>
+            <p style="font-size: 12px; margin-top: 15px;">
+                This reminder was sent because a consent request for ${data.studentFirstName} at ${data.schoolName} has not been responded to. 
+                To stop receiving reminders, please either approve or deny the consent request.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+    `;
+  }
+
+  private generateConsentReminderEmailText(data: {
+    parentName: string;
+    studentFirstName: string;
+    schoolName: string;
+    consentUrl: string;
+    reminderType: '3day' | '7day';
+    daysSinceRequest: number;
+    expiresInDays: number;
+  }) {
+    const reminderText = data.reminderType === '3day' ? '3-DAY REMINDER' : 'FINAL 7-DAY REMINDER';
+    
+    return `
+${reminderText}: PARENTAL CONSENT REQUIRED - EchoDeed
+
+Dear ${data.parentName},
+
+🚨 ACTION REQUIRED
+This is a ${data.reminderType === '3day' ? 'gentle' : 'final'} reminder that your child ${data.studentFirstName} is still waiting for parental consent to use EchoDeed through ${data.schoolName}.
+
+REQUEST STATUS:
+• Request sent: ${data.daysSinceRequest} days ago
+• Expires in: ${data.expiresInDays} days
+• Status: Waiting for your response
+
+🏫 BURLINGTON MIDDLE SCHOOL COPPA COMPLIANCE NOTICE:
+As part of Burlington Middle School's commitment to student digital safety, all students require explicit parental consent before accessing online educational platforms like EchoDeed. This consent process ensures:
+• Full transparency about data collection and use
+• Compliance with federal COPPA regulations
+• Parent control over their child's digital footprint
+• Enhanced safety measures for student online activities
+
+TO PROVIDE CONSENT:
+Click this link: ${data.consentUrl}
+
+${data.reminderType === '7day' ? 
+  `⚠️ FINAL NOTICE: This is your final reminder. The consent request will expire in ${data.expiresInDays} days. After expiration, your child will need to register again.` :
+  `📅 IMPORTANT: You have ${data.expiresInDays} days remaining to provide consent. We'll send one more reminder in 4 days.`
+}
+
+If you have any questions, please contact Burlington Middle School directly.
+
+Thank you for your attention to this important matter!
+
+Best regards,
+Burlington Middle School
+EchoDeed Implementation Team
+
+---
+EchoDeed™ - Building Character Through Kindness
+Burlington Middle School • COPPA Compliant • Safe for Students
+    `;
+  }
+
+  private generateConsentDenialHTML(data: {
+    parentName: string;
+    studentFirstName: string;
+    schoolName: string;
+    deniedAt: Date;
+  }) {
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parental Consent Denied - EchoDeed Account Status</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8f9fa; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 700; }
+        .header p { margin: 10px 0 0 0; font-size: 16px; opacity: 0.9; }
+        .content { padding: 30px; }
+        .status-box { background: #fef2f2; border: 2px solid #ef4444; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .status-box h3 { margin: 0 0 10px 0; color: #dc2626; font-size: 18px; }
+        .info-box { background: #f0f9ff; border-left: 4px solid #0ea5e9; padding: 15px; margin: 20px 0; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 14px; color: #6b7280; border-top: 1px solid #e5e7eb; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>❌ Consent Denied</h1>
+            <p>Account Status Confirmation</p>
+        </div>
+        
+        <div class="content">
+            <p>Dear <strong>${data.parentName}</strong>,</p>
+            
+            <div class="status-box">
+                <h3>📋 Consent Decision Recorded</h3>
+                <p>You have chosen to <strong>deny parental consent</strong> for your child <strong>${data.studentFirstName}</strong> to use EchoDeed through <strong>${data.schoolName}</strong>.</p>
+                <ul>
+                    <li><strong>Decision:</strong> Consent Denied</li>
+                    <li><strong>Date & Time:</strong> ${data.deniedAt.toLocaleDateString()} at ${data.deniedAt.toLocaleTimeString()}</li>
+                    <li><strong>Account Status:</strong> Inactive (as requested)</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <p><strong>📌 What This Means:</strong></p>
+                <ul>
+                    <li>Your child's EchoDeed account will remain inactive</li>
+                    <li>No personal information will be collected or processed</li>
+                    <li>Your child will not have access to the EchoDeed platform</li>
+                    <li>Your decision has been logged for Burlington Middle School's records</li>
+                </ul>
+            </div>
+
+            <div class="info-box">
+                <p><strong>💭 Changed Your Mind?</strong></p>
+                <p>If you would like to reconsider and provide consent in the future, please contact <strong>${data.schoolName}</strong> directly. They can help initiate a new consent request.</p>
+            </div>
+
+            <p>Thank you for taking the time to review and respond to the parental consent request. Your decision helps ensure that only students with explicit parental approval can access digital educational platforms.</p>
+            
+            <p>If you have any questions about this decision or need to discuss your child's educational technology options, please contact the school directly.</p>
+            
+            <p>Best regards,<br><strong>Burlington Middle School<br>EchoDeed Implementation Team</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>EchoDeed™ - Building Character Through Kindness</p>
+            <p>Burlington Middle School • COPPA Compliant • Respecting Parental Choices</p>
+            <p style="font-size: 12px; margin-top: 15px;">
+                This confirmation was sent to acknowledge your consent decision for ${data.studentFirstName} at ${data.schoolName}.
+                Your privacy choices are respected and will be maintained.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
+    `;
+  }
+
+  private generateConsentDenialText(data: {
+    parentName: string;
+    studentFirstName: string;
+    schoolName: string;
+    deniedAt: Date;
+  }) {
+    return `
+PARENTAL CONSENT DENIED - EchoDeed Account Status
+
+Dear ${data.parentName},
+
+📋 CONSENT DECISION RECORDED
+You have chosen to deny parental consent for your child ${data.studentFirstName} to use EchoDeed through ${data.schoolName}.
+
+DECISION SUMMARY:
+• Decision: Consent Denied
+• Date & Time: ${data.deniedAt.toLocaleDateString()} at ${data.deniedAt.toLocaleTimeString()}
+• Account Status: Inactive (as requested)
+
+📌 WHAT THIS MEANS:
+• Your child's EchoDeed account will remain inactive
+• No personal information will be collected or processed
+• Your child will not have access to the EchoDeed platform
+• Your decision has been logged for Burlington Middle School's records
+
+💭 CHANGED YOUR MIND?
+If you would like to reconsider and provide consent in the future, please contact ${data.schoolName} directly. They can help initiate a new consent request.
+
+Thank you for taking the time to review and respond to the parental consent request. Your decision helps ensure that only students with explicit parental approval can access digital educational platforms.
+
+If you have any questions about this decision or need to discuss your child's educational technology options, please contact the school directly.
+
+Best regards,
+Burlington Middle School
+EchoDeed Implementation Team
+
+---
+EchoDeed™ - Building Character Through Kindness
+Burlington Middle School • COPPA Compliant • Respecting Parental Choices
     `;
   }
 
