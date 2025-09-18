@@ -5,11 +5,12 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Search, ArrowLeft, Shield } from 'lucide-react';
+import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Search, ArrowLeft, Shield, Building2 } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
+import { SponsorsPage } from '@/components/SponsorsPage';
 
 interface CurriculumLesson {
   id: string;
@@ -336,7 +337,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
         </header>
 
         <Tabs defaultValue="classroom" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-6">
+          <TabsList className="grid w-full grid-cols-6 mb-6">
             <TabsTrigger value="classroom" data-testid="tab-classroom">
               <Users className="h-4 w-4 mr-2" />
               My Classroom
@@ -356,6 +357,10 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
             <TabsTrigger value="analytics" data-testid="tab-analytics">
               <Star className="h-4 w-4 mr-2" />
               Analytics
+            </TabsTrigger>
+            <TabsTrigger value="sponsors" data-testid="tab-sponsors">
+              <Building2 className="h-4 w-4 mr-2" />
+              Sponsors
             </TabsTrigger>
           </TabsList>
 
@@ -561,6 +566,11 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Sponsors Tab */}
+          <TabsContent value="sponsors" className="space-y-6">
+            <SponsorsPage />
           </TabsContent>
 
           <TabsContent value="lessons" className="space-y-6">
