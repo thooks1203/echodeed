@@ -51,6 +51,9 @@ import {
   encryptedEmergencyContacts,
   teacherClaimCodes,
   claimCodeUsages,
+  // Enhanced consent tracking tables
+  parentalConsentRecords,
+  consentAuditEvents,
   type User,
   type UpsertUser,
   type KindnessPost,
@@ -213,6 +216,9 @@ import {
   type InsertTeacherClaimCode,
   type ClaimCodeUsage,
   type InsertClaimCodeUsage,
+  // Enhanced consent tracking types
+  type ConsentAuditEvent,
+  type InsertConsentAuditEvent,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte, lte } from "drizzle-orm";
@@ -605,6 +611,55 @@ export interface IStorage {
   }): Promise<ParentalConsentRecord[]>;
   getConsentAuditTrail(studentAccountId: string): Promise<ParentalConsentRecord[]>;
   markConsentRecordImmutable(recordId: string): Promise<ParentalConsentRecord>;
+  
+  // 📊 CONSENT DASHBOARD FUNCTIONS - For school administrators
+  listConsentsBySchool(schoolId: string, filters?: {
+    status?: string;
+    grade?: string;
+    query?: string;
+    page?: number;
+    pageSize?: number;
+  }): Promise<{
+    consents: Array<ParentalConsentRecord & {
+      studentFirstName: string;
+      studentLastName: string;
+      studentGrade: string;
+      parentName: string;
+      parentEmail: string;
+    }>;
+    total: number;
+    page: number;
+    pageSize: number;
+  }>;
+  getConsentStats(schoolId: string): Promise<{
+    totalStudents: number;
+    approvedCount: number;
+    pendingCount: number;
+    deniedCount: number;
+    revokedCount: number;
+    expiredCount: number;
+    pendingOlderThan48h: number;
+    expiringIn7Days: number;
+    approvedRate: number;
+  }>;
+  getStudentConsentAudit(studentUserId: string): Promise<Array<ConsentAuditEvent & {
+    milestone?: string;
+  }>>;
+  generateConsentReport(schoolId: string, filters?: {
+    from?: Date;
+    to?: Date;
+  }): Promise<{
+    summary: {
+      totalStudents: number;
+      consentsByStatus: Record<string, number>;
+      averageResponseTime: number;
+      complianceRate: number;
+    };
+    csvData: string;
+  }>;
+  
+  // 🔍 AUDIT EVENT MANAGEMENT
+  createConsentAuditEvent(event: InsertConsentAuditEvent): Promise<ConsentAuditEvent>;
   
   // 🎓 TEACHER CLAIM CODE SYSTEM - COPPA-compliant school registration
   createTeacherClaimCode(claimCode: InsertTeacherClaimCode): Promise<TeacherClaimCode>;
@@ -3263,6 +3318,400 @@ export class DatabaseStorage implements IStorage {
     }
 
     return updatedRecord;
+  }
+
+  // 📊 CONSENT DASHBOARD FUNCTIONS - For school administrators
+  async listConsentsBySchool(schoolId: string, filters?: {
+    status?: string;
+    grade?: string;
+    query?: string;
+    page?: number;
+    pageSize?: number;
+  }): Promise<{
+    consents: Array<ParentalConsentRecord & {
+      studentFirstName: string;
+      studentLastName: string;
+      studentGrade: string;
+      parentName: string;
+      parentEmail: string;
+    }>;
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
+    const page = filters?.page || 1;
+    const pageSize = filters?.pageSize || 20;
+    const offset = (page - 1) * pageSize;
+
+    // Build the conditions array
+    const conditions = [eq(parentalConsentRecords.schoolId, schoolId)];
+    
+    if (filters?.status) {
+      conditions.push(eq(parentalConsentRecords.consentStatus, filters.status));
+    }
+
+    // For grade filtering, we need to join with student accounts and users
+    let gradeCondition = null;
+    if (filters?.grade) {
+      gradeCondition = eq(users.grade, filters.grade);
+    }
+
+    // Get consents with student and parent information
+    let query = db
+      .select({
+        // Consent fields
+        id: parentalConsentRecords.id,
+        studentAccountId: parentalConsentRecords.studentAccountId,
+        schoolId: parentalConsentRecords.schoolId,
+        consentStatus: parentalConsentRecords.consentStatus,
+        consentSubmittedAt: parentalConsentRecords.consentSubmittedAt,
+        consentApprovedAt: parentalConsentRecords.consentApprovedAt,
+        consentRevokedAt: parentalConsentRecords.consentRevokedAt,
+        linkExpiresAt: parentalConsentRecords.linkExpiresAt,
+        signerFullName: parentalConsentRecords.signerFullName,
+        digitalSignatureHash: parentalConsentRecords.digitalSignatureHash,
+        isImmutable: parentalConsentRecords.isImmutable,
+        recordCreatedAt: parentalConsentRecords.recordCreatedAt,
+        lastUpdatedBy: parentalConsentRecords.lastUpdatedBy,
+        // Additional fields
+        consentVersion: parentalConsentRecords.consentVersion,
+        parentName: parentalConsentRecords.parentName,
+        parentEmail: parentalConsentRecords.parentEmail,
+        relationshipToStudent: parentalConsentRecords.relationshipToStudent,
+        verificationMethod: parentalConsentRecords.verificationMethod,
+        signatureTimestamp: parentalConsentRecords.signatureTimestamp,
+        recordUpdatedAt: parentalConsentRecords.recordUpdatedAt,
+        renewalDueAt: parentalConsentRecords.renewalDueAt,
+        revokedReason: parentalConsentRecords.revokedReason,
+        // Student info
+        studentFirstName: studentAccounts.firstName,
+        studentLastName: studentAccounts.lastName,
+        studentGrade: users.grade,
+      })
+      .from(parentalConsentRecords)
+      .innerJoin(studentAccounts, eq(parentalConsentRecords.studentAccountId, studentAccounts.id))
+      .innerJoin(users, eq(studentAccounts.userId, users.id))
+      .where(gradeCondition ? and(...conditions, gradeCondition) : and(...conditions));
+
+    // Add search query filter if provided
+    if (filters?.query) {
+      const searchTerm = `%${filters.query}%`;
+      query = query.where(
+        and(
+          ...conditions,
+          gradeCondition ? gradeCondition : sql`1=1`,
+          or(
+            sql`${studentAccounts.firstName} ILIKE ${searchTerm}`,
+            sql`${studentAccounts.lastName} ILIKE ${searchTerm}`,
+            sql`${parentalConsentRecords.parentName} ILIKE ${searchTerm}`,
+            sql`${parentalConsentRecords.parentEmail} ILIKE ${searchTerm}`
+          )
+        )
+      );
+    }
+
+    const consents = await query
+      .orderBy(desc(parentalConsentRecords.recordCreatedAt))
+      .limit(pageSize)
+      .offset(offset);
+
+    // Get total count for pagination
+    let countQuery = db
+      .select({ count: count() })
+      .from(parentalConsentRecords)
+      .innerJoin(studentAccounts, eq(parentalConsentRecords.studentAccountId, studentAccounts.id))
+      .innerJoin(users, eq(studentAccounts.userId, users.id))
+      .where(gradeCondition ? and(...conditions, gradeCondition) : and(...conditions));
+
+    if (filters?.query) {
+      const searchTerm = `%${filters.query}%`;
+      countQuery = countQuery.where(
+        and(
+          ...conditions,
+          gradeCondition ? gradeCondition : sql`1=1`,
+          or(
+            sql`${studentAccounts.firstName} ILIKE ${searchTerm}`,
+            sql`${studentAccounts.lastName} ILIKE ${searchTerm}`,
+            sql`${parentalConsentRecords.parentName} ILIKE ${searchTerm}`,
+            sql`${parentalConsentRecords.parentEmail} ILIKE ${searchTerm}`
+          )
+        )
+      );
+    }
+
+    const [{ count: total }] = await countQuery;
+
+    return {
+      consents: consents as any,
+      total,
+      page,
+      pageSize,
+    };
+  }
+
+  async getConsentStats(schoolId: string): Promise<{
+    totalStudents: number;
+    approvedCount: number;
+    pendingCount: number;
+    deniedCount: number;
+    revokedCount: number;
+    expiredCount: number;
+    pendingOlderThan48h: number;
+    expiringIn7Days: number;
+    approvedRate: number;
+  }> {
+    // Get total students in the school
+    const [{ count: totalStudents }] = await db
+      .select({ count: count() })
+      .from(studentAccounts)
+      .where(eq(studentAccounts.schoolId, schoolId));
+
+    // Get consent status counts
+    const statusCounts = await db
+      .select({
+        status: parentalConsentRecords.consentStatus,
+        count: count(),
+      })
+      .from(parentalConsentRecords)
+      .where(eq(parentalConsentRecords.schoolId, schoolId))
+      .groupBy(parentalConsentRecords.consentStatus);
+
+    // Initialize counts
+    let approvedCount = 0;
+    let pendingCount = 0;
+    let deniedCount = 0;
+    let revokedCount = 0;
+    let expiredCount = 0;
+
+    statusCounts.forEach(({ status, count }) => {
+      switch (status) {
+        case 'approved':
+          approvedCount = count;
+          break;
+        case 'pending':
+          pendingCount = count;
+          break;
+        case 'denied':
+          deniedCount = count;
+          break;
+        case 'revoked':
+          revokedCount = count;
+          break;
+        case 'expired':
+          expiredCount = count;
+          break;
+      }
+    });
+
+    // Get pending consents older than 48 hours
+    const twoDaysAgo = new Date();
+    twoDaysAgo.setHours(twoDaysAgo.getHours() - 48);
+    
+    const [{ count: pendingOlderThan48h }] = await db
+      .select({ count: count() })
+      .from(parentalConsentRecords)
+      .where(
+        and(
+          eq(parentalConsentRecords.schoolId, schoolId),
+          eq(parentalConsentRecords.consentStatus, 'pending'),
+          lte(parentalConsentRecords.recordCreatedAt, twoDaysAgo)
+        )
+      );
+
+    // Get consents expiring in 7 days
+    const sevenDaysFromNow = new Date();
+    sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+    
+    const [{ count: expiringIn7Days }] = await db
+      .select({ count: count() })
+      .from(parentalConsentRecords)
+      .where(
+        and(
+          eq(parentalConsentRecords.schoolId, schoolId),
+          eq(parentalConsentRecords.consentStatus, 'approved'),
+          lte(parentalConsentRecords.renewalDueAt, sevenDaysFromNow)
+        )
+      );
+
+    const approvedRate = totalStudents > 0 ? (approvedCount / totalStudents) * 100 : 0;
+
+    return {
+      totalStudents,
+      approvedCount,
+      pendingCount,
+      deniedCount,
+      revokedCount,
+      expiredCount,
+      pendingOlderThan48h,
+      expiringIn7Days,
+      approvedRate: Math.round(approvedRate * 100) / 100, // Round to 2 decimal places
+    };
+  }
+
+  async getStudentConsentAudit(studentUserId: string): Promise<Array<ConsentAuditEvent & {
+    milestone?: string;
+  }>> {
+    const auditEvents = await db
+      .select()
+      .from(consentAuditEvents)
+      .where(eq(consentAuditEvents.studentUserId, studentUserId))
+      .orderBy(desc(consentAuditEvents.createdAt));
+
+    // Add milestone information based on event types
+    return auditEvents.map(event => {
+      let milestone: string | undefined;
+      
+      switch (event.eventType) {
+        case 'consent_requested':
+          milestone = 'Consent Request Sent';
+          break;
+        case 'consent_approved':
+          milestone = 'Parent Consent Approved';
+          break;
+        case 'consent_denied':
+          milestone = 'Parent Consent Denied';
+          break;
+        case 'consent_revoked':
+          milestone = 'Consent Revoked';
+          break;
+        case 'consent_expired':
+          milestone = 'Consent Expired';
+          break;
+        case 'signature_verified':
+          milestone = 'Digital Signature Verified';
+          break;
+        case 'audit_accessed':
+          milestone = 'Audit Trail Accessed';
+          break;
+        case 'report_generated':
+          milestone = 'Report Generated';
+          break;
+        default:
+          milestone = undefined;
+      }
+
+      return {
+        ...event,
+        milestone,
+      };
+    });
+  }
+
+  async generateConsentReport(schoolId: string, filters?: {
+    from?: Date;
+    to?: Date;
+  }): Promise<{
+    summary: {
+      totalStudents: number;
+      consentsByStatus: Record<string, number>;
+      averageResponseTime: number;
+      complianceRate: number;
+    };
+    csvData: string;
+  }> {
+    const conditions = [eq(parentalConsentRecords.schoolId, schoolId)];
+    
+    if (filters?.from) {
+      conditions.push(gte(parentalConsentRecords.recordCreatedAt, filters.from));
+    }
+    
+    if (filters?.to) {
+      conditions.push(lte(parentalConsentRecords.recordCreatedAt, filters.to));
+    }
+
+    // Get all consent records with student information
+    const records = await db
+      .select({
+        id: parentalConsentRecords.id,
+        consentStatus: parentalConsentRecords.consentStatus,
+        consentSubmittedAt: parentalConsentRecords.consentSubmittedAt,
+        consentApprovedAt: parentalConsentRecords.consentApprovedAt,
+        recordCreatedAt: parentalConsentRecords.recordCreatedAt,
+        studentFirstName: studentAccounts.firstName,
+        studentLastName: studentAccounts.lastName,
+        studentGrade: users.grade,
+        parentName: parentalConsentRecords.parentName,
+        parentEmail: parentalConsentRecords.parentEmail,
+        relationshipToStudent: parentalConsentRecords.relationshipToStudent,
+        signatureTimestamp: parentalConsentRecords.signatureTimestamp,
+      })
+      .from(parentalConsentRecords)
+      .innerJoin(studentAccounts, eq(parentalConsentRecords.studentAccountId, studentAccounts.id))
+      .innerJoin(users, eq(studentAccounts.userId, users.id))
+      .where(and(...conditions))
+      .orderBy(desc(parentalConsentRecords.recordCreatedAt));
+
+    // Calculate summary statistics
+    const totalStudents = records.length;
+    const consentsByStatus: Record<string, number> = {};
+    let totalResponseTime = 0;
+    let responsiveRecords = 0;
+
+    records.forEach(record => {
+      // Count by status
+      consentsByStatus[record.consentStatus] = (consentsByStatus[record.consentStatus] || 0) + 1;
+      
+      // Calculate response time for approved consents
+      if (record.consentApprovedAt && record.consentSubmittedAt) {
+        const responseTime = record.consentApprovedAt.getTime() - record.consentSubmittedAt.getTime();
+        totalResponseTime += responseTime;
+        responsiveRecords++;
+      }
+    });
+
+    const averageResponseTime = responsiveRecords > 0 ? totalResponseTime / responsiveRecords / (1000 * 60 * 60) : 0; // in hours
+    const approvedCount = consentsByStatus['approved'] || 0;
+    const complianceRate = totalStudents > 0 ? (approvedCount / totalStudents) * 100 : 0;
+
+    // Generate CSV data with masked PII
+    const csvHeaders = [
+      'Student Grade',
+      'Consent Status',
+      'Submitted Date',
+      'Approved Date',
+      'Response Time (hours)',
+      'Parent Relationship',
+      'Signature Method'
+    ];
+
+    const csvRows = records.map(record => {
+      const responseTime = record.consentApprovedAt && record.consentSubmittedAt 
+        ? Math.round((record.consentApprovedAt.getTime() - record.consentSubmittedAt.getTime()) / (1000 * 60 * 60))
+        : '';
+
+      return [
+        record.studentGrade || '',
+        record.consentStatus,
+        record.consentSubmittedAt?.toISOString().split('T')[0] || '',
+        record.consentApprovedAt?.toISOString().split('T')[0] || '',
+        responseTime,
+        record.relationshipToStudent || '',
+        record.signatureTimestamp ? 'Digital Signature' : 'Standard'
+      ];
+    });
+
+    const csvData = [csvHeaders, ...csvRows]
+      .map(row => row.map(cell => `"${cell}"`).join(','))
+      .join('\n');
+
+    return {
+      summary: {
+        totalStudents,
+        consentsByStatus,
+        averageResponseTime: Math.round(averageResponseTime * 100) / 100,
+        complianceRate: Math.round(complianceRate * 100) / 100,
+      },
+      csvData,
+    };
+  }
+
+  // 🔍 AUDIT EVENT MANAGEMENT
+  async createConsentAuditEvent(event: InsertConsentAuditEvent): Promise<ConsentAuditEvent> {
+    const [newEvent] = await db
+      .insert(consentAuditEvents)
+      .values(event)
+      .returning();
+    return newEvent;
   }
 
   // SEL Standards management

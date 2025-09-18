@@ -17,6 +17,7 @@ import FamilyDashboard from "@/pages/FamilyDashboard";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import StudentSignup from "@/pages/StudentSignup";
 import ParentConsent from "@/pages/ParentConsent";
+import SchoolConsentDashboard from "@/pages/SchoolConsentDashboard";
 import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 import { RewardNotificationManager } from "@/components/RewardNotificationManager";
 import { SchoolRegistration } from "@/components/SchoolRegistration";
@@ -31,6 +32,7 @@ function Router() {
         <Route path="/teacher-dashboard"><TeacherDashboard /></Route>
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/admin-dashboard" component={AdminDashboard} />
+        <Route path="/admin/consents" component={SchoolConsentDashboard} />
         <Route path="/parent" component={ParentDashboard} />
         <Route path="/parent-dashboard" component={ParentDashboard} />
         <Route path="/rewards" component={RewardsPage} />

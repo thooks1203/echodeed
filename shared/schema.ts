@@ -911,6 +911,21 @@ export const parentalConsentRecords = pgTable("parental_consent_records", {
   finalConsentConfirmed: boolean("final_consent_confirmed").default(false), // Final consent checkbox confirmation
   signatureTimestamp: timestamp("signature_timestamp"), // When digital signature was created
   signatureMetadata: jsonb("signature_metadata"), // Additional signer details (IP, UA, device fingerprint, etc.)
+  
+  // 👤 AUDIT TRACKING
+  lastUpdatedBy: varchar("last_updated_by").references(() => users.id), // User who last modified this record
+});
+
+// 📋 CONSENT AUDIT EVENTS - Complete tracking of all consent lifecycle events
+export const consentAuditEvents = pgTable("consent_audit_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentUserId: varchar("student_user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id").notNull(), // For school-specific filtering and compliance
+  eventType: varchar("event_type", { length: 50 }).notNull(), // consent_requested, consent_approved, consent_denied, consent_revoked, consent_expired, signature_verified, audit_accessed, report_generated
+  details: jsonb("details").notNull(), // Event-specific data (status changes, reasons, etc.)
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  actorUserId: varchar("actor_user_id").references(() => users.id), // Who performed the action
+  actorRole: varchar("actor_role", { length: 50 }), // admin, parent, system, counselor
 });
 
 // SEL (Social-Emotional Learning) standards alignment
@@ -1076,6 +1091,12 @@ export const insertParentalConsentRecordSchema = createInsertSchema(parentalCons
   // - linkExpiresAt (server enforces 72-hour limit)
 });
 
+// 📋 CONSENT AUDIT EVENT INSERT SCHEMA
+export const insertConsentAuditEventSchema = createInsertSchema(consentAuditEvents).omit({
+  id: true,
+  createdAt: true,
+});
+
 // 🔍 CONSENT VERIFICATION SCHEMA - For link verification endpoint
 export const verifyConsentSchema = z.object({
   verificationCode: z.string().min(10, "Invalid verification code").max(30),
@@ -1145,6 +1166,8 @@ export type ParentalConsentRecord = typeof parentalConsentRecords.$inferSelect;
 export type InsertParentalConsentRecord = z.infer<typeof insertParentalConsentRecordSchema>;
 export type VerifyConsent = z.infer<typeof verifyConsentSchema>;
 export type RevokeConsent = z.infer<typeof revokeConsentSchema>;
+export type ConsentAuditEvent = typeof consentAuditEvents.$inferSelect;
+export type InsertConsentAuditEvent = z.infer<typeof insertConsentAuditEventSchema>;
 export type StudentParentLink = typeof studentParentLinks.$inferSelect;
 export type InsertStudentParentLink = z.infer<typeof insertStudentParentLinkSchema>;
 export type SelStandard = typeof selStandards.$inferSelect;

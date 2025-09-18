@@ -62,7 +62,7 @@ import { SurpriseGiveawayService } from './surpriseGiveaways';
 import { rateLimiter } from "./services/rateLimiter";
 import { securityAuditLogger } from "./services/auditLogger";
 import { emergencyContactEncryption } from "./services/emergencyContactEncryption";
-import { requireCounselorRole, requireSchoolSpecificAccess, logCounselorAction, validateCrisisPermissions, createSchoolFilter } from "./middleware/counselorAuth";
+import { requireCounselorRole, logCounselorAction, validateCrisisPermissions, createSchoolFilter } from "./middleware/counselorAuth";
 import { mandatoryReportingService } from "./services/mandatoryReporting";
 import { enforceCOPPA, requireCOPPACompliance } from "./middleware/coppaEnforcement";
 
@@ -6264,6 +6264,365 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({
         error: 'Failed to generate compliance report',
         errorCode: 'REPORT_GENERATION_FAILED'
+      });
+    }
+  });
+
+  // 📊 CONSENT DASHBOARD API - For School Administrators
+  
+  // GET /api/schools/:schoolId/consents - Paginated consent list with filters
+  app.get('/api/schools/:schoolId/consents', 
+    isAuthenticated, 
+    requireSchoolAccess, 
+    requireSpecificSchoolAccess('schoolId'),
+    rateLimiter.createGenericLimiter({ maxRequests: 30, windowMs: 60000 }),
+    async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      const { status, grade, query, page, pageSize } = req.query;
+      
+      // 🔒 ADMIN ROLE VERIFICATION: Consent data is admin-only
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
+        return res.status(403).json({ 
+          error: 'INSUFFICIENT_PERMISSIONS',
+          message: 'Admin or teacher access required for consent dashboard' 
+        });
+      }
+      
+      // 🔒 AUDIT: Log dashboard access
+      await securityAuditLogger.logSecurityEvent({
+        userId: req.user.claims.sub,
+        userRole: req.user.schoolRole || 'admin',
+        schoolId,
+        action: 'CONSENT_DASHBOARD_ACCESS',
+        details: {
+          endpoint: 'consents_list',
+          filters: { status, grade, query, page, pageSize }
+        },
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent'),
+        success: true
+      });
+
+      const filters = {
+        status: status as string,
+        grade: grade as string,
+        query: query as string,
+        page: page ? parseInt(page as string) : 1,
+        pageSize: pageSize ? Math.min(parseInt(pageSize as string), 100) : 20
+      };
+
+      // Remove undefined filters
+      Object.keys(filters).forEach(key => {
+        if (!filters[key as keyof typeof filters]) {
+          delete filters[key as keyof typeof filters];
+        }
+      });
+
+      const result = await storage.listConsentsBySchool(schoolId, filters);
+      
+      // 🛡️ PRIVACY: Mask IP addresses in response to /24
+      const maskedResult = {
+        ...result,
+        consents: result.consents.map(consent => ({
+          ...consent,
+          // Keep only essential fields for dashboard
+          id: consent.id,
+          studentFirstName: consent.studentFirstName,
+          studentLastName: consent.studentLastName,
+          studentGrade: consent.studentGrade,
+          parentName: consent.parentName,
+          parentEmail: consent.parentEmail,
+          consentStatus: consent.consentStatus,
+          consentSubmittedAt: consent.consentSubmittedAt,
+          consentApprovedAt: consent.consentApprovedAt,
+          consentRevokedAt: consent.consentRevokedAt,
+          linkExpiresAt: consent.linkExpiresAt,
+          recordCreatedAt: consent.recordCreatedAt,
+          isImmutable: consent.isImmutable
+        }))
+      };
+
+      res.json(maskedResult);
+    } catch (error: any) {
+      console.error('Failed to list school consents:', error);
+      res.status(500).json({
+        error: 'Failed to retrieve consent records',
+        errorCode: 'CONSENT_LIST_FAILED'
+      });
+    }
+  });
+
+  // GET /api/schools/:schoolId/consents/stats - KPI metrics for dashboard
+  app.get('/api/schools/:schoolId/consents/stats', 
+    isAuthenticated, 
+    requireSchoolAccess, 
+    requireSpecificSchoolAccess('schoolId'),
+    rateLimiter.createGenericLimiter({ maxRequests: 20, windowMs: 60000 }),
+    async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      
+      // 🔒 ADMIN ROLE VERIFICATION: Consent data is admin-only
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
+        return res.status(403).json({ 
+          error: 'INSUFFICIENT_PERMISSIONS',
+          message: 'Admin or teacher access required for consent statistics' 
+        });
+      }
+      
+      // 🔒 AUDIT: Log stats access
+      await securityAuditLogger.logSecurityEvent({
+        userId: req.user.claims.sub,
+        userRole: req.user.schoolRole || 'admin',
+        schoolId,
+        action: 'CONSENT_STATS_ACCESS',
+        details: {
+          endpoint: 'consent_stats'
+        },
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent'),
+        success: true
+      });
+
+      const stats = await storage.getConsentStats(schoolId);
+      res.json(stats);
+    } catch (error: any) {
+      console.error('Failed to get consent stats:', error);
+      res.status(500).json({
+        error: 'Failed to retrieve consent statistics',
+        errorCode: 'CONSENT_STATS_FAILED'
+      });
+    }
+  });
+
+  // GET /api/schools/:schoolId/consents/expiring - Consents expiring in 7 days
+  app.get('/api/schools/:schoolId/consents/expiring', 
+    isAuthenticated, 
+    requireSchoolAccess, 
+    requireSpecificSchoolAccess('schoolId'),
+    rateLimiter.createGenericLimiter({ maxRequests: 20, windowMs: 60000 }),
+    async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      
+      // 🔒 ADMIN ROLE VERIFICATION: Consent data is admin-only
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
+        return res.status(403).json({ 
+          error: 'INSUFFICIENT_PERMISSIONS',
+          message: 'Admin or teacher access required for expiring consents' 
+        });
+      }
+      
+      // 🔒 AUDIT: Log expiring consents access
+      await securityAuditLogger.logSecurityEvent({
+        userId: req.user.claims.sub,
+        userRole: req.user.schoolRole || 'admin',
+        schoolId,
+        action: 'EXPIRING_CONSENTS_ACCESS',
+        details: {
+          endpoint: 'expiring_consents'
+        },
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent'),
+        success: true
+      });
+
+      // Get consents expiring in 7 days using the existing function
+      const sevenDaysFromNow = new Date();
+      sevenDaysFromNow.setDate(sevenDaysFromNow.getDate() + 7);
+      
+      const expiringConsents = await storage.getConsentRecordsForSchool(schoolId, {
+        status: 'approved',
+        dateTo: sevenDaysFromNow,
+        limit: 50
+      });
+
+      // Filter to only those with renewal due dates
+      const actuallyExpiring = expiringConsents.filter(consent => 
+        consent.renewalDueAt && new Date(consent.renewalDueAt) <= sevenDaysFromNow
+      );
+
+      res.json({
+        expiringCount: actuallyExpiring.length,
+        consents: actuallyExpiring.map(consent => ({
+          id: consent.id,
+          studentAccountId: consent.studentAccountId,
+          parentName: consent.parentName,
+          parentEmail: consent.parentEmail,
+          consentStatus: consent.consentStatus,
+          renewalDueAt: consent.renewalDueAt,
+          recordCreatedAt: consent.recordCreatedAt
+        }))
+      });
+    } catch (error: any) {
+      console.error('Failed to get expiring consents:', error);
+      res.status(500).json({
+        error: 'Failed to retrieve expiring consents',
+        errorCode: 'EXPIRING_CONSENTS_FAILED'
+      });
+    }
+  });
+
+  // GET /api/schools/:schoolId/students/:studentId/audit - Student consent audit trail
+  app.get('/api/schools/:schoolId/students/:studentId/audit', 
+    isAuthenticated, 
+    requireSchoolAccess, 
+    requireSpecificSchoolAccess('schoolId'),
+    rateLimiter.createGenericLimiter({ maxRequests: 15, windowMs: 60000 }),
+    async (req: any, res) => {
+    try {
+      const { schoolId, studentId } = req.params;
+      
+      // 🔒 ADMIN ROLE VERIFICATION: Audit trails are admin-only
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
+        return res.status(403).json({ 
+          error: 'INSUFFICIENT_PERMISSIONS',
+          message: 'Admin or teacher access required for student audit trails' 
+        });
+      }
+      
+      // 🔒 AUDIT: Log audit trail access
+      await securityAuditLogger.logSecurityEvent({
+        userId: req.user.claims.sub,
+        userRole: req.user.schoolRole || 'admin',
+        schoolId,
+        action: 'STUDENT_AUDIT_ACCESS',
+        details: {
+          endpoint: 'student_audit',
+          studentId
+        },
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent'),
+        success: true
+      });
+
+      // Create audit event for accessing audit trail
+      await storage.createConsentAuditEvent({
+        studentUserId: studentId,
+        schoolId,
+        eventType: 'audit_accessed',
+        details: {
+          accessedBy: req.user.claims.sub,
+          accessedByRole: req.user.schoolRole || 'admin',
+          timestamp: new Date().toISOString()
+        },
+        actorUserId: req.user.claims.sub,
+        actorRole: req.user.schoolRole || 'admin'
+      });
+
+      const auditTrail = await storage.getStudentConsentAudit(studentId);
+      
+      // 🛡️ PRIVACY: Mask sensitive information in audit trail
+      const maskedAuditTrail = auditTrail.map(event => ({
+        id: event.id,
+        eventType: event.eventType,
+        milestone: event.milestone,
+        createdAt: event.createdAt,
+        actorRole: event.actorRole,
+        details: {
+          ...event.details,
+          // Mask IP addresses to /24 subnet
+          ipAddress: event.details?.ipAddress ? 
+            event.details.ipAddress.replace(/\.\d+$/, '.xxx') : undefined,
+          // Redact detailed user agent info
+          userAgent: event.details?.userAgent ? 
+            event.details.userAgent.split(' ')[0] + ' [redacted]' : undefined
+        }
+      }));
+
+      res.json({
+        studentId,
+        auditTrail: maskedAuditTrail
+      });
+    } catch (error: any) {
+      console.error('Failed to get student audit trail:', error);
+      res.status(500).json({
+        error: 'Failed to retrieve audit trail',
+        errorCode: 'AUDIT_TRAIL_FAILED'
+      });
+    }
+  });
+
+  // GET /api/schools/:schoolId/consents/export/csv - CSV export with rate limiting
+  app.get('/api/schools/:schoolId/consents/export/csv', 
+    isAuthenticated, 
+    requireSchoolAccess, 
+    requireSpecificSchoolAccess('schoolId'),
+    rateLimiter.createGenericLimiter({ maxRequests: 5, windowMs: 300000 }), // 5 requests per 5 minutes
+    async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      const { from, to } = req.query;
+      
+      // 🔒 ADMIN ROLE VERIFICATION: CSV exports are admin-only
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
+        return res.status(403).json({ 
+          error: 'INSUFFICIENT_PERMISSIONS',
+          message: 'Admin or teacher access required for CSV exports' 
+        });
+      }
+      
+      // 🔒 AUDIT: Log CSV export (high-value operation)
+      await securityAuditLogger.logSecurityEvent({
+        userId: req.user.claims.sub,
+        userRole: req.user.schoolRole || 'admin',
+        schoolId,
+        action: 'CONSENT_CSV_EXPORT',
+        details: {
+          endpoint: 'csv_export',
+          dateRange: { from, to },
+          exportTimestamp: new Date().toISOString()
+        },
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent'),
+        success: true
+      });
+
+      // Create audit event for report generation
+      await storage.createConsentAuditEvent({
+        studentUserId: req.user.claims.sub, // Use admin as student for this case
+        schoolId,
+        eventType: 'report_generated',
+        details: {
+          reportType: 'csv_export',
+          generatedBy: req.user.claims.sub,
+          generatedByRole: req.user.schoolRole || 'admin',
+          dateRange: { from, to },
+          timestamp: new Date().toISOString()
+        },
+        actorUserId: req.user.claims.sub,
+        actorRole: req.user.schoolRole || 'admin'
+      });
+
+      const filters: any = {};
+      if (from) filters.from = new Date(from as string);
+      if (to) filters.to = new Date(to as string);
+
+      const report = await storage.generateConsentReport(schoolId, filters);
+      
+      // Set CSV headers
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 
+        `attachment; filename="consent-report-${schoolId}-${new Date().toISOString().split('T')[0]}.csv"`
+      );
+      
+      res.send(report.csvData);
+    } catch (error: any) {
+      console.error('Failed to export consent CSV:', error);
+      res.status(500).json({
+        error: 'Failed to export consent data',
+        errorCode: 'CSV_EXPORT_FAILED'
       });
     }
   });
