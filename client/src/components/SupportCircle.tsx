@@ -434,10 +434,16 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
                     <Shield className="w-8 h-8 text-white" />
                   </div>
                   
-                  <h3 className="text-xl font-bold text-gray-900 mb-3">Safety Review Required</h3>
+                  <h3 className="text-xl font-bold text-red-600 mb-2">🛑 STOP: Safety Review Required</h3>
+                  
+                  <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-4">
+                    <p className="text-red-800 font-medium text-center">
+                      ⚠️ YOU MUST VIEW SAFETY RULES BEFORE POSTING ⚠️
+                    </p>
+                  </div>
                   
                   <p className="text-gray-700 mb-4 max-w-md mx-auto">
-                    Before posting in Support Circle, you must review our safety guidelines to understand how we protect students while providing help.
+                    Before you can post in Support Circle, you are required to review our safety guidelines to understand how we protect students while providing help.
                   </p>
                   
                   <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">

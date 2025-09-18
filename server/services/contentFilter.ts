@@ -13,7 +13,7 @@ export class ContentFilterService {
     const lowerContent = content.toLowerCase();
     
     // Create word boundary regex for more precise matching
-    const words = lowerContent.match(/\b\w+\b/g) || [];
+    const words: string[] = lowerContent.match(/\b\w+\b/g) || [];
     
     // Check for profanity (exact word matches only)
     for (const word of this.profanityWords) {
