@@ -300,33 +300,268 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
           </Button>
         </div>
         
-        <header className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-3 rounded-full">
-              <BookOpen className="h-8 w-8 text-white" />
+        <header className="mb-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-3 rounded-full">
+                <Users className="h-8 w-8 text-white" />
+              </div>
+              <div>
+                <h1 className="text-4xl font-bold text-gray-900">Teacher Dashboard</h1>
+                <p className="text-lg text-gray-600">
+                  Monitor your students, manage your classroom, and access curriculum resources
+                </p>
+              </div>
             </div>
-            <h1 className="text-4xl font-bold text-gray-900">Teacher Curriculum Hub</h1>
+            <div className="flex items-center gap-3">
+              <Button
+                onClick={() => setLocation('/app')}
+                className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
+                data-testid="button-student-feed"
+              >
+                <Heart className="w-4 h-4 mr-2" />
+                View Student Feed
+              </Button>
+              <Button
+                onClick={() => setLocation('/wellness-checkin')}
+                variant="outline"
+                className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                data-testid="button-wellness-check"
+              >
+                <Target className="w-4 h-4 mr-2" />
+                Student Wellness
+              </Button>
+            </div>
           </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            K-8 kindness lesson plans designed to build empathy, character, and community in your classroom
-          </p>
         </header>
 
-        <Tabs defaultValue="lessons" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+        <Tabs defaultValue="classroom" className="w-full">
+          <TabsList className="grid w-full grid-cols-5 mb-6">
+            <TabsTrigger value="classroom" data-testid="tab-classroom">
+              <Users className="h-4 w-4 mr-2" />
+              My Classroom
+            </TabsTrigger>
+            <TabsTrigger value="student-feed" data-testid="tab-student-feed">
+              <Heart className="h-4 w-4 mr-2" />
+              Student Posts
+            </TabsTrigger>
+            <TabsTrigger value="support-monitor" data-testid="tab-support-monitor">
+              <Shield className="h-4 w-4 mr-2" />
+              Support Monitor
+            </TabsTrigger>
             <TabsTrigger value="lessons" data-testid="tab-lessons">
               <BookOpen className="h-4 w-4 mr-2" />
-              Lesson Library
+              Curriculum
             </TabsTrigger>
-            <TabsTrigger value="progress" data-testid="tab-progress">
-              <Target className="h-4 w-4 mr-2" />
-              My Progress
-            </TabsTrigger>
-            <TabsTrigger value="resources" data-testid="tab-resources">
+            <TabsTrigger value="analytics" data-testid="tab-analytics">
               <Star className="h-4 w-4 mr-2" />
-              Resources
+              Analytics
             </TabsTrigger>
           </TabsList>
+
+          {/* My Classroom Tab */}
+          <TabsContent value="classroom" className="space-y-6">
+            {/* Class Overview Stats */}
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-2xl font-bold text-blue-600">24</div>
+                  <div className="text-sm text-gray-600">Total Students</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-2xl font-bold text-green-600">18</div>
+                  <div className="text-sm text-gray-600">Active This Week</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-2xl font-bold text-purple-600">47</div>
+                  <div className="text-sm text-gray-600">Kindness Acts</div>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardContent className="p-4">
+                  <div className="text-2xl font-bold text-orange-600">2</div>
+                  <div className="text-sm text-gray-600">Need Attention</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Card>
+              <CardHeader>
+                <CardTitle>Student Activity Overview</CardTitle>
+                <CardDescription>Recent kindness posts and student engagement</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                        <Users className="w-4 h-4 text-blue-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Emma S.</p>
+                        <p className="text-sm text-gray-600">Helped classmate with homework</p>
+                      </div>
+                    </div>
+                    <Badge variant="secondary">Today</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                        <Heart className="w-4 h-4 text-green-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Marcus T.</p>
+                        <p className="text-sm text-gray-600">Shared lunch with new student</p>
+                      </div>
+                    </div>
+                    <Badge variant="secondary">Today</Badge>
+                  </div>
+                  <div className="flex items-center justify-between p-3 border rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                        <Star className="w-4 h-4 text-purple-600" />
+                      </div>
+                      <div>
+                        <p className="font-medium">Zoe K.</p>
+                        <p className="text-sm text-gray-600">Organized playground cleanup</p>
+                      </div>
+                    </div>
+                    <Badge variant="secondary">Yesterday</Badge>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Student Posts Tab */}
+          <TabsContent value="student-feed" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-pink-500" />
+                  Student Kindness Feed
+                </CardTitle>
+                <CardDescription>Real-time feed of kindness posts from your students</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="text-center py-8">
+                  <Button
+                    onClick={() => setLocation('/app')}
+                    className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white"
+                    size="lg"
+                  >
+                    <Heart className="w-5 h-5 mr-2" />
+                    View Full Student Feed
+                  </Button>
+                  <p className="text-gray-600 mt-3">Access the complete kindness feed to see all student posts</p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Support Monitor Tab */}
+          <TabsContent value="support-monitor" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Shield className="w-5 h-5 text-orange-500" />
+                  Student Support Monitor
+                </CardTitle>
+                <CardDescription>Monitor student wellness and provide support when needed</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="p-4 bg-green-50 rounded-lg border-l-4 border-green-400">
+                    <div className="flex items-center">
+                      <CheckCircle className="w-5 h-5 text-green-500 mr-2" />
+                      <span className="font-medium text-green-800">All Students Safe</span>
+                    </div>
+                    <p className="text-green-700 text-sm mt-1">No crisis alerts or support requests at this time</p>
+                  </div>
+                  
+                  <div className="text-center py-6">
+                    <Button
+                      onClick={() => setLocation('/wellness-checkin')}
+                      variant="outline"
+                      className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                    >
+                      <Target className="w-4 h-4 mr-2" />
+                      Access Wellness Check-In
+                    </Button>
+                    <p className="text-gray-600 mt-3">Monitor student emotional well-being and provide support</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Analytics Tab */}
+          <TabsContent value="analytics" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="w-5 h-5 text-yellow-500" />
+                  Class Analytics
+                </CardTitle>
+                <CardDescription>Track student progress and classroom engagement</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium">Class Participation</span>
+                        <span className="text-sm text-gray-600">75%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-blue-600 h-2 rounded-full" style={{ width: '75%' }}></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium">Kindness Goal Progress</span>
+                        <span className="text-sm text-gray-600">82%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-green-600 h-2 rounded-full" style={{ width: '82%' }}></div>
+                      </div>
+                    </div>
+                    <div>
+                      <div className="flex justify-between items-center mb-2">
+                        <span className="text-sm font-medium">Student Engagement</span>
+                        <span className="text-sm text-gray-600">91%</span>
+                      </div>
+                      <div className="w-full bg-gray-200 rounded-full h-2">
+                        <div className="bg-purple-600 h-2 rounded-full" style={{ width: '91%' }}></div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="space-y-3">
+                    <h4 className="font-medium">Top Performers</h4>
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between p-2 bg-yellow-50 rounded">
+                        <span className="text-sm">Emma S.</span>
+                        <Badge variant="secondary">12 acts</Badge>
+                      </div>
+                      <div className="flex items-center justify-between p-2 bg-green-50 rounded">
+                        <span className="text-sm">Marcus T.</span>
+                        <Badge variant="secondary">10 acts</Badge>
+                      </div>
+                      <div className="flex items-center justify-between p-2 bg-blue-50 rounded">
+                        <span className="text-sm">Zoe K.</span>
+                        <Badge variant="secondary">9 acts</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="lessons" className="space-y-6">
             {/* Search */}
