@@ -16,7 +16,7 @@ export function FilterBar({ activeFilter, location, onFilterChange }: FilterBarP
   return (
     <div className="bg-card border-b border-border">
       <div className="py-3 overflow-x-auto scrollbar-hide" style={{ scrollBehavior: 'smooth', overscrollBehaviorX: 'contain', WebkitOverflowScrolling: 'touch' }}>
-        <div className="flex space-x-2 w-max pb-1 pl-4 pr-4">
+        <div className="flex space-x-1 w-max pb-1 pl-4 pr-4">
           <button 
           className={`filter-chip ${activeFilter === 'global' ? 'active' : ''}`}
           onClick={() => handleFilterClick('global')}
