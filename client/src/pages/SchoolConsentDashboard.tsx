@@ -448,21 +448,6 @@ export default function SchoolConsentDashboard() {
   // 👥 STUDENTS TAB COMPONENT
   const StudentsTab = () => {
     const students = studentsLoading ? null : (studentsList as ConsentListResponse);
-    
-    // Handle undefined data (from 304 responses or errors) - only when tab is actually selected
-    if (selectedTab === 'students' && !studentsLoading && !students) {
-      return (
-        <Card>
-          <CardContent className="py-8">
-            <div className="text-center">
-              <AlertTriangle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium">Unable to Load Student Data</h3>
-              <p className="text-muted-foreground">Please refresh the page and try again.</p>
-            </div>
-          </CardContent>
-        </Card>
-      );
-    }
 
     const handleSearch = (query: string) => {
       setSearchQuery(query);
@@ -903,21 +888,6 @@ export default function SchoolConsentDashboard() {
   const RenewalsTab = () => {
     const renewalsResponse = renewalsLoading ? null : (renewalsData as RenewalListResponse);
     const metrics = renewalsResponse?.metrics;
-    
-    // Handle undefined data (from 304 responses or errors) - only when tab is actually selected
-    if (selectedTab === 'renewals' && !renewalsLoading && !renewalsResponse) {
-      return (
-        <Card>
-          <CardContent className="py-8">
-            <div className="text-center">
-              <AlertTriangle className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium">Unable to Load Renewals Data</h3>
-              <p className="text-muted-foreground">Please refresh the page and try again.</p>
-            </div>
-          </CardContent>
-        </Card>
-      );
-    }
 
     // 📤 RESEND RENEWAL REMINDER MUTATION
     const resendReminderMutation = useMutation({
