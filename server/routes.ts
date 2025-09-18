@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema, insertSupportPostSchema, insertWellnessCheckInSchema, insertPushSubscriptionSchema, insertSchoolFundraiserSchema, insertFamilyDonationSchema, insertStudentAccountSchema, insertParentalConsentRequestSchema } from "@shared/schema";
 import { nanoid } from 'nanoid';
 import { contentFilter } from "./services/contentFilter";
+import { crisisDetectionService } from "./services/crisisDetection";
 import { realTimeMonitoring } from "./services/realTimeMonitoring";
 import { emailService } from "./services/emailService";
 
@@ -58,6 +59,11 @@ import { executionEngine } from "./services/executionEngine";
 import { setupAuth, isAuthenticated } from "./replitAuth";
 import { fulfillmentService } from "./fulfillment";
 import { SurpriseGiveawayService } from './surpriseGiveaways';
+import { rateLimiter } from "./services/rateLimiter";
+import { securityAuditLogger } from "./services/auditLogger";
+import { emergencyContactEncryption } from "./services/emergencyContactEncryption";
+import { requireCounselorRole, requireSchoolSpecificAccess, logCounselorAction, validateCrisisPermissions, createSchoolFilter } from "./middleware/counselorAuth";
+import { mandatoryReportingService } from "./services/mandatoryReporting";
 
 // 🔒 SECURITY: School Access Control Middleware
 const requireSchoolAccess = async (req: any, res: any, next: any) => {
@@ -1456,7 +1462,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ===== SUPPORT CIRCLE ROUTES - Anonymous peer support for grades 6-8 =====
   
-  // Get support posts with optional filters
+  // Get support posts with optional filters (PUBLIC FEED - excludes crisis/high-risk posts)
   app.get("/api/support-posts", async (req, res) => {
     try {
       const { schoolId, category, gradeLevel } = req.query;
@@ -1473,16 +1479,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
       
-      const posts = await storage.getSupportPosts(Object.keys(filters).length > 0 ? filters : undefined);
-      res.json(posts);
+      const allPosts = await storage.getSupportPosts(Object.keys(filters).length > 0 ? filters : undefined);
+      
+      // SAFETY TRIAGE: Filter out crisis and high-risk posts from public feed
+      const publicPosts = allPosts.filter(post => 
+        post.isVisibleToPublic === 1 && 
+        !['Crisis', 'High_Risk'].includes(post.safetyLevel || '')
+      );
+      
+      res.json(publicPosts);
     } catch (error: any) {
       console.error('Failed to get support posts:', error);
       res.status(500).json({ message: error.message });
     }
   });
 
-  // Create new support post - Anonymous (no auth required for safety)
-  app.post("/api/support-posts", async (req, res) => {
+  // Create new support post - Anonymous (no auth required for safety) - RATE LIMITED
+  app.post("/api/support-posts", rateLimiter.createSupportPostLimiter(), async (req, res) => {
     try {
       const postData = insertSupportPostSchema.parse(req.body);
       
@@ -1492,22 +1505,110 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: contentValidation.reason });
       }
       
-      // Create support post with crisis detection
-      const post = await storage.createSupportPost(postData);
+      // CRISIS DETECTION: Analyze content for safety concerns
+      const crisisAnalysis = crisisDetectionService.analyzeCrisisRisk(postData.content);
       
-      // If crisis detected, send immediate notification to school counselors
-      if (post.isCrisis) {
-        console.log(`🚨 CRISIS DETECTED in support post ${post.id} at ${post.schoolId}:`, {
-          keywords: post.crisisKeywords,
-          score: post.crisisScore,
-          urgency: post.urgencyLevel
-        });
+      // 🚨 CRITICAL SECURITY: Handle Crisis/High_Risk posts with mandatory reporting
+      if (crisisAnalysis.safetyLevel === 'Crisis' || crisisAnalysis.safetyLevel === 'High_Risk') {
+        console.log(`🚨 CRITICAL: ${crisisAnalysis.safetyLevel} post detected - triggering mandatory reporting`);
         
-        // In production, this would trigger real notifications to school counselors
-        // For now, we log it for demonstration
+        // MANDATORY REPORTING: Automatically trigger NCMEC reporting for qualifying cases
+        try {
+          const reportingEvaluation = mandatoryReportingService.requiresNCMECReporting({
+            safetyLevel: crisisAnalysis.safetyLevel,
+            crisisScore: crisisAnalysis.crisisScore,
+            detectedKeywords: crisisAnalysis.detectedKeywords,
+            content: postData.content
+          });
+          
+          if (reportingEvaluation.required) {
+            // Create NCMEC report with system as reporter (escalate to counselor)
+            const ncmecReport = await mandatoryReportingService.createNCMECReport({
+              postId: 'pending', // Will be updated after post creation
+              reporterId: 'system_crisis_detection',
+              reporterRole: 'automated_system',
+              schoolId: postData.schoolId || 'unknown',
+              crisisData: {
+                safetyLevel: crisisAnalysis.safetyLevel,
+                crisisScore: crisisAnalysis.crisisScore,
+                detectedKeywords: crisisAnalysis.detectedKeywords,
+                content: postData.content
+              },
+              legalJustification: reportingEvaluation.justification,
+              mandatoryReporterLicense: 'AUTOMATED_CRISIS_DETECTION_SYSTEM'
+            });
+            
+            console.log(`📋 NCMEC Report Created: ${ncmecReport.id} - ${reportingEvaluation.reportType} (${reportingEvaluation.urgencyLevel})`);
+          }
+        } catch (reportingError) {
+          console.error('🚨 CRITICAL: Mandatory reporting failed:', reportingError);
+          // Continue with crisis intervention even if reporting fails
+        }
+        
+        // Crisis/High_Risk posts should not be posted directly - redirect to intervention
+        return res.status(423).json({
+          error: 'CRISIS_INTERVENTION_REQUIRED',
+          message: 'Your message indicates you may need immediate support. Please contact a counselor or use the crisis resources provided.',
+          safetyLevel: crisisAnalysis.safetyLevel,
+          crisisScore: crisisAnalysis.crisisScore,
+          requiresIntervention: crisisAnalysis.requiresIntervention,
+          emergencyResources: crisisAnalysis.emergencyResources,
+          recommendedAction: crisisAnalysis.recommendedAction
+        });
       }
       
-      res.json(post);
+      // Enhance post data with crisis analysis results
+      const enhancedPostData = {
+        ...postData,
+        safetyLevel: crisisAnalysis.safetyLevel,
+        crisisScore: crisisAnalysis.crisisScore,
+        urgencyLevel: crisisAnalysis.urgencyLevel,
+        isCrisis: crisisAnalysis.isCrisis ? 1 : 0,
+        crisisKeywords: crisisAnalysis.detectedKeywords,
+        isVisibleToPublic: crisisAnalysis.shouldHideFromPublic ? 0 : 1,
+        safetyAnalyzedAt: new Date(),
+        flaggedAt: crisisAnalysis.isCrisis ? new Date() : null,
+      };
+      
+      // Create support post with enhanced crisis detection
+      const post = await storage.createSupportPost(enhancedPostData);
+      
+      // CRISIS INTERVENTION: Handle different safety levels
+      if (crisisAnalysis.requiresIntervention) {
+        console.log(`🚨 ${crisisAnalysis.safetyLevel.toUpperCase()} DETECTED in support post ${post.id}:`, {
+          schoolId: post.schoolId,
+          safetyLevel: crisisAnalysis.safetyLevel,
+          crisisScore: crisisAnalysis.crisisScore,
+          urgency: crisisAnalysis.urgencyLevel,
+          keywords: crisisAnalysis.detectedKeywords,
+          recommendedAction: crisisAnalysis.recommendedAction
+        });
+        
+        // Send immediate notification to school counselors for Crisis/High Risk posts
+        try {
+          await slackNotifications.sendCrisisAlert({
+            postId: post.id,
+            schoolId: post.schoolId || 'Unknown School',
+            safetyLevel: crisisAnalysis.safetyLevel,
+            crisisScore: crisisAnalysis.crisisScore,
+            urgencyLevel: crisisAnalysis.urgencyLevel,
+            detectedKeywords: crisisAnalysis.detectedKeywords,
+            recommendedAction: crisisAnalysis.recommendedAction,
+            emergencyResources: crisisAnalysis.emergencyResources
+          });
+        } catch (error) {
+          console.error('Failed to send crisis notification:', error);
+        }
+      }
+      
+      // Return post with crisis intervention resources if needed
+      const response = {
+        ...post,
+        crisisResources: crisisAnalysis.requiresIntervention ? crisisAnalysis.emergencyResources : undefined,
+        safetyMessage: crisisAnalysis.recommendedAction
+      };
+      
+      res.json(response);
     } catch (error: any) {
       console.error('Failed to create support post:', error);
       res.status(500).json({ message: error.message });
@@ -1538,30 +1639,152 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create professional response (Phase 2 - Licensed counselors only)
-  app.post("/api/support-posts/:id/responses", isAuthenticated, async (req: any, res) => {
+  // 🔒 SECURE COUNSELOR ENDPOINT: Professional crisis response (Licensed counselors only)
+  app.post("/api/support-posts/:id/responses", 
+    isAuthenticated, 
+    requireCounselorRole,
+    validateCrisisPermissions,
+    logCounselorAction('RESPOND_TO_CRISIS'),
+    async (req: any, res) => {
     try {
       const { id } = req.params;
-      const userId = req.user.claims.sub;
+      const counselor = req.counselor;
       
-      // Check if user is a licensed counselor (Phase 2 implementation)
-      // For now, we'll allow any authenticated user to respond
+      // 🔒 SECURITY: Verify post belongs to counselor's school
+      const post = await storage.getSupportPost(id);
+      if (!post || post.schoolId !== counselor.schoolId) {
+        return res.status(403).json({ 
+          error: 'ACCESS_DENIED',
+          message: 'Post not found or access denied' 
+        });
+      }
       
       const responseData = {
         supportPostId: id,
-        counselorId: userId,
-        counselorName: "School Counselor", // Would be from licensed counselor profile
+        counselorId: counselor.id,
+        counselorName: `${counselor.email.split('@')[0]} (Licensed Counselor)`,
         counselorCredentials: "Licensed Professional Counselor",
         responseContent: req.body.content,
         responseType: req.body.type || "support",
         includedResources: req.body.resources || [],
         isPrivate: req.body.isPrivate || 0,
+        interventionReason: req.body.interventionReason,
+        schoolId: counselor.schoolId
       };
       
       const response = await storage.createSupportResponse(responseData);
+      
+      // 🔒 AUDIT: Log crisis response
+      await securityAuditLogger.logCounselorAction({
+        userId: counselor.id,
+        schoolId: counselor.schoolId,
+        postId: id,
+        action: 'RESPOND',
+        details: {
+          responseType: req.body.type,
+          isPrivate: req.body.isPrivate,
+          interventionReason: req.body.interventionReason,
+          resourcesProvided: req.body.resources?.length || 0
+        },
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent')
+      });
+      
       res.json(response);
     } catch (error: any) {
       console.error('Failed to create support response:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // ===== COUNSELOR-ONLY ENDPOINTS FOR CRISIS MANAGEMENT =====
+  
+  // 🔒 SECURE COUNSELOR ENDPOINT: Crisis and high-risk posts (Licensed counselors only)
+  app.get("/api/support-posts/crisis-queue", 
+    isAuthenticated, 
+    requireCounselorRole,
+    rateLimiter.createCrisisQueueLimiter(),
+    logCounselorAction('VIEW_CRISIS_QUEUE'),
+    async (req: any, res) => {
+    try {
+      const { safetyLevel, urgencyLevel } = req.query;
+      
+      // 🔒 SECURITY: Automatically scope to counselor's school
+      const schoolFilter = createSchoolFilter(req);
+      
+      const filters = {
+        ...schoolFilter,
+        safetyLevel: safetyLevel as string,
+        urgencyLevel: urgencyLevel as string,
+      };
+      
+      // Remove undefined filters
+      Object.keys(filters).forEach(key => {
+        if (!filters[key as keyof typeof filters]) {
+          delete filters[key as keyof typeof filters];
+        }
+      });
+      
+      const allPosts = await storage.getSupportPosts(Object.keys(filters).length > 0 ? filters : undefined);
+      
+      // 🔒 SECURITY: Only return crisis and high-risk posts for counselor review
+      const crisisPosts = allPosts.filter(post => 
+        ['Crisis', 'High_Risk'].includes(post.safetyLevel || '') ||
+        post.isCrisis === 1 ||
+        post.isVisibleToPublic === 0
+      );
+      
+      // 🔒 AUDIT: Log successful crisis queue access
+      await securityAuditLogger.logCrisisDataAccess({
+        userId: req.counselor.id,
+        userRole: req.counselor.schoolRole,
+        schoolId: req.counselor.schoolId,
+        postId: `queue_${crisisPosts.length}_posts`,
+        action: 'VIEW_CRISIS_QUEUE',
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent')
+      });
+      
+      res.json(crisisPosts);
+    } catch (error: any) {
+      console.error('Failed to get crisis queue:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get immediate crisis resources
+  app.get("/api/crisis-resources", async (req, res) => {
+    try {
+      const resources = crisisDetectionService.getCrisisInterventionResources();
+      res.json(resources);
+    } catch (error: any) {
+      console.error('Failed to get crisis resources:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Analyze content for crisis risk (used by frontend for real-time screening)
+  // 🔒 SECURITY: Rate limited to prevent abuse of crisis detection system
+  app.post("/api/support-posts/analyze-safety", rateLimiter.createSafetyAnalysisLimiter(), async (req, res) => {
+    try {
+      const { content } = req.body;
+      
+      if (!content || typeof content !== 'string') {
+        return res.status(400).json({ message: 'Content is required for analysis' });
+      }
+      
+      const analysis = crisisDetectionService.analyzeCrisisRisk(content);
+      
+      res.json({
+        safetyLevel: analysis.safetyLevel,
+        crisisScore: analysis.crisisScore,
+        urgencyLevel: analysis.urgencyLevel,
+        requiresIntervention: analysis.requiresIntervention, // Fixed typo
+        emergencyResources: analysis.emergencyResources,
+        warningMessage: analysis.recommendedAction
+      });
+    } catch (error: any) {
+      console.error('Failed to analyze content safety:', error);
       res.status(500).json({ message: error.message });
     }
   });

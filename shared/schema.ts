@@ -26,8 +26,8 @@ export const users = pgTable("users", {
   referredBy: varchar("referred_by"),
   totalReferrals: integer("total_referrals").default(0),
   referralEarnings: integer("referral_earnings").default(0),
-  // SCHOOL ROLE SYSTEM - FOR EDUCATIONAL INSTITUTIONS
-  schoolRole: varchar("school_role", { length: 20 }).default("student").notNull(), // student, teacher, admin
+  // SCHOOL ROLE SYSTEM - FOR EDUCATIONAL INSTITUTIONS  
+  schoolRole: varchar("school_role", { length: 20 }).default("student").notNull(), // student, teacher, counselor, admin
   schoolId: varchar("school_id"), // Links user to a specific school
   grade: varchar("grade", { length: 5 }), // For students: 6, 7, 8, etc.
   // PREMIUM TIER SYSTEM
@@ -460,6 +460,15 @@ export const supportPosts = pgTable("support_posts", {
   crisisScore: integer("crisis_score").default(0), // 0-100 AI-determined crisis severity
   urgencyLevel: varchar("urgency_level", { length: 20 }).default("low").notNull(), // low, medium, high, critical
   flaggedAt: timestamp("flagged_at"), // When crisis was first detected
+  // Safety Classification System
+  safetyLevel: varchar("safety_level", { length: 20 }).default("pending").notNull(), // Safe, Sensitive, High_Risk, Crisis, pending
+  isVisibleToPublic: integer("is_visible_to_public").default(1).notNull(), // 0 = counselor-only, 1 = public
+  safetyAnalyzedAt: timestamp("safety_analyzed_at"), // When safety analysis was completed
+  // Emergency Contact Fields (COPPA Safety Exception)
+  emergencyContactName: varchar("emergency_contact_name", { length: 100 }), // For crisis situations only
+  emergencyContactPhone: varchar("emergency_contact_phone", { length: 20 }), // For crisis situations only
+  emergencyContactRelation: varchar("emergency_contact_relation", { length: 50 }), // parent, guardian, family
+  safetyDisclosureAccepted: integer("safety_disclosure_accepted").default(0).notNull(), // 1 = accepted safety terms
   // Professional Response Fields
   hasResponse: integer("has_response").default(0).notNull(), // 1 = professional has responded
   responseCount: integer("response_count").default(0).notNull(), // Number of professional responses

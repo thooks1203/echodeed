@@ -1,9 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { SupportPost, InsertSupportPost } from '@shared/schema';
-import { Heart, AlertTriangle, Send, BookOpen, Users, Home, Brain, Shield, Search } from 'lucide-react';
+import { Heart, AlertTriangle, Send, BookOpen, Users, Home, Brain, Shield, Search, Lock, MessageSquare, Zap } from 'lucide-react';
 import { BackButton } from '@/components/BackButton';
+import { CrisisInterventionModal } from '@/components/CrisisInterventionModal';
+import { SafetyDisclosureModal } from '@/components/SafetyDisclosureModal';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { apiRequest } from '@/lib/queryClient';
 
 interface SupportCircleProps {
   onBack?: () => void;
@@ -21,6 +25,17 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
   );
   const [searchQuery, setSearchQuery] = useState(''); // Search input
   const [showSearchResults, setShowSearchResults] = useState(false);
+  
+  // Safety and Crisis Detection State
+  const [showSafetyDisclosure, setShowSafetyDisclosure] = useState(false);
+  const [showCrisisIntervention, setShowCrisisIntervention] = useState(false);
+  const [safetyAnalysis, setSafetyAnalysis] = useState<any>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [hasSafetyDisclosureAccepted, setHasSafetyDisclosureAccepted] = useState(() => 
+    typeof window !== 'undefined' ? localStorage.getItem('safety_disclosure_accepted') === 'true' : false
+  );
+  const [emergencyContact, setEmergencyContact] = useState<any>(null);
+  
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -92,6 +107,38 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
     },
   });
 
+  // Real-time safety analysis as user types
+  const analyzeContentSafety = useCallback(async (content: string) => {
+    if (!content.trim() || content.length < 10) {
+      setSafetyAnalysis(null);
+      return;
+    }
+    
+    setIsAnalyzing(true);
+    try {
+      const response = await apiRequest('/api/support-posts/analyze-safety', {
+        method: 'POST',
+        body: JSON.stringify({ content }),
+      });
+      setSafetyAnalysis(response);
+    } catch (error) {
+      console.error('Safety analysis failed:', error);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  }, []);
+
+  // Debounced safety analysis
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      if (newPost.trim()) {
+        analyzeContentSafety(newPost);
+      }
+    }, 1000);
+    
+    return () => clearTimeout(timeoutId);
+  }, [newPost, analyzeContentSafety]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newPost.trim()) return;
@@ -104,7 +151,24 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
       return;
     }
 
-    postMutation.mutate({
+    // Check if safety disclosure is required
+    if (!hasSafetyDisclosureAccepted) {
+      setShowSafetyDisclosure(true);
+      return;
+    }
+
+    // Handle crisis intervention if needed
+    if (safetyAnalysis && (safetyAnalysis.safetyLevel === 'Crisis' || safetyAnalysis.requiresIntervention)) {
+      setShowCrisisIntervention(true);
+      return;
+    }
+
+    // Proceed with posting
+    proceedWithPost();
+  };
+
+  const proceedWithPost = () => {
+    const postData: InsertSupportPost = {
       content: newPost.trim(),
       category: selectedCategory,
       schoolId: schoolId.trim(),
@@ -112,7 +176,79 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
       city: "", // Optional for now
       state: "",
       country: "US",
-    });
+      // Add emergency contact if crisis situation
+      ...(emergencyContact && {
+        emergencyContactName: emergencyContact.name,
+        emergencyContactPhone: emergencyContact.phone,
+        emergencyContactRelation: emergencyContact.relation,
+      }),
+      safetyDisclosureAccepted: hasSafetyDisclosureAccepted ? 1 : 0,
+    };
+
+    postMutation.mutate(postData);
+  };
+
+  const handleSafetyDisclosureAccept = () => {
+    setHasSafetyDisclosureAccepted(true);
+    localStorage.setItem('safety_disclosure_accepted', 'true');
+    setShowSafetyDisclosure(false);
+    
+    // If crisis intervention is needed, show that next
+    if (safetyAnalysis && (safetyAnalysis.safetyLevel === 'Crisis' || safetyAnalysis.requiresIntervention)) {
+      setShowCrisisIntervention(true);
+    } else {
+      // Otherwise, proceed with posting
+      proceedWithPost();
+    }
+  };
+
+  const handleEmergencyContactSubmit = (contact: any) => {
+    setEmergencyContact(contact);
+    setShowCrisisIntervention(false);
+    proceedWithPost();
+  };
+
+  const getSafetyIndicator = () => {
+    if (!safetyAnalysis) return null;
+    
+    switch (safetyAnalysis.safetyLevel) {
+      case 'Crisis':
+        return {
+          color: 'red',
+          icon: AlertTriangle,
+          message: 'Crisis detected - immediate help available',
+          bgColor: 'bg-red-50',
+          borderColor: 'border-red-200',
+          textColor: 'text-red-800'
+        };
+      case 'High_Risk':
+        return {
+          color: 'orange',
+          icon: Shield,
+          message: 'High risk content - support resources available',
+          bgColor: 'bg-orange-50',
+          borderColor: 'border-orange-200',
+          textColor: 'text-orange-800'
+        };
+      case 'Sensitive':
+        return {
+          color: 'yellow',
+          icon: Heart,
+          message: 'Sensitive content - wellness resources included',
+          bgColor: 'bg-yellow-50',
+          borderColor: 'border-yellow-200',
+          textColor: 'text-yellow-800'
+        };
+      default:
+        return {
+          color: 'green',
+          icon: Heart,
+          message: 'Content reviewed - ready to share',
+          bgColor: 'bg-green-50',
+          borderColor: 'border-green-200',
+          textColor: 'text-green-800'
+        };
+    }
   };
 
   const getCategoryIcon = (category: string) => {
@@ -315,23 +451,60 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
                   </div>
                 </div>
 
-                {/* Message Input */}
+                {/* Message Input with Real-time Safety Analysis */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
                     What's been challenging you? (Anonymous)
                   </label>
-                  <textarea
-                    value={newPost}
-                    onChange={(e) => setNewPost(e.target.value)}
-                    placeholder="Share what's on your mind... Remember, this is anonymous and only school counselors will see it."
-                    className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-                    rows={4}
-                    maxLength={500}
-                    data-testid="textarea-support-post"
-                  />
-                  <div className="text-right text-sm text-gray-400 mt-1">
-                    {newPost.length}/500
+                  <div className="relative">
+                    <textarea
+                      value={newPost}
+                      onChange={(e) => setNewPost(e.target.value)}
+                      placeholder="Share what's on your mind... Remember, this is anonymous and only school counselors will see it."
+                      className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                      rows={4}
+                      maxLength={500}
+                      data-testid="textarea-support-post"
+                    />
+                    {isAnalyzing && (
+                      <div className="absolute top-2 right-2 flex items-center gap-1 text-xs text-gray-500">
+                        <Zap className="w-3 h-3 animate-pulse" />
+                        Analyzing...
+                      </div>
+                    )}
                   </div>
+                  
+                  {/* Character count and safety indicator */}
+                  <div className="flex justify-between items-center mt-1">
+                    <div className="text-sm text-gray-400">
+                      {newPost.length}/500
+                    </div>
+                    {!hasSafetyDisclosureAccepted && newPost.trim() && (
+                      <div className="flex items-center gap-1 text-xs text-blue-600">
+                        <Lock className="w-3 h-3" />
+                        Safety review required
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Real-time Safety Analysis Display */}
+                  {safetyAnalysis && getSafetyIndicator() && (() => {
+                    const indicator = getSafetyIndicator();
+                    const IconComponent = indicator?.icon;
+                    return (
+                      <Alert className={`mt-3 ${indicator?.bgColor} ${indicator?.borderColor}`}>
+                        {IconComponent && <IconComponent className={`h-4 w-4 text-${indicator?.color}-600`} />}
+                        <AlertDescription className={indicator?.textColor}>
+                          <strong>Safety Check:</strong> {indicator?.message}
+                          {safetyAnalysis.safetyLevel === 'Crisis' && (
+                            <div className="mt-2">
+                              <span className="font-medium">Immediate help is available. You don't have to face this alone.</span>
+                            </div>
+                          )}
+                        </AlertDescription>
+                      </Alert>
+                    );
+                  })()}
                 </div>
 
                 <button
@@ -442,6 +615,23 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
           </>
         )}
       </div>
+
+      {/* Safety Disclosure Modal */}
+      <SafetyDisclosureModal
+        isOpen={showSafetyDisclosure}
+        onAccept={handleSafetyDisclosureAccept}
+        onDecline={() => setShowSafetyDisclosure(false)}
+      />
+
+      {/* Crisis Intervention Modal */}
+      <CrisisInterventionModal
+        isOpen={showCrisisIntervention}
+        onClose={() => setShowCrisisIntervention(false)}
+        safetyLevel={safetyAnalysis?.safetyLevel || 'Safe'}
+        emergencyResources={safetyAnalysis?.emergencyResources || []}
+        showEmergencyContactForm={safetyAnalysis?.safetyLevel === 'Crisis'}
+        onEmergencyContactSubmit={handleEmergencyContactSubmit}
+      />
     </div>
   );
 }
