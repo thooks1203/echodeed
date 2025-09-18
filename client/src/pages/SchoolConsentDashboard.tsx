@@ -251,7 +251,7 @@ export default function SchoolConsentDashboard() {
 
   const { data: studentsList, isLoading: studentsLoading } = useQuery({
     queryKey: [studentsQueryUrl],
-    enabled: !!schoolId // DEMO FIX: Always load for BCA demo
+    enabled: !!schoolId && (selectedTab === 'students' || selectedTab === 'overview') // Load for students tab and overview
   });
 
   // Expiring consents query
@@ -271,7 +271,7 @@ export default function SchoolConsentDashboard() {
 
   const { data: renewalsData, isLoading: renewalsLoading, refetch: refetchRenewals } = useQuery({
     queryKey: [renewalsQueryUrl],
-    enabled: !!schoolId // DEMO FIX: Always load for BCA demo
+    enabled: !!schoolId && (selectedTab === 'renewals' || selectedTab === 'overview') // Load for renewals tab and overview
   });
 
   // Student audit query
@@ -455,6 +455,7 @@ export default function SchoolConsentDashboard() {
   // 👥 STUDENTS TAB COMPONENT
   const StudentsTab = () => {
     const students = studentsLoading ? null : (studentsList as ConsentListResponse);
+    
 
     const handleSearch = (query: string) => {
       setSearchQuery(query);
@@ -472,6 +473,22 @@ export default function SchoolConsentDashboard() {
 
     return (
       <div className="space-y-6" data-testid="students-tab">
+        {/* 🔧 DEBUG INFO */}
+        {process.env.NODE_ENV === 'development' && (
+          <Card className="bg-yellow-50 border-yellow-200">
+            <CardContent className="pt-4">
+              <div className="text-xs font-mono space-y-1">
+                <div>Loading: {studentsLoading ? 'YES' : 'NO'}</div>
+                <div>Data exists: {studentsList ? 'YES' : 'NO'}</div>
+                <div>Students count: {students?.consents?.length || 0}</div>
+                <div>Total: {students?.total || 0}</div>
+                <div>Query URL: {studentsQueryUrl}</div>
+                <div>Selected Tab: {selectedTab}</div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        
         {/* Filters */}
         <Card>
           <CardHeader>
@@ -895,6 +912,7 @@ export default function SchoolConsentDashboard() {
   const RenewalsTab = () => {
     const renewalsResponse = renewalsLoading ? null : (renewalsData as RenewalListResponse);
     const metrics = renewalsResponse?.metrics;
+    
 
     // 📤 RESEND RENEWAL REMINDER MUTATION
     const resendReminderMutation = useMutation({
@@ -969,6 +987,23 @@ export default function SchoolConsentDashboard() {
 
     return (
       <div className="space-y-6" data-testid="renewals-tab">
+        {/* 🔧 DEBUG INFO */}
+        {process.env.NODE_ENV === 'development' && (
+          <Card className="bg-blue-50 border-blue-200">
+            <CardContent className="pt-4">
+              <div className="text-xs font-mono space-y-1">
+                <div>Loading: {renewalsLoading ? 'YES' : 'NO'}</div>
+                <div>Data exists: {renewalsData ? 'YES' : 'NO'}</div>
+                <div>Renewals count: {renewalsResponse?.renewals?.length || 0}</div>
+                <div>Total: {renewalsResponse?.total || 0}</div>
+                <div>Query URL: {renewalsQueryUrl}</div>
+                <div>Selected Tab: {selectedTab}</div>
+                <div>Metrics: {metrics ? JSON.stringify(metrics) : 'NONE'}</div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+        
         {/* 📊 RENEWAL METRICS KPI CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           <Card data-testid="card-total-renewals">
