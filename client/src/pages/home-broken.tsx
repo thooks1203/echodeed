@@ -669,7 +669,7 @@ export default function Home() {
           onBack={canGoBackInTabs ? goBackInTabs : undefined}
           showBackButton={canGoBackInTabs}
         />
-        <SupportCircle />
+        <SupportCircle onBack={canGoBackInTabs ? goBackInTabs : undefined} />
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );

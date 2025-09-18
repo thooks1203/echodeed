@@ -5,7 +5,11 @@ import { SupportPost, InsertSupportPost } from '@shared/schema';
 import { Heart, AlertTriangle, Send, BookOpen, Users, Home, Brain, Shield, Search } from 'lucide-react';
 import { BackButton } from '@/components/BackButton';
 
-export function SupportCircle() {
+interface SupportCircleProps {
+  onBack?: () => void;
+}
+
+export function SupportCircle({ onBack }: SupportCircleProps = {}) {
   const [newPost, setNewPost] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('emotional');
   // Load school connection from localStorage on component mount
@@ -149,11 +153,13 @@ export function SupportCircle() {
         {/* Header with Back Button */}
         <div className="text-center mb-6 relative">
           <div className="absolute left-0 top-0">
-            <BackButton 
-              onClick={() => window.location.href = '/'}
-              variant="minimal"
-              style={{ color: '#6b7280' }}
-            />
+            {onBack && (
+              <BackButton 
+                onClick={onBack}
+                variant="minimal"
+                style={{ color: '#6b7280' }}
+              />
+            )}
           </div>
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
