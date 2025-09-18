@@ -7,16 +7,19 @@
 > "Good [morning/afternoon], George. Thank you for taking the time to explore how EchoDeed can serve Burlington Christian Academy's mission of developing character and kindness in your middle school students."
 
 ### What is EchoDeed? (2 minutes)
-> "Before I show you what we've built for BCA specifically, let me explain what EchoDeed is and why it exists."
+> "Before I show you what we've built for BCA specifically, let me explain what EchoDeed is and why the world needs it now more than ever."
 
-**The Problem We Solve:**
-> "COPPA laws prevent children under 13 from participating in most digital platforms. This means K-8 schools can't use standard social platforms, learning apps, or character development tools without complex legal hurdles."
+**The Reality Children Face Today:**
+> "George, we both know that kids today are dealing with tremendous challenges through social media - cyberbullying, negative peer pressure, anxiety, and constant comparison. The world needs more kindness, and who better to lead that change than children? They are our future."
+
+**Our Mission:**
+> "EchoDeed exists to give children a positive alternative - a platform that encourages them to think differently and act with kindness. Instead of consuming negativity, they're creating ripples of good in their communities."
 
 **What EchoDeed Is:**
-> "EchoDeed is the world's first comprehensive K-8 kindness and character education platform that's fully COPPA compliant from day one. We handle all the legal complexity so schools can focus on character development."
+> "EchoDeed is the world's first comprehensive K-8 kindness and character education platform. We've spent 2+ years solving the legal challenges that prevent other platforms from serving young children, so schools like BCA can focus on what matters most - developing character and spreading kindness."
 
-**Why This Matters:**
-> "For the past 2+ years, we've solved the legal and technical challenges that prevent other platforms from serving K-8 students. The result is a platform that combines character education, family engagement, and community connection—all while ensuring complete legal compliance."
+**Why This Matters for BCA:**
+> "This isn't just another app - it's a movement to reshape how children interact with digital platforms, turning technology into a force for good that aligns perfectly with BCA's Christian values and character development mission."
 
 ### Your BCA-Specific Solution
 > "What you're about to see is this platform specifically configured for BCA's 360 middle school students across grades 6-8. We're not showing you a generic demo—this is your school, with your local Burlington community partners, designed around Christian values and educational excellence."
