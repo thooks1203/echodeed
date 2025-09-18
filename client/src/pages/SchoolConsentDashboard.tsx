@@ -251,7 +251,7 @@ export default function SchoolConsentDashboard() {
 
   const { data: studentsList, isLoading: studentsLoading } = useQuery({
     queryKey: [studentsQueryUrl],
-    enabled: !!schoolId && selectedTab === 'students'
+    enabled: !!schoolId // DEMO FIX: Always load for BCA demo
   });
 
   // Expiring consents query
@@ -271,7 +271,7 @@ export default function SchoolConsentDashboard() {
 
   const { data: renewalsData, isLoading: renewalsLoading, refetch: refetchRenewals } = useQuery({
     queryKey: [renewalsQueryUrl],
-    enabled: !!schoolId && selectedTab === 'renewals'
+    enabled: !!schoolId // DEMO FIX: Always load for BCA demo
   });
 
   // Student audit query
