@@ -127,14 +127,24 @@ const requireTeacherRole = async (req: any, res: any, next: any) => {
 const requireSchoolAccess = async (req: any, res: any, next: any) => {
   try {
     // Development bypass - allow access with mock school data
-    if (process.env.NODE_ENV === 'development' && req.headers['x-session-id']) {
-      req.userSchools = [{
-        schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // GRAHAM MIDDLE SCHOOL
-        schoolName: 'Graham Middle School',
-        role: 'admin'
-      }];
-      req.primarySchoolId = 'bc016cad-fa89-44fb-aab0-76f82c574f78';
-      return next();
+    if (process.env.NODE_ENV === 'development') {
+      const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
+      console.log('🔧 DEBUG requireSchoolAccess:', { 
+        nodeEnv: process.env.NODE_ENV, 
+        sessionId,
+        allHeaders: Object.keys(req.headers)
+      });
+      
+      if (sessionId) {
+        console.log('✅ DEVELOPMENT BYPASS: Granting school access');
+        req.userSchools = [{
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // GRAHAM MIDDLE SCHOOL
+          schoolName: 'Graham Middle School',
+          role: 'admin'
+        }];
+        req.primarySchoolId = 'bc016cad-fa89-44fb-aab0-76f82c574f78';
+        return next();
+      }
     }
 
     if (!req.user?.claims?.sub) {
@@ -171,10 +181,18 @@ const requireSpecificSchoolAccess = (schoolIdParam: string = 'schoolId') => {
   return async (req: any, res: any, next: any) => {
     try {
       // Development bypass - allow access to Graham Middle School
-      if (process.env.NODE_ENV === 'development' && req.headers['x-session-id']) {
+      if (process.env.NODE_ENV === 'development') {
+        const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
         const requestedSchoolId = req.params[schoolIdParam];
-        // Allow access to Graham Middle School in development
-        if (requestedSchoolId === 'bc016cad-fa89-44fb-aab0-76f82c574f78') {
+        console.log('🔧 DEBUG requireSpecificSchoolAccess:', { 
+          nodeEnv: process.env.NODE_ENV, 
+          sessionId,
+          requestedSchoolId,
+          schoolIdParam
+        });
+        
+        if (sessionId && requestedSchoolId === 'bc016cad-fa89-44fb-aab0-76f82c574f78') {
+          console.log('✅ DEVELOPMENT BYPASS: Granting specific school access');
           return next();
         }
       }

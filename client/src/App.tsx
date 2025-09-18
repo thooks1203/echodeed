@@ -33,6 +33,7 @@ function Router() {
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/admin-dashboard" component={AdminDashboard} />
         <Route path="/admin/consents" component={SchoolConsentDashboard} />
+        <Route path="/school-consent" component={SchoolConsentDashboard} />
         <Route path="/parent" component={ParentDashboard} />
         <Route path="/parent-dashboard" component={ParentDashboard} />
         <Route path="/rewards" component={RewardsPage} />
