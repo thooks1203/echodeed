@@ -23,6 +23,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
 
   const adminTabs = [
     { id: 'schools', label: 'Schools', icon: '🏫' },
+    { id: 'sponsors', label: 'Sponsors', icon: '🤝' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
   ];

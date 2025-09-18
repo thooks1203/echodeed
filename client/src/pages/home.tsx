@@ -24,6 +24,7 @@ import { canAccessSchoolsDashboard } from '@/lib/roleUtils';
 import { StudentDashboard } from '@/components/StudentDashboard';
 import { RoleSwitcherDemo } from '@/components/RoleSwicherDemo';
 import MentorDashboard from '@/pages/MentorDashboard';
+import { SponsorsPage } from '@/components/SponsorsPage';
 
 interface RewardOffer {
   id: string;
@@ -205,6 +206,15 @@ export default function Home() {
     return (
       <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
         <MentorDashboard />
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
+    );
+  }
+
+  if (activeTab === 'sponsors') {
+    return (
+      <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+        <SponsorsPage />
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
