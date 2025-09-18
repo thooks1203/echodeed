@@ -48,19 +48,39 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
     <div style={{ padding: '20px', minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '24px', position: 'relative' }}>
-        {/* Back Button */}
+        {/* Back Button - Prominent and Colorful */}
         <div style={{ position: 'absolute', left: 0, top: 0 }}>
-          <BackButton 
+          <button
             onClick={() => onNavigateToTab ? onNavigateToTab('feed') : window.location.href = '/'}
-            label="Feed"
-            variant="minimal"
             style={{
-              color: '#6B7280',
-              fontSize: '12px',
-              padding: '4px 8px',
-              borderRadius: '6px'
+              background: 'linear-gradient(135deg, #10B981, #06B6D4)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '8px 16px',
+              fontSize: '14px',
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
+              transition: 'all 0.3s ease',
+              textShadow: '0 1px 2px rgba(0,0,0,0.2)'
             }}
-          />
+            onMouseEnter={(e) => {
+              (e.target as HTMLElement).style.transform = 'translateY(-1px)';
+              (e.target as HTMLElement).style.boxShadow = '0 6px 16px rgba(16, 185, 129, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              (e.target as HTMLElement).style.transform = 'translateY(0)';
+              (e.target as HTMLElement).style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.3)';
+            }}
+            data-testid="button-back-to-feed"
+          >
+            <span style={{ fontSize: '16px' }}>←</span>
+            <span>Feed</span>
+          </button>
         </div>
         
         <div style={{ 
