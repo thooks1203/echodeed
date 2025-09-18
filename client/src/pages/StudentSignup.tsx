@@ -16,6 +16,7 @@ import { useSchoolRole } from "@/lib/roleUtils";
 
 const studentSignupSchema = z.object({
   firstName: z.string().min(1, "First name is required").max(50, "Name too long"),
+  lastName: z.string().min(1, "Last name is required").max(50, "Name too long"),
   grade: z.string().min(1, "Please select your grade"),
   birthYear: z.coerce.number()
     .min(2005, "Please enter a valid birth year") 
@@ -48,6 +49,7 @@ export default function StudentSignup() {
     resolver: zodResolver(studentSignupSchema),
     defaultValues: {
       firstName: "",
+      lastName: "",
       grade: "",
       birthYear: new Date().getFullYear() - 10, // Default to ~10 years old
       schoolId: "",
@@ -252,29 +254,47 @@ export default function StudentSignup() {
 
                   <FormField
                     control={form.control}
-                    name="grade"
+                    name="lastName"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Grade *</FormLabel>
-                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                          <FormControl>
-                            <SelectTrigger data-testid="select-grade">
-                              <SelectValue placeholder="Select your grade" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {gradeOptions.map((grade) => (
-                              <SelectItem key={grade.value} value={grade.value}>
-                                {grade.label}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <FormLabel>Last Name *</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Enter your last name" 
+                            {...field} 
+                            data-testid="input-last-name"
+                          />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
                 </div>
+
+                <FormField
+                  control={form.control}
+                  name="grade"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Grade *</FormLabel>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                        <FormControl>
+                          <SelectTrigger data-testid="select-grade">
+                            <SelectValue placeholder="Select your grade" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          {gradeOptions.map((grade) => (
+                            <SelectItem key={grade.value} value={grade.value}>
+                              {grade.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
                 <FormField
                   control={form.control}

@@ -795,6 +795,7 @@ export const studentAccounts = pgTable("student_accounts", {
   schoolId: varchar("school_id").notNull(), // School restriction for safety
   // COPPA-compliant minimal data collection
   firstName: varchar("first_name", { length: 50 }).notNull(),
+  lastName: varchar("last_name", { length: 50 }).notNull(),
   grade: varchar("grade", { length: 5 }).notNull(), // K, 1, 2, 3, 4, 5, 6, 7, 8
   birthYear: integer("birth_year").notNull(), // For age verification, not birth date
   // Parental consent tracking
