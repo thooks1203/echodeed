@@ -48,8 +48,8 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
     <div style={{ padding: '20px', minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '24px', position: 'relative' }}>
-        {/* Back Button - Prominent and Colorful */}
-        <div style={{ position: 'absolute', left: 0, top: 0 }}>
+        {/* Big Prominent HOME Button */}
+        <div style={{ position: 'absolute', left: 0, top: 0, display: 'flex', gap: '8px' }}>
           <button
             onClick={() => onNavigateToTab ? onNavigateToTab('feed') : window.location.href = '/'}
             style={{
@@ -57,12 +57,12 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
               color: 'white',
               border: 'none',
               borderRadius: '12px',
-              padding: '8px 16px',
-              fontSize: '14px',
+              padding: '10px 20px',
+              fontSize: '16px',
               fontWeight: '700',
               display: 'flex',
               alignItems: 'center',
-              gap: '6px',
+              gap: '8px',
               cursor: 'pointer',
               boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
               transition: 'all 0.3s ease',
@@ -78,8 +78,8 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
             }}
             data-testid="button-back-to-feed"
           >
-            <span style={{ fontSize: '16px' }}>←</span>
-            <span>Feed</span>
+            <span style={{ fontSize: '20px' }}>🏠</span>
+            <span>HOME</span>
           </button>
         </div>
         
