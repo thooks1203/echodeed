@@ -663,7 +663,7 @@ export default function Home() {
         minHeight: '100vh',
         position: 'relative'
       }}>
-        <SupportCircle onBack={canGoBackInTabs ? goBackInTabs : undefined} />
+        <SupportCircle onBack={() => setActiveTab('feed')} />
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
