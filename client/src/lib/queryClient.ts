@@ -33,6 +33,7 @@ export const getQueryFn: <T>(options: {
     const res = await fetch(queryKey.join("/") as string, {
       headers: addSessionHeaders(),
       credentials: "include",
+      cache: 'no-store' // Prevent 304 responses that cause blank screens
     });
 
     if (unauthorizedBehavior === "returnNull" && res.status === 401) {
