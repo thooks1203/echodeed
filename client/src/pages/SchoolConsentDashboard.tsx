@@ -250,7 +250,19 @@ export default function SchoolConsentDashboard() {
 
   // 🔄 RENEWALS DATA FETCHING
   const { data: renewalsData, isLoading: renewalsLoading, refetch: refetchRenewals } = useQuery({
-    queryKey: ['/api/schools', schoolId, 'consents', 'renewals', renewalFilters],
+    queryKey: [
+      '/api/schools', 
+      schoolId, 
+      'consents', 
+      'renewals',
+      {
+        status: renewalFilters.status,
+        grade: renewalFilters.grade,
+        query: renewalFilters.query,
+        page: renewalFilters.page,
+        pageSize: renewalFilters.pageSize
+      }
+    ],
     enabled: !!schoolId && selectedTab === 'renewals'
   });
 
