@@ -129,7 +129,8 @@ export default function Home() {
   };
 
   const handleBackToDashboard = () => {
-    navigate('/');
+    // Navigate to the main dashboard (schools tab)
+    setActiveTab('schools');
   };
 
   const navigateToTab = (tab: string) => {
@@ -523,7 +524,8 @@ export default function Home() {
       <AppHeader 
         counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} 
         isPulse={counterPulse} 
-        showBackButton={false}
+        showBackButton={true}
+        onBack={handleBackToDashboard}
       />
       
       <div style={{ paddingBottom: '100px' }}>
