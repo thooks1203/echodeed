@@ -53,13 +53,13 @@ const sponsors: Sponsor[] = [
   },
   {
     id: '3',
-    name: 'Alamance County Libraries',
-    logo: '📚',
-    tier: 'silver',
-    monthlyInvestment: 3000,
-    description: 'Fostering literacy and learning opportunities for all ages.',
-    specialOffers: ['Book fair discounts', 'Free workshop access', 'Reading rewards'],
-    studentReach: 600,
+    name: 'Putt-Putt Fun Center Burlington',
+    logo: '⛳',
+    tier: 'gold',
+    monthlyInvestment: 4500,
+    description: 'Burlington\'s premier mini golf destination with arcade games and family fun.',
+    specialOffers: ['Free game tokens', 'Birthday party discounts', 'Family fun pack deals'],
+    studentReach: 750,
     partnerSince: '2024'
   },
   {
@@ -71,6 +71,17 @@ const sponsors: Sponsor[] = [
     description: 'Nourishing bodies and supporting education in our community.',
     specialOffers: ['Free meals for achievements', 'Family night discounts', 'Fundraising support'],
     studentReach: 900,
+    partnerSince: '2024'
+  },
+  {
+    id: '5',
+    name: 'Buffalo Wild Wings Burlington',
+    logo: '🔥',
+    tier: 'gold',
+    monthlyInvestment: 5500,
+    description: 'Wings, sports, and family dining with an energetic atmosphere middle schoolers love.',
+    specialOffers: ['Team celebration meals', 'Family game day specials', 'Student achievement rewards'],
+    studentReach: 850,
     partnerSince: '2024'
   }
 ];
