@@ -263,13 +263,11 @@ export default function SchoolConsentDashboard() {
       schoolId, 
       'consents', 
       'renewals',
-      {
-        status: renewalFilters.status,
-        grade: renewalFilters.grade,
-        query: renewalFilters.query,
-        page: renewalFilters.page,
-        pageSize: renewalFilters.pageSize
-      }
+      renewalFilters.status,
+      renewalFilters.grade,
+      renewalFilters.query,
+      renewalFilters.page,
+      renewalFilters.pageSize
     ],
     enabled: !!schoolId && selectedTab === 'renewals'
   });
