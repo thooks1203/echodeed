@@ -108,30 +108,17 @@ export function SponsorsPage() {
           </p>
         </div>
 
-        {/* Revenue & Impact Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Family Benefits Overview */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-green-600">Monthly Revenue</p>
-                  <p className="text-3xl font-bold text-green-700">${totalRevenue.toLocaleString()}</p>
-                  <p className="text-sm text-green-600">From {sponsors.length} sponsors</p>
+                  <p className="text-sm font-medium text-green-600">Local Sponsors</p>
+                  <p className="text-3xl font-bold text-green-700">{sponsors.length}</p>
+                  <p className="text-sm text-green-600">Burlington area partners</p>
                 </div>
-                <DollarSign className="h-12 w-12 text-green-500" />
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-blue-200">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-blue-600">Student Reach</p>
-                  <p className="text-3xl font-bold text-blue-700">{totalStudentReach.toLocaleString()}</p>
-                  <p className="text-sm text-blue-600">Students impacted</p>
-                </div>
-                <Users className="h-12 w-12 text-blue-500" />
+                <Building2 className="h-12 w-12 text-green-500" />
               </div>
             </CardContent>
           </Card>
@@ -140,11 +127,11 @@ export function SponsorsPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-purple-600">Platform Growth</p>
-                  <p className="text-3xl font-bold text-purple-700">+45%</p>
-                  <p className="text-sm text-purple-600">This semester</p>
+                  <p className="text-sm font-medium text-purple-600">Family Benefits</p>
+                  <p className="text-3xl font-bold text-purple-700">FREE</p>
+                  <p className="text-sm text-purple-600">Discounts & offers</p>
                 </div>
-                <TrendingUp className="h-12 w-12 text-purple-500" />
+                <Gift className="h-12 w-12 text-purple-500" />
               </div>
             </CardContent>
           </Card>
@@ -218,15 +205,9 @@ export function SponsorsPage() {
               <CardContent className="space-y-4">
                 <p className="text-gray-600">{sponsor.description}</p>
                 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="text-center p-3 bg-blue-50 rounded-lg">
-                    <p className="text-2xl font-bold text-blue-600">${sponsor.monthlyInvestment.toLocaleString()}</p>
-                    <p className="text-sm text-blue-700">Monthly Investment</p>
-                  </div>
-                  <div className="text-center p-3 bg-purple-50 rounded-lg">
-                    <p className="text-2xl font-bold text-purple-600">{sponsor.studentReach}</p>
-                    <p className="text-sm text-purple-700">Students Reached</p>
-                  </div>
+                <div className="text-center p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+                  <p className="text-2xl font-bold text-blue-600">{sponsor.studentReach}+</p>
+                  <p className="text-sm text-blue-700">Burlington families served</p>
                 </div>
 
                 <div>
@@ -253,30 +234,33 @@ export function SponsorsPage() {
           ))}
         </div>
 
-        {/* Revenue Transparency */}
-        <Card className="bg-gradient-to-r from-gray-50 to-slate-50">
+        {/* How to Get Benefits */}
+        <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <CheckCircle className="w-5 h-5 text-green-500" />
-              Revenue Transparency
+              <Gift className="w-5 h-5 text-blue-500" />
+              🎯 How to Access Sponsor Benefits
             </CardTitle>
             <CardDescription>
-              How sponsor funding enables free access to EchoDeed for all students
+              Three easy ways to enjoy exclusive offers from our Burlington community sponsors
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid md:grid-cols-3 gap-4">
               <div className="text-center p-4 bg-white rounded-lg border">
-                <p className="text-2xl font-bold text-green-600">75%</p>
-                <p className="text-sm text-gray-600">Platform Development</p>
+                <Mail className="w-8 h-8 mx-auto mb-2 text-blue-500" />
+                <p className="font-semibold text-gray-900">Email Alerts</p>
+                <p className="text-sm text-gray-600">Automatic notifications for special offers</p>
               </div>
               <div className="text-center p-4 bg-white rounded-lg border">
-                <p className="text-2xl font-bold text-blue-600">15%</p>
-                <p className="text-sm text-gray-600">Content Creation</p>
+                <MessageSquare className="w-8 h-8 mx-auto mb-2 text-green-500" />
+                <p className="font-semibold text-gray-900">SMS Offers</p>
+                <p className="text-sm text-gray-600">Flash deals sent directly to your phone</p>
               </div>
               <div className="text-center p-4 bg-white rounded-lg border">
-                <p className="text-2xl font-bold text-purple-600">10%</p>
-                <p className="text-sm text-gray-600">Community Support</p>
+                <Heart className="w-8 h-8 mx-auto mb-2 text-pink-500" />
+                <p className="font-semibold text-gray-900">Thank Sponsors</p>
+                <p className="text-sm text-gray-600">Show appreciation and strengthen partnerships</p>
               </div>
             </div>
           </CardContent>
