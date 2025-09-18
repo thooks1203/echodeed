@@ -234,19 +234,16 @@ export default function SchoolConsentDashboard() {
   });
 
   // Students list query with filters
+  const studentsQueryUrl = `/api/schools/${schoolId}/consents?` + new URLSearchParams({
+    status: statusFilter || '',
+    grade: gradeFilter || '',
+    query: searchQuery || '',
+    page: studentsPage.toString(),
+    pageSize: studentsPageSize.toString()
+  }).toString();
+
   const { data: studentsList, isLoading: studentsLoading } = useQuery({
-    queryKey: [
-      '/api/schools', 
-      schoolId, 
-      'consents', 
-      { 
-        status: statusFilter, 
-        grade: gradeFilter, 
-        query: searchQuery, 
-        page: studentsPage, 
-        pageSize: studentsPageSize 
-      }
-    ],
+    queryKey: [studentsQueryUrl],
     enabled: !!schoolId && selectedTab === 'students'
   });
 
