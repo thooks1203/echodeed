@@ -663,12 +663,6 @@ export default function Home() {
         minHeight: '100vh',
         position: 'relative'
       }}>
-        <AppHeader 
-          counter={counter || { count: 0, id: 'global', updatedAt: new Date() }} 
-          isPulse={counterPulse}
-          onBack={canGoBackInTabs ? goBackInTabs : undefined}
-          showBackButton={canGoBackInTabs}
-        />
         <SupportCircle onBack={canGoBackInTabs ? goBackInTabs : undefined} />
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>

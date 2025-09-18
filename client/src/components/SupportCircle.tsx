@@ -9,7 +9,7 @@ interface SupportCircleProps {
   onBack?: () => void;
 }
 
-export function SupportCircle({ onBack }: SupportCircleProps = {}) {
+export function SupportCircle({ onBack }: SupportCircleProps) {
   const [newPost, setNewPost] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('emotional');
   // Load school connection from localStorage on component mount
