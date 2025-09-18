@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { School, GraduationCap, Users, MapPin, Mail, Phone } from "lucide-react";
+import { BackButton } from "@/components/BackButton";
 
 const schoolRegistrationSchema = z.object({
   schoolName: z.string().min(1, "School name is required"),
@@ -126,7 +127,21 @@ export function SchoolRegistration({ onSuccess }: SchoolRegistrationProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-cyan-50 dark:from-gray-900 dark:via-purple-900/20 dark:to-blue-900/20 flex items-center justify-center p-4">
       <Card className="w-full max-w-2xl shadow-2xl">
-        <CardHeader className="text-center space-y-4">
+        <CardHeader className="text-center space-y-4 relative">
+          {/* Back Button */}
+          <div className="absolute left-4 top-4">
+            <BackButton 
+              onClick={() => navigate('/')}
+              label="Dashboard"
+              variant="minimal"
+              style={{
+                color: '#6B7280',
+                fontSize: '12px',
+                padding: '4px 8px',
+                borderRadius: '6px'
+              }}
+            />
+          </div>
           <div className="flex justify-center">
             <div className="p-3 bg-gradient-to-br from-purple-500 to-blue-500 rounded-full">
               <School className="w-8 h-8 text-white" />
