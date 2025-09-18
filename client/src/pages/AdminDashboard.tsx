@@ -5,6 +5,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { useAuth, switchDemoRole, getDemoRoles } from '@/hooks/useAuth';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
@@ -30,7 +32,9 @@ import {
   MessageSquare,
   Clock,
   CheckCircle,
-  XCircle
+  XCircle,
+  User,
+  LogOut
 } from 'lucide-react';
 
 interface SchoolAdmin {
@@ -486,6 +490,8 @@ function SafetyMonitoringContent() {
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'schools' | 'analytics' | 'compliance' | 'safety' | 'integrations'>('overview');
   const [, navigate] = useLocation();
+  const { user } = useAuth();
+  const demoRoles = getDemoRoles();
   
   // Mock admin data (in production, get from auth context)
   const currentAdmin: SchoolAdmin = {
@@ -620,6 +626,55 @@ export default function AdminDashboard() {
             <Users className="w-4 h-4 mr-1" />
             {mockDistrictMetrics.totalStudents.toLocaleString()} Students
           </Badge>
+          
+          {/* User Menu */}
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" className="flex items-center gap-2" data-testid="user-menu">
+                <User className="w-4 h-4" />
+                {user?.name}
+                <span className="text-xs text-muted-foreground">({user?.schoolRole})</span>
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" className="w-64">
+              <DropdownMenuLabel>
+                <div className="flex flex-col space-y-1">
+                  <p className="text-sm font-medium">{user?.name}</p>
+                  <p className="text-xs text-muted-foreground">{user?.email}</p>
+                  <p className="text-xs font-medium text-blue-600">{user?.schoolRole?.toUpperCase()}</p>
+                </div>
+              </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">
+                Switch Demo User:
+              </DropdownMenuLabel>
+              {demoRoles.map((roleInfo) => (
+                <DropdownMenuItem
+                  key={roleInfo.role}
+                  onClick={() => switchDemoRole(roleInfo.role)}
+                  className={`cursor-pointer ${user?.schoolRole === roleInfo.role ? 'bg-muted' : ''}`}
+                  data-testid={`switch-to-${roleInfo.role}`}
+                >
+                  <div className="flex flex-col space-y-1">
+                    <span className="text-sm font-medium">{roleInfo.label}</span>
+                    <span className="text-xs text-muted-foreground">{roleInfo.description}</span>
+                  </div>
+                </DropdownMenuItem>
+              ))}
+              <DropdownMenuSeparator />
+              <DropdownMenuItem
+                onClick={() => {
+                  localStorage.removeItem('echodeed_demo_role');
+                  window.location.reload();
+                }}
+                className="text-red-600 cursor-pointer"
+                data-testid="sign-out"
+              >
+                <LogOut className="w-4 h-4 mr-2" />
+                Sign Out (Reset to Default)
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
 
