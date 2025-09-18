@@ -36,6 +36,7 @@ interface TrialResponse {
 export default function TrialSignup() {
   const [isSuccess, setIsSuccess] = useState(false);
   const [trialDetails, setTrialDetails] = useState<TrialResponse | null>(null);
+  const [formData, setFormData] = useState<TrialSignupForm | null>(null);
   const { toast } = useToast();
 
   const form = useForm<TrialSignupForm>({
@@ -85,6 +86,7 @@ export default function TrialSignup() {
   });
 
   const onSubmit = (data: TrialSignupForm) => {
+    setFormData(data); // Store form data for use in success screen
     trialMutation.mutate(data);
   };
 
@@ -124,22 +126,38 @@ export default function TrialSignup() {
               </div>
             </div>
             
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <h3 className="font-semibold text-blue-800 mb-2">Next Steps:</h3>
-              <ol className="list-decimal list-inside space-y-1 text-sm text-blue-700">
-                <li>Access your admin dashboard at <code>/admin-dashboard</code></li>
-                <li>Share the platform with your students and teachers</li>
-                <li>Monitor engagement metrics and student participation</li>
-                <li>Schedule a check-in call with our team in 2 weeks</li>
-              </ol>
+            <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+              <h3 className="font-semibold text-green-800 mb-3 flex items-center gap-2">
+                <CheckCircle2 className="w-5 h-5" />
+                Registration Complete - What's Next?
+              </h3>
+              <div className="space-y-3 text-sm text-green-700">
+                <div className="bg-white p-3 rounded border border-green-200">
+                  <p className="font-semibold text-green-800 mb-1">📧 Account Approval Process:</p>
+                  <p>Our team will review your registration and send login credentials to <strong>{formData?.adminEmail}</strong> within <strong>1-2 business days</strong>.</p>
+                </div>
+                <div className="bg-white p-3 rounded border border-green-200">
+                  <p className="font-semibold text-green-800 mb-1">🎯 Next Steps:</p>
+                  <ol className="list-decimal list-inside space-y-1 ml-2">
+                    <li>Watch for our approval email with login instructions</li>
+                    <li>Access your secure admin dashboard</li>
+                    <li>Set up teacher accounts and student claim codes</li>
+                    <li>Schedule a 15-minute onboarding call with our team</li>
+                  </ol>
+                </div>
+                <div className="bg-yellow-50 p-3 rounded border border-yellow-200">
+                  <p className="font-semibold text-yellow-800 mb-1">⚠️ Important:</p>
+                  <p className="text-yellow-700">Please allow students to register only AFTER you receive your approval email and set up claim codes.</p>
+                </div>
+              </div>
             </div>
 
             <div className="flex gap-2">
-              <Button className="flex-1" onClick={() => window.location.href = '/admin-dashboard'} data-testid="button-admin-dashboard">
-                Go to Admin Dashboard
+              <Button className="flex-1" onClick={() => window.location.href = '/'} data-testid="button-return-home">
+                Return to Homepage
               </Button>
-              <Button variant="outline" onClick={() => window.location.href = '/'} data-testid="button-home">
-                View Platform
+              <Button variant="outline" className="flex-1" onClick={() => window.open('mailto:support@echodeed.com?subject=Trial%20Registration%20-%20' + encodeURIComponent(formData?.schoolName || 'School'), '_blank')} data-testid="button-contact-support">
+                Contact Support
               </Button>
             </div>
           </CardContent>
