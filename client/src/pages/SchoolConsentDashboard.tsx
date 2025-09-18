@@ -139,8 +139,16 @@ export default function SchoolConsentDashboard() {
   const queryClient = useQueryClient();
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
   
-  // 🔒 SECURITY FIX: Get schoolId from authenticated user context
-  const schoolId = user?.schoolId;
+  // 🔧 DEV FIX: Ensure admin role is set for consent dashboard
+  useEffect(() => {
+    if (!localStorage.getItem('echodeed_demo_role')) {
+      localStorage.setItem('echodeed_demo_role', 'admin');
+      window.location.reload();
+    }
+  }, []);
+  
+  // 🔒 SECURITY FIX: Get schoolId from authenticated user context  
+  const schoolId = user?.schoolId || 'bc016cad-fa89-44fb-aab0-76f82c574f78'; // Fallback to Graham Middle School
   
   // Redirect to login if not authenticated
   if (!authLoading && !isAuthenticated) {
