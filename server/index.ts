@@ -63,8 +63,8 @@ async function processConsentReminders() {
                 const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
                 await emailService.sendConsentDenialConfirmation({
                   parentEmail: request.parentEmail,
-                  parentName: request.parentName,
-                  studentFirstName: request.studentFirstName,
+                  parentName: request.parentName || '',
+                  studentFirstName: request.studentFirstName || '',
                   schoolName: school.companyName || 'School',
                   deniedAt: new Date()
                 });
@@ -83,10 +83,10 @@ async function processConsentReminders() {
               const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
               const emailSent = await emailService.sendConsentReminderEmail({
                 parentEmail: request.parentEmail,
-                parentName: request.parentName,
-                studentFirstName: request.studentFirstName,
+                parentName: request.parentName || '',
+                studentFirstName: request.studentFirstName || '',
                 schoolName: school.companyName || 'School',
-                verificationCode: request.verificationCode,
+                verificationCode: request.verificationCode || '',
                 baseUrl: baseUrl,
                 reminderType: '7day',
                 daysSinceRequest: daysSinceRequest,
@@ -108,10 +108,10 @@ async function processConsentReminders() {
               const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
               const emailSent = await emailService.sendConsentReminderEmail({
                 parentEmail: request.parentEmail,
-                parentName: request.parentName,
-                studentFirstName: request.studentFirstName,
+                parentName: request.parentName || '',
+                studentFirstName: request.studentFirstName || '',
                 schoolName: school.companyName || 'School',
-                verificationCode: request.verificationCode,
+                verificationCode: request.verificationCode || '',
                 baseUrl: baseUrl,
                 reminderType: '3day',
                 daysSinceRequest: daysSinceRequest,
@@ -298,7 +298,13 @@ async function processConsentRenewals() {
             const daysUntilExpiry = renewal.daysUntilExpiry;
             
             // Check reminder metadata for 24h cooldown
-            const lastReminderData = renewal.signatureMetadata || {};
+            const lastReminderData = (renewal.signatureMetadata as Record<string, any>) || {
+              last_reminder_sent: null,
+              reminder_45_sent: false,
+              reminder_14_sent: false,
+              reminder_7_sent: false,
+              reminder_1_sent: false
+            };
             const lastReminderTime = lastReminderData.last_reminder_sent;
             const lastReminderDate = lastReminderTime ? new Date(lastReminderTime) : null;
             
@@ -335,9 +341,9 @@ async function processConsentRenewals() {
                 parentName: renewal.parentName,
                 studentFirstName: renewal.studentFirstName,
                 schoolName: school.companyName || 'School',
-                verificationCode: renewal.renewalVerificationCode,
+                verificationCode: renewal.renewalVerificationCode || '',
                 baseUrl: baseUrl,
-                reminderType: reminderType,
+                reminderType: reminderType as '45day' | '14day' | '7day' | '1day' | 'manual',
                 daysUntilExpiry: daysUntilExpiry,
                 expiryDate: schoolYearEnd
               });

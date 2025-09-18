@@ -207,7 +207,6 @@ import {
   type ParentalConsentRequest,
   type InsertParentalConsentRequest,
   // Enhanced COPPA consent types
-  parentalConsentRecords,
   type ParentalConsentRecord,
   type InsertParentalConsentRecord,
   type VerifyConsent,
@@ -3125,29 +3124,6 @@ export class DatabaseStorage implements IStorage {
     return updatedRequest;
   }
 
-  async linkStudentToParent(link: InsertStudentParentLink): Promise<StudentParentLink> {
-    const [newLink] = await db.insert(studentParentLinks).values(link).returning();
-    return newLink;
-  }
-
-  async getParentsForStudent(studentUserId: string): Promise<ParentAccount[]> {
-    return await db
-      .select({
-        id: parentAccounts.id,
-        email: parentAccounts.email,
-        firstName: parentAccounts.firstName,
-        lastName: parentAccounts.lastName,
-        phone: parentAccounts.phone,
-        relationshipToStudent: parentAccounts.relationshipToStudent,
-        isVerified: parentAccounts.isVerified,
-        preferredContactMethod: parentAccounts.preferredContactMethod,
-        timezone: parentAccounts.timezone,
-        createdAt: parentAccounts.createdAt,
-      })
-      .from(studentParentLinks)
-      .innerJoin(parentAccounts, eq(studentParentLinks.parentAccountId, parentAccounts.id))
-      .where(eq(studentParentLinks.studentUserId, studentUserId));
-  }
 
   // 🔄 WORKFLOW ORCHESTRATION METHODS - For seamless integration
   async upsertStudentAccount(student: InsertStudentAccount | Partial<StudentAccount>): Promise<StudentAccount> {
@@ -3181,12 +3157,10 @@ export class DatabaseStorage implements IStorage {
 
     // Create new parent account
     const parentData: InsertParentAccount = {
-      email: parentEmail,
-      firstName: parentName.split(' ')[0] || parentName,
-      lastName: parentName.split(' ').slice(1).join(' ') || '',
-      relationshipToStudent: 'parent',
+      parentEmail: parentEmail,
+      parentName: parentName,
       isVerified: 0,
-      preferredContactMethod: 'email'
+      preferredContact: 'email'
     };
 
     return await this.createParentAccount(parentData);
@@ -5886,6 +5860,7 @@ export class DatabaseStorage implements IStorage {
         userId: newUser.id,
         schoolId: claimCode.schoolId,
         firstName: claimCodeData.studentFirstName,
+        lastName: claimCodeData.studentLastName,
         grade: claimCode.gradeLevel,
         birthYear: claimCodeData.studentBirthYear,
         parentNotificationEmail: claimCodeData.parentEmail,

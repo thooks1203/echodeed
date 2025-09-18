@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
+import { getBCASchoolId } from '@shared/demoConfig';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -148,7 +149,7 @@ export default function SchoolConsentDashboard() {
   }, []);
   
   // 🔒 SECURITY FIX: Get schoolId from authenticated user context  
-  const schoolId = user?.schoolId || 'bc016cad-fa89-44fb-aab0-76f82c574f78'; // Fallback to Burlington Christian Academy
+  const schoolId = user?.schoolId || getBCASchoolId(); // Fallback to Burlington Christian Academy from demo config
   
   // Redirect to login if not authenticated
   if (!authLoading && !isAuthenticated) {

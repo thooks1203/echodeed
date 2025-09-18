@@ -1,4 +1,5 @@
 import nodemailer from 'nodemailer';
+import { DEMO_MODE, BCA_EMAIL_CONFIG } from '@shared/demoConfig';
 
 interface ConsentEmailData {
   parentEmail: string;
@@ -100,10 +101,10 @@ class NodemailerEmailService implements EmailService {
   }
 
   private initializeTransporter() {
-    // For development, we'll use a test account or log-only mode
-    if (process.env.NODE_ENV === 'development') {
-      // In development, we'll just log the emails instead of sending them
-      console.log('📧 Email service initialized in development mode (logging only)');
+    // For development and demo mode, we'll use a test account or log-only mode
+    if (process.env.NODE_ENV === 'development' || DEMO_MODE.enabled) {
+      // In development and demo mode, we'll just log the emails instead of sending them
+      console.log('📧 Email service initialized in demo mode (logging only)');
       this.transporter = null;
     } else {
       // In production, configure with real SMTP settings
@@ -142,9 +143,9 @@ class NodemailerEmailService implements EmailService {
     });
 
     const mailOptions = {
-      from: process.env.SMTP_FROM || 'EchoDeed <noreply@echodeed.com>',
+      from: BCA_EMAIL_CONFIG.fromEmail || process.env.SMTP_FROM || 'EchoDeed <noreply@echodeed.com>',
       to: parentEmail,
-      subject: `🔐 Parental Consent Required - ${studentFirstName}'s EchoDeed Account`,
+      subject: BCA_EMAIL_CONFIG.templates.consentRequest.subject.replace('{studentName}', studentFirstName),
       text: textContent,
       html: htmlContent
     };
