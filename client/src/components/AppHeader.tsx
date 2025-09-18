@@ -57,12 +57,12 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
           </div>
           
           <div className="relative z-10">
-            <p className="text-white/90 text-sm font-bold mb-1 animate-fade-in tracking-wide">
+            <p className="text-white/90 text-lg font-bold mb-2 animate-fade-in tracking-wide">
               🌟 GLOBAL KINDNESS COUNTER 🌟
             </p>
             
             {/* PERFECT SIZE NUMBER DISPLAY */}
-            <div className="mb-2">
+            <div className="mb-3">
               <span 
                 className={`text-4xl md:text-5xl font-black text-white drop-shadow-xl ${isPulse ? 'animate-bounce' : 'animate-pulse'} tracking-tight`}
                 data-testid="text-kindness-counter"
@@ -79,24 +79,24 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
             </div>
             
             {/* Spectacular description with emojis */}
-            <p className="text-white/90 text-base md:text-lg font-bold mb-2 animate-fade-in-delay tracking-wide">
+            <p className="text-white/90 text-xl md:text-2xl font-bold mb-3 animate-fade-in-delay tracking-wide">
               ✨ ACTS OF KINDNESS SHARED ✨
             </p>
             
-            <div className="flex justify-center items-center gap-2 text-white/80 text-xs animate-fade-in-delay-2">
+            <div className="flex justify-center items-center gap-2 text-white/80 text-sm animate-fade-in-delay-2">
               <span className="inline-block animate-bounce">💝</span>
               <span>Making the world brighter, one deed at a time</span>
               <span className="inline-block animate-bounce delay-150">🌈</span>
             </div>
             
             {/* Progress bar showing growth */}
-            <div className="mt-2 bg-white/20 rounded-full h-1.5 overflow-hidden">
+            <div className="mt-3 bg-white/20 rounded-full h-2 overflow-hidden">
               <div 
                 className="h-full bg-gradient-to-r from-yellow-300 to-pink-300 rounded-full animate-pulse"
                 style={{ width: '78%' }}
               ></div>
             </div>
-            <p className="text-white/70 text-xs mt-1">🎯 On track to reach 300,000!</p>
+            <p className="text-white/70 text-sm mt-2">🎯 On track to reach 300,000!</p>
           </div>
         </div>
         
