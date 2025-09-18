@@ -28,10 +28,12 @@ import {
   AlertTriangle,
   Target,
   Award,
-  ArrowLeft
+  ArrowLeft,
+  Building2
 } from 'lucide-react';
 import { useLocation } from 'wouter';
 import PushNotificationSetup from '@/components/PushNotificationSetup';
+import { SponsorsPage } from '@/components/SponsorsPage';
 
 interface ParentNotification {
   id: string;
@@ -89,7 +91,7 @@ interface LinkedStudent {
 }
 
 export default function ParentDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'notifications' | 'rewards' | 'insights'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'notifications' | 'rewards' | 'insights' | 'sponsors'>('overview');
   const [selectedStudent, setSelectedStudent] = useState<string>('');
   const [, navigate] = useLocation();
 
@@ -395,12 +397,16 @@ export default function ParentDashboard() {
 
         {/* Main Dashboard */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="activity">Live Activity</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="rewards">Dual Rewards</TabsTrigger>
             <TabsTrigger value="insights">Insights</TabsTrigger>
+            <TabsTrigger value="sponsors">
+              <Building2 className="h-4 w-4 mr-1" />
+              Sponsors
+            </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -735,6 +741,11 @@ export default function ParentDashboard() {
                 </p>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Sponsors Tab */}
+          <TabsContent value="sponsors" className="space-y-6">
+            <SponsorsPage />
           </TabsContent>
         </Tabs>
       </div>
