@@ -4,7 +4,6 @@ import { useLocation } from 'wouter';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
@@ -200,13 +199,6 @@ export default function SchoolConsentDashboard() {
     );
   }
   
-  // 📊 OVERVIEW TAB STATE
-  const [selectedTab, setSelectedTab] = useState('overview');
-  
-  // 🔧 DEBUG: Log tab changes
-  useEffect(() => {
-    console.log('🔄 Selected tab changed to:', selectedTab);
-  }, [selectedTab]);
   
   // 🔄 RENEWALS TAB STATE
   const [renewalFilters, setRenewalFilters] = useState({
@@ -224,10 +216,10 @@ export default function SchoolConsentDashboard() {
   const [gradeFilter, setGradeFilter] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   
-  // 🔍 AUDIT TAB STATE
+  // 🔍 AUDIT STATE
   const [selectedStudentId, setSelectedStudentId] = useState('');
   
-  // 📄 REPORTS TAB STATE
+  // 📄 REPORTS STATE
   const [dateFrom, setDateFrom] = useState<Date>();
   const [dateTo, setDateTo] = useState<Date>();
   const [isExporting, setIsExporting] = useState(false);
@@ -237,7 +229,7 @@ export default function SchoolConsentDashboard() {
   // Overview stats query
   const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ['/api/schools', schoolId, 'consents', 'stats'],
-    enabled: !!schoolId && selectedTab === 'overview'
+    enabled: !!schoolId
   });
 
   // Students list query with filters
@@ -251,13 +243,13 @@ export default function SchoolConsentDashboard() {
 
   const { data: studentsList, isLoading: studentsLoading } = useQuery({
     queryKey: [studentsQueryUrl],
-    enabled: !!schoolId && (selectedTab === 'students' || selectedTab === 'overview') // Load for students tab and overview
+    enabled: !!schoolId
   });
 
   // Expiring consents query
   const { data: expiringConsents, isLoading: expiringLoading } = useQuery({
     queryKey: ['/api/schools', schoolId, 'consents', 'expiring'],
-    enabled: !!schoolId && selectedTab === 'overview'
+    enabled: !!schoolId
   });
 
   // 🔄 RENEWALS DATA FETCHING
@@ -271,13 +263,13 @@ export default function SchoolConsentDashboard() {
 
   const { data: renewalsData, isLoading: renewalsLoading, refetch: refetchRenewals } = useQuery({
     queryKey: [renewalsQueryUrl],
-    enabled: !!schoolId && (selectedTab === 'renewals' || selectedTab === 'overview') // Load for renewals tab and overview
+    enabled: !!schoolId
   });
 
   // Student audit query
   const { data: auditData, isLoading: auditLoading } = useQuery({
     queryKey: ['/api/schools', schoolId, 'students', selectedStudentId, 'audit'],
-    enabled: !!schoolId && !!selectedStudentId && selectedTab === 'audit'
+    enabled: !!schoolId && !!selectedStudentId
   });
 
   // 📊 OVERVIEW TAB COMPONENT
@@ -473,21 +465,6 @@ export default function SchoolConsentDashboard() {
 
     return (
       <div className="space-y-6" data-testid="students-tab">
-        {/* 🔧 DEBUG INFO */}
-        {import.meta.env.DEV && (
-          <Card className="bg-yellow-50 border-yellow-200">
-            <CardContent className="pt-4">
-              <div className="text-xs font-mono space-y-1">
-                <div>Loading: {studentsLoading ? 'YES' : 'NO'}</div>
-                <div>Data exists: {studentsList ? 'YES' : 'NO'}</div>
-                <div>Students count: {students?.consents?.length || 0}</div>
-                <div>Total: {students?.total || 0}</div>
-                <div>Query URL: {studentsQueryUrl}</div>
-                <div>Selected Tab: {selectedTab}</div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
         
         {/* Filters */}
         <Card>
@@ -620,7 +597,10 @@ export default function SchoolConsentDashboard() {
                             size="sm"
                             onClick={() => {
                               setSelectedStudentId(consent.id);
-                              setSelectedTab('audit');
+                              // Scroll to audit section after selecting student
+                              setTimeout(() => {
+                                document.getElementById('audit-section')?.scrollIntoView({ behavior: 'smooth' });
+                              }, 100);
                             }}
                             data-testid={`button-view-audit-${consent.id}`}
                           >
@@ -987,22 +967,6 @@ export default function SchoolConsentDashboard() {
 
     return (
       <div className="space-y-6" data-testid="renewals-tab">
-        {/* 🔧 DEBUG INFO */}
-        {import.meta.env.DEV && (
-          <Card className="bg-blue-50 border-blue-200">
-            <CardContent className="pt-4">
-              <div className="text-xs font-mono space-y-1">
-                <div>Loading: {renewalsLoading ? 'YES' : 'NO'}</div>
-                <div>Data exists: {renewalsData ? 'YES' : 'NO'}</div>
-                <div>Renewals count: {renewalsResponse?.renewals?.length || 0}</div>
-                <div>Total: {renewalsResponse?.total || 0}</div>
-                <div>Query URL: {renewalsQueryUrl}</div>
-                <div>Selected Tab: {selectedTab}</div>
-                <div>Metrics: {metrics ? JSON.stringify(metrics) : 'NONE'}</div>
-              </div>
-            </CardContent>
-          </Card>
-        )}
         
         {/* 📊 RENEWAL METRICS KPI CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -1256,59 +1220,115 @@ export default function SchoolConsentDashboard() {
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 py-6">
-        <Tabs 
-          value={selectedTab} 
-          onValueChange={(value) => {
-            console.log('🔄 Tab clicked:', value);
-            setSelectedTab(value);
-          }} 
-          className="space-y-6"
-        >
-          <TabsList className="grid w-full grid-cols-5" data-testid="tabs-list">
-            <TabsTrigger value="overview" data-testid="tab-overview">
-              <TrendingUp className="h-4 w-4 mr-2" />
+      {/* Navigation Bar */}
+      <div className="border-b bg-muted/30">
+        <div className="container mx-auto px-4 py-3">
+          <nav className="flex space-x-6">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => document.getElementById('overview-section')?.scrollIntoView({ behavior: 'smooth' })}
+              className="flex items-center gap-2"
+              data-testid="nav-overview"
+            >
+              <TrendingUp className="h-4 w-4" />
               Overview
-            </TabsTrigger>
-            <TabsTrigger value="renewals" data-testid="tab-renewals">
-              <RefreshCw className="h-4 w-4 mr-2" />
-              Renewals
-            </TabsTrigger>
-            <TabsTrigger value="students" data-testid="tab-students">
-              <Users className="h-4 w-4 mr-2" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => document.getElementById('students-section')?.scrollIntoView({ behavior: 'smooth' })}
+              className="flex items-center gap-2"
+              data-testid="nav-students"
+            >
+              <Users className="h-4 w-4" />
               Students
-            </TabsTrigger>
-            <TabsTrigger value="audit" data-testid="tab-audit">
-              <Eye className="h-4 w-4 mr-2" />
-              Audit
-            </TabsTrigger>
-            <TabsTrigger value="reports" data-testid="tab-reports">
-              <FileText className="h-4 w-4 mr-2" />
-              Reports
-            </TabsTrigger>
-          </TabsList>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => document.getElementById('renewals-section')?.scrollIntoView({ behavior: 'smooth' })}
+              className="flex items-center gap-2"
+              data-testid="nav-renewals"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Renewals
+            </Button>
+            {selectedStudentId && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => document.getElementById('audit-section')?.scrollIntoView({ behavior: 'smooth' })}
+                className="flex items-center gap-2"
+                data-testid="nav-audit"
+              >
+                <Eye className="h-4 w-4" />
+                Audit Trail
+              </Button>
+            )}
+          </nav>
+        </div>
+      </div>
 
-          <TabsContent value="overview">
-            <OverviewTab />
-          </TabsContent>
+      {/* Main Content - Single Page Layout */}
+      <div className="container mx-auto px-4 py-6 space-y-12">
+        {/* Overview Section */}
+        <section id="overview-section" className="scroll-mt-16">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <TrendingUp className="h-5 w-5" />
+              Overview
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Summary statistics and key metrics for consent management
+            </p>
+          </div>
+          <OverviewTab />
+        </section>
 
-          <TabsContent value="renewals">
-            <RenewalsTab />
-          </TabsContent>
+        {/* Students Section */}
+        <section id="students-section" className="scroll-mt-16">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Students
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              View and manage all student consent records
+            </p>
+          </div>
+          <StudentsTab />
+        </section>
 
-          <TabsContent value="students">
-            <StudentsTab />
-          </TabsContent>
+        {/* Renewals Section */}
+        <section id="renewals-section" className="scroll-mt-16">
+          <div className="mb-6">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <RefreshCw className="h-5 w-5" />
+              Renewals
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Annual consent renewals and expiration management
+            </p>
+          </div>
+          <RenewalsTab />
+        </section>
 
-          <TabsContent value="audit">
+        {/* Audit Section - Only show if student is selected */}
+        {selectedStudentId && (
+          <section id="audit-section" className="scroll-mt-16">
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold flex items-center gap-2">
+                <Eye className="h-5 w-5" />
+                Audit Trail
+              </h2>
+              <p className="text-sm text-muted-foreground mt-1">
+                Complete timeline of consent-related activities for selected student
+              </p>
+            </div>
             <AuditTab />
-          </TabsContent>
-
-          <TabsContent value="reports">
-            <ReportsTab />
-          </TabsContent>
-        </Tabs>
+          </section>
+        )}
       </div>
     </div>
   );
