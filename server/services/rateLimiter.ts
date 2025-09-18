@@ -110,6 +110,30 @@ export class RateLimiterService {
   }
 
   /**
+   * Generic Rate Limiter
+   * Creates a rate limiter with custom parameters for claim code endpoints
+   */
+  createGenericLimiter(options: {
+    maxRequests: number;
+    windowMs: number;
+    message?: string;
+    keyGenerator?: (req: any) => string;
+  }): (req: any, res: any, next: any) => void {
+    const rule: RateLimitRule = {
+      windowMs: options.windowMs,
+      maxRequests: options.maxRequests,
+      keyGenerator: options.keyGenerator || ((req) => {
+        return req.user?.claims?.sub || req.ip || req.connection.remoteAddress;
+      }),
+      message: options.message || `Too many requests. Maximum ${options.maxRequests} requests per ${Math.floor(options.windowMs / 1000)} seconds.`,
+      skipSuccessfulRequests: false,
+      skipFailedRequests: false
+    };
+
+    return this.createMiddleware(rule);
+  }
+
+  /**
    * Create rate limiting middleware
    */
   private createMiddleware(rule: RateLimitRule) {

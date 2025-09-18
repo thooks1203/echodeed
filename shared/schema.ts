@@ -2001,6 +2001,12 @@ export type PushSubscription = typeof pushSubscriptions.$inferSelect;
 export type InsertPushSubscription = z.infer<typeof insertPushSubscriptionSchema>;
 export type WellnessTrend = typeof wellnessTrends.$inferSelect;
 
+// Claim code system types - COPPA-compliant school registration
+export type TeacherClaimCode = typeof teacherClaimCodes.$inferSelect;
+export type InsertTeacherClaimCode = z.infer<typeof insertTeacherClaimCodeSchema>;
+export type ClaimCodeUsage = typeof claimCodeUsages.$inferSelect;
+export type InsertClaimCodeUsage = z.infer<typeof insertClaimCodeUsageSchema>;
+
 // Emergency contact encryption types - LIFE-CRITICAL FOR CHILD SAFETY
 export type EncryptionKey = typeof encryptionKeys.$inferSelect;
 export type InsertEncryptionKey = z.infer<typeof insertEncryptionKeySchema>;
@@ -2054,6 +2060,77 @@ export const encryptedEmergencyContacts = pgTable("encrypted_emergency_contacts"
   // Consent tracking for COPPA/FERPA compliance
   consentRecord: jsonb("consent_record").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// 🎓 TEACHER CLAIM CODES - School-issued student registration codes
+export const teacherClaimCodes = pgTable("teacher_claim_codes", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  claimCode: varchar("claim_code", { length: 15 }).notNull().unique(), // 12-character alphanumeric code with dashes
+  claimCodeHash: varchar("claim_code_hash", { length: 64 }).notNull().unique(), // SHA-256 hash for secure validation
+  teacherUserId: varchar("teacher_user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id").notNull(), // Links to corporateAccounts table
+  className: varchar("class_name", { length: 100 }).notNull(), // e.g., "Ms. Smith's 6th Grade Math"
+  gradeLevel: varchar("grade_level", { length: 5 }).notNull(), // 6, 7, 8, etc.
+  subject: varchar("subject", { length: 50 }), // optional subject (Math, Science, etc.)
+  maxUses: integer("max_uses").default(30).notNull(), // Maximum number of students who can use this code
+  currentUses: integer("current_uses").default(0).notNull(), // How many times it's been used
+  isActive: integer("is_active").default(1).notNull(), // 1 = active, 0 = disabled
+  expiresAt: timestamp("expires_at").notNull(), // Expiration date for security
+  // 🔒 ENHANCED SECURITY FIELDS
+  generatedBy: varchar("generated_by").notNull(), // User ID who generated the code
+  lastUsedAt: timestamp("last_used_at"),
+  // Rate limiting and anti-enumeration protection
+  failedAttempts: integer("failed_attempts").default(0).notNull(), // Track failed validation attempts
+  lastFailureAt: timestamp("last_failure_at"), // Last failed attempt timestamp
+  lockedUntil: timestamp("locked_until"), // Temporary lock for too many failures
+  validationAttempts: integer("validation_attempts").default(0).notNull(), // Total validation attempts
+  // Geographic restrictions for security
+  allowedSchoolIds: jsonb("allowed_school_ids"), // Array of allowed school IDs (defaults to creating school)
+  generationIP: varchar("generation_ip"), // IP address where code was generated
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// 📋 CLAIM CODE USAGE TRACKING - Audit trail for security and compliance
+export const claimCodeUsages = pgTable("claim_code_usages", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  claimCodeId: varchar("claim_code_id").notNull().references(() => teacherClaimCodes.id),
+  studentUserId: varchar("student_user_id").notNull().references(() => users.id),
+  studentAccountId: varchar("student_account_id").notNull().references(() => studentAccounts.id),
+  usageResult: varchar("usage_result", { length: 20 }).notNull(), // success, already_used, expired, invalid, max_uses_reached, locked, rate_limited
+  // 🛡️ COPPA COMPLIANCE TRACKING
+  parentConsentTriggered: integer("parent_consent_triggered").default(1).notNull(),
+  parentConsentRequestId: varchar("parent_consent_request_id"), // Links to parentalConsentRequests
+  studentAge: integer("student_age"), // Age at time of registration for compliance tracking
+  coppaRequired: integer("coppa_required").default(1).notNull(), // Whether COPPA consent was required
+  consentStatus: varchar("consent_status", { length: 20 }).default("pending").notNull(), // pending, approved, denied
+  // 🔒 ENHANCED SECURITY TRACKING
+  ipAddress: varchar("ip_address"),
+  userAgent: text("user_agent"),
+  sessionId: varchar("session_id"), // Browser session identifier
+  deviceFingerprint: varchar("device_fingerprint"), // Device identification for security
+  geoLocation: jsonb("geo_location"), // Geographic location data
+  schoolValidated: integer("school_validated").default(0).notNull(), // Whether school affiliation was validated
+  preventedReason: varchar("prevented_reason"), // If usage was prevented, why?
+  usedAt: timestamp("used_at").defaultNow().notNull(),
+});
+
+// Schema exports for claim code system
+export const insertTeacherClaimCodeSchema = createInsertSchema(teacherClaimCodes).omit({
+  id: true,
+  currentUses: true,
+  lastUsedAt: true,
+  failedAttempts: true,
+  lastFailureAt: true,
+  lockedUntil: true,
+  validationAttempts: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertClaimCodeUsageSchema = createInsertSchema(claimCodeUsages).omit({
+  id: true,
+  usedAt: true,
 });
 
 // Schema exports for encryption key management

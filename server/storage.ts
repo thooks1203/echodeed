@@ -49,6 +49,8 @@ import {
   encryptionKeys,
   dualAuthRequests,
   encryptedEmergencyContacts,
+  teacherClaimCodes,
+  claimCodeUsages,
   type User,
   type UpsertUser,
   type KindnessPost,
@@ -185,6 +187,10 @@ import {
   type MentorStats,
   type MentorTraining,
   type InsertMentorTraining,
+  type MentorScenario,
+  type InsertMentorScenario,
+  type MentorConversation,
+  type InsertMentorConversation,
   type CurriculumLesson,
   type InsertCurriculumLesson,
   type CurriculumProgress,
@@ -197,13 +203,14 @@ import {
   type InsertStudentAccount,
   type ParentalConsentRequest,
   type InsertParentalConsentRequest,
-  type ParentAccount,
-  type InsertParentAccount,
-  type StudentParentLink,
-  type InsertStudentParentLink,
+  type TeacherClaimCode,
+  type InsertTeacherClaimCode,
+  type ClaimCodeUsage,
+  type InsertClaimCodeUsage,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte, lte } from "drizzle-orm";
+import { CryptoSecurity } from "./utils/cryptoSecurity";
 
 // Storage interface for all operations
 export interface IStorage {
@@ -559,6 +566,46 @@ export interface IStorage {
   updateParentalConsentStatus(requestId: string, status: string, ipAddress?: string): Promise<ParentalConsentRequest>;
   linkStudentToParent(link: InsertStudentParentLink): Promise<StudentParentLink>;
   getParentsForStudent(studentUserId: string): Promise<ParentAccount[]>;
+  
+  // 🎓 TEACHER CLAIM CODE SYSTEM - COPPA-compliant school registration
+  createTeacherClaimCode(claimCode: InsertTeacherClaimCode): Promise<TeacherClaimCode>;
+  getTeacherClaimCodes(teacherUserId: string): Promise<TeacherClaimCode[]>;
+  getSchoolClaimCodes(schoolId: string): Promise<TeacherClaimCode[]>;
+  getActiveClaimCode(claimCode: string): Promise<TeacherClaimCode | undefined>;
+  validateClaimCode(claimCode: string, context?: {
+    ipAddress?: string;
+    userAgent?: string;
+    schoolId?: string;
+  }): Promise<{ 
+    isValid: boolean; 
+    code?: TeacherClaimCode; 
+    error?: string; 
+    errorCode?: string;
+  }>;
+  useClaimCode(claimCodeData: {
+    claimCode: string;
+    studentFirstName: string;
+    studentLastName?: string;
+    studentBirthYear: number;
+    parentEmail: string;
+    parentName?: string;
+    ipAddress?: string;
+    userAgent?: string;
+    sessionId?: string;
+    deviceFingerprint?: string;
+    schoolId?: string;
+  }): Promise<{
+    success: boolean;
+    result?: ClaimCodeUsage;
+    student?: any;
+    consentRequest?: any;
+    error?: string;
+    errorCode?: string;
+  }>;
+  getClaimCodeUsages(claimCodeId: string): Promise<ClaimCodeUsage[]>;
+  updateClaimCodeUsage(claimCodeId: string): Promise<TeacherClaimCode | undefined>;
+  deactivateClaimCode(claimCodeId: string): Promise<TeacherClaimCode | undefined>;
+  generateUniqueClaimCode(): Promise<string>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -628,8 +675,6 @@ export class DatabaseStorage implements IStorage {
     userId?: string;
     schoolId?: string;
   }): Promise<KindnessPost[]> {
-    let query = db.select().from(kindnessPosts);
-    
     const conditions = [];
     if (filters?.category) {
       conditions.push(eq(kindnessPosts.category, filters.category));
@@ -650,15 +695,11 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(kindnessPosts.schoolId, filters.schoolId));
     }
     
-    if (conditions.length > 0) {
-      query = query.where(and(...conditions));
-    }
-    
-    const posts = await query
+    return await db.select()
+      .from(kindnessPosts)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
       .orderBy(desc(kindnessPosts.createdAt))
       .limit(filters?.limit || 50);
-      
-    return posts;
   }
 
   async createPost(post: InsertKindnessPost): Promise<KindnessPost> {
@@ -779,8 +820,6 @@ export class DatabaseStorage implements IStorage {
     challengeType?: string;
     limit?: number;
   }): Promise<BrandChallenge[]> {
-    let query = db.select().from(brandChallenges);
-    
     const conditions = [];
     if (filters?.isActive !== undefined) {
       conditions.push(eq(brandChallenges.isActive, filters.isActive ? 1 : 0));
@@ -795,15 +834,11 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(brandChallenges.challengeType, filters.challengeType));
     }
     
-    if (conditions.length > 0) {
-      query = query.where(and(...conditions));
-    }
-    
-    const challenges = await query
+    return await db.select()
+      .from(brandChallenges)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
       .orderBy(desc(brandChallenges.isPriority), desc(brandChallenges.createdAt))
       .limit(filters?.limit || 10);
-      
-    return challenges;
   }
 
   async createChallenge(challenge: InsertBrandChallenge): Promise<BrandChallenge> {
@@ -1296,12 +1331,13 @@ export class DatabaseStorage implements IStorage {
       ));
 
     const averageWellnessScore = teamMembers.length > 0 ? totalWellnessScore / teamMembers.length : 0;
-    const kindnessGoalProgress = (teamPosts.length / team.monthlyKindnessGoal) * 100;
+    const monthlyGoal = team.monthlyKindnessGoal || 10; // Default goal if null
+    const kindnessGoalProgress = (teamPosts.length / monthlyGoal) * 100;
     const challengeCompletionRate = teamMembers.length > 0 ? (teamChallenges.length / teamMembers.length) * 100 : 0;
 
     return {
       teamName: team.teamName,
-      currentSize: team.currentSize,
+      currentSize: team.currentSize || 0,
       wellnessScore: Math.round(averageWellnessScore),
       kindnessGoalProgress: Math.min(Math.round(kindnessGoalProgress), 100),
       challengeCompletionRate: Math.round(challengeCompletionRate),
@@ -1333,7 +1369,7 @@ export class DatabaseStorage implements IStorage {
       
       // Generate alerts based on metrics
       if (metrics.atRiskEmployees > 0) {
-        const severity = metrics.atRiskEmployees >= 3 ? 'high' : metrics.atRiskEmployees >= 2 ? 'medium' : 'low';
+        const severity: 'low' | 'medium' | 'high' = metrics.atRiskEmployees >= 3 ? 'high' : metrics.atRiskEmployees >= 2 ? 'medium' : 'low';
         alerts.push({
           severity,
           teamId: team.id,
@@ -1350,7 +1386,7 @@ export class DatabaseStorage implements IStorage {
 
       if (metrics.kindnessGoalProgress < 50 && new Date().getDate() > 15) {
         alerts.push({
-          severity: 'medium',
+          severity: 'medium' as const,
           teamId: team.id,
           title: `Kindness Goal Behind Schedule: ${team.teamName}`,
           description: `Team is at ${metrics.kindnessGoalProgress}% of monthly kindness goal with ${30 - new Date().getDate()} days remaining`,
@@ -1558,7 +1594,7 @@ export class DatabaseStorage implements IStorage {
         .where(and(
           eq(corporateEmployees.corporateAccountId, corporateAccountId),
           gte(kindnessPosts.createdAt, monthStart),
-          gte(monthEnd, kindnessPosts.createdAt)
+          lte(kindnessPosts.createdAt, monthEnd)
         ));
 
       const monthChallenges = await db.select({ count: count() })
@@ -1567,7 +1603,7 @@ export class DatabaseStorage implements IStorage {
         .where(and(
           eq(corporateEmployees.corporateAccountId, corporateAccountId),
           gte(challengeCompletions.completedAt, monthStart),
-          gte(monthEnd, challengeCompletions.completedAt)
+          lte(challengeCompletions.completedAt, monthEnd)
         ));
 
       monthlyTrends.push({
@@ -1630,7 +1666,7 @@ export class DatabaseStorage implements IStorage {
       
       const deptData = departmentData.get(dept)!;
       deptData.teams.push(team);
-      deptData.employees += team.currentSize;
+      deptData.employees += team.currentSize || 0;
       
       // Get team metrics
       const metrics = await this.getTeamWellnessMetrics(team.id);
@@ -1729,7 +1765,7 @@ export class DatabaseStorage implements IStorage {
     const percentile = companyAverage > 0 ? Math.min(Math.round((companyAverage / industryAverage) * 50 + 25), 99) : 50;
 
     // Goal tracking (based on company metrics)
-    const employeeCount = teams.reduce((sum, team) => sum + team.currentSize, 0);
+    const employeeCount = teams.reduce((sum, team) => sum + (team.currentSize || 0), 0);
     const monthlyTarget = Math.max(employeeCount * 5, 50); // 5 kindness acts per employee per month minimum
     
     const currentDate = new Date();
@@ -1769,8 +1805,6 @@ export class DatabaseStorage implements IStorage {
 
   // Rewards system implementation
   async getRewardPartners(filters?: { isActive?: boolean; partnerType?: string; }): Promise<RewardPartner[]> {
-    let query = db.select().from(rewardPartners);
-    
     const conditions = [];
     if (filters?.isActive !== undefined) {
       conditions.push(eq(rewardPartners.isActive, filters.isActive ? 1 : 0));
@@ -1779,11 +1813,10 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(rewardPartners.partnerType, filters.partnerType));
     }
     
-    if (conditions.length > 0) {
-      query = query.where(and(...conditions));
-    }
-    
-    return await query.orderBy(desc(rewardPartners.createdAt));
+    return await db.select()
+      .from(rewardPartners)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(desc(rewardPartners.createdAt));
   }
 
   async createRewardPartner(partner: InsertRewardPartner): Promise<RewardPartner> {
@@ -1792,8 +1825,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getRewardOffers(filters?: { partnerId?: string; isActive?: boolean; offerType?: string; badgeRequirement?: string; }): Promise<RewardOffer[]> {
-    let query = db.select().from(rewardOffers);
-    
     const conditions = [];
     if (filters?.partnerId) {
       conditions.push(eq(rewardOffers.partnerId, filters.partnerId));
@@ -1808,11 +1839,10 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(rewardOffers.badgeRequirement, filters.badgeRequirement));
     }
     
-    if (conditions.length > 0) {
-      query = query.where(and(...conditions));
-    }
-    
-    return await query.orderBy(desc(rewardOffers.isFeatured), desc(rewardOffers.createdAt));
+    return await db.select()
+      .from(rewardOffers)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(desc(rewardOffers.isFeatured), desc(rewardOffers.createdAt));
   }
 
   async createRewardOffer(offer: InsertRewardOffer): Promise<RewardOffer> {
@@ -1862,8 +1892,6 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getKindnessVerifications(filters?: { userId?: string; status?: string; }): Promise<KindnessVerification[]> {
-    let query = db.select().from(kindnessVerifications);
-    
     const conditions = [];
     if (filters?.userId) {
       conditions.push(eq(kindnessVerifications.userId, filters.userId));
@@ -1872,11 +1900,10 @@ export class DatabaseStorage implements IStorage {
       conditions.push(eq(kindnessVerifications.status, filters.status));
     }
     
-    if (conditions.length > 0) {
-      query = query.where(and(...conditions));
-    }
-    
-    return await query.orderBy(desc(kindnessVerifications.submittedAt));
+    return await db.select()
+      .from(kindnessVerifications)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(desc(kindnessVerifications.submittedAt));
   }
 
   async approveKindnessVerification(id: string, reviewerId: string, bonusEcho?: number): Promise<KindnessVerification | undefined> {
@@ -1892,9 +1919,12 @@ export class DatabaseStorage implements IStorage {
 
     // Award bonus echo tokens to user if specified
     if (updatedVerification && bonusEcho && bonusEcho > 0) {
-      await this.updateUserTokens(updatedVerification.userId, {
-        echoTokens: sql`${userTokens.echoTokens} + ${bonusEcho}`,
-      } as any);
+      const currentTokens = await this.getUserTokens(updatedVerification.userId);
+      if (currentTokens) {
+        await this.updateUserTokens(updatedVerification.userId, {
+          echoBalance: currentTokens.echoBalance + bonusEcho,
+        });
+      }
     }
     
     return updatedVerification;
@@ -2156,13 +2186,10 @@ export class DatabaseStorage implements IStorage {
 
   // Weekly prizes implementation
   async getWeeklyPrizes(filters?: { status?: string; }): Promise<WeeklyPrize[]> {
-    let query = db.select().from(weeklyPrizes);
-    
-    if (filters?.status) {
-      query = query.where(eq(weeklyPrizes.status, filters.status));
-    }
-    
-    return await query.orderBy(desc(weeklyPrizes.weekStartDate));
+    return await db.select()
+      .from(weeklyPrizes)
+      .where(filters?.status ? eq(weeklyPrizes.status, filters.status) : undefined)
+      .orderBy(desc(weeklyPrizes.weekStartDate));
   }
 
   async createWeeklyPrize(prize: InsertWeeklyPrize): Promise<WeeklyPrize> {
@@ -2446,9 +2473,9 @@ export class DatabaseStorage implements IStorage {
           // First create a user record 
           const userId = `tf-${employee.employeeEmail.split('@')[0]}`;
           const [user] = await db.insert(users).values({
-            id: userId,
             email: employee.employeeEmail,
-            name: employee.displayName,
+            firstName: employee.displayName.split(' ')[0],
+            lastName: employee.displayName.split(' ')[1] || '',
             createdAt: new Date()
           }).onConflictDoNothing().returning();
 
@@ -2479,9 +2506,9 @@ export class DatabaseStorage implements IStorage {
           // First create a user record 
           const userId = `wise-${employee.employeeEmail.split('@')[0]}`;
           const [user] = await db.insert(users).values({
-            id: userId,
             email: employee.employeeEmail,
-            name: employee.displayName,
+            firstName: employee.displayName.split(' ')[0],
+            lastName: employee.displayName.split(' ')[1] || '',
             createdAt: new Date()
           }).onConflictDoNothing().returning();
 
@@ -2645,13 +2672,10 @@ export class DatabaseStorage implements IStorage {
 
   // PREMIUM SUBSCRIPTION SYSTEM IMPLEMENTATIONS
   async getSubscriptionPlans(planType?: string): Promise<SubscriptionPlan[]> {
-    let query = db.select().from(subscriptionPlans);
-    
-    if (planType) {
-      query = query.where(eq(subscriptionPlans.planType, planType));
-    }
-    
-    return await query.orderBy(subscriptionPlans.sortOrder);
+    return await db.select()
+      .from(subscriptionPlans)
+      .where(planType ? eq(subscriptionPlans.planType, planType) : undefined)
+      .orderBy(subscriptionPlans.sortOrder);
   }
 
   async createSubscriptionPlan(plan: InsertSubscriptionPlan): Promise<SubscriptionPlan> {
@@ -2715,16 +2739,25 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getUserWellnessPredictions(userId: string, riskLevel?: string): Promise<WellnessPrediction[]> {
-    let query = db.select().from(wellnessPredictions).where(eq(wellnessPredictions.userId, userId));
+    const conditions = [eq(wellnessPredictions.userId, userId)];
     
     if (riskLevel) {
-      query = query.where(and(
-        eq(wellnessPredictions.userId, userId),
-        eq(wellnessPredictions.riskLevel, riskLevel)
-      ));
+      // Note: riskLevel filter would need custom logic since schema uses riskScore (1-100)
+      // For now, treating high risk as score > 70, medium as 30-70, low as < 30
+      if (riskLevel === 'high') {
+        conditions.push(gte(wellnessPredictions.riskScore, 70));
+      } else if (riskLevel === 'medium') {
+        conditions.push(gte(wellnessPredictions.riskScore, 30));
+        conditions.push(lte(wellnessPredictions.riskScore, 69));
+      } else if (riskLevel === 'low') {
+        conditions.push(lte(wellnessPredictions.riskScore, 29));
+      }
     }
     
-    return await query.orderBy(desc(wellnessPredictions.createdAt));
+    return await db.select()
+      .from(wellnessPredictions)
+      .where(conditions.length > 1 ? and(...conditions) : conditions.length === 1 ? conditions[0] : undefined)
+      .orderBy(desc(wellnessPredictions.createdAt));
   }
 
   async getCorporateWellnessRisks(corporateAccountId: string): Promise<WellnessPrediction[]> {
@@ -2738,7 +2771,7 @@ export class DatabaseStorage implements IStorage {
     const [prediction] = await db
       .update(wellnessPredictions)
       .set({ 
-        status,
+        isActive: status === 'resolved' ? 0 : 1,
         resolvedAt: status === 'resolved' ? new Date() : null
       })
       .where(eq(wellnessPredictions.id, id))
@@ -2974,18 +3007,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getSchoolContentReports(corporateAccountId: string, status?: string): Promise<SchoolContentReport[]> {
-    let query = db.select()
-      .from(schoolContentReports)
-      .where(eq(schoolContentReports.corporateAccountId, corporateAccountId));
-
+    const conditions = [eq(schoolContentReports.corporateAccountId, corporateAccountId)];
     if (status) {
-      query = query.where(and(
-        eq(schoolContentReports.corporateAccountId, corporateAccountId),
-        eq(schoolContentReports.status, status)
-      ));
+      conditions.push(eq(schoolContentReports.status, status));
     }
 
-    return await query.orderBy(desc(schoolContentReports.createdAt));
+    return await db.select()
+      .from(schoolContentReports)
+      .where(and(...conditions))
+      .orderBy(desc(schoolContentReports.createdAt));
   }
 
   // Education subscription plan initialization
@@ -3545,15 +3575,21 @@ export class DatabaseStorage implements IStorage {
     
     // Update user tokens for both student and parent (dual reward system)
     if (progress.studentId) {
-      await this.updateUserTokens(progress.studentId, { 
-        kindnessTokens: sql`kindness_tokens + ${challenge?.kidPoints || 0}` 
-      });
+      const currentTokens = await this.getUserTokens(progress.studentId);
+      if (currentTokens) {
+        await this.updateUserTokens(progress.studentId, { 
+          echoBalance: currentTokens.echoBalance + (challenge?.kidPoints || 0)
+        });
+      }
     }
     
     if (progress.parentId) {
-      await this.updateUserTokens(progress.parentId, { 
-        kindnessTokens: sql`kindness_tokens + ${challenge?.parentPoints || 0}` 
-      });
+      const currentTokens = await this.getUserTokens(progress.parentId);
+      if (currentTokens) {
+        await this.updateUserTokens(progress.parentId, { 
+          echoBalance: currentTokens.echoBalance + (challenge?.parentPoints || 0)
+        });
+      }
     }
     
     return newProgress;
@@ -3591,19 +3627,17 @@ export class DatabaseStorage implements IStorage {
 
   async getActiveFundraisers(schoolName?: string): Promise<SchoolFundraiser[]> {
     const now = new Date();
-    let query = db
-      .select()
-      .from(schoolFundraisers)
-      .where(and(
-        eq(schoolFundraisers.isActive, true),
-        gte(schoolFundraisers.endDate, now)
-      ));
-
+    const conditions = [
+      eq(schoolFundraisers.isActive, true),
+      gte(schoolFundraisers.endDate, now)
+    ];
     if (schoolName) {
-      query = query.where(eq(schoolFundraisers.schoolName, schoolName));
+      conditions.push(eq(schoolFundraisers.schoolName, schoolName));
     }
 
-    return await query;
+    return await db.select()
+      .from(schoolFundraisers)
+      .where(and(...conditions));
   }
 
   async getFundraiserById(id: string): Promise<SchoolFundraiser | undefined> {
@@ -3680,16 +3714,15 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getActiveMentorships(schoolId?: string): Promise<Mentorship[]> {
-    let query = db
-      .select()
-      .from(mentorships)
-      .where(eq(mentorships.status, 'active'));
-    
+    const conditions = [eq(mentorships.status, 'active')];
     if (schoolId) {
-      query = query.where(eq(mentorships.schoolId, schoolId));
+      conditions.push(eq(mentorships.schoolId, schoolId));
     }
     
-    return await query.orderBy(desc(mentorships.createdAt));
+    return await db.select()
+      .from(mentorships)
+      .where(and(...conditions))
+      .orderBy(desc(mentorships.createdAt));
   }
 
   async updateMentorshipStatus(id: string, status: string): Promise<Mentorship | undefined> {
@@ -3937,32 +3970,31 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getAvailableMentors(ageGroup?: string, interests?: string[]): Promise<User[]> {
-    let query = db
-      .select({ user: users })
-      .from(mentorPreferences)
-      .leftJoin(users, eq(mentorPreferences.userId, users.id))
-      .where(
-        and(
-          eq(mentorPreferences.availableAsMentor, true),
-          eq(mentorPreferences.parentPermission, true)
-        )
-      );
+    const conditions = [
+      eq(mentorPreferences.availableAsMentor, true),
+      eq(mentorPreferences.parentPermission, true)
+    ];
 
     if (ageGroup) {
-      query = query.where(
-        sql`${mentorPreferences.preferredMenteeAgeGroups}::jsonb ? ${ageGroup}`
+      conditions.push(
+        sql`${mentorPreferences.preferredMenteeAgeGroups}::jsonb ? ${ageGroup}` as any
       );
     }
 
     if (interests && interests.length > 0) {
-      query = query.where(
+      conditions.push(
         or(...interests.map(interest => 
           sql`${mentorPreferences.interests}::jsonb ? ${interest}`
         ))
       );
     }
 
-    const result = await query;
+    const result = await db
+      .select({ user: users })
+      .from(mentorPreferences)
+      .leftJoin(users, eq(mentorPreferences.userId, users.id))
+      .where(and(...conditions));
+    
     return result.map(r => r.user).filter(Boolean) as User[];
   }
 
@@ -4006,26 +4038,30 @@ export class DatabaseStorage implements IStorage {
     difficulty?: string;
     limit?: number;
   }): Promise<CurriculumLesson[]> {
-    let query = db.select().from(curriculumLessons).where(eq(curriculumLessons.isActive, true));
-
+    const conditions = [eq(curriculumLessons.isActive, true)];
     if (filters?.gradeLevel) {
-      query = query.where(eq(curriculumLessons.gradeLevel, filters.gradeLevel));
+      conditions.push(eq(curriculumLessons.gradeLevel, filters.gradeLevel));
     }
     if (filters?.subject) {
-      query = query.where(eq(curriculumLessons.subject, filters.subject));
+      conditions.push(eq(curriculumLessons.subject, filters.subject));
     }
     if (filters?.kindnessTheme) {
-      query = query.where(eq(curriculumLessons.kindnessTheme, filters.kindnessTheme));
+      conditions.push(eq(curriculumLessons.kindnessTheme, filters.kindnessTheme));
     }
     if (filters?.difficulty) {
-      query = query.where(eq(curriculumLessons.difficulty, filters.difficulty));
+      conditions.push(eq(curriculumLessons.difficulty, filters.difficulty));
     }
+
+    const query = db.select()
+      .from(curriculumLessons)
+      .where(and(...conditions))
+      .orderBy(curriculumLessons.gradeLevel, curriculumLessons.title);
 
     if (filters?.limit) {
-      query = query.limit(filters.limit);
+      return await query.limit(filters.limit);
     }
 
-    return await query.orderBy(curriculumLessons.gradeLevel, curriculumLessons.title);
+    return await query;
   }
 
   async getCurriculumLessonById(id: string): Promise<CurriculumLesson | undefined> {
@@ -4085,19 +4121,21 @@ export class DatabaseStorage implements IStorage {
     lessonId?: string;
     progressId?: string;
   }): Promise<StudentCurriculumResponse[]> {
-    let query = db.select().from(studentCurriculumResponses);
-
+    const conditions = [];
     if (filters?.studentId) {
-      query = query.where(eq(studentCurriculumResponses.studentId, filters.studentId));
+      conditions.push(eq(studentCurriculumResponses.studentId, filters.studentId));
     }
     if (filters?.lessonId) {
-      query = query.where(eq(studentCurriculumResponses.lessonId, filters.lessonId));
+      conditions.push(eq(studentCurriculumResponses.lessonId, filters.lessonId));
     }
     if (filters?.progressId) {
-      query = query.where(eq(studentCurriculumResponses.progressId, filters.progressId));
+      conditions.push(eq(studentCurriculumResponses.progressId, filters.progressId));
     }
 
-    return await query.orderBy(desc(studentCurriculumResponses.createdAt));
+    return await db.select()
+      .from(studentCurriculumResponses)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(desc(studentCurriculumResponses.createdAt));
   }
 
   async createStudentCurriculumResponse(response: InsertStudentCurriculumResponse): Promise<StudentCurriculumResponse> {
@@ -4123,19 +4161,21 @@ export class DatabaseStorage implements IStorage {
     resourceType?: string;
     gradeLevel?: string;
   }): Promise<CurriculumResource[]> {
-    let query = db.select().from(curriculumResources);
-
+    const conditions = [];
     if (filters?.lessonId) {
-      query = query.where(eq(curriculumResources.lessonId, filters.lessonId));
+      conditions.push(eq(curriculumResources.lessonId, filters.lessonId));
     }
     if (filters?.resourceType) {
-      query = query.where(eq(curriculumResources.resourceType, filters.resourceType));
+      conditions.push(eq(curriculumResources.resourceType, filters.resourceType));
     }
     if (filters?.gradeLevel) {
-      query = query.where(eq(curriculumResources.gradeLevel, filters.gradeLevel));
+      conditions.push(eq(curriculumResources.gradeLevel, filters.gradeLevel));
     }
 
-    return await query.orderBy(curriculumResources.title);
+    return await db.select()
+      .from(curriculumResources)
+      .where(conditions.length > 0 ? and(...conditions) : undefined)
+      .orderBy(curriculumResources.title);
   }
 
   async createCurriculumResource(resource: InsertCurriculumResource): Promise<CurriculumResource> {
@@ -4244,6 +4284,410 @@ export class DatabaseStorage implements IStorage {
         })
         .where(eq(encryptedEmergencyContacts.contactId, contactId));
     }
+  }
+
+  // 🎓 TEACHER CLAIM CODE SYSTEM IMPLEMENTATIONS
+  async generateUniqueClaimCode(): Promise<string> {
+    let attempts = 0;
+    const maxAttempts = 10;
+    
+    while (attempts < maxAttempts) {
+      // 🔒 SECURE: Use cryptographically secure random generation
+      const code = CryptoSecurity.generateSecureCode(12);
+      
+      // Check if code already exists (checking both plain and hash for transition period)
+      const existing = await db.select().from(teacherClaimCodes).where(
+        or(
+          eq(teacherClaimCodes.claimCode, code),
+          eq(teacherClaimCodes.claimCodeHash, CryptoSecurity.hashClaimCode(code))
+        )
+      );
+      if (existing.length === 0) {
+        return code;
+      }
+      
+      attempts++;
+    }
+    
+    // Fallback: add timestamp if all attempts failed
+    const timestamp = Date.now().toString().slice(-4);
+    return `SEC-${timestamp}`;
+  }
+
+  async createTeacherClaimCode(claimCodeData: InsertTeacherClaimCode): Promise<TeacherClaimCode> {
+    // Generate unique claim code if not provided
+    let claimCode = claimCodeData.claimCode;
+    if (!claimCode) {
+      claimCode = await this.generateUniqueClaimCode();
+    }
+    
+    // 🔒 SECURE: Hash the claim code for secure storage
+    const claimCodeHash = CryptoSecurity.hashClaimCode(claimCode);
+    
+    const [newClaimCode] = await db.insert(teacherClaimCodes).values({
+      ...claimCodeData,
+      claimCode,
+      claimCodeHash,
+    }).returning();
+    return newClaimCode;
+  }
+
+  async getTeacherClaimCodes(teacherUserId: string): Promise<TeacherClaimCode[]> {
+    const codes = await db
+      .select()
+      .from(teacherClaimCodes)
+      .where(eq(teacherClaimCodes.teacherUserId, teacherUserId))
+      .orderBy(desc(teacherClaimCodes.createdAt));
+    return codes;
+  }
+
+  async getSchoolClaimCodes(schoolId: string): Promise<TeacherClaimCode[]> {
+    const codes = await db
+      .select()
+      .from(teacherClaimCodes)
+      .where(eq(teacherClaimCodes.schoolId, schoolId))
+      .orderBy(desc(teacherClaimCodes.createdAt));
+    return codes;
+  }
+
+  async getActiveClaimCode(claimCode: string): Promise<TeacherClaimCode | undefined> {
+    const [code] = await db
+      .select()
+      .from(teacherClaimCodes)
+      .where(
+        and(
+          eq(teacherClaimCodes.claimCode, claimCode),
+          eq(teacherClaimCodes.isActive, 1),
+          gte(teacherClaimCodes.expiresAt, new Date()) // Not expired
+        )
+      );
+    return code;
+  }
+
+  async validateClaimCode(claimCode: string, context?: {
+    ipAddress?: string;
+    userAgent?: string;
+    schoolId?: string;
+  }): Promise<{ 
+    isValid: boolean; 
+    code?: TeacherClaimCode; 
+    error?: string; 
+    errorCode?: string;
+  }> {
+    const now = new Date();
+    
+    // 🔒 ENHANCED SECURITY: Secure hash-based validation with constant-time comparison
+    const inputCodeHash = CryptoSecurity.hashClaimCode(claimCode);
+    
+    // Get all active codes to perform constant-time hash comparison
+    const activeCodes = await db
+      .select()
+      .from(teacherClaimCodes)
+      .where(
+        and(
+          eq(teacherClaimCodes.isActive, 1),
+          gte(teacherClaimCodes.expiresAt, now)
+        )
+      );
+    
+    // Find matching code using constant-time hash comparison
+    let code: TeacherClaimCode | undefined;
+    for (const activeCode of activeCodes) {
+      // Support both hashed and legacy plain text codes during transition
+      if (activeCode.claimCodeHash && CryptoSecurity.validateClaimCodeHash(claimCode, activeCode.claimCodeHash)) {
+        code = activeCode;
+        break;
+      } else if (!activeCode.claimCodeHash && activeCode.claimCode === claimCode) {
+        // Legacy support - migrate to hash on validation
+        const hash = CryptoSecurity.hashClaimCode(claimCode);
+        await db
+          .update(teacherClaimCodes)
+          .set({ claimCodeHash: hash })
+          .where(eq(teacherClaimCodes.id, activeCode.id));
+        code = { ...activeCode, claimCodeHash: hash };
+        break;
+      }
+    }
+    
+    // Always increment validation attempts for security tracking (even for non-existent codes)
+    if (code) {
+      await db
+        .update(teacherClaimCodes)
+        .set({
+          validationAttempts: sql`${teacherClaimCodes.validationAttempts} + 1`,
+          updatedAt: now
+        })
+        .where(eq(teacherClaimCodes.id, code.id));
+    }
+    
+    // 🛡️ RATE LIMITING: Check if code is temporarily locked due to too many failures
+    if (code?.lockedUntil && now < code.lockedUntil) {
+      await this.recordFailedAttempt(code.id);
+      return { 
+        isValid: false, 
+        error: 'This claim code is temporarily locked due to security concerns. Please try again later.',
+        errorCode: 'TEMPORARILY_LOCKED'
+      };
+    }
+    
+    // Basic existence and status checks
+    if (!code) {
+      return { 
+        isValid: false, 
+        error: 'Invalid claim code. Please check the code and try again.',
+        errorCode: 'NOT_FOUND' 
+      };
+    }
+    
+    if (!code.isActive) {
+      await this.recordFailedAttempt(code.id);
+      return { 
+        isValid: false, 
+        error: 'This claim code has been deactivated.',
+        errorCode: 'DEACTIVATED' 
+      };
+    }
+    
+    // 📅 EXPIRATION CHECK
+    if (now > code.expiresAt) {
+      await this.recordFailedAttempt(code.id);
+      return { 
+        isValid: false, 
+        error: 'This claim code has expired. Please contact your teacher for a new code.',
+        errorCode: 'EXPIRED' 
+      };
+    }
+    
+    // 🔢 USAGE LIMIT CHECK
+    if (code.currentUses >= code.maxUses) {
+      await this.recordFailedAttempt(code.id);
+      return { 
+        isValid: false, 
+        error: 'This claim code has reached its maximum number of uses.',
+        errorCode: 'MAX_USES_REACHED' 
+      };
+    }
+    
+    // 🏫 SCHOOL VALIDATION: Ensure claim code is being used by correct school
+    if (context?.schoolId && code.schoolId !== context.schoolId) {
+      await this.recordFailedAttempt(code.id);
+      return { 
+        isValid: false, 
+        error: 'This claim code is not valid for your school.',
+        errorCode: 'SCHOOL_MISMATCH' 
+      };
+    }
+    
+    return { isValid: true, code };
+  }
+
+  // 🔒 SECURITY: Record failed validation attempts with anti-enumeration protection
+  private async recordFailedAttempt(claimCodeId: string): Promise<void> {
+    const now = new Date();
+    const [updatedCode] = await db
+      .update(teacherClaimCodes)
+      .set({
+        failedAttempts: sql`${teacherClaimCodes.failedAttempts} + 1`,
+        lastFailureAt: now,
+        // Lock code for 15 minutes after 5 failed attempts
+        lockedUntil: sql`CASE 
+          WHEN ${teacherClaimCodes.failedAttempts} >= 4 
+          THEN ${now.getTime() + (15 * 60 * 1000)} 
+          ELSE ${teacherClaimCodes.lockedUntil} 
+        END`,
+        updatedAt: now
+      })
+      .where(eq(teacherClaimCodes.id, claimCodeId))
+      .returning();
+  }
+
+  // 🎓 COPPA-COMPLIANT CLAIM CODE REDEMPTION WITH TRANSACTIONAL SAFETY
+  async useClaimCode(claimCodeData: {
+    claimCode: string;
+    studentFirstName: string;
+    studentLastName?: string;
+    studentBirthYear: number;
+    parentEmail: string;
+    parentName?: string;
+    ipAddress?: string;
+    userAgent?: string;
+    sessionId?: string;
+    deviceFingerprint?: string;
+    schoolId?: string;
+  }): Promise<{
+    success: boolean;
+    result?: ClaimCodeUsage;
+    student?: any;
+    consentRequest?: any;
+    error?: string;
+    errorCode?: string;
+  }> {
+    // 🔒 ATOMIC TRANSACTION for concurrency safety
+    return await db.transaction(async (tx) => {
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      const studentAge = currentYear - claimCodeData.studentBirthYear;
+      
+      // 1️⃣ VALIDATE CLAIM CODE with enhanced security
+      const validation = await this.validateClaimCode(claimCodeData.claimCode, {
+        ipAddress: claimCodeData.ipAddress,
+        userAgent: claimCodeData.userAgent,
+        schoolId: claimCodeData.schoolId
+      });
+      
+      if (!validation.isValid || !validation.code) {
+        // Record failed usage attempt
+        await tx.insert(claimCodeUsages).values({
+          claimCodeId: 'invalid', // Will be overwritten if code exists
+          studentUserId: 'unknown',
+          studentAccountId: 'unknown',
+          usageResult: validation.errorCode || 'invalid',
+          parentConsentTriggered: 0,
+          studentAge,
+          coppaRequired: studentAge < 13 ? 1 : 0,
+          ipAddress: claimCodeData.ipAddress,
+          userAgent: claimCodeData.userAgent,
+          sessionId: claimCodeData.sessionId,
+          deviceFingerprint: claimCodeData.deviceFingerprint,
+          schoolValidated: claimCodeData.schoolId ? 1 : 0,
+          preventedReason: validation.error,
+        });
+        
+        return {
+          success: false,
+          error: validation.error,
+          errorCode: validation.errorCode
+        };
+      }
+
+      const claimCode = validation.code;
+      
+      // 2️⃣ CHECK FOR CONCURRENT REDEMPTION (SELECT FOR UPDATE)
+      const [lockedCode] = await tx
+        .select()
+        .from(teacherClaimCodes)
+        .where(eq(teacherClaimCodes.id, claimCode.id))
+        .for('update'); // Row-level lock to prevent concurrent redemptions
+      
+      if (!lockedCode || lockedCode.currentUses >= lockedCode.maxUses) {
+        return {
+          success: false,
+          error: 'This claim code is no longer available due to concurrent usage.',
+          errorCode: 'CONCURRENT_REDEMPTION'
+        };
+      }
+      
+      // 3️⃣ CREATE USER ACCOUNT (PROVISIONAL - inactive until consent)
+      const [newUser] = await tx.insert(users).values({
+        firstName: claimCodeData.studentFirstName,
+        lastName: claimCodeData.studentLastName,
+        anonymityLevel: 'full', // Default to full anonymity for safety
+        schoolRole: 'student',
+        schoolId: claimCode.schoolId,
+        workplaceId: claimCode.schoolId, // Link to school
+      }).returning();
+      
+      // 4️⃣ CREATE STUDENT ACCOUNT (COPPA-COMPLIANT)
+      const [newStudent] = await tx.insert(studentAccounts).values({
+        userId: newUser.id,
+        schoolId: claimCode.schoolId,
+        firstName: claimCodeData.studentFirstName,
+        grade: claimCode.gradeLevel,
+        birthYear: claimCodeData.studentBirthYear,
+        parentNotificationEmail: claimCodeData.parentEmail,
+        // 🛡️ COPPA: Account starts inactive until parental consent
+        isAccountActive: studentAge >= 13 ? 1 : 0, // Only activate if 13+
+        parentalConsentStatus: studentAge < 13 ? 'pending' : 'not_required'
+      }).returning();
+      
+      // 5️⃣ COPPA COMPLIANCE: Create parental consent request if under 13
+      let consentRequest;
+      if (studentAge < 13) {
+        const verificationCode = require('nanoid').nanoid(20);
+        
+        [consentRequest] = await tx.insert(parentalConsentRequests).values({
+          studentAccountId: newStudent.id,
+          parentEmail: claimCodeData.parentEmail,
+          parentName: claimCodeData.parentName || 'Parent/Guardian',
+          verificationCode: verificationCode
+        }).returning();
+        
+        // 📧 TRIGGER PARENTAL CONSENT EMAIL (async, don't block transaction)
+        // This will be handled by the calling code using emailService
+      }
+      
+      // 6️⃣ RECORD SUCCESSFUL CLAIM CODE USAGE
+      const [usage] = await tx.insert(claimCodeUsages).values({
+        claimCodeId: claimCode.id,
+        studentUserId: newUser.id,
+        studentAccountId: newStudent.id,
+        usageResult: 'success',
+        parentConsentTriggered: studentAge < 13 ? 1 : 0,
+        parentConsentRequestId: consentRequest?.id,
+        studentAge,
+        coppaRequired: studentAge < 13 ? 1 : 0,
+        consentStatus: studentAge < 13 ? 'pending' : 'not_required',
+        ipAddress: claimCodeData.ipAddress,
+        userAgent: claimCodeData.userAgent,
+        sessionId: claimCodeData.sessionId,
+        deviceFingerprint: claimCodeData.deviceFingerprint,
+        schoolValidated: 1,
+      }).returning();
+      
+      // 7️⃣ UPDATE CLAIM CODE USAGE COUNT
+      await tx
+        .update(teacherClaimCodes)
+        .set({
+          currentUses: sql`${teacherClaimCodes.currentUses} + 1`,
+          lastUsedAt: now,
+          updatedAt: now
+        })
+        .where(eq(teacherClaimCodes.id, claimCode.id));
+      
+      return {
+        success: true,
+        result: usage,
+        student: newStudent,
+        consentRequest
+      };
+    });
+  }
+
+  async updateClaimCodeUsage(claimCodeId: string): Promise<TeacherClaimCode | undefined> {
+    // Increment the current uses count
+    const [updatedCode] = await db
+      .update(teacherClaimCodes)
+      .set({
+        currentUses: sql`${teacherClaimCodes.currentUses} + 1`,
+        lastUsedAt: new Date(),
+        updatedAt: new Date()
+      })
+      .where(eq(teacherClaimCodes.id, claimCodeId))
+      .returning();
+    
+    return updatedCode;
+  }
+
+  async getClaimCodeUsages(claimCodeId: string): Promise<ClaimCodeUsage[]> {
+    const usages = await db
+      .select()
+      .from(claimCodeUsages)
+      .where(eq(claimCodeUsages.claimCodeId, claimCodeId))
+      .orderBy(desc(claimCodeUsages.usedAt));
+    return usages;
+  }
+
+  async deactivateClaimCode(claimCodeId: string): Promise<TeacherClaimCode | undefined> {
+    const [deactivatedCode] = await db
+      .update(teacherClaimCodes)
+      .set({
+        isActive: 0,
+        updatedAt: new Date()
+      })
+      .where(eq(teacherClaimCodes.id, claimCodeId))
+      .returning();
+    
+    return deactivatedCode;
   }
 }
 

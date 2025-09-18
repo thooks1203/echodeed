@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
-import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema, insertSupportPostSchema, insertWellnessCheckInSchema, insertPushSubscriptionSchema, insertSchoolFundraiserSchema, insertFamilyDonationSchema, insertStudentAccountSchema, insertParentalConsentRequestSchema } from "@shared/schema";
+import { insertKindnessPostSchema, insertCorporateAccountSchema, insertCorporateTeamSchema, insertCorporateEmployeeSchema, insertCorporateChallengeSchema, insertSupportPostSchema, insertWellnessCheckInSchema, insertPushSubscriptionSchema, insertSchoolFundraiserSchema, insertFamilyDonationSchema, insertStudentAccountSchema, insertParentalConsentRequestSchema, insertTeacherClaimCodeSchema, insertClaimCodeUsageSchema } from "@shared/schema";
 import { nanoid } from 'nanoid';
 import { contentFilter } from "./services/contentFilter";
 import { crisisDetectionService } from "./services/crisisDetection";
@@ -64,6 +64,64 @@ import { securityAuditLogger } from "./services/auditLogger";
 import { emergencyContactEncryption } from "./services/emergencyContactEncryption";
 import { requireCounselorRole, requireSchoolSpecificAccess, logCounselorAction, validateCrisisPermissions, createSchoolFilter } from "./middleware/counselorAuth";
 import { mandatoryReportingService } from "./services/mandatoryReporting";
+import { enforceCOPPA, requireCOPPACompliance } from "./middleware/coppaEnforcement";
+
+// 🔒 TEACHER AUTHORIZATION MIDDLEWARE
+const requireTeacherRole = async (req: any, res: any, next: any) => {
+  try {
+    if (!req.user?.claims?.sub) {
+      return res.status(401).json({ error: 'Authentication required' });
+    }
+
+    const userId = req.user.claims.sub;
+    const user = await storage.getUser(userId);
+    
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Check if user has teacher role
+    if (user.schoolRole !== 'teacher' && user.schoolRole !== 'admin') {
+      // 🔒 AUDIT: Log unauthorized access attempt
+      await securityAuditLogger.logClaimCodeEvent({
+        userId,
+        userRole: user.schoolRole || 'unknown',
+        schoolId: user.schoolId || 'unknown',
+        action: 'GENERATE',
+        details: {
+          authorizationFailed: true,
+          requiredRole: 'teacher',
+          actualRole: user.schoolRole || 'unknown',
+          endpoint: req.path
+        },
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent'),
+        success: false,
+        errorMessage: 'Insufficient permissions - teacher role required'
+      });
+
+      return res.status(403).json({ 
+        error: 'Teacher access required. Only teachers and administrators can access this endpoint.',
+        errorCode: 'INSUFFICIENT_PERMISSIONS'
+      });
+    }
+
+    // Add teacher context to request
+    req.teacherContext = {
+      userId,
+      schoolRole: user.schoolRole,
+      schoolId: user.schoolId
+    };
+
+    next();
+  } catch (error) {
+    console.error('Teacher authorization failed:', error);
+    res.status(500).json({ 
+      error: 'Authorization verification temporarily unavailable',
+      errorCode: 'AUTHORIZATION_ERROR'
+    });
+  }
+};
 
 // 🔒 SECURITY: School Access Control Middleware
 const requireSchoolAccess = async (req: any, res: any, next: any) => {
@@ -1194,7 +1252,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // 🔒 SECURE: Create new kindness post - School-restricted route
-  app.post("/api/posts", isAuthenticated, requireSchoolAccess, async (req: any, res) => {
+  app.post("/api/posts", isAuthenticated, enforceCOPPA, requireSchoolAccess, async (req: any, res) => {
     try {
       const postData = insertKindnessPostSchema.parse(req.body);
       const userId = req.user.claims.sub;
@@ -1447,8 +1505,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get user tokens - Protected route  
-  app.get('/api/tokens', isAuthenticated, async (req: any, res) => {
+  // Get user tokens - Protected route with COPPA compliance 
+  app.get('/api/tokens', isAuthenticated, enforceCOPPA, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
       let userTokens = await storage.getUserTokens(userId);
@@ -1465,8 +1523,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ===== SUPPORT CIRCLE ROUTES - Anonymous peer support for grades 6-8 =====
   
-  // Get support posts with optional filters (PUBLIC FEED - excludes crisis/high-risk posts)
-  app.get("/api/support-posts", async (req, res) => {
+  // Get support posts with optional filters (PUBLIC FEED - excludes crisis/high-risk posts) - COPPA Protected
+  app.get("/api/support-posts", enforceCOPPA, async (req, res) => {
     try {
       const { schoolId, category, gradeLevel } = req.query;
       const filters = {
@@ -1497,8 +1555,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Create new support post - Anonymous (no auth required for safety) - RATE LIMITED
-  app.post("/api/support-posts", rateLimiter.createSupportPostLimiter(), async (req, res) => {
+  // Create new support post - Anonymous (no auth required for safety) - RATE LIMITED - COPPA Protected
+  app.post("/api/support-posts", enforceCOPPA, rateLimiter.createSupportPostLimiter(), async (req, res) => {
     try {
       const postData = insertSupportPostSchema.parse(req.body);
       
@@ -1618,8 +1676,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Heart a support post (show support)
-  app.post("/api/support-posts/:id/heart", async (req, res) => {
+  // Heart a support post (show support) - COPPA Protected
+  app.post("/api/support-posts/:id/heart", enforceCOPPA, async (req, res) => {
     try {
       const { id } = req.params;
       const post = await storage.heartSupportPost(id);
@@ -5330,6 +5388,486 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 🔒 SECURE CLAIM CODE SYSTEM - COPPA-COMPLIANT WITH ENHANCED SECURITY
+  
+  // 1️⃣ CLAIM CODE VALIDATION ENDPOINT - With rate limiting and anti-enumeration
+  app.post('/api/claim-codes/validate', rateLimiter.createGenericLimiter({ maxRequests: 10, windowMs: 60000 }), async (req: any, res) => {
+    try {
+      const { claimCode, schoolId } = req.body;
+      const ipAddress = req.ip || req.connection.remoteAddress;
+      const userAgent = req.get('User-Agent');
+      
+      if (!claimCode) {
+        return res.status(400).json({ 
+          error: 'Claim code is required',
+          errorCode: 'MISSING_CLAIM_CODE' 
+        });
+      }
+
+      // 🔒 SECURITY: Log validation attempt with proper claim code audit
+      await securityAuditLogger.logClaimCodeEvent({
+        userId: req.user?.claims?.sub || 'anonymous',
+        userRole: 'student_registrant',
+        schoolId: schoolId || 'unknown',
+        action: 'VALIDATE',
+        details: {
+          validationAttempt: true,
+          schoolId: schoolId || 'unknown',
+          hasAuthentication: !!req.user?.claims?.sub
+        },
+        ipAddress,
+        userAgent,
+        success: true
+      });
+
+      // Validate claim code with enhanced security context
+      const validation = await storage.validateClaimCode(claimCode, {
+        ipAddress,
+        userAgent,
+        schoolId
+      });
+
+      if (!validation.isValid) {
+        // 🛡️ ANTI-ENUMERATION: Return generic error for security
+        return res.status(400).json({
+          isValid: false,
+          error: 'Invalid or expired claim code. Please check with your teacher.',
+          errorCode: validation.errorCode
+        });
+      }
+
+      // Return sanitized validation result (don't expose sensitive claim code details)
+      res.json({
+        isValid: true,
+        claimCode: {
+          className: validation.code?.className,
+          gradeLevel: validation.code?.gradeLevel,
+          subject: validation.code?.subject,
+          schoolId: validation.code?.schoolId,
+          usesRemaining: validation.code ? validation.code.maxUses - validation.code.currentUses : 0
+        }
+      });
+
+    } catch (error) {
+      console.error('Claim code validation failed:', error);
+      res.status(500).json({ 
+        error: 'Validation service temporarily unavailable. Please try again later.',
+        errorCode: 'SERVICE_ERROR'
+      });
+    }
+  });
+
+  // 2️⃣ CLAIM CODE REDEMPTION ENDPOINT - COPPA-compliant with transactional safety
+  app.post('/api/claim-codes/redeem', rateLimiter.createGenericLimiter({ maxRequests: 3, windowMs: 300000 }), async (req: any, res) => {
+    try {
+      const { 
+        claimCode, 
+        studentFirstName, 
+        studentLastName,
+        studentBirthYear, 
+        parentEmail, 
+        parentName,
+        schoolId 
+      } = req.body;
+      
+      const ipAddress = req.ip || req.connection.remoteAddress;
+      const userAgent = req.get('User-Agent');
+      const sessionId = req.sessionID;
+      
+      // 🛡️ INPUT VALIDATION
+      if (!claimCode || !studentFirstName || !studentBirthYear || !parentEmail) {
+        return res.status(400).json({ 
+          error: 'Missing required fields: claimCode, studentFirstName, studentBirthYear, parentEmail',
+          errorCode: 'MISSING_REQUIRED_FIELDS'
+        });
+      }
+
+      // Email validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(parentEmail)) {
+        return res.status(400).json({ 
+          error: 'Please enter a valid parent email address',
+          errorCode: 'INVALID_EMAIL'
+        });
+      }
+
+      // 🔒 SECURITY: Log redemption attempt with proper claim code audit
+      await securityAuditLogger.logClaimCodeEvent({
+        userId: 'pending_student',
+        userRole: 'student_registrant',
+        schoolId: schoolId || 'unknown',
+        action: 'REDEEM',
+        details: {
+          redemptionAttempt: true,
+          studentFirstName: studentFirstName,
+          parentEmailProvided: !!parentEmail,
+          schoolId: schoolId || 'unknown'
+        },
+        ipAddress,
+        userAgent,
+        success: true
+      });
+
+      // 🎓 COPPA-COMPLIANT CLAIM CODE REDEMPTION
+      const redemptionResult = await storage.useClaimCode({
+        claimCode,
+        studentFirstName,
+        studentLastName,
+        studentBirthYear,
+        parentEmail,
+        parentName,
+        ipAddress,
+        userAgent,
+        sessionId,
+        deviceFingerprint: req.headers['x-device-fingerprint'] as string,
+        schoolId
+      });
+
+      if (!redemptionResult.success) {
+        return res.status(400).json({
+          success: false,
+          error: redemptionResult.error,
+          errorCode: redemptionResult.errorCode
+        });
+      }
+
+      const { student, consentRequest } = redemptionResult;
+      
+      // 📧 SEND PARENTAL CONSENT EMAIL if required
+      if (consentRequest) {
+        try {
+          // Get school name for email
+          let schoolName = 'Your School';
+          try {
+            const school = await storage.getCorporateAccount(schoolId);
+            if (school?.companyName) {
+              schoolName = school.companyName;
+            }
+          } catch (error) {
+            console.log('Could not fetch school name for consent email');
+          }
+
+          await emailService.sendParentalConsentEmail({
+            parentEmail: parentEmail,
+            parentName: parentName || 'Parent/Guardian',
+            studentFirstName: studentFirstName,
+            schoolName: schoolName,
+            verificationCode: consentRequest.verificationCode,
+            verificationUrl: `${req.protocol}://${req.get('host')}/api/students/consent/${consentRequest.verificationCode}`
+          });
+
+          console.log('📧 Parental consent email sent:', {
+            parentEmail,
+            studentName: studentFirstName,
+            schoolName,
+            consentRequestId: consentRequest.id
+          });
+        } catch (emailError) {
+          console.error('Failed to send parental consent email:', emailError);
+          // Don't fail the registration if email fails - log for follow-up
+        }
+      }
+
+      // 🔒 AUDIT: Log successful redemption
+      await securityAuditLogger.logCounselorAction({
+        userId: student.userId,
+        schoolId: student.schoolId,
+        postId: `successful_redemption_${claimCode}`,
+        action: 'RESPOND',
+        details: {
+          claimCodeRedeemed: true,
+          coppaRequired: consentRequest ? true : false,
+          parentConsentTriggered: consentRequest ? true : false,
+          accountActive: student.isAccountActive
+        },
+        ipAddress,
+        userAgent
+      });
+
+      res.json({
+        success: true,
+        student: {
+          id: student.id,
+          firstName: student.firstName,
+          grade: student.grade,
+          schoolId: student.schoolId,
+          isAccountActive: student.isAccountActive,
+          parentalConsentStatus: student.parentalConsentStatus
+        },
+        coppaRequired: consentRequest ? true : false,
+        message: consentRequest 
+          ? `Account created successfully! A parental consent email has been sent to ${parentEmail}. The student's account will be activated once parental consent is approved.`
+          : 'Account created and activated successfully!'
+      });
+
+    } catch (error) {
+      console.error('Claim code redemption failed:', error);
+      
+      // 🔒 AUDIT: Log failed redemption with proper claim code audit
+      try {
+        await securityAuditLogger.logClaimCodeEvent({
+          userId: 'failed_redemption',
+          userRole: 'student_registrant',
+          schoolId: req.body.schoolId || 'unknown',
+          action: 'REDEEM_FAILED',
+          details: {
+            redemptionFailed: true,
+            errorType: error instanceof Error ? error.name : 'unknown_error',
+            schoolId: req.body.schoolId || 'unknown'
+          },
+          ipAddress: req.ip,
+          userAgent: req.get('User-Agent'),
+          success: false,
+          errorMessage: error instanceof Error ? error.message : 'Unknown error'
+        });
+      } catch (auditError) {
+        console.error('Failed to log redemption error:', auditError);
+      }
+
+      res.status(500).json({ 
+        success: false,
+        error: 'Registration service temporarily unavailable. Please try again later.',
+        errorCode: 'SERVICE_ERROR'
+      });
+    }
+  });
+
+  // 3️⃣ TEACHER CLAIM CODE GENERATION ENDPOINT - With enhanced authorization and audit
+  app.post('/api/claim-codes/generate', isAuthenticated, requireTeacherRole, requireSchoolAccess, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { className, gradeLevel, subject, maxUses, expiresAt } = req.body;
+      const schoolId = req.primarySchoolId;
+      const ipAddress = req.ip || req.connection.remoteAddress;
+      
+      // 🛡️ ENHANCED AUTHORIZATION: Verify user is a teacher with proper school scoping
+      const user = await storage.getUser(userId);
+      if (!user || user.schoolRole !== 'teacher') {
+        // 🔒 AUDIT: Log unauthorized attempt
+        await securityAuditLogger.logClaimCodeEvent({
+          userId,
+          userRole: user?.schoolRole || 'unknown',
+          schoolId,
+          action: 'GENERATE',
+          details: {
+            authorizationFailed: true,
+            requiredRole: 'teacher',
+            actualRole: user?.schoolRole || 'unknown',
+            endpoint: '/api/claim-codes/generate'
+          },
+          ipAddress,
+          userAgent: req.get('User-Agent'),
+          success: false,
+          errorMessage: 'Insufficient permissions - teacher role required'
+        });
+        
+        return res.status(403).json({ 
+          error: 'Only teachers can generate claim codes',
+          errorCode: 'INSUFFICIENT_PERMISSIONS'
+        });
+      }
+      
+      // 🛡️ SCHOOL SCOPING: Verify teacher belongs to the school
+      if (user.schoolId && user.schoolId !== schoolId) {
+        await securityAuditLogger.logClaimCodeEvent({
+          userId,
+          userRole: 'teacher',
+          schoolId,
+          action: 'GENERATE',
+          details: {
+            schoolMismatch: true,
+            teacherSchoolId: user.schoolId,
+            requestedSchoolId: schoolId,
+            endpoint: '/api/claim-codes/generate'
+          },
+          ipAddress,
+          userAgent: req.get('User-Agent'),
+          success: false,
+          errorMessage: 'School scoping violation - teacher not authorized for this school'
+        });
+        
+        return res.status(403).json({ 
+          error: 'You can only generate claim codes for your assigned school',
+          errorCode: 'SCHOOL_SCOPING_VIOLATION'
+        });
+      }
+
+      // 🛡️ INPUT VALIDATION
+      if (!className || !gradeLevel) {
+        return res.status(400).json({ 
+          error: 'Class name and grade level are required',
+          errorCode: 'MISSING_REQUIRED_FIELDS'
+        });
+      }
+
+      // Validate expiration date (must be within 90 days)
+      const maxExpirationDate = new Date();
+      maxExpirationDate.setDate(maxExpirationDate.getDate() + 90);
+      
+      const expirationDate = expiresAt ? new Date(expiresAt) : new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)); // Default 30 days
+      
+      if (expirationDate > maxExpirationDate) {
+        return res.status(400).json({ 
+          error: 'Claim codes cannot expire more than 90 days from now',
+          errorCode: 'INVALID_EXPIRATION'
+        });
+      }
+
+      // Generate unique claim code
+      const claimCode = await storage.generateUniqueClaimCode();
+      
+      // Create claim code with enhanced security tracking
+      const newClaimCode = await storage.createTeacherClaimCode({
+        claimCode,
+        teacherUserId: userId,
+        schoolId,
+        className,
+        gradeLevel,
+        subject,
+        maxUses: maxUses || 30,
+        expiresAt: expirationDate,
+        generatedBy: userId,
+        generationIP: ipAddress,
+        allowedSchoolIds: JSON.stringify([schoolId]) // Only allow usage by this school
+      });
+
+      // 🔒 AUDIT: Log claim code generation
+      await securityAuditLogger.logCounselorAction({
+        userId,
+        schoolId,
+        postId: `claim_code_generated_${claimCode}`,
+        action: 'RESPOND',
+        details: {
+          claimCodeGenerated: claimCode,
+          className,
+          gradeLevel,
+          maxUses: newClaimCode.maxUses,
+          expiresAt: newClaimCode.expiresAt,
+          teacherAction: 'generate_claim_code'
+        },
+        ipAddress,
+        userAgent: req.get('User-Agent')
+      });
+
+      console.log('🎓 New claim code generated:', {
+        claimCode,
+        teacherId: userId,
+        schoolId,
+        className,
+        gradeLevel,
+        maxUses: newClaimCode.maxUses
+      });
+
+      res.json({
+        success: true,
+        claimCode: {
+          id: newClaimCode.id,
+          claimCode: newClaimCode.claimCode,
+          className: newClaimCode.className,
+          gradeLevel: newClaimCode.gradeLevel,
+          subject: newClaimCode.subject,
+          maxUses: newClaimCode.maxUses,
+          currentUses: newClaimCode.currentUses,
+          expiresAt: newClaimCode.expiresAt,
+          isActive: newClaimCode.isActive
+        }
+      });
+
+    } catch (error) {
+      console.error('Claim code generation failed:', error);
+      res.status(500).json({ 
+        error: 'Claim code generation service temporarily unavailable',
+        errorCode: 'SERVICE_ERROR'
+      });
+    }
+  });
+
+  // 4️⃣ TEACHER CLAIM CODE MANAGEMENT ENDPOINTS
+  
+  // Get teacher's claim codes
+  app.get('/api/claim-codes/teacher', isAuthenticated, requireTeacherRole, requireSchoolAccess, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      
+      if (!user || user.schoolRole !== 'teacher') {
+        return res.status(403).json({ 
+          error: 'Only teachers can view claim codes',
+          errorCode: 'INSUFFICIENT_PERMISSIONS'
+        });
+      }
+
+      const claimCodes = await storage.getTeacherClaimCodes(userId);
+      
+      // Add usage details for each claim code
+      const enrichedCodes = await Promise.all(
+        claimCodes.map(async (code) => {
+          const usages = await storage.getClaimCodeUsages(code.id);
+          return {
+            ...code,
+            usages: usages.length,
+            recentUsages: usages.slice(0, 5).map(usage => ({
+              usedAt: usage.usedAt,
+              usageResult: usage.usageResult,
+              consentStatus: usage.consentStatus
+            }))
+          };
+        })
+      );
+
+      res.json({ claimCodes: enrichedCodes });
+
+    } catch (error) {
+      console.error('Failed to get teacher claim codes:', error);
+      res.status(500).json({ error: 'Failed to retrieve claim codes' });
+    }
+  });
+
+  // Deactivate claim code
+  app.patch('/api/claim-codes/:claimCodeId/deactivate', isAuthenticated, requireTeacherRole, requireSchoolAccess, async (req: any, res) => {
+    try {
+      const { claimCodeId } = req.params;
+      const userId = req.user.claims.sub;
+      
+      // Verify ownership
+      const claimCodes = await storage.getTeacherClaimCodes(userId);
+      const ownedCode = claimCodes.find(code => code.id === claimCodeId);
+      
+      if (!ownedCode) {
+        return res.status(403).json({ 
+          error: 'You can only deactivate your own claim codes',
+          errorCode: 'NOT_AUTHORIZED'
+        });
+      }
+
+      const deactivatedCode = await storage.deactivateClaimCode(claimCodeId);
+      
+      // 🔒 AUDIT: Log claim code deactivation
+      await securityAuditLogger.logCounselorAction({
+        userId,
+        schoolId: ownedCode.schoolId,
+        postId: `claim_code_deactivated_${ownedCode.claimCode}`,
+        action: 'RESOLVE',
+        details: {
+          claimCodeDeactivated: ownedCode.claimCode,
+          teacherAction: 'deactivate_claim_code',
+          reasonCode: 'manual_deactivation'
+        },
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent')
+      });
+
+      res.json({ 
+        success: true, 
+        claimCode: deactivatedCode 
+      });
+
+    } catch (error) {
+      console.error('Failed to deactivate claim code:', error);
+      res.status(500).json({ error: 'Failed to deactivate claim code' });
+    }
+  });
+
   // Parent notifications
   app.post('/api/school/parent-notifications', isAuthenticated, async (req: any, res) => {
     try {
@@ -5664,7 +6202,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Store conflict report
       const conflictReport = {
         id: nanoid(),
-        reporterId: isAnonymous ? null : (req.user?.claims?.sub || req.user?.id),
+        reporterId: isAnonymous ? null : ((req as any).user?.claims?.sub),
         conflictType,
         conflictDescription,
         involvedParties,

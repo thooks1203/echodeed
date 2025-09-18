@@ -6,12 +6,13 @@
  */
 
 export interface AuditEvent {
-  eventType: 'CRISIS_DATA_ACCESS' | 'EMERGENCY_CONTACT_ACCESS' | 'IDENTITY_UNMASK' | 'COUNSELOR_ACTION' | 'NCMEC_REPORT' | 'SLACK_NOTIFICATION';
+  eventType: 'CRISIS_DATA_ACCESS' | 'EMERGENCY_CONTACT_ACCESS' | 'IDENTITY_UNMASK' | 'COUNSELOR_ACTION' | 'NCMEC_REPORT' | 'SLACK_NOTIFICATION' | 'CLAIM_CODE_EVENT';
   userId?: string;
   userRole?: string;
   schoolId?: string;
   postId?: string;
   emergencyContactId?: string;
+  claimCodeId?: string;
   action: string;
   details: any;
   ipAddress?: string;
@@ -175,6 +176,45 @@ export class SecurityAuditLogger {
         dataMinimization: 'PII_REMOVED',
         timestamp: new Date().toISOString()
       },
+      timestamp: new Date(),
+      success: params.success,
+      errorMessage: params.errorMessage
+    };
+
+    await this.writeAuditLog(event);
+  }
+
+  /**
+   * Log claim code events - dedicated COPPA-compliant audit for school registration
+   */
+  async logClaimCodeEvent(params: {
+    userId?: string;
+    userRole?: string;
+    schoolId?: string;
+    claimCodeId?: string;
+    action: 'VALIDATE' | 'GENERATE' | 'REDEEM' | 'REDEEM_SUCCESS' | 'REDEEM_FAILED' | 'DEACTIVATE';
+    details: any;
+    ipAddress?: string;
+    userAgent?: string;
+    success: boolean;
+    errorMessage?: string;
+  }): Promise<void> {
+    const event: AuditEvent = {
+      eventType: 'CLAIM_CODE_EVENT',
+      userId: params.userId,
+      userRole: params.userRole,
+      schoolId: params.schoolId,
+      claimCodeId: params.claimCodeId,
+      action: params.action,
+      details: {
+        ...params.details,
+        timestamp: new Date().toISOString(),
+        security_context: 'coppa_compliant_registration',
+        compliance_note: 'Student registration audit - no sensitive data stored',
+        data_minimization: 'COPPA_COMPLIANT'
+      },
+      ipAddress: params.ipAddress,
+      userAgent: params.userAgent,
       timestamp: new Date(),
       success: params.success,
       errorMessage: params.errorMessage
