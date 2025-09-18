@@ -527,6 +527,22 @@ app.use((req, res, next) => {
       const { initializeCurriculumLessons } = await import('./curriculumLessonData');
       await initializeCurriculumLessons(storage);
       
+      // 🛡️ PRODUCTION SAFETY: Initialize BCA demo consent data only in demo/dev mode
+      const isProduction = process.env.NODE_ENV === 'production';
+      const isDemoModeEnabled = process.env.DEMO_MODE === 'true';
+      
+      if (!isProduction || isDemoModeEnabled) {
+        log('Initializing BCA demo consent data...');
+        const demoResult = await storage.initializeBCADemoData();
+        if (demoResult.success) {
+          log(`✓ BCA demo data: ${demoResult.message}`);
+        } else {
+          log(`⚠ BCA demo data initialization: ${demoResult.message}`);
+        }
+      } else {
+        log('🚫 Skipping BCA demo data initialization in production mode (set DEMO_MODE=true to enable)');
+      }
+      
       log('✓ Sample data initialization completed');
 
       // Initialize Summer Challenge Program

@@ -1178,6 +1178,18 @@ export default function SchoolConsentDashboard() {
         </div>
       </div>
 
+      {/* Demo Data Banner */}
+      <div className="bg-blue-50 dark:bg-blue-900/20 border-b border-blue-200 dark:border-blue-800">
+        <div className="container mx-auto px-4 py-2">
+          <div className="flex items-center justify-center space-x-2">
+            <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
+            <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
+              Demo Mode: Synthetic data for Burlington Christian Academy (360 students, no PII)
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Navigation Bar */}
       <div className="border-b bg-muted/30">
         <div className="container mx-auto px-4 py-3">

@@ -223,6 +223,9 @@ import {
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte, lte, isNotNull, isNull, inArray, gt, getTableColumns } from "drizzle-orm";
 import { CryptoSecurity } from "./utils/cryptoSecurity";
+// Import demo seeding function
+import { generateDemoConsentData, DEMO_CONFIG } from "./demoSeed";
+import { nanoid } from 'nanoid';
 
 // Storage interface for all operations
 export interface IStorage {
@@ -5979,6 +5982,109 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return deactivatedCode;
+  }
+
+  // 🎓 BCA DEMO DATA INITIALIZATION - COPPA-COMPLIANT SYNTHETIC DATA
+  async initializeBCADemoData(): Promise<{ success: boolean; message: string; stats?: any }> {
+    try {
+      console.log('🎓 Initializing BCA demo consent data...');
+      
+      // Check if demo data already exists for Burlington Christian Academy
+      const existingConsents = await this.listConsentsBySchool(DEMO_CONFIG.SCHOOL_ID, { page: 1, pageSize: 1 });
+      if (existingConsents && existingConsents.consents && existingConsents.consents.length > 0) {
+        console.log('📋 BCA demo consent data already exists, skipping initialization');
+        return { success: true, message: 'Demo data already exists' };
+      }
+
+      // Generate the demo data using our seeding utility
+      const demoData = generateDemoConsentData();
+      
+      console.log('🌱 Seeding BCA demo data into database...');
+      
+      // Insert student accounts and users
+      const createdUsers: any[] = [];
+      const createdStudents: any[] = [];
+      
+      for (let i = 0; i < demoData.students.length; i++) {
+        const student = demoData.students[i];
+        // Get corresponding consent record to align status
+        const correspondingConsent = demoData.consentRecords[i];
+        
+        // Create user account first
+        const newUser = await this.upsertUser({
+          id: student.userId,
+          firstName: student.firstName,
+          lastName: student.lastName,
+          schoolRole: 'student',
+          schoolId: DEMO_CONFIG.SCHOOL_ID,
+          grade: student.grade,
+          email: `${student.studentId.toLowerCase().replace(/-/g, '')}@example.edu`,
+          anonymityLevel: 'full'
+        });
+        createdUsers.push(newUser);
+
+        // Create student account with aligned consent status
+        const [newStudent] = await db.insert(studentAccounts).values({
+          userId: student.userId,
+          schoolId: DEMO_CONFIG.SCHOOL_ID,
+          firstName: student.firstName,
+          lastName: student.lastName,
+          grade: student.grade,
+          birthYear: student.birthYear,
+          parentNotificationEmail: student.parentEmail,
+          // ✅ Fixed: Align status with actual consent record status 
+          isAccountActive: correspondingConsent.consentStatus === 'approved' ? 1 : 0,
+          parentalConsentStatus: correspondingConsent.consentStatus
+        }).returning();
+        createdStudents.push(newStudent);
+      }
+
+      // Insert consent records with correct foreign key linkage
+      const createdConsentRecords: any[] = [];
+      for (let i = 0; i < demoData.consentRecords.length; i++) {
+        const consentRecord = demoData.consentRecords[i];
+        // 🔧 CRITICAL FIX: Use the actual inserted student ID instead of original userId
+        const correspondingStudent = createdStudents[i];
+        
+        const [created] = await db.insert(parentalConsentRecords).values({
+          ...consentRecord,
+          // ✅ Fixed: Use newStudent.id instead of student.userId for proper foreign key linkage
+          studentAccountId: correspondingStudent.id,
+          // Ensure all required fields are properly set for database
+          isImmutable: consentRecord.isImmutable || false,
+          recordCreatedAt: consentRecord.recordCreatedAt || new Date(),
+          recordUpdatedAt: consentRecord.recordUpdatedAt || new Date()
+        }).returning();
+        createdConsentRecords.push(created);
+      }
+
+      // Insert audit events
+      for (const auditEvent of demoData.auditEvents) {
+        await db.insert(consentAuditEvents).values(auditEvent);
+      }
+
+      console.log('✅ BCA demo data seeding completed successfully!');
+      console.log(`📊 Created: ${createdUsers.length} users, ${createdStudents.length} students, ${createdConsentRecords.length} consent records`);
+      
+      return {
+        success: true,
+        message: `BCA demo data initialized: ${demoData.metadata.totalRecords} total records created`,
+        stats: {
+          users: createdUsers.length,
+          students: createdStudents.length,
+          consentRecords: createdConsentRecords.length,
+          auditEvents: demoData.auditEvents.length,
+          breakdown: demoData.stats
+        }
+      };
+
+    } catch (error: any) {
+      console.error('❌ Failed to initialize BCA demo data:', error);
+      return {
+        success: false,
+        message: `Demo data initialization failed: ${error.message}`
+      };
+    }
   }
 }
 
