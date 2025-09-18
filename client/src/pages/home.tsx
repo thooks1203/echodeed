@@ -34,7 +34,7 @@ export default function Home() {
   const [, navigate] = useLocation();
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
-  const [activeTab, setActiveTab] = useState('schools');
+  const [activeTab, setActiveTab] = useState('feed');
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(() => {
@@ -49,6 +49,17 @@ export default function Home() {
   const { toast } = useToast();
   
   const { location } = useGeolocation();
+
+  // Handle URL parameters for tab navigation
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    if (tabParam && ['feed', 'schools', 'support', 'summer', 'rewards'].includes(tabParam)) {
+      setActiveTab(tabParam);
+      // Remove the tab parameter from URL to keep it clean
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, []);
 
   // Fetch data
   const { data: posts = [], isLoading: postsLoading } = useQuery<KindnessPost[]>({
