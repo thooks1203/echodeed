@@ -115,7 +115,7 @@ export function SponsorsPage() {
             </h1>
           </div>
           <p className="text-lg text-gray-600 max-w-3xl mx-auto">
-            Meet the amazing local businesses and organizations that make EchoDeed possible. Our sponsors are the backbone of our platform, enabling us to provide free character education to students.
+            Meet the amazing local businesses and organizations that make EchoDeed possible. Our sponsors are the backbone of our platform, enabling us to provide affordable, high-quality character education to students.
           </p>
         </div>
 
@@ -139,7 +139,7 @@ export function SponsorsPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-purple-600">Family Benefits</p>
-                  <p className="text-3xl font-bold text-purple-700">FREE</p>
+                  <p className="text-3xl font-bold text-purple-700">INCLUDED</p>
                   <p className="text-sm text-purple-600">Discounts & offers</p>
                 </div>
                 <Gift className="h-12 w-12 text-purple-500" />
