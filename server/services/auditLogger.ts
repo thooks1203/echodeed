@@ -224,6 +224,41 @@ export class SecurityAuditLogger {
   }
 
   /**
+   * General security event logging - for consent system and other security events
+   */
+  async logSecurityEvent(params: {
+    userId?: string;
+    userRole?: string;
+    schoolId?: string;
+    action: string;
+    details?: any;
+    ipAddress?: string;
+    userAgent?: string;
+    success: boolean;
+    errorMessage?: string;
+  }): Promise<void> {
+    const event: AuditEvent = {
+      eventType: 'CRISIS_DATA_ACCESS', // Use existing type for now
+      userId: params.userId,
+      userRole: params.userRole,
+      schoolId: params.schoolId,
+      action: params.action,
+      details: {
+        ...params.details,
+        timestamp: new Date().toISOString(),
+        security_context: 'general_security_event'
+      },
+      ipAddress: params.ipAddress,
+      userAgent: params.userAgent,
+      timestamp: new Date(),
+      success: params.success,
+      errorMessage: params.errorMessage
+    };
+
+    await this.writeAuditLog(event);
+  }
+
+  /**
    * Write audit log to secure, immutable storage
    */
   private async writeAuditLog(event: AuditEvent): Promise<void> {
