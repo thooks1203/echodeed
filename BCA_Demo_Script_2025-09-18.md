@@ -1,13 +1,25 @@
 # Burlington Christian Academy Demo Script
-**George Robinson Meeting - September 18, 2025 | 15-20 Minutes**
+**George Robinson Meeting - September 18, 2025 | 18-22 Minutes**
 
-## Opening & Value Proposition (3 minutes)
+## Opening & Value Proposition (5 minutes)
 
 ### Welcome & Context Setting
 > "Good [morning/afternoon], George. Thank you for taking the time to explore how EchoDeed can serve Burlington Christian Academy's mission of developing character and kindness in your middle school students."
 
-### Immediate Value Hook
-> "What you're about to see is a platform specifically configured for BCA's 360 middle school students across grades 6-8. We're not showing you a generic demo—this is your school, with your local Burlington community partners, designed around Christian values and educational excellence."
+### What is EchoDeed? (2 minutes)
+> "Before I show you what we've built for BCA specifically, let me explain what EchoDeed is and why it exists."
+
+**The Problem We Solve:**
+> "COPPA laws prevent children under 13 from participating in most digital platforms. This means K-8 schools can't use standard social platforms, learning apps, or character development tools without complex legal hurdles."
+
+**What EchoDeed Is:**
+> "EchoDeed is the world's first comprehensive K-8 kindness and character education platform that's fully COPPA compliant from day one. We handle all the legal complexity so schools can focus on character development."
+
+**Why This Matters:**
+> "For the past 2+ years, we've solved the legal and technical challenges that prevent other platforms from serving K-8 students. The result is a platform that combines character education, family engagement, and community connection—all while ensuring complete legal compliance."
+
+### Your BCA-Specific Solution
+> "What you're about to see is this platform specifically configured for BCA's 360 middle school students across grades 6-8. We're not showing you a generic demo—this is your school, with your local Burlington community partners, designed around Christian values and educational excellence."
 
 ### Key Benefits Preview
 - **Child Safety First**: 100% COPPA compliant with AI crisis detection and mandatory reporting
@@ -17,7 +29,7 @@
 
 > "Let me show you exactly how this works for BCA..."
 
-## Live Demo Walkthrough (12-15 minutes)
+## Live Demo Walkthrough (13-15 minutes)
 
 ### 1. School Administration Dashboard (4 minutes)
 
