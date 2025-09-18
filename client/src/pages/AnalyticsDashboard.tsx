@@ -208,7 +208,7 @@ export default function AnalyticsDashboard({
               
               <div className="flex gap-2">
                 <span className="text-sm font-medium">Grade:</span>
-                {(['all', 'K-2', '3-5', '6-8'] as const).map((grade) => (
+                {(['all', '6', '7', '8'] as const).map((grade) => (
                   <Button
                     key={grade}
                     variant={selectedGrade === grade ? "default" : "outline"}
@@ -216,7 +216,7 @@ export default function AnalyticsDashboard({
                     onClick={() => setSelectedGrade(grade)}
                     data-testid={`button-grade-${grade}`}
                   >
-                    {grade === 'all' ? 'All Grades' : `Grades ${grade}`}
+                    {grade === 'all' ? 'All Grades' : `Grade ${grade}`}
                   </Button>
                 ))}
               </div>
