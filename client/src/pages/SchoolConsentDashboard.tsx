@@ -257,18 +257,16 @@ export default function SchoolConsentDashboard() {
   });
 
   // 🔄 RENEWALS DATA FETCHING
+  const renewalsQueryUrl = `/api/schools/${schoolId}/consents/renewals?` + new URLSearchParams({
+    status: renewalFilters.status || '',
+    grade: renewalFilters.grade || '',
+    query: renewalFilters.query || '',
+    page: renewalFilters.page.toString(),
+    pageSize: renewalFilters.pageSize.toString()
+  }).toString();
+
   const { data: renewalsData, isLoading: renewalsLoading, refetch: refetchRenewals } = useQuery({
-    queryKey: [
-      '/api/schools', 
-      schoolId, 
-      'consents', 
-      'renewals',
-      renewalFilters.status,
-      renewalFilters.grade,
-      renewalFilters.query,
-      renewalFilters.page,
-      renewalFilters.pageSize
-    ],
+    queryKey: [renewalsQueryUrl],
     enabled: !!schoolId && selectedTab === 'renewals'
   });
 
