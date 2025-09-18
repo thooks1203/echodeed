@@ -848,7 +848,11 @@ export default function Home() {
       minHeight: '100vh',
       position: 'relative'
     }}>
-      <AppHeader counter={counter || { count: 0 }} isPulse={counterPulse} />
+      <AppHeader 
+        counter={counter || { count: 0 }} 
+        isPulse={counterPulse} 
+        showBackButton={false} 
+      />
       <FilterBar 
         activeFilter={activeFilter} 
         location={location}
