@@ -8,7 +8,6 @@ import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Calendar } from '@/components/ui/calendar';
@@ -491,34 +490,16 @@ export default function SchoolConsentDashboard() {
               
               <div className="w-full md:w-48">
                 <Label htmlFor="status-filter">Status Filter</Label>
-                <Select value={statusFilter} onValueChange={(value) => handleFilterChange('status', value)}>
-                  <SelectTrigger data-testid="select-status-filter">
-                    <SelectValue placeholder="All Statuses" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Statuses</SelectItem>
-                    <SelectItem value="approved">Approved</SelectItem>
-                    <SelectItem value="pending">Pending</SelectItem>
-                    <SelectItem value="denied">Denied</SelectItem>
-                    <SelectItem value="revoked">Revoked</SelectItem>
-                    <SelectItem value="expired">Expired</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="p-2 border border-dashed border-muted-foreground/30 rounded text-sm text-muted-foreground text-center">
+                  Filters temporarily disabled
+                </div>
               </div>
               
               <div className="w-full md:w-32">
                 <Label htmlFor="grade-filter">Grade Filter</Label>
-                <Select value={gradeFilter} onValueChange={(value) => handleFilterChange('grade', value)}>
-                  <SelectTrigger data-testid="select-grade-filter">
-                    <SelectValue placeholder="All Grades" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="">All Grades</SelectItem>
-                    <SelectItem value="6">Grade 6</SelectItem>
-                    <SelectItem value="7">Grade 7</SelectItem>
-                    <SelectItem value="8">Grade 8</SelectItem>
-                  </SelectContent>
-                </Select>
+                <div className="p-2 border border-dashed border-muted-foreground/30 rounded text-sm text-muted-foreground text-center">
+                  Filters disabled
+                </div>
               </div>
             </div>
 
@@ -1032,36 +1013,13 @@ export default function SchoolConsentDashboard() {
         {/* 🔍 FILTERS AND EXPORT */}
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div className="flex flex-col sm:flex-row gap-2">
-            <Select 
-              value={renewalFilters.status} 
-              onValueChange={(value) => setRenewalFilters(prev => ({ ...prev, status: value, page: 1 }))}
-            >
-              <SelectTrigger className="w-[150px]" data-testid="filter-status">
-                <SelectValue placeholder="All Statuses" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">All Statuses</SelectItem>
-                <SelectItem value="pending">Pending</SelectItem>
-                <SelectItem value="approved">Approved</SelectItem>
-                <SelectItem value="overdue">Overdue</SelectItem>
-                <SelectItem value="expired">Expired</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="w-[150px] p-2 border border-dashed border-muted-foreground/30 rounded text-sm text-muted-foreground text-center">
+              Status filters disabled
+            </div>
 
-            <Select 
-              value={renewalFilters.grade} 
-              onValueChange={(value) => setRenewalFilters(prev => ({ ...prev, grade: value, page: 1 }))}
-            >
-              <SelectTrigger className="w-[120px]" data-testid="filter-grade">
-                <SelectValue placeholder="All Grades" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="">All Grades</SelectItem>
-                <SelectItem value="6">Grade 6</SelectItem>
-                <SelectItem value="7">Grade 7</SelectItem>
-                <SelectItem value="8">Grade 8</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="w-[120px] p-2 border border-dashed border-muted-foreground/30 rounded text-sm text-muted-foreground text-center">
+              Grade filters disabled
+            </div>
           </div>
 
           <Button 
