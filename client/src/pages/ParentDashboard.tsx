@@ -106,8 +106,8 @@ export default function ParentDashboard() {
     {
       userId: 'student-001',
       name: 'Emma Johnson',
-      grade: '4th',
-      school: 'Burlington Elementary',
+      grade: '6th',
+      school: 'Burlington Middle School',
       isActive: true,
       lastActivity: new Date().toISOString(),
       weeklyKindnessCount: 8,

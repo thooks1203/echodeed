@@ -315,7 +315,7 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
               Emma Johnson
             </h3>
             <p style={{ fontSize: '14px', opacity: 0.9, margin: 0 }}>
-              5th Grade • Riverside Elementary
+              6th Grade • Riverside Middle School
             </p>
           </div>
 
