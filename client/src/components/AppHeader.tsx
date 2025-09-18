@@ -46,7 +46,7 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
         )}
         
         {/* 🎉 SPECTACULAR Global Kindness Counter 🎉 */}
-        <div className="relative bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 p-4 rounded-2xl text-center shadow-xl transform hover:scale-105 transition-all duration-500 overflow-hidden max-w-md mx-auto">
+        <div className="relative bg-gradient-to-r from-purple-600 via-pink-600 to-blue-600 p-4 rounded-2xl text-center shadow-xl transform hover:scale-105 transition-all duration-500 overflow-hidden max-w-2xl mx-auto">
           {/* Electric Heart positioned ABOVE the counter */}
           <div className="flex justify-center mb-2">
             <img 
