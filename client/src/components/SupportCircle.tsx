@@ -10,7 +10,6 @@ interface SupportCircleProps {
 }
 
 export function SupportCircle({ onBack }: SupportCircleProps) {
-  console.log('SupportCircle onBack prop:', onBack);
   const [newPost, setNewPost] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('emotional');
   // Load school connection from localStorage on component mount
@@ -156,12 +155,8 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
           <div className="absolute left-0 top-0">
             <BackButton 
               onClick={() => {
-                console.log('BackButton clicked, onBack:', onBack);
                 if (onBack) {
                   onBack();
-                } else {
-                  console.log('No onBack function provided, defaulting to go back to main page');
-                  window.location.href = '/';
                 }
               }}
               variant="minimal"
