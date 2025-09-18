@@ -9,7 +9,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'schools', label: 'Schools', icon: '🎓' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'summer', label: 'Summer', icon: '☀️' },
-    { id: 'rewards', label: '🔥 Rewards', icon: '💎' },
+    { id: 'rewards', label: 'Rewards', icon: '🔥' },
   ];
 
   return (
@@ -24,8 +24,8 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
       backdropFilter: 'blur(8px)',
       borderTop: '1px solid #e5e7eb',
       display: 'flex',
-      justifyContent: 'space-around',
-      padding: '6px 0',
+      justifyContent: 'space-between',
+      padding: '6px 8px',
       zIndex: 100
     }}>
       {tabs.map((tab) => (
@@ -38,14 +38,16 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '4px',
+            gap: '2px',
             cursor: 'pointer',
-            padding: '4px',
+            padding: '4px 2px',
             borderRadius: '6px',
-            fontSize: '9px',
+            fontSize: '8px',
             fontWeight: '500',
             color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
-            backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent'
+            backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent',
+            flex: '1',
+            minWidth: '0'
           }}
           data-testid={`button-nav-${tab.id}`}
         >
