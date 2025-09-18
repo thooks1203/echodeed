@@ -70,11 +70,26 @@ export const enforceCOPPA = async (req: COPPAEnforcedRequest, res: Response, nex
 
     // 🛡️ COPPA ENFORCEMENT: Block access for under-13 students without approved consent
     if (isUnder13) {
-      const consentStatus = studentAccount.parentalConsentStatus || 'pending';
+      // 🔄 INTEGRATION: Read consent status from new consent records system
+      const latestConsentRecord = await storage.getStudentConsentStatus(userId);
+      const consentStatus = latestConsentRecord?.consentStatus || 'pending';
       const isAccountActive = studentAccount.isAccountActive === 1;
       
-      // Block access if consent not approved or account not active
-      if (consentStatus !== 'approved' || !isAccountActive) {
+      // 🛡️ CRITICAL FIX: Only check linkExpiresAt for pre-approval verification
+      // Post-approval: rely on consentStatus === 'approved' && isImmutable
+      let hasValidConsent = false;
+      if (latestConsentRecord) {
+        if (latestConsentRecord.consentStatus === 'approved' && latestConsentRecord.isImmutable) {
+          // Approved and immutable consent - no expiry check needed
+          hasValidConsent = true;
+        } else if (latestConsentRecord.consentStatus === 'pending' || !latestConsentRecord.isImmutable) {
+          // Pre-approval verification - check linkExpiresAt
+          hasValidConsent = new Date() <= latestConsentRecord.linkExpiresAt;
+        }
+      }
+      
+      // Block access if consent not approved, account not active, or consent invalid
+      if (!hasValidConsent || !isAccountActive) {
         req.coppaStatus = {
           isStudent: true,
           isUnder13: true,
@@ -83,7 +98,7 @@ export const enforceCOPPA = async (req: COPPAEnforcedRequest, res: Response, nex
           accessBlocked: true
         };
 
-        // 🔒 AUDIT: Log blocked access attempt
+        // 🔒 AUDIT: Log blocked access attempt with enhanced consent details
         await securityAuditLogger.logClaimCodeEvent({
           userId,
           userRole: 'student',
@@ -92,38 +107,45 @@ export const enforceCOPPA = async (req: COPPAEnforcedRequest, res: Response, nex
           details: {
             blockReason: 'COPPA_COMPLIANCE',
             consentStatus,
+            hasValidConsent,
             studentAge,
             isAccountActive,
             endpoint: req.path,
-            method: req.method
+            method: req.method,
+            consentRecordId: latestConsentRecord?.id,
+            consentExpiry: latestConsentRecord?.linkExpiresAt,
+            isImmutable: latestConsentRecord?.isImmutable
           },
           ipAddress,
           userAgent: req.get('User-Agent'),
           success: false,
-          errorMessage: 'Access blocked pending parental consent'
+          errorMessage: 'Access blocked pending valid parental consent'
         });
 
-        // Return COPPA compliance error
+        // Return enhanced COPPA compliance error with detailed status
         return res.status(403).json({
-          error: 'Account access restricted pending parental consent',
+          error: 'Account access restricted pending valid parental consent',
           errorCode: 'COPPA_CONSENT_REQUIRED',
           details: {
             requiresParentalConsent: true,
             consentStatus,
+            hasValidConsent,
             parentNotificationEmail: studentAccount.parentNotificationEmail,
-            message: consentStatus === 'pending' 
-              ? 'A parental consent email has been sent. Please ask your parent/guardian to approve your account.'
-              : 'Parental consent is required to activate your account. Please contact your teacher.'
+            consentRecordId: latestConsentRecord?.id,
+            consentExpired: latestConsentRecord ? new Date() > latestConsentRecord.linkExpiresAt : false,
+            isImmutable: latestConsentRecord?.isImmutable || false,
+            message: getConsentStatusMessage(consentStatus, latestConsentRecord)
           }
         });
       }
     }
 
-    // Access allowed - set status and continue
+    // Access allowed - set status with enhanced consent tracking
+    const latestConsentRecord = isUnder13 ? await storage.getStudentConsentStatus(userId) : null;
     req.coppaStatus = {
       isStudent: true,
       isUnder13,
-      consentStatus: studentAccount.parentalConsentStatus || 'not_required',
+      consentStatus: latestConsentRecord?.consentStatus || (isUnder13 ? 'pending' : 'not_required'),
       requiresParentalConsent: isUnder13,
       accessBlocked: false
     };
@@ -188,10 +210,10 @@ export const requireCOPPACompliance = async (req: COPPAEnforcedRequest, res: Res
   await enforceCOPPA(req, res, (err) => {
     if (err || res.headersSent) return;
 
-    // Additional strict checking for sensitive operations
+    // Additional strict checking for sensitive operations using new consent system
     if (req.coppaStatus?.isUnder13 && req.coppaStatus?.consentStatus !== 'approved') {
       return res.status(403).json({
-        error: 'This operation requires verified parental consent',
+        error: 'This operation requires verified and immutable parental consent',
         errorCode: 'COPPA_STRICT_CONSENT_REQUIRED'
       });
     }
@@ -199,3 +221,25 @@ export const requireCOPPACompliance = async (req: COPPAEnforcedRequest, res: Res
     next();
   });
 };
+
+/**
+ * Helper function to generate appropriate consent status messages
+ */
+function getConsentStatusMessage(consentStatus: string, consentRecord: any): string {
+  if (!consentRecord) {
+    return 'Parental consent is required to access this platform. Please contact your teacher for a registration code.';
+  }
+
+  switch (consentStatus) {
+    case 'pending':
+      return 'A parental consent email has been sent. Please ask your parent/guardian to check their email and approve your account.';
+    case 'denied':
+      return 'Parental consent was denied. Please contact your teacher or school administrator for assistance.';
+    case 'expired':
+      return 'The parental consent link has expired. Please contact your teacher to request a new consent email.';
+    case 'revoked':
+      return 'Parental consent has been revoked. Your account access has been suspended. Contact your teacher for more information.';
+    default:
+      return 'Valid parental consent is required to access this platform. Please contact your teacher.';
+  }
+}

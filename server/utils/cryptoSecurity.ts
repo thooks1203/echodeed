@@ -79,4 +79,107 @@ export class CryptoSecurity {
     
     return result;
   }
+
+  /**
+   * ✍️ DIGITAL SIGNATURE CAPABILITY
+   * Generate a cryptographic signature hash over consent payload for legal verification
+   * @param consentData The consent data object
+   * @param metadata Additional metadata (IP, UA, timestamp, etc.)
+   * @returns Object containing signature hash and payload
+   */
+  static generateConsentSignature(consentData: {
+    consentVersion: string;
+    parentName: string;
+    parentEmail: string;
+    signerFullName: string;
+    consentFlags: Record<string, boolean>;
+    finalConsentConfirmed: boolean;
+  }, metadata: {
+    ipAddress: string;
+    userAgent: string;
+    timestamp: string;
+    deviceFingerprint?: string;
+    sessionId?: string;
+  }): { hash: string; payload: string; signatureMetadata: any } {
+    
+    // Create signature payload with all critical consent data
+    const signaturePayload = {
+      consentData,
+      metadata,
+      signatureTimestamp: new Date().toISOString(),
+      signatureVersion: 'v1.0',
+      cryptoAlgorithm: 'SHA-256'
+    };
+
+    // Convert to canonical JSON string for consistent hashing
+    const payloadString = JSON.stringify(signaturePayload, Object.keys(signaturePayload).sort());
+    
+    // Generate cryptographic hash using SHA-256
+    const hash = createHash('sha256');
+    hash.update('COPPA_CONSENT_SIGNATURE_SALT_2025' + payloadString);
+    const signatureHash = hash.digest('hex');
+
+    // Create signature metadata for audit trail
+    const signatureMetadata = {
+      algorithm: 'SHA-256',
+      saltUsed: 'COPPA_CONSENT_SIGNATURE_SALT_2025',
+      payloadLength: payloadString.length,
+      signatureVersion: 'v1.0',
+      generatedAt: new Date().toISOString(),
+      ...metadata
+    };
+
+    return {
+      hash: signatureHash,
+      payload: payloadString,
+      signatureMetadata
+    };
+  }
+
+  /**
+   * Verify a consent signature hash against the stored payload
+   * @param payload The stored signature payload
+   * @param storedHash The stored signature hash
+   * @returns true if signature is valid, false otherwise
+   */
+  static verifyConsentSignature(payload: string, storedHash: string): boolean {
+    try {
+      // Recreate the hash from the payload
+      const hash = createHash('sha256');
+      hash.update('COPPA_CONSENT_SIGNATURE_SALT_2025' + payload);
+      const computedHash = hash.digest('hex');
+      
+      // Use constant-time comparison for security
+      return this.constantTimeCompare(computedHash, storedHash);
+    } catch (error) {
+      console.error('Signature verification failed:', error);
+      return false;
+    }
+  }
+
+  /**
+   * Extract signature metadata for audit purposes
+   * @param signaturePayload The signature payload JSON string
+   * @returns Parsed signature data for audit
+   */
+  static extractSignatureAuditData(signaturePayload: string): any {
+    try {
+      const parsed = JSON.parse(signaturePayload);
+      return {
+        consentVersion: parsed.consentData?.consentVersion,
+        signerName: parsed.consentData?.signerFullName,
+        parentEmail: parsed.consentData?.parentEmail,
+        signatureTimestamp: parsed.signatureTimestamp,
+        ipAddress: parsed.metadata?.ipAddress,
+        userAgent: parsed.metadata?.userAgent,
+        deviceFingerprint: parsed.metadata?.deviceFingerprint,
+        finalConsentConfirmed: parsed.consentData?.finalConsentConfirmed,
+        cryptoAlgorithm: parsed.cryptoAlgorithm,
+        signatureVersion: parsed.signatureVersion
+      };
+    } catch (error) {
+      console.error('Failed to extract signature audit data:', error);
+      return null;
+    }
+  }
 }

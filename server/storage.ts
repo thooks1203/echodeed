@@ -203,6 +203,12 @@ import {
   type InsertStudentAccount,
   type ParentalConsentRequest,
   type InsertParentalConsentRequest,
+  // Enhanced COPPA consent types
+  parentalConsentRecords,
+  type ParentalConsentRecord,
+  type InsertParentalConsentRecord,
+  type VerifyConsent,
+  type RevokeConsent,
   type TeacherClaimCode,
   type InsertTeacherClaimCode,
   type ClaimCodeUsage,
@@ -566,6 +572,39 @@ export interface IStorage {
   updateParentalConsentStatus(requestId: string, status: string, ipAddress?: string): Promise<ParentalConsentRequest>;
   linkStudentToParent(link: InsertStudentParentLink): Promise<StudentParentLink>;
   getParentsForStudent(studentUserId: string): Promise<ParentAccount[]>;
+  
+  // 🛡️ ENHANCED COPPA CONSENT OPERATIONS - PRODUCTION COMPLIANCE
+  createConsentRecord(record: InsertParentalConsentRecord): Promise<ParentalConsentRecord>;
+  getConsentRecord(recordId: string): Promise<ParentalConsentRecord | undefined>;
+  getConsentRecordByCode(verificationCode: string): Promise<ParentalConsentRecord | undefined>;
+  verifyConsentLink(verification: VerifyConsent, ipAddress: string, userAgent: string): Promise<{
+    success: boolean;
+    record?: ParentalConsentRecord;
+    error?: string;
+    errorCode?: string;
+  }>;
+  approveConsent(recordId: string, ipAddress: string, userAgent: string): Promise<ParentalConsentRecord>;
+  approveConsentWithSignature(recordId: string, signatureData: {
+    digitalSignatureHash: string;
+    signaturePayload: string;
+    signerFullName: string;
+    finalConsentConfirmed: boolean;
+    signatureTimestamp: Date;
+    signatureMetadata: any;
+    renewalDueAt: Date;
+    ipAddress: string;
+    userAgent: string;
+  }): Promise<ParentalConsentRecord>;
+  revokeConsent(revocation: RevokeConsent, ipAddress: string, userAgent: string): Promise<ParentalConsentRecord>;
+  getStudentConsentStatus(studentAccountId: string): Promise<ParentalConsentRecord | undefined>;
+  getConsentRecordsForSchool(schoolId: string, filters?: {
+    status?: string;
+    dateFrom?: Date;
+    dateTo?: Date;
+    limit?: number;
+  }): Promise<ParentalConsentRecord[]>;
+  getConsentAuditTrail(studentAccountId: string): Promise<ParentalConsentRecord[]>;
+  markConsentRecordImmutable(recordId: string): Promise<ParentalConsentRecord>;
   
   // 🎓 TEACHER CLAIM CODE SYSTEM - COPPA-compliant school registration
   createTeacherClaimCode(claimCode: InsertTeacherClaimCode): Promise<TeacherClaimCode>;
@@ -2968,6 +3007,262 @@ export class DatabaseStorage implements IStorage {
       .where(eq(parentalConsentRequests.id, requestId))
       .returning();
     return updatedRequest;
+  }
+
+  // 🛡️ ENHANCED COPPA CONSENT OPERATIONS - PRODUCTION COMPLIANCE
+  async createConsentRecord(record: InsertParentalConsentRecord): Promise<ParentalConsentRecord> {
+    const { nanoid } = await import('nanoid');
+    
+    // 🔒 SERVER-SIDE SECURITY: Generate verification code with sufficient entropy
+    const verificationCode = nanoid(25); // High entropy, URL-safe
+    
+    // 🛡️ SERVER-SIDE OVERRIDE: Set canonical version and security fields
+    const enhancedRecord = {
+      ...record,
+      consentVersion: "v2025.1", // Canonical version set by server
+      verificationCode,
+      linkExpiresAt: new Date(Date.now() + 72 * 60 * 60 * 1000), // Strict 72-hour expiry
+      isCodeUsed: false,
+      isImmutable: false,
+      recordCreatedAt: new Date(),
+      recordUpdatedAt: new Date()
+    };
+
+    const [newRecord] = await db.insert(parentalConsentRecords).values(enhancedRecord).returning();
+    return newRecord;
+  }
+
+  async getConsentRecord(recordId: string): Promise<ParentalConsentRecord | undefined> {
+    const [record] = await db.select()
+      .from(parentalConsentRecords)
+      .where(eq(parentalConsentRecords.id, recordId));
+    return record;
+  }
+
+  async getConsentRecordByCode(verificationCode: string): Promise<ParentalConsentRecord | undefined> {
+    const [record] = await db.select()
+      .from(parentalConsentRecords)
+      .where(eq(parentalConsentRecords.verificationCode, verificationCode));
+    return record;
+  }
+
+  async verifyConsentLink(verification: VerifyConsent, ipAddress: string, userAgent: string): Promise<{
+    success: boolean;
+    record?: ParentalConsentRecord;
+    error?: string;
+    errorCode?: string;
+  }> {
+    try {
+      // 🔍 SECURITY: Get consent record
+      const record = await this.getConsentRecord(verification.consentRecordId);
+      
+      if (!record) {
+        return {
+          success: false,
+          error: "Consent record not found",
+          errorCode: "RECORD_NOT_FOUND"
+        };
+      }
+
+      // 🔒 SECURITY: Verify code matches
+      if (record.verificationCode !== verification.verificationCode) {
+        return {
+          success: false,
+          error: "Invalid verification code",
+          errorCode: "INVALID_CODE"
+        };
+      }
+
+      // ⏰ SECURITY: Check expiration (72-hour strict limit)
+      if (new Date() > record.linkExpiresAt) {
+        return {
+          success: false,
+          error: "Verification link has expired",
+          errorCode: "LINK_EXPIRED"
+        };
+      }
+
+      // 🛡️ SECURITY: Prevent replay attacks
+      if (record.isCodeUsed) {
+        return {
+          success: false,
+          error: "Verification code has already been used",
+          errorCode: "CODE_ALREADY_USED"
+        };
+      }
+
+      // ✅ VALID LINK - Return record for use
+      return {
+        success: true,
+        record
+      };
+
+    } catch (error) {
+      console.error('Consent link verification error:', error);
+      return {
+        success: false,
+        error: "Verification failed",
+        errorCode: "VERIFICATION_ERROR"
+      };
+    }
+  }
+
+  async approveConsent(recordId: string, ipAddress: string, userAgent: string): Promise<ParentalConsentRecord> {
+    const [updatedRecord] = await db
+      .update(parentalConsentRecords)
+      .set({
+        consentStatus: 'approved',
+        consentApprovedAt: new Date(),
+        codeUsedAt: new Date(),
+        isCodeUsed: true, // 🔒 SECURITY: One-time use enforcement
+        recordUpdatedAt: new Date()
+      })
+      .where(and(
+        eq(parentalConsentRecords.id, recordId),
+        eq(parentalConsentRecords.isCodeUsed, false) // Prevent double-approval
+      ))
+      .returning();
+
+    if (!updatedRecord) {
+      throw new Error('Consent record not found or already processed');
+    }
+
+    return updatedRecord;
+  }
+
+  async approveConsentWithSignature(recordId: string, signatureData: {
+    digitalSignatureHash: string;
+    signaturePayload: string;
+    signerFullName: string;
+    finalConsentConfirmed: boolean;
+    signatureTimestamp: Date;
+    signatureMetadata: any;
+    renewalDueAt: Date;
+    ipAddress: string;
+    userAgent: string;
+  }): Promise<ParentalConsentRecord> {
+    // 🔒 SECURITY: Update consent record with approval status AND digital signature data
+    const [updatedRecord] = await db
+      .update(parentalConsentRecords)
+      .set({
+        // Approval status
+        consentStatus: 'approved',
+        consentApprovedAt: new Date(),
+        codeUsedAt: new Date(),
+        isCodeUsed: true, // 🔒 SECURITY: One-time use enforcement
+        
+        // ✍️ DIGITAL SIGNATURE DATA
+        digitalSignatureHash: signatureData.digitalSignatureHash,
+        signaturePayload: signatureData.signaturePayload,
+        signerFullName: signatureData.signerFullName,
+        finalConsentConfirmed: signatureData.finalConsentConfirmed,
+        signatureTimestamp: signatureData.signatureTimestamp,
+        signatureMetadata: signatureData.signatureMetadata,
+        
+        // 📅 ANNUAL RENEWAL
+        renewalDueAt: signatureData.renewalDueAt,
+        
+        // Update timestamps
+        recordUpdatedAt: new Date()
+      })
+      .where(and(
+        eq(parentalConsentRecords.id, recordId),
+        eq(parentalConsentRecords.isCodeUsed, false) // Prevent double-approval
+      ))
+      .returning();
+
+    if (!updatedRecord) {
+      throw new Error('Consent record not found or already processed');
+    }
+
+    return updatedRecord;
+  }
+
+  async revokeConsent(revocation: RevokeConsent, ipAddress: string, userAgent: string): Promise<ParentalConsentRecord> {
+    // 🔒 SECURITY: Verify parent email matches for authorization
+    const record = await this.getConsentRecord(revocation.consentRecordId);
+    
+    if (!record) {
+      throw new Error('Consent record not found');
+    }
+
+    if (record.parentEmail !== revocation.parentEmail) {
+      throw new Error('Unauthorized: Parent email does not match');
+    }
+
+    const [updatedRecord] = await db
+      .update(parentalConsentRecords)
+      .set({
+        consentStatus: 'revoked',
+        consentRevokedAt: new Date(),
+        revokedReason: revocation.revokedReason,
+        recordUpdatedAt: new Date()
+      })
+      .where(eq(parentalConsentRecords.id, revocation.consentRecordId))
+      .returning();
+
+    return updatedRecord;
+  }
+
+  async getStudentConsentStatus(studentAccountId: string): Promise<ParentalConsentRecord | undefined> {
+    const [record] = await db.select()
+      .from(parentalConsentRecords)
+      .where(eq(parentalConsentRecords.studentAccountId, studentAccountId))
+      .orderBy(desc(parentalConsentRecords.recordCreatedAt))
+      .limit(1);
+    return record;
+  }
+
+  async getConsentRecordsForSchool(schoolId: string, filters?: {
+    status?: string;
+    dateFrom?: Date;
+    dateTo?: Date;
+    limit?: number;
+  }): Promise<ParentalConsentRecord[]> {
+    const conditions = [eq(parentalConsentRecords.schoolId, schoolId)];
+    
+    if (filters?.status) {
+      conditions.push(eq(parentalConsentRecords.consentStatus, filters.status));
+    }
+    
+    if (filters?.dateFrom) {
+      conditions.push(gte(parentalConsentRecords.recordCreatedAt, filters.dateFrom));
+    }
+    
+    if (filters?.dateTo) {
+      conditions.push(lte(parentalConsentRecords.recordCreatedAt, filters.dateTo));
+    }
+
+    return await db.select()
+      .from(parentalConsentRecords)
+      .where(and(...conditions))
+      .orderBy(desc(parentalConsentRecords.recordCreatedAt))
+      .limit(filters?.limit || 100);
+  }
+
+  async getConsentAuditTrail(studentAccountId: string): Promise<ParentalConsentRecord[]> {
+    return await db.select()
+      .from(parentalConsentRecords)
+      .where(eq(parentalConsentRecords.studentAccountId, studentAccountId))
+      .orderBy(desc(parentalConsentRecords.recordCreatedAt));
+  }
+
+  async markConsentRecordImmutable(recordId: string): Promise<ParentalConsentRecord> {
+    const [updatedRecord] = await db
+      .update(parentalConsentRecords)
+      .set({
+        isImmutable: true,
+        immutableSince: new Date(),
+        recordUpdatedAt: new Date()
+      })
+      .where(eq(parentalConsentRecords.id, recordId))
+      .returning();
+
+    if (!updatedRecord) {
+      throw new Error('Consent record not found');
+    }
+
+    return updatedRecord;
   }
 
   // SEL Standards management

@@ -844,6 +844,75 @@ export const parentalConsentRequests = pgTable("parental_consent_requests", {
   userAgent: text("user_agent"),
 });
 
+// 🛡️ ENHANCED COPPA COMPLIANCE - IMMUTABLE CONSENT RECORDS
+export const parentalConsentRecords = pgTable("parental_consent_records", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  // Linkage
+  studentAccountId: varchar("student_account_id").notNull().references(() => studentAccounts.id),
+  parentConsentRequestId: varchar("parent_consent_request_id").references(() => parentalConsentRequests.id),
+  schoolId: varchar("school_id").notNull(), // Links to school for compliance reporting
+  
+  // 🔒 IMMUTABLE CONSENT DATA - SET SERVER-SIDE ONLY
+  consentVersion: varchar("consent_version", { length: 10 }).notNull(), // e.g., "v2025.1" - canonical version set by server
+  parentName: varchar("parent_name", { length: 100 }).notNull(), // Server-validated parent name
+  parentEmail: varchar("parent_email", { length: 200 }).notNull(),
+  parentPhone: varchar("parent_phone", { length: 20 }),
+  relationshipToStudent: varchar("relationship_to_student", { length: 50 }).notNull(), // parent, guardian, etc.
+  
+  // 🛡️ GRANULAR CONSENT FLAGS - COPPA COMPLIANT
+  consentToDataCollection: boolean("consent_to_data_collection").notNull(),
+  consentToDataSharing: boolean("consent_to_data_sharing").notNull(),
+  consentToEmailCommunication: boolean("consent_to_email_communication").notNull(),
+  consentToEducationalReports: boolean("consent_to_educational_reports").notNull(),
+  consentToKindnessActivityTracking: boolean("consent_to_kindness_activity_tracking").notNull(),
+  
+  // 📊 GRANULAR OPT-OUT FLAGS
+  optOutOfDataAnalytics: boolean("opt_out_of_data_analytics").default(false).notNull(),
+  optOutOfThirdPartySharing: boolean("opt_out_of_third_party_sharing").default(true).notNull(), // Default to privacy
+  optOutOfMarketingCommunications: boolean("opt_out_of_marketing_communications").default(true).notNull(),
+  optOutOfPlatformNotifications: boolean("opt_out_of_platform_notifications").default(false).notNull(),
+  
+  // 🔒 SECURITY & AUDIT TRAIL
+  verificationCode: varchar("verification_code", { length: 30 }).notNull(), // nanoid with high entropy
+  codeUsedAt: timestamp("code_used_at"), // When verification code was used (one-time use)
+  isCodeUsed: boolean("is_code_used").default(false).notNull(), // Prevents replay attacks
+  verificationMethod: varchar("verification_method", { length: 20 }).notNull(), // email_link, manual_verification
+  
+  // 📋 COMPLIANCE METADATA
+  consentStatus: varchar("consent_status", { length: 20 }).notNull(), // pending, approved, denied, revoked, expired
+  consentSubmittedAt: timestamp("consent_submitted_at"),
+  consentApprovedAt: timestamp("consent_approved_at"),
+  consentRevokedAt: timestamp("consent_revoked_at"),
+  revokedReason: text("revoked_reason"),
+  
+  // 🌐 TECHNICAL AUDIT DATA - SERVER CAPTURED
+  ipAddress: varchar("ip_address").notNull(), // Server-captured IP
+  userAgent: text("user_agent").notNull(), // Server-captured user agent
+  geolocation: jsonb("geolocation"), // Geographic data for compliance
+  sessionId: varchar("session_id"), // Browser session tracking
+  deviceFingerprint: varchar("device_fingerprint"), // Device identification
+  
+  // ⏰ COMPLIANCE TIMING
+  linkExpiresAt: timestamp("link_expires_at").notNull(), // Strict 72-hour expiry
+  recordCreatedAt: timestamp("record_created_at").defaultNow().notNull(),
+  recordUpdatedAt: timestamp("record_updated_at").defaultNow().notNull(),
+  
+  // 🔐 IMMUTABILITY PROTECTION
+  isImmutable: boolean("is_immutable").default(false).notNull(), // Once true, record cannot be modified
+  immutableSince: timestamp("immutable_since"), // When record became immutable
+  
+  // 📅 ANNUAL RENEWAL REQUIREMENTS
+  renewalDueAt: timestamp("renewal_due_at"), // Annual consent renewal date (separate from linkExpiresAt)
+  
+  // ✍️ DIGITAL SIGNATURE CAPABILITY - LEGAL VERIFICATION
+  digitalSignatureHash: varchar("digital_signature_hash", { length: 128 }), // SHA-256 hash of consent payload + metadata
+  signaturePayload: text("signature_payload"), // JSON of signed data (consent + timestamp + IP + UA + version)
+  signerFullName: varchar("signer_full_name", { length: 100 }), // Parent's typed full name for signature
+  finalConsentConfirmed: boolean("final_consent_confirmed").default(false), // Final consent checkbox confirmation
+  signatureTimestamp: timestamp("signature_timestamp"), // When digital signature was created
+  signatureMetadata: jsonb("signature_metadata"), // Additional signer details (IP, UA, device fingerprint, etc.)
+});
+
 // SEL (Social-Emotional Learning) standards alignment
 export const selStandards = pgTable("sel_standards", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -952,6 +1021,74 @@ export const insertParentalConsentRequestSchema = createInsertSchema(parentalCon
   consentStatus: true,
 });
 
+// 🛡️ ENHANCED COPPA CONSENT VALIDATION - SERVER-SIDE ONLY
+export const insertParentalConsentRecordSchema = createInsertSchema(parentalConsentRecords).omit({
+  id: true,
+  recordCreatedAt: true,
+  recordUpdatedAt: true,
+  isImmutable: true,
+  immutableSince: true,
+  codeUsedAt: true,
+  isCodeUsed: true,
+  consentSubmittedAt: true,
+  consentApprovedAt: true,
+  consentRevokedAt: true,
+}).extend({
+  // 🔒 ENHANCED SERVER-SIDE VALIDATION
+  parentEmail: z.string().email("Invalid parent email address").min(5).max(200),
+  parentName: z.string().min(2, "Parent name must be at least 2 characters").max(100),
+  relationshipToStudent: z.enum(["parent", "guardian", "caregiver", "legal_guardian"], {
+    errorMap: () => ({ message: "Must be parent, guardian, caregiver, or legal_guardian" })
+  }),
+  
+  // 🛡️ MANDATORY CONSENT VALIDATION - ALL REQUIRED FOR COPPA
+  consentToDataCollection: z.boolean({
+    required_error: "Consent to data collection is required for COPPA compliance"
+  }),
+  consentToDataSharing: z.boolean({
+    required_error: "Consent to data sharing must be explicitly addressed"
+  }),
+  consentToEmailCommunication: z.boolean({
+    required_error: "Email communication consent must be specified"
+  }),
+  consentToEducationalReports: z.boolean({
+    required_error: "Educational reports consent must be specified"
+  }),
+  consentToKindnessActivityTracking: z.boolean({
+    required_error: "Activity tracking consent must be specified"
+  }),
+  
+  // 📊 OPT-OUT FLAGS - DEFAULTS PROVIDED BUT VALIDATION REQUIRED
+  optOutOfDataAnalytics: z.boolean().default(false),
+  optOutOfThirdPartySharing: z.boolean().default(true), // Privacy-first default
+  optOutOfMarketingCommunications: z.boolean().default(true), // Privacy-first default
+  optOutOfPlatformNotifications: z.boolean().default(false),
+  
+  // 🔒 SECURITY FIELDS - SERVER VALIDATES BUT CLIENT CAN PROVIDE
+  verificationMethod: z.enum(["email_link", "manual_verification"]).default("email_link"),
+  consentStatus: z.enum(["pending", "approved", "denied", "revoked", "expired"]).default("pending"),
+  
+  // ⚠️ NEVER TRUST CLIENT DATA FOR THESE FIELDS (Server overrides):
+  // - consentVersion (server sets canonical version)
+  // - ipAddress (server captures real IP)
+  // - userAgent (server captures real user agent) 
+  // - verificationCode (server generates with nanoid)
+  // - linkExpiresAt (server enforces 72-hour limit)
+});
+
+// 🔍 CONSENT VERIFICATION SCHEMA - For link verification endpoint
+export const verifyConsentSchema = z.object({
+  verificationCode: z.string().min(10, "Invalid verification code").max(30),
+  consentRecordId: z.string().uuid("Invalid consent record ID"),
+});
+
+// 📊 CONSENT REVOCATION SCHEMA - For parent rights compliance
+export const revokeConsentSchema = z.object({
+  consentRecordId: z.string().uuid("Invalid consent record ID"),
+  revokedReason: z.string().min(10, "Revocation reason must be at least 10 characters").max(500),
+  parentEmail: z.string().email("Valid parent email required for verification"),
+});
+
 export const insertStudentParentLinkSchema = createInsertSchema(studentParentLinks).omit({
   id: true,
   linkedAt: true,
@@ -1002,6 +1139,12 @@ export type StudentAccount = typeof studentAccounts.$inferSelect;
 export type InsertStudentAccount = z.infer<typeof insertStudentAccountSchema>;
 export type ParentalConsentRequest = typeof parentalConsentRequests.$inferSelect;
 export type InsertParentalConsentRequest = z.infer<typeof insertParentalConsentRequestSchema>;
+
+// 🛡️ ENHANCED COPPA CONSENT TYPES
+export type ParentalConsentRecord = typeof parentalConsentRecords.$inferSelect;
+export type InsertParentalConsentRecord = z.infer<typeof insertParentalConsentRecordSchema>;
+export type VerifyConsent = z.infer<typeof verifyConsentSchema>;
+export type RevokeConsent = z.infer<typeof revokeConsentSchema>;
 export type StudentParentLink = typeof studentParentLinks.$inferSelect;
 export type InsertStudentParentLink = z.infer<typeof insertStudentParentLinkSchema>;
 export type SelStandard = typeof selStandards.$inferSelect;
