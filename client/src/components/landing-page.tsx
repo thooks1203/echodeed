@@ -272,6 +272,159 @@ export function LandingPage() {
         </h2>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+          {/* Student-focused items at the top */}
+          <button 
+            onClick={handleStudentSignup}
+            style={{
+              backgroundColor: '#10B981',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#059669';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#10B981';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>🎓</span>
+            Student Sign Up
+          </button>
+
+          <button 
+            onClick={handleSchoolRegistration}
+            style={{
+              backgroundColor: '#F59E0B',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#D97706';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#F59E0B';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>🏫</span>
+            Register Your School
+          </button>
+
+          <button 
+            onClick={() => navigate('/analytics-dashboard')}
+            style={{
+              backgroundColor: '#2563EB',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#1D4ED8';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#2563EB';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>📊</span>
+            Student Analytics Dashboard
+          </button>
+
+          {/* Parent and family items in middle */}
+          <button 
+            onClick={handleParentLogin}
+            style={{
+              backgroundColor: '#3B82F6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#2563EB';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#3B82F6';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>👨‍👩‍👧‍👦</span>
+            Parent Dashboard
+          </button>
+
+          <button 
+            onClick={handleFamilyLogin}
+            style={{
+              backgroundColor: '#EC4899',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#DB2777';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#EC4899';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>💕</span>
+            Family Kindness Hub
+          </button>
+
+          {/* Educator/admin items at the bottom */}
           <button 
             onClick={handleTeacherLogin}
             style={{
@@ -360,156 +513,6 @@ export function LandingPage() {
           >
             <span style={{ fontSize: '20px' }}>👨‍💼</span>
             Administrator Dashboard
-          </button>
-
-          <button 
-            onClick={handleParentLogin}
-            style={{
-              backgroundColor: '#3B82F6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#2563EB';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#3B82F6';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span style={{ fontSize: '20px' }}>👨‍👩‍👧‍👦</span>
-            Parent Dashboard
-          </button>
-
-          <button 
-            onClick={handleFamilyLogin}
-            style={{
-              backgroundColor: '#EC4899',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#DB2777';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#EC4899';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span style={{ fontSize: '20px' }}>💕</span>
-            Family Kindness Hub
-          </button>
-
-          <button 
-            onClick={() => navigate('/analytics-dashboard')}
-            style={{
-              backgroundColor: '#2563EB',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#1D4ED8';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#2563EB';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span style={{ fontSize: '20px' }}>📊</span>
-            Student Analytics Dashboard
-          </button>
-
-          <button 
-            onClick={handleStudentSignup}
-            style={{
-              backgroundColor: '#10B981',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#059669';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#10B981';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span style={{ fontSize: '20px' }}>🎓</span>
-            Student Sign Up
-          </button>
-
-          <button 
-            onClick={handleSchoolRegistration}
-            style={{
-              backgroundColor: '#F59E0B',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#D97706';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#F59E0B';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span style={{ fontSize: '20px' }}>🏫</span>
-            Register Your School
           </button>
 
           <button 
