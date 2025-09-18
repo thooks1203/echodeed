@@ -139,9 +139,11 @@ export default function SchoolConsentDashboard() {
   const queryClient = useQueryClient();
   const { user, isLoading: authLoading, isAuthenticated } = useAuth();
   
-  // 🔧 DEV FIX: Ensure admin role is set for consent dashboard
+  // 🔧 DEV FIX: Force admin role for consent dashboard access
   useEffect(() => {
-    if (!localStorage.getItem('echodeed_demo_role')) {
+    const currentRole = localStorage.getItem('echodeed_demo_role');
+    if (currentRole !== 'admin') {
+      console.log('🚀 Setting demo role to admin for school dashboard access');
       localStorage.setItem('echodeed_demo_role', 'admin');
       window.location.reload();
     }
