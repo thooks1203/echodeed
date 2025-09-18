@@ -304,6 +304,39 @@ export function LandingPage() {
           </button>
 
           <button 
+            onClick={handleGetStarted}
+            style={{
+              backgroundColor: '#DC2626',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#B91C1C';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 6px 16px rgba(220, 38, 38, 0.4)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#DC2626';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.3)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>🏠</span>
+            Student Feed
+          </button>
+
+          <button 
             onClick={handleSchoolRegistration}
             style={{
               backgroundColor: '#F59E0B',
