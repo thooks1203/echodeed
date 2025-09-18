@@ -546,6 +546,18 @@ export default function SchoolConsentDashboard() {
                         <TableCell><Skeleton className="h-4 w-16" /></TableCell>
                       </TableRow>
                     ))
+                  ) : students?.consents?.length === 0 ? (
+                    <TableRow>
+                      <TableCell colSpan={6} className="text-center py-8">
+                        <div className="flex flex-col items-center space-y-2">
+                          <Users className="h-12 w-12 text-muted-foreground mb-2" />
+                          <h3 className="text-lg font-medium">No Students Found</h3>
+                          <p className="text-muted-foreground">
+                            No student consent records match your current filters.
+                          </p>
+                        </div>
+                      </TableCell>
+                    </TableRow>
                   ) : (
                     (students?.consents || []).map((consent) => (
                       <TableRow key={consent.id} data-testid={`student-row-${consent.id}`}>
