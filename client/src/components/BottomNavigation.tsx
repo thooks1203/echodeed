@@ -43,7 +43,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
       boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
       display: 'flex',
       justifyContent: 'space-between',
-      padding: '6px 8px',
+      padding: '4px 6px',
       zIndex: 100
     }}>
       {tabs.map((tab) => (
@@ -58,11 +58,11 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '2px',
+            gap: '3px',
             cursor: 'pointer',
-            padding: '6px 4px',
-            borderRadius: '8px',
-            fontSize: '10px',
+            padding: '4px 3px',
+            borderRadius: '6px',
+            fontSize: '12px',
             fontWeight: '600',
             color: activeTab === tab.id ? '#fff' : '#fff',
             textShadow: activeTab === tab.id ? '0 1px 2px rgba(0,0,0,0.3)' : '0 1px 2px rgba(0,0,0,0.2)',
@@ -89,14 +89,15 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
           }}
         >
           <span style={{ 
-            fontSize: '14px',
+            fontSize: '16px',
             filter: activeTab === tab.id ? 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' : 'none'
           }}>
             {tab.icon}
           </span>
           <span style={{
-            fontSize: '9px',
-            letterSpacing: '0.3px'
+            fontSize: '11px',
+            letterSpacing: '0.2px',
+            fontWeight: '600'
           }}>
             {tab.label}
           </span>
