@@ -6,7 +6,6 @@ interface BottomNavigationProps {
 export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationProps) {
   const tabs = [
     { id: 'feed', label: 'Feed', icon: '🏠' },
-    { id: 'schools', label: 'Schools', icon: '🎓' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'summer', label: 'Summer', icon: '☀️' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
