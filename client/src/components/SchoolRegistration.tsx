@@ -131,7 +131,7 @@ export function SchoolRegistration({ onSuccess }: SchoolRegistrationProps) {
           {/* Back Button */}
           <div className="absolute left-4 top-4">
             <BackButton 
-              onClick={() => navigate('/app?tab=schools')}
+              onClick={() => navigate('/app')}
               label="Dashboard"
               variant="minimal"
               style={{
