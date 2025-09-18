@@ -23,6 +23,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { canAccessSchoolsDashboard } from '@/lib/roleUtils';
 import { StudentDashboard } from '@/components/StudentDashboard';
 import { RoleSwitcherDemo } from '@/components/RoleSwicherDemo';
+import MentorDashboard from '@/pages/MentorDashboard';
 
 interface RewardOffer {
   id: string;
@@ -197,6 +198,15 @@ export default function Home() {
         onNavigateToTab={navigateToTab} 
         activeBottomTab={activeTab}
       />
+    );
+  }
+
+  if (activeTab === 'mentor-dashboard') {
+    return (
+      <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+        <MentorDashboard />
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
     );
   }
 
