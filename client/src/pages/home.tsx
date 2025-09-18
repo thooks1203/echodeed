@@ -142,8 +142,13 @@ export default function Home() {
       // Teachers and admins can access Schools Dashboard
       setActiveTab('schools');
     } else {
-      // Default fallback - redirect to feed
-      setActiveTab('feed');
+      // For users without clear roles, check if they can access schools dashboard
+      // If not, assume they're students and go to student dashboard
+      if (canAccessSchoolsDashboard(user?.schoolRole || 'student')) {
+        setActiveTab('schools');
+      } else {
+        setActiveTab('student-dashboard');
+      }
     }
   };
 
