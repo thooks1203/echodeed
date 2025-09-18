@@ -33,10 +33,11 @@ export class ContentFilterService {
       }
     }
     
-    // Check minimum length with appropriate message
-    if (content.trim().length < 10) {
+    // Check minimum length with appropriate message (support posts can be shorter)
+    const minLength = context === 'support' ? 3 : 10; // Support posts: 3 chars, Kindness posts: 10 chars
+    if (content.trim().length < minLength) {
       const minLengthMessage = context === 'support' 
-        ? 'Please provide more details about what you\'re going through (minimum 10 characters)'
+        ? 'Please share what you\'re feeling (minimum 3 characters)'
         : 'Please provide more details about your act of kindness (minimum 10 characters)';
       return { isValid: false, reason: minLengthMessage };
     }

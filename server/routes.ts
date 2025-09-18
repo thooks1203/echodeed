@@ -1654,7 +1654,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const counselor = req.counselor;
       
       // 🔒 SECURITY: Verify post belongs to counselor's school
-      const post = await storage.getSupportPost(id);
+      const post = await storage.getSupportPostById(id);
       if (!post || post.schoolId !== counselor.schoolId) {
         return res.status(403).json({ 
           error: 'ACCESS_DENIED',
@@ -5132,8 +5132,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let schoolName = 'Your School';
       try {
         const school = await storage.getCorporateAccount(schoolId);
-        if (school?.name) {
-          schoolName = school.name;
+        if (school?.companyName) {
+          schoolName = school.companyName;
         }
       } catch (error) {
         console.log('Could not fetch school name, using fallback');
@@ -5664,7 +5664,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Store conflict report
       const conflictReport = {
         id: nanoid(),
-        reporterId: isAnonymous ? null : req.user?.id,
+        reporterId: isAnonymous ? null : (req.user?.claims?.sub || req.user?.id),
         conflictType,
         conflictDescription,
         involvedParties,
@@ -5739,7 +5739,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       for (const grade of grades) {
         const gradeConflicts = recentConflicts.filter(c => c.gradeLevel === grade);
-        const gradePosts = recentPosts.filter(p => p.metadata?.gradeLevel === grade);
+        const gradePosts = recentPosts.filter(p => p.category === `grade-${grade}`);
         
         if (gradeConflicts.length > 0 || gradePosts.length > 2) {
           const prediction = BullyingPreventionAI.analyzeBullyingRisk(
@@ -6155,7 +6155,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const userTokens = await storage.getUserTokens(donation.userTokenId);
       if (userTokens) {
         await storage.updateUserTokens(donation.userTokenId, {
-          kindnessTokens: (userTokens.kindnessTokens || 0) + donation.kidTokensEarned + donation.parentTokensEarned
+          echoBalance: (userTokens.echoBalance || 0) + donation.kidTokensEarned + donation.parentTokensEarned
         });
       }
 
@@ -6608,6 +6608,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       const updatedSchool = await storage.updateCorporateAccount(schoolId, allowedFields);
+      
+      if (!updatedSchool) {
+        return res.status(500).json({ message: 'Failed to update school information' });
+      }
       
       res.json({
         message: 'School information updated successfully',

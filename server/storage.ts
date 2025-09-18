@@ -476,6 +476,7 @@ export interface IStorage {
 
   // Support Circle operations - Anonymous peer support for grades 6-8
   getSupportPosts(filters?: { schoolId?: string; category?: string; gradeLevel?: string; }): Promise<SupportPost[]>;
+  getSupportPostById(id: string): Promise<SupportPost | null>;
   createSupportPost(post: InsertSupportPost): Promise<SupportPost>;
   heartSupportPost(postId: string): Promise<SupportPost>;
   getSupportResponses(postId: string): Promise<SupportResponse[]>;
@@ -3246,6 +3247,11 @@ export class DatabaseStorage implements IStorage {
     }
 
     return query.orderBy(desc(supportPosts.createdAt)).limit(50);
+  }
+
+  async getSupportPostById(id: string): Promise<SupportPost | null> {
+    const [post] = await db.select().from(supportPosts).where(eq(supportPosts.id, id));
+    return post || null;
   }
 
   async createSupportPost(post: InsertSupportPost): Promise<SupportPost> {
