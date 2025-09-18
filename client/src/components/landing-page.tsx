@@ -515,37 +515,6 @@ export function LandingPage() {
             Administrator Dashboard
           </button>
 
-          <button 
-            onClick={handleGetStarted}
-            style={{
-              backgroundColor: 'white',
-              color: '#6b7280',
-              border: '2px solid #e5e7eb',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.borderColor = '#8B5CF6';
-              (e.target as HTMLButtonElement).style.color = '#8B5CF6';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.borderColor = '#e5e7eb';
-              (e.target as HTMLButtonElement).style.color = '#6b7280';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span style={{ fontSize: '20px' }}>🏠</span>
-            Student Feed
-          </button>
         </div>
       </div>
 

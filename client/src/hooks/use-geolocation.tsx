@@ -20,10 +20,10 @@ export function useGeolocation() {
         // Use a reverse geocoding service (for demo, we'll use a mock response)
         // In production, you would use a real service like Google Maps API
         const mockLocation: LocationData = {
-          city: 'San Francisco',
-          state: 'California', 
+          city: 'Burlington',
+          state: 'North Carolina', 
           country: 'United States',
-          fullLocation: 'San Francisco, California'
+          fullLocation: 'Burlington, North Carolina'
         };
         
         setLocation(mockLocation);
