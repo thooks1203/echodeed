@@ -50,7 +50,7 @@ export class FamilyChallengeEngine {
   }
 
   // Generate age-appropriate family challenges
-  async generateWeeklyChallenges(week: number, ageGroup: 'k-2' | '3-5' | '6-8' | 'family'): Promise<void> {
+  async generateWeeklyChallenges(week: number, ageGroup: '6-8' | 'family'): Promise<void> {
     const theme = this.getWeekTheme(week);
     const challengeTemplates = this.getChallengeTemplatesForAge(theme.theme, ageGroup);
     
@@ -111,7 +111,7 @@ export class FamilyChallengeEngine {
     return new Date(jan1.getTime() + daysToAdd * 24 * 60 * 60 * 1000);
   }
 
-  private getChallengeTemplatesForAge(theme: string, ageGroup: 'k-2' | '3-5' | '6-8' | 'family') {
+  private getChallengeTemplatesForAge(theme: string, ageGroup: '6-8' | 'family') {
     const templates: Record<string, Record<string, any[]>> = {
       'New Year Kindness': {
         'family': [
@@ -267,6 +267,50 @@ export class FamilyChallengeEngine {
             ]
           }
         ]
+      },
+      'Elder Appreciation': {
+        'family': [
+          {
+            title: "Intergenerational Kindness Project",
+            description: "Connect with elderly community members and show appreciation",
+            difficulty: "medium",
+            kidPoints: 20,
+            parentPoints: 15,
+            activities: [
+              {
+                title: "Elderly Appreciation Cards & Visit",
+                description: "Create personalized cards and spend time with elderly community members",
+                kidInstructions: "Make handmade cards with drawings and kind messages for elderly neighbors, relatives, or nursing home residents. Practice what you'll say when visiting.",
+                parentInstructions: "Help your child create meaningful cards and arrange safe visits to elderly family members or community centers. Guide conversations about respect and learning from elders.",
+                timeEstimate: 90,
+                materials: "Cardstock, markers, colored pencils, stickers, small gifts or treats",
+                location: "community",
+                discussionPrompts: "What stories did you hear from the elderly person you visited? What can we learn from people who have lived longer than us? How did your visit make them feel?"
+              }
+            ]
+          }
+        ],
+        '6-8': [
+          {
+            title: "Elder Wisdom & Service Project",
+            description: "Create a meaningful service project that honors elderly community members",
+            difficulty: "medium",
+            kidPoints: 25,
+            parentPoints: 15,
+            activities: [
+              {
+                title: "Community Elder Support Initiative",
+                description: "Design and implement a project to support elderly community members",
+                kidInstructions: "Choose a way to help elderly people in your community: offer technology help, organize a letter-writing campaign, create care packages, or start a lawn care service. Document the impact of your work.",
+                parentInstructions: "Support your middle schooler in planning and executing their service project. Help them understand the importance of intergenerational relationships and community care.",
+                timeEstimate: 120,
+                materials: "Project supplies (varies by chosen project), notebook for documenting impact, camera for photos",
+                location: "community",
+                discussionPrompts: "What challenges do elderly people face that young people don't think about? How did your service project make a difference? What did you learn about aging and community support?"
+              }
+            ]
+          }
+        ]
       }
     };
 
@@ -277,7 +321,7 @@ export class FamilyChallengeEngine {
   async initializeFamilyProgram(): Promise<void> {
     console.log('👨‍👩‍👧‍👦 Initializing Family Kindness Challenge Program...');
     
-    const ageGroups: Array<'k-2' | '3-5' | '6-8' | 'family'> = ['k-2', '3-5', '6-8', 'family'];
+    const ageGroups: Array<'6-8' | 'family'> = ['6-8', 'family'];
     const currentWeek = this.getCurrentWeek();
     
     // Initialize current week and next 3 weeks
@@ -291,7 +335,7 @@ export class FamilyChallengeEngine {
   }
 
   // Get current week's challenges for a specific age group
-  async getCurrentWeekChallenges(ageGroup: 'k-2' | '3-5' | '6-8' | 'family'): Promise<YearRoundFamilyChallenge[]> {
+  async getCurrentWeekChallenges(ageGroup: '6-8' | 'family'): Promise<YearRoundFamilyChallenge[]> {
     const currentWeek = this.getCurrentWeek();
     
     const challenges = await db.select()

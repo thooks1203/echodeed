@@ -81,6 +81,12 @@ app.use((req, res, next) => {
       const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
       await summerChallengeEngine.initializeSummerProgram();
       log('✓ Summer Challenge Program initialized');
+
+      // Initialize Family Challenge Program
+      log('Initializing Family Challenge Program...');
+      const { familyChallengeEngine } = await import('./services/familyChallengeEngine');
+      await familyChallengeEngine.initializeFamilyProgram();
+      log('✓ Family Challenge Program initialized');
     } catch (error) {
       log(`✗ Sample data initialization failed: ${error}`);
       // In production, sample data failure shouldn't crash the app

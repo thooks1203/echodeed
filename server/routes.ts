@@ -5753,7 +5753,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get family challenges for a specific age group  
   app.get('/api/family-challenges/challenges/:ageGroup', async (req, res) => {
     try {
-      const { ageGroup } = req.params as { ageGroup: 'k-2' | '3-5' | '6-8' | 'family' };
+      const { ageGroup } = req.params as { ageGroup: '6-8' | 'family' };
       const { familyChallengeEngine } = await import('./services/familyChallengeEngine');
       const challenges = await familyChallengeEngine.getCurrentWeekChallenges(ageGroup);
       res.json(challenges);
