@@ -424,7 +424,7 @@ export default function Home() {
     return (
       <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
         <AppHeader counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} isPulse={counterPulse} />
-        <SupportCircle />
+        <SupportCircle onBack={() => setActiveTab('feed')} />
         <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
     );
