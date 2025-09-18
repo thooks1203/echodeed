@@ -192,35 +192,6 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
         ))}
       </div>
 
-      {/* Direct Parent Portal Access */}
-      <div style={{ 
-        background: '#EEF2FF', 
-        border: '1px solid #C7D2FE', 
-        borderRadius: '8px', 
-        padding: '12px', 
-        marginBottom: '24px',
-        textAlign: 'center'
-      }}>
-        <p style={{ margin: '0 0 8px 0', fontSize: '14px', color: '#4338CA' }}>
-          👨‍👩‍👧‍👦 Are you a parent? Track your child's kindness journey
-        </p>
-        <button
-          onClick={() => navigate('/parent')}
-          style={{
-            background: '#7C3AED',
-            color: 'white',
-            border: 'none',
-            borderRadius: '6px',
-            padding: '8px 16px',
-            fontSize: '14px',
-            fontWeight: '600',
-            cursor: 'pointer'
-          }}
-          data-testid="parent-portal-access"
-        >
-          Access Parent Dashboard
-        </button>
-      </div>
 
       {/* Tab Content */}
       {activeTab === 'overview' && (
