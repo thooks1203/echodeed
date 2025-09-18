@@ -48,7 +48,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
     <div style={{ padding: '20px', minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '24px', position: 'relative' }}>
-        {/* Big Prominent HOME Button */}
+        {/* Navigation Buttons */}
         <div style={{ position: 'absolute', left: 0, top: 0, display: 'flex', gap: '8px' }}>
           <button
             onClick={() => onNavigateToTab ? onNavigateToTab('feed') : window.location.href = '/'}
@@ -57,12 +57,12 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
               color: 'white',
               border: 'none',
               borderRadius: '12px',
-              padding: '10px 20px',
-              fontSize: '16px',
+              padding: '8px 16px',
+              fontSize: '14px',
               fontWeight: '700',
               display: 'flex',
               alignItems: 'center',
-              gap: '8px',
+              gap: '6px',
               cursor: 'pointer',
               boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
               transition: 'all 0.3s ease',
@@ -78,8 +78,40 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
             }}
             data-testid="button-back-to-feed"
           >
-            <span style={{ fontSize: '20px' }}>🏠</span>
-            <span>HOME</span>
+            <span style={{ fontSize: '18px' }}>🏠</span>
+            <span>FEED</span>
+          </button>
+          
+          <button
+            onClick={() => window.location.href = '/'}
+            style={{
+              background: 'linear-gradient(135deg, #8B5CF6, #EC4899)',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '8px 16px',
+              fontSize: '14px',
+              fontWeight: '700',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
+              transition: 'all 0.3s ease',
+              textShadow: '0 1px 2px rgba(0,0,0,0.2)'
+            }}
+            onMouseEnter={(e) => {
+              (e.target as HTMLElement).style.transform = 'translateY(-1px)';
+              (e.target as HTMLElement).style.boxShadow = '0 6px 16px rgba(139, 92, 246, 0.4)';
+            }}
+            onMouseLeave={(e) => {
+              (e.target as HTMLElement).style.transform = 'translateY(0)';
+              (e.target as HTMLElement).style.boxShadow = '0 4px 12px rgba(139, 92, 246, 0.3)';
+            }}
+            data-testid="button-main-menu"
+          >
+            <span style={{ fontSize: '18px' }}>🚪</span>
+            <span>EXIT</span>
           </button>
         </div>
         
