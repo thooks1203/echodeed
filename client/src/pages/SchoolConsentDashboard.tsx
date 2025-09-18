@@ -449,8 +449,8 @@ export default function SchoolConsentDashboard() {
   const StudentsTab = () => {
     const students = studentsLoading ? null : (studentsList as ConsentListResponse);
     
-    // Handle undefined data (from 304 responses or errors)
-    if (!studentsLoading && !students) {
+    // Handle undefined data (from 304 responses or errors) - only when tab is actually selected
+    if (selectedTab === 'students' && !studentsLoading && !students) {
       return (
         <Card>
           <CardContent className="py-8">
@@ -904,8 +904,8 @@ export default function SchoolConsentDashboard() {
     const renewalsResponse = renewalsLoading ? null : (renewalsData as RenewalListResponse);
     const metrics = renewalsResponse?.metrics;
     
-    // Handle undefined data (from 304 responses or errors)
-    if (!renewalsLoading && !renewalsResponse) {
+    // Handle undefined data (from 304 responses or errors) - only when tab is actually selected
+    if (selectedTab === 'renewals' && !renewalsLoading && !renewalsResponse) {
       return (
         <Card>
           <CardContent className="py-8">
