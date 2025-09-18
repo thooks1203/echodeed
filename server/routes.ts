@@ -150,6 +150,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth middleware - Set up before routes
   await setupAuth(app);
 
+  // CRITICAL FIX: Wire storage to app.locals for counselor middleware
+  app.locals.storage = storage;
+
   // Auth routes - Get current user info
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {

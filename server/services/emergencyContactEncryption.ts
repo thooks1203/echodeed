@@ -6,8 +6,9 @@
  * while maintaining ability to unmask identity in genuine emergencies.
  */
 
-import { randomBytes, createCipherGCM, createDecipherGCM, pbkdf2Sync } from 'crypto';
+import { randomBytes, createCipheriv, createDecipheriv, pbkdf2Sync } from 'crypto';
 import { securityAuditLogger } from './auditLogger';
+import { storage } from '../storage';
 
 export interface EncryptedEmergencyContact {
   id: string;
@@ -277,8 +278,8 @@ export class EmergencyContactEncryption {
       // Generate random IV for each encryption operation (CRITICAL for security)
       const iv = randomBytes(16);
       
-      // Use createCipherGCM with proper algorithm and key
-      const cipher = createCipherGCM('aes-256-gcm', key, iv);
+      // Use createCipheriv with proper algorithm and key
+      const cipher = createCipheriv('aes-256-gcm', key, iv);
       
       // Encrypt the plaintext
       let encrypted = cipher.update(plaintext, 'utf8', 'hex');
@@ -310,9 +311,9 @@ export class EmergencyContactEncryption {
         throw new Error('Invalid encrypted data format - missing required components');
       }
       
-      // Use createDecipherGCM with the stored IV
+      // Use createDecipheriv with the stored IV
       const iv = Buffer.from(data.iv, 'hex');
-      const decipher = createDecipherGCM('aes-256-gcm', key, iv);
+      const decipher = createDecipheriv('aes-256-gcm', key, iv);
       
       // Set auth tag for integrity verification (CRITICAL)
       const authTag = Buffer.from(data.authTag, 'hex');
@@ -329,40 +330,138 @@ export class EmergencyContactEncryption {
     }
   }
 
-  // Mock storage methods (implement with actual database in production)
-  private async storeEncryptionKey(keyId: string, key: Buffer): Promise<void> {
-    // TODO: Store in secure key management system (AWS KMS, HashiCorp Vault, etc.)
-    console.log(`🔑 Storing encryption key ${keyId} in secure key management system`);
+  // MASTER KEY for encrypting stored keys (in production, use AWS KMS/HashiCorp Vault)
+  private readonly MASTER_KEY = this.getMasterKey();
+
+  /**
+   * SECURITY FIX: Fail-fast if MASTER_ENCRYPTION_KEY environment variable is missing
+   */
+  private getMasterKey(): string {
+    const masterKey = process.env.MASTER_ENCRYPTION_KEY;
+    if (!masterKey) {
+      console.error('CRITICAL SECURITY ERROR: MASTER_ENCRYPTION_KEY environment variable is required for emergency contact encryption');
+      console.error('This system handles child safety data and CANNOT operate without proper encryption keys');
+      throw new Error('MASTER_ENCRYPTION_KEY environment variable is required - no hard-coded fallback allowed for child safety');
+    }
+    if (masterKey.length < 32) {
+      throw new Error('MASTER_ENCRYPTION_KEY must be at least 32 characters for security');
+    }
+    return masterKey;
   }
 
+  /**
+   * FIXED: Store encryption key securely in database with master key encryption
+   */
+  private async storeEncryptionKey(keyId: string, key: Buffer): Promise<void> {
+    try {
+      // Encrypt the key with master key before storage
+      const encryptedKey = this.encryptWithMasterKey(key);
+      
+      // Store in database 
+      await storage.storeEncryptionKey(keyId, encryptedKey, 'emergency_contact');
+      
+      console.log(`🔑 FIXED: Encryption key ${keyId} securely stored in database`);
+    } catch (error) {
+      console.error(`CRITICAL: Failed to store encryption key ${keyId}:`, error);
+      throw new Error('Failed to store encryption key securely');
+    }
+  }
+
+  /**
+   * FIXED: Retrieve and decrypt encryption key from database  
+   */
   private async retrieveEncryptionKey(keyId: string): Promise<Buffer> {
-    // TODO: Retrieve from secure key management system
-    console.log(`🔑 Retrieving encryption key ${keyId} from secure key management system`);
-    return randomBytes(32); // Mock - replace with actual key retrieval
+    try {
+      // Retrieve encrypted key from database
+      const encryptedKey = await storage.retrieveEncryptionKey(keyId);
+      
+      if (!encryptedKey) {
+        throw new Error(`Encryption key not found: ${keyId}`);
+      }
+      
+      // Decrypt with master key
+      const key = this.decryptWithMasterKey(encryptedKey);
+      
+      console.log(`🔑 FIXED: Encryption key ${keyId} successfully retrieved and decrypted`);
+      return key;
+    } catch (error) {
+      console.error(`CRITICAL: Failed to retrieve encryption key ${keyId}:`, error);
+      throw new Error('Failed to retrieve encryption key');
+    }
+  }
+
+  /**
+   * Encrypt key with master key for secure storage
+   */
+  private encryptWithMasterKey(key: Buffer): string {
+    const iv = randomBytes(16);
+    const masterKeyHash = pbkdf2Sync(this.MASTER_KEY, 'echodeed_salt', 100000, 32, 'sha512');
+    const cipher = createCipheriv('aes-256-gcm', masterKeyHash, iv);
+    
+    let encrypted = cipher.update(key, undefined, 'hex');
+    encrypted += cipher.final('hex');
+    const authTag = cipher.getAuthTag();
+    
+    return JSON.stringify({
+      encrypted,
+      iv: iv.toString('hex'),
+      authTag: authTag.toString('hex'),
+      algorithm: 'aes-256-gcm'
+    });
+  }
+
+  /**
+   * Decrypt key with master key from storage
+   */
+  private decryptWithMasterKey(encryptedData: string): Buffer {
+    const data = JSON.parse(encryptedData);
+    const iv = Buffer.from(data.iv, 'hex');
+    const authTag = Buffer.from(data.authTag, 'hex');
+    const masterKeyHash = pbkdf2Sync(this.MASTER_KEY, 'echodeed_salt', 100000, 32, 'sha512');
+    
+    const decipher = createDecipheriv('aes-256-gcm', masterKeyHash, iv);
+    decipher.setAuthTag(authTag);
+    
+    let decrypted = decipher.update(data.encrypted, 'hex');
+    decrypted = Buffer.concat([decrypted, decipher.final()]);
+    
+    return decrypted;
   }
 
   private async getEncryptedContact(contactId: string): Promise<EncryptedEmergencyContact | null> {
-    // TODO: Implement database query
-    return null;
+    return await storage.getEncryptedEmergencyContact(contactId);
   }
 
   private async updateAccessTracking(contactId: string, userId: string): Promise<void> {
-    // TODO: Implement access tracking update
+    await storage.updateEncryptedEmergencyContactAccess(contactId, userId);
     console.log(`📊 Updated access tracking for contact ${contactId} by user ${userId}`);
   }
 
   private async storeDualAuthRequest(request: DualAuthRequest): Promise<void> {
-    // TODO: Store in database
+    await storage.createDualAuthRequest({
+      requestId: request.requestId,
+      requesterId: request.requesterId,
+      requesterRole: request.requesterRole,
+      emergencyContactId: request.emergencyContactId,
+      justification: request.justification,
+      urgencyLevel: request.urgencyLevel,
+      status: request.status,
+      approvals: request.approvals,
+      expiresAt: request.expiresAt
+    });
     console.log(`💼 Stored dual auth request ${request.requestId}`);
   }
 
   private async getDualAuthRequest(requestId: string): Promise<DualAuthRequest | null> {
-    // TODO: Implement database query
-    return null;
+    return await storage.getDualAuthRequest(requestId);
   }
 
   private async updateDualAuthRequest(request: DualAuthRequest): Promise<void> {
-    // TODO: Implement database update
+    await storage.updateDualAuthRequest(request.requestId, {
+      status: request.status,
+      approvals: request.approvals,
+      updatedAt: new Date()
+    });
     console.log(`💼 Updated dual auth request ${request.requestId} with status ${request.status}`);
   }
 }

@@ -281,7 +281,7 @@ export default function ParentDashboard() {
                 <Button
                   variant="outline"
                   size="sm"
-                  onClick={() => navigate('/app')}
+                  onClick={() => navigate('/')}
                   className="flex items-center gap-2"
                   data-testid="back-to-platform"
                 >

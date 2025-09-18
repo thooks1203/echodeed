@@ -2001,6 +2001,66 @@ export type PushSubscription = typeof pushSubscriptions.$inferSelect;
 export type InsertPushSubscription = z.infer<typeof insertPushSubscriptionSchema>;
 export type WellnessTrend = typeof wellnessTrends.$inferSelect;
 
+// Emergency contact encryption types - LIFE-CRITICAL FOR CHILD SAFETY
+export type EncryptionKey = typeof encryptionKeys.$inferSelect;
+export type InsertEncryptionKey = z.infer<typeof insertEncryptionKeySchema>;
+export type DualAuthRequest = typeof dualAuthRequests.$inferSelect;
+export type InsertDualAuthRequest = z.infer<typeof insertDualAuthRequestSchema>;
+export type EncryptedEmergencyContact = typeof encryptedEmergencyContacts.$inferSelect;
+export type InsertEncryptedEmergencyContact = z.infer<typeof insertEncryptedEmergencyContactSchema>;
+
+// EMERGENCY CONTACT ENCRYPTION KEY STORAGE - LIFE-CRITICAL FOR CHILD SAFETY
+export const encryptionKeys = pgTable("encryption_keys", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  keyId: varchar("key_id").notNull().unique(), // The key identifier used by encryption service
+  encryptedKey: text("encrypted_key").notNull(), // AES-256 key encrypted with master key
+  keyType: varchar("key_type", { length: 50 }).default("emergency_contact").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  lastUsedAt: timestamp("last_used_at"),
+  isActive: boolean("is_active").default(true).notNull(),
+  // Audit fields for security compliance
+  createdBy: varchar("created_by").default("system").notNull(),
+  accessCount: integer("access_count").default(0).notNull(),
+});
+
+// DUAL AUTH REQUESTS - EMERGENCY CONTACT ACCESS CONTROL
+export const dualAuthRequests = pgTable("dual_auth_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  requestId: varchar("request_id").notNull().unique(),
+  requesterId: varchar("requester_id").notNull(),
+  requesterRole: varchar("requester_role", { length: 50 }).notNull(),
+  emergencyContactId: varchar("emergency_contact_id").notNull(),
+  justification: text("justification").notNull(),
+  urgencyLevel: varchar("urgency_level", { length: 20 }).notNull(), // ROUTINE, URGENT, EMERGENCY, COURT_ORDER
+  status: varchar("status", { length: 20 }).default("PENDING").notNull(), // PENDING, APPROVED, DENIED, EXPIRED
+  approvals: jsonb("approvals"), // Array of approval records
+  expiresAt: timestamp("expires_at").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// ENCRYPTED EMERGENCY CONTACTS - SECURE STORAGE FOR CRISIS INTERVENTION
+export const encryptedEmergencyContacts = pgTable("encrypted_emergency_contacts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  contactId: varchar("contact_id").notNull().unique(),
+  encryptedName: text("encrypted_name").notNull(),
+  encryptedPhone: text("encrypted_phone").notNull(), 
+  encryptedRelation: text("encrypted_relation").notNull(),
+  encryptionKeyId: varchar("encryption_key_id").notNull(),
+  // Access tracking for audit compliance
+  accessCount: integer("access_count").default(0).notNull(),
+  lastAccessedAt: timestamp("last_accessed_at"),
+  lastAccessedBy: varchar("last_accessed_by"),
+  // Consent tracking for COPPA/FERPA compliance
+  consentRecord: jsonb("consent_record").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Schema exports for encryption key management
+export const insertEncryptionKeySchema = createInsertSchema(encryptionKeys);
+export const insertDualAuthRequestSchema = createInsertSchema(dualAuthRequests);
+export const insertEncryptedEmergencyContactSchema = createInsertSchema(encryptedEmergencyContacts);
+
 // User relations for better query performance
 export const usersRelations = relations(users, ({ many }) => ({
   posts: many(kindnessPosts),

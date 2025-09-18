@@ -83,7 +83,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           </button>
           
           <button
-            onClick={() => window.location.href = '/admin-dashboard'}
+            onClick={() => window.location.href = '/'}
             style={{
               background: 'linear-gradient(135deg, #8B5CF6, #EC4899)',
               color: 'white',

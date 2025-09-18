@@ -46,6 +46,9 @@ import {
   supportResponses,
   crisisEscalations,
   licensedCounselors,
+  encryptionKeys,
+  dualAuthRequests,
+  encryptedEmergencyContacts,
   type User,
   type UpsertUser,
   type KindnessPost,
@@ -123,6 +126,12 @@ import {
   type InsertSupportPost,
   type SupportResponse,
   type InsertSupportResponse,
+  type EncryptionKey,
+  type InsertEncryptionKey,
+  type DualAuthRequest,
+  type InsertDualAuthRequest,
+  type EncryptedEmergencyContact,
+  type InsertEncryptedEmergencyContact,
   type CrisisEscalation,
   type InsertCrisisEscalation,
   type LicensedCounselor,
@@ -4129,6 +4138,106 @@ export class DatabaseStorage implements IStorage {
       .values(resource)
       .returning();
     return created;
+  }
+
+  // ===== EMERGENCY CONTACT ENCRYPTION KEY MANAGEMENT - LIFE-CRITICAL =====
+  
+  async storeEncryptionKey(keyId: string, encryptedKey: string, keyType: string = 'emergency_contact'): Promise<EncryptionKey> {
+    const [created] = await db
+      .insert(encryptionKeys)
+      .values({
+        keyId,
+        encryptedKey,
+        keyType,
+        createdBy: 'system',
+        accessCount: 0,
+        isActive: true
+      })
+      .returning();
+    return created;
+  }
+
+  async retrieveEncryptionKey(keyId: string): Promise<string | null> {
+    const [key] = await db
+      .select()
+      .from(encryptionKeys)
+      .where(and(
+        eq(encryptionKeys.keyId, keyId),
+        eq(encryptionKeys.isActive, true)
+      ))
+      .limit(1);
+    
+    if (!key) {
+      return null;
+    }
+
+    // Update access tracking
+    await db
+      .update(encryptionKeys)
+      .set({ 
+        lastUsedAt: new Date(),
+        accessCount: key.accessCount + 1
+      })
+      .where(eq(encryptionKeys.keyId, keyId));
+
+    return key.encryptedKey;
+  }
+
+  async createDualAuthRequest(request: InsertDualAuthRequest): Promise<DualAuthRequest> {
+    const [created] = await db
+      .insert(dualAuthRequests)
+      .values(request)
+      .returning();
+    return created;
+  }
+
+  async getDualAuthRequest(requestId: string): Promise<DualAuthRequest | null> {
+    const [request] = await db
+      .select()
+      .from(dualAuthRequests)
+      .where(eq(dualAuthRequests.requestId, requestId))
+      .limit(1);
+    return request || null;
+  }
+
+  async updateDualAuthRequest(requestId: string, updates: Partial<InsertDualAuthRequest>): Promise<DualAuthRequest> {
+    const [updated] = await db
+      .update(dualAuthRequests)
+      .set({ ...updates, updatedAt: new Date() })
+      .where(eq(dualAuthRequests.requestId, requestId))
+      .returning();
+    return updated;
+  }
+
+  async createEncryptedEmergencyContact(contact: InsertEncryptedEmergencyContact): Promise<EncryptedEmergencyContact> {
+    const [created] = await db
+      .insert(encryptedEmergencyContacts)
+      .values(contact)
+      .returning();
+    return created;
+  }
+
+  async getEncryptedEmergencyContact(contactId: string): Promise<EncryptedEmergencyContact | null> {
+    const [contact] = await db
+      .select()
+      .from(encryptedEmergencyContacts)
+      .where(eq(encryptedEmergencyContacts.contactId, contactId))
+      .limit(1);
+    return contact || null;
+  }
+
+  async updateEncryptedEmergencyContactAccess(contactId: string, accessorUserId: string): Promise<void> {
+    const contact = await this.getEncryptedEmergencyContact(contactId);
+    if (contact) {
+      await db
+        .update(encryptedEmergencyContacts)
+        .set({
+          accessCount: contact.accessCount + 1,
+          lastAccessedAt: new Date(),
+          lastAccessedBy: accessorUserId
+        })
+        .where(eq(encryptedEmergencyContacts.contactId, contactId));
+    }
   }
 }
 
