@@ -3,6 +3,7 @@ import { KindnessPost } from '@shared/schema';
 import { formatDistance } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { addSessionHeaders } from '@/lib/session';
 
 interface KindnessFeedProps {
   posts: KindnessPost[];
@@ -17,7 +18,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
     mutationFn: async (postId: string) => {
       const response = await fetch(`/api/posts/${postId}/heart`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' }
+        headers: addSessionHeaders()
       });
       if (!response.ok) throw new Error('Failed to heart post');
       return response.json();
@@ -31,7 +32,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
     mutationFn: async (postId: string) => {
       const response = await fetch(`/api/posts/${postId}/echo`, {
         method: 'POST', 
-        headers: { 'Content-Type': 'application/json' }
+        headers: addSessionHeaders()
       });
       if (!response.ok) throw new Error('Failed to echo post');
       return response.json();
