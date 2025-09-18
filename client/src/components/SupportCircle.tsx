@@ -34,6 +34,9 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
   const [hasSafetyDisclosureAccepted, setHasSafetyDisclosureAccepted] = useState(() => 
     typeof window !== 'undefined' ? localStorage.getItem('safety_disclosure_accepted') === 'true' : false
   );
+  const [hasSupportSafetyAcknowledged, setHasSupportSafetyAcknowledged] = useState(() => 
+    typeof window !== 'undefined' ? localStorage.getItem('support_safety_acknowledged') === 'true' : false
+  );
   const [emergencyContact, setEmergencyContact] = useState<any>(null);
   
   const { toast } = useToast();
@@ -188,6 +191,11 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
   const handleSafetyDisclosureAccept = () => {
     setHasSafetyDisclosureAccepted(true);
     localStorage.setItem('safety_disclosure_accepted', 'true');
+    
+    // Also mark Support safety as acknowledged if this is from Support posting
+    setHasSupportSafetyAcknowledged(true);
+    localStorage.setItem('support_safety_acknowledged', 'true');
+    
     setShowSafetyDisclosure(false);
     
     // If crisis intervention is needed, show that next
@@ -197,6 +205,10 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
       // Otherwise, proceed with posting
       proceedWithPost();
     }
+  };
+
+  const handleSupportSafetyAcknowledgment = () => {
+    setShowSafetyDisclosure(true);
   };
 
   const handleEmergencyContactSubmit = (contact: any) => {
@@ -413,8 +425,53 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
 
         {schoolId && (
           <>
-            {/* Post Form */}
-            <div className="bg-white rounded-xl p-6 mb-6 shadow-sm border border-gray-100">
+            {/* Safety Acknowledgment Requirement OR Post Form */}
+            {!hasSupportSafetyAcknowledged ? (
+              /* Safety Acknowledgment Required */
+              <div className="bg-white rounded-xl p-6 mb-6 shadow-sm border border-orange-200">
+                <div className="text-center">
+                  <div className="w-16 h-16 bg-gradient-to-r from-orange-500 to-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Shield className="w-8 h-8 text-white" />
+                  </div>
+                  
+                  <h3 className="text-xl font-bold text-gray-900 mb-3">Safety Review Required</h3>
+                  
+                  <p className="text-gray-700 mb-4 max-w-md mx-auto">
+                    Before posting in Support Circle, you must review our safety guidelines to understand how we protect students while providing help.
+                  </p>
+                  
+                  <div className="bg-orange-50 border border-orange-200 rounded-lg p-4 mb-6">
+                    <div className="flex items-start gap-3">
+                      <AlertTriangle className="w-5 h-5 text-orange-600 mt-0.5 flex-shrink-0" />
+                      <div className="text-left">
+                        <p className="text-orange-800 font-medium mb-2">Important Safety Information:</p>
+                        <ul className="text-sm text-orange-700 space-y-1">
+                          <li>• Your posts are anonymous to protect your privacy</li>
+                          <li>• If you're in danger, we may contact you to keep you safe</li>
+                          <li>• Licensed counselors at your school will see your posts</li>
+                          <li>• Crisis support is available 24/7 if you need immediate help</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <button
+                    onClick={handleSupportSafetyAcknowledgment}
+                    className="bg-gradient-to-r from-orange-500 to-red-500 text-white py-3 px-8 rounded-lg font-semibold hover:from-orange-600 hover:to-red-600 transition-all flex items-center gap-2 mx-auto"
+                    data-testid="button-review-safety-rules"
+                  >
+                    <BookOpen className="w-4 h-4" />
+                    Review Complete Safety Guidelines
+                  </button>
+                  
+                  <p className="text-xs text-gray-500 mt-4">
+                    You only need to do this once per device
+                  </p>
+                </div>
+              </div>
+            ) : (
+              /* Post Form */
+              <div className="bg-white rounded-xl p-6 mb-6 shadow-sm border border-gray-100">
               <h3 className="text-lg font-semibold mb-4 text-gray-800">Share What's on Your Mind</h3>
               <form onSubmit={handleSubmit} className="space-y-4">
                 {/* Category Selection */}
@@ -554,7 +611,8 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
                   {postMutation.isPending ? 'Sharing...' : 'Share Anonymously'}
                 </button>
               </form>
-            </div>
+              </div>
+            )}
 
             {/* Support Posts Feed */}
             <div className="space-y-4">
