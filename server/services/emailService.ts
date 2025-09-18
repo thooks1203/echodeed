@@ -56,6 +56,30 @@ interface ConsentDenialEmailData {
   deniedAt: Date;
 }
 
+// 🔄 ANNUAL CONSENT RENEWAL EMAIL INTERFACES - BURLINGTON POLICY
+interface ConsentRenewalEmailData {
+  parentEmail: string;
+  parentName: string;
+  studentFirstName: string;
+  schoolName: string;
+  verificationCode: string;
+  baseUrl: string;
+  renewalYear: string;
+  expiryDate: Date;
+}
+
+interface RenewalReminderEmailData {
+  parentEmail: string;
+  parentName: string;
+  studentFirstName: string;
+  schoolName: string;
+  verificationCode: string;
+  baseUrl: string;
+  reminderType: '45day' | '14day' | '7day' | '1day' | 'manual';
+  daysUntilExpiry: number;
+  expiryDate: Date;
+}
+
 interface EmailService {
   sendParentalConsentEmail(data: ConsentEmailData): Promise<boolean>;
   sendEnhancedParentalConsentEmail(data: EnhancedConsentEmailData): Promise<boolean>;
@@ -63,6 +87,9 @@ interface EmailService {
   sendConsentRevocationConfirmation(data: ConsentRevocationEmailData): Promise<boolean>;
   sendConsentReminderEmail(data: ConsentReminderEmailData): Promise<boolean>;
   sendConsentDenialConfirmation(data: ConsentDenialEmailData): Promise<boolean>;
+  // 🔄 Burlington renewal methods
+  sendConsentRenewalEmail(data: ConsentRenewalEmailData): Promise<boolean>;
+  sendRenewalReminderEmail(data: RenewalReminderEmailData): Promise<boolean>;
 }
 
 class NodemailerEmailService implements EmailService {
@@ -392,6 +419,136 @@ class NodemailerEmailService implements EmailService {
       }
     } catch (error) {
       console.error('❌ Failed to send consent denial confirmation email:', error);
+      return false;
+    }
+  }
+
+  // 🔄 ANNUAL CONSENT RENEWAL EMAIL METHODS - BURLINGTON POLICY IMPLEMENTATION
+
+  async sendConsentRenewalEmail(data: ConsentRenewalEmailData): Promise<boolean> {
+    const { parentEmail, parentName, studentFirstName, schoolName, verificationCode, baseUrl, renewalYear, expiryDate } = data;
+    
+    const renewalUrl = `${baseUrl}/renewals/${verificationCode}`;
+    
+    const htmlContent = this.generateConsentRenewalHTML({
+      parentName,
+      studentFirstName,
+      schoolName,
+      renewalUrl,
+      renewalYear,
+      expiryDate,
+      verificationCode
+    });
+
+    const textContent = this.generateConsentRenewalText({
+      parentName,
+      studentFirstName,
+      schoolName,
+      renewalUrl,
+      renewalYear,
+      expiryDate
+    });
+
+    const mailOptions = {
+      from: process.env.SMTP_FROM || 'Burlington Middle School EchoDeed <noreply@echodeed.com>',
+      to: parentEmail,
+      subject: `🔄 Annual Consent Renewal Required - ${studentFirstName}'s EchoDeed Account for ${renewalYear}`,
+      text: textContent,
+      html: htmlContent
+    };
+
+    try {
+      if (this.transporter) {
+        const info = await this.transporter.sendMail(mailOptions);
+        console.log('📧 Consent renewal email sent successfully:', info.messageId);
+        return true;
+      } else {
+        console.log('\n📧 ==== CONSENT RENEWAL EMAIL (DEVELOPMENT MODE) ====');
+        console.log(`To: ${parentEmail}`);
+        console.log(`Subject: ${mailOptions.subject}`);
+        console.log(`Renewal URL: ${renewalUrl}`);
+        console.log(`Renewal Year: ${renewalYear}`);
+        console.log(`Expiry Date: ${expiryDate.toLocaleDateString()}`);
+        console.log('=================================================\n');
+        console.log(textContent);
+        console.log('\n=================================================');
+        return true;
+      }
+    } catch (error) {
+      console.error('❌ Failed to send consent renewal email:', error);
+      return false;
+    }
+  }
+
+  async sendRenewalReminderEmail(data: RenewalReminderEmailData): Promise<boolean> {
+    const { parentEmail, parentName, studentFirstName, schoolName, verificationCode, baseUrl, reminderType, daysUntilExpiry, expiryDate } = data;
+    
+    const renewalUrl = `${baseUrl}/renewals/${verificationCode}`;
+    
+    // Define reminder urgency and messaging
+    const reminderConfig = {
+      '45day': { urgency: 'Early Notice', emoji: '📅', priority: 'info' },
+      '14day': { urgency: 'Action Needed', emoji: '⚠️', priority: 'warning' },
+      '7day': { urgency: 'Urgent Action Required', emoji: '🚨', priority: 'urgent' },
+      '1day': { urgency: 'IMMEDIATE ACTION REQUIRED', emoji: '⏰', priority: 'critical' },
+      'manual': { urgency: 'Reminder', emoji: '📧', priority: 'info' }
+    };
+
+    const config = reminderConfig[reminderType] || reminderConfig['manual'];
+    
+    const htmlContent = this.generateRenewalReminderHTML({
+      parentName,
+      studentFirstName,
+      schoolName,
+      renewalUrl,
+      reminderType,
+      daysUntilExpiry,
+      expiryDate,
+      urgency: config.urgency,
+      emoji: config.emoji,
+      priority: config.priority,
+      verificationCode
+    });
+
+    const textContent = this.generateRenewalReminderText({
+      parentName,
+      studentFirstName,
+      schoolName,
+      renewalUrl,
+      reminderType,
+      daysUntilExpiry,
+      expiryDate,
+      urgency: config.urgency
+    });
+
+    const mailOptions = {
+      from: process.env.SMTP_FROM || 'Burlington Middle School EchoDeed <noreply@echodeed.com>',
+      to: parentEmail,
+      subject: `${config.emoji} ${config.urgency}: Consent Renewal for ${studentFirstName} (${daysUntilExpiry} days remaining)`,
+      text: textContent,
+      html: htmlContent
+    };
+
+    try {
+      if (this.transporter) {
+        const info = await this.transporter.sendMail(mailOptions);
+        console.log(`📧 ${reminderType} renewal reminder email sent successfully:`, info.messageId);
+        return true;
+      } else {
+        console.log(`\n📧 ==== ${reminderType.toUpperCase()} RENEWAL REMINDER EMAIL (DEVELOPMENT MODE) ====`);
+        console.log(`To: ${parentEmail}`);
+        console.log(`Subject: ${mailOptions.subject}`);
+        console.log(`Renewal URL: ${renewalUrl}`);
+        console.log(`Days Until Expiry: ${daysUntilExpiry}`);
+        console.log(`Expiry Date: ${expiryDate.toLocaleDateString()}`);
+        console.log(`Urgency: ${config.urgency}`);
+        console.log('=================================================\n');
+        console.log(textContent);
+        console.log('\n=================================================');
+        return true;
+      }
+    } catch (error) {
+      console.error(`❌ Failed to send ${reminderType} renewal reminder email:`, error);
       return false;
     }
   }
@@ -1185,6 +1342,300 @@ The EchoDeed Team
 ---
 EchoDeed™ - Building Character Through Kindness
 COPPA Compliant • Consent Rights Respected
+    `;
+  }
+
+  // 🔄 RENEWAL EMAIL TEMPLATE GENERATORS - BURLINGTON POLICY
+
+  private generateConsentRenewalHTML(data: {
+    parentName: string;
+    studentFirstName: string;
+    schoolName: string;
+    renewalUrl: string;
+    renewalYear: string;
+    expiryDate: Date;
+    verificationCode: string;
+  }) {
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Annual Consent Renewal Required - EchoDeed</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8f9fa; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #f59e0b, #d97706); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 700; }
+        .header p { margin: 10px 0 0 0; font-size: 16px; opacity: 0.9; }
+        .content { padding: 30px; }
+        .renewal-box { background: #fef3c7; border: 2px solid #f59e0b; border-radius: 8px; padding: 20px; margin: 20px 0; }
+        .renewal-box h3 { margin: 0 0 10px 0; color: #92400e; font-size: 18px; }
+        .renewal-button { display: block; background: linear-gradient(135deg, #f59e0b, #d97706); color: white; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 18px; text-align: center; margin: 25px 0; transition: transform 0.2s; }
+        .renewal-button:hover { transform: translateY(-1px); }
+        .burlington-info { background: #dbeafe; border-left: 4px solid #3b82f6; padding: 15px; margin: 20px 0; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 14px; color: #6b7280; border-top: 1px solid #e5e7eb; }
+        .code-box { background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 16px; text-align: center; margin: 15px 0; }
+        .deadline-warning { background: #fee2e2; border: 2px solid #ef4444; border-radius: 8px; padding: 15px; margin: 20px 0; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔄 Annual Consent Renewal</h1>
+            <p>Burlington Middle School - School Year ${data.renewalYear}</p>
+        </div>
+        
+        <div class="content">
+            <p><strong>Dear ${data.parentName},</strong></p>
+            
+            <div class="renewal-box">
+                <h3>📅 Time to Renew ${data.studentFirstName}'s EchoDeed Consent</h3>
+                <p>Your child's current consent expires on <strong>${data.expiryDate.toLocaleDateString()}</strong>. To ensure uninterrupted access to our character-building platform, please renew their consent for the ${data.renewalYear} school year.</p>
+            </div>
+
+            <div class="burlington-info">
+                <h4>🏫 Burlington Policy Requirement</h4>
+                <p>In accordance with Burlington Middle School policy, all student technology consents must be renewed annually. This ensures:</p>
+                <ul>
+                    <li>Continued COPPA compliance for grades 6-8</li>
+                    <li>Updated parent contact information</li>
+                    <li>Verification of current consent preferences</li>
+                    <li>Alignment with current school year policies</li>
+                </ul>
+            </div>
+
+            <div style="text-align: center;">
+                <a href="${data.renewalUrl}" class="renewal-button">
+                    🔄 Renew Consent for ${data.renewalYear}
+                </a>
+            </div>
+
+            <div class="deadline-warning">
+                <h4>⏰ Important Deadline</h4>
+                <p><strong>Renewal must be completed by ${data.expiryDate.toLocaleDateString()}</strong></p>
+                <p>After this date, ${data.studentFirstName}'s account will be temporarily restricted until consent is renewed.</p>
+            </div>
+
+            <p><strong>What's included in the renewal?</strong></p>
+            <ul>
+                <li>Review and update your consent preferences</li>
+                <li>Confirm current contact information</li>
+                <li>Digital signature authentication</li>
+                <li>New school year coverage through July 31, 2026</li>
+            </ul>
+
+            <div class="code-box">
+                <strong>Verification Code:</strong> ${data.verificationCode}
+            </div>
+
+            <p><strong>Questions?</strong> Contact Burlington Middle School or reply to this email.</p>
+            
+            <p>Thank you for your continued support of ${data.studentFirstName}'s character development!</p>
+            
+            <p>Best regards,<br><strong>${data.schoolName}<br>EchoDeed Team</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>EchoDeed™ - Building Character Through Kindness</p>
+            <p>Burlington Middle School • COPPA Compliant • Annual Renewal Required</p>
+        </div>
+    </div>
+</body>
+</html>
+    `;
+  }
+
+  private generateConsentRenewalText(data: {
+    parentName: string;
+    studentFirstName: string;
+    schoolName: string;
+    renewalUrl: string;
+    renewalYear: string;
+    expiryDate: Date;
+  }) {
+    return `
+ANNUAL CONSENT RENEWAL REQUIRED - EchoDeed
+Burlington Middle School - School Year ${data.renewalYear}
+
+Dear ${data.parentName},
+
+🔄 Time to Renew ${data.studentFirstName}'s EchoDeed Consent
+
+Your child's current consent expires on ${data.expiryDate.toLocaleDateString()}. To ensure uninterrupted access to our character-building platform, please renew their consent for the ${data.renewalYear} school year.
+
+🏫 BURLINGTON POLICY REQUIREMENT
+In accordance with Burlington Middle School policy, all student technology consents must be renewed annually. This ensures:
+• Continued COPPA compliance for grades 6-8
+• Updated parent contact information  
+• Verification of current consent preferences
+• Alignment with current school year policies
+
+⏰ IMPORTANT DEADLINE
+Renewal must be completed by ${data.expiryDate.toLocaleDateString()}
+After this date, ${data.studentFirstName}'s account will be temporarily restricted until consent is renewed.
+
+WHAT'S INCLUDED IN THE RENEWAL?
+• Review and update your consent preferences
+• Confirm current contact information
+• Digital signature authentication
+• New school year coverage through July 31, 2026
+
+RENEW NOW: ${data.renewalUrl}
+
+Questions? Contact Burlington Middle School or reply to this email.
+
+Thank you for your continued support of ${data.studentFirstName}'s character development!
+
+Best regards,
+${data.schoolName}
+EchoDeed Team
+
+----
+EchoDeed™ - Building Character Through Kindness
+Burlington Middle School • COPPA Compliant • Annual Renewal Required
+    `;
+  }
+
+  private generateRenewalReminderHTML(data: {
+    parentName: string;
+    studentFirstName: string;
+    schoolName: string;
+    renewalUrl: string;
+    reminderType: string;
+    daysUntilExpiry: number;
+    expiryDate: Date;
+    urgency: string;
+    emoji: string;
+    priority: string;
+    verificationCode: string;
+  }) {
+    const priorityColors = {
+      'info': { bg: '#dbeafe', border: '#3b82f6', text: '#1e40af' },
+      'warning': { bg: '#fef3c7', border: '#f59e0b', text: '#92400e' },
+      'urgent': { bg: '#fee2e2', border: '#ef4444', text: '#dc2626' },
+      'critical': { bg: '#fecaca', border: '#dc2626', text: '#991b1b' }
+    };
+
+    const colors = priorityColors[data.priority as keyof typeof priorityColors] || priorityColors.info;
+
+    return `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${data.urgency} - Consent Renewal Reminder</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8f9fa; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, ${colors.border}, ${colors.text}); color: white; padding: 30px; text-align: center; }
+        .header h1 { margin: 0; font-size: 28px; font-weight: 700; }
+        .header p { margin: 10px 0 0 0; font-size: 16px; opacity: 0.9; }
+        .content { padding: 30px; }
+        .reminder-box { background: ${colors.bg}; border: 2px solid ${colors.border}; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center; }
+        .reminder-box h3 { margin: 0 0 10px 0; color: ${colors.text}; font-size: 20px; }
+        .countdown { font-size: 36px; font-weight: bold; color: ${colors.text}; margin: 15px 0; }
+        .renewal-button { display: block; background: linear-gradient(135deg, ${colors.border}, ${colors.text}); color: white; text-decoration: none; padding: 16px 32px; border-radius: 8px; font-weight: 600; font-size: 18px; text-align: center; margin: 25px 0; transition: transform 0.2s; }
+        .renewal-button:hover { transform: translateY(-1px); }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; font-size: 14px; color: #6b7280; border-top: 1px solid #e5e7eb; }
+        .code-box { background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 6px; padding: 12px; font-family: monospace; font-size: 16px; text-align: center; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>${data.emoji} ${data.urgency}</h1>
+            <p>Consent Renewal Reminder for ${data.studentFirstName}</p>
+        </div>
+        
+        <div class="content">
+            <p><strong>Dear ${data.parentName},</strong></p>
+            
+            <div class="reminder-box">
+                <h3>${data.emoji} Consent Renewal Required</h3>
+                <div class="countdown">${data.daysUntilExpiry}</div>
+                <p><strong>Days Remaining</strong></p>
+                <p>${data.studentFirstName}'s consent expires on <strong>${data.expiryDate.toLocaleDateString()}</strong></p>
+            </div>
+
+            <p><strong>Why this matters:</strong></p>
+            <ul>
+                <li>Ensures continuous access to EchoDeed activities</li>
+                <li>Maintains COPPA compliance for Burlington Middle School</li>
+                <li>Prevents temporary account restrictions</li>
+                <li>Updates consent for the current school year</li>
+            </ul>
+
+            <div style="text-align: center;">
+                <a href="${data.renewalUrl}" class="renewal-button">
+                    ${data.emoji} Complete Renewal Now
+                </a>
+            </div>
+
+            <div class="code-box">
+                <strong>Verification Code:</strong> ${data.verificationCode}
+            </div>
+
+            <p><strong>Next reminders:</strong> We'll continue to notify you until the renewal is completed or the deadline passes.</p>
+            
+            <p>Questions? Contact ${data.schoolName} or reply to this email.</p>
+            
+            <p>Best regards,<br><strong>${data.schoolName}<br>EchoDeed Team</strong></p>
+        </div>
+        
+        <div class="footer">
+            <p>EchoDeed™ - Building Character Through Kindness</p>
+            <p>Burlington Middle School • COPPA Compliant • Renewal System</p>
+        </div>
+    </div>
+</body>
+</html>
+    `;
+  }
+
+  private generateRenewalReminderText(data: {
+    parentName: string;
+    studentFirstName: string;
+    schoolName: string;
+    renewalUrl: string;
+    reminderType: string;
+    daysUntilExpiry: number;
+    expiryDate: Date;
+    urgency: string;
+  }) {
+    return `
+${data.urgency.toUpperCase()} - CONSENT RENEWAL REMINDER
+Burlington Middle School - EchoDeed
+
+Dear ${data.parentName},
+
+🔄 Consent Renewal Required for ${data.studentFirstName}
+
+⏰ ${data.daysUntilExpiry} DAYS REMAINING
+
+${data.studentFirstName}'s consent expires on ${data.expiryDate.toLocaleDateString()}
+
+WHY THIS MATTERS:
+• Ensures continuous access to EchoDeed activities
+• Maintains COPPA compliance for Burlington Middle School  
+• Prevents temporary account restrictions
+• Updates consent for the current school year
+
+COMPLETE RENEWAL NOW: ${data.renewalUrl}
+
+NEXT REMINDERS: We'll continue to notify you until the renewal is completed or the deadline passes.
+
+Questions? Contact ${data.schoolName} or reply to this email.
+
+Best regards,
+${data.schoolName}
+EchoDeed Team
+
+----
+EchoDeed™ - Building Character Through Kindness
+Burlington Middle School • COPPA Compliant • Renewal System
     `;
   }
 }

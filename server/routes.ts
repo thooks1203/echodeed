@@ -6820,6 +6820,702 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 🔄 ANNUAL CONSENT RENEWAL API - BURLINGTON POLICY IMPLEMENTATION
+  
+  // 👨‍👩‍👧‍👦 PARENT RENEWAL ROUTES
+  
+  // GET /api/renewals/:code - Get renewal request data for parent (public route with code auth)
+  app.get('/api/renewals/:code', 
+    rateLimiter.createGenericLimiter({ maxRequests: 10, windowMs: 300000 }), // 10 requests per 5 minutes
+    async (req, res) => {
+    try {
+      const { code } = req.params;
+      const ipAddress = req.ip || req.connection.remoteAddress;
+      const userAgent = req.get('User-Agent') || '';
+
+      if (!code || code.length !== 32) {
+        return res.status(400).json({
+          error: 'Invalid renewal verification code',
+          errorCode: 'INVALID_RENEWAL_CODE'
+        });
+      }
+
+      // 🛡️ SECURITY: Get renewal record by verification code
+      const renewalRecord = await storage.getConsentRecordByCode(code);
+      
+      if (!renewalRecord || !renewalRecord.renewalVerificationCode || renewalRecord.renewalVerificationCode !== code) {
+        return res.status(404).json({
+          error: 'Renewal request not found',
+          errorCode: 'RENEWAL_NOT_FOUND'
+        });
+      }
+
+      // ⏰ SECURITY: Check expiration (72-hour strict limit)
+      if (new Date() > renewalRecord.linkExpiresAt) {
+        return res.status(400).json({
+          error: 'Renewal link has expired',
+          errorCode: 'RENEWAL_LINK_EXPIRED'
+        });
+      }
+
+      // 🛡️ SECURITY: Check if already processed
+      if (renewalRecord.renewalStatus === 'approved') {
+        return res.status(400).json({
+          error: 'This renewal has already been approved',
+          errorCode: 'RENEWAL_ALREADY_APPROVED'
+        });
+      }
+
+      if (renewalRecord.renewalStatus !== 'pending') {
+        return res.status(400).json({
+          error: 'This renewal is no longer available for processing',
+          errorCode: 'RENEWAL_NOT_AVAILABLE'
+        });
+      }
+
+      // Get student details for the renewal
+      const studentAccount = await storage.getStudentAccount(renewalRecord.studentAccountId);
+      const school = await storage.getCorporateAccount(renewalRecord.schoolId);
+
+      // ✅ VALID RENEWAL - Return renewal form data for parent (masked response)
+      res.json({
+        success: true,
+        renewalData: {
+          id: renewalRecord.id,
+          parentName: renewalRecord.parentName,
+          parentEmail: renewalRecord.parentEmail,
+          parentPhone: renewalRecord.parentPhone,
+          relationshipToStudent: renewalRecord.relationshipToStudent,
+          consentVersion: renewalRecord.consentVersion,
+          
+          // Student info (masked for privacy)
+          studentFirstName: studentAccount?.firstName || 'Student',
+          schoolName: school?.companyName || 'School',
+          
+          // Burlington renewal context
+          renewalYear: renewalRecord.validUntil ? 
+            `${new Date(renewalRecord.validUntil).getFullYear() - 1}-${new Date(renewalRecord.validUntil).getFullYear()}` : 
+            'Current Year',
+          expiryDate: renewalRecord.validUntil,
+          
+          // Current consent preferences for renewal
+          preferences: {
+            consentToDataCollection: renewalRecord.consentToDataCollection,
+            consentToDataSharing: renewalRecord.consentToDataSharing,
+            consentToEmailCommunication: renewalRecord.consentToEmailCommunication,
+            consentToEducationalReports: renewalRecord.consentToEducationalReports,
+            consentToKindnessActivityTracking: renewalRecord.consentToKindnessActivityTracking,
+            optOutOfDataAnalytics: renewalRecord.optOutOfDataAnalytics,
+            optOutOfThirdPartySharing: renewalRecord.optOutOfThirdPartySharing,
+            optOutOfMarketingCommunications: renewalRecord.optOutOfMarketingCommunications,
+            optOutOfPlatformNotifications: renewalRecord.optOutOfPlatformNotifications
+          }
+        }
+      });
+
+    } catch (error: any) {
+      console.error('Renewal lookup failed:', error);
+      res.status(500).json({
+        error: 'Failed to retrieve renewal request',
+        errorCode: 'RENEWAL_LOOKUP_FAILED'
+      });
+    }
+  });
+
+  // POST /api/renewals/:code/approve - Process renewal approval with digital signature
+  app.post('/api/renewals/:code/approve', 
+    rateLimiter.createGenericLimiter({ maxRequests: 3, windowMs: 900000 }), // 3 attempts per 15 minutes
+    async (req, res) => {
+    try {
+      const { code } = req.params;
+      const ipAddress = req.ip || req.connection.remoteAddress;
+      const userAgent = req.get('User-Agent') || '';
+      
+      const { 
+        signerFullName,
+        digitalSignature,
+        consentDecision,
+        consentPreferences 
+      } = req.body;
+
+      if (!code || code.length !== 32) {
+        return res.status(400).json({
+          error: 'Invalid renewal verification code',
+          errorCode: 'INVALID_RENEWAL_CODE'
+        });
+      }
+
+      // 🛡️ VALIDATION: Ensure all required fields
+      if (!signerFullName || !digitalSignature || !consentDecision) {
+        return res.status(400).json({
+          error: 'Missing required fields for renewal approval',
+          errorCode: 'MISSING_RENEWAL_FIELDS'
+        });
+      }
+
+      // Get renewal record
+      const renewalRecord = await storage.getConsentRecordByCode(code);
+      
+      if (!renewalRecord || renewalRecord.renewalVerificationCode !== code) {
+        return res.status(404).json({
+          error: 'Renewal request not found',
+          errorCode: 'RENEWAL_NOT_FOUND'
+        });
+      }
+
+      // ⏰ Check expiration
+      if (new Date() > renewalRecord.linkExpiresAt) {
+        return res.status(400).json({
+          error: 'Renewal link has expired',
+          errorCode: 'RENEWAL_LINK_EXPIRED'
+        });
+      }
+
+      // Check if already processed
+      if (renewalRecord.renewalStatus !== 'pending') {
+        return res.status(400).json({
+          error: 'This renewal has already been processed',
+          errorCode: 'RENEWAL_ALREADY_PROCESSED'
+        });
+      }
+
+      if (consentDecision === 'approve') {
+        // 🔒 Create signature hash and metadata
+        const signatureTimestamp = new Date();
+        const { nanoid } = await import('nanoid');
+        const signatureId = nanoid(25);
+        
+        const signaturePayload = JSON.stringify({
+          renewalId: renewalRecord.id,
+          signerName: signerFullName,
+          timestamp: signatureTimestamp.toISOString(),
+          consentVersion: renewalRecord.consentVersion,
+          ipAddress,
+          signatureId
+        });
+
+        const crypto = await import('crypto');
+        const digitalSignatureHash = crypto.createHash('sha256')
+          .update(signaturePayload + digitalSignature + process.env.CONSENT_SIGNATURE_SECRET)
+          .digest('hex');
+
+        const signatureMetadata = {
+          signatureId,
+          signatureMethod: 'digital_renewal',
+          ipAddress,
+          userAgent,
+          renewalProcessed: true,
+          burlingtonCompliance: true
+        };
+
+        // Update consent preferences if provided
+        const updatedRecord = {
+          ...renewalRecord,
+          ...consentPreferences,
+          recordUpdatedAt: new Date()
+        };
+
+        // 📝 APPROVE RENEWAL - Creates new record and closes prior
+        const approvedRenewal = await storage.approveRenewal(renewalRecord.id, {
+          digitalSignatureHash,
+          signaturePayload,
+          signerFullName,
+          finalConsentConfirmed: true,
+          signatureTimestamp,
+          signatureMetadata,
+          ipAddress,
+          userAgent
+        });
+
+        // 🔒 AUDIT: Log renewal approval
+        await securityAuditLogger.logSecurityEvent({
+          userId: 'parent',
+          userRole: 'parent',
+          schoolId: renewalRecord.schoolId,
+          action: 'RENEWAL_APPROVED',
+          details: {
+            renewalId: renewalRecord.id,
+            studentAccountId: renewalRecord.studentAccountId,
+            parentEmail: renewalRecord.parentEmail,
+            signatureHash: digitalSignatureHash.substring(0, 16) + '...', // Partial hash for audit
+            burlingtonPolicy: true
+          },
+          ipAddress,
+          userAgent,
+          success: true
+        });
+
+        res.json({
+          success: true,
+          message: 'Consent renewal approved successfully',
+          renewalStatus: 'approved',
+          validUntil: approvedRenewal.validUntil,
+          renewalYear: approvedRenewal.validUntil ? 
+            `${new Date(approvedRenewal.validUntil).getFullYear() - 1}-${new Date(approvedRenewal.validUntil).getFullYear()}` : 
+            'Current Year'
+        });
+
+      } else {
+        // 🚫 DENIAL - Mark renewal as denied
+        await storage.setRenewalStatus(renewalRecord.id, 'denied');
+
+        // 🔒 AUDIT: Log renewal denial
+        await securityAuditLogger.logSecurityEvent({
+          userId: 'parent',
+          userRole: 'parent',
+          schoolId: renewalRecord.schoolId,
+          action: 'RENEWAL_DENIED',
+          details: {
+            renewalId: renewalRecord.id,
+            studentAccountId: renewalRecord.studentAccountId,
+            parentEmail: renewalRecord.parentEmail,
+            burlingtonPolicy: true
+          },
+          ipAddress,
+          userAgent,
+          success: true
+        });
+
+        res.json({
+          success: true,
+          message: 'Consent renewal denied. Student account will have limited access.',
+          renewalStatus: 'denied'
+        });
+      }
+
+    } catch (error: any) {
+      console.error('Renewal approval failed:', error);
+      res.status(500).json({
+        error: 'Failed to process renewal approval',
+        errorCode: 'RENEWAL_APPROVAL_FAILED'
+      });
+    }
+  });
+
+  // 🏫 ADMIN RENEWAL ROUTES
+  
+  // GET /api/schools/:schoolId/consents/renewals - Dashboard data with filters
+  app.get('/api/schools/:schoolId/consents/renewals', 
+    isAuthenticated, 
+    requireSchoolAccess, 
+    requireSpecificSchoolAccess('schoolId'),
+    rateLimiter.createGenericLimiter({ maxRequests: 30, windowMs: 60000 }),
+    async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      const { status, grade, query, page, pageSize } = req.query;
+      
+      // 🔒 ADMIN ROLE VERIFICATION
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
+        return res.status(403).json({ 
+          error: 'INSUFFICIENT_PERMISSIONS',
+          message: 'Admin or teacher access required for renewal dashboard' 
+        });
+      }
+      
+      // 🔒 AUDIT: Log renewal dashboard access
+      await securityAuditLogger.logSecurityEvent({
+        userId,
+        userRole: user.schoolRole || 'admin',
+        schoolId,
+        action: 'RENEWAL_DASHBOARD_ACCESS',
+        details: {
+          endpoint: 'renewals_list',
+          filters: { status, grade, query, page, pageSize }
+        },
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent'),
+        success: true
+      });
+
+      const filters = {
+        status: status as string,
+        grade: grade as string,
+        query: query as string,
+        page: page ? parseInt(page as string) : 1,
+        pageSize: pageSize ? Math.min(parseInt(pageSize as string), 100) : 20
+      };
+
+      // Remove undefined filters
+      Object.keys(filters).forEach(key => {
+        if (!filters[key as keyof typeof filters]) {
+          delete filters[key as keyof typeof filters];
+        }
+      });
+
+      const result = await storage.listRenewalsDashboard(schoolId, filters);
+      
+      // 🛡️ PRIVACY: Mask sensitive data in response
+      const maskedResult = {
+        ...result,
+        renewals: result.renewals.map(renewal => ({
+          id: renewal.id,
+          studentFirstName: renewal.studentFirstName,
+          studentLastName: renewal.studentLastName,
+          studentGrade: renewal.studentGrade,
+          parentName: renewal.parentName,
+          parentEmail: renewal.parentEmail,
+          renewalStatus: renewal.renewalStatus,
+          validUntil: renewal.validUntil,
+          daysUntilExpiry: renewal.daysUntilExpiry,
+          reminderCount: renewal.reminderCount,
+          recordCreatedAt: renewal.recordCreatedAt,
+          renewalWindowStart: renewal.renewalWindowStart
+        }))
+      };
+
+      res.json(maskedResult);
+    } catch (error: any) {
+      console.error('Failed to list school renewals:', error);
+      res.status(500).json({
+        error: 'Failed to retrieve renewal records',
+        errorCode: 'RENEWAL_LIST_FAILED'
+      });
+    }
+  });
+
+  // POST /api/schools/:schoolId/consents/renewals/:renewalId/resend - Resend renewal notification
+  app.post('/api/schools/:schoolId/consents/renewals/:renewalId/resend', 
+    isAuthenticated, 
+    requireSchoolAccess, 
+    requireSpecificSchoolAccess('schoolId'),
+    rateLimiter.createGenericLimiter({ maxRequests: 5, windowMs: 300000 }),
+    async (req: any, res) => {
+    try {
+      const { schoolId, renewalId } = req.params;
+      
+      // 🔒 ADMIN ROLE VERIFICATION
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
+        return res.status(403).json({ 
+          error: 'INSUFFICIENT_PERMISSIONS',
+          message: 'Admin or teacher access required' 
+        });
+      }
+
+      // Get renewal record
+      const renewalRecord = await storage.getConsentRecord(renewalId);
+      if (!renewalRecord || renewalRecord.schoolId !== schoolId) {
+        return res.status(404).json({
+          error: 'Renewal record not found',
+          errorCode: 'RENEWAL_NOT_FOUND'
+        });
+      }
+
+      if (renewalRecord.renewalStatus !== 'pending') {
+        return res.status(400).json({
+          error: 'Cannot resend notification for non-pending renewal',
+          errorCode: 'RENEWAL_NOT_PENDING'
+        });
+      }
+
+      // Check cooldown (24 hours)
+      const lastReminderData = renewalRecord.signatureMetadata || {};
+      const lastReminderTime = lastReminderData.last_reminder_sent;
+      const lastReminderDate = lastReminderTime ? new Date(lastReminderTime) : null;
+      
+      const canSendReminder = !lastReminderDate || 
+        (new Date().getTime() - lastReminderDate.getTime()) > (24 * 60 * 60 * 1000);
+
+      if (!canSendReminder) {
+        return res.status(429).json({
+          error: 'Must wait 24 hours between reminder notifications',
+          errorCode: 'REMINDER_COOLDOWN'
+        });
+      }
+
+      // Get school info
+      const school = await storage.getCorporateAccount(schoolId);
+      const studentAccount = await storage.getStudentAccount(renewalRecord.studentAccountId);
+
+      // Send renewal reminder email
+      const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+      const emailSent = await emailService.sendRenewalReminderEmail({
+        parentEmail: renewalRecord.parentEmail,
+        parentName: renewalRecord.parentName,
+        studentFirstName: studentAccount?.firstName || 'Student',
+        schoolName: school?.companyName || 'School',
+        verificationCode: renewalRecord.renewalVerificationCode,
+        baseUrl: baseUrl,
+        reminderType: 'manual',
+        daysUntilExpiry: renewalRecord.validUntil ? 
+          Math.ceil((new Date(renewalRecord.validUntil).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)) : 0,
+        expiryDate: renewalRecord.validUntil
+      });
+
+      if (emailSent) {
+        await storage.markRenewalReminderSent(renewalId, 'manual_resend');
+
+        // 🔒 AUDIT: Log manual resend
+        await securityAuditLogger.logSecurityEvent({
+          userId,
+          userRole: user.schoolRole || 'admin',
+          schoolId,
+          action: 'RENEWAL_REMINDER_RESENT',
+          details: {
+            renewalId,
+            parentEmail: renewalRecord.parentEmail,
+            resentBy: userId
+          },
+          ipAddress: req.ip,
+          userAgent: req.get('User-Agent'),
+          success: true
+        });
+
+        res.json({
+          success: true,
+          message: 'Renewal reminder sent successfully'
+        });
+      } else {
+        res.status(500).json({
+          error: 'Failed to send renewal reminder',
+          errorCode: 'EMAIL_SEND_FAILED'
+        });
+      }
+
+    } catch (error: any) {
+      console.error('Failed to resend renewal reminder:', error);
+      res.status(500).json({
+        error: 'Failed to resend renewal reminder',
+        errorCode: 'RESEND_FAILED'
+      });
+    }
+  });
+
+  // GET /api/schools/:schoolId/consents/renewals/export - CSV export for renewals dashboard
+  app.get('/api/schools/:schoolId/consents/renewals/export', 
+    isAuthenticated, 
+    requireSchoolAccess, 
+    requireSpecificSchoolAccess('schoolId'),
+    rateLimiter.createGenericLimiter({ maxRequests: 5, windowMs: 300000 }), // 5 requests per 5 minutes
+    async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      const { status, grade, from, to } = req.query;
+      
+      // 🔒 ADMIN ROLE VERIFICATION
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
+        return res.status(403).json({ 
+          error: 'INSUFFICIENT_PERMISSIONS',
+          message: 'Admin or teacher access required for CSV export' 
+        });
+      }
+      
+      // 🔒 AUDIT: Log CSV export request
+      await securityAuditLogger.logSecurityEvent({
+        userId,
+        userRole: user.schoolRole || 'admin',
+        schoolId,
+        action: 'RENEWAL_CSV_EXPORT',
+        details: {
+          filters: { status, grade, from, to },
+          exportType: 'CSV'
+        },
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent'),
+        success: true
+      });
+
+      const filters: any = {};
+      if (status) filters.status = status as string;
+      if (grade) filters.grade = grade as string;
+      if (from) filters.from = new Date(from as string);
+      if (to) filters.to = new Date(to as string);
+
+      // Get renewal data for export
+      const result = await storage.listRenewalsDashboard(schoolId, {
+        ...filters,
+        page: 1,
+        pageSize: 1000 // Export up to 1000 records
+      });
+      
+      // Generate CSV headers
+      const csvHeaders = [
+        'Student First Name',
+        'Student Last Name', 
+        'Student Grade',
+        'Parent Name',
+        'Parent Email',
+        'Renewal Status',
+        'Valid Until',
+        'Days Until Expiry',
+        'Reminder Count',
+        'Record Created',
+        'Renewal Window Start'
+      ];
+
+      // Convert renewals to CSV rows
+      const csvRows = result.renewals.map(renewal => [
+        renewal.studentFirstName || 'N/A',
+        renewal.studentLastName || 'N/A',
+        renewal.studentGrade || 'N/A',
+        renewal.parentName || 'N/A',
+        renewal.parentEmail || 'N/A',
+        renewal.renewalStatus || 'N/A',
+        renewal.validUntil ? new Date(renewal.validUntil).toLocaleDateString() : 'N/A',
+        renewal.daysUntilExpiry?.toString() || 'N/A',
+        renewal.reminderCount?.toString() || '0',
+        renewal.recordCreatedAt ? new Date(renewal.recordCreatedAt).toLocaleDateString() : 'N/A',
+        renewal.renewalWindowStart ? new Date(renewal.renewalWindowStart).toLocaleDateString() : 'N/A'
+      ]);
+
+      // Generate CSV content
+      const csvContent = [
+        csvHeaders.join(','),
+        ...csvRows.map(row => row.map(field => 
+          // Escape fields containing commas or quotes
+          field.includes(',') || field.includes('"') ? `"${field.replace(/"/g, '""')}"` : field
+        ).join(','))
+      ].join('\n');
+      
+      // Set CSV headers
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', 
+        `attachment; filename="renewals-export-${schoolId}-${new Date().toISOString().split('T')[0]}.csv"`
+      );
+      
+      res.send(csvContent);
+    } catch (error: any) {
+      console.error('Failed to export renewals CSV:', error);
+      res.status(500).json({
+        error: 'Failed to export renewal data',
+        errorCode: 'RENEWAL_CSV_EXPORT_FAILED'
+      });
+    }
+  });
+
+  // POST /api/schools/:schoolId/consents/renewals/seed - Manual renewal kickoff for testing
+  app.post('/api/schools/:schoolId/consents/renewals/seed', 
+    isAuthenticated, 
+    requireSchoolAccess, 
+    requireSpecificSchoolAccess('schoolId'),
+    rateLimiter.createGenericLimiter({ maxRequests: 2, windowMs: 3600000 }), // 2 per hour
+    async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      const { grades } = req.body; // Optional grade filter
+      
+      // 🔒 ADMIN ROLE VERIFICATION (admin only for seed operations)
+      const userId = req.user.claims.sub;
+      const user = await storage.getUser(userId);
+      if (!user || user.schoolRole !== 'admin') {
+        return res.status(403).json({ 
+          error: 'INSUFFICIENT_PERMISSIONS',
+          message: 'Admin access required for renewal seed operations' 
+        });
+      }
+
+      // Get school info
+      const school = await storage.getCorporateAccount(schoolId);
+      if (!school) {
+        return res.status(404).json({
+          error: 'School not found',
+          errorCode: 'SCHOOL_NOT_FOUND'
+        });
+      }
+
+      // Calculate Burlington school year dates
+      const now = new Date();
+      const currentYear = now.getFullYear();
+      let schoolYearEnd = new Date(currentYear + 1, 6, 31); // Jul 31 next year
+      
+      // Burlington grades to target (default: 6, 7, 8)
+      const targetGrades = grades || ['6', '7', '8'];
+
+      // Find approved consents that need renewal
+      const expiringConsents = await storage.listExpiringConsentsBySchool(
+        schoolId,
+        schoolYearEnd,
+        schoolYearEnd,
+        targetGrades
+      );
+
+      let renewalsCreated = 0;
+      const errors = [];
+
+      for (const consent of expiringConsents) {
+        try {
+          // Check if renewal already exists
+          const existingRenewal = await storage.getConsentRecordsForSchool(schoolId, {
+            status: 'pending'
+          });
+          
+          const hasExistingRenewal = existingRenewal.some(r => 
+            r.supersedesConsentId === consent.id && r.renewalStatus
+          );
+          
+          if (!hasExistingRenewal) {
+            const { nanoid } = await import('nanoid');
+            const renewalCode = nanoid(32);
+            
+            // Create parent contact snapshot
+            const parentSnapshot = {
+              parentName: consent.parentName,
+              parentEmail: consent.parentEmail,
+              capturedAt: new Date().toISOString(),
+              schoolYear: `${currentYear}-${currentYear + 1}`,
+              originalConsentId: consent.id,
+              seededBy: userId
+            };
+            
+            // Create renewal request
+            await storage.createRenewalRequestFromConsent(
+              consent.id,
+              parentSnapshot,
+              renewalCode
+            );
+
+            renewalsCreated++;
+          }
+        } catch (renewalError) {
+          errors.push({
+            consentId: consent.id,
+            error: renewalError.message
+          });
+        }
+      }
+
+      // 🔒 AUDIT: Log seed operation
+      await securityAuditLogger.logSecurityEvent({
+        userId,
+        userRole: 'admin',
+        schoolId,
+        action: 'RENEWAL_SEED_OPERATION',
+        details: {
+          renewalsCreated,
+          totalEligible: expiringConsents.length,
+          targetGrades,
+          errors: errors.length
+        },
+        ipAddress: req.ip,
+        userAgent: req.get('User-Agent'),
+        success: true
+      });
+
+      res.json({
+        success: true,
+        message: `Seed operation completed`,
+        results: {
+          renewalsCreated,
+          totalEligible: expiringConsents.length,
+          errors: errors.length > 0 ? errors : undefined
+        }
+      });
+
+    } catch (error: any) {
+      console.error('Failed to seed renewals:', error);
+      res.status(500).json({
+        error: 'Failed to seed renewal requests',
+        errorCode: 'RENEWAL_SEED_FAILED'
+      });
+    }
+  });
+
   // 🔒 SECURE CLAIM CODE SYSTEM - COPPA-COMPLIANT WITH ENHANCED SECURITY
   
   // 1️⃣ CLAIM CODE VALIDATION ENDPOINT - With rate limiting and anti-enumeration

@@ -161,6 +161,256 @@ async function processConsentReminders() {
   }
 }
 
+// 🔄 ANNUAL CONSENT RENEWAL SCHEDULER - Burlington Policy Implementation  
+async function processConsentRenewals() {
+  try {
+    log('🔄 Starting automated consent renewal processing...');
+    
+    // Get all schools for renewal processing
+    const schools = await storage.getCorporateAccounts();
+    
+    if (!Array.isArray(schools)) {
+      log('❌ Expected schools to be an array for renewal processing, got:', typeof schools);
+      return;
+    }
+    
+    log(`📊 Found ${schools.length} schools to check for consent renewals`);
+    
+    // Burlington specific: Focus on middle schools (grades 6-8)
+    const burlingtonGrades = ['6', '7', '8'];
+    
+    // Calculate key dates for Burlington school year (Aug 1 - Jul 31)
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    
+    // School year end (Jul 31)
+    let schoolYearEnd = new Date(currentYear, 6, 31); // Jul 31 current year
+    if (now > schoolYearEnd) {
+      schoolYearEnd = new Date(currentYear + 1, 6, 31); // Jul 31 next year
+    }
+    
+    // Key renewal dates
+    const renewalStart75Days = new Date(schoolYearEnd);
+    renewalStart75Days.setDate(schoolYearEnd.getDate() - 75); // May 18
+    
+    const renewalReminder45Days = new Date(schoolYearEnd);
+    renewalReminder45Days.setDate(schoolYearEnd.getDate() - 45);
+    
+    const renewalReminder14Days = new Date(schoolYearEnd);
+    renewalReminder14Days.setDate(schoolYearEnd.getDate() - 14);
+    
+    const renewalReminder7Days = new Date(schoolYearEnd);
+    renewalReminder7Days.setDate(schoolYearEnd.getDate() - 7);
+    
+    const renewalReminder1Day = new Date(schoolYearEnd);
+    renewalReminder1Day.setDate(schoolYearEnd.getDate() - 1);
+    
+    let totalRenewalsCreated = 0;
+    let totalRemindersDebt = 0;
+    let totalExpiredProcessed = 0;
+    
+    for (const school of schools) {
+      try {
+        log(`🏫 Processing consent renewals for school: ${school.companyName} (${school.id})`);
+        
+        // 1️⃣ CREATE NEW RENEWAL REQUESTS (75 days before expiry)
+        if (now >= renewalStart75Days && now < schoolYearEnd) {
+          log(`📅 Creating renewal requests for ${school.companyName} (renewal window open)`);
+          
+          // Find approved consents expiring at end of school year for grades 6-8
+          const expiringConsents = await storage.listExpiringConsentsBySchool(
+            school.id,
+            schoolYearEnd,
+            schoolYearEnd,
+            burlingtonGrades
+          );
+          
+          log(`📋 Found ${expiringConsents.length} consents expiring for renewal`);
+          
+          for (const consent of expiringConsents) {
+            try {
+              // Check if renewal already exists
+              const existingRenewal = await storage.getConsentRecordsForSchool(school.id, {
+                status: 'pending'
+              });
+              
+              const hasExistingRenewal = existingRenewal.some(r => 
+                r.supersedesConsentId === consent.id && r.renewalStatus
+              );
+              
+              if (!hasExistingRenewal) {
+                const { nanoid } = await import('nanoid');
+                const renewalCode = nanoid(32);
+                
+                // Create parent contact snapshot
+                const parentSnapshot = {
+                  parentName: consent.parentName,
+                  parentEmail: consent.parentEmail,
+                  capturedAt: new Date().toISOString(),
+                  schoolYear: `${currentYear}-${currentYear + 1}`,
+                  originalConsentId: consent.id
+                };
+                
+                // Create renewal request
+                const renewalRequest = await storage.createRenewalRequestFromConsent(
+                  consent.id,
+                  parentSnapshot,
+                  renewalCode
+                );
+                
+                // Send initial renewal email
+                try {
+                  const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+                  const emailSent = await emailService.sendConsentRenewalEmail({
+                    parentEmail: consent.parentEmail,
+                    parentName: consent.parentName,
+                    studentFirstName: consent.studentFirstName,
+                    schoolName: school.companyName || 'School',
+                    verificationCode: renewalCode,
+                    baseUrl: baseUrl,
+                    renewalYear: `${currentYear + 1}-${currentYear + 2}`,
+                    expiryDate: schoolYearEnd
+                  });
+                  
+                  if (emailSent) {
+                    log(`📧 Sent renewal email to ${consent.parentEmail} for student ${consent.studentFirstName}`);
+                    totalRenewalsCreated++;
+                  }
+                } catch (emailError) {
+                  log(`❌ Failed to send renewal email for consent ${consent.id}: ${emailError}`);
+                }
+              }
+            } catch (renewalError) {
+              log(`❌ Error creating renewal for consent ${consent.id}: ${renewalError}`);
+            }
+          }
+        }
+        
+        // 2️⃣ SEND RENEWAL REMINDERS with 24h cooldown
+        const pendingRenewals = await storage.listRenewalsDashboard(school.id, {
+          status: 'pending'
+        });
+        
+        log(`📋 Found ${pendingRenewals.renewals.length} pending renewals for reminder processing`);
+        
+        for (const renewal of pendingRenewals.renewals) {
+          try {
+            const daysUntilExpiry = renewal.daysUntilExpiry;
+            
+            // Check reminder metadata for 24h cooldown
+            const lastReminderData = renewal.signatureMetadata || {};
+            const lastReminderTime = lastReminderData.last_reminder_sent;
+            const lastReminderDate = lastReminderTime ? new Date(lastReminderTime) : null;
+            
+            // 24h cooldown check
+            const canSendReminder = !lastReminderDate || 
+              (new Date().getTime() - lastReminderDate.getTime()) > (24 * 60 * 60 * 1000);
+            
+            if (!canSendReminder) {
+              continue; // Skip if within 24h cooldown
+            }
+            
+            let shouldSendReminder = false;
+            let reminderType = '';
+            
+            // Burlington reminder cadence: D-45, D-14, D-7, D-1
+            if (daysUntilExpiry <= 45 && daysUntilExpiry > 14 && !lastReminderData.reminder_45_sent) {
+              shouldSendReminder = true;
+              reminderType = '45day';
+            } else if (daysUntilExpiry <= 14 && daysUntilExpiry > 7 && !lastReminderData.reminder_14_sent) {
+              shouldSendReminder = true;
+              reminderType = '14day';
+            } else if (daysUntilExpiry <= 7 && daysUntilExpiry > 1 && !lastReminderData.reminder_7_sent) {
+              shouldSendReminder = true;
+              reminderType = '7day';
+            } else if (daysUntilExpiry <= 1 && daysUntilExpiry >= 0 && !lastReminderData.reminder_1_sent) {
+              shouldSendReminder = true;
+              reminderType = '1day';
+            }
+            
+            if (shouldSendReminder) {
+              const baseUrl = process.env.BASE_URL || 'http://localhost:5000';
+              const emailSent = await emailService.sendRenewalReminderEmail({
+                parentEmail: renewal.parentEmail,
+                parentName: renewal.parentName,
+                studentFirstName: renewal.studentFirstName,
+                schoolName: school.companyName || 'School',
+                verificationCode: renewal.renewalVerificationCode,
+                baseUrl: baseUrl,
+                reminderType: reminderType,
+                daysUntilExpiry: daysUntilExpiry,
+                expiryDate: schoolYearEnd
+              });
+              
+              if (emailSent) {
+                await storage.markRenewalReminderSent(renewal.id, reminderType);
+                totalRemindersDebt++;
+                log(`📧 Sent ${reminderType} renewal reminder to ${renewal.parentEmail}`);
+              }
+            }
+            
+          } catch (reminderError) {
+            log(`❌ Error processing renewal reminder for ${renewal.id}: ${reminderError}`);
+          }
+        }
+        
+        // 3️⃣ HANDLE EXPIRED RENEWALS & AUTO-RESTRICT ACCOUNTS
+        if (now >= schoolYearEnd) {
+          // Aug 1 - process overdue renewals
+          const overdueRenewals = await storage.listRenewalsDashboard(school.id, {
+            status: 'pending'
+          });
+          
+          for (const overdue of overdueRenewals.renewals) {
+            if (overdue.daysUntilExpiry < 0) { // Past expiry
+              try {
+                // Mark as overdue
+                await storage.setRenewalStatus(overdue.id, 'overdue');
+                
+                // Restrict student account features
+                const studentAccount = await storage.getStudentAccount(overdue.studentAccountId);
+                if (studentAccount) {
+                  await storage.updateStudentParentalConsent(overdue.studentAccountId, {
+                    status: 'limited',
+                    method: 'auto_restriction',
+                    parentEmail: overdue.parentEmail,
+                    ipAddress: 'system'
+                  });
+                  
+                  log(`🔒 Restricted student account ${overdue.studentAccountId} due to expired consent`);
+                  totalExpiredProcessed++;
+                }
+              } catch (restrictError) {
+                log(`❌ Error restricting account for overdue renewal ${overdue.id}: ${restrictError}`);
+              }
+            }
+          }
+        }
+        
+        log(`✓ Completed renewal processing for ${school.companyName}`);
+        
+        // Small delay between schools
+        await new Promise(resolve => setTimeout(resolve, 500));
+        
+      } catch (schoolError) {
+        log(`❌ Error processing renewals for school ${school.id}: ${schoolError}`);
+      }
+    }
+    
+    log(`✓ Consent renewal processing completed: ${totalRenewalsCreated} renewals created, ${totalRemindersDebt} reminders sent, ${totalExpiredProcessed} accounts restricted`);
+    
+  } catch (error) {
+    log(`❌ Fatal error in consent renewal processing: ${error}`);
+    
+    if (error instanceof Error) {
+      log(`❌ Renewal error details: ${error.message}`);
+      log(`❌ Renewal error stack: ${error.stack}`);
+    }
+    
+    log('⚠ Renewal scheduler will continue running despite this error');
+  }
+}
+
 function startAutomatedConsentReminderScheduler() {
   // Run immediately on startup (with a small delay to ensure everything is initialized)
   setTimeout(async () => {
@@ -186,6 +436,32 @@ function startAutomatedConsentReminderScheduler() {
   }, intervalMs);
   
   log(`✓ Consent reminder scheduler configured to run every ${intervalMinutes} minutes`);
+}
+
+function startAutomatedConsentRenewalScheduler() {
+  // Run immediately on startup with longer delay for complex processing
+  setTimeout(async () => {
+    try {
+      log('🚀 Running initial consent renewal processing...');
+      await processConsentRenewals();
+    } catch (error) {
+      log(`❌ Error in initial consent renewal processing: ${error}`);
+    }
+  }, 10000); // 10 second delay for renewal processing
+  
+  // Run daily at 6 AM for renewal processing
+  const dailyIntervalMs = 24 * 60 * 60 * 1000; // 24 hours
+  
+  setInterval(async () => {
+    try {
+      log('🔄 Running daily consent renewal processing...');
+      await processConsentRenewals();
+    } catch (error) {
+      log(`❌ Error in daily consent renewal processing: ${error}`);
+    }
+  }, dailyIntervalMs);
+  
+  log('✓ Consent renewal scheduler configured to run daily');
 }
 
 app.use((req, res, next) => {
@@ -315,6 +591,11 @@ app.use((req, res, next) => {
       log('🔄 Initializing automated consent reminder scheduler...');
       startAutomatedConsentReminderScheduler();
       log('✓ Automated consent reminder scheduler started');
+      
+      // 🔄 Initialize automated renewal scheduler for Burlington policy
+      log('🔄 Initializing automated consent renewal scheduler...');
+      startAutomatedConsentRenewalScheduler();
+      log('✓ Automated consent renewal scheduler started');
     });
 
     // Handle server errors

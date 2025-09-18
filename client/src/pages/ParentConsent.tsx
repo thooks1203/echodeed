@@ -12,7 +12,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { Shield, CheckCircle, XCircle, Heart, Users, GraduationCap, AlertTriangle, FileText, Phone, Mail, Clock, Lock, Eye, Trash2, Settings, ChevronRight, ChevronLeft, Info, BookOpen, Database, UserCheck } from "lucide-react";
+import { Shield, CheckCircle, XCircle, Heart, Users, GraduationCap, AlertTriangle, FileText, Phone, Mail, Clock, Lock, Eye, Trash2, Settings, ChevronRight, ChevronLeft, Info, BookOpen, Database, UserCheck, RefreshCw, Calendar } from "lucide-react";
 
 interface ConsentRequest {
   id: string;
@@ -22,6 +22,31 @@ interface ConsentRequest {
   studentFirstName?: string;
   schoolName?: string;
   grade?: string;
+}
+
+// 🔄 RENEWAL-SPECIFIC DATA INTERFACE
+interface RenewalData {
+  id: string;
+  parentName: string;
+  parentEmail: string;
+  parentPhone: string;
+  relationshipToStudent: string;
+  consentVersion: string;
+  studentFirstName: string;
+  schoolName: string;
+  renewalYear: string;
+  expiryDate: string;
+  preferences: {
+    consentToDataCollection: boolean;
+    consentToDataSharing: boolean;
+    consentToEmailCommunication: boolean;
+    consentToEducationalReports: boolean;
+    consentToKindnessActivityTracking: boolean;
+    optOutOfDataAnalytics: boolean;
+    optOutOfThirdPartySharing: boolean;
+    optOutOfMarketingCommunications: boolean;
+    optOutOfPlatformNotifications: boolean;
+  };
 }
 
 // COPPA Compliance Form Schema with Digital Signature
@@ -78,11 +103,16 @@ const consentFormSchema = z.object({
 type ConsentFormData = z.infer<typeof consentFormSchema>;
 
 export default function ParentConsent() {
-  const [, params] = useRoute("/parent-consent/:verificationCode");
-  const verificationCode = params?.verificationCode;
+  // 🔄 DUAL ROUTING SUPPORT: Handle both initial consent and renewal routes
+  const [, consentParams] = useRoute("/parent-consent/:verificationCode");
+  const [, renewalParams] = useRoute("/renewals/:code");
+  
+  const verificationCode = consentParams?.verificationCode || renewalParams?.code;
+  const isRenewal = !!renewalParams?.code;
   const { toast } = useToast();
   
   const [consentData, setConsentData] = useState<ConsentRequest | null>(null);
+  const [renewalData, setRenewalData] = useState<RenewalData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [consentGiven, setConsentGiven] = useState<boolean | null>(null);
@@ -111,55 +141,112 @@ export default function ParentConsent() {
   const totalSteps = 5;
   const progressPercentage = (currentStep / totalSteps) * 100;
 
-  // Fetch consent request details
+  // 🔄 DUAL DATA FETCHING: Handle both initial consent and renewal scenarios
   useEffect(() => {
     if (!verificationCode) {
-      setError("Invalid consent link - verification code missing");
+      setError("Invalid link - verification code missing");
       setLoading(false);
       return;
     }
 
-    const fetchConsentData = async () => {
+    const fetchData = async () => {
       try {
-        const response = await apiRequest("GET", `/api/students/consent/${verificationCode}`);
-        const result = await response.json();
-        
-        if (result.success) {
-          setConsentData(result.consentRequest);
+        if (isRenewal) {
+          // 🔄 RENEWAL DATA FETCHING: Use new renewal endpoint
+          const response = await apiRequest("GET", `/api/renewals/${verificationCode}`);
+          const result = await response.json();
+          
+          if (result.success) {
+            setRenewalData(result.renewalData);
+            
+            // 📝 PRE-FILL FORM: Use existing preferences from renewal snapshot
+            const preferences = result.renewalData.preferences;
+            form.reset({
+              // Map renewal preferences to form schema
+              understandDataCollection: true, // Always true for renewals
+              consentToEducationalUse: preferences.consentToDataCollection,
+              consentToProgressTracking: preferences.consentToKindnessActivityTracking,
+              consentToSafetyMonitoring: true, // Always required
+              allowWellnessReports: preferences.consentToEducationalReports,
+              allowParentNotifications: preferences.consentToEmailCommunication,
+              allowAnonymousSharing: !preferences.optOutOfDataAnalytics,
+              understandRights: false, // Must be re-acknowledged
+              acceptTerms: false, // Must be re-acknowledged  
+              acceptPrivacyPolicy: false, // Must be re-acknowledged
+              signerFullName: result.renewalData.parentName, // Pre-fill with known name
+              finalConsentConfirmed: false,
+              giveConsent: false
+            });
+          } else {
+            setError(result.error || "Invalid renewal request");
+          }
         } else {
-          setError(result.error || "Invalid consent request");
+          // 🆕 INITIAL CONSENT DATA FETCHING: Use existing endpoint
+          const response = await apiRequest("GET", `/api/students/consent/${verificationCode}`);
+          const result = await response.json();
+          
+          if (result.success) {
+            setConsentData(result.consentRequest);
+          } else {
+            setError(result.error || "Invalid consent request");
+          }
         }
       } catch (error: any) {
-        setError(error.message || "Failed to load consent request");
+        const errorMessage = error.message || (isRenewal ? "Failed to load renewal request" : "Failed to load consent request");
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchConsentData();
-  }, [verificationCode]);
+    fetchData();
+  }, [verificationCode, isRenewal, form]);
 
   const submitConsent = useMutation({
     mutationFn: async (data: { approved: boolean; formData?: ConsentFormData }) => {
-      const submissionData = {
-        approved: data.approved,
-        parentName: consentData?.parentName,
-        // ✍️ DIGITAL SIGNATURE: Include signature data for legal verification
-        signerFullName: data.approved ? data.formData?.signerFullName : undefined,
-        finalConsentConfirmed: data.approved ? data.formData?.finalConsentConfirmed : undefined,
-        consentDetails: data.approved ? {
-          formData: data.formData,
-          consentVersion: "2.1", // Burlington NC District COPPA v2.1
-          submissionTimestamp: new Date().toISOString(),
-          formCompletionTime: new Date().getTime() - formStartTime.getTime(),
-          ipAddress: undefined, // Backend will capture this
-          userAgent: navigator.userAgent
-        } : null
-      };
-      
-      // ✍️ DIGITAL SIGNATURE: Use the enhanced consent approval endpoint with signature capability
-      const response = await apiRequest("POST", `/api/parental-consent/approve/${verificationCode}`, submissionData);
-      return await response.json();
+      if (isRenewal) {
+        // 🔄 RENEWAL SUBMISSION: Use renewal-specific endpoint and data structure
+        const renewalSubmissionData = {
+          consentDecision: data.approved ? 'approve' : 'deny',
+          signerFullName: data.approved ? data.formData?.signerFullName : undefined,
+          digitalSignature: data.approved ? `${data.formData?.signerFullName}_${new Date().toISOString()}` : undefined,
+          consentPreferences: data.approved ? {
+            consentToDataCollection: data.formData?.consentToEducationalUse,
+            consentToKindnessActivityTracking: data.formData?.consentToProgressTracking,
+            consentToEducationalReports: data.formData?.allowWellnessReports,
+            consentToEmailCommunication: data.formData?.allowParentNotifications,
+            optOutOfDataAnalytics: !data.formData?.allowAnonymousSharing,
+            // Keep other preferences from renewal data
+            consentToDataSharing: renewalData?.preferences.consentToDataSharing || false,
+            optOutOfThirdPartySharing: renewalData?.preferences.optOutOfThirdPartySharing || false,
+            optOutOfMarketingCommunications: renewalData?.preferences.optOutOfMarketingCommunications || false,
+            optOutOfPlatformNotifications: renewalData?.preferences.optOutOfPlatformNotifications || false
+          } : undefined
+        };
+        
+        const response = await apiRequest("POST", `/api/renewals/${verificationCode}/approve`, renewalSubmissionData);
+        return await response.json();
+      } else {
+        // 🆕 INITIAL CONSENT SUBMISSION: Use existing endpoint and data structure
+        const submissionData = {
+          approved: data.approved,
+          parentName: consentData?.parentName,
+          // ✍️ DIGITAL SIGNATURE: Include signature data for legal verification
+          signerFullName: data.approved ? data.formData?.signerFullName : undefined,
+          finalConsentConfirmed: data.approved ? data.formData?.finalConsentConfirmed : undefined,
+          consentDetails: data.approved ? {
+            formData: data.formData,
+            consentVersion: "2.1", // Burlington NC District COPPA v2.1
+            submissionTimestamp: new Date().toISOString(),
+            formCompletionTime: new Date().getTime() - formStartTime.getTime(),
+            ipAddress: undefined, // Backend will capture this
+            userAgent: navigator.userAgent
+          } : null
+        };
+        
+        const response = await apiRequest("POST", `/api/parental-consent/approve/${verificationCode}`, submissionData);
+        return await response.json();
+      }
     },
     onSuccess: (result, data) => {
       setConsentGiven(data.approved);
@@ -288,15 +375,28 @@ export default function ParentConsent() {
       <div className="max-w-4xl mx-auto px-2 sm:px-4">
         {/* Header */}
         <div className="text-center mb-8">
-          <div className="mx-auto mb-6 w-20 h-20 bg-gradient-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center">
-            <Shield className="w-10 h-10 text-white" />
+          <div className={`mx-auto mb-6 w-20 h-20 bg-gradient-to-br ${isRenewal ? 'from-orange-500 to-red-500' : 'from-blue-500 to-green-500'} rounded-full flex items-center justify-center`}>
+            {isRenewal ? <RefreshCw className="w-10 h-10 text-white" /> : <Shield className="w-10 h-10 text-white" />}
           </div>
           <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
-            Parental Consent Required
+            {isRenewal ? 'Annual Consent Renewal' : 'Parental Consent Required'}
           </h1>
           <p className="text-base sm:text-lg md:text-xl text-gray-600 dark:text-gray-300">
-            {consentData?.studentFirstName ? `${consentData.studentFirstName} wants to join EchoDeed` : 'Your child wants to join EchoDeed'}
+            {isRenewal 
+              ? `Renewal for ${renewalData?.studentFirstName || 'your child'} - ${renewalData?.renewalYear || 'School Year'}`
+              : (consentData?.studentFirstName ? `${consentData.studentFirstName} wants to join EchoDeed` : 'Your child wants to join EchoDeed')
+            }
           </p>
+          {isRenewal && renewalData?.expiryDate && (
+            <div className="mt-4 p-3 bg-orange-50 dark:bg-orange-950 border border-orange-200 dark:border-orange-800 rounded-lg">
+              <div className="flex items-center justify-center gap-2 text-orange-700 dark:text-orange-300">
+                <Calendar className="w-4 h-4" />
+                <span className="text-sm font-medium">
+                  Current consent expires: {new Date(renewalData.expiryDate).toLocaleDateString()}
+                </span>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Progress Indicator */}

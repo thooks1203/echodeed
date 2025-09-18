@@ -221,7 +221,7 @@ import {
   type InsertConsentAuditEvent,
 } from "@shared/schema";
 import { db } from "./db";
-import { eq, sql, desc, and, count, or, gte, lte } from "drizzle-orm";
+import { eq, sql, desc, and, count, or, gte, lte, isNotNull, isNull, inArray, gt, getTableColumns } from "drizzle-orm";
 import { CryptoSecurity } from "./utils/cryptoSecurity";
 
 // Storage interface for all operations
@@ -670,6 +670,50 @@ export interface IStorage {
       complianceRate: number;
     };
     csvData: string;
+  }>;
+  
+  // 🔄 ANNUAL CONSENT RENEWAL WORKFLOW - BURLINGTON POLICY
+  getActiveConsent(studentId: string, schoolId: string): Promise<ParentalConsentRecord | undefined>;
+  listExpiringConsentsBySchool(schoolId: string, start: Date, end: Date, grades?: string[]): Promise<Array<ParentalConsentRecord & {
+    studentFirstName: string;
+    studentLastName: string;
+    studentGrade: string;
+    parentName: string;
+    parentEmail: string;
+    daysUntilExpiry: number;
+  }>>;
+  createRenewalRequestFromConsent(consentId: string, snapshot: any, code: string): Promise<ParentalConsentRecord>;
+  markRenewalReminderSent(renewalId: string, marker: string): Promise<void>;
+  setRenewalStatus(renewalId: string, status: string): Promise<ParentalConsentRecord | undefined>;
+  approveRenewal(renewalId: string, signatureData: {
+    digitalSignatureHash: string;
+    signaturePayload: string;
+    signerFullName: string;
+    finalConsentConfirmed: boolean;
+    signatureTimestamp: Date;
+    signatureMetadata: any;
+    ipAddress: string;
+    userAgent: string;
+  }): Promise<ParentalConsentRecord>;
+  listRenewalsDashboard(schoolId: string, filters?: {
+    status?: string;
+    grade?: string;
+    query?: string;
+    page?: number;
+    pageSize?: number;
+  }): Promise<{
+    renewals: Array<ParentalConsentRecord & {
+      studentFirstName: string;
+      studentLastName: string;
+      studentGrade: string;
+      parentName: string;
+      parentEmail: string;
+      daysUntilExpiry: number;
+      reminderCount: number;
+    }>;
+    total: number;
+    page: number;
+    pageSize: number;
   }>;
   
   // 🔍 AUDIT EVENT MANAGEMENT
@@ -3876,6 +3920,345 @@ export class DatabaseStorage implements IStorage {
       .values(event)
       .returning();
     return newEvent;
+  }
+
+  // 🔄 ANNUAL CONSENT RENEWAL WORKFLOW IMPLEMENTATIONS - BURLINGTON POLICY
+  async getActiveConsent(studentId: string, schoolId: string): Promise<ParentalConsentRecord | undefined> {
+    const [record] = await db.select()
+      .from(parentalConsentRecords)
+      .where(
+        and(
+          eq(parentalConsentRecords.studentAccountId, studentId),
+          eq(parentalConsentRecords.schoolId, schoolId),
+          eq(parentalConsentRecords.consentStatus, 'approved'),
+          or(
+            isNull(parentalConsentRecords.validUntil),
+            gt(parentalConsentRecords.validUntil, new Date())
+          )
+        )
+      )
+      .orderBy(desc(parentalConsentRecords.recordCreatedAt))
+      .limit(1);
+    return record;
+  }
+
+  async listExpiringConsentsBySchool(schoolId: string, start: Date, end: Date, grades?: string[]): Promise<Array<ParentalConsentRecord & {
+    studentFirstName: string;
+    studentLastName: string;
+    studentGrade: string;
+    parentName: string;
+    parentEmail: string;
+    daysUntilExpiry: number;
+  }>> {
+    let query = db
+      .select({
+        ...getTableColumns(parentalConsentRecords),
+        studentFirstName: studentAccounts.firstName,
+        studentLastName: studentAccounts.lastName,
+        studentGrade: users.grade,
+        parentName: parentalConsentRecords.parentName,
+        parentEmail: parentalConsentRecords.parentEmail,
+        daysUntilExpiry: sql<number>`EXTRACT(DAY FROM ${parentalConsentRecords.validUntil} - CURRENT_DATE)::int`,
+      })
+      .from(parentalConsentRecords)
+      .innerJoin(studentAccounts, eq(parentalConsentRecords.studentAccountId, studentAccounts.id))
+      .innerJoin(users, eq(studentAccounts.userId, users.id))
+      .where(
+        and(
+          eq(parentalConsentRecords.schoolId, schoolId),
+          eq(parentalConsentRecords.consentStatus, 'approved'),
+          gte(parentalConsentRecords.validUntil, start),
+          lte(parentalConsentRecords.validUntil, end)
+        )
+      );
+
+    // Filter by grades if specified (Burlington: 6, 7, 8)
+    if (grades && grades.length > 0) {
+      query = query.where(
+        and(
+          eq(parentalConsentRecords.schoolId, schoolId),
+          eq(parentalConsentRecords.consentStatus, 'approved'),
+          gte(parentalConsentRecords.validUntil, start),
+          lte(parentalConsentRecords.validUntil, end),
+          inArray(users.grade, grades)
+        )
+      );
+    }
+
+    return await query.orderBy(parentalConsentRecords.validUntil);
+  }
+
+  async createRenewalRequestFromConsent(consentId: string, snapshot: any, code: string): Promise<ParentalConsentRecord> {
+    const { nanoid } = await import('nanoid');
+    
+    // Get the original consent record
+    const originalConsent = await this.getConsentRecord(consentId);
+    if (!originalConsent) {
+      throw new Error('Original consent record not found');
+    }
+
+    // Calculate Burlington school year dates (Aug 1 - Jul 31)
+    const now = new Date();
+    const currentYear = now.getFullYear();
+    const schoolYearStart = new Date(currentYear, 7, 1); // Aug 1
+    const schoolYearEnd = new Date(currentYear + 1, 6, 31); // Jul 31 next year
+    
+    // If we're past Aug 1, use next school year
+    if (now >= schoolYearStart) {
+      schoolYearStart.setFullYear(currentYear + 1);
+      schoolYearEnd.setFullYear(currentYear + 2);
+    }
+
+    const renewalDueAt = new Date(schoolYearEnd);
+    const renewalWindowStart = new Date(schoolYearEnd);
+    renewalWindowStart.setDate(schoolYearEnd.getDate() - 75); // 75 days before
+
+    const renewalRecord = {
+      studentAccountId: originalConsent.studentAccountId,
+      schoolId: originalConsent.schoolId,
+      consentVersion: "v2025.2", // New version for renewal
+      parentName: originalConsent.parentName,
+      parentEmail: originalConsent.parentEmail,
+      parentPhone: originalConsent.parentPhone,
+      relationshipToStudent: originalConsent.relationshipToStudent,
+      
+      // Copy consent preferences from original
+      consentToDataCollection: originalConsent.consentToDataCollection,
+      consentToDataSharing: originalConsent.consentToDataSharing,
+      consentToEmailCommunication: originalConsent.consentToEmailCommunication,
+      consentToEducationalReports: originalConsent.consentToEducationalReports,
+      consentToKindnessActivityTracking: originalConsent.consentToKindnessActivityTracking,
+      optOutOfDataAnalytics: originalConsent.optOutOfDataAnalytics,
+      optOutOfThirdPartySharing: originalConsent.optOutOfThirdPartySharing,
+      optOutOfMarketingCommunications: originalConsent.optOutOfMarketingCommunications,
+      optOutOfPlatformNotifications: originalConsent.optOutOfPlatformNotifications,
+      
+      verificationCode: nanoid(25),
+      verificationMethod: 'email_link',
+      consentStatus: 'pending',
+      
+      // Burlington renewal fields
+      validFrom: schoolYearStart,
+      validUntil: schoolYearEnd,
+      renewalDueAt,
+      renewalWindowStart,
+      renewalStatus: 'pending',
+      renewalSource: 'auto',
+      parentContactSnapshot: snapshot,
+      renewalVerificationCode: code,
+      supersedesConsentId: consentId,
+      
+      linkExpiresAt: new Date(Date.now() + 72 * 60 * 60 * 1000), // 72 hours
+      recordCreatedAt: new Date(),
+      recordUpdatedAt: new Date(),
+      ipAddress: '0.0.0.0', // Will be updated on approval
+      userAgent: 'system-renewal'
+    };
+
+    const [created] = await db
+      .insert(parentalConsentRecords)
+      .values(renewalRecord)
+      .returning();
+
+    return created;
+  }
+
+  async markRenewalReminderSent(renewalId: string, marker: string): Promise<void> {
+    await db
+      .update(parentalConsentRecords)
+      .set({
+        recordUpdatedAt: new Date(),
+        // Store reminder marker in signature metadata for tracking
+        signatureMetadata: sql`COALESCE(${parentalConsentRecords.signatureMetadata}, '{}')::jsonb || ${JSON.stringify({ [`${marker}_reminder_sent`]: new Date().toISOString() })}`
+      })
+      .where(eq(parentalConsentRecords.id, renewalId));
+  }
+
+  async setRenewalStatus(renewalId: string, status: string): Promise<ParentalConsentRecord | undefined> {
+    const [updated] = await db
+      .update(parentalConsentRecords)
+      .set({
+        renewalStatus: status,
+        recordUpdatedAt: new Date()
+      })
+      .where(eq(parentalConsentRecords.id, renewalId))
+      .returning();
+
+    return updated;
+  }
+
+  async approveRenewal(renewalId: string, signatureData: {
+    digitalSignatureHash: string;
+    signaturePayload: string;
+    signerFullName: string;
+    finalConsentConfirmed: boolean;
+    signatureTimestamp: Date;
+    signatureMetadata: any;
+    ipAddress: string;
+    userAgent: string;
+  }): Promise<ParentalConsentRecord> {
+    return await db.transaction(async (tx) => {
+      // Get the renewal record
+      const [renewalRecord] = await tx
+        .select()
+        .from(parentalConsentRecords)
+        .where(eq(parentalConsentRecords.id, renewalId));
+
+      if (!renewalRecord) {
+        throw new Error('Renewal record not found');
+      }
+
+      // Approve the renewal record with signature data
+      const [approvedRenewal] = await tx
+        .update(parentalConsentRecords)
+        .set({
+          consentStatus: 'approved',
+          renewalStatus: 'approved',
+          consentApprovedAt: new Date(),
+          codeUsedAt: new Date(),
+          isCodeUsed: true,
+          
+          // Digital signature data
+          digitalSignatureHash: signatureData.digitalSignatureHash,
+          signaturePayload: signatureData.signaturePayload,
+          signerFullName: signatureData.signerFullName,
+          finalConsentConfirmed: signatureData.finalConsentConfirmed,
+          signatureTimestamp: signatureData.signatureTimestamp,
+          signatureMetadata: signatureData.signatureMetadata,
+          
+          // Make immutable
+          isImmutable: true,
+          immutableSince: new Date(),
+          
+          recordUpdatedAt: new Date()
+        })
+        .where(eq(parentalConsentRecords.id, renewalId))
+        .returning();
+
+      // If this renewal supersedes a previous consent, mark the old one as superseded
+      if (renewalRecord.supersedesConsentId) {
+        await tx
+          .update(parentalConsentRecords)
+          .set({
+            renewalStatus: 'superseded',
+            recordUpdatedAt: new Date()
+          })
+          .where(eq(parentalConsentRecords.id, renewalRecord.supersedesConsentId));
+      }
+
+      return approvedRenewal;
+    });
+  }
+
+  async listRenewalsDashboard(schoolId: string, filters?: {
+    status?: string;
+    grade?: string;
+    query?: string;
+    page?: number;
+    pageSize?: number;
+  }): Promise<{
+    renewals: Array<ParentalConsentRecord & {
+      studentFirstName: string;
+      studentLastName: string;
+      studentGrade: string;
+      parentName: string;
+      parentEmail: string;
+      daysUntilExpiry: number;
+      reminderCount: number;
+    }>;
+    total: number;
+    page: number;
+    pageSize: number;
+  }> {
+    const page = filters?.page || 1;
+    const pageSize = filters?.pageSize || 20;
+    const offset = (page - 1) * pageSize;
+
+    const conditions = [
+      eq(parentalConsentRecords.schoolId, schoolId),
+      isNotNull(parentalConsentRecords.renewalStatus) // Only renewal records
+    ];
+
+    if (filters?.status) {
+      conditions.push(eq(parentalConsentRecords.renewalStatus, filters.status));
+    }
+
+    // Grade filter
+    let gradeCondition = undefined;
+    if (filters?.grade) {
+      gradeCondition = eq(users.grade, filters.grade);
+    }
+
+    let query = db
+      .select({
+        ...getTableColumns(parentalConsentRecords),
+        studentFirstName: studentAccounts.firstName,
+        studentLastName: studentAccounts.lastName,
+        studentGrade: users.grade,
+        parentName: parentalConsentRecords.parentName,
+        parentEmail: parentalConsentRecords.parentEmail,
+        daysUntilExpiry: sql<number>`EXTRACT(DAY FROM ${parentalConsentRecords.validUntil} - CURRENT_DATE)::int`,
+        reminderCount: sql<number>`COALESCE(jsonb_array_length(COALESCE(${parentalConsentRecords.signatureMetadata}->'reminders', '[]'::jsonb)), 0)`,
+      })
+      .from(parentalConsentRecords)
+      .innerJoin(studentAccounts, eq(parentalConsentRecords.studentAccountId, studentAccounts.id))
+      .innerJoin(users, eq(studentAccounts.userId, users.id))
+      .where(gradeCondition ? and(...conditions, gradeCondition) : and(...conditions));
+
+    // Search filter
+    if (filters?.query) {
+      const searchTerm = `%${filters.query}%`;
+      query = query.where(
+        and(
+          ...conditions,
+          gradeCondition ? gradeCondition : sql`1=1`,
+          or(
+            sql`${studentAccounts.firstName} ILIKE ${searchTerm}`,
+            sql`${studentAccounts.lastName} ILIKE ${searchTerm}`,
+            sql`${parentalConsentRecords.parentName} ILIKE ${searchTerm}`,
+            sql`${parentalConsentRecords.parentEmail} ILIKE ${searchTerm}`
+          )
+        )
+      );
+    }
+
+    const renewals = await query
+      .orderBy(desc(parentalConsentRecords.validUntil))
+      .limit(pageSize)
+      .offset(offset);
+
+    // Get total count
+    let countQuery = db
+      .select({ count: count() })
+      .from(parentalConsentRecords)
+      .innerJoin(studentAccounts, eq(parentalConsentRecords.studentAccountId, studentAccounts.id))
+      .innerJoin(users, eq(studentAccounts.userId, users.id))
+      .where(gradeCondition ? and(...conditions, gradeCondition) : and(...conditions));
+
+    if (filters?.query) {
+      const searchTerm = `%${filters.query}%`;
+      countQuery = countQuery.where(
+        and(
+          ...conditions,
+          gradeCondition ? gradeCondition : sql`1=1`,
+          or(
+            sql`${studentAccounts.firstName} ILIKE ${searchTerm}`,
+            sql`${studentAccounts.lastName} ILIKE ${searchTerm}`,
+            sql`${parentalConsentRecords.parentName} ILIKE ${searchTerm}`,
+            sql`${parentalConsentRecords.parentEmail} ILIKE ${searchTerm}`
+          )
+        )
+      );
+    }
+
+    const [{ count: total }] = await countQuery;
+
+    return {
+      renewals,
+      total,
+      page,
+      pageSize
+    };
   }
 
   // SEL Standards management

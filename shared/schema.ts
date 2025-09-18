@@ -904,8 +904,16 @@ export const parentalConsentRecords = pgTable("parental_consent_records", {
   isImmutable: boolean("is_immutable").default(false).notNull(), // Once true, record cannot be modified
   immutableSince: timestamp("immutable_since"), // When record became immutable
   
-  // 📅 ANNUAL RENEWAL REQUIREMENTS
+  // 📅 ANNUAL RENEWAL REQUIREMENTS - BURLINGTON POLICY
   renewalDueAt: timestamp("renewal_due_at"), // Annual consent renewal date (separate from linkExpiresAt)
+  validFrom: timestamp("valid_from"), // School year start date (Aug 1)
+  validUntil: timestamp("valid_until"), // School year end date (Jul 31)
+  renewalWindowStart: timestamp("renewal_window_start"), // When renewal window opens (75 days before)
+  renewalStatus: varchar("renewal_status", { length: 20 }).default("active"), // active, scheduled, pending, approved, expired, overdue
+  renewalSource: varchar("renewal_source", { length: 10 }).default("auto"), // auto (system), manual (admin)
+  parentContactSnapshot: jsonb("parent_contact_snapshot"), // Snapshot of parent info at renewal time
+  renewalVerificationCode: varchar("renewal_verification_code", { length: 32 }), // nanoid(32) for renewal
+  supersedesConsentId: varchar("supersedes_consent_id").references(() => parentalConsentRecords.id), // Links to previous consent record
   
   // ✍️ DIGITAL SIGNATURE CAPABILITY - LEGAL VERIFICATION
   digitalSignatureHash: varchar("digital_signature_hash", { length: 128 }), // SHA-256 hash of consent payload + metadata
