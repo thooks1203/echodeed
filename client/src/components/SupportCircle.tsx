@@ -35,7 +35,7 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
     typeof window !== 'undefined' ? localStorage.getItem('safety_disclosure_accepted') === 'true' : false
   );
   const [hasSupportSafetyAcknowledged, setHasSupportSafetyAcknowledged] = useState(() => 
-    typeof window !== 'undefined' ? localStorage.getItem('support_safety_acknowledged') === 'true' : false
+    false // Always require safety acknowledgment for testing - change to localStorage in production
   );
   const [emergencyContact, setEmergencyContact] = useState<any>(null);
   
