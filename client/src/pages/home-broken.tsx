@@ -11,6 +11,7 @@ import { BottomNavigation } from '@/components/BottomNavigation';
 import { NotificationSetupModal } from '@/components/notification-setup-modal';
 import { useTabNavigation } from '@/hooks/useNavigation';
 import { BackButton } from '@/components/BackButton';
+import { SupportCircle } from '@/components/SupportCircle';
 const logoUrl = '/electric-heart-logo.png';
 import { WelcomeModal } from '@/components/WelcomeModal';
 import { MarketingDashboard } from '@/components/MarketingDashboard';
@@ -652,6 +653,28 @@ export default function Home() {
     }
   };
 
+  // Show Support tab if selected
+  if (activeTab === 'support') {
+    return (
+      <div style={{ 
+        maxWidth: '430px', 
+        margin: '0 auto', 
+        backgroundColor: '#f8f9fa',
+        minHeight: '100vh',
+        position: 'relative'
+      }}>
+        <AppHeader 
+          counter={counter || { count: 0, id: 'global', updatedAt: new Date() }} 
+          isPulse={counterPulse}
+          onBack={canGoBackInTabs ? goBackInTabs : undefined}
+          showBackButton={canGoBackInTabs}
+        />
+        <SupportCircle />
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
+    );
+  }
+
   // Show Rewards tab if selected
   if (activeTab === 'rewards') {
     return (
@@ -663,8 +686,10 @@ export default function Home() {
         position: 'relative'
       }}>
         <AppHeader 
-          title="🎁 Rewards & Partners"
+          counter={counter || { count: 0, id: 'global', updatedAt: new Date() }} 
+          isPulse={counterPulse}
           onBack={canGoBackInTabs ? goBackInTabs : undefined}
+          showBackButton={canGoBackInTabs}
         />
         
         <div style={{ padding: '20px', paddingBottom: '100px' }}>
