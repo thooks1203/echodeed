@@ -116,10 +116,7 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
     
     setIsAnalyzing(true);
     try {
-      const response = await apiRequest('/api/support-posts/analyze-safety', {
-        method: 'POST',
-        body: JSON.stringify({ content }),
-      });
+      const response = await apiRequest('POST', '/api/support-posts/analyze-safety', { content });
       setSafetyAnalysis(response);
     } catch (error) {
       console.error('Safety analysis failed:', error);

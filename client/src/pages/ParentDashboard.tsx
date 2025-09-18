@@ -310,6 +310,25 @@ export default function ParentDashboard() {
           </div>
         </div>
 
+        {/* Safety & Privacy Disclosure for Parents */}
+        <Alert className="mb-6 border-blue-200 bg-blue-50 dark:bg-blue-900/10">
+          <Shield className="h-4 w-4 text-blue-600" />
+          <AlertTitle className="text-blue-900 dark:text-blue-100 flex items-center gap-2">
+            <Shield className="w-4 h-4" />
+            Safety & Privacy Notice
+          </AlertTitle>
+          <AlertDescription className="text-blue-700 dark:text-blue-200">
+            <p className="mb-2">
+              <strong>Student Privacy:</strong> Your children can post anonymously to support each other through challenges. 
+              Posts are completely anonymous with no identifying information.
+            </p>
+            <p>
+              <strong>Safety Protocols:</strong> If posts indicate immediate danger (self-harm, abuse, or crisis situations), 
+              school counselors and appropriate authorities will be notified to ensure student safety, following all legal requirements.
+            </p>
+          </AlertDescription>
+        </Alert>
+
         {/* 🌟 REVOLUTIONARY: Real-time notification banner */}
         {mockNotifications.filter(n => !n.isRead).length > 0 && (
           <Alert className="mb-6 border-pink-200 bg-pink-50 dark:bg-pink-900/10">
