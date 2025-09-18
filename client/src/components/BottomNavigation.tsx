@@ -38,12 +38,12 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
       transform: 'translateX(-50%)',
       maxWidth: '430px',
       width: '100%',
-      backgroundColor: 'rgba(255,255,255,0.95)',
-      backdropFilter: 'blur(8px)',
-      borderTop: '1px solid #e5e7eb',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      backdropFilter: 'blur(12px)',
+      boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
       display: 'flex',
       justifyContent: 'space-between',
-      padding: '6px 8px',
+      padding: '8px 12px',
       zIndex: 100
     }}>
       {tabs.map((tab) => (
@@ -51,26 +51,55 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
           style={{
-            background: 'none',
-            border: 'none',
+            background: activeTab === tab.id 
+              ? 'linear-gradient(135deg, #ff6b6b, #feca57)' 
+              : 'rgba(255,255,255,0.2)',
+            border: activeTab === tab.id ? '2px solid #fff' : '2px solid transparent',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '2px',
+            gap: '4px',
             cursor: 'pointer',
-            padding: '4px 2px',
-            borderRadius: '6px',
-            fontSize: '8px',
-            fontWeight: '500',
-            color: activeTab === tab.id ? '#8B5CF6' : '#6b7280',
-            backgroundColor: activeTab === tab.id ? '#f3f4f6' : 'transparent',
+            padding: '8px 6px',
+            borderRadius: '12px',
+            fontSize: '11px',
+            fontWeight: '700',
+            color: activeTab === tab.id ? '#fff' : '#fff',
+            textShadow: activeTab === tab.id ? '0 1px 2px rgba(0,0,0,0.3)' : '0 1px 2px rgba(0,0,0,0.2)',
             flex: '1',
-            minWidth: '0'
+            minWidth: '0',
+            transform: activeTab === tab.id ? 'translateY(-2px)' : 'translateY(0)',
+            transition: 'all 0.3s ease',
+            boxShadow: activeTab === tab.id 
+              ? '0 4px 12px rgba(255,107,107,0.4)' 
+              : '0 2px 4px rgba(0,0,0,0.1)'
           }}
           data-testid={`button-nav-${tab.id}`}
+          onMouseEnter={(e) => {
+            if (activeTab !== tab.id) {
+              (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.3)';
+              (e.target as HTMLElement).style.transform = 'translateY(-1px)';
+            }
+          }}
+          onMouseLeave={(e) => {
+            if (activeTab !== tab.id) {
+              (e.target as HTMLElement).style.background = 'rgba(255,255,255,0.2)';
+              (e.target as HTMLElement).style.transform = 'translateY(0)';
+            }
+          }}
         >
-          <span style={{ fontSize: '14px' }}>{tab.icon}</span>
-          <span>{tab.label}</span>
+          <span style={{ 
+            fontSize: '18px',
+            filter: activeTab === tab.id ? 'drop-shadow(0 1px 2px rgba(0,0,0,0.3))' : 'none'
+          }}>
+            {tab.icon}
+          </span>
+          <span style={{
+            fontSize: '10px',
+            letterSpacing: '0.5px'
+          }}>
+            {tab.label}
+          </span>
         </button>
       ))}
     </div>
