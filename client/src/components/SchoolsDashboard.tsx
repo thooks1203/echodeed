@@ -107,8 +107,8 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
         {/* Back Button */}
         <div style={{ position: 'absolute', left: 0, top: 0 }}>
           <BackButton 
-            onClick={() => navigate('/')}
-            label="Dashboard"
+            onClick={() => onNavigateToTab ? onNavigateToTab('feed') : navigate('/')}
+            label="Feed"
             variant="minimal"
             style={{
               color: '#6B7280',
