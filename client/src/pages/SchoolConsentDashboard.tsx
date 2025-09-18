@@ -203,6 +203,11 @@ export default function SchoolConsentDashboard() {
   // 📊 OVERVIEW TAB STATE
   const [selectedTab, setSelectedTab] = useState('overview');
   
+  // 🔧 DEBUG: Log tab changes
+  useEffect(() => {
+    console.log('🔄 Selected tab changed to:', selectedTab);
+  }, [selectedTab]);
+  
   // 🔄 RENEWALS TAB STATE
   const [renewalFilters, setRenewalFilters] = useState({
     status: '',
@@ -1218,7 +1223,14 @@ export default function SchoolConsentDashboard() {
 
       {/* Main Content */}
       <div className="container mx-auto px-4 py-6">
-        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
+        <Tabs 
+          value={selectedTab} 
+          onValueChange={(value) => {
+            console.log('🔄 Tab clicked:', value);
+            setSelectedTab(value);
+          }} 
+          className="space-y-6"
+        >
           <TabsList className="grid w-full grid-cols-5" data-testid="tabs-list">
             <TabsTrigger value="overview" data-testid="tab-overview">
               <TrendingUp className="h-4 w-4 mr-2" />
