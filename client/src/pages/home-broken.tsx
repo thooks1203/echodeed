@@ -664,8 +664,11 @@ export default function Home() {
         position: 'relative'
       }}>
         <SupportCircle onBack={() => {
-          console.log('Back button clicked!');
+          console.log('Support Circle back button clicked!');
+          console.log('Current activeTab:', activeTab);
+          console.log('Setting activeTab to feed');
           setActiveTab('feed');
+          console.log('ActiveTab set to feed');
         }} />
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
