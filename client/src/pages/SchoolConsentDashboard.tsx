@@ -148,7 +148,7 @@ export default function SchoolConsentDashboard() {
   }, []);
   
   // 🔒 SECURITY FIX: Get schoolId from authenticated user context  
-  const schoolId = user?.schoolId || 'bc016cad-fa89-44fb-aab0-76f82c574f78'; // Fallback to Graham Middle School
+  const schoolId = user?.schoolId || 'bc016cad-fa89-44fb-aab0-76f82c574f78'; // Fallback to Burlington Christian Academy
   
   // Redirect to login if not authenticated
   if (!authLoading && !isAuthenticated) {

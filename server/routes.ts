@@ -138,8 +138,8 @@ const requireSchoolAccess = async (req: any, res: any, next: any) => {
       if (sessionId) {
         console.log('✅ DEVELOPMENT BYPASS: Granting school access');
         req.userSchools = [{
-          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // GRAHAM MIDDLE SCHOOL
-          schoolName: 'Graham Middle School',
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // BURLINGTON CHRISTIAN ACADEMY
+          schoolName: 'Burlington Christian Academy',
           role: 'admin'
         }];
         req.primarySchoolId = 'bc016cad-fa89-44fb-aab0-76f82c574f78';
@@ -180,7 +180,7 @@ const requireSchoolAccess = async (req: any, res: any, next: any) => {
 const requireSpecificSchoolAccess = (schoolIdParam: string = 'schoolId') => {
   return async (req: any, res: any, next: any) => {
     try {
-      // Development bypass - allow access to Graham Middle School
+      // Development bypass - allow access to Burlington Christian Academy
       if (process.env.NODE_ENV === 'development') {
         const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
         const requestedSchoolId = req.params[schoolIdParam];

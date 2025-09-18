@@ -17,7 +17,7 @@ const MOCK_USERS: Record<string, AuthUser> = {
     name: 'Emma Johnson',
     email: 'emma.johnson@student.edu',
     schoolRole: 'student',
-    schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // GRAHAM MIDDLE SCHOOL
+    schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Burlington Christian Academy
     grade: '7'
   },
   teacher: {
