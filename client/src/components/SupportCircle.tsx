@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { SupportPost, InsertSupportPost } from '@shared/schema';
-import { Heart, AlertTriangle, Send, BookOpen, Users, Home, Brain, Shield, Search, Lock, MessageSquare, Zap } from 'lucide-react';
+import { Heart, AlertTriangle, Send, BookOpen, Users, Home, Brain, Shield, Search, Lock, MessageSquare, Zap, Info, HelpCircle } from 'lucide-react';
 import { BackButton } from '@/components/BackButton';
 import { CrisisInterventionModal } from '@/components/CrisisInterventionModal';
 import { SafetyDisclosureModal } from '@/components/SafetyDisclosureModal';
@@ -453,14 +453,25 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
 
                 {/* Message Input with Real-time Safety Analysis */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    What's been challenging you? (Anonymous)
-                  </label>
+                  <div className="flex items-center justify-between mb-2">
+                    <label className="text-sm font-medium text-gray-700">
+                      What's been challenging you? (Anonymous with safety exceptions)
+                    </label>
+                    <button
+                      type="button"
+                      className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 transition-colors"
+                      onClick={() => setShowSafetyDisclosure(true)}
+                      data-testid="safety-info-button"
+                    >
+                      <HelpCircle className="w-3 h-3" />
+                      Why?
+                    </button>
+                  </div>
                   <div className="relative">
                     <textarea
                       value={newPost}
                       onChange={(e) => setNewPost(e.target.value)}
-                      placeholder="Share what's on your mind... Remember, this is anonymous and only school counselors will see it."
+                      placeholder="Share what's on your mind... This is anonymous except if someone's in danger (self-harm, abuse, or required by law)."
                       className="w-full p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
                       rows={4}
                       maxLength={500}
@@ -487,6 +498,19 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
                     )}
                   </div>
 
+                  {/* Risk-Aware Safety Banner for High-Risk Posts */}
+                  {safetyAnalysis && (safetyAnalysis.safetyLevel === 'High_Risk' || safetyAnalysis.safetyLevel === 'Crisis') && (
+                    <Alert className="mt-3 border-orange-200 bg-orange-50">
+                      <AlertTriangle className="h-4 w-4 text-orange-600" />
+                      <AlertDescription className="text-orange-800">
+                        <strong>Safety Notice:</strong> If your post suggests danger, counselors may contact you to keep you safe.
+                        <div className="mt-1 text-xs">
+                          Crisis support: 988 (Suicide & Crisis Lifeline) • 741741 (Crisis Text Line)
+                        </div>
+                      </AlertDescription>
+                    </Alert>
+                  )}
+
                   {/* Real-time Safety Analysis Display */}
                   {safetyAnalysis && getSafetyIndicator() && (() => {
                     const indicator = getSafetyIndicator();
@@ -505,6 +529,22 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
                       </Alert>
                     );
                   })()}
+                </div>
+
+                {/* Safety reminder for submit button */}
+                <div className="flex items-center justify-between mb-2">
+                  <div className="text-xs text-gray-500">
+                    <Info className="w-3 h-3 inline mr-1" />
+                    Safety exceptions apply for your protection
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowSafetyDisclosure(true)}
+                    className="text-xs text-blue-600 hover:text-blue-700 underline"
+                    data-testid="view-safety-rules"
+                  >
+                    View safety rules
+                  </button>
                 </div>
 
                 <button

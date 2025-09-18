@@ -158,7 +158,7 @@ export function SafetyDisclosureModal({
                 <Checkbox 
                   id="read-disclosure"
                   checked={hasReadDisclosure}
-                  onCheckedChange={setHasReadDisclosure}
+                  onCheckedChange={(checked) => setHasReadDisclosure(!!checked)}
                   data-testid="checkbox-read-disclosure"
                 />
                 <label htmlFor="read-disclosure" className="text-sm leading-relaxed cursor-pointer">
@@ -170,7 +170,7 @@ export function SafetyDisclosureModal({
                 <Checkbox 
                   id="anonymity-limits"
                   checked={understandsAnonymityLimits}
-                  onCheckedChange={setUnderstandsAnonymityLimits}
+                  onCheckedChange={(checked) => setUnderstandsAnonymityLimits(!!checked)}
                   data-testid="checkbox-anonymity-limits"
                 />
                 <label htmlFor="anonymity-limits" className="text-sm leading-relaxed cursor-pointer">
@@ -182,7 +182,7 @@ export function SafetyDisclosureModal({
                 <Checkbox 
                   id="safety-protocol"
                   checked={agreesToSafetyProtocol}
-                  onCheckedChange={setAgreesToSafetyProtocol}
+                  onCheckedChange={(checked) => setAgreesToSafetyProtocol(!!checked)}
                   data-testid="checkbox-safety-protocol"
                 />
                 <label htmlFor="safety-protocol" className="text-sm leading-relaxed cursor-pointer">
