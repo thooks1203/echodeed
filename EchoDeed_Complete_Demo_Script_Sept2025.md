@@ -35,7 +35,7 @@
 **Opening Statement:**
 *"Now let me show you exactly how we've solved these problems and why schools are seeing 88% parent approval rates and 85% family engagement with our platform."*
 
-**Demo Structure:** 8 sections, 15 minutes total
+**Demo Structure:** 8 sections, 18-20 minutes total including intro
 **Key Message:** We've solved problems no other platform can touch
 
 ---
@@ -99,7 +99,7 @@
 ### **What to Show:**
 1. Navigate to Parent Dashboard
 2. Show reward tracking interface
-3. Demonstrate Burlington, NC partnerships
+3. Demonstrate local community partnerships
 4. Show how parents earn rewards when kids are kind
 
 ### **Step-by-Step Demo:**
@@ -206,7 +206,7 @@
 - *"Track incident prevention and intervention success with complete audit trails"*
 
 **Step 3:** Engagement analytics  
-- *"Measure actual family participation in real-time - we're seeing 88% approval rates compared to industry average of 65%"*
+- *"Measure actual family participation in real-time - we're seeing 88% approval rates, significantly above typical engagement levels"*
 
 **Step 4:** Cost savings calculator
 - *"Show exactly how much they save vs. multiple vendors while achieving better results"*
@@ -275,7 +275,7 @@
 ### **Before Starting:**
 - [ ] App running and responsive 
 - [ ] Have sample student registration ready
-- [ ] Burlington business partnerships loaded
+- [ ] Local business partnerships loaded
 - [ ] All dashboards accessible
 - [ ] Phone ready to show parent email (if possible)
 
@@ -311,7 +311,7 @@
 
 ## 🎪 **DEMO FLOW SUMMARY**
 
-**Total Time: 15 minutes**
+**Total Time: 18-20 minutes**
 1. **Landing Page** (2min) → Show stakeholder coverage
 2. **Student Registration** (4min) → **THE BREAKTHROUGH**  
 3. **Dual Rewards** (3min) → Parent engagement revolution
