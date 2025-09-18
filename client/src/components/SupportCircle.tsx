@@ -513,11 +513,11 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
                     </label>
                     <button
                       type="button"
-                      className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-700 transition-colors"
+                      className="flex items-center gap-1 text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors bg-blue-50 hover:bg-blue-100 px-3 py-1 rounded-lg border border-blue-200"
                       onClick={() => setShowSafetyDisclosure(true)}
                       data-testid="safety-info-button"
                     >
-                      <HelpCircle className="w-3 h-3" />
+                      <HelpCircle className="w-4 h-4" />
                       Why?
                     </button>
                   </div>
@@ -586,18 +586,18 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
                 </div>
 
                 {/* Safety reminder for submit button */}
-                <div className="flex items-center justify-between mb-2">
-                  <div className="text-xs text-gray-500">
-                    <Info className="w-3 h-3 inline mr-1" />
+                <div className="flex items-center justify-between mb-4">
+                  <div className="text-sm text-gray-600">
+                    <Info className="w-4 h-4 inline mr-1" />
                     Safety exceptions apply for your protection
                   </div>
                   <button
                     type="button"
                     onClick={() => setShowSafetyDisclosure(true)}
-                    className="text-xs text-blue-600 hover:text-blue-700 underline"
+                    className="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors bg-blue-50 hover:bg-blue-100 px-4 py-2 rounded-lg border border-blue-200"
                     data-testid="view-safety-rules"
                   >
-                    View safety rules
+                    📋 View safety rules
                   </button>
                 </div>
 

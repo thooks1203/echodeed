@@ -1502,8 +1502,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const postData = insertSupportPostSchema.parse(req.body);
       
-      // Content filtering for safety
-      const contentValidation = contentFilter.isContentAppropriate(postData.content);
+      // Content filtering for safety (support context allows negative content)
+      const contentValidation = contentFilter.isContentAppropriate(postData.content, 'support');
       if (!contentValidation.isValid) {
         return res.status(400).json({ message: contentValidation.reason });
       }

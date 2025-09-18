@@ -9,7 +9,7 @@ export class ContentFilterService {
     'useless', 'worthless', 'failure', 'loser', 'stupid', 'dumb'
   ];
 
-  isContentAppropriate(content: string): { isValid: boolean; reason?: string } {
+  isContentAppropriate(content: string, context: 'kindness' | 'support' = 'kindness'): { isValid: boolean; reason?: string } {
     const lowerContent = content.toLowerCase();
     
     // Create word boundary regex for more precise matching
@@ -22,21 +22,29 @@ export class ContentFilterService {
       }
     }
     
-    // Check for negative keywords (exact word matches only)
-    for (const keyword of this.negativeKeywords) {
-      if (words.includes(keyword.toLowerCase())) {
-        return { isValid: false, reason: 'Content contains negative language. EchoDeed is for positive acts of kindness only.' };
+    // For support posts, negative keywords are expected (students sharing challenges)
+    // For kindness posts, we want positive content only
+    if (context === 'kindness') {
+      // Check for negative keywords (exact word matches only)
+      for (const keyword of this.negativeKeywords) {
+        if (words.includes(keyword.toLowerCase())) {
+          return { isValid: false, reason: 'Content contains negative language. EchoDeed is for positive acts of kindness only.' };
+        }
       }
     }
     
-    // Check minimum length
+    // Check minimum length with appropriate message
     if (content.trim().length < 10) {
-      return { isValid: false, reason: 'Please provide more details about your act of kindness (minimum 10 characters)' };
+      const minLengthMessage = context === 'support' 
+        ? 'Please provide more details about what you\'re going through (minimum 10 characters)'
+        : 'Please provide more details about your act of kindness (minimum 10 characters)';
+      return { isValid: false, reason: minLengthMessage };
     }
     
     // Check maximum length
-    if (content.length > 280) {
-      return { isValid: false, reason: 'Content is too long (maximum 280 characters)' };
+    const maxLength = context === 'support' ? 500 : 280; // Support posts can be longer
+    if (content.length > maxLength) {
+      return { isValid: false, reason: `Content is too long (maximum ${maxLength} characters)` };
     }
     
     return { isValid: true };
