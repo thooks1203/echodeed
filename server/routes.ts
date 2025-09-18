@@ -126,6 +126,17 @@ const requireTeacherRole = async (req: any, res: any, next: any) => {
 // 🔒 SECURITY: School Access Control Middleware
 const requireSchoolAccess = async (req: any, res: any, next: any) => {
   try {
+    // Development bypass - allow access with mock school data
+    if (process.env.NODE_ENV === 'development' && req.headers['x-session-id']) {
+      req.userSchools = [{
+        schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // GRAHAM MIDDLE SCHOOL
+        schoolName: 'Graham Middle School',
+        role: 'admin'
+      }];
+      req.primarySchoolId = 'bc016cad-fa89-44fb-aab0-76f82c574f78';
+      return next();
+    }
+
     if (!req.user?.claims?.sub) {
       return res.status(401).json({ error: 'Authentication required' });
     }
@@ -159,6 +170,15 @@ const requireSchoolAccess = async (req: any, res: any, next: any) => {
 const requireSpecificSchoolAccess = (schoolIdParam: string = 'schoolId') => {
   return async (req: any, res: any, next: any) => {
     try {
+      // Development bypass - allow access to Graham Middle School
+      if (process.env.NODE_ENV === 'development' && req.headers['x-session-id']) {
+        const requestedSchoolId = req.params[schoolIdParam];
+        // Allow access to Graham Middle School in development
+        if (requestedSchoolId === 'bc016cad-fa89-44fb-aab0-76f82c574f78') {
+          return next();
+        }
+      }
+
       const requestedSchoolId = req.params[schoolIdParam];
       const userSchools = req.userSchools || [];
       
