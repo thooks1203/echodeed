@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useLocation } from 'wouter';
 import { AppHeader } from '@/components/AppHeader';
 import { FilterBar } from '@/components/FilterBar';
 import { KindnessFeed } from '@/components/KindnessFeed';
@@ -30,6 +31,7 @@ interface RewardOffer {
 
 export default function Home() {
   const queryClient = useQueryClient();
+  const [, navigate] = useLocation();
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
   const [activeTab, setActiveTab] = useState('schools');
@@ -113,6 +115,10 @@ export default function Home() {
   const handleWelcomeClose = () => {
     setShowWelcomeModal(false);
     localStorage.setItem('echodeed_has_seen_welcome', 'true');
+  };
+
+  const handleBackToDashboard = () => {
+    navigate('/');
   };
 
   const navigateToTab = (tab: string) => {
@@ -503,7 +509,12 @@ export default function Home() {
       minHeight: '100vh',
       position: 'relative'
     }}>
-      <AppHeader counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} isPulse={counterPulse} />
+      <AppHeader 
+        counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} 
+        isPulse={counterPulse} 
+        showBackButton={true}
+        onBack={handleBackToDashboard}
+      />
       
       <div style={{ paddingBottom: '100px' }}>
         <FilterBar 

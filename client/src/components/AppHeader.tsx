@@ -1,18 +1,36 @@
 import { Heart, Sliders } from 'lucide-react';
 import { KindnessCounter } from '@shared/schema';
 import { ElectricHeart } from './ElectricHeart';
+import { BackButton } from './BackButton';
 
 interface AppHeaderProps {
   counter: KindnessCounter;
   isPulse: boolean;
+  onBack?: () => void;
+  showBackButton?: boolean;
 }
 
-export function AppHeader({ counter, isPulse }: AppHeaderProps) {
+export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeaderProps) {
   return (
     <header className="bg-card border-b border-border">
       <div className="p-4">
         <div className="flex items-center justify-between mb-4">
-          <div className="w-8"> {/* Spacer for balance */}
+          <div className="w-8">
+            {(showBackButton && onBack) ? (
+              <BackButton 
+                onClick={onBack} 
+                label="Dashboard"
+                variant="minimal"
+                style={{ 
+                  color: '#6B7280', 
+                  fontSize: '12px', 
+                  padding: '4px 8px',
+                  borderRadius: '6px'
+                }}
+              />
+            ) : (
+              <div /> /* Spacer for balance */
+            )}
           </div>
           <div className="flex items-center space-x-4">
             <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{width: '120px', height: '120px'}} className="animate-logoFloat" />
