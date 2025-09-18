@@ -474,7 +474,7 @@ export default function SchoolConsentDashboard() {
     return (
       <div className="space-y-6" data-testid="students-tab">
         {/* 🔧 DEBUG INFO */}
-        {process.env.NODE_ENV === 'development' && (
+        {import.meta.env.DEV && (
           <Card className="bg-yellow-50 border-yellow-200">
             <CardContent className="pt-4">
               <div className="text-xs font-mono space-y-1">
@@ -988,7 +988,7 @@ export default function SchoolConsentDashboard() {
     return (
       <div className="space-y-6" data-testid="renewals-tab">
         {/* 🔧 DEBUG INFO */}
-        {process.env.NODE_ENV === 'development' && (
+        {import.meta.env.DEV && (
           <Card className="bg-blue-50 border-blue-200">
             <CardContent className="pt-4">
               <div className="text-xs font-mono space-y-1">
