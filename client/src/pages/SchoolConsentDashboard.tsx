@@ -1166,7 +1166,7 @@ export default function SchoolConsentDashboard() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => navigate('/admin')}
+                onClick={() => navigate('/admin-dashboard')}
                 data-testid="button-back-to-admin"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
