@@ -932,6 +932,40 @@ export default function AdminDashboard() {
                   </div>
                 </div>
               </div>
+
+              {/* Quick Access Section */}
+              <div className="pt-6 border-t">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h4 className="font-semibold">Detailed Consent Management</h4>
+                    <p className="text-sm text-muted-foreground">
+                      Access Burlington, NC consent tracking and renewal system
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => window.location.href = '/admin/consents'}
+                    className="flex items-center gap-2"
+                    data-testid="button-consent-management"
+                  >
+                    <Shield className="w-4 h-4" />
+                    View Consent Dashboard
+                  </Button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                  <div className="bg-muted/50 p-3 rounded-lg">
+                    <div className="font-medium">Student Tracking</div>
+                    <div className="text-muted-foreground">Individual consent status</div>
+                  </div>
+                  <div className="bg-muted/50 p-3 rounded-lg">
+                    <div className="font-medium">Annual Renewals</div>
+                    <div className="text-muted-foreground">Automated processing</div>
+                  </div>
+                  <div className="bg-muted/50 p-3 rounded-lg">
+                    <div className="font-medium">Audit Reports</div>
+                    <div className="text-muted-foreground">Compliance documentation</div>
+                  </div>
+                </div>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
