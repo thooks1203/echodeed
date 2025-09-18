@@ -1,3 +1,4 @@
+import { useAuth } from "@/hooks/useAuth";
 import { canAccessSchoolsDashboard } from "@/lib/roleUtils";
 
 interface BottomNavigationProps {
@@ -6,6 +7,8 @@ interface BottomNavigationProps {
 }
 
 export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationProps) {
+  const { user } = useAuth();
+
   // Different tabs for students vs teachers/admins
   const baseTabs = [
     { id: 'feed', label: 'Feed', icon: '🏠' },
@@ -23,7 +26,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
   ];
 
-  const tabs = canAccessSchoolsDashboard() 
+  const tabs = canAccessSchoolsDashboard(user?.schoolRole || 'student') 
     ? [...baseTabs, ...adminTabs]
     : [...baseTabs, ...studentTabs];
 
