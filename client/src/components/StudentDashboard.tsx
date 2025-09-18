@@ -311,6 +311,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         borderRadius: '12px',
         padding: '16px',
         marginTop: '24px',
+        marginBottom: '80px', // Space for bottom navigation
         textAlign: 'center'
       }}>
         <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>
@@ -320,6 +321,16 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           You only see your own data - no access to other students' information
         </div>
       </div>
+      
+      {/* Bottom Navigation for easy access back to Feed */}
+      <BottomNavigation 
+        activeTab="student-dashboard" 
+        onTabChange={(tab) => {
+          if (onNavigateToTab) {
+            onNavigateToTab(tab);
+          }
+        }} 
+      />
     </div>
   );
 }
