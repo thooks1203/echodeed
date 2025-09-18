@@ -155,14 +155,8 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
           <div className="absolute left-0 top-0">
             <BackButton 
               onClick={() => {
-                console.log('Support Circle back button clicked!');
-                console.log('onBack prop:', onBack);
                 if (onBack) {
-                  console.log('Calling onBack function');
                   onBack();
-                  console.log('onBack function called');
-                } else {
-                  console.log('No onBack function provided');
                 }
               }}
               variant="minimal"

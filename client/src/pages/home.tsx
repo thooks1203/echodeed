@@ -424,11 +424,7 @@ export default function Home() {
     return (
       <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
         <AppHeader counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} isPulse={counterPulse} />
-        <SupportCircle onBack={() => {
-          console.log('home.tsx: onBack called, setting activeTab to feed');
-          setActiveTab('feed');
-          console.log('home.tsx: activeTab set to feed');
-        }} />
+        <SupportCircle onBack={() => setActiveTab('feed')} />
         <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
     );
@@ -527,8 +523,7 @@ export default function Home() {
       <AppHeader 
         counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} 
         isPulse={counterPulse} 
-        showBackButton={true}
-        onBack={handleBackToDashboard}
+        showBackButton={false}
       />
       
       <div style={{ paddingBottom: '100px' }}>
