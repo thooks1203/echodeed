@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { BottomNavigation } from '@/components/BottomNavigation';
+import { BackButton } from '@/components/BackButton';
 
 interface School {
   id: string;
@@ -102,7 +103,22 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
   return (
     <div style={{ padding: '20px' }}>
       {/* Header */}
-      <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+      <div style={{ textAlign: 'center', marginBottom: '24px', position: 'relative' }}>
+        {/* Back Button */}
+        <div style={{ position: 'absolute', left: 0, top: 0 }}>
+          <BackButton 
+            onClick={() => navigate('/')}
+            label="Dashboard"
+            variant="minimal"
+            style={{
+              color: '#6B7280',
+              fontSize: '12px',
+              padding: '4px 8px',
+              borderRadius: '6px'
+            }}
+          />
+        </div>
+        
         <div style={{ 
           display: 'flex', 
           alignItems: 'center', 
