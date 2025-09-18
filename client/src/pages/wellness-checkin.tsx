@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WellnessCheckIn } from "@/components/WellnessCheckIn";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,19 @@ import { Link } from "wouter";
 export default function WellnessCheckInPage() {
   const [showCheckIn, setShowCheckIn] = useState(false);
   const [completed, setCompleted] = useState(false);
+  const [returnPath, setReturnPath] = useState("/");
+
+  // Determine return path based on URL parameters
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const from = urlParams.get('from');
+    
+    if (from === 'teacher-dashboard') {
+      setReturnPath('/teacher-dashboard');
+    } else {
+      setReturnPath('/');
+    }
+  }, []);
 
   // Demo values for testing
   const demoSchoolId = "burlington-nc-middle";
@@ -25,7 +38,7 @@ export default function WellnessCheckInPage() {
             </p>
             <div className="space-y-2">
               <Button asChild className="w-full">
-                <Link href="/">Return to Home</Link>
+                <Link href={returnPath}>Return to Home</Link>
               </Button>
               <Button 
                 variant="outline" 
@@ -109,7 +122,7 @@ export default function WellnessCheckInPage() {
 
           <div className="text-center">
             <Button variant="ghost" asChild className="text-sm">
-              <Link href="/">Return to Home</Link>
+              <Link href={returnPath}>Return to Home</Link>
             </Button>
           </div>
         </CardContent>

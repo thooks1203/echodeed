@@ -323,7 +323,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
                 View Student Feed
               </Button>
               <Button
-                onClick={() => setLocation('/wellness-checkin')}
+                onClick={() => setLocation('/wellness-checkin?from=teacher-dashboard')}
                 variant="outline"
                 className="border-orange-300 text-orange-600 hover:bg-orange-50"
                 data-testid="button-wellness-check"
@@ -485,7 +485,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
                   
                   <div className="text-center py-6">
                     <Button
-                      onClick={() => setLocation('/wellness-checkin')}
+                      onClick={() => setLocation('/wellness-checkin?from=teacher-dashboard')}
                       variant="outline"
                       className="border-orange-300 text-orange-600 hover:bg-orange-50"
                     >
