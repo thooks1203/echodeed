@@ -1132,7 +1132,7 @@ export default function SchoolConsentDashboard() {
           </CardContent>
         </Card>
 
-        {/* 🏫 BURLINGTON POLICY INFO */}
+        {/* 🏫 BCA POLICY INFO */}
         <Alert>
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Burlington Christian Academy Policy</AlertTitle>
