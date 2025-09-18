@@ -1,0 +1,88 @@
+import { useState } from 'react';
+import { switchDemoRole, getDemoRoles } from '@/hooks/useAuth';
+import { useAuth } from '@/hooks/useAuth';
+
+export function RoleSwitcherDemo() {
+  const [showDropdown, setShowDropdown] = useState(false);
+  const { user } = useAuth();
+  const demoRoles = getDemoRoles();
+
+  return (
+    <div style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 1000 }}>
+      <button
+        onClick={() => setShowDropdown(!showDropdown)}
+        style={{
+          background: '#7C3AED',
+          color: 'white',
+          border: 'none',
+          borderRadius: '8px',
+          padding: '8px 12px',
+          fontSize: '12px',
+          fontWeight: '600',
+          cursor: 'pointer',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+        }}
+        data-testid="role-switcher-demo"
+      >
+        🔒 {user.name} ({user.schoolRole.toUpperCase()})
+      </button>
+
+      {showDropdown && (
+        <div style={{
+          position: 'absolute',
+          top: '100%',
+          right: '0',
+          marginTop: '4px',
+          background: 'white',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+          border: '1px solid #E5E7EB',
+          minWidth: '280px',
+          zIndex: 1001
+        }}>
+          <div style={{ 
+            padding: '12px', 
+            borderBottom: '1px solid #E5E7EB',
+            fontSize: '14px',
+            fontWeight: '600',
+            color: '#374151'
+          }}>
+            Demo: Switch User Role
+          </div>
+          
+          {demoRoles.map((roleOption) => (
+            <button
+              key={roleOption.role}
+              onClick={() => {
+                switchDemoRole(roleOption.role);
+                setShowDropdown(false);
+              }}
+              style={{
+                width: '100%',
+                textAlign: 'left',
+                padding: '12px',
+                border: 'none',
+                background: user.schoolRole === roleOption.role ? '#F3F4F6' : 'transparent',
+                cursor: 'pointer',
+                fontSize: '13px',
+                borderTop: 'none'
+              }}
+              data-testid={`switch-to-${roleOption.role}`}
+            >
+              <div style={{ 
+                fontWeight: '600', 
+                color: user.schoolRole === roleOption.role ? '#7C3AED' : '#374151',
+                marginBottom: '2px'
+              }}>
+                {user.schoolRole === roleOption.role ? '✓ ' : ''}{roleOption.label}
+              </div>
+              <div style={{ fontSize: '11px', color: '#6B7280' }}>
+                {roleOption.description}
+              </div>
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}

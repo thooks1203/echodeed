@@ -26,6 +26,10 @@ export const users = pgTable("users", {
   referredBy: varchar("referred_by"),
   totalReferrals: integer("total_referrals").default(0),
   referralEarnings: integer("referral_earnings").default(0),
+  // SCHOOL ROLE SYSTEM - FOR EDUCATIONAL INSTITUTIONS
+  schoolRole: varchar("school_role", { length: 20 }).default("student").notNull(), // student, teacher, admin
+  schoolId: varchar("school_id"), // Links user to a specific school
+  grade: varchar("grade", { length: 5 }), // For students: 6, 7, 8, etc.
   // PREMIUM TIER SYSTEM
   subscriptionTier: varchar("subscription_tier", { length: 20 }).default("free").notNull(), // free, basic, premium, enterprise
   subscriptionStatus: varchar("subscription_status", { length: 20 }).default("active").notNull(), // active, cancelled, suspended
@@ -246,6 +250,9 @@ export const insertUserTokensSchema = createInsertSchema(userTokens).omit({
 export const upsertUserSchema = createInsertSchema(users);
 export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
+
+// School role types
+export type SchoolRole = 'student' | 'teacher' | 'admin';
 
 // ==========================================
 // CURRICULUM INTEGRATION TABLES

@@ -19,6 +19,10 @@ import { useGeolocation } from '@/hooks/use-geolocation';
 import { KindnessPost, KindnessCounter, UserTokens } from '@shared/schema';
 import { PostFilters, WebSocketMessage, TokenEarning } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { canAccessSchoolsDashboard } from '@/lib/roleUtils';
+import { StudentDashboard } from '@/components/StudentDashboard';
+import { RoleSwitcherDemo } from '@/components/RoleSwicherDemo';
 
 interface RewardOffer {
   id: string;
@@ -32,6 +36,7 @@ interface RewardOffer {
 export default function Home() {
   const queryClient = useQueryClient();
   const [, navigate] = useLocation();
+  const { user, isStudent, isTeacher, isAdmin } = useAuth();
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
   const [activeTab, setActiveTab] = useState('feed');
@@ -129,8 +134,17 @@ export default function Home() {
   };
 
   const handleBackToDashboard = () => {
-    // Navigate to the main dashboard (schools tab)
-    setActiveTab('schools');
+    // CRITICAL SECURITY FIX: Role-based dashboard routing
+    if (isStudent) {
+      // Students get redirected to their own dashboard - no access to Schools Dashboard
+      setActiveTab('student-dashboard');
+    } else if (isTeacher || isAdmin) {
+      // Teachers and admins can access Schools Dashboard
+      setActiveTab('schools');
+    } else {
+      // Default fallback - redirect to feed
+      setActiveTab('feed');
+    }
   };
 
   const navigateToTab = (tab: string) => {
@@ -139,8 +153,42 @@ export default function Home() {
 
   // Show different content based on active tab
   if (activeTab === 'schools') {
+    // CRITICAL SECURITY CHECK: Only teachers and admins can access Schools Dashboard
+    if (!canAccessSchoolsDashboard(user.schoolRole)) {
+      // Redirect students to their appropriate dashboard
+      setTimeout(() => setActiveTab('student-dashboard'), 0);
+      return (
+        <div style={{ 
+          minHeight: '100vh', 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'center',
+          background: '#F9FAFB'
+        }}>
+          <div style={{ textAlign: 'center', padding: '20px' }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔒</div>
+            <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: '#DC2626' }}>
+              Access Restricted
+            </h2>
+            <p style={{ fontSize: '14px', color: '#6B7280' }}>
+              Students cannot access the Schools Dashboard. Redirecting to your dashboard...
+            </p>
+          </div>
+        </div>
+      );
+    }
+    
     return (
       <SchoolsDashboard 
+        onNavigateToTab={navigateToTab} 
+        activeBottomTab={activeTab}
+      />
+    );
+  }
+  
+  if (activeTab === 'student-dashboard') {
+    return (
+      <StudentDashboard 
         onNavigateToTab={navigateToTab} 
         activeBottomTab={activeTab}
       />
