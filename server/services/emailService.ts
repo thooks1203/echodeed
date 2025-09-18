@@ -347,7 +347,7 @@ class NodemailerEmailService implements EmailService {
 
     const reminderTypeText = reminderType === '3day' ? '3-Day' : '7-Day';
     const mailOptions = {
-      from: process.env.SMTP_FROM || 'Burlington Middle School EchoDeed <noreply@echodeed.com>',
+      from: process.env.SMTP_FROM || 'Burlington Christian Academy EchoDeed <noreply@echodeed.com>',
       to: parentEmail,
       subject: `⏰ ${reminderTypeText} Reminder: Parental Consent Still Needed - ${studentFirstName}'s EchoDeed Account`,
       text: textContent,
@@ -395,7 +395,7 @@ class NodemailerEmailService implements EmailService {
     });
 
     const mailOptions = {
-      from: process.env.SMTP_FROM || 'Burlington Middle School EchoDeed <noreply@echodeed.com>',
+      from: process.env.SMTP_FROM || 'Burlington Christian Academy EchoDeed <noreply@echodeed.com>',
       to: parentEmail,
       subject: `❌ Parental Consent Denied - ${studentFirstName}'s EchoDeed Account Status`,
       text: textContent,
@@ -450,7 +450,7 @@ class NodemailerEmailService implements EmailService {
     });
 
     const mailOptions = {
-      from: process.env.SMTP_FROM || 'Burlington Middle School EchoDeed <noreply@echodeed.com>',
+      from: process.env.SMTP_FROM || 'Burlington Christian Academy EchoDeed <noreply@echodeed.com>',
       to: parentEmail,
       subject: `🔄 Annual Consent Renewal Required - ${studentFirstName}'s EchoDeed Account for ${renewalYear}`,
       text: textContent,
@@ -522,7 +522,7 @@ class NodemailerEmailService implements EmailService {
     });
 
     const mailOptions = {
-      from: process.env.SMTP_FROM || 'Burlington Middle School EchoDeed <noreply@echodeed.com>',
+      from: process.env.SMTP_FROM || 'Burlington Christian Academy EchoDeed <noreply@echodeed.com>',
       to: parentEmail,
       subject: `${config.emoji} ${config.urgency}: Consent Renewal for ${studentFirstName} (${daysUntilExpiry} days remaining)`,
       text: textContent,
@@ -632,7 +632,7 @@ class NodemailerEmailService implements EmailService {
             </div>
 
             <p style="font-size: 14px; color: #6b7280;">
-                <strong>Important:</strong> This consent link will expire in 14 days per Burlington Middle School policy. If you do not provide consent within this time, your child will need to register again.
+                <strong>Important:</strong> This consent link will expire in 14 days per Burlington Christian Academy policy. If you do not provide consent within this time, your child will need to register again.
             </p>
 
             <p>If you have any questions about EchoDeed or need assistance, please contact your child's school or reply to this email.</p>
@@ -687,7 +687,7 @@ YOUR CHILD'S SAFETY & PRIVACY:
 TO APPROVE YOUR CHILD'S ACCOUNT:
 Click this link: ${data.consentUrl}
 
-This consent link will expire in 14 days per Burlington Middle School policy.
+This consent link will expire in 14 days per Burlington Christian Academy policy.
 
 If you have any questions, please contact your child's school.
 
@@ -855,8 +855,8 @@ FERPA & COPPA Compliant • Anonymous & Safe
             </div>
 
             <div class="burlington-info">
-                <p><strong>🏫 Burlington Middle School COPPA Compliance Notice:</strong></p>
-                <p>As part of Burlington Middle School's commitment to student digital safety, all students require explicit parental consent before accessing online educational platforms like EchoDeed. This consent process ensures:</p>
+                <p><strong>🏫 Burlington Christian Academy COPPA Compliance Notice:</strong></p>
+                <p>As part of Burlington Christian Academy's commitment to student digital safety, all students require explicit parental consent before accessing online educational platforms like EchoDeed. This consent process ensures:</p>
                 <ul>
                     <li>Full transparency about data collection and use</li>
                     <li>Compliance with federal COPPA regulations</li>
@@ -883,16 +883,16 @@ FERPA & COPPA Compliant • Anonymous & Safe
                 }
             </p>
 
-            <p>If you have any questions about this process, please contact Burlington Middle School directly or reply to this email.</p>
+            <p>If you have any questions about this process, please contact Burlington Christian Academy directly or reply to this email.</p>
             
             <p>Thank you for your attention to this important matter!</p>
             
-            <p>Best regards,<br><strong>Burlington Middle School<br>EchoDeed Implementation Team</strong></p>
+            <p>Best regards,<br><strong>Burlington Christian Academy<br>EchoDeed Implementation Team</strong></p>
         </div>
         
         <div class="footer">
             <p>EchoDeed™ - Building Character Through Kindness</p>
-            <p>Burlington Middle School • COPPA Compliant • Safe for Students</p>
+            <p>Burlington Christian Academy • COPPA Compliant • Safe for Students</p>
             <p style="font-size: 12px; margin-top: 15px;">
                 This reminder was sent because a consent request for ${data.studentFirstName} at ${data.schoolName} has not been responded to. 
                 To stop receiving reminders, please either approve or deny the consent request.
@@ -929,7 +929,7 @@ REQUEST STATUS:
 • Status: Waiting for your response
 
 🏫 BURLINGTON MIDDLE SCHOOL COPPA COMPLIANCE NOTICE:
-As part of Burlington Middle School's commitment to student digital safety, all students require explicit parental consent before accessing online educational platforms like EchoDeed. This consent process ensures:
+As part of Burlington Christian Academy's commitment to student digital safety, all students require explicit parental consent before accessing online educational platforms like EchoDeed. This consent process ensures:
 • Full transparency about data collection and use
 • Compliance with federal COPPA regulations
 • Parent control over their child's digital footprint
@@ -943,17 +943,17 @@ ${data.reminderType === '7day' ?
   `📅 IMPORTANT: You have ${data.expiresInDays} days remaining to provide consent. We'll send one more reminder in 4 days.`
 }
 
-If you have any questions, please contact Burlington Middle School directly.
+If you have any questions, please contact Burlington Christian Academy directly.
 
 Thank you for your attention to this important matter!
 
 Best regards,
-Burlington Middle School
+Burlington Christian Academy
 EchoDeed Implementation Team
 
 ---
 EchoDeed™ - Building Character Through Kindness
-Burlington Middle School • COPPA Compliant • Safe for Students
+Burlington Christian Academy • COPPA Compliant • Safe for Students
     `;
   }
 
@@ -1009,7 +1009,7 @@ Burlington Middle School • COPPA Compliant • Safe for Students
                     <li>Your child's EchoDeed account will remain inactive</li>
                     <li>No personal information will be collected or processed</li>
                     <li>Your child will not have access to the EchoDeed platform</li>
-                    <li>Your decision has been logged for Burlington Middle School's records</li>
+                    <li>Your decision has been logged for Burlington Christian Academy's records</li>
                 </ul>
             </div>
 
@@ -1022,12 +1022,12 @@ Burlington Middle School • COPPA Compliant • Safe for Students
             
             <p>If you have any questions about this decision or need to discuss your child's educational technology options, please contact the school directly.</p>
             
-            <p>Best regards,<br><strong>Burlington Middle School<br>EchoDeed Implementation Team</strong></p>
+            <p>Best regards,<br><strong>Burlington Christian Academy<br>EchoDeed Implementation Team</strong></p>
         </div>
         
         <div class="footer">
             <p>EchoDeed™ - Building Character Through Kindness</p>
-            <p>Burlington Middle School • COPPA Compliant • Respecting Parental Choices</p>
+            <p>Burlington Christian Academy • COPPA Compliant • Respecting Parental Choices</p>
             <p style="font-size: 12px; margin-top: 15px;">
                 This confirmation was sent to acknowledge your consent decision for ${data.studentFirstName} at ${data.schoolName}.
                 Your privacy choices are respected and will be maintained.
@@ -1062,7 +1062,7 @@ DECISION SUMMARY:
 • Your child's EchoDeed account will remain inactive
 • No personal information will be collected or processed
 • Your child will not have access to the EchoDeed platform
-• Your decision has been logged for Burlington Middle School's records
+• Your decision has been logged for Burlington Christian Academy's records
 
 💭 CHANGED YOUR MIND?
 If you would like to reconsider and provide consent in the future, please contact ${data.schoolName} directly. They can help initiate a new consent request.
@@ -1072,12 +1072,12 @@ Thank you for taking the time to review and respond to the parental consent requ
 If you have any questions about this decision or need to discuss your child's educational technology options, please contact the school directly.
 
 Best regards,
-Burlington Middle School
+Burlington Christian Academy
 EchoDeed Implementation Team
 
 ---
 EchoDeed™ - Building Character Through Kindness
-Burlington Middle School • COPPA Compliant • Respecting Parental Choices
+Burlington Christian Academy • COPPA Compliant • Respecting Parental Choices
     `;
   }
 
@@ -1384,7 +1384,7 @@ COPPA Compliant • Consent Rights Respected
     <div class="container">
         <div class="header">
             <h1>🔄 Annual Consent Renewal</h1>
-            <p>Burlington Middle School - School Year ${data.renewalYear}</p>
+            <p>Burlington Christian Academy - School Year ${data.renewalYear}</p>
         </div>
         
         <div class="content">
@@ -1397,7 +1397,7 @@ COPPA Compliant • Consent Rights Respected
 
             <div class="burlington-info">
                 <h4>🏫 Burlington Policy Requirement</h4>
-                <p>In accordance with Burlington Middle School policy, all student technology consents must be renewed annually. This ensures:</p>
+                <p>In accordance with Burlington Christian Academy policy, all student technology consents must be renewed annually. This ensures:</p>
                 <ul>
                     <li>Continued COPPA compliance for grades 6-8</li>
                     <li>Updated parent contact information</li>
@@ -1430,7 +1430,7 @@ COPPA Compliant • Consent Rights Respected
                 <strong>Verification Code:</strong> ${data.verificationCode}
             </div>
 
-            <p><strong>Questions?</strong> Contact Burlington Middle School or reply to this email.</p>
+            <p><strong>Questions?</strong> Contact Burlington Christian Academy or reply to this email.</p>
             
             <p>Thank you for your continued support of ${data.studentFirstName}'s character development!</p>
             
@@ -1439,7 +1439,7 @@ COPPA Compliant • Consent Rights Respected
         
         <div class="footer">
             <p>EchoDeed™ - Building Character Through Kindness</p>
-            <p>Burlington Middle School • COPPA Compliant • Annual Renewal Required</p>
+            <p>Burlington Christian Academy • COPPA Compliant • Annual Renewal Required</p>
         </div>
     </div>
 </body>
@@ -1457,7 +1457,7 @@ COPPA Compliant • Consent Rights Respected
   }) {
     return `
 ANNUAL CONSENT RENEWAL REQUIRED - EchoDeed
-Burlington Middle School - School Year ${data.renewalYear}
+Burlington Christian Academy - School Year ${data.renewalYear}
 
 Dear ${data.parentName},
 
@@ -1466,7 +1466,7 @@ Dear ${data.parentName},
 Your child's current consent expires on ${data.expiryDate.toLocaleDateString()}. To ensure uninterrupted access to our character-building platform, please renew their consent for the ${data.renewalYear} school year.
 
 🏫 BURLINGTON POLICY REQUIREMENT
-In accordance with Burlington Middle School policy, all student technology consents must be renewed annually. This ensures:
+In accordance with Burlington Christian Academy policy, all student technology consents must be renewed annually. This ensures:
 • Continued COPPA compliance for grades 6-8
 • Updated parent contact information  
 • Verification of current consent preferences
@@ -1484,7 +1484,7 @@ WHAT'S INCLUDED IN THE RENEWAL?
 
 RENEW NOW: ${data.renewalUrl}
 
-Questions? Contact Burlington Middle School or reply to this email.
+Questions? Contact Burlington Christian Academy or reply to this email.
 
 Thank you for your continued support of ${data.studentFirstName}'s character development!
 
@@ -1494,7 +1494,7 @@ EchoDeed Team
 
 ----
 EchoDeed™ - Building Character Through Kindness
-Burlington Middle School • COPPA Compliant • Annual Renewal Required
+Burlington Christian Academy • COPPA Compliant • Annual Renewal Required
     `;
   }
 
@@ -1563,7 +1563,7 @@ Burlington Middle School • COPPA Compliant • Annual Renewal Required
             <p><strong>Why this matters:</strong></p>
             <ul>
                 <li>Ensures continuous access to EchoDeed activities</li>
-                <li>Maintains COPPA compliance for Burlington Middle School</li>
+                <li>Maintains COPPA compliance for Burlington Christian Academy</li>
                 <li>Prevents temporary account restrictions</li>
                 <li>Updates consent for the current school year</li>
             </ul>
@@ -1587,7 +1587,7 @@ Burlington Middle School • COPPA Compliant • Annual Renewal Required
         
         <div class="footer">
             <p>EchoDeed™ - Building Character Through Kindness</p>
-            <p>Burlington Middle School • COPPA Compliant • Renewal System</p>
+            <p>Burlington Christian Academy • COPPA Compliant • Renewal System</p>
         </div>
     </div>
 </body>
@@ -1607,7 +1607,7 @@ Burlington Middle School • COPPA Compliant • Annual Renewal Required
   }) {
     return `
 ${data.urgency.toUpperCase()} - CONSENT RENEWAL REMINDER
-Burlington Middle School - EchoDeed
+Burlington Christian Academy - EchoDeed
 
 Dear ${data.parentName},
 
@@ -1619,7 +1619,7 @@ ${data.studentFirstName}'s consent expires on ${data.expiryDate.toLocaleDateStri
 
 WHY THIS MATTERS:
 • Ensures continuous access to EchoDeed activities
-• Maintains COPPA compliance for Burlington Middle School  
+• Maintains COPPA compliance for Burlington Christian Academy  
 • Prevents temporary account restrictions
 • Updates consent for the current school year
 
@@ -1635,7 +1635,7 @@ EchoDeed Team
 
 ----
 EchoDeed™ - Building Character Through Kindness
-Burlington Middle School • COPPA Compliant • Renewal System
+Burlington Christian Academy • COPPA Compliant • Renewal System
     `;
   }
 }

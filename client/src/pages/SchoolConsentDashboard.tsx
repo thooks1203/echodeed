@@ -961,7 +961,7 @@ export default function SchoolConsentDashboard() {
                 {renewalsLoading ? <Skeleton className="h-8 w-16" /> : metrics?.totalRenewals || 0}
               </div>
               <p className="text-xs text-muted-foreground">
-                Burlington Middle School
+                Burlington Christian Academy
               </p>
             </CardContent>
           </Card>
@@ -1041,7 +1041,7 @@ export default function SchoolConsentDashboard() {
               Consent Renewals
             </CardTitle>
             <CardDescription>
-              Annual consent renewals for Burlington Middle School (grades 6-8)
+              Annual consent renewals for Burlington Christian Academy (grades 6-8)
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -1135,7 +1135,7 @@ export default function SchoolConsentDashboard() {
         {/* 🏫 BURLINGTON POLICY INFO */}
         <Alert>
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Burlington Middle School Policy</AlertTitle>
+          <AlertTitle>Burlington Christian Academy Policy</AlertTitle>
           <AlertDescription>
             All student technology consents must be renewed annually for grades 6-8. 
             School year validity: August 1 - July 31. Renewal notifications begin 75 days before expiry.
