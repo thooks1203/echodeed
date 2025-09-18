@@ -24,7 +24,7 @@ export function LandingPage() {
   }, []);
 
   const handleGetStarted = () => {
-    navigate('/app?tab=schools');
+    navigate('/app?tab=feed');
   };
 
   const handleTeacherLogin = () => {
