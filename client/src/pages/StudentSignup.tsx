@@ -12,7 +12,7 @@ import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
 import { ArrowLeft, Shield, Heart, Users, CheckCircle, AlertCircle } from "lucide-react";
 import { Link, useLocation } from "wouter";
-import { canAccessSchoolsDashboard } from "@/lib/roleUtils";
+import { useSchoolRole } from "@/lib/roleUtils";
 
 const studentSignupSchema = z.object({
   firstName: z.string().min(1, "First name is required").max(50, "Name too long"),
@@ -35,6 +35,7 @@ const gradeOptions = [
 
 export default function StudentSignup() {
   const [, setLocation] = useLocation();
+  const { canAccessSchoolsDashboard } = useSchoolRole();
   const { toast } = useToast();
   const [registrationResult, setRegistrationResult] = useState<any>(null);
   
@@ -135,7 +136,7 @@ export default function StudentSignup() {
                 <Button 
                   onClick={() => {
                     // Navigate to appropriate dashboard based on user role
-                    if (canAccessSchoolsDashboard()) {
+                    if (canAccessSchoolsDashboard) {
                       setLocation("/app?tab=schools");
                     } else {
                       setLocation("/app?tab=student-dashboard"); 
@@ -178,7 +179,7 @@ export default function StudentSignup() {
         {/* Header */}
         <div className="text-center mb-8">
           <Link 
-            href={canAccessSchoolsDashboard() ? "/app?tab=schools" : "/app?tab=student-dashboard"} 
+            href={canAccessSchoolsDashboard ? "/app?tab=schools" : "/app?tab=student-dashboard"} 
             className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 mb-4"
             data-testid="link-back-dashboard"
           >
