@@ -16,7 +16,7 @@ export function FilterBar({ activeFilter, location, onFilterChange }: FilterBarP
   return (
     <div className="bg-card border-b border-border">
       <div className="py-3 overflow-x-auto scrollbar-hide" style={{ scrollBehavior: 'smooth', overscrollBehaviorX: 'contain', WebkitOverflowScrolling: 'touch' }}>
-        <div className="flex space-x-2 w-max pb-1 pl-4 pr-20">
+        <div className="flex space-x-2 w-max pb-1 pl-4 pr-4">
           <button 
           className={`filter-chip ${activeFilter === 'global' ? 'active' : ''}`}
           onClick={() => handleFilterClick('global')}
@@ -55,32 +55,6 @@ export function FilterBar({ activeFilter, location, onFilterChange }: FilterBarP
             Community
           </button>
           
-          <button 
-            className={`filter-chip ${activeFilter === 'positivity' ? 'active' : ''}`}
-            onClick={() => handleFilterClick('positivity', { category: 'Spreading Positivity' })}
-            data-testid="filter-positivity"
-          >
-            <Smile size={12} className="mr-1" />
-            Positivity
-          </button>
-          
-          <button 
-            className={`filter-chip ${activeFilter === 'environmental' ? 'active' : ''}`}
-            onClick={() => handleFilterClick('environmental', { category: 'Environmental' })}
-            data-testid="filter-environmental"
-          >
-            <TreePine size={12} className="mr-1" />
-            Environmental
-          </button>
-          
-          <button 
-            className={`filter-chip ${activeFilter === 'random' ? 'active' : ''}`}
-            onClick={() => handleFilterClick('random', { category: 'Random Acts' })}
-            data-testid="filter-random"
-          >
-            <Coffee size={12} className="mr-1" />
-            Random Acts
-          </button>
         </div>
       </div>
     </div>
