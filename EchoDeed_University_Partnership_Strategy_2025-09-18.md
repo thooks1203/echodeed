@@ -19,12 +19,30 @@
 
 ## 🏆 **TARGET UNIVERSITY PARTNERS** (North Carolina Focus)
 
-### **Tier 1 - Primary Targets (North Carolina)**
+### **Tier 1 - PRIMARY TARGET: ELON UNIVERSITY** ⭐
+
+**🎓 ELON UNIVERSITY - THE PERFECT PARTNER**
+- **Teaching College Focus**: Specifically designed for education and teaching excellence
+- **UNBEATABLE LOCATION**: Less than 5 miles from Burlington Christian Academy!
+- **Practical Education Research**: Focus on real-world teaching applications vs. theoretical research
+- **Local Community Ties**: Existing relationships with Burlington area schools
+- **Faster Decision Making**: Smaller, more agile than massive research universities
+- **Perfect Partnership Size**: Intimate enough for collaborative relationships
+- **Contact Strategy**: School of Education, Teacher Preparation Program, Education Research Center
+
+**Why Elon is BETTER than UNC/Duke:**
+- ✅ **Geographic Advantage**: 5 miles vs. 45+ miles = daily collaboration possible
+- ✅ **Mission Alignment**: Teaching college = perfect fit for education research
+- ✅ **Speed to Partnership**: Smaller bureaucracy = faster approvals
+- ✅ **Local Investment**: Elon benefits from Burlington area education success
+- ✅ **Relationship Depth**: More personal, collaborative partnerships possible
+
+### **Tier 2 - Regional Backup Options**
 
 **🎓 University of North Carolina at Chapel Hill**
 - **School of Education**: Top-ranked education research program
 - **SEL Focus**: Active social-emotional learning research initiatives
-- **Local Advantage**: 45 minutes from Burlington - perfect for BCA partnership
+- **Local Advantage**: 45 minutes from Burlington - good for BCA partnership
 - **Research Credibility**: Publications carry national weight
 - **Contact Strategy**: Education psychology and child development departments
 
@@ -268,7 +286,35 @@ EchoDeed Platform
 
 ---
 
-## 🎯 **SPECIFIC PROFESSOR TARGETS** (UNC Chapel Hill)
+## 🎯 **SPECIFIC PROFESSOR TARGETS** (ELON UNIVERSITY - PRIMARY FOCUS)
+
+### **ELON UNIVERSITY SCHOOL OF EDUCATION** ⭐
+
+**Dr. Holly Bellows** - Education Department
+- **Expertise**: Elementary and middle school education research
+- **Recent Work**: Teacher preparation and student achievement
+- **Contact**: hbellows@elon.edu
+- **Approach**: Highlight BCA partnership and local community impact
+
+**Dr. Lynn Priddy** - School of Education
+- **Expertise**: Social-emotional learning and character education
+- **Recent Work**: SEL implementation in K-8 settings
+- **Contact**: lpriddy@elon.edu  
+- **Approach**: Reference her work on character development and academic achievement
+
+**Dr. Catherine McCulloch** - Education Department
+- **Expertise**: Educational psychology and student engagement
+- **Recent Work**: Technology integration in elementary education
+- **Contact**: cmcculloch@elon.edu
+- **Approach**: Connect EchoDeed platform to her technology research
+
+**Elon University Education Research Center**
+- **Contact**: Dr. Woody Pelton (Director)
+- **Phone**: (336) 278-6950
+- **Email**: wpelton@elon.edu
+- **Approach**: Present comprehensive research partnership proposal
+
+### **UNC CHAPEL HILL BACKUP TARGETS**
 
 ### **Dr. Maureen Hoke** - School of Education
 - **Expertise**: Social-emotional learning and character development
@@ -293,7 +339,7 @@ EchoDeed Platform
 ## 🎪 **BURLINGTON CHRISTIAN ACADEMY INTEGRATION**
 
 ### **BCA Partnership Positioning:**
-> "George, we want Burlington Christian Academy to be our founding research partner with the University of North Carolina. BCA students will be the first to participate in groundbreaking research proving that daily kindness practice improves academic performance. This positions BCA as an educational innovator and provides the platform at no cost during the research period."
+> "George, we want Burlington Christian Academy to be our founding research partner with Elon University - literally in your backyard, less than 5 miles away! BCA students will be the first to participate in groundbreaking research proving that daily kindness practice improves academic performance. This positions BCA as an educational innovator alongside Elon's School of Education, and provides the platform at no cost during the research period."
 
 ### **BCA Research Benefits:**
 - **Free Platform Access**: No cost during 12-18 month research period
