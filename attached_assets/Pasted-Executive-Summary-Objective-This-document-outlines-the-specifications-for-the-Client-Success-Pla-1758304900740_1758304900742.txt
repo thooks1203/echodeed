@@ -1,0 +1,107 @@
+Executive Summary & Objective
+
+This document outlines the specifications for the "Client Success Plan," a new core module for the Acellipath™ platform.
+
+Currently, Acellipath excels at matching clients with the right providers. This module represents the next critical phase: empowering the client after the match is made. Its objective is to transform the static list of referrals into a dynamic, collaborative, and interactive plan that the client and their case manager can use to track progress, manage documents, and centralize communication.
+
+This module will dramatically increase client agency, improve service follow-through, and provide richer data for our outcome-tracking metrics. It moves the client from being a passive recipient to the active manager of their own journey.
+
+2.0 Core User Stories
+
+As a Client, I want to see all my next steps, appointments, and required documents in one place, so that I can feel organized, in control, and motivated to complete my journey.
+
+As a Case Manager, I want to view my client's active success plan and track their progress on specific milestones, so that I can provide timely support, identify roadblocks, and effectively manage my caseload.
+
+3.0 Feature Set Breakdown
+
+The Client Success Plan will be a new tab within the authenticated Client Portal and will have a corresponding view in the Case Manager Dashboard. It will be comprised of four key features:
+
+3.1 Feature: Milestone Tracking
+
+Description: A dynamic, task-based checklist that visualizes the specific steps a client needs to take with each matched provider. This is the core of the Success Plan.
+
+UI/UX (Client & Case Manager View):
+
+Display milestones grouped by the matched service provider (e.g., "Guilford Mental Health," "SafeTransport LLC").
+
+Each milestone will be a single line item with a checkbox.
+
+Milestones should be editable by the Case Manager and suggestible by the client.
+
+Examples: [ ] Call to schedule intake, [ ] Attend first appointment on [Date], [ ] Submit application paperwork.
+
+When a client checks a box, the item should be marked as complete (e.g., grayed out with a strikethrough).
+
+Backend & Logic:
+
+A new database table/collection milestones will be created.
+
+Each milestone must be associated with a client_id, a service_provider_id, and the case_manager_id.
+
+Fields should include: milestone_description (string), status (e.g., 'pending', 'complete'), due_date (optional date), completion_timestamp (records when the box is checked).
+
+The Case Manager's dashboard should show an aggregated view of milestone completion rates for their clients.
+
+3.2 Feature: Secure Document Vault
+
+Description: A centralized, secure, and HIPAA-compliant location for clients to upload, store, and manage critical documents required for applications.
+
+UI/UX (Client View):
+
+A simple interface with an "Upload New Document" button.
+
+Support for common file types (PDF, JPG, PNG) with a reasonable size limit (e.g., 10MB).
+
+A list of uploaded documents, showing file name, upload date, and a simple user-defined document type (e.g., "ID," "Proof of Income," "Birth Certificate").
+
+Ability for the client to view and delete their uploaded documents.
+
+Backend & Logic:
+
+CRITICAL: Must be HIPAA-compliant. Files must be stored in a secure, encrypted cloud storage bucket (e.g., AWS S3 with server-side encryption, or a similar HIPAA-eligible service).
+
+A new database table/collection client_documents will be created.
+
+Fields should include: client_id, file_name (string), document_type (string), storage_url (secure link to the file in the bucket), upload_timestamp.
+
+Access to these documents must be strictly controlled and limited to the client and their assigned case manager with explicit consent.
+
+3.3 Feature: "My Team" Directory
+
+Description: A simple, card-based directory that shows all the active service providers a client is engaged with, centralizing contact information.
+
+UI/UX (Client View):
+
+Each matched provider from "PHASE 3: INTELLIGENT PROVIDER MATCHING" will be displayed as a clean, simple "card."
+
+Each card will contain: Provider Name, Service Provided (e.g., "Mental Health Counseling"), Phone Number, Address, and a contact person's name (if available).
+
+This should be a read-only display, populated automatically after the "Warm Handoff" is completed.
+
+Backend & Logic:
+
+This feature will pull data directly from the existing providers and client_provider_matches tables/collections. No new database structure is required, only a new API endpoint to fetch this aggregated data for the client's view.
+
+3.4 Feature: Direct Scheduling Integration (V2 - Optional)
+
+Description: An advanced feature allowing clients to book their intake appointments directly from the Success Plan.
+
+UI/UX (Client View):
+
+For providers who have opted-in, a "Schedule Now" button will appear on their "My Team" card or next to a relevant milestone.
+
+Clicking the button will either embed or link out to the provider's scheduling tool (e.g., Calendly, Zocdoc).
+
+Backend & Logic:
+
+The providers table will need a new optional field: scheduling_url (string).
+
+The frontend will conditionally display the "Schedule Now" button only if this URL exists for a given provider. This makes it an easily scalable, opt-in feature.
+
+4.0 Integration with Existing Workflow
+
+Trigger: The Client Success Plan for a specific service is automatically generated and populated for the client upon completion of "PHASE 4: WARM HANDOFF PROCESS."
+
+Data Source: The plan is populated with data from the Provider Matching and Warm Handoff phases.
+
+Feedback Loop: Data from the "Milestone Tracking" feature (e.g., completion rates, time-to-completion) will feed directly into "PHASE 6: OUTCOME MEASUREMENT & ANALYTICS," providing granular, real-time data on client progress.
