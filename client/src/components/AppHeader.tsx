@@ -20,7 +20,7 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
             <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{width: '120px', height: '120px'}} className="animate-logoFloat" />
             <div className="text-center">
               <h1 className="text-3xl font-bold text-foreground" data-testid="text-app-title">EchoDeed™</h1>
-              <p className="text-sm text-muted-foreground font-medium mt-1" data-testid="text-tagline">Kindness, Amplified</p>
+              <p className="text-sm text-muted-foreground font-medium mt-1" data-testid="text-tagline">Character Education, Reimagined</p>
             </div>
           </div>
           <button 

@@ -14,7 +14,7 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
   const steps = [
     {
       title: "Welcome to EchoDeed™",
-      subtitle: "Your Kindness, Amplified",
+      subtitle: "Character Education, Reimagined",
       content: (
         <div style={{ textAlign: 'center' }}>
           <div style={{ 
@@ -28,7 +28,7 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
             <h1 style={{ fontSize: '32px', fontWeight: '700', margin: '0', color: '#1f2937' }}>Welcome to EchoDeed™</h1>
           </div>
           <p style={{ fontSize: '18px', color: '#6b7280', marginBottom: '24px', lineHeight: '1.6' }}>
-            Share anonymous acts of kindness and be part of a global community spreading positivity, one kind act at a time.
+            Transform character development through evidence-based kindness activities and build positive school culture through our innovative platform.
           </p>
           <div style={{
             background: 'linear-gradient(135deg, rgba(139,92,246,0.1), rgba(16,185,129,0.1))',
@@ -38,11 +38,11 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
             marginBottom: '20px'
           }}>
             <p style={{ fontSize: '16px', color: '#8B5CF6', fontWeight: '600', margin: 0 }}>
-              ✨ Every act of kindness creates ripples of positivity
+              ✨ Every character-building moment shapes tomorrow's leaders
             </p>
           </div>
           <div style={{ fontSize: '24px', color: '#10B981', fontWeight: '700' }}>
-            243,876 acts of kindness shared so far!
+            243,876 character moments tracked!
           </div>
         </div>
       )
@@ -53,10 +53,10 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
       content: (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {[
-            { step: '1', icon: '📝', title: 'Share Your Story', desc: 'Post about a kind act you did or witnessed - completely anonymous' },
-            { step: '2', icon: '⚡', title: 'Inspire Others', desc: 'Your story joins a global feed of kindness that motivates others' },
-            { step: '3', icon: '🪙', title: 'Earn ECHO Tokens', desc: 'Get rewarded with tokens you can redeem for real gifts' },
-            { step: '4', icon: '🌍', title: 'Make an Impact', desc: 'Watch the kindness counter grow as we build a more positive world' }
+            { step: '1', icon: '📝', title: 'Document Character', desc: 'Record acts of kindness and character development - completely anonymous' },
+            { step: '2', icon: '⚡', title: 'Build Culture', desc: 'Your actions contribute to positive school culture and peer inspiration' },
+            { step: '3', icon: '🪙', title: 'Track Growth', desc: 'Earn recognition and track your character development journey' },
+            { step: '4', icon: '🌍', title: 'Shape Leaders', desc: 'Participate in evidence-based character education that creates tomorrow\'s leaders' }
           ].map((step, index) => (
             <div key={index} style={{
               display: 'flex',
@@ -96,12 +96,12 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
     },
     {
       title: "🎁 Ready to Start?",
-      subtitle: "Join the Global Kindness Movement",
+      subtitle: "Begin Your Character Journey",
       content: (
         <div style={{ textAlign: 'center' }}>
           <div style={{ fontSize: '48px', marginBottom: '20px' }}>🌟</div>
           <p style={{ fontSize: '18px', color: '#6b7280', marginBottom: '24px', lineHeight: '1.6' }}>
-            You're now part of a growing community of people making the world a little brighter through small acts of kindness.
+            You're now part of an innovative character education community that develops empathy, leadership, and social responsibility.
           </p>
           <div style={{ 
             display: 'flex', 
@@ -113,13 +113,13 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
             border: '1px solid rgba(16,185,129,0.2)'
           }}>
             <div style={{ fontSize: '16px', fontWeight: '600', color: '#10B981' }}>
-              🏠 Browse the global kindness feed
+              🏠 Explore character development activities
             </div>
             <div style={{ fontSize: '16px', fontWeight: '600', color: '#8B5CF6' }}>
-              📍 Discover local acts of kindness
+              📍 Connect with your school community
             </div>
             <div style={{ fontSize: '16px', fontWeight: '600', color: '#F59E0B' }}>
-              🏅 Earn badges and track your impact
+              🏅 Track your leadership growth
             </div>
           </div>
         </div>

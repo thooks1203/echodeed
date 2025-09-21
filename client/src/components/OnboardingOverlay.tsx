@@ -33,14 +33,14 @@ export function OnboardingOverlay({ onComplete }: OnboardingOverlayProps) {
           <h2 className="text-3xl font-bold text-foreground">Welcome to EchoDeed™</h2>
         </div>
         <p className="text-muted-foreground mb-1 leading-relaxed">
-          EchoDeed™ is an anonymous kindness platform designed to inspire and track acts of kindness through a community-driven feed. Share your kind acts, browse a global feed of positivity, and watch our real-time global kindness counter grow. <strong>Your Kindness, Amplified.</strong>
+          EchoDeed™ is an innovative character education platform that transforms how students learn empathy and social responsibility. Share anonymous acts of kindness, track character development, and build positive school culture through our evidence-based approach. <strong>Character Education, Reimagined.</strong>
         </p>
         <button 
           onClick={handleClose}
           className="w-full bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:opacity-90 transition-opacity"
           data-testid="button-start-kindness"
         >
-          TAP HERE to start spreading kindness
+          TAP HERE to start building character
         </button>
       </div>
     </div>
