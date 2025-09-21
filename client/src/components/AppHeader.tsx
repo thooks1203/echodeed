@@ -18,7 +18,10 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
         <div className="flex items-center justify-center mb-4 relative">
           <div className="flex items-center space-x-4">
             <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{width: '120px', height: '120px'}} className="animate-logoFloat" />
-            <h1 className="text-3xl font-bold text-foreground" data-testid="text-app-title">EchoDeed™</h1>
+            <div className="text-center">
+              <h1 className="text-3xl font-bold text-foreground" data-testid="text-app-title">EchoDeed™</h1>
+              <p className="text-sm text-muted-foreground font-medium mt-1" data-testid="text-tagline">Kindness, Amplified</p>
+            </div>
           </div>
           <button 
             className="absolute right-0 p-2 rounded-lg bg-muted text-muted-foreground hover:bg-secondary transition-colors"
