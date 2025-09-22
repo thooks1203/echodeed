@@ -610,9 +610,8 @@ export default function AdminDashboard() {
         </div>
         <div className="flex items-center gap-3">
           <Button
-            variant="outline"
             onClick={() => navigate('/app')}
-            className="flex items-center gap-2"
+            className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
             data-testid="back-to-platform"
           >
             <ArrowLeft className="w-4 h-4" />
