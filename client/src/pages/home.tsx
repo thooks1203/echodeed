@@ -233,7 +233,7 @@ export default function Home() {
         onBack={handleBackToDashboard}
       />
       
-      <div style={{ paddingBottom: '100px' }}>
+      <div style={{ paddingBottom: '140px' }}>
         <FilterBar 
           activeFilter={activeFilter} 
           location={location}
