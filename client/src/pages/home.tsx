@@ -20,6 +20,7 @@ import { StudentDashboard } from '@/components/StudentDashboard';
 import MentorDashboard from '@/pages/MentorDashboard';
 import { SupportCircle } from '@/components/SupportCircle';
 import RewardsPage from '@/pages/rewards';
+import { SummerChallenges } from '@/components/SummerChallenges';
 
 interface RewardOffer {
   id: string;
@@ -148,6 +149,15 @@ export default function Home() {
   if (activeTab === 'support') {
     return (
       <SupportCircle onBack={handleBackToDashboard} />
+    );
+  }
+
+  if (activeTab === 'summer') {
+    return (
+      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+        <SummerChallenges />
+        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
     );
   }
 

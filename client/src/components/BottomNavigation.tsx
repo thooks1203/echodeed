@@ -17,6 +17,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
   const studentTabs = [
     { id: 'mentor-dashboard', label: 'Mentor', icon: '🌟' },
     { id: 'student-dashboard', label: 'Dashboard', icon: '👨‍🎓' },
+    { id: 'summer', label: 'Summer', icon: '🏖️' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
   ];
