@@ -38,7 +38,13 @@ export default function Home() {
   const { user, isStudent, isTeacher, isAdmin } = useAuth();
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
-  const [activeTab, setActiveTab] = useState('feed');
+  const [activeTab, setActiveTab] = useState(() => {
+    // Default tab based on role
+    if (user?.schoolRole === 'admin' || user?.schoolRole === 'teacher') {
+      return 'schools';
+    }
+    return 'feed';
+  });
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(() => {
@@ -50,7 +56,7 @@ export default function Home() {
   
   const { location } = useGeolocation();
 
-  // Handle URL parameters for tab navigation
+  // Handle URL parameters for tab navigation and role-based defaults
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
@@ -58,8 +64,15 @@ export default function Home() {
       setActiveTab(tabParam);
       // Remove the tab parameter from URL to keep it clean
       window.history.replaceState({}, '', window.location.pathname);
+    } else {
+      // Set default tab based on role if no URL param
+      if (user?.schoolRole === 'admin' || user?.schoolRole === 'teacher') {
+        setActiveTab('schools');
+      } else if (user?.schoolRole === 'student') {
+        setActiveTab('feed');
+      }
     }
-  }, []);
+  }, [user]);
 
   // Fetch data
   const { data: posts = [], isLoading: postsLoading } = useQuery<KindnessPost[]>({
