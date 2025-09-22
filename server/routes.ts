@@ -9244,8 +9244,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       // Get all corporate accounts that are schools
       const allAccounts = await storage.getCorporateAccounts();
-      const schools = allAccounts
-        .filter((account: any) => account.industry === 'education')
+      
+      const educationAccounts = allAccounts.filter((account: any) => account.industry === 'education');
+      
+      const schools = educationAccounts
         .filter((account: any) => 
           account.companyName.toLowerCase().includes(query.toLowerCase())
         )
@@ -9255,7 +9257,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
           domain: account.domain
         }))
         .slice(0, 10); // Limit to 10 results
-
       res.json(schools);
     } catch (error: any) {
       console.error('Failed to search schools:', error);

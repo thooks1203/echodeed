@@ -44,12 +44,15 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
 
   // School search functionality
   const { data: searchResults = [] } = useQuery({
-    queryKey: ['/api/schools/search', searchQuery],
+    queryKey: ['/api', 'schools', 'search', searchQuery],
     queryFn: async () => {
       if (!searchQuery.trim() || searchQuery.length < 2) return [];
+      console.log('🔍 Frontend searching for:', searchQuery);
       const response = await fetch(`/api/schools/search?query=${encodeURIComponent(searchQuery)}`);
       if (!response.ok) throw new Error('Failed to search schools');
-      return response.json();
+      const results = await response.json();
+      console.log('🔍 Frontend received results:', results);
+      return results;
     },
     enabled: searchQuery.length >= 2,
   });
