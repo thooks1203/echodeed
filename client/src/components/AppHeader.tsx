@@ -33,7 +33,7 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
     <header className="bg-card border-b border-border">
       <div className="p-4">
         {/* Logo and Title Section */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-center mb-4">
           <div className="flex items-center space-x-4">
             <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{width: '120px', height: '120px'}} className="animate-logoFloat" />
             <div className="text-center">
@@ -41,57 +41,64 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
               <p className="text-sm text-muted-foreground font-medium mt-1" data-testid="text-tagline">Character Education, Reimagined</p>
             </div>
           </div>
-          
-          {/* User Menu - Better positioned */}
+        </div>
+
+        {/* Kid-Friendly User Menu - Prominent Position */}
+        <div className="flex justify-center mb-4">
           <div className="relative">
             <button 
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-2 p-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-colors shadow-lg border-2 border-white"
+              className="flex flex-col items-center gap-1 p-4 rounded-xl bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 transition-all duration-300 shadow-lg border-3 border-yellow-300 hover:scale-105"
               data-testid="button-user-menu"
               style={{ 
-                minWidth: '160px',
-                fontSize: '13px',
-                fontWeight: '600'
+                minWidth: '200px',
+                fontSize: '14px',
+                fontWeight: '700'
               }}
             >
-              <User size={18} />
-              <span className="text-sm font-medium">{user?.name || 'User'}</span>
-              <span className="text-sm">▼</span>
+              <div className="flex items-center gap-2">
+                <User size={20} />
+                <span className="text-sm font-bold">Signed in as:</span>
+              </div>
+              <span className="text-base font-bold">{user?.name || 'User'}</span>
+              <span className="text-xs bg-white/20 px-2 py-1 rounded-full">👆 Click here to switch users or sign out!</span>
             </button>
             
             {showUserMenu && (
-              <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 z-[100]">
-                <div className="p-4 border-b border-gray-100">
-                  <div className="flex flex-col">
-                    <span className="text-sm font-medium text-gray-900">{user.name}</span>
-                    <span className="text-xs text-gray-500">{user.email}</span>
-                    <span className="text-xs font-medium text-blue-600 mt-1">{user.schoolRole.toUpperCase()}</span>
+              <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border-3 border-yellow-300 z-[100]">
+                <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-green-50">
+                  <div className="text-center">
+                    <div className="text-lg font-bold text-gray-800">👋 Hi {user.name.split(' ')[0]}!</div>
+                    <div className="text-sm text-gray-600">{user.email}</div>
+                    <div className="inline-block px-3 py-1 mt-2 text-xs font-bold bg-blue-100 text-blue-800 rounded-full">
+                      You are: {user.schoolRole.toUpperCase()}
+                    </div>
                   </div>
                 </div>
                 
-                <div className="p-2">
-                  <div className="text-xs font-medium text-gray-600 px-2 py-1">Switch Demo User:</div>
+                <div className="p-3">
+                  <div className="text-sm font-bold text-gray-700 px-2 py-2 text-center">🔄 Want to try a different user?</div>
                   {demoRoles.map((roleInfo) => (
                     <button
                       key={roleInfo.role}
                       onClick={() => handleRoleSwitch(roleInfo.role)}
-                      className={`w-full text-left px-2 py-2 text-sm hover:bg-gray-100 rounded ${user.schoolRole === roleInfo.role ? 'bg-blue-50' : ''}`}
+                      className={`w-full text-left px-3 py-3 text-sm hover:bg-yellow-50 rounded-lg border-2 mb-2 transition-colors ${user.schoolRole === roleInfo.role ? 'bg-blue-50 border-blue-300' : 'border-gray-200'}`}
                       data-testid={`switch-to-${roleInfo.role}`}
                     >
-                      <div className="font-medium">{roleInfo.label}</div>
-                      <div className="text-xs text-gray-500">{roleInfo.description}</div>
+                      <div className="font-bold text-gray-800">{roleInfo.label}</div>
+                      <div className="text-xs text-gray-600">{roleInfo.description}</div>
                     </button>
                   ))}
                 </div>
                 
-                <div className="border-t border-gray-100 p-2">
+                <div className="border-t-3 border-yellow-200 p-3 bg-red-50">
                   <button
                     onClick={handleSignOut}
-                    className="w-full flex items-center gap-2 px-2 py-2 text-sm text-red-600 hover:bg-red-50 rounded"
+                    className="w-full flex items-center justify-center gap-2 px-4 py-3 text-lg font-bold text-red-700 hover:bg-red-100 rounded-lg border-2 border-red-300 transition-colors"
                     data-testid="sign-out"
                   >
-                    <LogOut size={14} />
-                    Sign Out (Reset to Default)
+                    <LogOut size={18} />
+                    🚪 Sign Out (Go Back to Default)
                   </button>
                 </div>
               </div>
