@@ -18,6 +18,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { canAccessSchoolsDashboard } from '@/lib/roleUtils';
 import { StudentDashboard } from '@/components/StudentDashboard';
 import { MentorDashboard } from '@/pages/MentorDashboard';
+import { SupportCircle } from '@/components/SupportCircle';
+import RewardsPage from '@/pages/rewards';
 
 interface RewardOffer {
   id: string;
@@ -181,6 +183,18 @@ export default function Home() {
   if (activeTab === 'mentor-dashboard') {
     return (
       <MentorDashboard />
+    );
+  }
+
+  if (activeTab === 'support') {
+    return (
+      <SupportCircle onBack={handleBackToDashboard} />
+    );
+  }
+
+  if (activeTab === 'rewards') {
+    return (
+      <RewardsPage />
     );
   }
 
