@@ -26,7 +26,7 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
   const handleSignOut = () => {
     localStorage.removeItem('echodeed_demo_role');
     setShowUserMenu(false);
-    window.location.reload();
+    window.location.href = '/';
   };
 
   return (
