@@ -17,7 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { canAccessSchoolsDashboard } from '@/lib/roleUtils';
 import { StudentDashboard } from '@/components/StudentDashboard';
-import { MentorDashboard } from '@/pages/MentorDashboard';
+import MentorDashboard from '@/pages/MentorDashboard';
 import { SupportCircle } from '@/components/SupportCircle';
 import RewardsPage from '@/pages/rewards';
 
@@ -134,10 +134,13 @@ export default function Home() {
   };
 
   const navigateToTab = (tab: string) => {
+    console.log('navigateToTab called with:', tab);
     setActiveTab(tab);
   };
 
   // Show different content based on active tab
+  console.log('Current activeTab:', activeTab);
+  
   if (activeTab === 'schools') {
     // Only teachers and admins can access Schools Dashboard
     if (!canAccessSchoolsDashboard(user.schoolRole)) {
