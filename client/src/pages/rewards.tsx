@@ -100,21 +100,28 @@ export default function RewardsPage() {
   });
 
   // Fetch reward offers - using the correct endpoint that has Burlington rewards
-  const { data: offers = [] } = useQuery<RewardOffer[]>({
+  const { data: offers = [], isLoading: offersLoading } = useQuery<RewardOffer[]>({
     queryKey: ['/api/rewards/offers', selectedPartner, selectedOfferType],
     queryFn: async () => {
+      console.log('🎁 Fetching offers with filters:', { selectedPartner, selectedOfferType });
       // Build the URL with filters if needed
       if (selectedPartner === 'all' && selectedOfferType === 'all') {
         // Use the endpoint that has our Burlington/Alamance County rewards
+        console.log('🎁 Using all/all endpoint');
         const response = await fetch('/api/rewards/offers/all/all');
-        return response.json();
+        const data = await response.json();
+        console.log('🎁 Received offers data:', data.length, 'offers');
+        return data;
       } else {
         // Use the filtered endpoint for specific selections
         const params = new URLSearchParams();
         if (selectedPartner !== 'all') params.append('partnerId', selectedPartner);
         if (selectedOfferType !== 'all') params.append('offerType', selectedOfferType);
+        console.log('🎁 Using filtered endpoint with params:', params.toString());
         const response = await fetch(`/api/rewards/offers?${params}`);
-        return response.json();
+        const data = await response.json();
+        console.log('🎁 Received filtered offers data:', data.length, 'offers');
+        return data;
       }
     }
   });
@@ -170,6 +177,8 @@ export default function RewardsPage() {
   };
 
   // Get partner info for offers
+  console.log('🎁 Processing offers:', offers.length, 'raw offers');
+  console.log('🎁 Available partners:', partners.length, 'partners');
   const enrichedOffers = offers.map((offer: RewardOffer) => {
     const partner = partners.find((p: RewardPartner) => p.id === offer.partnerId);
     return {
@@ -178,6 +187,7 @@ export default function RewardsPage() {
       partnerLogo: partner?.partnerLogo,
     };
   });
+  console.log('🎁 Enriched offers:', enrichedOffers.length, 'final offers');
 
 
   // Filter featured offers
@@ -370,9 +380,14 @@ export default function RewardsPage() {
             {/* All Offers */}
             <div className="space-y-4">
               <h2 className="text-2xl font-bold text-gray-900 dark:text-white">All Rewards</h2>
-              {enrichedOffers.length === 0 ? (
+              {offersLoading ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-500 dark:text-gray-400">Loading rewards...</p>
+                </div>
+              ) : enrichedOffers.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500 dark:text-gray-400">No rewards available - check filters above</p>
+                  <p className="text-xs text-gray-400 mt-2">Debug: offers={offers.length}, partners={partners.length}</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
