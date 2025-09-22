@@ -462,35 +462,6 @@ export function LandingPage() {
             6. Student Feed
           </button>
 
-          <button 
-            onClick={() => navigate('/analytics-dashboard')}
-            style={{
-              backgroundColor: '#2563EB',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#1D4ED8';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#2563EB';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span style={{ fontSize: '20px' }}>📊</span>
-            Student Analytics Dashboard
-          </button>
 
           {/* Additional Features */}
           <div style={{ 
@@ -511,6 +482,34 @@ export function LandingPage() {
             </p>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <button 
+                onClick={() => navigate('/analytics-dashboard')}
+                style={{
+                  backgroundColor: '#6B7280',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '12px 16px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseOver={(e) => {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#4B5563';
+                }}
+                onMouseOut={(e) => {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#6B7280';
+                }}
+              >
+                <span style={{ fontSize: '16px' }}>📊</span>
+                Student Analytics Dashboard
+              </button>
+
               <button 
                 onClick={handleFamilyLogin}
                 style={{
