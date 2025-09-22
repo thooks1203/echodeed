@@ -301,19 +301,7 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <div style={{ 
-              width: '20px', 
-              height: '20px', 
-              borderRadius: '4px', 
-              backgroundColor: '#FEB941', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              fontSize: '12px',
-              fontWeight: 'bold',
-              color: '#DC2626'
-            }}>1</div>
-            <span>Register Your School</span>
+            🏫 1. Register Your School
           </button>
 
           {/* 2. ADMIN CONFIGURATION */}
@@ -344,19 +332,7 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <div style={{ 
-              width: '20px', 
-              height: '20px', 
-              borderRadius: '4px', 
-              backgroundColor: '#34D399', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              fontSize: '12px',
-              fontWeight: 'bold',
-              color: '#DC2626'
-            }}>2</div>
-            <span>Administrator Dashboard</span>
+            👨‍💼 2. Administrator Dashboard
           </button>
 
           {/* 3. TEACHER PREPARATION */}
@@ -387,19 +363,7 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <div style={{ 
-              width: '20px', 
-              height: '20px', 
-              borderRadius: '4px', 
-              backgroundColor: '#C084FC', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              fontSize: '12px',
-              fontWeight: 'bold',
-              color: '#FFFFFF'
-            }}>3</div>
-            <span>Teacher Dashboard</span>
+            👩‍🏫 3. Teacher Dashboard
           </button>
 
           {/* 4. STUDENT REGISTRATION (TRIGGERS PARENT CONSENT) */}
@@ -430,19 +394,7 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <div style={{ 
-              width: '20px', 
-              height: '20px', 
-              borderRadius: '4px', 
-              backgroundColor: '#60A5FA', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              fontSize: '12px',
-              fontWeight: 'bold',
-              color: '#FFFFFF'
-            }}>4</div>
-            <span>Student Sign Up</span>
+            🎓 4. Student Sign Up
           </button>
 
           {/* 5. PARENT CONSENT VERIFICATION */}
@@ -473,19 +425,7 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <div style={{ 
-              width: '20px', 
-              height: '20px', 
-              borderRadius: '4px', 
-              backgroundColor: '#F472B6', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              fontSize: '12px',
-              fontWeight: 'bold',
-              color: '#FFFFFF'
-            }}>5</div>
-            <span>Parent Dashboard</span>
+            👨‍👩‍👧‍👦 5. Parent Dashboard
           </button>
 
           {/* 6. STUDENT PARTICIPATION (ONLY AFTER CONSENT) */}
@@ -519,19 +459,7 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.3)';
             }}
           >
-            <div style={{ 
-              width: '20px', 
-              height: '20px', 
-              borderRadius: '4px', 
-              backgroundColor: '#FCA5A5', 
-              display: 'flex', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              fontSize: '12px',
-              fontWeight: 'bold',
-              color: '#DC2626'
-            }}>6</div>
-            <span>Student Feed</span>
+            🏠 6. Student Feed
           </button>
 
 
