@@ -102,9 +102,10 @@
   "related_applications": [],
   "prefer_related_applications": false,
   "dir": "ltr",
+  "version": "1.0.3",
   "serviceworker": {
     "src": "/sw.js",
     "scope": "/",
-    "update_via_cache": "imports"
+    "update_via_cache": "none"
   }
 }
