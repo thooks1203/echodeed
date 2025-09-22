@@ -68,15 +68,20 @@ export default function Home() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
+    console.log('🔍 URL Tab Param:', tabParam, 'User Role:', user?.schoolRole);
+    
     if (tabParam && ['feed', 'schools', 'support', 'summer', 'rewards', 'mentor-dashboard', 'student-dashboard'].includes(tabParam)) {
+      console.log('✅ Setting activeTab to:', tabParam);
       setActiveTab(tabParam);
       // Remove the tab parameter from URL to keep it clean
       window.history.replaceState({}, '', window.location.pathname);
     } else {
       // Set default tab based on role if no URL param
       if (user?.schoolRole === 'admin' || user?.schoolRole === 'teacher') {
+        console.log('👨‍💼 Setting admin/teacher default: schools');
         setActiveTab('schools');
       } else if (user?.schoolRole === 'student') {
+        console.log('🎓 Setting student default: feed');
         setActiveTab('feed');
       } else if (user?.schoolRole === 'parent') {
         // Redirect parents to their dedicated dashboard
@@ -254,17 +259,6 @@ export default function Home() {
     );
   }
 
-  if (activeTab === 'support') {
-    return (
-      <SupportCircle onBack={handleBackToDashboard} />
-    );
-  }
-
-  if (activeTab === 'rewards') {
-    return (
-      <RewardsPage />
-    );
-  }
 
   // Default: Show main feed
   return (
