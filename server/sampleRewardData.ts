@@ -1,4 +1,6 @@
 import { storage } from './storage';
+import { db } from './db';
+import { rewardRedemptions } from '../shared/schema';
 
 export async function initializeSampleRewardData() {
   try {
@@ -569,6 +571,44 @@ export async function initializeSampleRewardData() {
 
     console.log('✓ Sample reward data initialization completed');
     console.log(`✓ Created ${createdPartners.length} partners and ${offers.length} offers`);
+
+    // ===== CREATE DEMO REDEMPTIONS FOR STUDENT EMMA =====
+    console.log('🎁 Creating demo student redemptions for realistic demo...');
+    
+    const existingRedemptions = await db.select().from(rewardRedemptions).limit(1);
+    
+    if (existingRedemptions.length === 0) {
+      // Add realistic redemptions for Emma (student-001) - shows working reward system
+      const demoRedemptions = [
+        {
+          userId: 'student-001', // Emma Johnson
+          offerId: offers[0].id, // Burlington Carousel - 2 Free Rides
+          partnerId: createdPartners[0].id, // Burlington City Park Carousel
+          echoSpent: 100,
+          redemptionCode: 'CAROUSEL2024',
+          status: 'used',
+          redeemedAt: new Date('2025-09-15T10:30:00Z'),
+          usedAt: new Date('2025-09-16T14:20:00Z'),
+          expiresAt: new Date('2025-12-31T23:59:59Z')
+        },
+        {
+          userId: 'student-001', // Emma Johnson
+          offerId: offers[3].id, // Sir Pizza - Kids Meal
+          partnerId: createdPartners[3].id, // Sir Pizza Burlington
+          echoSpent: 150,
+          redemptionCode: 'PIZZA2024KIDS',
+          status: 'active', // Ready to use
+          redeemedAt: new Date('2025-09-20T16:45:00Z'),
+          expiresAt: new Date('2025-10-31T23:59:59Z')
+        }
+      ];
+
+      await db.insert(rewardRedemptions).values(demoRedemptions);
+      console.log('✅ Demo redemptions created for Emma - shows working reward system!');
+      console.log(`✓ Emma now has 2 redemptions: 1 used (carousel), 1 active (pizza)`);
+    } else {
+      console.log('📋 Demo redemptions already exist, skipping initialization');
+    }
 
   } catch (error) {
     console.error('Error initializing sample reward data:', error);

@@ -68,7 +68,7 @@ export default function Home() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
-    console.log('🔍 URL Tab Param:', tabParam, 'User Role:', user?.schoolRole);
+    // Removed debug console log
     
     if (tabParam && ['feed', 'schools', 'support', 'summer', 'rewards', 'mentor-dashboard', 'student-dashboard'].includes(tabParam)) {
       console.log('✅ Setting activeTab to:', tabParam);

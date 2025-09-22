@@ -13,9 +13,9 @@ interface AuthUser {
 // Mock user data for different roles (for development/testing)
 const MOCK_USERS: Record<string, AuthUser> = {
   student: {
-    id: 'student-001',
-    name: 'Emma Johnson',
-    email: 'emma.johnson@student.edu',
+    id: 'tf-sarah',
+    name: 'Sarah Chen',
+    email: 'sarah@techflow.com',
     schoolRole: 'student',
     schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Burlington Christian Academy
     grade: '7'
