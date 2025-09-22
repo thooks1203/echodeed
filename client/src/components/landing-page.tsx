@@ -231,7 +231,7 @@ export function LandingPage() {
             margin: 0,
             opacity: '0.95'
           }}>
-            Where K-8 students discover the power of anonymous kindness
+            Where middle school students (grades 6-8) discover the power of anonymous kindness
           </p>
         </div>
         <p style={{ 
@@ -539,7 +539,7 @@ export function LandingPage() {
         fontSize: '12px'
       }}>
         <p style={{ margin: '0 0 4px 0' }}>
-          Trusted by K-8 schools nationwide
+          Trusted by middle schools nationwide
         </p>
         <p style={{ margin: 0 }}>
           FERPA & COPPA Compliant • Anonymous & Safe
