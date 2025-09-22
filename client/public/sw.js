@@ -1,5 +1,5 @@
 // EchoDeed™ Service Worker - PWA Capabilities
-const CACHE_NAME = 'echodeed-v1.0.2-demo-ready';
+const CACHE_NAME = 'echodeed-v1.0.3-DEPLOYMENT-FIX-' + Date.now();
 const OFFLINE_URL = '/offline.html';
 
 const CACHE_URLS = [
