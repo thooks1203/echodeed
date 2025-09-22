@@ -7,7 +7,8 @@ interface FloatingRewardsButtonProps {
 }
 
 interface UserTokens {
-  echoTokens: number;
+  echoBalance: number;
+  totalEarned: number;
 }
 
 export function FloatingRewardsButton({ onRewardsClick }: FloatingRewardsButtonProps) {
@@ -60,7 +61,7 @@ export function FloatingRewardsButton({ onRewardsClick }: FloatingRewardsButtonP
         }}
       >
         <Gift className="w-5 h-5" />
-        <span>💎 {userTokens?.echoTokens || 0}</span>
+        <span>💎 {userTokens?.echoBalance || 0}</span>
         <Sparkles className="w-4 h-4" />
       </div>
       

@@ -50,7 +50,8 @@ interface RewardPartner {
 }
 
 interface UserTokens {
-  echoTokens: number;
+  echoBalance: number;
+  totalEarned: number;
 }
 
 interface Redemption {
@@ -152,10 +153,10 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
   });
 
   const handleRedeem = (offer: RewardOffer) => {
-    if (!userTokens || userTokens.echoTokens < offer.echoCost) {
+    if (!userTokens || userTokens.echoBalance < offer.echoCost) {
       toast({
         title: "Insufficient $ECHO Tokens",
-        description: `You need ${offer.echoCost} $ECHO tokens but only have ${userTokens?.echoTokens || 0}`,
+        description: `You need ${offer.echoCost} $ECHO tokens but only have ${userTokens?.echoBalance || 0}`,
         variant: "destructive",
       });
       return;
@@ -216,7 +217,7 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 px-6 py-3 rounded-full border border-purple-200 dark:border-purple-700">
             <Trophy className="w-5 h-5 text-purple-600 dark:text-purple-400" />
             <span className="font-bold text-lg text-purple-800 dark:text-purple-200">
-              {userTokens?.echoTokens || 0} $ECHO
+              {userTokens?.echoBalance || 0} $ECHO
             </span>
           </div>
         </div>
@@ -364,7 +365,7 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
                         
                         <Button 
                           onClick={() => handleRedeem(offer)}
-                          disabled={redeemMutation.isPending || !userTokens || userTokens.echoTokens < offer.echoCost}
+                          disabled={redeemMutation.isPending || !userTokens || userTokens.echoBalance < offer.echoCost}
                           className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700"
                           data-testid={`redeem-offer-${offer.id}`}
                         >
@@ -454,7 +455,7 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
                       
                       <Button 
                         onClick={() => handleRedeem(offer)}
-                        disabled={redeemMutation.isPending || !userTokens || userTokens.echoTokens < offer.echoCost}
+                        disabled={redeemMutation.isPending || !userTokens || userTokens.echoBalance < offer.echoCost}
                         className="w-full"
                         data-testid={`redeem-offer-${offer.id}`}
                       >
