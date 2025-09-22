@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 export type UserRole = 'employee' | 'team_lead' | 'hr_admin' | 'corporate_admin';
 
 // School roles (new security system)
-export type SchoolRole = 'student' | 'teacher' | 'admin';
+export type SchoolRole = 'student' | 'teacher' | 'admin' | 'parent';
 
 export interface CorporateEmployee {
   id: string;

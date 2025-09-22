@@ -33,6 +33,13 @@ const MOCK_USERS: Record<string, AuthUser> = {
     email: 'michael.brown@district.edu', 
     schoolRole: 'admin',
     schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78' // GRAHAM MIDDLE SCHOOL
+  },
+  parent: {
+    id: 'parent-001',
+    name: 'Mrs. Sarah Johnson',
+    email: 'sarah.johnson@parent.edu',
+    schoolRole: 'parent',
+    schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78' // Burlington Christian Academy
   }
 };
 
@@ -65,6 +72,7 @@ export function useAuth() {
     isStudent: mockUser.schoolRole === 'student',
     isTeacher: mockUser.schoolRole === 'teacher',
     isAdmin: mockUser.schoolRole === 'admin',
+    isParent: mockUser.schoolRole === 'parent',
   };
 }
 
@@ -80,6 +88,7 @@ export function getDemoRoles() {
   return [
     { role: 'student', label: 'Student (Emma)', description: 'Limited access - can only see own data' },
     { role: 'teacher', label: 'Teacher (Ms. Wilson)', description: 'Can access classroom tools and some school data' },
-    { role: 'admin', label: 'Admin (Dr. Brown)', description: 'Full access to school management dashboard' }
+    { role: 'admin', label: 'Admin (Dr. Brown)', description: 'Full access to school management dashboard' },
+    { role: 'parent', label: 'Parent (Mrs. Johnson)', description: 'Track children\'s kindness journey and approve activities' }
   ] as const;
 }

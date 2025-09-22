@@ -70,6 +70,10 @@ export default function Home() {
         setActiveTab('schools');
       } else if (user?.schoolRole === 'student') {
         setActiveTab('feed');
+      } else if (user?.schoolRole === 'parent') {
+        // Redirect parents to their dedicated dashboard
+        window.location.href = '/parent';
+        return;
       }
     }
   }, [user]);

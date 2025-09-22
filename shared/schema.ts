@@ -252,7 +252,7 @@ export type UpsertUser = typeof users.$inferInsert;
 export type User = typeof users.$inferSelect;
 
 // School role types
-export type SchoolRole = 'student' | 'teacher' | 'admin';
+export type SchoolRole = 'student' | 'teacher' | 'admin' | 'parent';
 
 // ==========================================
 // CURRICULUM INTEGRATION TABLES
