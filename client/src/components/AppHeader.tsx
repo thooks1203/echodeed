@@ -61,7 +61,7 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
                 <span className="text-sm font-bold">Signed in as:</span>
               </div>
               <span className="text-base font-bold">{user?.name || 'User'}</span>
-              <span className="text-xs bg-white/20 px-2 py-1 rounded-full">👆 Click here to switch users or sign out!</span>
+              <span className="text-xs bg-white/20 px-2 py-1 rounded-full">👆 Click to see current user & sign out!</span>
             </button>
             
             {showUserMenu && (
