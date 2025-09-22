@@ -1,7 +1,9 @@
-import { Heart, Sliders } from 'lucide-react';
+import { Heart, Sliders, User, LogOut } from 'lucide-react';
 import { KindnessCounter } from '@shared/schema';
 import { ElectricHeart } from './ElectricHeart';
 import { BackButton } from './BackButton';
+import { useAuth, switchDemoRole, getDemoRoles } from '@/hooks/useAuth';
+import { useState } from 'react';
 
 interface AppHeaderProps {
   counter: KindnessCounter;
@@ -11,6 +13,22 @@ interface AppHeaderProps {
 }
 
 export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeaderProps) {
+  const { user } = useAuth();
+  const [showUserMenu, setShowUserMenu] = useState(false);
+  const demoRoles = getDemoRoles();
+
+  const handleRoleSwitch = (role: string) => {
+    switchDemoRole(role as any);
+    setShowUserMenu(false);
+    window.location.reload(); // Refresh to apply new role
+  };
+
+  const handleSignOut = () => {
+    localStorage.removeItem('echodeed_demo_role');
+    setShowUserMenu(false);
+    window.location.reload();
+  };
+
   return (
     <header className="bg-card border-b border-border">
       <div className="p-4">
@@ -23,12 +41,54 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
               <p className="text-sm text-muted-foreground font-medium mt-1" data-testid="text-tagline">Character Education, Reimagined</p>
             </div>
           </div>
-          <button 
-            className="absolute right-0 p-2 rounded-lg bg-muted text-muted-foreground hover:bg-secondary transition-colors"
-            data-testid="button-settings"
-          >
-            <Sliders size={14} />
-          </button>
+          <div className="absolute right-0 relative">
+            <button 
+              onClick={() => setShowUserMenu(!showUserMenu)}
+              className="flex items-center gap-2 p-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-colors shadow-lg"
+              data-testid="button-user-menu"
+            >
+              <User size={14} />
+              <span className="text-xs font-medium">{user.name}</span>
+            </button>
+            
+            {showUserMenu && (
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+                <div className="p-4 border-b border-gray-100">
+                  <div className="flex flex-col">
+                    <span className="text-sm font-medium text-gray-900">{user.name}</span>
+                    <span className="text-xs text-gray-500">{user.email}</span>
+                    <span className="text-xs font-medium text-blue-600 mt-1">{user.schoolRole.toUpperCase()}</span>
+                  </div>
+                </div>
+                
+                <div className="p-2">
+                  <div className="text-xs font-medium text-gray-600 px-2 py-1">Switch Demo User:</div>
+                  {demoRoles.map((roleInfo) => (
+                    <button
+                      key={roleInfo.role}
+                      onClick={() => handleRoleSwitch(roleInfo.role)}
+                      className={`w-full text-left px-2 py-2 text-sm hover:bg-gray-100 rounded ${user.schoolRole === roleInfo.role ? 'bg-blue-50' : ''}`}
+                      data-testid={`switch-to-${roleInfo.role}`}
+                    >
+                      <div className="font-medium">{roleInfo.label}</div>
+                      <div className="text-xs text-gray-500">{roleInfo.description}</div>
+                    </button>
+                  ))}
+                </div>
+                
+                <div className="border-t border-gray-100 p-2">
+                  <button
+                    onClick={handleSignOut}
+                    className="w-full flex items-center gap-2 px-2 py-2 text-sm text-red-600 hover:bg-red-50 rounded"
+                    data-testid="sign-out"
+                  >
+                    <LogOut size={14} />
+                    Sign Out (Reset to Default)
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Dashboard Section - Below Logo */}
