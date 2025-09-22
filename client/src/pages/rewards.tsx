@@ -154,19 +154,33 @@ export default function RewardsPage() {
     redeemMutation.mutate(offer);
   };
 
-  // Get partner info for offers
-  const enrichedOffers = offers.map((offer: RewardOffer) => {
+  // Get partner info for offers (unfiltered for My Rewards tab)
+  const allEnrichedOffers = offers.map((offer: RewardOffer) => {
     const partner = partners.find((p: RewardPartner) => p.id === offer.partnerId);
     return {
       ...offer, // This preserves ALL fields including sponsorCompany, sponsorshipMessage, etc.
-      partnerName: partner?.partnerName,
-      partnerLogo: partner?.partnerLogo,
+      partnerName: partner?.partnerName || offer.partnerName, // Use existing partnerName if partner lookup fails
+      partnerLogo: partner?.partnerLogo || offer.partnerLogo, // Use existing partnerLogo if partner lookup fails
     };
   });
 
+  // Apply filters for Browse Rewards tab
+  const filteredOffers = allEnrichedOffers.filter((offer: RewardOffer) => {
+    // Filter by partner
+    if (selectedPartner !== 'all' && offer.partnerId !== selectedPartner) {
+      return false;
+    }
+    
+    // Filter by offer type
+    if (selectedOfferType !== 'all' && offer.offerType !== selectedOfferType) {
+      return false;
+    }
+    
+    return true;
+  });
 
-  // Filter featured offers
-  const featuredOffers = enrichedOffers.filter((offer: RewardOffer) => offer.isFeatured);
+  // Filter featured offers from filtered list
+  const featuredOffers = filteredOffers.filter((offer: RewardOffer) => offer.isFeatured);
   const featuredPartners = partners.filter((partner: RewardPartner) => partner.isFeatured);
 
   return (
@@ -241,10 +255,11 @@ export default function RewardsPage() {
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="all">All Types</SelectItem>
-                    <SelectItem value="discount">Discounts</SelectItem>
-                    <SelectItem value="freebie">Free Items</SelectItem>
-                    <SelectItem value="cashback">Cashback</SelectItem>
-                    <SelectItem value="experience">Experiences</SelectItem>
+                    <SelectItem value="dual_reward">Dual Rewards</SelectItem>
+                    <SelectItem value="entertainment">Entertainment</SelectItem>
+                    <SelectItem value="meal">Meals</SelectItem>
+                    <SelectItem value="treat">Treats</SelectItem>
+                    <SelectItem value="educational">Educational</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -359,13 +374,13 @@ export default function RewardsPage() {
                 <div className="text-center py-8">
                   <p className="text-gray-500 dark:text-gray-400">Loading rewards...</p>
                 </div>
-              ) : enrichedOffers.length === 0 ? (
+              ) : filteredOffers.length === 0 ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500 dark:text-gray-400">No rewards available - check filters above</p>
                 </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {enrichedOffers.map((offer: RewardOffer) => (
+                  {filteredOffers.map((offer: RewardOffer) => (
                   <Card key={offer.id} className="hover:shadow-lg transition-all bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-700/20">
                     {offer.imageUrl && (
                       <div className="h-32 bg-cover bg-center rounded-t-lg" style={{ backgroundImage: `url(${offer.imageUrl})` }} />
@@ -490,7 +505,7 @@ export default function RewardsPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {redemptions.map((redemption: Redemption) => {
-                  const offer = enrichedOffers.find((o: RewardOffer) => o.id === redemption.offerId);
+                  const offer = allEnrichedOffers.find((o: RewardOffer) => o.id === redemption.offerId);
                   const partner = partners.find((p: RewardPartner) => p.id === redemption.partnerId);
                   
                   return (
