@@ -272,7 +272,7 @@ export function LandingPage() {
         </h2>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {/* 1. SCHOOL SETUP PHASE - Start Here */}
+          {/* 1. SCHOOL SETUP PHASE - Start Here - UPDATED */}
           <button 
             onClick={handleSchoolRegistration}
             style={{
