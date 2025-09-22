@@ -156,9 +156,8 @@ export default function AnalyticsDashboard({
         {/* Back Button */}
         <div className="mb-6">
           <Button
-            variant="ghost"
             onClick={() => setLocation('/?show=roles')}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg border-2 border-white/20"
             data-testid="button-back"
           >
             <ArrowLeft className="h-4 w-4" />
