@@ -33,7 +33,7 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
     <header className="bg-card border-b border-border">
       <div className="p-4">
         {/* Logo and Title Section */}
-        <div className="flex items-center justify-center mb-4 relative">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center space-x-4">
             <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{width: '120px', height: '120px'}} className="animate-logoFloat" />
             <div className="text-center">
@@ -41,24 +41,26 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
               <p className="text-sm text-muted-foreground font-medium mt-1" data-testid="text-tagline">Character Education, Reimagined</p>
             </div>
           </div>
-          <div className="absolute right-0 relative">
+          
+          {/* User Menu - Better positioned */}
+          <div className="relative">
             <button 
               onClick={() => setShowUserMenu(!showUserMenu)}
               className="flex items-center gap-2 p-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-colors shadow-lg border-2 border-white"
               data-testid="button-user-menu"
               style={{ 
-                minWidth: '140px',
-                fontSize: '12px',
+                minWidth: '160px',
+                fontSize: '13px',
                 fontWeight: '600'
               }}
             >
-              <User size={16} />
-              <span className="text-xs font-medium">{user?.name || 'User'}</span>
-              <span className="text-xs">▼</span>
+              <User size={18} />
+              <span className="text-sm font-medium">{user?.name || 'User'}</span>
+              <span className="text-sm">▼</span>
             </button>
             
             {showUserMenu && (
-              <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-[100]">
+              <div className="absolute right-0 top-full mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-200 z-[100]">
                 <div className="p-4 border-b border-gray-100">
                   <div className="flex flex-col">
                     <span className="text-sm font-medium text-gray-900">{user.name}</span>
