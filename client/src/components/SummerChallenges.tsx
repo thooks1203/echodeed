@@ -36,7 +36,7 @@ interface WeekTheme {
 }
 
 export function SummerChallenges() {
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'k-2' | '3-5' | '6-8'>('k-2');
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'6-8'>('6-8');
   const [selectedChallenge, setSelectedChallenge] = useState<SummerChallenge | null>(null);
   const [showActivities, setShowActivities] = useState(false);
   const { toast } = useToast();

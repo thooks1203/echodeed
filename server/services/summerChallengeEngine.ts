@@ -46,7 +46,7 @@ export class SummerChallengeEngine {
   }
 
   // Generate age-appropriate challenges for a specific week and age group
-  async generateWeeklyChallenges(week: number, ageGroup: 'k-2' | '3-5' | '6-8'): Promise<void> {
+  async generateWeeklyChallenges(week: number, ageGroup: '6-8'): Promise<void> {
     const theme = this.getWeekTheme(week);
     
     const challengeTemplates = this.getChallengeTemplatesForAge(theme.theme, ageGroup);
@@ -92,7 +92,7 @@ export class SummerChallengeEngine {
   }
 
   // Get age-appropriate challenge templates
-  private getChallengeTemplatesForAge(theme: string, ageGroup: 'k-2' | '3-5' | '6-8') {
+  private getChallengeTemplatesForAge(theme: string, ageGroup: '6-8') {
     const baseTemplates = {
       'Acts of Service': {
         'k-2': [
@@ -226,14 +226,14 @@ export class SummerChallengeEngine {
     };
 
     // Return templates for the specific theme and age group, defaulting to Acts of Service if not found
-    return baseTemplates[theme]?.[ageGroup] || baseTemplates['Acts of Service'][ageGroup] || [];
+    return baseTemplates[theme]?.['6-8'] || baseTemplates['Acts of Service']['6-8'] || [];
   }
 
   // Initialize all challenges for the summer
   async initializeSummerProgram(): Promise<void> {
     console.log('🌞 Initializing Summer Challenge Program...');
     
-    const ageGroups: Array<'k-2' | '3-5' | '6-8'> = ['k-2', '3-5', '6-8'];
+    const ageGroups: Array<'6-8'> = ['6-8'];
     
     for (let week = 1; week <= 12; week++) {
       for (const ageGroup of ageGroups) {
@@ -291,7 +291,7 @@ export class SummerChallengeEngine {
   }
 
   // Get challenges for current week and age group
-  async getCurrentWeekChallenges(ageGroup: 'k-2' | '3-5' | '6-8') {
+  async getCurrentWeekChallenges(ageGroup: '6-8') {
     const currentWeek = this.getCurrentSummerWeek();
     
     return await db.select()
