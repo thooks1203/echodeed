@@ -272,9 +272,41 @@ export function LandingPage() {
         </h2>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {/* Student-focused items at the top */}
+          {/* 1. SCHOOL SETUP PHASE - Start Here */}
           <button 
-            onClick={handleStudentSignup}
+            onClick={handleSchoolRegistration}
+            style={{
+              backgroundColor: '#F59E0B',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease',
+              boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#D97706';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#F59E0B';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>🏫</span>
+            1. Register Your School
+          </button>
+
+          {/* 2. ADMIN CONFIGURATION */}
+          <button 
+            onClick={handleAdminLogin}
             style={{
               backgroundColor: '#10B981',
               color: 'white',
@@ -299,10 +331,104 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '20px' }}>🎓</span>
-            Student Sign Up
+            <span style={{ fontSize: '20px' }}>👨‍💼</span>
+            2. Administrator Dashboard
           </button>
 
+          {/* 3. TEACHER PREPARATION */}
+          <button 
+            onClick={handleTeacherLogin}
+            style={{
+              backgroundColor: '#8B5CF6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#7C3AED';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#8B5CF6';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>👩‍🏫</span>
+            3. Teacher Dashboard
+          </button>
+
+          {/* 4. STUDENT REGISTRATION (TRIGGERS PARENT CONSENT) */}
+          <button 
+            onClick={handleStudentSignup}
+            style={{
+              backgroundColor: '#3B82F6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#2563EB';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#3B82F6';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>🎓</span>
+            4. Student Sign Up
+          </button>
+
+          {/* 5. PARENT CONSENT VERIFICATION */}
+          <button 
+            onClick={handleParentLogin}
+            style={{
+              backgroundColor: '#EC4899',
+              color: 'white',
+              border: 'none',
+              borderRadius: '12px',
+              padding: '16px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '8px',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#DB2777';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#EC4899';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+            }}
+          >
+            <span style={{ fontSize: '20px' }}>👨‍👩‍👧‍👦</span>
+            5. Parent Dashboard
+          </button>
+
+          {/* 6. STUDENT PARTICIPATION (ONLY AFTER CONSENT) */}
           <button 
             onClick={handleGetStarted}
             style={{
@@ -333,37 +459,7 @@ export function LandingPage() {
             }}
           >
             <span style={{ fontSize: '20px' }}>🏠</span>
-            Student Feed
-          </button>
-
-          <button 
-            onClick={handleSchoolRegistration}
-            style={{
-              backgroundColor: '#F59E0B',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#D97706';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#F59E0B';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span style={{ fontSize: '20px' }}>🏫</span>
-            Register Your School
+            6. Student Feed
           </button>
 
           <button 
@@ -396,157 +492,82 @@ export function LandingPage() {
             Student Analytics Dashboard
           </button>
 
-          {/* Parent and family items in middle */}
-          <button 
-            onClick={handleParentLogin}
-            style={{
-              backgroundColor: '#3B82F6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#2563EB';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#3B82F6';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span style={{ fontSize: '20px' }}>👨‍👩‍👧‍👦</span>
-            Parent Dashboard
-          </button>
+          {/* Additional Features */}
+          <div style={{ 
+            marginTop: '20px', 
+            padding: '16px', 
+            background: '#F3F4F6', 
+            borderRadius: '12px',
+            border: '2px dashed #9CA3AF'
+          }}>
+            <p style={{ 
+              fontSize: '14px', 
+              color: '#6B7280', 
+              textAlign: 'center', 
+              margin: '0 0 12px 0',
+              fontWeight: '600'
+            }}>
+              ⭐ Additional Features
+            </p>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <button 
+                onClick={handleFamilyLogin}
+                style={{
+                  backgroundColor: '#6B7280',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '12px 16px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px',
+                  transition: 'all 0.2s ease'
+                }}
+                onMouseOver={(e) => {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#4B5563';
+                }}
+                onMouseOut={(e) => {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#6B7280';
+                }}
+              >
+                <span style={{ fontSize: '16px' }}>💕</span>
+                Family Kindness Hub
+              </button>
 
-          <button 
-            onClick={handleFamilyLogin}
-            style={{
-              backgroundColor: '#EC4899',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#DB2777';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#EC4899';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span style={{ fontSize: '20px' }}>💕</span>
-            Family Kindness Hub
-          </button>
-
-          {/* Educator/admin items at the bottom */}
-          <button 
-            onClick={handleTeacherLogin}
-            style={{
-              backgroundColor: '#8B5CF6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#7C3AED';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#8B5CF6';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span style={{ fontSize: '20px' }}>👩‍🏫</span>
-            Teacher Dashboard
-          </button>
-
-          <button 
-            onClick={handleMentorLogin}
-            style={{
-              backgroundColor: '#F59E0B',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              transition: 'all 0.2s ease',
-              justifyContent: 'center'
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#D97706';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#F59E0B';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span style={{ fontSize: '20px' }}>🎓</span>
-            Mentor Dashboard
-          </button>
-
-          <button 
-            onClick={handleAdminLogin}
-            style={{
-              backgroundColor: '#10B981',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '8px',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#059669';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#10B981';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            <span style={{ fontSize: '20px' }}>👨‍💼</span>
-            Administrator Dashboard
-          </button>
+              <button 
+                onClick={handleMentorLogin}
+                style={{
+                  backgroundColor: '#6B7280',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '12px 16px',
+                  fontSize: '14px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  transition: 'all 0.2s ease',
+                  justifyContent: 'center'
+                }}
+                onMouseOver={(e) => {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#4B5563';
+                }}
+                onMouseOut={(e) => {
+                  (e.target as HTMLButtonElement).style.backgroundColor = '#6B7280';
+                }}
+              >
+                <span style={{ fontSize: '16px' }}>🎓</span>
+                Mentor Dashboard
+              </button>
+            </div>
+          </div>
 
         </div>
       </div>
