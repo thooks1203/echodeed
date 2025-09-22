@@ -301,7 +301,7 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            🏫 1. Register Your School
+            🏫 Register Your School
           </button>
 
           {/* 2. ADMIN CONFIGURATION */}
@@ -332,7 +332,7 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            👨‍💼 2. Administrator Dashboard
+            👨‍💼 Administrator Dashboard
           </button>
 
           {/* 3. TEACHER PREPARATION */}
@@ -363,7 +363,7 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            👩‍🏫 3. Teacher Dashboard
+            👩‍🏫 Teacher Dashboard
           </button>
 
           {/* 4. STUDENT REGISTRATION (TRIGGERS PARENT CONSENT) */}
@@ -394,7 +394,7 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            🎓 4. Student Sign Up
+            🎓 Student Sign Up
           </button>
 
           {/* 5. PARENT CONSENT VERIFICATION */}
@@ -425,7 +425,7 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            👨‍👩‍👧‍👦 5. Parent Dashboard
+            👨‍👩‍👧‍👦 Parent Dashboard
           </button>
 
           {/* 6. STUDENT PARTICIPATION (ONLY AFTER CONSENT) */}
@@ -459,7 +459,7 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.3)';
             }}
           >
-            🏠 6. Student Feed
+            🏠 Student Feed
           </button>
 
 
