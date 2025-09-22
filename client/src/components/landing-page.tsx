@@ -301,8 +301,19 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '1.25rem', lineHeight: '1', width: '1.25em', height: '1.25em', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji' }}>🏫</span>
-            <span style={{ lineHeight: 1.2, display: 'inline-block' }}>1. Register Your School</span>
+            <div style={{ 
+              width: '20px', 
+              height: '20px', 
+              borderRadius: '4px', 
+              backgroundColor: '#FEB941', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              color: '#DC2626'
+            }}>1</div>
+            <span>Register Your School</span>
           </button>
 
           {/* 2. ADMIN CONFIGURATION */}
@@ -333,8 +344,19 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '1.25rem', lineHeight: '1', width: '1.25em', height: '1.25em', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji' }}>👨‍💼</span>
-            <span style={{ lineHeight: 1.2, display: 'inline-block' }}>2. Administrator Dashboard</span>
+            <div style={{ 
+              width: '20px', 
+              height: '20px', 
+              borderRadius: '4px', 
+              backgroundColor: '#34D399', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              color: '#DC2626'
+            }}>2</div>
+            <span>Administrator Dashboard</span>
           </button>
 
           {/* 3. TEACHER PREPARATION */}
@@ -365,8 +387,19 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '1.25rem', lineHeight: '1', width: '1.25em', height: '1.25em', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji' }}>👩‍🏫</span>
-            <span style={{ lineHeight: 1.2, display: 'inline-block' }}>3. Teacher Dashboard</span>
+            <div style={{ 
+              width: '20px', 
+              height: '20px', 
+              borderRadius: '4px', 
+              backgroundColor: '#C084FC', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              color: '#FFFFFF'
+            }}>3</div>
+            <span>Teacher Dashboard</span>
           </button>
 
           {/* 4. STUDENT REGISTRATION (TRIGGERS PARENT CONSENT) */}
@@ -397,8 +430,19 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '1.25rem', lineHeight: '1', width: '1.25em', height: '1.25em', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji' }}>🎓</span>
-            <span style={{ lineHeight: 1.2, display: 'inline-block' }}>4. Student Sign Up</span>
+            <div style={{ 
+              width: '20px', 
+              height: '20px', 
+              borderRadius: '4px', 
+              backgroundColor: '#60A5FA', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              color: '#FFFFFF'
+            }}>4</div>
+            <span>Student Sign Up</span>
           </button>
 
           {/* 5. PARENT CONSENT VERIFICATION */}
@@ -429,8 +473,19 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '1.25rem', lineHeight: '1', width: '1.25em', height: '1.25em', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji' }}>👨‍👩‍👧‍👦</span>
-            <span style={{ lineHeight: 1.2, display: 'inline-block' }}>5. Parent Dashboard</span>
+            <div style={{ 
+              width: '20px', 
+              height: '20px', 
+              borderRadius: '4px', 
+              backgroundColor: '#F472B6', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              color: '#FFFFFF'
+            }}>5</div>
+            <span>Parent Dashboard</span>
           </button>
 
           {/* 6. STUDENT PARTICIPATION (ONLY AFTER CONSENT) */}
@@ -464,8 +519,19 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.3)';
             }}
           >
-            <span style={{ fontSize: '1.25rem', lineHeight: '1', width: '1.25em', height: '1.25em', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji' }}>🏠</span>
-            <span style={{ lineHeight: 1.2, display: 'inline-block' }}>6. Student Feed</span>
+            <div style={{ 
+              width: '20px', 
+              height: '20px', 
+              borderRadius: '4px', 
+              backgroundColor: '#FCA5A5', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center',
+              fontSize: '12px',
+              fontWeight: 'bold',
+              color: '#DC2626'
+            }}>6</div>
+            <span>Student Feed</span>
           </button>
 
 
