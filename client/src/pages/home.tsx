@@ -35,7 +35,15 @@ interface RewardOffer {
 export default function Home() {
   const queryClient = useQueryClient();
   const [, navigate] = useLocation();
-  const { user, isStudent, isTeacher, isAdmin } = useAuth();
+  const { user, isStudent, isTeacher, isAdmin, isAuthenticated } = useAuth();
+
+  // Redirect to landing page if not authenticated
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/?show=roles');
+      return;
+    }
+  }, [isAuthenticated, navigate]);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
   const [activeTab, setActiveTab] = useState(() => {
@@ -73,6 +81,10 @@ export default function Home() {
       } else if (user?.schoolRole === 'parent') {
         // Redirect parents to their dedicated dashboard
         window.location.href = '/parent';
+        return;
+      } else if (!user) {
+        // No user found, redirect to landing
+        navigate('/?show=roles');
         return;
       }
     }
@@ -196,7 +208,7 @@ export default function Home() {
   
   if (activeTab === 'schools') {
     // Only teachers and admins can access Schools Dashboard
-    if (!canAccessSchoolsDashboard(user.schoolRole)) {
+    if (!canAccessSchoolsDashboard(user?.schoolRole)) {
       setTimeout(() => setActiveTab('student-dashboard'), 0);
       return (
         <div style={{ 

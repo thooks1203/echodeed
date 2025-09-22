@@ -4,8 +4,18 @@ import { useAuth } from '@/hooks/useAuth';
 
 export function RoleSwitcherDemo() {
   const [showDropdown, setShowDropdown] = useState(false);
-  const { user } = useAuth();
+  const { user, isAuthenticated } = useAuth();
   const demoRoles = getDemoRoles();
+
+  // Don't render if no user is authenticated
+  if (!isAuthenticated || !user) {
+    return null;
+  }
+
+  const handleSignOut = () => {
+    localStorage.removeItem('echodeed_demo_role');
+    window.location.href = '/?show=roles'; // Redirect to landing page instead of reload
+  };
 
   return (
     <div style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 1000 }}>
@@ -62,7 +72,7 @@ export function RoleSwitcherDemo() {
                 textAlign: 'left',
                 padding: '12px',
                 border: 'none',
-                background: user.schoolRole === roleOption.role ? '#F3F4F6' : 'transparent',
+                background: user?.schoolRole === roleOption.role ? '#F3F4F6' : 'transparent',
                 cursor: 'pointer',
                 fontSize: '13px',
                 borderTop: 'none'
@@ -71,16 +81,36 @@ export function RoleSwitcherDemo() {
             >
               <div style={{ 
                 fontWeight: '600', 
-                color: user.schoolRole === roleOption.role ? '#7C3AED' : '#374151',
+                color: user?.schoolRole === roleOption.role ? '#7C3AED' : '#374151',
                 marginBottom: '2px'
               }}>
-                {user.schoolRole === roleOption.role ? '✓ ' : ''}{roleOption.label}
+                {user?.schoolRole === roleOption.role ? '✓ ' : ''}{roleOption.label}
               </div>
               <div style={{ fontSize: '11px', color: '#6B7280' }}>
                 {roleOption.description}
               </div>
             </button>
           ))}
+          
+          <div style={{ borderTop: '1px solid #E5E7EB' }}>
+            <button
+              onClick={handleSignOut}
+              style={{
+                width: '100%',
+                textAlign: 'left',
+                padding: '12px',
+                border: 'none',
+                background: 'transparent',
+                cursor: 'pointer',
+                fontSize: '13px',
+                color: '#DC2626',
+                fontWeight: '600'
+              }}
+              data-testid="sign-out-button"
+            >
+              🚪 Sign Out
+            </button>
+          </div>
         </div>
       )}
     </div>

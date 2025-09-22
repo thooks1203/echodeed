@@ -44,13 +44,13 @@ const MOCK_USERS: Record<string, AuthUser> = {
 };
 
 // Get current mock user from localStorage (for demo purposes)
-function getCurrentMockUser(): AuthUser {
+function getCurrentMockUser(): AuthUser | null {
   const storedRole = localStorage.getItem('echodeed_demo_role') as SchoolRole;
   if (storedRole && MOCK_USERS[storedRole]) {
     return MOCK_USERS[storedRole];
   }
-  // Default to student for security
-  return MOCK_USERS.student;
+  // Return null if no valid role is stored (user is not authenticated)
+  return null;
 }
 
 export function useAuth() {
@@ -67,12 +67,12 @@ export function useAuth() {
   return {
     user: mockUser,
     isLoading: false,
-    isAuthenticated: true,
+    isAuthenticated: !!mockUser,
     // Helper methods for role checking
-    isStudent: mockUser.schoolRole === 'student',
-    isTeacher: mockUser.schoolRole === 'teacher',
-    isAdmin: mockUser.schoolRole === 'admin',
-    isParent: mockUser.schoolRole === 'parent',
+    isStudent: mockUser?.schoolRole === 'student',
+    isTeacher: mockUser?.schoolRole === 'teacher',
+    isAdmin: mockUser?.schoolRole === 'admin',
+    isParent: mockUser?.schoolRole === 'parent',
   };
 }
 

@@ -79,8 +79,8 @@ export default function StudentSignup() {
           description: "Your account is ready! Start sharing kindness today.",
           duration: 5000
         });
-        // Redirect to main app after a moment
-        setTimeout(() => setLocation("/"), 2000);
+        // Redirect to landing page after a moment
+        setTimeout(() => setLocation("/?show=roles"), 2000);
       }
     },
     onError: (error: any) => {
