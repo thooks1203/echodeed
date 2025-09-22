@@ -134,12 +134,28 @@ export default function Home() {
   };
 
   const navigateToTab = (tab: string) => {
-    console.log('navigateToTab called with:', tab);
     setActiveTab(tab);
   };
 
   // Show different content based on active tab
-  console.log('Current activeTab:', activeTab);
+  
+  if (activeTab === 'mentor-dashboard') {
+    return (
+      <MentorDashboard />
+    );
+  }
+
+  if (activeTab === 'support') {
+    return (
+      <SupportCircle onBack={handleBackToDashboard} />
+    );
+  }
+
+  if (activeTab === 'rewards') {
+    return (
+      <RewardsPage />
+    );
+  }
   
   if (activeTab === 'schools') {
     // Only teachers and admins can access Schools Dashboard
