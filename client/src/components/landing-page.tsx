@@ -287,7 +287,6 @@ export function LandingPage() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px',
               transition: 'all 0.2s ease',
               boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
               lineHeight: 1
@@ -319,7 +318,6 @@ export function LandingPage() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px',
               transition: 'all 0.2s ease',
               lineHeight: 1
             }}
@@ -350,7 +348,6 @@ export function LandingPage() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px',
               transition: 'all 0.2s ease',
               lineHeight: 1
             }}
@@ -381,7 +378,6 @@ export function LandingPage() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px',
               transition: 'all 0.2s ease',
               lineHeight: 1
             }}
@@ -412,7 +408,6 @@ export function LandingPage() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px',
               transition: 'all 0.2s ease',
               lineHeight: 1
             }}
@@ -443,7 +438,6 @@ export function LandingPage() {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '8px',
               transition: 'all 0.2s ease',
               boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)',
               lineHeight: 1
