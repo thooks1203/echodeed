@@ -65,6 +65,12 @@ interface Redemption {
 
 const getOfferIcon = (type: string) => {
   switch (type) {
+    case 'dual_reward': return <Gift className="w-5 h-5" />;
+    case 'entertainment': return <ShoppingBag className="w-5 h-5" />;
+    case 'meal': return <Trophy className="w-5 h-5" />;
+    case 'treat': return <Star className="w-5 h-5" />;
+    case 'educational': return <ShoppingBag className="w-5 h-5" />;
+    // Legacy support
     case 'discount': return <ShoppingBag className="w-5 h-5" />;
     case 'freebie': return <Gift className="w-5 h-5" />;
     case 'cashback': return <Trophy className="w-5 h-5" />;
@@ -164,8 +170,20 @@ export default function RewardsPage() {
     };
   });
 
-  // TEMPORARY: Show ALL offers to debug the issue
-  const filteredOffers = allEnrichedOffers;
+  // Apply filters for Browse Rewards tab - but default to showing all when filters are set to 'all'
+  const filteredOffers = allEnrichedOffers.filter((offer: RewardOffer) => {
+    // Filter by partner - only filter if NOT 'all'
+    if (selectedPartner !== 'all' && offer.partnerId !== selectedPartner) {
+      return false;
+    }
+    
+    // Filter by offer type - only filter if NOT 'all' 
+    if (selectedOfferType !== 'all' && offer.offerType !== selectedOfferType) {
+      return false;
+    }
+    
+    return true;
+  });
 
   // Filter featured offers from filtered list
   const featuredOffers = filteredOffers.filter((offer: RewardOffer) => offer.isFeatured);
