@@ -2,8 +2,13 @@ import { useState, useEffect } from 'react';
 import { LocationData } from '@/lib/types';
 
 export function useGeolocation() {
-  const [location, setLocation] = useState<LocationData | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [location, setLocation] = useState<LocationData | null>({
+    city: 'Burlington',
+    state: 'North Carolina', 
+    country: 'United States',
+    fullLocation: 'Burlington, North Carolina'
+  });
+  const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
