@@ -44,15 +44,21 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
           <div className="absolute right-0 relative">
             <button 
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex items-center gap-2 p-2 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-colors shadow-lg"
+              className="flex items-center gap-2 p-3 rounded-lg bg-gradient-to-r from-blue-600 to-purple-600 text-white hover:from-blue-700 hover:to-purple-700 transition-colors shadow-lg border-2 border-white"
               data-testid="button-user-menu"
+              style={{ 
+                minWidth: '140px',
+                fontSize: '12px',
+                fontWeight: '600'
+              }}
             >
-              <User size={14} />
-              <span className="text-xs font-medium">{user.name}</span>
+              <User size={16} />
+              <span className="text-xs font-medium">{user?.name || 'User'}</span>
+              <span className="text-xs">▼</span>
             </button>
             
             {showUserMenu && (
-              <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-50">
+              <div className="absolute right-0 top-full mt-2 w-64 bg-white rounded-lg shadow-xl border border-gray-200 z-[100]">
                 <div className="p-4 border-b border-gray-100">
                   <div className="flex flex-col">
                     <span className="text-sm font-medium text-gray-900">{user.name}</span>
