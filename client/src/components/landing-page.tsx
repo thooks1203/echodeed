@@ -24,6 +24,8 @@ export function LandingPage() {
   }, []);
 
   const handleGetStarted = () => {
+    // Set up demo student authentication first
+    localStorage.setItem('echodeed_demo_role', 'student');
     navigate('/app?tab=feed');
   };
 
