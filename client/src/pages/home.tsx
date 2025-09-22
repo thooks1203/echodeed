@@ -49,7 +49,7 @@ export default function Home() {
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
-    if (tabParam && ['feed', 'schools', 'support', 'summer', 'rewards'].includes(tabParam)) {
+    if (tabParam && ['feed', 'schools', 'support', 'summer', 'rewards', 'mentor-dashboard', 'student-dashboard'].includes(tabParam)) {
       setActiveTab(tabParam);
       // Remove the tab parameter from URL to keep it clean
       window.history.replaceState({}, '', window.location.pathname);
@@ -118,17 +118,15 @@ export default function Home() {
   };
 
   const handleBackToDashboard = () => {
-    // Role-based dashboard routing
+    // For demo purposes, always go to student dashboard for better flow
+    // Students should see their dashboard when hitting back
     if (isStudent) {
       setActiveTab('student-dashboard');
     } else if (isTeacher || isAdmin) {
       setActiveTab('schools');
     } else {
-      if (canAccessSchoolsDashboard(user?.schoolRole || 'student')) {
-        setActiveTab('schools');
-      } else {
-        setActiveTab('student-dashboard');
-      }
+      // Default fallback to student dashboard for demo
+      setActiveTab('student-dashboard');
     }
   };
 
@@ -176,6 +174,12 @@ export default function Home() {
         onNavigateToTab={navigateToTab} 
         activeBottomTab={activeTab}
       />
+    );
+  }
+
+  if (activeTab === 'mentor-dashboard') {
+    return (
+      <MentorDashboard />
     );
   }
 
