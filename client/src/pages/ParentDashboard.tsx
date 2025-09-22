@@ -220,17 +220,44 @@ export default function ParentDashboard() {
     }
   ];
 
-  // 💎 DUAL REWARD SYSTEM STATS: Both kids AND parents earn rewards!
-  const mockStats: ParentStats = {
+  // 💎 DUAL REWARD SYSTEM STATS: Individual stats for each child + combined family stats
+  const individualStats: Record<string, ParentStats> = {
+    'student-001': { // Emma Johnson
+      totalKindnessActs: 47,
+      weeklyKindnessActs: 8,
+      totalRewardsEarned: 235,
+      currentStreak: 5,
+      impactScore: 820,
+      parentRewardsEarned: 75, // Parent rewards from Emma's activities
+      familyRanking: 8,
+      milestonesAchieved: 8
+    },
+    'student-002': { // Alex Johnson
+      totalKindnessActs: 23,
+      weeklyKindnessActs: 6,
+      totalRewardsEarned: 115,
+      currentStreak: 3,
+      impactScore: 420,
+      parentRewardsEarned: 50, // Parent rewards from Alex's activities
+      familyRanking: 8,
+      milestonesAchieved: 4
+    }
+  };
+
+  // Combined family stats when viewing all children
+  const combinedStats: ParentStats = {
     totalKindnessActs: 70,
     weeklyKindnessActs: 14,
     totalRewardsEarned: 350,
     currentStreak: 5,
     impactScore: 1240,
-    parentRewardsEarned: 125, // REVOLUTIONARY: Parents earn rewards too!
+    parentRewardsEarned: 125, // Total parent rewards from both children
     familyRanking: 8,
     milestonesAchieved: 12
   };
+
+  // Get current stats based on selected student
+  const currentStats = selectedStudent === '' ? combinedStats : (individualStats[selectedStudent] || combinedStats);
 
   const getNotificationIcon = (type: string) => {
     switch (type) {
@@ -419,9 +446,9 @@ export default function ParentDashboard() {
                     <div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Total Kindness Acts</p>
                       <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {mockStats.totalKindnessActs}
+                        {currentStats.totalKindnessActs}
                       </p>
-                      <p className="text-xs text-green-600">+{mockStats.weeklyKindnessActs} this week</p>
+                      <p className="text-xs text-green-600">+{currentStats.weeklyKindnessActs} this week</p>
                     </div>
                   </div>
                 </CardContent>
@@ -434,7 +461,7 @@ export default function ParentDashboard() {
                     <div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Current Streak</p>
                       <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        {mockStats.currentStreak} days
+                        {currentStats.currentStreak} days
                       </p>
                       <p className="text-xs text-orange-600">Keep it going! 🔥</p>
                     </div>
@@ -449,7 +476,7 @@ export default function ParentDashboard() {
                     <div>
                       <p className="text-sm text-green-700 dark:text-green-300 font-medium">💰 Your Parent Rewards</p>
                       <p className="text-2xl font-bold text-green-900 dark:text-green-100">
-                        ${mockStats.parentRewardsEarned}
+                        ${currentStats.parentRewardsEarned}
                       </p>
                       <p className="text-xs text-green-600 font-medium">Dual reward system! 🎉</p>
                     </div>
@@ -464,7 +491,7 @@ export default function ParentDashboard() {
                     <div>
                       <p className="text-sm text-gray-600 dark:text-gray-400">Family Ranking</p>
                       <p className="text-2xl font-bold text-gray-900 dark:text-white">
-                        #{mockStats.familyRanking}
+                        #{currentStats.familyRanking}
                       </p>
                       <p className="text-xs text-blue-600">Top 10 families! 🌟</p>
                     </div>
@@ -535,15 +562,15 @@ export default function ParentDashboard() {
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <span className="text-sm text-gray-600">Family progress this week</span>
-                    <span className="text-sm font-medium">{mockStats.weeklyKindnessActs}/20 acts</span>
+                    <span className="text-sm font-medium">{currentStats.weeklyKindnessActs}/20 acts</span>
                   </div>
-                  <Progress value={(mockStats.weeklyKindnessActs / 20) * 100} className="h-3" />
+                  <Progress value={(currentStats.weeklyKindnessActs / 20) * 100} className="h-3" />
                   <div className="flex items-center justify-between text-xs">
                     <span className="text-gray-500">
-                      {20 - mockStats.weeklyKindnessActs} more to reach your family goal!
+                      {20 - currentStats.weeklyKindnessActs} more to reach your family goal!
                     </span>
                     <span className="text-green-600 font-medium">
-                      +${Math.floor((mockStats.weeklyKindnessActs / 20) * 50)} parent bonus earned
+                      +${Math.floor((currentStats.weeklyKindnessActs / 20) * 50)} parent bonus earned
                     </span>
                   </div>
                 </div>
@@ -562,12 +589,16 @@ export default function ParentDashboard() {
                   <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                   <span className="text-sm text-green-600 font-medium">Live</span>
                 </div>
-                <Badge variant="outline">{mockActivities.length} activities this week</Badge>
+                <Badge variant="outline">
+                  {mockActivities.filter(activity => selectedStudent === '' || activity.studentUserId === selectedStudent).length} activities this week
+                </Badge>
               </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {mockActivities.map((activity) => (
+              {mockActivities
+                .filter(activity => selectedStudent === '' || activity.studentUserId === selectedStudent)
+                .map((activity) => (
                 <Card key={activity.id} className="relative">
                   <CardContent className="p-6">
                     <div className="flex items-start justify-between gap-4">
@@ -703,12 +734,12 @@ export default function ParentDashboard() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">👶 Children's Rewards</h4>
-                    <p className="text-2xl font-bold text-blue-600">${mockStats.totalRewardsEarned}</p>
+                    <p className="text-2xl font-bold text-blue-600">${currentStats.totalRewardsEarned}</p>
                     <p className="text-sm text-blue-700 dark:text-blue-300">Burlington area kid-friendly rewards</p>
                   </div>
                   <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                     <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">👨‍👩‍👧‍👦 Parent Rewards</h4>
-                    <p className="text-2xl font-bold text-green-600">${mockStats.parentRewardsEarned}</p>
+                    <p className="text-2xl font-bold text-green-600">${currentStats.parentRewardsEarned}</p>
                     <p className="text-sm text-green-700 dark:text-green-300">Family shopping & experiences</p>
                   </div>
                 </div>
