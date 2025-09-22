@@ -291,9 +291,8 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
         {/* Back Button */}
         <div className="mb-6">
           <Button
-            variant="ghost"
             onClick={() => setLocation('/?show=roles')}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
             data-testid="button-back"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -775,7 +774,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
                       <Heart className="h-8 w-8 text-pink-600 mx-auto mb-3" />
                       <h3 className="font-semibold mb-2">Kindness Tracking Charts</h3>
                       <p className="text-sm text-gray-600 mb-4">Visual tools to track student kindness acts</p>
-                      <Button variant="outline" size="sm" data-testid="button-download-charts">Download</Button>
+                      <Button size="sm" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0" data-testid="button-download-charts">Download</Button>
                     </div>
                   </Card>
                   
@@ -784,7 +783,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
                       <Users className="h-8 w-8 text-blue-600 mx-auto mb-3" />
                       <h3 className="font-semibold mb-2">Community Helpers Guide</h3>
                       <p className="text-sm text-gray-600 mb-4">Connect lessons with local community service</p>
-                      <Button variant="outline" size="sm" data-testid="button-download-guide">Download</Button>
+                      <Button size="sm" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0" data-testid="button-download-guide">Download</Button>
                     </div>
                   </Card>
                   
@@ -793,7 +792,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
                       <BookOpen className="h-8 w-8 text-green-600 mx-auto mb-3" />
                       <h3 className="font-semibold mb-2">Assessment Rubrics</h3>
                       <p className="text-sm text-gray-600 mb-4">Tools to measure character development</p>
-                      <Button variant="outline" size="sm" data-testid="button-download-rubrics">Download</Button>
+                      <Button size="sm" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0" data-testid="button-download-rubrics">Download</Button>
                     </div>
                   </Card>
                 </div>
@@ -813,9 +812,9 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
                     <CardDescription className="text-lg">{selectedLesson.description}</CardDescription>
                   </div>
                   <Button
-                    variant="ghost"
                     size="sm"
                     onClick={() => setSelectedLesson(null)}
+                    className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white"
                     data-testid="button-close-modal"
                   >
                     ✕

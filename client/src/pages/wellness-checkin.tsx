@@ -41,12 +41,11 @@ export default function WellnessCheckInPage() {
                 <Link href={returnPath}>Return to Home</Link>
               </Button>
               <Button 
-                variant="outline" 
                 onClick={() => {
                   setCompleted(false);
                   setShowCheckIn(false);
                 }}
-                className="w-full"
+                className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0"
               >
                 Take Another Check-In
               </Button>
@@ -62,9 +61,8 @@ export default function WellnessCheckInPage() {
       <div className="min-h-screen bg-gradient-to-b from-blue-50 to-indigo-100 flex items-center justify-center p-4">
         <div className="w-full max-w-md">
           <Button
-            variant="ghost"
             onClick={() => setShowCheckIn(false)}
-            className="mb-4"
+            className="mb-4 bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back

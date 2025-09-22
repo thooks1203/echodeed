@@ -155,9 +155,8 @@ export default function FamilyDashboard({
         {/* Back Button */}
         <div className="mb-6">
           <Button
-            variant="ghost"
             onClick={() => setLocation('/?show=roles')}
-            className="flex items-center gap-2 text-gray-600 hover:text-gray-900"
+            className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
             data-testid="button-back"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -190,7 +189,7 @@ export default function FamilyDashboard({
                     Week {(currentWeek as any).week}: {
                       typeof (currentWeek as any).theme === 'object' && (currentWeek as any).theme?.theme
                         ? `${(currentWeek as any).theme.emoji || '🌟'} ${(currentWeek as any).theme.theme}`
-                        : (currentWeek as any).theme || 'Kindness Week'
+                        : ((currentWeek as any).theme as string) || 'Kindness Week'
                     }
                   </h2>
                   <p className="text-blue-100">This week's family kindness theme</p>
@@ -277,9 +276,8 @@ export default function FamilyDashboard({
                       <div className="flex gap-2">
                         <Button
                           size="sm"
-                          variant="outline"
                           onClick={() => setSelectedChallenge(challenge)}
-                          className="flex-1"
+                          className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0"
                           data-testid={`button-view-${challenge.id}`}
                         >
                           View Details
@@ -310,8 +308,8 @@ export default function FamilyDashboard({
                       <CardDescription className="mt-2">{selectedChallenge.description}</CardDescription>
                     </div>
                     <Button
-                      variant="ghost"
                       onClick={() => setSelectedChallenge(null)}
+                      className="bg-gradient-to-r from-gray-500 to-gray-600 hover:from-gray-600 hover:to-gray-700 text-white"
                       data-testid="button-close-details"
                     >
                       ✕
@@ -543,7 +541,7 @@ export default function FamilyDashboard({
                       <Button size="sm" className="flex-1" data-testid="button-donate-playground">
                         Donate Now
                       </Button>
-                      <Button size="sm" variant="outline" data-testid="button-learn-more-playground">
+                      <Button size="sm" className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0" data-testid="button-learn-more-playground">
                         Learn More
                       </Button>
                     </div>
@@ -570,7 +568,7 @@ export default function FamilyDashboard({
                       <Button size="sm" className="flex-1" data-testid="button-donate-art">
                         Donate Now
                       </Button>
-                      <Button size="sm" variant="outline" data-testid="button-learn-more-art">
+                      <Button size="sm" className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0" data-testid="button-learn-more-art">
                         Learn More
                       </Button>
                     </div>

@@ -281,10 +281,9 @@ export default function ParentDashboard() {
             <div>
               <div className="flex items-center gap-3 mb-2">
                 <Button
-                  variant="outline"
                   size="sm"
                   onClick={() => navigate('/')}
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                   data-testid="back-to-platform"
                 >
                   <ArrowLeft className="w-4 h-4" />

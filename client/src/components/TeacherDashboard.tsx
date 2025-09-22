@@ -164,10 +164,9 @@ export function TeacherDashboard() {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               <Button
-                variant="outline"
                 size="sm"
                 onClick={() => navigate('/app')}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                 data-testid="back-to-platform"
               >
                 <ArrowLeft className="w-4 h-4" />
@@ -183,11 +182,11 @@ export function TeacherDashboard() {
               </div>
             </div>
             <div className="flex gap-2">
-              <Button variant="outline" size="sm">
+              <Button size="sm" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0">
                 <Download className="w-4 h-4 mr-2" />
                 Export Report
               </Button>
-              <Button size="sm">
+              <Button size="sm" className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white">
                 <Settings className="w-4 h-4 mr-2" />
                 Class Settings
               </Button>
