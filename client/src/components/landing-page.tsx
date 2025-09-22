@@ -300,8 +300,8 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '20px' }}>🏫</span>
-            1. Register Your School
+            <span style={{ fontSize: '20px', lineHeight: '1', display: 'flex', alignItems: 'center' }}>🏫</span>
+            <span>1. Register Your School</span>
           </button>
 
           {/* 2. ADMIN CONFIGURATION */}
@@ -331,8 +331,8 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '20px' }}>👨‍💼</span>
-            2. Administrator Dashboard
+            <span style={{ fontSize: '20px', lineHeight: '1', display: 'flex', alignItems: 'center' }}>👨‍💼</span>
+            <span>2. Administrator Dashboard</span>
           </button>
 
           {/* 3. TEACHER PREPARATION */}
@@ -362,8 +362,8 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '20px' }}>👩‍🏫</span>
-            3. Teacher Dashboard
+            <span style={{ fontSize: '20px', lineHeight: '1', display: 'flex', alignItems: 'center' }}>👩‍🏫</span>
+            <span>3. Teacher Dashboard</span>
           </button>
 
           {/* 4. STUDENT REGISTRATION (TRIGGERS PARENT CONSENT) */}
@@ -393,8 +393,8 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '20px' }}>🎓</span>
-            4. Student Sign Up
+            <span style={{ fontSize: '20px', lineHeight: '1', display: 'flex', alignItems: 'center' }}>🎓</span>
+            <span>4. Student Sign Up</span>
           </button>
 
           {/* 5. PARENT CONSENT VERIFICATION */}
@@ -424,8 +424,8 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '20px' }}>👨‍👩‍👧‍👦</span>
-            5. Parent Dashboard
+            <span style={{ fontSize: '20px', lineHeight: '1', display: 'flex', alignItems: 'center' }}>👨‍👩‍👧‍👦</span>
+            <span>5. Parent Dashboard</span>
           </button>
 
           {/* 6. STUDENT PARTICIPATION (ONLY AFTER CONSENT) */}
@@ -458,8 +458,8 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.3)';
             }}
           >
-            <span style={{ fontSize: '20px' }}>🏠</span>
-            6. Student Feed
+            <span style={{ fontSize: '20px', lineHeight: '1', display: 'flex', alignItems: 'center' }}>🏠</span>
+            <span>6. Student Feed</span>
           </button>
 
 
