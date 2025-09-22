@@ -164,20 +164,8 @@ export default function RewardsPage() {
     };
   });
 
-  // Apply filters for Browse Rewards tab
-  const filteredOffers = allEnrichedOffers.filter((offer: RewardOffer) => {
-    // Filter by partner
-    if (selectedPartner !== 'all' && offer.partnerId !== selectedPartner) {
-      return false;
-    }
-    
-    // Filter by offer type
-    if (selectedOfferType !== 'all' && offer.offerType !== selectedOfferType) {
-      return false;
-    }
-    
-    return true;
-  });
+  // TEMPORARY: Show ALL offers to debug the issue
+  const filteredOffers = allEnrichedOffers;
 
   // Filter featured offers from filtered list
   const featuredOffers = filteredOffers.filter((offer: RewardOffer) => offer.isFeatured);
