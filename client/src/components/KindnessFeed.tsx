@@ -16,34 +16,51 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
 
   const heartMutation = useMutation({
     mutationFn: async (postId: string) => {
+      console.log('Heart mutation called for post:', postId);
       const response = await fetch(`/api/posts/${postId}/heart`, {
         method: 'POST',
         headers: addSessionHeaders()
       });
+      console.log('Heart response status:', response.status);
       if (!response.ok) throw new Error('Failed to heart post');
-      return response.json();
+      const result = await response.json();
+      console.log('Heart response:', result);
+      return result;
     },
     onSuccess: () => {
+      console.log('Heart mutation success, invalidating queries');
       queryClient.invalidateQueries({ queryKey: ['/api/posts'] });
+    },
+    onError: (error) => {
+      console.error('Heart mutation error:', error);
     }
   });
 
   const echoMutation = useMutation({
     mutationFn: async (postId: string) => {
+      console.log('Echo mutation called for post:', postId);
       const response = await fetch(`/api/posts/${postId}/echo`, {
         method: 'POST', 
         headers: addSessionHeaders()
       });
+      console.log('Echo response status:', response.status);
       if (!response.ok) throw new Error('Failed to echo post');
-      return response.json();
+      const result = await response.json();
+      console.log('Echo response:', result);
+      return result;
     },
     onSuccess: () => {
+      console.log('Echo mutation success, invalidating queries');
       queryClient.invalidateQueries({ queryKey: ['/api/posts'] });
+    },
+    onError: (error) => {
+      console.error('Echo mutation error:', error);
     }
   });
 
   const handleHeart = (postId: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    console.log('Heart button clicked for post:', postId);
     setClickedPosts(prev => new Set(prev).add(postId));
     heartMutation.mutate(postId);
     setTimeout(() => {
@@ -57,6 +74,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
 
   const handleEcho = (postId: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    console.log('Echo button clicked for post:', postId);
     setClickedPosts(prev => new Set(prev).add(postId));
     echoMutation.mutate(postId);
     setTimeout(() => {
