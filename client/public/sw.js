@@ -1,5 +1,5 @@
 // EchoDeed™ Service Worker - PWA Capabilities
-const CACHE_NAME = 'echodeed-v1.0.1-logo-refresh';
+const CACHE_NAME = 'echodeed-v1.0.2-demo-ready';
 const OFFLINE_URL = '/offline.html';
 
 const CACHE_URLS = [
@@ -43,7 +43,7 @@ self.addEventListener('activate', (event) => {
   );
 });
 
-// Fetch event - Network first, cache fallback strategy
+// Fetch event - Network first strategy for demo reliability
 self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (event.request.method !== 'GET') return;
@@ -51,11 +51,21 @@ self.addEventListener('fetch', (event) => {
   // Skip chrome-extension requests
   if (event.request.url.startsWith('chrome-extension://')) return;
   
+  // Always fetch fresh content for main HTML pages to ensure latest demo version
+  if (event.request.headers.get('accept')?.includes('text/html')) {
+    event.respondWith(
+      fetch(event.request)
+        .catch(() => caches.match(OFFLINE_URL))
+    );
+    return;
+  }
+  
+  // For other resources, use network first with cache fallback
   event.respondWith(
     fetch(event.request)
       .then((response) => {
-        // Only cache successful responses
-        if (response.status === 200) {
+        // Only cache static assets, not API responses for demo freshness
+        if (response.status === 200 && !event.request.url.includes('/api/')) {
           const responseToCache = response.clone();
           caches.open(CACHE_NAME)
             .then((cache) => {
@@ -66,16 +76,7 @@ self.addEventListener('fetch', (event) => {
       })
       .catch(() => {
         // Network failed, try cache
-        return caches.match(event.request)
-          .then((response) => {
-            if (response) {
-              return response;
-            }
-            // If requesting an HTML page, return offline page
-            if (event.request.headers.get('accept').includes('text/html')) {
-              return caches.match(OFFLINE_URL);
-            }
-          });
+        return caches.match(event.request);
       })
   );
 });
