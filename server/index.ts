@@ -585,7 +585,8 @@ app.use((req, res, next) => {
     // setting up all the other routes so the catch-all route
     // doesn't interfere with the other routes
     log('Setting up static file serving...');
-    if (app.get("env") === "development") {
+    const isProduction = process.env.NODE_ENV === 'production';
+    if (!isProduction) {
       await setupVite(app, server);
       log('✓ Vite development server configured');
     } else {
