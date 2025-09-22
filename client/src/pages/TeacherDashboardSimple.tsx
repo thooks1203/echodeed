@@ -324,8 +324,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
               </Button>
               <Button
                 onClick={() => setLocation('/wellness-checkin?from=teacher-dashboard')}
-                variant="outline"
-                className="border-orange-300 text-orange-600 hover:bg-orange-50"
+                className="bg-gradient-to-r from-red-500 to-orange-500 hover:from-red-600 hover:to-orange-600 text-white font-bold border-4 border-yellow-400 hover:border-yellow-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 animate-pulse"
                 data-testid="button-wellness-check"
               >
                 <Target className="w-4 h-4 mr-2" />
