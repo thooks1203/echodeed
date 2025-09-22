@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { ArrowLeft } from 'lucide-react';
 
 interface SummerChallenge {
   id: string;
@@ -35,7 +36,11 @@ interface WeekTheme {
   color: string;
 }
 
-export function SummerChallenges() {
+interface SummerChallengesProps {
+  onBack?: () => void;
+}
+
+export function SummerChallenges({ onBack }: SummerChallengesProps) {
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'6-8'>('6-8');
   const [selectedChallenge, setSelectedChallenge] = useState<SummerChallenge | null>(null);
   const [showActivities, setShowActivities] = useState(false);
@@ -123,6 +128,23 @@ export function SummerChallenges() {
 
   return (
     <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+      {/* Kid-Friendly Back Button */}
+      {onBack && (
+        <div style={{ padding: '16px 20px 0' }}>
+          <button
+            onClick={onBack}
+            className="flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 transition-all duration-300 shadow-lg border-2 border-yellow-300 hover:scale-105"
+            data-testid="summer-back-button"
+            style={{ 
+              fontSize: '14px',
+              fontWeight: '700'
+            }}
+          >
+            <ArrowLeft size={18} />
+            <span>🏠 Back to My Dashboard</span>
+          </button>
+        </div>
+      )}
       {/* Header with current week theme */}
       {currentWeek && (
         <div style={{ 

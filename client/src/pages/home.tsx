@@ -169,7 +169,7 @@ export default function Home() {
   if (activeTab === 'summer') {
     return (
       <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
-        <SummerChallenges />
+        <SummerChallenges onBack={handleBackToDashboard} />
         <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
     );
