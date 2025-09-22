@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { canAccessSchoolsDashboard } from '@/lib/roleUtils';
 import { StudentDashboard } from '@/components/StudentDashboard';
+import { MentorDashboard } from '@/pages/MentorDashboard';
 
 interface RewardOffer {
   id: string;
