@@ -209,9 +209,18 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             💎 Rewards Marketplace
           </h1>
-          <p className="text-xl text-gray-600 dark:text-gray-300 mb-6">
+          <p className="text-xl text-gray-600 dark:text-gray-300 mb-4">
             Turn your kindness into real rewards
           </p>
+          
+          {/* Echo Token System Explanation */}
+          <div className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/30 dark:to-purple-950/30 p-4 rounded-lg border border-blue-200 dark:border-blue-700/30 mb-6 max-w-4xl mx-auto">
+            <div className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
+              <p><strong>🎓 Students:</strong> Earn $ECHO tokens by posting kindness acts (5-15 tokens), completing challenges (10-50 tokens), and supporting peers (1-3 tokens)</p>
+              <p><strong>👨‍👩‍👧‍👦 Parents:</strong> Earn tokens when your child does! Parent approval required for high-value activities. Redeem adult rewards like coffee & dining</p>
+              <p><strong>🏫 Teachers:</strong> Verify student activities, track class wellness trends, and approve classroom kindness initiatives</p>
+            </div>
+          </div>
           
           {/* Token Balance */}
           <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-100 to-blue-100 dark:from-purple-900/30 dark:to-blue-900/30 px-6 py-3 rounded-full border border-purple-200 dark:border-purple-700">
