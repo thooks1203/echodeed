@@ -186,7 +186,7 @@ export default function Home() {
 
   if (activeTab === 'rewards') {
     return (
-      <RewardsPage />
+      <RewardsPage onBack={handleBackToDashboard} />
     );
   }
   

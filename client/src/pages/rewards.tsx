@@ -63,6 +63,10 @@ interface Redemption {
   redeemedAt: string;
 }
 
+interface RewardsPageProps {
+  onBack?: () => void;
+}
+
 const getOfferIcon = (type: string) => {
   switch (type) {
     case 'dual_reward': return <Gift className="w-5 h-5" />;
@@ -88,7 +92,7 @@ const getStatusIcon = (status: string) => {
   }
 };
 
-export default function RewardsPage() {
+export default function RewardsPage({ onBack }: RewardsPageProps) {
   const [selectedPartner, setSelectedPartner] = useState<string>('all');
   const [selectedOfferType, setSelectedOfferType] = useState<string>('all');
   const { toast } = useToast();
@@ -196,7 +200,7 @@ export default function RewardsPage() {
         <div className="text-center mb-8 relative">
           <div className="absolute left-0 top-0">
             <BackButton 
-              onClick={() => window.location.href = '/'}
+              onClick={() => onBack ? onBack() : window.location.href = '/'}
               variant="minimal"
               style={{ color: '#6b7280' }}
             />
