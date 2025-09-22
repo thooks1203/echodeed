@@ -1550,7 +1550,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
       let userTokens = await storage.getUserTokens(userId);
       
       if (!userTokens) {
-        userTokens = await storage.createUserTokens({ userId, echoBalance: 0, totalEarned: 0 });
+        // 🎯 DEMO DATA: Give demo users realistic token balances to show system activity
+        let demoBalance = 0;
+        let demoTotalEarned = 0;
+        
+        // Demo users get different realistic balances to show engagement variety
+        if (userId === 'student-001') {
+          demoBalance = 67;  // Emma has earned more tokens
+          demoTotalEarned = 94; // She's redeemed some rewards (27 tokens spent)
+        } else if (userId === 'teacher-001') {
+          demoBalance = 45;  // Ms. Wilson has moderate balance
+          demoTotalEarned = 45; // Hasn't redeemed rewards yet
+        } else if (userId === 'admin-001') {
+          demoBalance = 23;  // Admin has fewer tokens (different activity pattern)
+          demoTotalEarned = 38; // Has redeemed some rewards (15 tokens spent)
+        } else if (userId === 'parent-001') {
+          demoBalance = 83;  // Parent has high balance from dual reward system
+          demoTotalEarned = 128; // Parent has earned most tokens and redeemed some (45 tokens spent)
+        } else {
+          demoBalance = 0;   // Regular users start at 0
+          demoTotalEarned = 0;
+        }
+        
+        userTokens = await storage.createUserTokens({ 
+          userId, 
+          echoBalance: demoBalance, 
+          totalEarned: demoTotalEarned 
+        });
       }
       
       res.json(userTokens);
