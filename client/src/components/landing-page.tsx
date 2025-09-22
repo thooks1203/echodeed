@@ -289,7 +289,8 @@ export function LandingPage() {
               justifyContent: 'center',
               gap: '8px',
               transition: 'all 0.2s ease',
-              boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)'
+              boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
+              lineHeight: 1
             }}
             onMouseOver={(e) => {
               (e.target as HTMLButtonElement).style.backgroundColor = '#D97706';
@@ -300,8 +301,8 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '20px', lineHeight: '1', display: 'flex', alignItems: 'center' }}>🏫</span>
-            <span>1. Register Your School</span>
+            <span style={{ fontSize: '1.25rem', lineHeight: '1', width: '1.25em', height: '1.25em', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji' }}>🏫</span>
+            <span style={{ lineHeight: 1.2, display: 'inline-block' }}>1. Register Your School</span>
           </button>
 
           {/* 2. ADMIN CONFIGURATION */}
@@ -320,7 +321,8 @@ export function LandingPage() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              lineHeight: 1
             }}
             onMouseOver={(e) => {
               (e.target as HTMLButtonElement).style.backgroundColor = '#059669';
@@ -331,8 +333,8 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '20px', lineHeight: '1', display: 'flex', alignItems: 'center' }}>👨‍💼</span>
-            <span>2. Administrator Dashboard</span>
+            <span style={{ fontSize: '1.25rem', lineHeight: '1', width: '1.25em', height: '1.25em', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji' }}>👨‍💼</span>
+            <span style={{ lineHeight: 1.2, display: 'inline-block' }}>2. Administrator Dashboard</span>
           </button>
 
           {/* 3. TEACHER PREPARATION */}
@@ -351,7 +353,8 @@ export function LandingPage() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              lineHeight: 1
             }}
             onMouseOver={(e) => {
               (e.target as HTMLButtonElement).style.backgroundColor = '#7C3AED';
@@ -362,8 +365,8 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '20px', lineHeight: '1', display: 'flex', alignItems: 'center' }}>👩‍🏫</span>
-            <span>3. Teacher Dashboard</span>
+            <span style={{ fontSize: '1.25rem', lineHeight: '1', width: '1.25em', height: '1.25em', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji' }}>👩‍🏫</span>
+            <span style={{ lineHeight: 1.2, display: 'inline-block' }}>3. Teacher Dashboard</span>
           </button>
 
           {/* 4. STUDENT REGISTRATION (TRIGGERS PARENT CONSENT) */}
@@ -382,7 +385,8 @@ export function LandingPage() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              lineHeight: 1
             }}
             onMouseOver={(e) => {
               (e.target as HTMLButtonElement).style.backgroundColor = '#2563EB';
@@ -393,8 +397,8 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '20px', lineHeight: '1', display: 'flex', alignItems: 'center' }}>🎓</span>
-            <span>4. Student Sign Up</span>
+            <span style={{ fontSize: '1.25rem', lineHeight: '1', width: '1.25em', height: '1.25em', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji' }}>🎓</span>
+            <span style={{ lineHeight: 1.2, display: 'inline-block' }}>4. Student Sign Up</span>
           </button>
 
           {/* 5. PARENT CONSENT VERIFICATION */}
@@ -413,7 +417,8 @@ export function LandingPage() {
               alignItems: 'center',
               justifyContent: 'center',
               gap: '8px',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.2s ease',
+              lineHeight: 1
             }}
             onMouseOver={(e) => {
               (e.target as HTMLButtonElement).style.backgroundColor = '#DB2777';
@@ -424,8 +429,8 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
             }}
           >
-            <span style={{ fontSize: '20px', lineHeight: '1', display: 'flex', alignItems: 'center' }}>👨‍👩‍👧‍👦</span>
-            <span>5. Parent Dashboard</span>
+            <span style={{ fontSize: '1.25rem', lineHeight: '1', width: '1.25em', height: '1.25em', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji' }}>👨‍👩‍👧‍👦</span>
+            <span style={{ lineHeight: 1.2, display: 'inline-block' }}>5. Parent Dashboard</span>
           </button>
 
           {/* 6. STUDENT PARTICIPATION (ONLY AFTER CONSENT) */}
@@ -445,7 +450,8 @@ export function LandingPage() {
               justifyContent: 'center',
               gap: '8px',
               transition: 'all 0.2s ease',
-              boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)'
+              boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)',
+              lineHeight: 1
             }}
             onMouseOver={(e) => {
               (e.target as HTMLButtonElement).style.backgroundColor = '#B91C1C';
@@ -458,8 +464,8 @@ export function LandingPage() {
               (e.target as HTMLButtonElement).style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.3)';
             }}
           >
-            <span style={{ fontSize: '20px', lineHeight: '1', display: 'flex', alignItems: 'center' }}>🏠</span>
-            <span>6. Student Feed</span>
+            <span style={{ fontSize: '1.25rem', lineHeight: '1', width: '1.25em', height: '1.25em', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', fontFamily: 'Apple Color Emoji, Segoe UI Emoji, Noto Color Emoji' }}>🏠</span>
+            <span style={{ lineHeight: 1.2, display: 'inline-block' }}>6. Student Feed</span>
           </button>
 
 
