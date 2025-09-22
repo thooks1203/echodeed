@@ -21,6 +21,7 @@ import MentorDashboard from '@/pages/MentorDashboard';
 import { SupportCircle } from '@/components/SupportCircle';
 import RewardsPage from '@/pages/rewards';
 import { SummerChallenges } from '@/components/SummerChallenges';
+import { SponsorsPage } from '@/components/SponsorsPage';
 
 interface RewardOffer {
   id: string;
@@ -156,6 +157,15 @@ export default function Home() {
     return (
       <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
         <SummerChallenges />
+        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
+    );
+  }
+
+  if (activeTab === 'sponsors') {
+    return (
+      <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+        <SponsorsPage />
         <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
     );
