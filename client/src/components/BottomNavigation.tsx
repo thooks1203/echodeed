@@ -51,7 +51,10 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
       {tabs.map((tab) => (
         <button 
           key={tab.id}
-          onClick={() => onTabChange(tab.id)}
+          onClick={() => {
+            console.log('BottomNavigation button clicked:', tab.id);
+            onTabChange(tab.id);
+          }}
           style={{
             background: activeTab === tab.id 
               ? 'linear-gradient(135deg, #ff6b6b, #feca57)' 
