@@ -343,7 +343,7 @@ export default function FamilyDashboard({
                     <div className="flex justify-between items-start">
                       <CardTitle className="text-lg">{challenge.title}</CardTitle>
                       <Badge variant={challenge.difficulty === 'easy' ? 'secondary' : challenge.difficulty === 'medium' ? 'default' : 'destructive'}>
-                        {challenge.difficulty}
+                        {String(challenge.difficulty)}
                       </Badge>
                     </div>
                     <CardDescription>{challenge.description}</CardDescription>
