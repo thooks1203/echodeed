@@ -7,6 +7,7 @@ import {
   users 
 } from '@shared/schema';
 import { eq, and, sql, desc } from 'drizzle-orm';
+// Import email service dynamically to avoid circular dependency
 
 export interface CommunityServiceSubmission {
   userId: string;
@@ -67,6 +68,42 @@ export class CommunityServiceEngine {
 
       // Update or create student service summary
       await this.updateStudentSummary(submission.userId, submission.hoursLogged, 'pending');
+      
+      // 📧 Send parent notification email
+      try {
+        const studentInfo = await db.select().from(users).where(eq(users.id, submission.userId));
+        if (studentInfo.length > 0) {
+          const student = studentInfo[0];
+          
+          // Dynamically import email service to avoid circular dependency
+          const { emailService } = await import('../services/emailService');
+          
+          // Send notification to parent (using demo data for parent info)
+          const emailSent = await emailService.sendServiceHoursNotificationEmail({
+            parentEmail: `parent+${student.id}@example.edu`, // Demo email format
+            parentName: 'Parent Guardian',
+            studentFirstName: student.firstName || 'Student',
+            schoolName: 'Burlington Christian Academy',
+            serviceName: submission.serviceName,
+            hoursLogged: submission.hoursLogged,
+            serviceDate: submission.serviceDate,
+            organizationName: submission.organizationName,
+            studentReflection: submission.studentReflection,
+            category: submission.category
+          });
+
+          if (emailSent) {
+            // Mark as parent notified
+            await db.update(communityServiceLogs)
+              .set({ parentNotified: true })
+              .where(eq(communityServiceLogs.id, serviceLog.id));
+            console.log('✅ Parent notification email sent successfully');
+          }
+        }
+      } catch (emailError) {
+        console.error('⚠️ Failed to send parent notification email:', emailError);
+        // Don't throw error as the main logging was successful
+      }
       
       console.log(`✅ Service hours logged successfully: ${serviceLog.id}`);
       return serviceLog;

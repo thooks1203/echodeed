@@ -81,6 +81,19 @@ interface RenewalReminderEmailData {
   expiryDate: Date;
 }
 
+interface ServiceHoursNotificationData {
+  parentEmail: string;
+  parentName: string;
+  studentFirstName: string;
+  schoolName: string;
+  serviceName: string;
+  hoursLogged: number;
+  serviceDate: Date;
+  organizationName?: string;
+  studentReflection: string;
+  category: string;
+}
+
 interface EmailService {
   sendParentalConsentEmail(data: ConsentEmailData): Promise<boolean>;
   sendEnhancedParentalConsentEmail(data: EnhancedConsentEmailData): Promise<boolean>;
@@ -91,6 +104,8 @@ interface EmailService {
   // 🔄 Burlington renewal methods
   sendConsentRenewalEmail(data: ConsentRenewalEmailData): Promise<boolean>;
   sendRenewalReminderEmail(data: RenewalReminderEmailData): Promise<boolean>;
+  // 🏥 Community service notifications
+  sendServiceHoursNotificationEmail(data: ServiceHoursNotificationData): Promise<boolean>;
 }
 
 class NodemailerEmailService implements EmailService {
@@ -550,6 +565,147 @@ class NodemailerEmailService implements EmailService {
       }
     } catch (error) {
       console.error(`❌ Failed to send ${reminderType} renewal reminder email:`, error);
+      return false;
+    }
+  }
+
+  async sendServiceHoursNotificationEmail(data: ServiceHoursNotificationData): Promise<boolean> {
+    const { parentEmail, parentName, studentFirstName, schoolName, serviceName, hoursLogged, serviceDate, organizationName, studentReflection, category } = data;
+    
+    const subject = `🏥 ${studentFirstName} Submitted Community Service Hours - Verification Needed`;
+    const serviceDateStr = serviceDate.toLocaleDateString('en-US', { 
+      weekday: 'long', 
+      year: 'numeric', 
+      month: 'long', 
+      day: 'numeric' 
+    });
+
+    const textContent = `
+Dear ${parentName},
+
+${studentFirstName} has submitted community service hours for your review and verification.
+
+📋 SERVICE DETAILS:
+• Service Name: ${serviceName}
+• Organization: ${organizationName || 'Not specified'}
+• Hours Logged: ${hoursLogged} hours
+• Service Date: ${serviceDateStr}
+• Category: ${category}
+
+💭 STUDENT REFLECTION:
+"${studentReflection}"
+
+✅ NEXT STEPS:
+1. Log into your parent dashboard to review the full details
+2. Verify the accuracy of the submitted information
+3. The school will also review and approve these hours
+4. Once verified, ${studentFirstName} will earn ${Math.floor(hoursLogged * 5)} tokens as rewards
+
+Thank you for supporting ${studentFirstName}'s community service journey!
+
+Best regards,
+The EchoDeed Team
+${schoolName}
+`;
+
+    const htmlContent = `
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Service Hours Submitted - ${studentFirstName}</title>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; background-color: #f8f9fa; }
+        .container { max-width: 600px; margin: 0 auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; }
+        .content { padding: 30px; }
+        .service-details { background: #f8f9ff; border-left: 4px solid #667eea; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .reflection-box { background: #fff5f5; border-left: 4px solid #ec4899; padding: 20px; margin: 20px 0; border-radius: 8px; font-style: italic; }
+        .action-box { background: #f0fdf4; border: 2px solid #10b981; padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .footer { background: #f8f9fa; padding: 20px; text-align: center; color: #6c757d; font-size: 14px; }
+        .emoji { font-size: 20px; margin-right: 8px; }
+        .highlight { color: #667eea; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏥 Community Service Hours Submitted</h1>
+            <p>Review needed for ${studentFirstName}'s volunteer work</p>
+        </div>
+        
+        <div class="content">
+            <p>Dear <strong>${parentName}</strong>,</p>
+            
+            <p>${studentFirstName} has submitted community service hours for your review and verification.</p>
+            
+            <div class="service-details">
+                <h3><span class="emoji">📋</span>Service Details</h3>
+                <p><strong>Service Name:</strong> ${serviceName}</p>
+                <p><strong>Organization:</strong> ${organizationName || 'Not specified'}</p>
+                <p><strong>Hours Logged:</strong> <span class="highlight">${hoursLogged} hours</span></p>
+                <p><strong>Service Date:</strong> ${serviceDateStr}</p>
+                <p><strong>Category:</strong> ${category}</p>
+            </div>
+            
+            <div class="reflection-box">
+                <h3><span class="emoji">💭</span>Student Reflection</h3>
+                <p>"${studentReflection}"</p>
+            </div>
+            
+            <div class="action-box">
+                <h3><span class="emoji">✅</span>Next Steps</h3>
+                <ol>
+                    <li>Log into your parent dashboard to review the full details</li>
+                    <li>Verify the accuracy of the submitted information</li>
+                    <li>The school will also review and approve these hours</li>
+                    <li>Once verified, ${studentFirstName} will earn <strong>${Math.floor(hoursLogged * 5)} tokens</strong> as rewards</li>
+                </ol>
+            </div>
+            
+            <p>Thank you for supporting ${studentFirstName}'s community service journey!</p>
+        </div>
+        
+        <div class="footer">
+            <p>Best regards,<br>
+            <strong>The EchoDeed Team</strong><br>
+            ${schoolName}</p>
+        </div>
+    </div>
+</body>
+</html>
+`;
+
+    const mailOptions = {
+      from: process.env.SMTP_FROM || 'EchoDeed Community Service <noreply@echodeed.com>',
+      to: parentEmail,
+      subject: subject,
+      text: textContent,
+      html: htmlContent
+    };
+
+    try {
+      if (this.transporter) {
+        const info = await this.transporter.sendMail(mailOptions);
+        console.log('📧 Service hours notification email sent successfully:', info.messageId);
+        return true;
+      } else {
+        console.log('\n📧 ==== SERVICE HOURS NOTIFICATION EMAIL (DEVELOPMENT MODE) ====');
+        console.log(`To: ${parentEmail}`);
+        console.log(`Subject: ${subject}`);
+        console.log(`Service: ${serviceName} (${hoursLogged} hours)`);
+        console.log(`Date: ${serviceDateStr}`);
+        console.log(`Organization: ${organizationName || 'Not specified'}`);
+        console.log(`Category: ${category}`);
+        console.log(`Reflection: ${studentReflection}`);
+        console.log('=================================================\n');
+        console.log(textContent);
+        console.log('\n=================================================');
+        return true;
+      }
+    } catch (error) {
+      console.error('❌ Failed to send service hours notification email:', error);
       return false;
     }
   }
