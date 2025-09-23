@@ -109,13 +109,19 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
   // Get student's service summary
   const { data: summary, isLoading: summaryLoading } = useQuery<ServiceSummary>({
     queryKey: ['/api/community-service/summary', userId],
-    queryFn: () => fetch(`/api/community-service/summary/${userId}`).then(r => r.json())
+    queryFn: async () => {
+      const response = await apiRequest('GET', `/api/community-service/summary/${userId}`);
+      return response.json();
+    }
   });
 
   // Get student's service log history
   const { data: logs = [], isLoading: logsLoading } = useQuery<ServiceLog[]>({
     queryKey: ['/api/community-service/logs', userId],
-    queryFn: () => fetch(`/api/community-service/logs/${userId}`).then(r => r.json())
+    queryFn: async () => {
+      const response = await apiRequest('GET', `/api/community-service/logs/${userId}`);
+      return response.json();
+    }
   });
 
   // Submit service hours mutation
