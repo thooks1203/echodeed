@@ -631,14 +631,13 @@ export default function AdminDashboard() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button 
-                variant="outline" 
-                className="flex items-center gap-2 hover:bg-purple-50 hover:border-purple-300 transition-colors" 
+                className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200" 
                 data-testid="user-menu"
               >
                 <User className="w-4 h-4" />
                 <span className="font-medium">{user?.name}</span>
-                <span className="text-xs text-muted-foreground">({user?.schoolRole})</span>
-                <ChevronDown className="w-3 h-3 ml-1 text-muted-foreground" />
+                <span className="text-xs opacity-90">({user?.schoolRole})</span>
+                <ChevronDown className="w-3 h-3 ml-1 opacity-75" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64">
