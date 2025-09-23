@@ -10,6 +10,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useNavigation } from '@/hooks/useNavigation';
 import { BackButton } from '@/components/BackButton';
 import { Building2, Shield, Star, Gift, ShoppingBag, Coffee, Music, Trophy, CheckCircle2, AlertCircle, Clock, Bell } from 'lucide-react';
+import { RoleSwitcherDemo } from '@/components/RoleSwicherDemo';
 import { testRewardProximity } from '@/components/RewardNotificationManager';
 
 interface RewardOffer {
@@ -580,6 +581,7 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
           </TabsContent>
         </Tabs>
       </div>
+      <RoleSwitcherDemo />
     </div>
   );
 }

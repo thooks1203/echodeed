@@ -24,6 +24,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
+import { RoleSwitcherDemo } from '@/components/RoleSwicherDemo';
 
 interface FamilyChallenge {
   id: string;
@@ -733,6 +734,7 @@ export default function FamilyDashboard({
           </TabsContent>
         </Tabs>
       </div>
+      <RoleSwitcherDemo />
     </div>
   );
 }
