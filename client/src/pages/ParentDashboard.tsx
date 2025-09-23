@@ -90,8 +90,203 @@ interface LinkedStudent {
   currentStreak: number;
 }
 
+// Service Hours Section Component - Parent view of child's community service
+function ServiceHoursSection() {
+  // Demo parent viewing child's service hours (tf-sarah is the demo child)
+  const { data: serviceData, isLoading: serviceLoading } = useQuery({
+    queryKey: ['/api/community-service/parent', 'demo-parent', 'child', 'tf-sarah'],
+    enabled: true
+  });
+
+  if (serviceLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5 text-blue-600" />
+            🏥 Verified Service Hours
+          </CardTitle>
+          <CardDescription>Loading your child's community service verification history...</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const summary = (serviceData as any)?.summary;
+  const logs = (serviceData as any)?.recentLogs || [];
+  const notificationsSent = (serviceData as any)?.totalNotificationsSent || 0;
+
+  return (
+    <div className="space-y-6">
+      {/* Service Hours Overview */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Shield className="h-5 w-5 text-blue-600" />
+            🏥 Verified Service Hours - Sarah Chen
+          </CardTitle>
+          <CardDescription>
+            Track your child's community service progress and verification status
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {summary ? (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+              <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg text-center">
+                <div className="text-2xl font-bold text-blue-600">{summary.totalHoursCompleted || 0}</div>
+                <div className="text-sm text-blue-700 dark:text-blue-300">Total Hours Logged</div>
+              </div>
+              <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg text-center">
+                <div className="text-2xl font-bold text-green-600">{summary.totalHoursVerified || 0}</div>
+                <div className="text-sm text-green-700 dark:text-green-300">Hours Verified</div>
+              </div>
+              <div className="p-4 bg-orange-50 dark:bg-orange-900/20 rounded-lg text-center">
+                <div className="text-2xl font-bold text-orange-600">{summary.totalHoursPending || 0}</div>
+                <div className="text-sm text-orange-700 dark:text-orange-300">Awaiting Verification</div>
+              </div>
+              <div className="p-4 bg-purple-50 dark:bg-purple-900/20 rounded-lg text-center">
+                <div className="text-2xl font-bold text-purple-600">{notificationsSent}</div>
+                <div className="text-sm text-purple-700 dark:text-purple-300">Email Notifications</div>
+              </div>
+            </div>
+          ) : (
+            <Alert>
+              <Shield className="h-4 w-4" />
+              <AlertTitle>No Service Hours Yet</AlertTitle>
+              <AlertDescription>
+                Your child hasn't logged any community service hours yet. Encourage them to get started!
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {summary && (
+            <div className="mb-4">
+              <div className="flex items-center justify-between mb-2">
+                <span className="text-sm font-medium">Progress toward 30-hour goal</span>
+                <span className="text-sm text-gray-600">{summary.goalProgress || 0}% complete</span>
+              </div>
+              <Progress value={parseFloat(summary.goalProgress || '0')} className="h-2" />
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Recent Service Hours */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Clock className="h-5 w-5 text-green-600" />
+            📋 Recent Service Activity
+          </CardTitle>
+          <CardDescription>
+            Your child's latest community service submissions and verification status
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {logs.length > 0 ? (
+            <div className="space-y-4">
+              {logs.slice(0, 5).map((log: any) => (
+                <div key={log.id} className="border rounded-lg p-4 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="flex-1">
+                      <h4 className="font-medium text-gray-900 dark:text-white">{log.serviceName}</h4>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">{log.organizationName || 'Organization not specified'}</p>
+                    </div>
+                    <div className="flex flex-col items-end gap-2">
+                      <Badge 
+                        variant={log.verificationStatus === 'verified' ? 'default' : log.verificationStatus === 'pending' ? 'secondary' : 'destructive'}
+                        className="text-xs"
+                      >
+                        {log.verificationStatus === 'verified' ? 'Verified ✅' : 
+                         log.verificationStatus === 'pending' ? 'Pending Review ⏳' : 'Needs Review ⚠️'}
+                      </Badge>
+                      <span className="text-sm font-medium text-blue-600">{log.hoursLogged} hours</span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-gray-700 dark:text-gray-300 mb-2 line-clamp-2">
+                    {log.serviceDescription}
+                  </p>
+                  <div className="flex items-center justify-between text-xs text-gray-500">
+                    <span>{log.category} • {new Date(log.serviceDate).toLocaleDateString()}</span>
+                    {log.parentNotified && (
+                      <span className="flex items-center gap-1 text-green-600">
+                        <CheckCircle className="h-3 w-3" />
+                        Email sent
+                      </span>
+                    )}
+                  </div>
+                  {log.studentReflection && (
+                    <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-sm">
+                      <strong>Student Reflection:</strong> {log.studentReflection}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          ) : (
+            <Alert>
+              <Clock className="h-4 w-4" />
+              <AlertTitle>No Service Hours Yet</AlertTitle>
+              <AlertDescription>
+                Your child hasn't logged any community service hours. Once they do, you'll see their activity here and receive email notifications.
+              </AlertDescription>
+            </Alert>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Parent Actions */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Users className="h-5 w-5 text-purple-600" />
+            👨‍👩‍👧‍👦 Parent Actions
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Alert className="border-blue-200 bg-blue-50 dark:bg-blue-900/10">
+            <Bell className="h-4 w-4 text-blue-600" />
+            <AlertTitle className="text-blue-900 dark:text-blue-100">Email Notifications Active</AlertTitle>
+            <AlertDescription className="text-blue-700 dark:text-blue-200">
+              You'll receive an email every time your child submits service hours for verification. 
+              Total notifications sent: <strong>{notificationsSent}</strong>
+            </AlertDescription>
+          </Alert>
+          
+          <div className="flex flex-wrap gap-2">
+            <Button 
+              variant="outline" 
+              size="sm"
+              onClick={() => window.location.reload()}
+              data-testid="button-refresh-service-hours"
+            >
+              <ArrowLeft className="h-4 w-4 mr-2" />
+              Refresh Data
+            </Button>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              disabled
+              data-testid="button-view-certificates"
+            >
+              <Award className="h-4 w-4 mr-2" />
+              View Certificates (Coming Soon)
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export default function ParentDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'notifications' | 'rewards' | 'insights' | 'sponsors'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'notifications' | 'rewards' | 'service-hours' | 'insights' | 'sponsors'>('overview');
   const [selectedStudent, setSelectedStudent] = useState<string>('');
   const [, navigate] = useLocation();
 
@@ -423,11 +618,15 @@ export default function ParentDashboard() {
 
         {/* Main Dashboard */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="activity">Live Activity</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
             <TabsTrigger value="rewards">Dual Rewards</TabsTrigger>
+            <TabsTrigger value="service-hours">
+              <Shield className="h-4 w-4 mr-1" />
+              Service Hours
+            </TabsTrigger>
             <TabsTrigger value="insights">Insights</TabsTrigger>
             <TabsTrigger value="sponsors">
               <Building2 className="h-4 w-4 mr-1" />
@@ -756,6 +955,11 @@ export default function ParentDashboard() {
                 </Alert>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Service Hours Tab - NEW FEATURE! */}
+          <TabsContent value="service-hours">
+            <ServiceHoursSection />
           </TabsContent>
 
           {/* Insights Tab */}
