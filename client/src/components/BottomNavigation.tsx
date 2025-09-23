@@ -18,6 +18,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'mentor-dashboard', label: 'Mentor', icon: '🌟' },
     { id: 'student-dashboard', label: 'Dashboard', icon: '👨‍🎓' },
     { id: 'summer', label: 'Summer', icon: '🏖️' },
+    { id: 'community-service', label: 'Service', icon: '🏥' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
   ];

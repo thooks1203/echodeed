@@ -22,6 +22,7 @@ import { SupportCircle } from '@/components/SupportCircle';
 import RewardsPage from '@/pages/rewards';
 import { SummerChallenges } from '@/components/SummerChallenges';
 import { SponsorsPage } from '@/components/SponsorsPage';
+import { CommunityService } from '@/components/CommunityService';
 
 interface RewardOffer {
   id: string;
@@ -70,7 +71,7 @@ export default function Home() {
     const tabParam = urlParams.get('tab');
     // Removed debug console log
     
-    if (tabParam && ['feed', 'schools', 'support', 'summer', 'rewards', 'mentor-dashboard', 'student-dashboard'].includes(tabParam)) {
+    if (tabParam && ['feed', 'schools', 'support', 'summer', 'community-service', 'rewards', 'mentor-dashboard', 'student-dashboard'].includes(tabParam)) {
       console.log('✅ Setting activeTab to:', tabParam);
       setActiveTab(tabParam);
       // Remove the tab parameter from URL to keep it clean
@@ -191,6 +192,15 @@ export default function Home() {
     return (
       <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
         <SummerChallenges onBack={handleBackToDashboard} />
+        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
+    );
+  }
+
+  if (activeTab === 'community-service') {
+    return (
+      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+        <CommunityService onBack={handleBackToDashboard} />
         <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
     );
