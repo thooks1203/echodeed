@@ -4,6 +4,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Progress } from '@/components/ui/progress';
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import { 
   Heart, 
   Users, 
@@ -64,6 +66,20 @@ interface FamilyProgress {
   teacherApproved: boolean;
 }
 
+interface SchoolFundraiser {
+  id: string;
+  schoolName: string;
+  campaignName: string;
+  description: string;
+  goalAmount: number;
+  currentAmount: number;
+  startDate: string;
+  endDate: string;
+  isActive: boolean;
+  tokenMultiplier: number;
+  createdAt: string;
+}
+
 interface FamilyDashboardProps {
   familyId?: string;
   studentId?: string;
@@ -80,6 +96,8 @@ export default function FamilyDashboard({
   const [, setLocation] = useLocation();
   const [selectedAgeGroup, setSelectedAgeGroup] = useState<'6-8' | 'family'>('family');
   const [selectedChallenge, setSelectedChallenge] = useState<FamilyChallenge | null>(null);
+  const [selectedFundraiser, setSelectedFundraiser] = useState<SchoolFundraiser | null>(null);
+  const [donationAmount, setDonationAmount] = useState<string>('25');
 
   // Fetch current week and theme
   const { data: currentWeek, isLoading: currentWeekLoading } = useQuery({
@@ -97,6 +115,18 @@ export default function FamilyDashboard({
   const { data: activities, isLoading: activitiesLoading } = useQuery({
     queryKey: ['/api/family-challenges/activities', selectedChallenge?.id],
     enabled: !!selectedChallenge?.id,
+    retry: false,
+  });
+
+  // Fetch active fundraisers for Burlington Christian Academy
+  const { data: fundraisers, isLoading: fundraisersLoading } = useQuery({
+    queryKey: ['/api/fundraisers/active', 'Burlington Christian Academy'],
+    retry: false,
+  });
+
+  // Fetch user's token information for donation calculation
+  const { data: userTokens } = useQuery({
+    queryKey: ['/api/user-tokens', parentId],
     retry: false,
   });
 
@@ -127,6 +157,37 @@ export default function FamilyDashboard({
     },
   });
 
+  // Donation mutation
+  const donateMutation = useMutation({
+    mutationFn: async (data: {
+      fundraiserId: string;
+      donationAmount: number;
+      userTokenId: string;
+    }) => {
+      await apiRequest('POST', `/api/fundraisers/${data.fundraiserId}/donate`, {
+        donationAmount: data.donationAmount,
+        userTokenId: data.userTokenId,
+      });
+    },
+    onSuccess: () => {
+      toast({
+        title: "Donation Successful! 🎉",
+        description: "Thank you for supporting our school! You've earned double tokens for your contribution.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/fundraisers'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/user-tokens'] });
+      setSelectedFundraiser(null);
+      setDonationAmount('25');
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Donation Failed",
+        description: error.message || "Failed to process donation. Please try again.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleCompleteChallenge = (challenge: FamilyChallenge) => {
     completeChallengeMutation.mutate({
       studentId,
@@ -137,7 +198,43 @@ export default function FamilyDashboard({
     });
   };
 
-  if (currentWeekLoading || challengesLoading) {
+  const handleDonation = () => {
+    if (!selectedFundraiser || !userTokens) {
+      toast({
+        title: "Error",
+        description: "Please select a fundraiser and ensure you're logged in.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    const amount = parseFloat(donationAmount);
+    if (isNaN(amount) || amount <= 0) {
+      toast({
+        title: "Invalid Amount",
+        description: "Please enter a valid donation amount.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    donateMutation.mutate({
+      fundraiserId: selectedFundraiser.id,
+      donationAmount: amount,
+      userTokenId: (userTokens as any)?.id || parentId,
+    });
+  };
+
+  const calculateTokens = (amount: number, multiplier: number = 2) => {
+    const baseKidTokens = Math.floor(amount / 10); // $10 = 1 kid token
+    const baseParentTokens = Math.floor(amount / 15); // $15 = 1 parent token
+    return {
+      kidTokens: baseKidTokens * multiplier,
+      parentTokens: baseParentTokens * multiplier,
+    };
+  };
+
+  if (currentWeekLoading || challengesLoading || fundraisersLoading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-4">
         <div className="max-w-7xl mx-auto">
@@ -189,7 +286,7 @@ export default function FamilyDashboard({
                     Week {(currentWeek as any).week}: {
                       typeof (currentWeek as any).theme === 'object' && (currentWeek as any).theme?.theme
                         ? `${(currentWeek as any).theme.emoji || '🌟'} ${(currentWeek as any).theme.theme}`
-                        : ((currentWeek as any).theme as string) || 'Kindness Week'
+                        : String((currentWeek as any).theme || 'Kindness Week')
                     }
                   </h2>
                   <p className="text-blue-100">This week's family kindness theme</p>
@@ -520,59 +617,108 @@ export default function FamilyDashboard({
               </CardHeader>
               <CardContent>
                 <div className="space-y-6">
-                  <div className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h4 className="font-semibold">New Playground Equipment</h4>
-                        <p className="text-sm text-gray-600">Help us build a better playground for all students</p>
-                      </div>
-                      <Badge className="bg-orange-100 text-orange-800">2x Tokens!</Badge>
-                    </div>
-                    
-                    <div className="space-y-2 mb-4">
-                      <div className="flex justify-between text-sm">
-                        <span>Progress</span>
-                        <span>$8,500 of $15,000</span>
-                      </div>
-                      <Progress value={57} className="h-2" />
-                    </div>
+                  {Array.isArray(fundraisers) && fundraisers.length > 0 ? (
+                    fundraisers.map((fundraiser: SchoolFundraiser) => (
+                      <div key={fundraiser.id} className="border rounded-lg p-4">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <h4 className="font-semibold">{fundraiser.campaignName}</h4>
+                            <p className="text-sm text-gray-600">{fundraiser.description}</p>
+                          </div>
+                          <Badge className="bg-orange-100 text-orange-800">{fundraiser.tokenMultiplier}x Tokens!</Badge>
+                        </div>
+                        
+                        <div className="space-y-2 mb-4">
+                          <div className="flex justify-between text-sm">
+                            <span>Progress</span>
+                            <span>${(fundraiser.currentAmount / 100).toLocaleString()} of ${(fundraiser.goalAmount / 100).toLocaleString()}</span>
+                          </div>
+                          <Progress value={(fundraiser.currentAmount / fundraiser.goalAmount) * 100} className="h-2" />
+                        </div>
 
-                    <div className="flex gap-2">
-                      <Button size="sm" className="flex-1" data-testid="button-donate-playground">
-                        Donate Now
-                      </Button>
-                      <Button size="sm" className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0" data-testid="button-learn-more-playground">
-                        Learn More
-                      </Button>
-                    </div>
-                  </div>
-
-                  <div className="border rounded-lg p-4">
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <h4 className="font-semibold">Art Supplies Drive</h4>
-                        <p className="text-sm text-gray-600">Supporting creativity in our classrooms</p>
+                        <div className="flex gap-2">
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button 
+                                size="sm" 
+                                className="flex-1" 
+                                onClick={() => setSelectedFundraiser(fundraiser)}
+                                data-testid={`button-donate-${fundraiser.id}`}
+                              >
+                                Donate Now
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[425px]">
+                              <DialogHeader>
+                                <DialogTitle>Donate to {fundraiser.campaignName}</DialogTitle>
+                                <DialogDescription>
+                                  {fundraiser.description}
+                                </DialogDescription>
+                              </DialogHeader>
+                              <div className="space-y-4 py-4">
+                                <div className="space-y-2">
+                                  <label htmlFor="amount" className="text-sm font-medium">Donation Amount ($)</label>
+                                  <Input
+                                    id="amount"
+                                    type="number"
+                                    value={donationAmount}
+                                    onChange={(e) => setDonationAmount(e.target.value)}
+                                    placeholder="25.00"
+                                    min="1"
+                                    step="1"
+                                    data-testid="input-donation-amount"
+                                  />
+                                </div>
+                                
+                                {donationAmount && !isNaN(parseFloat(donationAmount)) && (
+                                  <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg">
+                                    <h4 className="font-semibold mb-2 text-green-800">You'll Earn (Double Tokens!) 🎁</h4>
+                                    <div className="grid grid-cols-2 gap-4">
+                                      <div className="text-center">
+                                        <div className="text-2xl font-bold text-blue-600">
+                                          {calculateTokens(parseFloat(donationAmount), fundraiser.tokenMultiplier).kidTokens}
+                                        </div>
+                                        <div className="text-sm text-gray-600">Kid Tokens</div>
+                                      </div>
+                                      <div className="text-center">
+                                        <div className="text-2xl font-bold text-purple-600">
+                                          {calculateTokens(parseFloat(donationAmount), fundraiser.tokenMultiplier).parentTokens}
+                                        </div>
+                                        <div className="text-sm text-gray-600">Parent Tokens</div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                <Button 
+                                  onClick={handleDonation} 
+                                  disabled={donateMutation.isPending || !donationAmount}
+                                  className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
+                                  data-testid="button-confirm-donation"
+                                >
+                                  {donateMutation.isPending ? 'Processing...' : `Donate $${donationAmount}`}
+                                </Button>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0" 
+                            data-testid={`button-learn-more-${fundraiser.id}`}
+                          >
+                            Learn More
+                          </Button>
+                        </div>
                       </div>
-                      <Badge className="bg-orange-100 text-orange-800">2x Tokens!</Badge>
+                    ))
+                  ) : (
+                    <div className="text-center py-8 text-gray-500">
+                      <DollarSign className="h-12 w-12 mx-auto mb-4 text-gray-300" />
+                      <p className="text-lg font-medium">No Active Fundraisers</p>
+                      <p className="text-sm">Check back soon for new school fundraising campaigns!</p>
                     </div>
-                    
-                    <div className="space-y-2 mb-4">
-                      <div className="flex justify-between text-sm">
-                        <span>Progress</span>
-                        <span>$2,100 of $3,000</span>
-                      </div>
-                      <Progress value={70} className="h-2" />
-                    </div>
-
-                    <div className="flex gap-2">
-                      <Button size="sm" className="flex-1" data-testid="button-donate-art">
-                        Donate Now
-                      </Button>
-                      <Button size="sm" className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0" data-testid="button-learn-more-art">
-                        Learn More
-                      </Button>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
