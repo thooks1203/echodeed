@@ -34,7 +34,8 @@ import {
   CheckCircle,
   XCircle,
   User,
-  LogOut
+  LogOut,
+  ChevronDown
 } from 'lucide-react';
 
 interface SchoolAdmin {
@@ -629,10 +630,15 @@ export default function AdminDashboard() {
           {/* User Menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="outline" className="flex items-center gap-2" data-testid="user-menu">
+              <Button 
+                variant="outline" 
+                className="flex items-center gap-2 hover:bg-purple-50 hover:border-purple-300 transition-colors" 
+                data-testid="user-menu"
+              >
                 <User className="w-4 h-4" />
-                {user?.name}
+                <span className="font-medium">{user?.name}</span>
                 <span className="text-xs text-muted-foreground">({user?.schoolRole})</span>
+                <ChevronDown className="w-3 h-3 ml-1 text-muted-foreground" />
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-64">
