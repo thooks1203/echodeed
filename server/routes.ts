@@ -8866,6 +8866,89 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // =======================================
+  // 👨‍👩‍👧‍👦 PARENT COMMUNITY SERVICE ENDPOINTS
+  // =======================================
+  
+  // Get child's service hours for parent dashboard (Demo: Parent views child's service history)
+  app.get('/api/community-service/parent/:parentId/child/:childId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { parentId, childId } = req.params;
+      console.log(`📊 Parent ${parentId} requesting service hours for child ${childId}`);
+      
+      const { communityServiceEngine } = await import('./services/communityServiceEngine');
+      const [summary, logs] = await Promise.all([
+        communityServiceEngine.getStudentServiceSummary(childId),
+        communityServiceEngine.getStudentServiceLogs(childId, 50)
+      ]);
+      
+      res.json({
+        student: { id: childId },
+        summary,
+        recentLogs: logs,
+        parentNotifications: logs.filter((log: any) => log.parentNotified),
+        totalNotificationsSent: logs.filter((log: any) => log.parentNotified).length
+      });
+    } catch (error) {
+      console.error('Failed to get child service hours for parent:', error);
+      res.status(500).json({ error: 'Failed to get child service hours' });
+    }
+  });
+  
+  // Get all children's service hours for a parent (Multi-child families)
+  app.get('/api/community-service/parent/:parentId/all-children', isAuthenticated, async (req: any, res) => {
+    try {
+      const { parentId } = req.params;
+      console.log(`👨‍👩‍👧‍👦 Parent ${parentId} requesting all children's service hours`);
+      
+      // For demo purposes, assume parent has access to specific child IDs
+      // In production, this would query based on parent-child relationships
+      const demoChildIds = ['tf-sarah']; // Demo data - in production, would be actual child IDs
+      
+      const { communityServiceEngine } = await import('./services/communityServiceEngine');
+      const childrenData = await Promise.all(
+        demoChildIds.map(async (childId) => {
+          const [summary, logs] = await Promise.all([
+            communityServiceEngine.getStudentServiceSummary(childId),
+            communityServiceEngine.getStudentServiceLogs(childId, 10)
+          ]);
+          return {
+            studentId: childId,
+            summary,
+            recentActivity: logs.slice(0, 3), // Show 3 most recent
+            pendingVerifications: logs.filter((log: any) => log.verificationStatus === 'pending').length
+          };
+        })
+      );
+      
+      res.json({ children: childrenData });
+    } catch (error) {
+      console.error('Failed to get all children service hours for parent:', error);
+      res.status(500).json({ error: 'Failed to get children service hours' });
+    }
+  });
+  
+  // Parent verification of service hours (when parent acts as verifier)
+  app.post('/api/community-service/parent-verify', isAuthenticated, async (req: any, res) => {
+    try {
+      console.log('👨‍👩‍👧‍👦 Parent verification request:', req.body);
+      
+      const verificationData = {
+        ...req.body,
+        verifierType: 'parent' as const
+      };
+      
+      const { communityServiceEngine } = await import('./services/communityServiceEngine');
+      const verification = await communityServiceEngine.verifyServiceHours(verificationData);
+      
+      console.log('✅ Parent verification completed:', verification);
+      res.json(verification);
+    } catch (error) {
+      console.error('Failed to complete parent verification:', error);
+      res.status(500).json({ error: 'Failed to complete parent verification' });
+    }
+  });
+
   // ===============================
   // 🎯 SCHOOL FUNDRAISER ENDPOINTS - DOUBLE TOKEN REWARDS! 
   // ===============================
