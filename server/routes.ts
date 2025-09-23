@@ -8784,6 +8784,88 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // =======================================
+  // COMMUNITY SERVICE HOURS TRACKING ROUTES 🏥📊
+  // =======================================
+
+  // Log community service hours
+  app.post('/api/community-service/log', isAuthenticated, async (req: any, res) => {
+    try {
+      const { communityServiceEngine } = await import('./services/communityServiceEngine');
+      const serviceLog = await communityServiceEngine.logServiceHours(req.body);
+      res.json(serviceLog);
+    } catch (error) {
+      console.error('Failed to log service hours:', error);
+      res.status(500).json({ error: 'Failed to log service hours' });
+    }
+  });
+
+  // Get student's community service summary
+  app.get('/api/community-service/summary/:userId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const { communityServiceEngine } = await import('./services/communityServiceEngine');
+      const summary = await communityServiceEngine.getStudentServiceSummary(userId);
+      res.json(summary);
+    } catch (error) {
+      console.error('Failed to get service summary:', error);
+      res.status(500).json({ error: 'Failed to get service summary' });
+    }
+  });
+
+  // Get student's service log history
+  app.get('/api/community-service/logs/:userId', isAuthenticated, async (req: any, res) => {
+    try {
+      const { userId } = req.params;
+      const limit = parseInt(req.query.limit as string) || 20;
+      const { communityServiceEngine } = await import('./services/communityServiceEngine');
+      const logs = await communityServiceEngine.getStudentServiceLogs(userId, limit);
+      res.json(logs);
+    } catch (error) {
+      console.error('Failed to get service logs:', error);
+      res.status(500).json({ error: 'Failed to get service logs' });
+    }
+  });
+
+  // Verify service hours (teachers/parents)
+  app.post('/api/community-service/verify', requireTeacherRole, async (req: any, res) => {
+    try {
+      const { communityServiceEngine } = await import('./services/communityServiceEngine');
+      const verification = await communityServiceEngine.verifyServiceHours(req.body);
+      res.json(verification);
+    } catch (error) {
+      console.error('Failed to verify service hours:', error);
+      res.status(500).json({ error: 'Failed to verify service hours' });
+    }
+  });
+
+  // Get pending verifications for teachers/admins
+  app.get('/api/community-service/pending-verifications', requireTeacherRole, async (req: any, res) => {
+    try {
+      const schoolId = req.query.schoolId as string;
+      const verifierType = req.query.verifierType as string;
+      const { communityServiceEngine } = await import('./services/communityServiceEngine');
+      const pending = await communityServiceEngine.getPendingVerifications(schoolId, verifierType);
+      res.json(pending);
+    } catch (error) {
+      console.error('Failed to get pending verifications:', error);
+      res.status(500).json({ error: 'Failed to get pending verifications' });
+    }
+  });
+
+  // Generate school service report
+  app.get('/api/community-service/school-report/:schoolId', requireSchoolAccess, async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      const { communityServiceEngine } = await import('./services/communityServiceEngine');
+      const report = await communityServiceEngine.generateSchoolServiceReport(schoolId);
+      res.json(report);
+    } catch (error) {
+      console.error('Failed to generate school service report:', error);
+      res.status(500).json({ error: 'Failed to generate school service report' });
+    }
+  });
+
   // ===============================
   // 🎯 SCHOOL FUNDRAISER ENDPOINTS - DOUBLE TOKEN REWARDS! 
   // ===============================
