@@ -1892,6 +1892,122 @@ export const insertSchoolFundraiserSchema = createInsertSchema(schoolFundraisers
   });
 export const insertFamilyDonationSchema = createInsertSchema(familyDonations);
 
+// ==========================================
+// YEAR-ROUND SCHOOL CHALLENGES & COMMUNITY SERVICE SYSTEM
+// ==========================================
+
+// Year-Round School Challenges (September-May) - Individual student challenges
+export const schoolYearChallenges = pgTable("school_year_challenges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  week: integer("week").notNull(), // Week 1-36 for school year (Sept-May)
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description").notNull(),
+  theme: varchar("theme", { length: 50 }).notNull(), // "leadership", "empathy", "community_action", "peer_support"
+  category: varchar("category", { length: 50 }).notNull(), // "kindness", "leadership", "community_service", "academic_support"
+  difficulty: varchar("difficulty", { length: 20 }).notNull(), // "easy", "medium", "hard"
+  points: integer("points").default(10), // 10-25 points based on difficulty
+  gradeLevel: varchar("grade_level", { length: 10 }).notNull(), // "6-8", "9-12" (expanding to high school!)
+  timeEstimate: integer("time_estimate_minutes").default(30), // Expected completion time
+  isActive: boolean("is_active").default(true),
+  seasonalFocus: varchar("seasonal_focus", { length: 20 }), // "fall", "winter", "spring", null for general
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Student progress on year-round school challenges
+export const schoolYearProgress = pgTable("school_year_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  challengeId: varchar("challenge_id").notNull().references(() => schoolYearChallenges.id),
+  completedAt: timestamp("completed_at"),
+  pointsEarned: integer("points_earned").default(0),
+  studentReflection: text("student_reflection"), // Student's reflection on what they learned
+  photoEvidence: text("photo_evidence"), // Optional photo URL
+  teacherApproved: boolean("teacher_approved").default(false),
+  teacherFeedback: text("teacher_feedback"), // Teacher comments and approval notes
+  parentNotified: boolean("parent_notified").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Community Service Hours Tracking System
+export const communityServiceLogs = pgTable("community_service_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id"), // Link to school for school-wide tracking
+  serviceName: varchar("service_name", { length: 200 }).notNull(), // "Food Bank Volunteer", "Library Helper"
+  serviceDescription: text("service_description").notNull(), // What did they do?
+  organizationName: varchar("organization_name", { length: 200 }), // "Burlington Food Pantry", "Boys & Girls Club"
+  contactPerson: varchar("contact_person", { length: 100 }), // Supervisor contact
+  contactEmail: varchar("contact_email", { length: 200 }), // For verification
+  contactPhone: varchar("contact_phone", { length: 20 }), // For verification
+  hoursLogged: decimal("hours_logged", { precision: 4, scale: 2 }).notNull(), // 2.5 hours, etc.
+  serviceDate: timestamp("service_date").notNull(), // When did they serve?
+  location: varchar("location", { length: 200 }), // Service location
+  category: varchar("category", { length: 50 }).default("general"), // "environmental", "elderly_care", "education", "food_service", "animal_care"
+  studentReflection: text("student_reflection").notNull(), // Required reflection on experience
+  photoEvidence: text("photo_evidence"), // Optional photo URL
+  verificationStatus: varchar("verification_status", { length: 20 }).default("pending"), // "pending", "approved", "rejected", "needs_info"
+  verifiedBy: varchar("verified_by"), // Teacher/admin who verified
+  verifiedAt: timestamp("verified_at"),
+  verificationNotes: text("verification_notes"), // Verification comments
+  tokensEarned: integer("tokens_earned").default(0), // 5 tokens per verified hour
+  parentNotified: boolean("parent_notified").default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// Community Service Verification System
+export const serviceVerifications = pgTable("service_verifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceLogId: varchar("service_log_id").notNull().references(() => communityServiceLogs.id),
+  verifierType: varchar("verifier_type", { length: 20 }).notNull(), // "teacher", "parent", "organization", "peer"
+  verifierId: varchar("verifier_id").notNull(), // User ID of person verifying
+  verificationMethod: varchar("verification_method", { length: 30 }).notNull(), // "photo", "form", "interview", "organization_contact"
+  status: varchar("status", { length: 20 }).default("pending"), // "pending", "approved", "rejected"
+  feedback: text("feedback"), // Verifier comments
+  requestedChanges: text("requested_changes"), // What needs to be updated?
+  followUpRequired: boolean("follow_up_required").default(false),
+  verifiedAt: timestamp("verified_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Student Community Service Totals (for easy reporting)
+export const studentServiceSummaries = pgTable("student_service_summaries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique().references(() => users.id),
+  schoolId: varchar("school_id"),
+  gradeLevel: varchar("grade_level", { length: 10 }), // "6", "7", "8", "9", "10", "11", "12"
+  totalHoursCompleted: decimal("total_hours_completed", { precision: 6, scale: 2 }).default(sql`0.00`),
+  totalHoursVerified: decimal("total_hours_verified", { precision: 6, scale: 2 }).default(sql`0.00`),
+  totalHoursPending: decimal("total_hours_pending", { precision: 6, scale: 2 }).default(sql`0.00`),
+  schoolYearGoal: decimal("school_year_goal", { precision: 4, scale: 2 }).default(sql`30.00`), // 30+ hour requirement
+  goalProgress: decimal("goal_progress", { precision: 5, scale: 2 }).default(sql`0.00`), // Percentage toward goal
+  tokensEarnedFromService: integer("tokens_earned_from_service").default(0),
+  lastServiceDate: timestamp("last_service_date"),
+  currentStreak: integer("current_streak").default(0), // Days with consecutive service
+  longestStreak: integer("longest_streak").default(0),
+  updatedAt: timestamp("updated_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Insert schemas for new tables
+export const insertSchoolYearChallengeSchema = createInsertSchema(schoolYearChallenges);
+export const insertSchoolYearProgressSchema = createInsertSchema(schoolYearProgress);
+export const insertCommunityServiceLogSchema = createInsertSchema(communityServiceLogs);
+export const insertServiceVerificationSchema = createInsertSchema(serviceVerifications);
+export const insertStudentServiceSummarySchema = createInsertSchema(studentServiceSummaries);
+
+// Types for new tables
+export type SchoolYearChallenge = typeof schoolYearChallenges.$inferSelect;
+export type InsertSchoolYearChallenge = typeof schoolYearChallenges.$inferInsert;
+export type SchoolYearProgress = typeof schoolYearProgress.$inferSelect;
+export type InsertSchoolYearProgress = typeof schoolYearProgress.$inferInsert;
+export type CommunityServiceLog = typeof communityServiceLogs.$inferSelect;
+export type InsertCommunityServiceLog = typeof communityServiceLogs.$inferInsert;
+export type ServiceVerification = typeof serviceVerifications.$inferSelect;
+export type InsertServiceVerification = typeof serviceVerifications.$inferInsert;
+export type StudentServiceSummary = typeof studentServiceSummaries.$inferSelect;
+export type InsertStudentServiceSummary = typeof studentServiceSummaries.$inferInsert;
+
 // ===============================
 // 🎓 KINDNESS MENTORS SYSTEM - PEER GUIDANCE & RECOGNITION! 
 // ===============================
