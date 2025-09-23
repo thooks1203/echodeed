@@ -247,7 +247,7 @@ export default function FamilyDashboard({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-3 sm:p-4 pb-[calc(env(safe-area-inset-bottom)+88px)] overflow-x-hidden max-w-full">
       <div className="max-w-7xl mx-auto">
         {/* Back Button */}
         <div className="mb-6">
@@ -262,16 +262,16 @@ export default function FamilyDashboard({
         </div>
 
         {/* Header */}
-        <header className="text-center mb-8">
-          <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-3 rounded-full">
-              <Home className="h-8 w-8 text-white" />
+        <header className="text-center mb-4 sm:mb-8">
+          <div className="flex items-center justify-center gap-2 sm:gap-3 mb-2 sm:mb-4">
+            <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-2 sm:p-3 rounded-full">
+              <Home className="h-6 w-6 sm:h-8 sm:w-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
               Family Kindness Hub
             </h1>
           </div>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-sm sm:text-lg text-gray-600 max-w-2xl mx-auto px-2">
             Where families earn kindness tokens together! Complete challenges as a team and watch your dual rewards grow.
           </p>
         </header>
@@ -326,30 +326,38 @@ export default function FamilyDashboard({
           </CardContent>
         </Card>
 
-        <Tabs defaultValue="challenges" className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="challenges">Current Challenges</TabsTrigger>
-            <TabsTrigger value="progress">Family Progress</TabsTrigger>
-            <TabsTrigger value="rewards">Dual Rewards</TabsTrigger>
-            <TabsTrigger value="fundraising">School Fundraising</TabsTrigger>
+        <Tabs defaultValue="challenges" className="space-y-3 sm:space-y-6">
+          <TabsList className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 snap-x snap-mandatory sm:mx-0 sm:px-0 sm:grid sm:grid-cols-4 sm:gap-0">
+            <TabsTrigger value="challenges" className="shrink-0 snap-start whitespace-nowrap text-xs px-3 py-2 rounded-full sm:text-sm sm:py-2 sm:px-4 sm:rounded-md">
+              Current
+            </TabsTrigger>
+            <TabsTrigger value="progress" className="shrink-0 snap-start whitespace-nowrap text-xs px-3 py-2 rounded-full sm:text-sm sm:py-2 sm:px-4 sm:rounded-md">
+              Progress
+            </TabsTrigger>
+            <TabsTrigger value="rewards" className="shrink-0 snap-start whitespace-nowrap text-xs px-3 py-2 rounded-full sm:text-sm sm:py-2 sm:px-4 sm:rounded-md">
+              Rewards
+            </TabsTrigger>
+            <TabsTrigger value="fundraising" className="shrink-0 snap-start whitespace-nowrap text-xs px-3 py-2 rounded-full sm:text-sm sm:py-2 sm:px-4 sm:rounded-md">
+              School
+            </TabsTrigger>
           </TabsList>
 
           {/* Current Challenges Tab */}
-          <TabsContent value="challenges" className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <TabsContent value="challenges" className="space-y-3 sm:space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-6">
               {Array.isArray(challenges) && challenges.map((challenge: FamilyChallenge) => (
                 <Card key={challenge.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-lg">{challenge.title}</CardTitle>
-                      <Badge variant={challenge.difficulty === 'easy' ? 'secondary' : challenge.difficulty === 'medium' ? 'default' : 'destructive'}>
+                  <CardHeader className="p-4 sm:p-6">
+                    <div className="flex justify-between items-start gap-2">
+                      <CardTitle className="text-base sm:text-lg break-words hyphens-auto flex-1 min-w-0">{challenge.title}</CardTitle>
+                      <Badge variant={challenge.difficulty === 'easy' ? 'secondary' : challenge.difficulty === 'medium' ? 'default' : 'destructive'} className="shrink-0">
                         {String(challenge.difficulty)}
                       </Badge>
                     </div>
-                    <CardDescription>{challenge.description}</CardDescription>
+                    <CardDescription className="break-words text-sm">{challenge.description}</CardDescription>
                   </CardHeader>
-                  <CardContent>
-                    <div className="space-y-4">
+                  <CardContent className="p-4 sm:p-6 pt-0">
+                    <div className="space-y-3 sm:space-y-4">
                       <div className="flex justify-between items-center">
                         <span className="text-sm text-gray-600">Theme:</span>
                         <Badge variant="outline">{challenge.theme}</Badge>
@@ -629,14 +637,14 @@ export default function FamilyDashboard({
                         </div>
                         
                         <div className="space-y-2 mb-4">
-                          <div className="flex justify-between text-sm">
+                          <div className="flex flex-col sm:flex-row sm:justify-between gap-1 text-sm">
                             <span>Progress</span>
-                            <span>${(fundraiser.currentAmount / 100).toLocaleString()} of ${(fundraiser.goalAmount / 100).toLocaleString()}</span>
+                            <span className="font-medium">${(fundraiser.currentAmount / 100).toLocaleString()} of ${(fundraiser.goalAmount / 100).toLocaleString()}</span>
                           </div>
                           <Progress value={(fundraiser.currentAmount / fundraiser.goalAmount) * 100} className="h-2" />
                         </div>
 
-                        <div className="flex gap-2">
+                        <div className="flex flex-wrap gap-2">
                           <Dialog>
                             <DialogTrigger asChild>
                               <Button 
@@ -648,7 +656,7 @@ export default function FamilyDashboard({
                                 Donate Now
                               </Button>
                             </DialogTrigger>
-                            <DialogContent className="sm:max-w-[425px]">
+                            <DialogContent className="w-[92vw] max-w-none sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
                               <DialogHeader>
                                 <DialogTitle>Donate to {fundraiser.campaignName}</DialogTitle>
                                 <DialogDescription>
@@ -693,7 +701,7 @@ export default function FamilyDashboard({
                                 <Button 
                                   onClick={handleDonation} 
                                   disabled={donateMutation.isPending || !donationAmount}
-                                  className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700"
+                                  className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-sm sm:text-base"
                                   data-testid="button-confirm-donation"
                                 >
                                   {donateMutation.isPending ? 'Processing...' : `Donate $${donationAmount}`}
