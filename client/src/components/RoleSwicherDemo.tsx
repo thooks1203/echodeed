@@ -18,7 +18,7 @@ export function RoleSwitcherDemo() {
   };
 
   return (
-    <div style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 1000 }}>
+    <div style={{ position: 'fixed', top: '10px', left: '50%', transform: 'translateX(-50%)', zIndex: 1000 }}>
       <button
         onClick={() => setShowDropdown(!showDropdown)}
         style={{
@@ -41,7 +41,8 @@ export function RoleSwitcherDemo() {
         <div style={{
           position: 'absolute',
           top: '100%',
-          right: '0',
+          left: '50%',
+          transform: 'translateX(-50%)',
           marginTop: '4px',
           background: 'white',
           borderRadius: '8px',
