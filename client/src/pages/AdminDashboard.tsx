@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { useAuth, switchDemoRole, getDemoRoles } from '@/hooks/useAuth';
 import { Progress } from '@/components/ui/progress';
+import { RoleSwitcherDemo } from '@/components/RoleSwicherDemo';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { 
@@ -1086,6 +1087,7 @@ export default function AdminDashboard() {
           </Card>
         </TabsContent>
       </Tabs>
+      <RoleSwitcherDemo />
     </div>
   );
 }
