@@ -7,12 +7,8 @@ export function RoleSwitcherDemo() {
   const { user, isAuthenticated } = useAuth();
   const demoRoles = getDemoRoles();
 
-  // Debug logging
-  console.log('RoleSwitcherDemo:', { user, isAuthenticated, demoRoles });
-
   // Don't render if no user is authenticated
   if (!isAuthenticated || !user) {
-    console.log('RoleSwitcherDemo: Not rendering - no auth or user');
     return null;
   }
 
