@@ -98,65 +98,101 @@ EchoDeed™ offers corporate sponsors an unprecedented opportunity: **direct acc
 
 ### Local Burlington Partners (Tier 1)
 
-**Community Champion: $2,000/month**
-- **Perfect for:** Local Burlington businesses
-- **Reach:** 500-1,000 families across 5 pilot schools
+**Pilot Partner: $200/month + up to $300 rewards = $500 total maximum**
+- **Perfect for:** Local Burlington businesses (small restaurants, services)
+- **Reach:** 200-400 families across 2-3 pilot schools
+- **Reward Cap:** Maximum 30 redemptions per month (automatically paused when reached)
 - **Benefits:**
-  - Logo placement on all student kindness celebrations
-  - Monthly featured reward offering (gift cards, experiences)
-  - Parent notification inclusion: "Sponsored by [Company]"
-  - Quarterly impact report with family engagement metrics
-- **ROI Estimate:** $0.33-0.67 per family reached monthly
+  - Logo placement on student kindness celebrations
+  - Monthly featured reward offering (up to $10 value each)
+  - "Proudly sponsored by [Company]" in parent notifications
+  - Basic monthly engagement report
+- **ROI Estimate:** $1.25-2.50 per family reached monthly
+- **Example:** Sir Pizza provides 30 kids meal vouchers ($8 each = $240) + $200 sponsorship
 
-**Burlington Business Leader: $3,500/month**
-- **Perfect for:** Established local companies (Sir Pizza, Burlington Chamber members)
-- **Reach:** 1,000-2,000 families across 10 schools
+**Community Champion: $400/month + up to $600 rewards = $1,000 total maximum**
+- **Perfect for:** Established local companies (larger restaurants, Burlington Chamber members)
+- **Reach:** 400-800 families across 3-5 pilot schools  
+- **Reward Cap:** Maximum 50 redemptions per month (automatically paused when reached)
 - **Benefits:**
   - Featured sponsor status in parent dashboard
-  - Custom reward offerings (family dining, local experiences)
+  - Custom reward offerings (family dining, local experiences up to $12 value each)
   - Monthly newsletter sponsorship to parent community
-  - Co-branded content creation opportunities
+  - Co-branded social media content opportunities
   - VIP access to school partnership events
-- **ROI Estimate:** $0.29-0.58 per family reached monthly
+- **ROI Estimate:** $1.25-2.50 per family reached monthly
+- **Example:** Chick-fil-A provides 50 sandwich vouchers ($8 each = $400) + $400 sponsorship
 
 ### Regional Partners (Tier 2)
 
-**Regional Family Partner: $7,500/month**
-- **Perfect for:** Regional chains and mid-size companies
-- **Reach:** 5,000-10,000 families across 25 schools
+**Regional Partner: $800/month + up to $1,200 rewards = $2,000 total maximum**
+- **Perfect for:** Regional chains and mid-size companies (after pilot success)
+- **Reach:** 800-1,500 families across 8-12 schools
+- **Reward Cap:** Maximum 100 redemptions per month (automatically paused when reached)
 - **Benefits:**
-  - All Tier 1 benefits plus:
+  - All Community Champion benefits plus:
   - Custom landing page for EchoDeed families
-  - Exclusive reward categories (education, family experiences)
+  - Exclusive reward categories (education, family experiences up to $12 value each)
   - Monthly sponsored family challenge themes
-  - Direct email marketing to opted-in parent database
+  - Basic email marketing to opted-in parent database
   - Quarterly family survey access for market research
-- **ROI Estimate:** $0.25-0.50 per family reached monthly
+- **ROI Estimate:** $1.33-2.50 per family reached monthly
+- **Example:** Food Lion provides 100 family grocery vouchers ($10 each = $1,000) + $800 sponsorship
 
 ### National Partners (Tier 3)
 
-**National Family Brand: $15,000/month**
-- **Perfect for:** Major family-focused brands (Target, Amazon, Scholastic)
-- **Reach:** 10,000+ families across 50+ schools
+**National Brand Partner: $2,000/month + up to $3,000 rewards = $5,000 total maximum**
+- **Perfect for:** Major family-focused brands (Target, Scholastic, Amazon) - Post-Pilot Phase
+- **Reach:** 2,000-4,000 families across 20+ schools
+- **Reward Cap:** Maximum 250 redemptions per month (automatically paused when reached)
 - **Benefits:**
-  - All previous tier benefits plus:
+  - All Regional Partner benefits plus:
   - Platform integration (custom rewards interface)
-  - National brand visibility across all EchoDeed schools
+  - Brand visibility across all EchoDeed schools in program
   - Priority access to expansion markets
   - Custom family engagement research and insights
   - Co-creation of kindness curriculum tied to brand values
-  - White-label family engagement solutions for employee programs
-- **ROI Estimate:** $0.15-0.30 per family reached monthly
+- **ROI Estimate:** $1.25-2.50 per family reached monthly
+- **Example:** Target provides 250 education gift cards ($10 each = $2,500) + $2,000 sponsorship
 
-### Premium Enterprise Partnership: $25,000/month
-- **Perfect for:** Fortune 500 companies with major CSR initiatives
+### Premium Enterprise Partnership: $5,000/month + up to $10,000 rewards = $15,000 total maximum
+- **Perfect for:** Fortune 500 companies with major CSR initiatives - Future Expansion Phase
+- **Reach:** 5,000+ families across 50+ schools nationwide
+- **Reward Cap:** Maximum 800 redemptions per month (automatically paused when reached)
 - **Custom Benefits:**
   - Exclusive category sponsorship (technology, education, wellness)
   - Platform co-branding opportunities
   - Employee family program integration
   - National expansion partnership rights
   - Custom research and impact measurement
-  - Board advisory position for platform development
+  - Advisory position for platform development
+- **ROI Estimate:** $1.50-3.00 per family reached monthly
+
+---
+
+## 🛡️ Sponsor Budget Protection System
+
+### Automatic Redemption Management
+- **Real-time tracking** of reward redemptions for each sponsor
+- **Automatic pause** when monthly redemption cap is reached
+- **Clear messaging** to families: "This reward will be available again next month"
+- **Email alerts** to sponsors at 75% and 100% of redemption cap
+
+### Predictable Monthly Costs
+- **Fixed sponsorship fee** + **capped reward costs** = **guaranteed maximum**
+- **No surprise charges** or unlimited liability for sponsors
+- **Budget-friendly** for local businesses with limited marketing budgets
+
+### Smart Reward Distribution
+- **Early month availability** ensures fair access across all families
+- **Token cost balancing** prevents immediate cap exhaustion
+- **Mix of low/high value rewards** to maximize participation while controlling costs
+
+### Sponsor Dashboard Features
+- **Live redemption counter** showing remaining monthly rewards
+- **Family engagement metrics** with real-time updates
+- **Monthly impact reports** with ROI analysis
+- **One-click reward renewal** for following month
 
 ---
 
