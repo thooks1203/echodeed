@@ -305,6 +305,18 @@ export default function Home() {
         onBack={handleBackToDashboard}
       />
       
+      {/* Visible Debug Info */}
+      <div style={{ 
+        backgroundColor: '#fff3cd', 
+        border: '1px solid #ffeaa7', 
+        padding: '10px', 
+        margin: '10px',
+        borderRadius: '5px',
+        fontSize: '12px'
+      }}>
+        🐛 <strong>Debug:</strong> Tab="{activeTab}" | User="{user?.name}" | Role="{user?.schoolRole}" | Posts={posts?.length} | Loading={postsLoading ? 'YES' : 'NO'}
+      </div>
+      
       <div style={{ paddingBottom: '140px' }}>
         <FilterBar 
           activeFilter={activeFilter} 
