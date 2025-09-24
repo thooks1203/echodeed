@@ -13,7 +13,11 @@ interface AuthUser {
 // Mock user data for different roles (for development/testing)
 const MOCK_USERS: Record<string, AuthUser> = {
   student: {
-    id: 'tf-sarah',
+    id: 'student-' + (sessionStorage.getItem('echodeed_student_id') || (() => {
+      const uniqueId = 'student-' + Date.now().toString(36) + Math.random().toString(36).substr(2);
+      sessionStorage.setItem('echodeed_student_id', uniqueId);
+      return uniqueId;
+    })()),
     name: 'Sarah Chen',
     email: 'sarah@techflow.com',
     schoolRole: 'student',

@@ -1571,9 +1571,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         let demoTotalEarned = 0;
         
         // Demo users get different realistic balances to show engagement variety
-        if (userId === 'tf-sarah') {
-          demoBalance = 67;  // Sarah has earned more tokens
-          demoTotalEarned = 344; // She's redeemed some rewards (250 tokens spent for 2 items)
+        if (userId.startsWith('student-')) {
+          demoBalance = 67;  // Student has earned tokens from service hours
+          demoTotalEarned = 344; // They've earned tokens and may have redeemed some rewards
         } else if (userId === 'teacher-001') {
           demoBalance = 45;  // Ms. Wilson has moderate balance
           demoTotalEarned = 45; // Hasn't redeemed rewards yet
