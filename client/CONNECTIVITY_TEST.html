@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>EchoDeed Connectivity Test</title>
+    <style>
+        body { 
+            background: linear-gradient(45deg, lime, purple); 
+            color: white; 
+            font-size: 32px; 
+            text-align: center; 
+            padding: 100px; 
+            font-family: Arial;
+        }
+    </style>
+</head>
+<body>
+    <h1>🚀 CONNECTIVITY TEST SUCCESS!</h1>
+    <p>If you see this colorful page, you're connected to the RIGHT server!</p>
+    <p>Time: <span id="time"></span></p>
+    <p>Random: <span id="random"></span></p>
+    
+    <script>
+        document.getElementById('time').innerText = new Date().toLocaleString();
+        document.getElementById('random').innerText = Math.random().toString(36);
+        
+        // Change colors every second to prove it's live
+        setInterval(() => {
+            document.body.style.background = `linear-gradient(45deg, 
+                hsl(${Math.random()*360}, 70%, 50%), 
+                hsl(${Math.random()*360}, 70%, 50%))`;
+        }, 1000);
+    </script>
+</body>
+</html>
