@@ -5,6 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
@@ -83,9 +84,23 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
   const [activeTab, setActiveTab] = useState('overview');
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
-  // Demo user ID (in real app, get from auth context)
-  const userId = 'tf-sarah'; // Sarah Chen from demo
+  // Use authenticated user ID
+  const userId = user?.id;
+  
+  // Don't render if no user is authenticated
+  if (!user || !userId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 p-4">
+        <Card className="max-w-md mx-auto mt-20">
+          <CardContent className="p-8 text-center">
+            <p className="text-lg text-gray-600 dark:text-gray-300">Please log in to access community service features.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   // Form setup
   const form = useForm<ServiceLogForm>({
@@ -140,8 +155,12 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
         description: 'Your community service has been submitted for verification. You\'ll receive tokens once approved.',
       });
       form.reset();
+      // Invalidate community service queries
       queryClient.invalidateQueries({ queryKey: ['/api/community-service/summary'] });
       queryClient.invalidateQueries({ queryKey: ['/api/community-service/logs'] });
+      // Invalidate token balance and rewards data
+      queryClient.invalidateQueries({ queryKey: ['/api', 'tokens'] });
+      queryClient.invalidateQueries({ queryKey: ['/api', 'rewards'] });
       setActiveTab('history');
     },
     onError: (error: any) => {
