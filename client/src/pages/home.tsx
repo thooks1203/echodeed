@@ -107,6 +107,14 @@ export default function Home() {
   });
 
   // Debug React Query state
+  console.log('🐛 Feed Debug:', { 
+    postsLoading, 
+    postsLength: posts?.length, 
+    error: error?.message, 
+    status,
+    activeTab,
+    user: user?.name 
+  });
 
   const { data: counter } = useQuery<KindnessCounter>({
     queryKey: ['/api/counter'],
