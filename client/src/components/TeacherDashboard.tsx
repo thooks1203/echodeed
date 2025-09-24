@@ -233,7 +233,7 @@ export function TeacherDashboard() {
         </div>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview" className="flex items-center gap-1">
               <BarChart3 className="w-4 h-4" />
               Overview
@@ -245,6 +245,10 @@ export function TeacherDashboard() {
             <TabsTrigger value="lessons" className="flex items-center gap-1">
               <BookOpen className="w-4 h-4" />
               Lesson Plans
+            </TabsTrigger>
+            <TabsTrigger value="service-hours" className="flex items-center gap-1">
+              <CheckCircle className="w-4 h-4" />
+              Service Hours
             </TabsTrigger>
             <TabsTrigger value="reports" className="flex items-center gap-1">
               <TrendingUp className="w-4 h-4" />
@@ -477,6 +481,82 @@ export function TeacherDashboard() {
                 </Card>
               ))}
             </div>
+          </TabsContent>
+
+          {/* Service Hours Verification Tab */}
+          <TabsContent value="service-hours" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-green-600" />
+                  Service Hours Pending Verification
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {/* Mock pending service hours for demonstration */}
+                  <div className="border rounded-lg p-4 bg-yellow-50">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h4 className="font-semibold text-lg">Food Bank Volunteer</h4>
+                        <p className="text-sm text-gray-600">Sarah C. • 4.5 hours • September 15, 2025</p>
+                      </div>
+                      <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>
+                    </div>
+                    <p className="text-sm mb-3">
+                      <strong>Organization:</strong> Burlington Food Pantry<br />
+                      <strong>Contact:</strong> Ms. Rodriguez (rodriguez@burlingtonfood.org)<br />
+                      <strong>Description:</strong> Helped sort and package donated food items for families in need
+                    </p>
+                    <p className="text-sm mb-4 italic">
+                      <strong>Student Reflection:</strong> "It felt really good to help families get the food they need. I learned how much work goes into organizing donations!"
+                    </p>
+                    <div className="flex gap-2">
+                      <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Approve (Award 23 tokens)
+                      </Button>
+                      <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700 border-red-300">
+                        ❌ Request More Info
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="border rounded-lg p-4 bg-yellow-50">
+                    <div className="flex justify-between items-start mb-3">
+                      <div>
+                        <h4 className="font-semibold text-lg">Senior Center Assistant</h4>
+                        <p className="text-sm text-gray-600">Jessica M. • 3.5 hours • September 20, 2025</p>
+                      </div>
+                      <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>
+                    </div>
+                    <p className="text-sm mb-3">
+                      <strong>Organization:</strong> Burlington Senior Living Center<br />
+                      <strong>Contact:</strong> Ms. Martinez (martinez@burlingtonseniors.org)<br />
+                      <strong>Description:</strong> Helped serve lunch and played games with elderly residents
+                    </p>
+                    <p className="text-sm mb-4 italic">
+                      <strong>Student Reflection:</strong> "The residents had so many interesting stories to share! Mrs. Williams taught me how to play bridge."
+                    </p>
+                    <div className="flex gap-2">
+                      <Button size="sm" className="bg-green-600 hover:bg-green-700">
+                        <CheckCircle className="w-4 h-4 mr-2" />
+                        Approve (Award 18 tokens)
+                      </Button>
+                      <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700 border-red-300">
+                        ❌ Request More Info
+                      </Button>
+                    </div>
+                  </div>
+
+                  <div className="text-center py-8 text-gray-500">
+                    <CheckCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                    <p>All other service hours have been verified.</p>
+                    <p className="text-sm">Great job keeping up with verifications!</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Reports Tab */}
