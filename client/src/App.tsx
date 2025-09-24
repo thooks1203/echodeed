@@ -53,8 +53,8 @@ function Router() {
         <Route path="/r/:code" component={MerchantVerifyPage} />
         {/* <Route path="/tv-display" component={TVDisplayMode} />
         <Route path="/assembly-mode" component={TVDisplayMode} /> */}
-        <Route path="/landing" component={LandingPage} />
-        <Route path="/" component={Home} />
+        <Route path="/app" component={Home} />
+        <Route path="/" component={LandingPage} />
       </Switch>
       
       {/* Floating Rewards Button - Always Visible for Better Engagement */}
