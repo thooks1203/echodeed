@@ -76,12 +76,12 @@ Transform school culture by making kindness visible, valued, and rewarded—whil
 
 **Step 2: Community Feed**
 - Students browse a feed of anonymous good deeds from their school
-- They can give "hearts" to posts that inspire them
+- They can show appreciation for posts that inspire them through our peer recognition system
 - Everything remains completely anonymous—no way to identify who posted what
 - Students see kindness happening all around them daily
 
 **Step 3: Earning Rewards**
-- Students earn "Echo tokens" for posting kind acts and receiving hearts
+- Students earn "Echo tokens" for posting kind acts and peer appreciation
 - Surprise giveaways randomly appear for active students
 - Special challenges (like "Random Acts of Kindness Week") offer bonus rewards
 - Token balance grows as students participate more
@@ -90,7 +90,7 @@ Transform school culture by making kindness visible, valued, and rewarded—whil
 - Students browse rewards from local businesses and national brands
 - They redeem tokens for gift cards, free food, or special school privileges
 - Each reward comes with a secure redemption code
-- Parents get notified when their child earns or uses a reward
+- **Revolutionary dual reward system**: Parents can earn rewards too when their child's kind act is verified, strengthening family bonds and creating shared positive experiences
 
 **Step 5: Inspiration Cycle**
 - Students get inspired by seeing others' kind acts
@@ -314,9 +314,11 @@ Transform school culture by making kindness visible, valued, and rewarded—whil
 
 **Token Earning**
 - 1 token for posting a kind act
-- 1 token for each heart received on posts  
+- 1 token for each peer appreciation received on posts  
 - Bonus tokens for participating in challenges
 - Surprise token bonuses for consistent participation
+
+*Note: Our peer appreciation system is evolving toward collective impact scoring to further emphasize community-wide kindness culture over individual recognition.*
 
 **Reward Categories**
 
@@ -325,6 +327,7 @@ Transform school culture by making kindness visible, valued, and rewarded—whil
 - Movie theater passes
 - Local retail discounts
 - Service business offerings (free car wash, etc.)
+- **Our revolutionary dual reward system incentivizes family engagement by allowing parents to also earn a small reward when their child's kind act is verified. This strengthens family bonds and ensures your brand is part of a positive, shared experience.**
 
 **National Brand Partners**
 - Amazon, Target, Starbucks gift cards
@@ -552,7 +555,7 @@ A: Very little! Most teachers spend 5-10 minutes per day on EchoDeed activities.
 A: No, EchoDeed enhances and supports your current program. It provides a practical way for students to apply character education lessons in their daily lives. Many schools integrate EchoDeed challenges with their existing curriculum themes and activities.
 
 **Q: How much does EchoDeed cost?**
-A: Implementation costs are minimal. The main expenses are staff time for setup and ongoing coordination. Local business sponsorships often cover reward costs. We work with each school to create a budget that fits their needs and resources.
+A: A **90-day pilot program costs just $1,200 total**, with the option to move to an annual subscription of **$4,800**. The main ongoing expenses are minimal staff time for coordination. Local business sponsorships often cover reward costs, making the program essentially self-sustaining after setup.
 
 **Q: What if our school doesn't have a lot of technology resources?**
 A: EchoDeed works on any smartphone, tablet, or computer with internet access. Students can use their own devices or school equipment. The platform is designed to be simple and accessible regardless of technical sophistication.
@@ -635,9 +638,9 @@ A 9th grader with frequent disciplinary issues discovered that sharing genuine a
 
 **Step 1: Initial Consultation**
 - Schedule a 30-minute overview call to discuss your school's needs
-- Review implementation timeline and resource requirements  
+- Review our **90-day pilot program ($1,200) and annual subscription ($4,800)** options
 - Get questions answered about safety, privacy, and effectiveness
-- Receive customized proposal for your school or district
+- Receive customized implementation plan for your school or district
 
 **Step 2: Planning Meeting**
 - Meet with key stakeholders (administrators, teachers, counselors)

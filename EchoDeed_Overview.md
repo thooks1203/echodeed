@@ -30,8 +30,8 @@ EchoDeed is a safe, anonymous app that helps students in grades 6-12 share acts 
 
 1. **Student shares a kind deed**: "I helped carry groceries for an elderly neighbor" (anonymous)
 2. **Good deeds appear in school feed**: Other students see positive actions happening around them
-3. **Students earn Echo tokens**: Get rewarded for posting and receiving "hearts" from others
-4. **Redeem safe, budgeted rewards**: Use tokens for gift cards, local treats, or school privileges
+3. **Students earn Echo tokens**: Get rewarded for posting and peer appreciation of inspiring acts
+4. **Redeem safe, budgeted rewards**: Use tokens for gift cards, local treats, or school privileges—**plus parents can earn rewards too** through our revolutionary dual reward system
 5. **Schools see positive trends**: Simple reports show growing kindness without identifying individuals
 
 ## Key Features & Benefits
@@ -40,6 +40,7 @@ EchoDeed is a safe, anonymous app that helps students in grades 6-12 share acts 
 - **Stay completely anonymous**—no one knows who posted what
 - **Earn real rewards** from local businesses and national brands
 - **Get surprise giveaways** just for being kind
+- **Appreciate inspiring acts** through our peer recognition system (evolving toward collective impact scoring)
 - **Feel part of something bigger** by seeing kindness happening everywhere
 
 ### For Educators 📚  
@@ -58,6 +59,7 @@ EchoDeed is a safe, anonymous app that helps students in grades 6-12 share acts 
 - **Safe environment** with content filtering and adult supervision
 - **Proper consent process** before children can participate  
 - **Email notifications** when your child earns or uses rewards
+- **Dual reward benefits**—you can earn rewards too when your child's kindness is verified
 - **Complete anonymity** protects your child's identity online
 
 ## Why does this matter?
@@ -98,9 +100,9 @@ All rewards have spending limits set by sponsors and are verified by businesses 
 
 ## Ready to bring EchoDeed to your school?
 
-**For School Administrators**: Start a pilot program in just a few weeks. Get simple setup, teacher training, and parent communication materials.
+**For School Administrators**: Start a **90-day pilot program for just $1,200 total**, with the option to continue with an annual subscription of $4,800. Get simple setup, teacher training, and parent communication materials.
 
-**For Local Businesses**: Sponsor student rewards and see real impact in your community while staying within your budget.
+**For Local Businesses**: Sponsor student rewards through our revolutionary **dual reward system that reaches both students and parents**, creating deeper community impact while staying within your budget.
 
 **For Parents**: Ask your child's school about bringing EchoDeed to campus as part of their character education program.
 
