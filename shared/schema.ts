@@ -375,7 +375,12 @@ export const rewardPartners = pgTable("reward_partners", {
   maxRedemptionAmount: integer("max_redemption_amount").default(5000).notNull(), // Maximum $ECHO per redemption
   contactEmail: varchar("contact_email", { length: 200 }),
   apiEndpoint: text("api_endpoint"), // For automated discount code generation
-  apiKey: text("api_key"), // Encrypted API key for partner integration
+  // SECURITY: Removed direct apiKey storage - use environment variables instead
+  // Merchant verification settings
+  merchantPinHash: varchar("merchant_pin_hash", { length: 100 }), // Hashed PIN for verification
+  allowsQrVerification: integer("allows_qr_verification").default(1).notNull(), // 1 = supports QR verification
+  locations: jsonb("locations"), // Array of store locations with addresses
+  redemptionInstructions: text("redemption_instructions"), // Instructions for customers
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -412,10 +417,17 @@ export const rewardRedemptions = pgTable("reward_redemptions", {
   partnerId: varchar("partner_id").notNull(),
   echoSpent: integer("echo_spent").notNull(),
   redemptionCode: varchar("redemption_code", { length: 50 }), // Generated discount/promo code
+  codeHash: varchar("code_hash", { length: 100 }), // Hashed version for security
   status: varchar("status", { length: 50 }).default("pending").notNull(), // pending, active, used, expired, refunded
   verificationRequired: integer("verification_required").default(0).notNull(),
   verificationStatus: varchar("verification_status", { length: 50 }).default("none").notNull(), // none, pending, approved, rejected
   verificationData: jsonb("verification_data"), // Photo/proof of kindness act
+  // Merchant verification fields
+  verifiedByMerchant: integer("verified_by_merchant").default(0).notNull(), // 0 = not verified, 1 = verified
+  verifyMethod: varchar("verify_method", { length: 20 }), // "qr", "manual", "api"
+  merchantLocationId: varchar("merchant_location_id"), // Which store/location verified
+  cashierId: varchar("cashier_id"), // Optional - which cashier processed
+  verificationNotes: text("verification_notes"), // Optional merchant notes
   expiresAt: timestamp("expires_at"),
   usedAt: timestamp("used_at"),
   redeemedAt: timestamp("redeemed_at").defaultNow().notNull(),

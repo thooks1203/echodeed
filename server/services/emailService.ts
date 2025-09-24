@@ -94,6 +94,19 @@ interface ServiceHoursNotificationData {
   category: string;
 }
 
+interface RewardRedemptionEmailData {
+  parentEmail: string;
+  parentName: string;
+  studentFirstName: string;
+  partnerName: string;
+  offerTitle: string;
+  offerValue: string;
+  redemptionCode: string;
+  expiresAt: Date;
+  verificationUrl: string;
+  instructions: string;
+}
+
 interface EmailService {
   sendParentalConsentEmail(data: ConsentEmailData): Promise<boolean>;
   sendEnhancedParentalConsentEmail(data: EnhancedConsentEmailData): Promise<boolean>;
@@ -106,6 +119,8 @@ interface EmailService {
   sendRenewalReminderEmail(data: RenewalReminderEmailData): Promise<boolean>;
   // 🏥 Community service notifications
   sendServiceHoursNotificationEmail(data: ServiceHoursNotificationData): Promise<boolean>;
+  // 🎁 Reward redemption notifications
+  sendRewardRedemptionEmail(data: RewardRedemptionEmailData): Promise<boolean>;
 }
 
 class NodemailerEmailService implements EmailService {
@@ -1795,8 +1810,156 @@ EchoDeed™ - Building Character Through Kindness
 Burlington Christian Academy • COPPA Compliant • Renewal System
     `;
   }
+
+  async sendRewardRedemptionEmail(data: RewardRedemptionEmailData): Promise<boolean> {
+    const { parentEmail, parentName, studentFirstName, partnerName, offerTitle, offerValue, redemptionCode, expiresAt, verificationUrl, instructions } = data;
+    
+    const htmlContent = this.generateRewardRedemptionHTML({
+      parentName,
+      studentFirstName,
+      partnerName,
+      offerTitle,
+      offerValue,
+      redemptionCode,
+      expiresAt,
+      verificationUrl,
+      instructions
+    });
+
+    const textContent = this.generateRewardRedemptionText({
+      parentName,
+      studentFirstName,
+      partnerName,
+      offerTitle,
+      offerValue,
+      redemptionCode,
+      expiresAt,
+      verificationUrl,
+      instructions
+    });
+
+    const mailOptions = {
+      from: BCA_EMAIL_CONFIG.fromEmail || process.env.SMTP_FROM || 'EchoDeed <noreply@echodeed.com>',
+      to: parentEmail,
+      subject: `🎁 ${studentFirstName} redeemed a kindness reward from ${partnerName}`,
+      text: textContent,
+      html: htmlContent
+    };
+
+    try {
+      if (this.transporter) {
+        // Send real email in production
+        const info = await this.transporter.sendMail(mailOptions);
+        console.log('📧 Reward redemption email sent successfully:', info.messageId);
+        return true;
+      } else {
+        // Development mode - log email content
+        console.log('\n📧 ==== REWARD REDEMPTION EMAIL (DEVELOPMENT MODE) ====');
+        console.log(`To: ${parentEmail}`);
+        console.log(`Subject: ${mailOptions.subject}`);
+        console.log(`Redemption Code: ${redemptionCode}`);
+        console.log(`Verification URL: ${verificationUrl}`);
+        console.log(`Expires: ${expiresAt.toLocaleDateString()}`);
+        console.log('=================================================\n');
+        console.log(textContent);
+        console.log('\n=================================================');
+        return true;
+      }
+    } catch (error) {
+      console.error('❌ Failed to send reward redemption email:', error);
+      return false;
+    }
+  }
+
+  private generateRewardRedemptionHTML(data: any): string {
+    const { parentName, studentFirstName, partnerName, offerTitle, offerValue, redemptionCode, expiresAt, verificationUrl, instructions } = data;
+    
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <style>
+          .container { max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; }
+          .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; text-align: center; }
+          .content { padding: 20px; background: #f9f9f9; }
+          .reward-card { background: white; border-radius: 10px; padding: 20px; margin: 20px 0; border-left: 5px solid #667eea; }
+          .code { font-family: monospace; font-size: 24px; font-weight: bold; color: #667eea; text-align: center; background: #f0f0f0; padding: 15px; border-radius: 5px; }
+          .qr-section { text-align: center; margin: 20px 0; }
+          .footer { padding: 20px; font-size: 12px; color: #666; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <h1>🎁 Kindness Reward Redeemed!</h1>
+            <p>Your child earned something special for their kindness</p>
+          </div>
+          <div class="content">
+            <p>Dear ${parentName},</p>
+            <p><strong>${studentFirstName}</strong> has just redeemed a kindness reward! Their acts of kindness have earned them:</p>
+            
+            <div class="reward-card">
+              <h3>${offerTitle}</h3>
+              <p><strong>Value:</strong> ${offerValue}</p>
+              <p><strong>Partner:</strong> ${partnerName}</p>
+              <p><strong>Expires:</strong> ${expiresAt.toLocaleDateString()}</p>
+            </div>
+
+            <h3>🔐 Redemption Code</h3>
+            <div class="code">${redemptionCode}</div>
+
+            <div class="qr-section">
+              <p><strong>Easy verification:</strong> Show this QR code at the business:</p>
+              <p><a href="${verificationUrl}" target="_blank">📱 Open Verification Page</a></p>
+            </div>
+
+            <h3>📋 How to Redeem</h3>
+            <p>${instructions}</p>
+            
+            <p><em>This email was sent to you because your child redeemed a reward through EchoDeed™, a COPPA-compliant kindness platform. Only parents/guardians receive these notifications.</em></p>
+          </div>
+          <div class="footer">
+            <p>EchoDeed™ - Character Education, Reimagined<br>
+            Supporting Burlington Christian Academy</p>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+  }
+
+  private generateRewardRedemptionText(data: any): string {
+    const { parentName, studentFirstName, partnerName, offerTitle, offerValue, redemptionCode, expiresAt, verificationUrl, instructions } = data;
+    
+    return `
+🎁 KINDNESS REWARD REDEEMED!
+
+Dear ${parentName},
+
+${studentFirstName} has just redeemed a kindness reward! Their acts of kindness have earned them:
+
+REWARD DETAILS:
+• ${offerTitle}
+• Value: ${offerValue}
+• Partner: ${partnerName}
+• Expires: ${expiresAt.toLocaleDateString()}
+
+REDEMPTION CODE: ${redemptionCode}
+
+HOW TO USE:
+${instructions}
+
+For easy verification, visit: ${verificationUrl}
+
+This email was sent to you because your child redeemed a reward through EchoDeed™, a COPPA-compliant kindness platform. Only parents/guardians receive these notifications.
+
+--
+EchoDeed™ - Character Education, Reimagined
+Supporting Burlington Christian Academy
+    `;
+  }
 }
 
 // Export singleton instance
 export const emailService = new NodemailerEmailService();
-export type { ConsentEmailData, EmailService };
+export type { ConsentEmailData, EmailService, RewardRedemptionEmailData };
