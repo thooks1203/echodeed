@@ -7,6 +7,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
+import { BackButton } from '@/components/BackButton';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
@@ -232,9 +233,11 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">
           {onBack && (
-            <Button variant="ghost" size="sm" onClick={onBack} data-testid="button-back">
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
+            <BackButton 
+              onClick={onBack} 
+              label="Back"
+              variant="minimal"
+            />
           )}
           <div>
             <h1 className="text-2xl font-bold">Community Service Hours</h1>
