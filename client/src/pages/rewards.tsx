@@ -125,7 +125,7 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
   const redeemMutation = useMutation({
     mutationFn: async (offer: RewardOffer) => {
       const partner = partners.find((p: RewardPartner) => p.id === offer.partnerId);
-      return apiRequest('/api/rewards/redeem', 'POST', {
+      return apiRequest('POST', '/api/rewards/redeem', {
         offerId: offer.id,
         partnerId: offer.partnerId,
         echoSpent: offer.echoCost,
