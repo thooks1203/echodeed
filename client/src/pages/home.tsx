@@ -106,7 +106,11 @@ export default function Home() {
       if (filters.schoolId) params.append('schoolId', filters.schoolId);
       
       const response = await fetch(`/api/posts?${params}`);
-      return response.json();
+      const data = await response.json();
+      console.log('🔍 DEBUG: Posts data received:', data);
+      console.log('🔍 DEBUG: Posts length:', data.length);
+      console.log('🔍 DEBUG: Applied filters:', filters);
+      return data;
     }
   });
 
