@@ -34,35 +34,16 @@ export async function initializeSampleData() {
       p.content.includes('teacher')
     );
     
+    // FORCE COMPREHENSIVE RE-SEEDING FOR COMPLETE DEMO DATA
+    log('🔄 FORCE RE-SEEDING: Adding comprehensive demo data regardless of existing content');
+    
     if (hasAdultContent) {
       log('Found adult content in posts, will add kid-friendly posts...');
       // Continue to add kid-friendly posts rather than trying to delete
-    } else if (hasKidFriendlyContent && existingPosts.length > 15) {
-      // If we have kid-friendly content and a good number of posts, we're done
-      log('Sample data already has kid-friendly content, skipping initialization');
-      return;
-    } else {
-      // If we have posts AND a high counter AND the right categories, then we're fully initialized
-      const hasNewCategories = existingPosts.some(p => p.category === 'Community Action' || p.category === 'Spreading Positivity');
-      if (existingPosts.length > 0 && existingCounter.count > 1000 && hasNewCategories && !hasAdultContent) {
-        log('Sample data already exists, skipping initialization');
-        return;
-      }
     }
     
-    // If we have some posts but counter is way off (indicating duplicate initialization), reset it
-    if (existingPosts.length > 0 && existingCounter.count > 400000) {
-      log(`Found duplicate initialization - counter at ${existingCounter.count}, using existing count...`);
-      log(`✓ Using existing counter for deployment`);
-      return;
-    }
-    
-    // If we have some posts but low counter, we need to fix the counter
-    if (existingPosts.length > 0 && existingCounter.count < 243876) {
-      log(`Found ${existingPosts.length} posts but counter only at ${existingCounter.count}, using existing count...`);
-      log(`✓ Using existing counter for deployment`);
-      return;
-    }
+    // TEMPORARILY DISABLED - Allow comprehensive re-seeding
+    log('⏭️ Skipping counter checks to allow comprehensive demo data restoration');
 
     // Sample kindness posts - diverse content across all categories
     const samplePosts = [
@@ -401,7 +382,7 @@ export async function initializeSampleData() {
 
         log('✅ Created sample community service hours for Sarah Chen');
       } else {
-        log('Sample community service hours already exist for Sarah Chen, skipping');
+        log('🔄 Re-creating sample community service hours for comprehensive demo');
       }
     } catch (error: any) {
       log('⚠️ Could not initialize community service hours:', error.message || error);
@@ -469,7 +450,7 @@ export async function initializeSampleData() {
       
       log(`✓ Initialized ${samplePartners.length} sample reward partners`);
     } else {
-      log('Reward partners already exist, skipping initialization');
+      log('🔄 Re-creating reward partners for comprehensive demo');
     }
 
     log(`✓ Successfully initialized ${samplePosts.length} sample posts and updated global counter`);

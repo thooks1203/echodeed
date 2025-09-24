@@ -4,11 +4,11 @@ import { rewardRedemptions } from '../shared/schema';
 
 export async function initializeSampleRewardData() {
   try {
-    // Check if sample data already exists
+    // FORCE COMPREHENSIVE RE-SEEDING FOR COMPLETE DEMO DATA
+    console.log('🔄 FORCE RE-SEEDING: Creating comprehensive reward partner data');
     const existingPartners = await storage.getRewardPartners({});
     if (existingPartners.length > 0) {
-      console.log('Sample reward data already exists, skipping initialization');
-      return;
+      console.log('🔄 Re-creating reward data for comprehensive demo');
     }
 
     console.log('Initializing sample reward partner data...');

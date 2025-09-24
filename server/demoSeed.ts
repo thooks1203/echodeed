@@ -479,10 +479,11 @@ export function generateDemoConsentData() {
 export async function seedDemoConsentData(storage: any) {
   // Check if data already exists to avoid duplicates
   try {
+    // FORCE COMPREHENSIVE RE-SEEDING FOR COMPLETE DEMO DATA
+    console.log('🔄 FORCE RE-SEEDING: Creating comprehensive BCA demo consent data');
     const existingConsents = await storage.listConsentsBySchool(DEMO_CONFIG.SCHOOL_ID, { page: 1, pageSize: 1 });
     if (existingConsents && existingConsents.consents && existingConsents.consents.length > 0) {
-      console.log('📋 Demo consent data already exists, skipping seeding');
-      return { skipped: true, reason: 'Data already exists' };
+      console.log('🔄 Re-creating BCA demo consent data for comprehensive demo');
     }
   } catch (error) {
     console.log('📋 No existing data found, proceeding with seeding');
@@ -505,7 +506,7 @@ export async function seedDemoConsentData(storage: any) {
     };
   } catch (error) {
     console.error('❌ Failed to seed demo data:', error);
-    return { success: false, error: error.message };
+    return { success: false, error: (error as Error).message };
   }
 }
 

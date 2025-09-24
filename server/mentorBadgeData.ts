@@ -4,11 +4,11 @@ export async function initializeMentorBadges() {
   console.log('🎓 Initializing Mentor Badge System...');
   
   try {
-    // Check if mentor badges already exist
+    // FORCE COMPREHENSIVE RE-SEEDING FOR COMPLETE DEMO DATA
+    console.log('🔄 FORCE RE-SEEDING: Creating comprehensive mentor badge system');
     const existingBadges = await storage.getMentorBadges();
     if (existingBadges.length > 0) {
-      console.log('✅ Mentor badges already exist, skipping initialization');
-      return;
+      console.log('🔄 Re-creating mentor badges for comprehensive demo');
     }
 
     console.log('📛 Creating sample mentor badges...');

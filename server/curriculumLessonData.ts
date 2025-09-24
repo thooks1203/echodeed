@@ -229,11 +229,11 @@ export async function initializeCurriculumLessons(storage: any) {
   try {
     console.log('🎓 Initializing Middle School Kindness Curriculum...');
     
-    // Check if lessons already exist
+    // FORCE COMPREHENSIVE RE-SEEDING FOR COMPLETE DEMO DATA
+    console.log('🔄 FORCE RE-SEEDING: Creating comprehensive curriculum lessons');
     const existingLessons = await storage.getCurriculumLessons();
     if (existingLessons && existingLessons.length > 0) {
-      console.log('✅ Curriculum lessons already exist, skipping initialization');
-      return;
+      console.log('🔄 Re-creating curriculum lessons for comprehensive demo');
     }
 
     // Create all lesson templates
