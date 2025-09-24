@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useAuth, switchDemoRole, getDemoRoles } from '@/hooks/useAuth';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
@@ -38,7 +40,13 @@ import {
   ChevronDown,
   Monitor,
   EyeOff,
-  School2
+  School2,
+  FileSpreadsheet,
+  Download,
+  Printer,
+  CalendarDays,
+  CalendarRange,
+  Zap
 } from 'lucide-react';
 
 interface SchoolAdmin {
@@ -621,6 +629,225 @@ export default function AdminDashboard() {
     return data;
   };
 
+  // Export handler functions
+  const handleExportCSV = async () => {
+    try {
+      const schoolSelect = document.getElementById('export-school') as HTMLSelectElement;
+      const startDateInput = document.getElementById('start-date') as HTMLInputElement;
+      const endDateInput = document.getElementById('end-date') as HTMLInputElement;
+      const anonymizeCheckbox = document.getElementById('anonymize-csv') as HTMLInputElement;
+      
+      const schoolId = schoolSelect?.value || 'all';
+      const startDate = startDateInput?.value;
+      const endDate = endDateInput?.value;
+      const anonymize = anonymizeCheckbox?.checked || false;
+      
+      const params = new URLSearchParams({
+        schoolId,
+        startDate,
+        endDate,
+        anonymize: anonymize.toString()
+      });
+      
+      // Create a download link
+      const url = `/api/admin/export/posts?${params}`;
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `kindness-posts-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      console.log('✅ CSV export initiated successfully');
+    } catch (error) {
+      console.error('❌ CSV export failed:', error);
+    }
+  };
+
+  const handleGenerateReport = async (isPrint: boolean = false) => {
+    try {
+      const schoolSelect = document.getElementById('report-school') as HTMLSelectElement;
+      const weekOfInput = document.getElementById('week-of') as HTMLInputElement;
+      const anonymizeCheckbox = document.getElementById('anonymize-report') as HTMLInputElement;
+      
+      const schoolId = schoolSelect?.value || 'bca-demo';
+      const weekOf = weekOfInput?.value;
+      const anonymize = anonymizeCheckbox?.checked || false;
+      
+      const params = new URLSearchParams({
+        schoolId,
+        weekOf,
+        anonymize: anonymize.toString()
+      });
+      
+      const response = await fetch(`/api/admin/export/report?${params}`);
+      const reportData = await response.json();
+      
+      if (isPrint) {
+        // Create printable report window
+        const printWindow = window.open('', '_blank', 'width=800,height=600');
+        if (printWindow) {
+          printWindow.document.write(generatePrintableReport(reportData));
+          printWindow.document.close();
+          printWindow.focus();
+          printWindow.print();
+        }
+      } else {
+        // Show report preview
+        alert(`Weekly Report Preview:\n\nSchool: ${reportData.schoolName}\nPeriod: ${reportData.weekPeriod}\n\nTotal Kindness Acts: ${reportData.summary.totalKindnessActs}\nTotal Hearts: ${reportData.summary.totalHeartsReceived}\nParticipating Students: ${reportData.summary.participatingStudents}\n\nTop Categories: ${reportData.topCategories.map(c => `${c.category} (${c.count})`).join(', ')}`);
+      }
+      
+      console.log('✅ Report generated successfully:', reportData);
+    } catch (error) {
+      console.error('❌ Report generation failed:', error);
+    }
+  };
+
+  const handleQuickExport = async (type: string) => {
+    try {
+      const today = new Date();
+      let startDate, endDate, schoolId = bcaDemoMode ? 'bca-demo' : 'all';
+      
+      switch (type) {
+        case 'today':
+          startDate = today.toISOString().split('T')[0];
+          endDate = today.toISOString().split('T')[0];
+          break;
+        case 'week':
+          const weekStart = new Date(today);
+          weekStart.setDate(today.getDate() - today.getDay());
+          startDate = weekStart.toISOString().split('T')[0];
+          endDate = today.toISOString().split('T')[0];
+          break;
+        case 'month':
+          startDate = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().split('T')[0];
+          endDate = today.toISOString().split('T')[0];
+          break;
+        case 'bca-report':
+          // Generate BCA-specific weekly report
+          const weekOf = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+          const params = new URLSearchParams({
+            schoolId: 'bca-demo',
+            weekOf,
+            anonymize: 'false'
+          });
+          
+          const response = await fetch(`/api/admin/export/report?${params}`);
+          const reportData = await response.json();
+          
+          // Create printable BCA report
+          const printWindow = window.open('', '_blank', 'width=800,height=600');
+          if (printWindow) {
+            printWindow.document.write(generateBCAReport(reportData));
+            printWindow.document.close();
+            printWindow.focus();
+            printWindow.print();
+          }
+          return;
+      }
+      
+      const params = new URLSearchParams({
+        schoolId,
+        startDate,
+        endDate,
+        anonymize: privacyMode.toString()
+      });
+      
+      // Create download link for quick export
+      const url = `/api/admin/export/posts?${params}`;
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `kindness-${type}-${new Date().toISOString().split('T')[0]}.csv`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      
+      console.log(`✅ Quick export (${type}) initiated successfully`);
+    } catch (error) {
+      console.error(`❌ Quick export (${type}) failed:`, error);
+    }
+  };
+
+  const generatePrintableReport = (data: any): string => {
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <title>${data.reportTitle}</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; line-height: 1.6; }
+          .header { text-align: center; margin-bottom: 30px; border-bottom: 2px solid #333; padding-bottom: 20px; }
+          .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin: 20px 0; }
+          .stat-box { border: 1px solid #ddd; padding: 15px; border-radius: 5px; text-align: center; }
+          .highlight { background: #f0f8ff; }
+          .category-list { margin: 20px 0; }
+          .category-item { margin: 5px 0; padding: 5px 10px; background: #f9f9f9; border-radius: 3px; }
+          .recent-posts { margin-top: 30px; }
+          .post-item { margin: 10px 0; padding: 10px; border-left: 4px solid #4f46e5; background: #f8fafc; }
+          @media print { body { margin: 0; } }
+        </style>
+      </head>
+      <body>
+        <div class="header">
+          <h1>${data.reportTitle}</h1>
+          <h2>${data.schoolName}</h2>
+          <p><strong>Report Period:</strong> ${data.weekPeriod}</p>
+          <p><em>Generated: ${new Date(data.generatedAt).toLocaleString()}</em></p>
+        </div>
+        
+        <div class="summary-grid">
+          <div class="stat-box highlight">
+            <h3>${data.summary.totalKindnessActs}</h3>
+            <p>Total Kindness Acts</p>
+          </div>
+          <div class="stat-box">
+            <h3>${data.summary.totalHeartsReceived}</h3>
+            <p>Hearts Received</p>
+          </div>
+          <div class="stat-box">
+            <h3>${data.summary.averageHeartsPerAct}</h3>
+            <p>Average Hearts per Act</p>
+          </div>
+          <div class="stat-box">
+            <h3>${data.summary.participatingStudents}</h3>
+            <p>Participating Students</p>
+          </div>
+        </div>
+        
+        <div class="category-list">
+          <h3>Top Categories This Week</h3>
+          ${data.topCategories.map(cat => `
+            <div class="category-item">
+              <strong>${cat.category}</strong> - ${cat.count} acts
+            </div>
+          `).join('')}
+        </div>
+        
+        <div class="recent-posts">
+          <h3>Recent Highlights</h3>
+          ${data.recentHighlights.map(post => `
+            <div class="post-item">
+              <p><strong>${post.student}</strong> (${post.hearts} ❤️)</p>
+              <p><em>${post.category}</em></p>
+              <p>"${post.content}"</p>
+            </div>
+          `).join('')}
+        </div>
+        
+        ${data.isAnonymized ? '<p><em>This report has been anonymized for FERPA compliance.</em></p>' : ''}
+      </body>
+      </html>
+    `;
+  };
+
+  const generateBCAReport = (data: any): string => {
+    return generatePrintableReport({
+      ...data,
+      reportTitle: 'Burlington Christian Academy - Kindness Impact Report',
+      schoolName: 'Burlington Christian Academy'
+    });
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Demo Mode Banner */}
@@ -783,10 +1010,14 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="schools">Schools</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="reports">
+            <FileSpreadsheet className="w-4 h-4 mr-1" />
+            Reports
+          </TabsTrigger>
           <TabsTrigger value="compliance">Compliance</TabsTrigger>
           <TabsTrigger value="safety">Safety Monitor</TabsTrigger>
           <TabsTrigger value="integrations">Integrations</TabsTrigger>
@@ -1021,6 +1252,205 @@ export default function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Reports & Exports Tab */}
+        <TabsContent value="reports" className="space-y-6">
+          <div className="grid gap-6">
+            {/* Export Controls */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileSpreadsheet className="w-5 h-5" />
+                  Data Export Tools
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Export kindness data for analysis and reporting. All exports include FERPA compliance options.
+                </p>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-2 gap-6">
+                  {/* CSV Export Section */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">CSV Data Export</h3>
+                    <div className="space-y-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="export-school">School Filter</Label>
+                        <Select defaultValue="all">
+                          <SelectTrigger id="export-school" data-testid="select-export-school">
+                            <SelectValue placeholder="Select School" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="all">All Schools</SelectItem>
+                            <SelectItem value="bca-demo">Burlington Christian Academy</SelectItem>
+                            <SelectItem value="burlington-elementary">Burlington Elementary</SelectItem>
+                            <SelectItem value="burlington-middle">Burlington Middle School</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-2">
+                          <Label htmlFor="start-date">Start Date</Label>
+                          <input
+                            type="date"
+                            id="start-date"
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            defaultValue={new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+                            data-testid="input-start-date"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="end-date">End Date</Label>
+                          <input
+                            type="date"
+                            id="end-date"
+                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                            defaultValue={new Date().toISOString().split('T')[0]}
+                            data-testid="input-end-date"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="anonymize-csv"
+                          className="peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+                          data-testid="checkbox-anonymize-csv"
+                        />
+                        <Label htmlFor="anonymize-csv" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                          <Shield className="w-4 h-4 inline mr-1" />
+                          FERPA Compliant (Anonymize student data)
+                        </Label>
+                      </div>
+                      
+                      <Button
+                        onClick={() => handleExportCSV()}
+                        className="w-full"
+                        data-testid="button-export-csv"
+                      >
+                        <Download className="w-4 h-4 mr-2" />
+                        Export CSV Data
+                      </Button>
+                    </div>
+                  </div>
+
+                  {/* Weekly Report Section */}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-semibold">Weekly Impact Report</h3>
+                    <div className="space-y-3">
+                      <div className="space-y-2">
+                        <Label htmlFor="report-school">School</Label>
+                        <Select defaultValue="bca-demo">
+                          <SelectTrigger id="report-school" data-testid="select-report-school">
+                            <SelectValue placeholder="Select School" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="bca-demo">Burlington Christian Academy</SelectItem>
+                            <SelectItem value="burlington-elementary">Burlington Elementary</SelectItem>
+                            <SelectItem value="burlington-middle">Burlington Middle School</SelectItem>
+                            <SelectItem value="all">District Summary</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
+
+                      <div className="space-y-2">
+                        <Label htmlFor="week-of">Week Of</Label>
+                        <input
+                          type="date"
+                          id="week-of"
+                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          defaultValue={new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]}
+                          data-testid="input-week-of"
+                        />
+                      </div>
+
+                      <div className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id="anonymize-report"
+                          className="peer h-4 w-4 shrink-0 rounded-sm border border-primary ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+                          data-testid="checkbox-anonymize-report"
+                        />
+                        <Label htmlFor="anonymize-report" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
+                          <Shield className="w-4 h-4 inline mr-1" />
+                          FERPA Compliant (Anonymize student data)
+                        </Label>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-2">
+                        <Button
+                          onClick={() => handleGenerateReport(false)}
+                          variant="outline"
+                          data-testid="button-preview-report"
+                        >
+                          <Eye className="w-4 h-4 mr-2" />
+                          Preview Report
+                        </Button>
+                        <Button
+                          onClick={() => handleGenerateReport(true)}
+                          data-testid="button-print-report"
+                        >
+                          <Printer className="w-4 h-4 mr-2" />
+                          Print Report
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Quick Export Actions */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Zap className="w-5 h-5" />
+                  Quick Export Actions
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid md:grid-cols-4 gap-3">
+                  <Button
+                    onClick={() => handleQuickExport('today')}
+                    variant="outline"
+                    className="flex items-center gap-2"
+                    data-testid="button-export-today"
+                  >
+                    <Calendar className="w-4 h-4" />
+                    Today's Data
+                  </Button>
+                  <Button
+                    onClick={() => handleQuickExport('week')}
+                    variant="outline"
+                    className="flex items-center gap-2"
+                    data-testid="button-export-week"
+                  >
+                    <CalendarDays className="w-4 h-4" />
+                    This Week
+                  </Button>
+                  <Button
+                    onClick={() => handleQuickExport('month')}
+                    variant="outline"
+                    className="flex items-center gap-2"
+                    data-testid="button-export-month"
+                  >
+                    <CalendarRange className="w-4 h-4" />
+                    This Month
+                  </Button>
+                  <Button
+                    onClick={() => handleQuickExport('bca-report')}
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700"
+                    data-testid="button-bca-report"
+                  >
+                    <School2 className="w-4 h-4" />
+                    BCA Report
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </TabsContent>
 
         {/* Compliance Tab */}

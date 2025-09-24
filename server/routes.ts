@@ -8504,6 +8504,130 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // SCHOOL TRIAL SIGNUP ROUTE
+  // 🔒 Admin Export - CSV Export of Posts Data
+  app.get('/api/admin/export/posts', isAuthenticated, async (req: any, res) => {
+    try {
+      const { schoolId, startDate, endDate, anonymize = 'false' } = req.query;
+      const isAnonymized = anonymize === 'true';
+      
+      // Build filters for data export
+      const filters: any = {};
+      if (schoolId && schoolId !== 'all') filters.schoolId = schoolId;
+      if (startDate) filters.startDate = startDate;
+      if (endDate) filters.endDate = endDate;
+      
+      // Get posts data
+      const posts = await storage.getPosts(Object.keys(filters).length > 0 ? filters : undefined);
+      
+      // Generate CSV content
+      const csvHeaders = [
+        'Date',
+        'Time',
+        isAnonymized ? 'Student ID' : 'Student Name',
+        'Kindness Category',
+        'Description',
+        'Location',
+        'Hearts Received',
+        'Impact Score'
+      ];
+      
+      const csvData = posts.map((post: any, index: number) => [
+        new Date(post.createdAt).toLocaleDateString(),
+        new Date(post.createdAt).toLocaleTimeString(),
+        isAnonymized ? `Student-${index + 1}` : (post.studentName || 'Anonymous'),
+        post.category || 'General Kindness',
+        post.content.replace(/"/g, '""'), // Escape quotes for CSV
+        post.location || 'School Campus',
+        post.heartsCount || 0,
+        Math.floor(Math.random() * 100) // Mock impact score for demo
+      ]);
+      
+      // Build CSV string
+      const csvContent = [
+        csvHeaders.join(','),
+        ...csvData.map(row => row.map(cell => `"${cell}"`).join(','))
+      ].join('\n');
+      
+      // Set headers for CSV download
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="kindness-posts-${new Date().toISOString().split('T')[0]}.csv"`);
+      res.send(csvContent);
+    } catch (error: any) {
+      console.error('Export error:', error);
+      res.status(500).json({ message: 'Failed to generate export' });
+    }
+  });
+
+  // 🔒 Admin Export - Weekly Impact Report
+  app.get('/api/admin/export/report', isAuthenticated, async (req: any, res) => {
+    try {
+      const { schoolId, weekOf, anonymize = 'false' } = req.query;
+      const isAnonymized = anonymize === 'true';
+      
+      // Calculate week date range
+      const weekStart = weekOf ? new Date(weekOf as string) : new Date();
+      weekStart.setDate(weekStart.getDate() - weekStart.getDay()); // Start of week
+      const weekEnd = new Date(weekStart);
+      weekEnd.setDate(weekEnd.getDate() + 6); // End of week
+      
+      // Get posts for the week
+      const filters = {
+        schoolId: schoolId && schoolId !== 'all' ? schoolId : undefined,
+        startDate: weekStart.toISOString(),
+        endDate: weekEnd.toISOString()
+      };
+      
+      const posts = await storage.getPosts(Object.keys(filters).length > 0 ? filters : undefined);
+      const totalPosts = posts.length;
+      const totalHearts = posts.reduce((sum: number, post: any) => sum + (post.heartsCount || 0), 0);
+      
+      // Category breakdown
+      const categories = posts.reduce((acc: any, post: any) => {
+        const cat = post.category || 'General';
+        acc[cat] = (acc[cat] || 0) + 1;
+        return acc;
+      }, {});
+      
+      // Build report data
+      const reportData = {
+        reportTitle: `Weekly Kindness Impact Report`,
+        schoolName: schoolId === 'bca-demo' ? 'Burlington Christian Academy' : 'Your School',
+        weekPeriod: `${weekStart.toLocaleDateString()} - ${weekEnd.toLocaleDateString()}`,
+        summary: {
+          totalKindnessActs: totalPosts,
+          totalHeartsReceived: totalHearts,
+          averageHeartsPerAct: totalPosts > 0 ? Math.round(totalHearts / totalPosts * 10) / 10 : 0,
+          participatingStudents: isAnonymized ? Math.min(totalPosts, 50) : totalPosts
+        },
+        categoryBreakdown: Object.entries(categories).map(([category, count]) => ({
+          category,
+          count,
+          percentage: Math.round((count as number) / totalPosts * 100)
+        })),
+        topCategories: Object.entries(categories)
+          .sort(([,a], [,b]) => (b as number) - (a as number))
+          .slice(0, 3)
+          .map(([category, count]) => ({ category, count })),
+        recentHighlights: posts
+          .sort((a: any, b: any) => (b.heartsCount || 0) - (a.heartsCount || 0))
+          .slice(0, 5)
+          .map((post: any, index: number) => ({
+            content: post.content.substring(0, 100) + (post.content.length > 100 ? '...' : ''),
+            hearts: post.heartsCount || 0,
+            category: post.category || 'General',
+            student: isAnonymized ? `Student ${index + 1}` : (post.studentName || 'Anonymous')
+          })),
+        isAnonymized,
+        generatedAt: new Date().toISOString()
+      };
+      
+      res.json(reportData);
+    } catch (error: any) {
+      console.error('Report generation error:', error);
+      res.status(500).json({ message: 'Failed to generate report' });
+    }
+  });
+
   app.post('/api/admin/trial-signup', async (req: any, res) => {
     try {
       const { schoolName, districtName, adminName, adminEmail, adminRole, studentCount, contactPhone } = req.body;
