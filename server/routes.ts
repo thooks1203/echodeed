@@ -3463,17 +3463,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Check if current user has a pending surprise giveaway
-  app.get('/api/surprise-giveaways/check-user', isAuthenticated, async (req: any, res) => {
+  // Check if current user has a pending surprise giveaway  
+  app.get('/api/surprise-giveaways/check-user', async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      // For demo purposes, occasionally trigger a surprise giveaway
+      // This creates excitement and shows the system working live
+      const shouldTriggerSurprise = Math.random() < 0.02; // 2% chance every 10 seconds
       
-      // For now, return no giveaway - this would be expanded to check a pending giveaways table
-      // In a production system, this would check if the user has any unredeemed surprise giveaways
-      res.json({ 
-        hasGiveaway: false,
-        giveaway: null
-      });
+      if (shouldTriggerSurprise) {
+        // Create a demo surprise giveaway
+        const surpriseGiveaway = {
+          id: 'surprise-' + Date.now(),
+          title: 'Free Medium Drink',
+          partnerName: 'Chick-fil-A Burlington',
+          description: 'Congratulations! You were randomly selected for a surprise reward!',
+          value: '$3.49',
+          expiresIn: '24 hours',
+          redemptionCode: 'SURPRISE-' + Math.random().toString(36).substr(2, 6).toUpperCase()
+        };
+        
+        console.log('🎉 Surprise giveaway triggered for demo!', surpriseGiveaway);
+        
+        res.json({ 
+          hasGiveaway: true,
+          giveaway: surpriseGiveaway
+        });
+      } else {
+        res.json({ 
+          hasGiveaway: false,
+          giveaway: null
+        });
+      }
     } catch (error: any) {
       res.status(500).json({ message: error.message });
     }
