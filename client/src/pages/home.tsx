@@ -47,10 +47,10 @@ export default function Home() {
   }, [isAuthenticated]);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
-  const [activeTab, setActiveTab] = useState('feed'); // FORCE FEED FOR DEBUGGING
+  const [activeTab, setActiveTab] = useState('feed');
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
-  const [showWelcomeModal, setShowWelcomeModal] = useState(false); // Disabled for debugging
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [tokenEarning, setTokenEarning] = useState<TokenEarning | null>(null);
   const { toast } = useToast();
   
