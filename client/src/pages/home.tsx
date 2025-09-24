@@ -56,33 +56,32 @@ export default function Home() {
   
   const { location } = useGeolocation();
 
-  // TEMPORARILY DISABLED FOR DEBUGGING - Handle URL parameters for tab navigation and role-based defaults
-  // useEffect(() => {
-  //   const urlParams = new URLSearchParams(window.location.search);
-  //   const tabParam = urlParams.get('tab');
-  //   // Removed debug console log
-  //   
-  //   if (tabParam && ['feed', 'schools', 'support', 'summer', 'community-service', 'rewards', 'mentor-dashboard', 'student-dashboard'].includes(tabParam)) {
-  //     setActiveTab(tabParam);
-  //     // Remove the tab parameter from URL to keep it clean
-  //     window.history.replaceState({}, '', window.location.pathname);
-  //   } else {
-  //     // Set default tab based on role if no URL param
-  //     if (user?.schoolRole === 'admin' || user?.schoolRole === 'teacher') {
-  //       setActiveTab('schools');
-  //     } else if (user?.schoolRole === 'student') {
-  //       setActiveTab('feed');
-  //     } else if (user?.schoolRole === 'parent') {
-  //       // Redirect parents to their dedicated dashboard
-  //       window.location.href = '/parent';
-  //       return;
-  //     } else if (!user) {
-  //       // No user found, redirect to landing
-  //       navigate('/?show=roles');
-  //       return;
-  //     }
-  //   }
-  // }, [user]);
+  // Handle URL parameters for tab navigation and role-based defaults
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabParam = urlParams.get('tab');
+    
+    if (tabParam && ['feed', 'schools', 'support', 'summer', 'community-service', 'rewards', 'mentor-dashboard', 'student-dashboard'].includes(tabParam)) {
+      setActiveTab(tabParam);
+      // Remove the tab parameter from URL to keep it clean
+      window.history.replaceState({}, '', window.location.pathname);
+    } else {
+      // Set default tab based on role if no URL param
+      if (user?.schoolRole === 'admin' || user?.schoolRole === 'teacher') {
+        setActiveTab('schools');
+      } else if (user?.schoolRole === 'student') {
+        setActiveTab('feed');
+      } else if (user?.schoolRole === 'parent') {
+        // Redirect parents to their dedicated dashboard
+        window.location.href = '/parent';
+        return;
+      } else if (!user) {
+        // No user found, redirect to landing
+        navigate('/?show=roles');
+        return;
+      }
+    }
+  }, [user, navigate]);
 
   // Fetch data - with console debugging
   const { data: posts = [], isLoading: postsLoading, error, status } = useQuery<KindnessPost[]>({
