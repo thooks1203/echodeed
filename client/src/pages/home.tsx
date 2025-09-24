@@ -38,13 +38,7 @@ export default function Home() {
   const [, navigate] = useLocation();
   const { user, isStudent, isTeacher, isAdmin, isAuthenticated } = useAuth();
 
-  // Auto-authenticate demo users (for production demo)
-  useEffect(() => {
-    if (!isAuthenticated) {
-      // Should not happen with auto-setup, but prevent infinite redirects
-      console.warn('Authentication failed - this should not happen in demo mode');
-    }
-  }, [isAuthenticated]);
+  // Remove auto-authentication check that was causing issues
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
   const [activeTab, setActiveTab] = useState('feed');
@@ -75,15 +69,9 @@ export default function Home() {
         // Redirect parents to their dedicated dashboard
         window.location.href = '/parent';
         return;
-      } else if (!user) {
-        // No user found - wait a moment for auth to load before redirecting
-        // In preview/deployed mode, don't immediately redirect to avoid blank screens
-        const waitForAuth = setTimeout(() => {
-          if (!user) {
-            setActiveTab('feed'); // Default to feed instead of redirecting
-          }
-        }, 500);
-        return () => clearTimeout(waitForAuth);
+      } else {
+        // Default to feed for all users (including when user is loading)
+        setActiveTab('feed');
       }
     }
   }, [user, navigate]);
@@ -106,27 +94,6 @@ export default function Home() {
     refetchOnMount: true
   });
 
-  // Debug React Query state
-  console.log('🐛 Feed Debug:', { 
-    postsLoading, 
-    postsLength: posts?.length, 
-    error: error?.message, 
-    status,
-    activeTab,
-    user: user?.name,
-    isStudent,
-    filters,
-    enabled: true
-  });
-
-  // Debug rendering path
-  console.log('🐛 Render Debug:', {
-    activeTab,
-    willRenderFeed: activeTab === 'feed',
-    willRenderStudentDash: activeTab === 'student-dashboard',
-    willRenderSchools: activeTab === 'schools',
-    willRenderMentor: activeTab === 'mentor-dashboard'
-  });
 
   const { data: counter } = useQuery<KindnessCounter>({
     queryKey: ['/api/counter'],
@@ -305,17 +272,6 @@ export default function Home() {
         onBack={handleBackToDashboard}
       />
       
-      {/* Visible Debug Info */}
-      <div style={{ 
-        backgroundColor: '#fff3cd', 
-        border: '1px solid #ffeaa7', 
-        padding: '10px', 
-        margin: '10px',
-        borderRadius: '5px',
-        fontSize: '12px'
-      }}>
-        🐛 <strong>Debug:</strong> Tab="{activeTab}" | User="{user?.name}" | Role="{user?.schoolRole}" | Posts={posts?.length} | Loading={postsLoading ? 'YES' : 'NO'}
-      </div>
       
       <div style={{ paddingBottom: '140px' }}>
         <FilterBar 
