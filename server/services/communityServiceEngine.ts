@@ -272,16 +272,25 @@ export class CommunityServiceEngine {
         // Ensure user exists first
         const existingUser = await db.select().from(users).where(eq(users.id, userId));
         if (existingUser.length === 0) {
-          // Create demo user for service hours
-          await db.insert(users).values({
-            email: `${userId}@demo.echoDeed.com`,
-            firstName: 'Sarah',
-            lastName: 'Chen',
-            schoolRole: 'student',
-            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Burlington Christian Academy
-            grade: '9th'
-          });
-          console.log(`✅ Created demo user for service hours: ${userId}`);
+          try {
+            // Create demo user for service hours
+            await db.insert(users).values({
+              email: `${userId}@demo.echoDeed.com`,
+              firstName: 'Sarah',
+              lastName: 'Chen',
+              schoolRole: 'student',
+              schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Burlington Christian Academy
+              grade: '9th'
+            });
+            console.log(`✅ Created demo user for service hours: ${userId}`);
+          } catch (insertError: any) {
+            // User might already exist with different ID, try to find by email
+            if (insertError.code === '23505') {
+              console.log(`⚠️ User email already exists, using existing user for ${userId}`);
+            } else {
+              throw insertError;
+            }
+          }
         }
 
         // Create default summary if it doesn't exist

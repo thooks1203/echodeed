@@ -353,6 +353,60 @@ export async function initializeSampleData() {
     log(`✓ Added ${samplePosts.length} sample posts`);
     log(`✓ Counter will reflect actual post count`);
 
+    // Initialize sample community service hours for Sarah Chen
+    try {
+      const { CommunityServiceEngine } = await import('./services/communityServiceEngine');
+      const serviceEngine = new CommunityServiceEngine();
+      
+      // Check if Sarah Chen already has service hours
+      const existingServiceHours = await serviceEngine.getStudentServiceLogs('student-student-mfy11oq5jmch05j2xp', 1);
+      
+      if (existingServiceHours.length === 0) {
+        log('🏥 Creating sample community service hours for Sarah Chen...');
+        
+        // Add some sample service hours for demonstration
+        await serviceEngine.logServiceHours({
+          userId: 'student-student-mfy11oq5jmch05j2xp',
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+          serviceName: 'Food Bank Volunteer',
+          serviceDescription: 'Helped sort and package food donations for local families',
+          organizationName: 'Burlington Community Food Bank',
+          contactPerson: 'Ms. Johnson',
+          contactEmail: 'volunteer@burlingtonfoodbank.org',
+          contactPhone: '(336) 123-4567',
+          hoursLogged: 4.5,
+          serviceDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
+          location: 'Burlington, NC',
+          category: 'Community Support',
+          studentReflection: 'It felt great knowing I helped families have meals. I learned about food insecurity in our community.',
+          photoEvidence: undefined
+        });
+
+        await serviceEngine.logServiceHours({
+          userId: 'student-student-mfy11oq5jmch05j2xp',
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+          serviceName: 'Park Cleanup',
+          serviceDescription: 'Picked up litter and helped maintain trails at City Park',
+          organizationName: 'Burlington Parks & Recreation',
+          contactPerson: 'Mr. Williams',
+          contactEmail: 'parks@burlington.nc.gov',
+          contactPhone: '(336) 222-5555',
+          hoursLogged: 3.0,
+          serviceDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // 2 weeks ago
+          location: 'Burlington City Park, NC',
+          category: 'Environmental',
+          studentReflection: 'Working outside was refreshing and I could see the immediate impact of our work making the park beautiful.',
+          photoEvidence: undefined
+        });
+
+        log('✅ Created sample community service hours for Sarah Chen');
+      } else {
+        log('Sample community service hours already exist for Sarah Chen, skipping');
+      }
+    } catch (error: any) {
+      log('⚠️ Could not initialize community service hours:', error.message || error);
+    }
+
     // Initialize sample reward partners
     const existingPartners = await storage.getRewardPartners();
     if (existingPartners.length === 0) {
