@@ -170,18 +170,6 @@ export default function Home() {
 
   // Show different content based on active tab
   
-  // DEBUGGING: Let's see what's happening
-  if (typeof window !== 'undefined') {
-    (window as any).debugInfo = {
-      activeTab,
-      userRole: user?.schoolRole,
-      postsLength: posts?.length,
-      isLoading: postsLoading,
-      hasData: !!posts,
-      posts: posts?.slice(0, 2)
-    };
-    console.log('🐛 DEBUG INFO:', (window as any).debugInfo);
-  }
   
   if (activeTab === 'mentor-dashboard') {
     return (

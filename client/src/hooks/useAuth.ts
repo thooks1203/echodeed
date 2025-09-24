@@ -49,8 +49,9 @@ function getCurrentMockUser(): AuthUser | null {
   if (storedRole && MOCK_USERS[storedRole]) {
     return MOCK_USERS[storedRole];
   }
-  // Return null if no valid role is stored (user is not authenticated)
-  return null;
+  // AUTO-SET STUDENT ROLE FOR DEMO if no role is stored
+  localStorage.setItem('echodeed_demo_role', 'student');
+  return MOCK_USERS['student'];
 }
 
 export function useAuth() {
