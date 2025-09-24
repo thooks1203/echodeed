@@ -81,7 +81,7 @@ export default function Home() {
       } else if (user?.schoolRole === 'student') {
         console.log('🎓 Setting student default: feed');
         setActiveTab('feed');
-        alert('🔍 DEBUG: Student role detected, activeTab set to: feed');
+        console.log('🔍 DEBUG: Student role detected, activeTab set to: feed');
       } else if (user?.schoolRole === 'parent') {
         // Redirect parents to their dedicated dashboard
         window.location.href = '/parent';
@@ -94,11 +94,11 @@ export default function Home() {
     }
   }, [user]);
 
-  // Fetch data - FORCE QUERY TO RUN
+  // Fetch data - with console debugging
   const { data: posts = [], isLoading: postsLoading, error, status } = useQuery<KindnessPost[]>({
     queryKey: ['/api/posts', filters],
     queryFn: async () => {
-      alert(`🔍 React Query executing! Filters: ${JSON.stringify(filters)}`);
+      console.log('🔍 React Query executing! Filters:', filters);
       const params = new URLSearchParams();
       if (filters.city) params.append('city', filters.city);
       if (filters.category) params.append('category', filters.category);
@@ -106,7 +106,7 @@ export default function Home() {
       
       const response = await fetch(`/api/posts?${params}`);
       const data = await response.json();
-      alert(`🔍 Got ${data?.length || 0} posts from API`);
+      console.log(`🔍 Got ${data?.length || 0} posts from API:`, data?.slice(0, 2));
       return data;
     },
     enabled: true, // Force query to always run
@@ -115,7 +115,7 @@ export default function Home() {
   });
 
   // Debug React Query state
-  alert(`🔍 Query Status: ${status}, Loading: ${postsLoading}, Error: ${error?.message || 'none'}, Posts: ${posts?.length || 0}`);
+  console.log(`🔍 Query Status: ${status}, Loading: ${postsLoading}, Error:`, error, 'Posts:', posts?.length || 0);
 
   const { data: counter } = useQuery<KindnessCounter>({
     queryKey: ['/api/counter'],
@@ -278,7 +278,7 @@ export default function Home() {
 
 
   // Default: Show main feed
-  alert(`🔍 DEBUG: Rendering main feed, activeTab: ${activeTab}, user role: ${user?.schoolRole || 'none'}`);
+  console.log(`🔍 DEBUG: Rendering main feed, activeTab: ${activeTab}, user role: ${user?.schoolRole || 'none'}`);
   return (
     <div style={{ 
       maxWidth: '430px', 
