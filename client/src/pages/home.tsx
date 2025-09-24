@@ -56,10 +56,7 @@ export default function Home() {
   });
   const [filters, setFilters] = useState<PostFilters>({});
   const [counterPulse, setCounterPulse] = useState(false);
-  const [showWelcomeModal, setShowWelcomeModal] = useState(() => {
-    const hasSeenWelcome = localStorage.getItem('echodeed_has_seen_welcome');
-    return !hasSeenWelcome;
-  });
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false); // Disabled for debugging
   const [tokenEarning, setTokenEarning] = useState<TokenEarning | null>(null);
   const { toast } = useToast();
   
