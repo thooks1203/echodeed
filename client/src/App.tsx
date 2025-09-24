@@ -21,6 +21,7 @@ import SchoolConsentDashboard from "@/pages/SchoolConsentDashboard";
 import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 import { RewardNotificationManager } from "@/components/RewardNotificationManager";
 import { SchoolRegistration } from "@/components/SchoolRegistration";
+import { SurpriseGiveawayManager } from "@/components/SurpriseGiveawayManager";
 
 function Router() {
   const [location, setLocation] = useLocation();
@@ -69,6 +70,7 @@ function App() {
         <Router />
         <PWAInstall />
         <RewardNotificationManager />
+        <SurpriseGiveawayManager />
       </TooltipProvider>
     </QueryClientProvider>
   );

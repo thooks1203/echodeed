@@ -3420,6 +3420,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Check if current user has a pending surprise giveaway
+  app.get('/api/surprise-giveaways/check-user', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // For now, return no giveaway - this would be expanded to check a pending giveaways table
+      // In a production system, this would check if the user has any unredeemed surprise giveaways
+      res.json({ 
+        hasGiveaway: false,
+        giveaway: null
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Redeem a surprise giveaway
+  app.post('/api/surprise-giveaways/redeem', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { giveawayId } = req.body;
+      
+      // For now, just return success - this would be expanded to handle actual redemption
+      // In production, this would mark the giveaway as redeemed and create a redemption record
+      res.json({ 
+        success: true,
+        message: 'Surprise giveaway redeemed successfully!'
+      });
+    } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // Test endpoint to trigger surprise giveaway (development only)
   app.post('/api/surprise-giveaways/test-trigger', async (req, res) => {
     try {
