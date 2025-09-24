@@ -129,7 +129,7 @@ function ServiceHoursSection() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Shield className="h-5 w-5 text-blue-600" />
-            🏥 Verified Service Hours - Sarah Chen
+            🏥 Verified Service Hours
           </CardTitle>
           <CardDescription>
             Track your child's community service progress and verification status

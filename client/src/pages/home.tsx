@@ -113,7 +113,19 @@ export default function Home() {
     error: error?.message, 
     status,
     activeTab,
-    user: user?.name 
+    user: user?.name,
+    isStudent,
+    filters,
+    enabled: true
+  });
+
+  // Debug rendering path
+  console.log('🐛 Render Debug:', {
+    activeTab,
+    willRenderFeed: activeTab === 'feed',
+    willRenderStudentDash: activeTab === 'student-dashboard',
+    willRenderSchools: activeTab === 'schools',
+    willRenderMentor: activeTab === 'mentor-dashboard'
   });
 
   const { data: counter } = useQuery<KindnessCounter>({
