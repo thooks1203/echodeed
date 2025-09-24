@@ -2040,6 +2040,26 @@ export class DatabaseStorage implements IStorage {
     return updatedRedemption;
   }
 
+  // New method for merchant verification system
+  async getRedemptionByCode(code: string): Promise<RewardRedemption | undefined> {
+    const [redemption] = await db.select().from(rewardRedemptions).where(eq(rewardRedemptions.redemptionCode, code));
+    return redemption;
+  }
+
+  async markRedemptionAsVerified(id: string, verificationData: { verifyMethod: string; usedAt: string }): Promise<RewardRedemption | undefined> {
+    const [updatedRedemption] = await db.update(rewardRedemptions)
+      .set({
+        status: 'used',
+        verifiedByMerchant: 1,
+        verifyMethod: verificationData.verifyMethod,
+        usedAt: new Date(verificationData.usedAt)
+      })
+      .where(eq(rewardRedemptions.id, id))
+      .returning();
+    
+    return updatedRedemption;
+  }
+
   async incrementRedemptionCounter(offerId: string): Promise<void> {
     await db.update(rewardOffers)
       .set({

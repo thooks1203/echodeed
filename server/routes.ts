@@ -9,6 +9,22 @@ import { crisisDetectionService } from "./services/crisisDetection";
 import { realTimeMonitoring } from "./services/realTimeMonitoring";
 import { emailService } from "./services/emailService";
 
+// Utility function to generate unique redemption codes
+function generateRedemptionCode(): string {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; // Excludes 0, O, 1, I for readability
+  const segments = [];
+  
+  for (let i = 0; i < 2; i++) {
+    let segment = '';
+    for (let j = 0; j < 4; j++) {
+      segment += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    segments.push(segment);
+  }
+  
+  return `ECHO-${segments.join('-')}`;
+}
+
 // 🚀 REVOLUTIONARY: Instant Parent Notification Function
 async function triggerInstantParentNotification(studentUserId: string, postContent: string, post: any) {
   try {
@@ -3186,16 +3202,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
 
+      // Generate unique redemption code
+      const redemptionCode = generateRedemptionCode();
+      
+      // Set expiration date (14 days from now)
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + 14);
+
       // Create initial redemption
       const redemption = await storage.redeemReward({
         userId,
         offerId,
         partnerId,
         echoSpent,
-        status: 'pending',
+        status: 'active', // Set as active immediately for merchant verification
+        redemptionCode, // Add the generated code
         verificationRequired: req.body.verificationRequired || 0,
         verificationStatus: req.body.verificationRequired ? 'pending' : 'none',
-        expiresAt: req.body.expiresAt ? new Date(req.body.expiresAt) : undefined
+        expiresAt
       });
 
       // Process fulfillment through external service
@@ -3206,31 +3230,50 @@ export async function registerRoutes(app: Express): Promise<Server> {
         await storage.updateRedemptionStatus(
           redemption.id, 
           'active', 
-          fulfillmentResult.redemptionCode
+          fulfillmentResult.redemptionCode || redemptionCode
         );
 
         // INCREMENT REDEMPTION COUNTER - CRITICAL FOR SPONSOR BUDGET PROTECTION
         await storage.incrementRedemptionCounter(offerId);
-
-        res.status(201).json({
-          ...redemption,
-          redemptionCode: fulfillmentResult.redemptionCode,
-          status: 'active',
-          externalId: fulfillmentResult.externalId
-        });
       } else {
-        // Fulfillment failed - refund tokens and mark as failed
-        await storage.updateUserTokens(userId, {
-          echoBalance: userTokens.echoBalance
-        });
-        await storage.updateRedemptionStatus(redemption.id, 'failed');
-
-        res.status(400).json({ 
-          message: `Fulfillment failed: ${fulfillmentResult.error}`,
-          redemptionId: redemption.id,
-          willRetry: !!fulfillmentResult.retryAfter
-        });
+        // Handle fulfillment failure but still proceed with verification system
+        console.warn(`Fulfillment failed for redemption ${redemption.id}:`, fulfillmentResult.error);
       }
+
+      // Send email notification to parent (COPPA compliant)
+      try {
+        const user = await storage.getUser(userId);
+        if (user?.parentEmail) {
+          const verificationUrl = `${req.protocol}://${req.get('host')}/r/${redemptionCode}`;
+          
+          await emailService.sendRewardRedemptionEmail({
+            parentEmail: user.parentEmail,
+            parentName: user.parentName || 'Parent',
+            studentFirstName: user.firstName || 'Your child',
+            partnerName: partner.partnerName,
+            offerTitle: offer.title,
+            offerValue: offer.offerValue,
+            redemptionCode,
+            expiresAt,
+            verificationUrl,
+            instructions: partner.redemptionInstructions || `Visit ${partner.partnerName} and show this code to redeem your reward.`
+          });
+          
+          console.log(`📧 Reward redemption email sent to parent for ${user.firstName}`);
+        }
+      } catch (emailError) {
+        console.error('Failed to send redemption email:', emailError);
+        // Don't fail the redemption if email fails
+      }
+
+      res.status(201).json({
+        ...redemption,
+        redemptionCode,
+        status: 'active',
+        message: 'Reward redeemed successfully! Check your parent\'s email for details.',
+        verificationUrl: `${req.protocol}://${req.get('host')}/r/${redemptionCode}`,
+        expiresAt: expiresAt.toISOString()
+      });
     } catch (error: any) {
       res.status(400).json({ message: error.message });
     }
@@ -3450,6 +3493,125 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error: any) {
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Merchant Verification API - Get redemption details by code
+  app.get('/api/rewards/verify/:code', async (req, res) => {
+    try {
+      const { code } = req.params;
+      
+      if (!code || code.length < 8) {
+        return res.status(400).json({ message: 'Invalid redemption code format' });
+      }
+
+      // Find redemption by code
+      const redemption = await storage.getRedemptionByCode(code);
+      
+      if (!redemption) {
+        return res.status(404).json({ message: 'Redemption code not found' });
+      }
+
+      // Get offer and partner details
+      const offer = await storage.getRewardOffer(redemption.offerId);
+      const partner = await storage.getRewardPartner(redemption.partnerId);
+      
+      if (!offer || !partner) {
+        return res.status(404).json({ message: 'Offer or partner not found' });
+      }
+
+      // Get user's first name only (COPPA compliance)
+      const user = await storage.getUser(redemption.userId);
+      const studentFirstName = user?.firstName || 'Student';
+
+      // Return redemption details (public info only)
+      res.json({
+        redemptionCode: redemption.redemptionCode,
+        offerTitle: offer.title,
+        offerValue: offer.offerValue,
+        partnerName: partner.partnerName,
+        studentFirstName,
+        status: redemption.status,
+        expiresAt: redemption.expiresAt,
+        verifiedByMerchant: redemption.verifiedByMerchant === 1,
+        usedAt: redemption.usedAt
+      });
+    } catch (error: any) {
+      console.error('Error fetching redemption details:', error);
+      res.status(500).json({ message: 'Failed to load redemption details' });
+    }
+  });
+
+  // Merchant Verification API - Verify with PIN and mark as used
+  app.post('/api/rewards/verify', async (req, res) => {
+    try {
+      const { redemptionCode, merchantPin } = req.body;
+      
+      if (!redemptionCode || !merchantPin) {
+        return res.status(400).json({ message: 'Redemption code and merchant PIN are required' });
+      }
+
+      // Find redemption
+      const redemption = await storage.getRedemptionByCode(redemptionCode);
+      
+      if (!redemption) {
+        return res.status(404).json({ message: 'Redemption code not found' });
+      }
+
+      // Check if already used
+      if (redemption.verifiedByMerchant === 1) {
+        return res.status(409).json({ 
+          message: 'This redemption has already been used',
+          redemption
+        });
+      }
+
+      // Check if expired
+      if (redemption.expiresAt && new Date() > new Date(redemption.expiresAt)) {
+        return res.status(410).json({ message: 'This redemption code has expired' });
+      }
+
+      // Get partner details to verify PIN
+      const partner = await storage.getRewardPartner(redemption.partnerId);
+      
+      if (!partner) {
+        return res.status(404).json({ message: 'Partner not found' });
+      }
+
+      // For development, accept PIN "1234" for all partners
+      // In production, this would verify against partner.merchantPinHash
+      const isValidPin = process.env.NODE_ENV === 'development' ? 
+        merchantPin === '1234' : 
+        false; // TODO: Implement proper PIN verification
+
+      if (!isValidPin) {
+        return res.status(401).json({ message: 'Invalid merchant PIN' });
+      }
+
+      // Mark as verified and used
+      const updatedRedemption = await storage.markRedemptionAsVerified(redemption.id, {
+        verifyMethod: 'qr',
+        usedAt: new Date().toISOString()
+      });
+
+      // Get updated details for response
+      const offer = await storage.getRewardOffer(redemption.offerId);
+      const user = await storage.getUser(redemption.userId);
+      
+      res.json({
+        success: true,
+        message: 'Redemption verified successfully',
+        redemption: {
+          ...updatedRedemption,
+          offerTitle: offer?.title,
+          offerValue: offer?.offerValue,
+          partnerName: partner.partnerName,
+          studentFirstName: user?.firstName || 'Student'
+        }
+      });
+    } catch (error: any) {
+      console.error('Error verifying redemption:', error);
+      res.status(500).json({ message: 'Failed to verify redemption' });
     }
   });
 
