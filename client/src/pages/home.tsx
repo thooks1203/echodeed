@@ -76,6 +76,14 @@ export default function Home() {
     }
   }, [user, navigate]);
 
+  // Guard against unauthorized access to schools dashboard
+  useEffect(() => {
+    const role = user?.schoolRole || 'student';
+    if (activeTab === 'schools' && !canAccessSchoolsDashboard(role)) {
+      setActiveTab('feed');
+    }
+  }, [activeTab, user?.schoolRole]);
+
   // Fetch data - with console debugging
   const { data: posts = [], isLoading: postsLoading, error, status } = useQuery<KindnessPost[]>({
     queryKey: ['/api/posts', filters],
@@ -210,26 +218,7 @@ export default function Home() {
   if (activeTab === 'schools') {
     // Only teachers and admins can access Schools Dashboard
     if (!canAccessSchoolsDashboard(user?.schoolRole || 'student')) {
-      setTimeout(() => setActiveTab('feed'), 0);
-      return (
-        <div style={{ 
-          minHeight: '100vh', 
-          display: 'flex', 
-          alignItems: 'center', 
-          justifyContent: 'center',
-          background: '#F9FAFB'
-        }}>
-          <div style={{ textAlign: 'center', padding: '20px' }}>
-            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🔒</div>
-            <h2 style={{ fontSize: '20px', fontWeight: '600', marginBottom: '8px', color: '#DC2626' }}>
-              Access Restricted
-            </h2>
-            <p style={{ fontSize: '14px', color: '#6B7280' }}>
-              Students cannot access the Schools Dashboard. Redirecting to your dashboard...
-            </p>
-          </div>
-        </div>
-      );
+      return null; // useEffect will redirect to feed
     }
     
     return (
@@ -246,12 +235,6 @@ export default function Home() {
         onNavigateToTab={navigateToTab} 
         activeBottomTab={activeTab}
       />
-    );
-  }
-
-  if (activeTab === 'mentor-dashboard') {
-    return (
-      <MentorDashboard />
     );
   }
 
