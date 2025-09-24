@@ -182,12 +182,14 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
             textShadow: '0 1px 2px rgba(0,0,0,0.2)'
           }}
           onMouseEnter={(e) => {
-            (e.target as HTMLElement).style.transform = 'translateY(-2px)';
-            (e.target as HTMLElement).style.boxShadow = '0 12px 30px rgba(139, 92, 246, 0.4)';
+            const target = e.currentTarget;
+            target.style.transform = 'translateY(-2px)';
+            target.style.boxShadow = '0 12px 30px rgba(139, 92, 246, 0.4)';
           }}
           onMouseLeave={(e) => {
-            (e.target as HTMLElement).style.transform = 'translateY(0)';
-            (e.target as HTMLElement).style.boxShadow = '0 8px 25px rgba(139, 92, 246, 0.3)';
+            const target = e.currentTarget;
+            target.style.transform = 'translateY(0)';
+            target.style.boxShadow = '0 8px 25px rgba(139, 92, 246, 0.3)';
           }}
           data-testid="button-log-service-hours"
         >
@@ -226,8 +228,9 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
               fontWeight: '600',
               cursor: 'pointer',
               transition: 'all 0.2s ease',
-              background: activeTab === tab.id ? '#10B981' : 'transparent',
-              color: activeTab === tab.id ? 'white' : '#6b7280'
+              background: activeTab === tab.id ? 'linear-gradient(135deg, #10B981, #06B6D4)' : 'transparent',
+              color: activeTab === tab.id ? 'white' : '#6b7280',
+              boxShadow: activeTab === tab.id ? '0 2px 8px rgba(16, 185, 129, 0.3)' : 'none'
             }}
             data-testid={`student-tab-${tab.id}`}
           >
