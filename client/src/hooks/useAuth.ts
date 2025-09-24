@@ -55,20 +55,13 @@ function getCurrentMockUser(): AuthUser | null {
 }
 
 export function useAuth() {
-  // In production, this would query real auth endpoint
-  const { data: user, isLoading } = useQuery({
-    queryKey: ["/api/auth/user"],
-    retry: false,
-    enabled: false // Disable real auth check for demo
-  });
-
-  // Use mock data for role-based testing
+  // Use mock data for role-based testing - always authenticated in demo
   const mockUser = getCurrentMockUser();
 
   return {
     user: mockUser,
     isLoading: false,
-    isAuthenticated: !!mockUser,
+    isAuthenticated: true, // Always authenticated in demo mode
     // Helper methods for role checking
     isStudent: mockUser?.schoolRole === 'student',
     isTeacher: mockUser?.schoolRole === 'teacher',
