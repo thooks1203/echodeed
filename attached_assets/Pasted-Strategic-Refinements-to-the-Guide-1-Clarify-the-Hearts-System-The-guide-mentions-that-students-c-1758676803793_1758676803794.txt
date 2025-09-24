@@ -1,0 +1,21 @@
+Strategic Refinements to the Guide
+1. Clarify the "Hearts" System
+The guide mentions that students can "give 'hearts' to posts that inspire them" and that they earn "tokens for... hearts received". However, our core mission is built on "no likes or upvotes" to remove social pressure. This creates a slight contradiction.
+
+
+Suggestion: Change the "hearts" system to a more anonymous or collective measure. For example, instead of giving a "heart" to an individual post, students could click a button that contributes to a "School-wide Kindness Score." This keeps the positive feedback loop while reinforcing the idea that the community's effort matters, not individual recognition. The student would still earn a token for posting, but the reward wouldn't be tied to social approval.
+
+2. Make the Reward System More Tangible and Unique
+Your guide mentions that "Parents get notified when their child earns or uses a reward". This is good, but you can make it more powerful by connecting it to your unique 
+
+dual reward system.
+
+Suggestion: Explicitly state how the dual reward system works in this document. For example, in the "Real Rewards System" section, under "For Local Business Sponsors," you could add a point: "Our revolutionary 
+
+dual reward system incentivizes family engagement by allowing parents to also earn a small reward when their child's kind act is verified.  This strengthens family bonds and ensures your brand is part of a positive, shared experience."
+
+3. Be More Direct on Pricing
+The guide says that "Implementation costs are minimal" and that you "work with each school to create a budget that fits their needs". This is a good way to start, but you can be more direct, as we've already defined a price for the pilot.
+
+
+Suggestion: In the "Getting Started" section, under "For School Administrators," you can propose a specific, low-cost pilot. "A 90-day pilot program costs just $1,200 total, with the option to move to a minimal annual subscription of $4,800." This provides a tangible number that can be budgeted and planned for.
