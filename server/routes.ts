@@ -3476,7 +3476,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: 'surprise-' + Date.now(),
           title: 'Free Medium Drink',
           partnerName: 'Chick-fil-A Burlington',
-          description: 'Congratulations! You were randomly selected for a surprise reward!',
+          description: 'Enjoy this complimentary beverage as a thank you for spreading kindness!',
           value: '$3.49',
           expiresIn: '24 hours',
           redemptionCode: 'SURPRISE-' + Math.random().toString(36).substr(2, 6).toUpperCase()
