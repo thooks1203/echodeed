@@ -23,6 +23,7 @@ import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 import { RewardNotificationManager } from "@/components/RewardNotificationManager";
 import { SchoolRegistration } from "@/components/SchoolRegistration";
 import { SurpriseGiveawayManager } from "@/components/SurpriseGiveawayManager";
+import TVDisplayMode from "@/pages/TVDisplayMode";
 
 function Router() {
   const [location, setLocation] = useLocation();
@@ -50,6 +51,8 @@ function Router() {
         <Route path="/student-signup" component={StudentSignup} />
         <Route path="/parent-consent/:verificationCode" component={ParentConsent} />
         <Route path="/r/:code" component={MerchantVerifyPage} />
+        <Route path="/tv-display" component={TVDisplayMode} />
+        <Route path="/assembly-mode" component={TVDisplayMode} />
         <Route path="/app" component={Home} />
         <Route path="/" component={LandingPage} />
       </Switch>
