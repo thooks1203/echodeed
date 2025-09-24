@@ -329,16 +329,6 @@ export class SummerChallengeEngine {
     return completion;
   }
 
-  // Parent approval workflow
-  async approveCompletion(progressId: string, pointsAwarded: number) {
-    return await db.update(userSummerProgress)
-      .set({ 
-        parentApproved: true, 
-        pointsEarned: pointsAwarded 
-      })
-      .where(eq(userSummerProgress.id, progressId))
-      .returning();
-  }
 
   // Notify parents of child's completion
   private async notifyParentOfCompletion(userId: string, challengeId: string) {

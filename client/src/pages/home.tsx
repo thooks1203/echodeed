@@ -239,8 +239,7 @@ export default function Home() {
   }
 
 
-  // FORCE STUDENT FEED TO RENDER FOR DEBUGGING
-  // This will bypass all routing logic to test if feed component can mount
+  // Default: Show main feed
   return (
     <div style={{ 
       maxWidth: '430px', 
