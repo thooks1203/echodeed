@@ -314,7 +314,7 @@ export default function ParentDashboard() {
     {
       userId: 'student-002', 
       name: 'Alex Johnson',
-      grade: '2nd',
+      grade: '9th',
       school: 'Burlington Christian Academy',
       isActive: true,
       lastActivity: new Date(Date.now() - 7200000).toISOString(),
