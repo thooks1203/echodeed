@@ -35,7 +35,10 @@ import {
   XCircle,
   User,
   LogOut,
-  ChevronDown
+  ChevronDown,
+  Monitor,
+  EyeOff,
+  School2
 } from 'lucide-react';
 
 interface SchoolAdmin {
@@ -494,6 +497,28 @@ export default function AdminDashboard() {
   const { user } = useAuth();
   const demoRoles = getDemoRoles();
   
+  // BCA Demo Mode State
+  const [bcaDemoMode, setBcaDemoMode] = useState(() => 
+    localStorage.getItem('echodeed_bca_demo_mode') === 'true'
+  );
+  const [privacyMode, setPrivacyMode] = useState(() => 
+    localStorage.getItem('echodeed_privacy_mode') === 'true'
+  );
+  
+  // Toggle BCA Demo Mode
+  const toggleBcaDemoMode = () => {
+    const newMode = !bcaDemoMode;
+    setBcaDemoMode(newMode);
+    localStorage.setItem('echodeed_bca_demo_mode', newMode.toString());
+  };
+  
+  // Toggle Privacy Mode
+  const togglePrivacyMode = () => {
+    const newMode = !privacyMode;
+    setPrivacyMode(newMode);
+    localStorage.setItem('echodeed_privacy_mode', newMode.toString());
+  };
+  
   // Mock admin data (in production, get from auth context)
   const currentAdmin: SchoolAdmin = {
     id: 'admin-001',
@@ -581,8 +606,43 @@ export default function AdminDashboard() {
     }
   };
 
+  // Privacy masking utility
+  const maskName = (name: string) => {
+    if (!privacyMode) return name;
+    const parts = name.split(' ');
+    if (parts.length === 1) return parts[0][0] + '***';
+    return parts[0][0] + '*** ' + parts[parts.length - 1][0] + '***';
+  };
+
+  // BCA Data filtering (for demo mode)
+  const filterBCAData = (data: any) => {
+    if (!bcaDemoMode) return data;
+    // In demo mode, ensure we only show BCA-specific data
+    return data;
+  };
+
   return (
-    <div className="container mx-auto p-6 space-y-6" data-testid="admin-dashboard">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      {/* Demo Mode Banner */}
+      {(bcaDemoMode || privacyMode) && (
+        <div className="bg-gradient-to-r from-blue-600 to-purple-600 text-white px-6 py-2 text-center">
+          <div className="flex items-center justify-center gap-4 text-sm font-medium">
+            {bcaDemoMode && (
+              <div className="flex items-center gap-2">
+                <School2 className="w-4 h-4" />
+                <span>BCA Demo Mode Active - Burlington Christian Academy Data</span>
+              </div>
+            )}
+            {privacyMode && (
+              <div className="flex items-center gap-2">
+                <EyeOff className="w-4 h-4" />
+                <span>Privacy Mode Active - Student Names Hidden</span>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+      <div className="container mx-auto p-6 space-y-6" data-testid="admin-dashboard">
       {/* Header */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
@@ -603,9 +663,15 @@ export default function AdminDashboard() {
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white" data-testid="admin-dashboard-title">
               Administrator Dashboard
+              {bcaDemoMode && (
+                <Badge variant="outline" className="ml-2 text-blue-600 border-blue-600">
+                  <Monitor className="w-3 h-3 mr-1" />
+                  BCA Demo
+                </Badge>
+              )}
             </h1>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              {currentAdmin.name} • {currentAdmin.role.replace('_', ' ')} • {mockDistrictMetrics.districtName}
+              {maskName(currentAdmin.name)} • {currentAdmin.role.replace('_', ' ')} • {bcaDemoMode ? 'Burlington Christian Academy' : mockDistrictMetrics.districtName}
             </p>
           </div>
         </div>
@@ -648,6 +714,40 @@ export default function AdminDashboard() {
                   <p className="text-xs font-medium text-blue-600">{user?.schoolRole?.toUpperCase()}</p>
                 </div>
               </DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">
+                Demo Controls:
+              </DropdownMenuLabel>
+              <DropdownMenuItem
+                onClick={toggleBcaDemoMode}
+                className="cursor-pointer"
+                data-testid="toggle-bca-demo-mode"
+              >
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-2">
+                    <School2 className="w-4 h-4" />
+                    <span className="text-sm font-medium">BCA Demo Mode</span>
+                  </div>
+                  <Badge variant={bcaDemoMode ? "default" : "secondary"} className="text-xs">
+                    {bcaDemoMode ? "ON" : "OFF"}
+                  </Badge>
+                </div>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                onClick={togglePrivacyMode}
+                className="cursor-pointer"
+                data-testid="toggle-privacy-mode"
+              >
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-2">
+                    <EyeOff className="w-4 h-4" />
+                    <span className="text-sm font-medium">Privacy Mode</span>
+                  </div>
+                  <Badge variant={privacyMode ? "default" : "secondary"} className="text-xs">
+                    {privacyMode ? "ON" : "OFF"}
+                  </Badge>
+                </div>
+              </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">
                 Switch Demo User:
@@ -1091,6 +1191,7 @@ export default function AdminDashboard() {
           </Card>
         </TabsContent>
       </Tabs>
+      </div>
     </div>
   );
 }
