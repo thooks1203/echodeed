@@ -564,13 +564,15 @@ export async function initializeSampleRewardData() {
       }
     ];
 
+    const createdOffers = [];
     for (const offerData of offers) {
       const offer = await storage.createRewardOffer(offerData);
+      createdOffers.push(offer);
       console.log(`✓ Created offer: ${offer.title}`);
     }
 
     console.log('✓ Sample reward data initialization completed');
-    console.log(`✓ Created ${createdPartners.length} partners and ${offers.length} offers`);
+    console.log(`✓ Created ${createdPartners.length} partners and ${createdOffers.length} offers`);
 
     // ===== CREATE DEMO REDEMPTIONS FOR STUDENT EMMA =====
     console.log('🎁 Creating demo student redemptions for realistic demo...');
@@ -582,7 +584,7 @@ export async function initializeSampleRewardData() {
       const demoRedemptions = [
         {
           userId: 'student-001', // Emma Johnson
-          offerId: offers[0].id, // Burlington Carousel - 2 Free Rides
+          offerId: createdOffers[0].id, // Burlington Carousel - 2 Free Rides
           partnerId: createdPartners[0].id, // Burlington City Park Carousel
           echoSpent: 100,
           redemptionCode: 'CAROUSEL2024',
@@ -593,7 +595,7 @@ export async function initializeSampleRewardData() {
         },
         {
           userId: 'student-001', // Emma Johnson
-          offerId: offers[3].id, // Sir Pizza - Kids Meal
+          offerId: createdOffers[3].id, // Sir Pizza - Kids Meal
           partnerId: createdPartners[3].id, // Sir Pizza Burlington
           echoSpent: 150,
           redemptionCode: 'PIZZA2024KIDS',
