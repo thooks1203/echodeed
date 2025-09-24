@@ -39,7 +39,7 @@ function Router() {
         <Route path="/school-consent" component={SchoolConsentDashboard} />
         <Route path="/parent" component={ParentDashboard} />
         <Route path="/parent-dashboard" component={ParentDashboard} />
-        <Route path="/rewards" component={RewardsPage} />
+        <Route path="/rewards"><RewardsPage /></Route>
         <Route path="/wellness-checkin" component={WellnessCheckInPage} />
         <Route path="/family-challenges" component={FamilyChallenges} />
         <Route path="/family-dashboard"><FamilyDashboard /></Route>

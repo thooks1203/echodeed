@@ -14,11 +14,6 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
   const queryClient = useQueryClient();
   const [clickedPosts, setClickedPosts] = useState<Set<string>>(new Set());
 
-  // Debug logging
-  console.log('📋 KindnessFeed received posts:', posts);
-  console.log('📋 KindnessFeed posts length:', posts.length);
-  console.log('📋 KindnessFeed isLoading:', isLoading);
-
   const heartMutation = useMutation({
     mutationFn: async (postId: string) => {
       const response = await fetch(`/api/posts/${postId}/heart`, {

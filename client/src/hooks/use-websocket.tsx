@@ -30,8 +30,10 @@ export function useWebSocket(onMessage?: (message: WebSocketMessage) => void) {
         wsRef.current.onclose = () => {
           console.log('WebSocket disconnected');
           setIsConnected(false);
-          // Attempt to reconnect after 3 seconds
-          setTimeout(connect, 3000);
+          // Don't auto-reconnect in development to prevent connection loops
+          if (process.env.NODE_ENV === 'production') {
+            setTimeout(connect, 3000);
+          }
         };
         
         wsRef.current.onerror = (error) => {
@@ -40,7 +42,10 @@ export function useWebSocket(onMessage?: (message: WebSocketMessage) => void) {
         };
       } catch (error) {
         console.error('Failed to connect to WebSocket:', error);
-        setTimeout(connect, 3000);
+        // Don't auto-reconnect in development to prevent connection loops
+        if (process.env.NODE_ENV === 'production') {
+          setTimeout(connect, 3000);
+        }
       }
     };
 
