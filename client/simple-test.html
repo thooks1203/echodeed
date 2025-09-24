@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>EchoDeed Simple Test</title>
+</head>
+<body style="background: purple; color: white; padding: 50px; font-size: 24px; text-align: center;">
+    <h1>🔥 BASIC HTML TEST PAGE 🔥</h1>
+    <p>If you see this purple page, the server is working!</p>
+    <div id="js-test">JavaScript is loading...</div>
+    
+    <!-- OLD SCHOOL JAVASCRIPT - NO MODULES -->
+    <script>
+        console.log('=== BASIC JAVASCRIPT WORKING ===');
+        document.getElementById('js-test').innerHTML = '✅ JavaScript is working perfectly!';
+        document.body.style.backgroundColor = 'green';
+        
+        // Test if we can fetch from our API
+        fetch('/api/counter')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('js-test').innerHTML += '<br>✅ API works! Counter: ' + data.count;
+            })
+            .catch(err => {
+                document.getElementById('js-test').innerHTML += '<br>❌ API failed: ' + err.message;
+            });
+    </script>
+</body>
+</html>
