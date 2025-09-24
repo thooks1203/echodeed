@@ -136,7 +136,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           </h2>
         </div>
         <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>
-          Welcome back, {user.name}! • Grade {user.grade}
+          Welcome back, {user?.name || 'Student'}! • Grade {user?.grade || '7'}
         </p>
       </div>
 
@@ -157,6 +157,47 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         <p style={{ fontSize: '14px', opacity: 0.9, margin: 0 }}>
           You're making a difference every day!
         </p>
+      </div>
+
+      {/* Service Hours Action Button */}
+      <div style={{ marginBottom: '24px' }}>
+        <button
+          onClick={() => onNavigateToTab ? onNavigateToTab('community-service') : window.location.href = '/app?tab=community-service'}
+          style={{
+            width: '100%',
+            background: 'linear-gradient(135deg, #8B5CF6, #EC4899)',
+            color: 'white',
+            border: 'none',
+            borderRadius: '16px',
+            padding: '20px',
+            fontSize: '16px',
+            fontWeight: '700',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '12px',
+            cursor: 'pointer',
+            boxShadow: '0 8px 25px rgba(139, 92, 246, 0.3)',
+            transition: 'all 0.3s ease',
+            textShadow: '0 1px 2px rgba(0,0,0,0.2)'
+          }}
+          onMouseEnter={(e) => {
+            (e.target as HTMLElement).style.transform = 'translateY(-2px)';
+            (e.target as HTMLElement).style.boxShadow = '0 12px 30px rgba(139, 92, 246, 0.4)';
+          }}
+          onMouseLeave={(e) => {
+            (e.target as HTMLElement).style.transform = 'translateY(0)';
+            (e.target as HTMLElement).style.boxShadow = '0 8px 25px rgba(139, 92, 246, 0.3)';
+          }}
+          data-testid="button-log-service-hours"
+        >
+          <span style={{ fontSize: '24px' }}>🏥</span>
+          <div style={{ textAlign: 'left' }}>
+            <div style={{ fontSize: '16px', fontWeight: '700' }}>Log Service Hours</div>
+            <div style={{ fontSize: '13px', opacity: 0.9 }}>Track your community service activities</div>
+          </div>
+          <span style={{ fontSize: '20px', marginLeft: 'auto' }}>→</span>
+        </button>
       </div>
 
       {/* Tab Navigation */}
