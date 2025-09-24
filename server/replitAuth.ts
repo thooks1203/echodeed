@@ -132,6 +132,19 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
   if (process.env.NODE_ENV === 'development' && req.headers['x-session-id']) {
     const sessionId = req.headers['x-session-id'] as string;
     
+    // Create the demo user in the database if it doesn't exist
+    try {
+      await storage.upsertUser({
+        id: sessionId,
+        email: 'demo@echodeed.com',
+        firstName: 'Demo',
+        lastName: 'User',
+        profileImageUrl: null,
+      });
+    } catch (error) {
+      console.error('Error creating demo user:', error);
+    }
+    
     // Create mock user for smooth demo experience
     req.user = {
       claims: { 
