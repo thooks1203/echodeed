@@ -69,17 +69,14 @@ export default function Home() {
     // Removed debug console log
     
     if (tabParam && ['feed', 'schools', 'support', 'summer', 'community-service', 'rewards', 'mentor-dashboard', 'student-dashboard'].includes(tabParam)) {
-      console.log('✅ Setting activeTab to:', tabParam);
       setActiveTab(tabParam);
       // Remove the tab parameter from URL to keep it clean
       window.history.replaceState({}, '', window.location.pathname);
     } else {
       // Set default tab based on role if no URL param
       if (user?.schoolRole === 'admin' || user?.schoolRole === 'teacher') {
-        console.log('👨‍💼 Setting admin/teacher default: schools');
         setActiveTab('schools');
       } else if (user?.schoolRole === 'student') {
-        console.log('🎓 Setting student default: feed');
         setActiveTab('feed');
       } else if (user?.schoolRole === 'parent') {
         // Redirect parents to their dedicated dashboard
@@ -97,7 +94,6 @@ export default function Home() {
   const { data: posts = [], isLoading: postsLoading, error, status } = useQuery<KindnessPost[]>({
     queryKey: ['/api/posts', filters],
     queryFn: async () => {
-      console.log('🔍 React Query executing! Filters:', filters);
       const params = new URLSearchParams();
       if (filters.city) params.append('city', filters.city);
       if (filters.category) params.append('category', filters.category);
@@ -105,7 +101,6 @@ export default function Home() {
       
       const response = await fetch(`/api/posts?${params}`);
       const data = await response.json();
-      console.log(`🔍 Got ${data?.length || 0} posts from API:`, data?.slice(0, 2));
       return data;
     },
     enabled: true, // Force query to always run
@@ -114,7 +109,6 @@ export default function Home() {
   });
 
   // Debug React Query state
-  console.log(`🔍 Query Status: ${status}, Loading: ${postsLoading}, Error:`, error, 'Posts:', posts?.length || 0);
 
   const { data: counter } = useQuery<KindnessCounter>({
     queryKey: ['/api/counter'],
