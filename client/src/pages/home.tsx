@@ -76,9 +76,14 @@ export default function Home() {
         window.location.href = '/parent';
         return;
       } else if (!user) {
-        // No user found, redirect to landing
-        navigate('/?show=roles');
-        return;
+        // No user found - wait a moment for auth to load before redirecting
+        // In preview/deployed mode, don't immediately redirect to avoid blank screens
+        const waitForAuth = setTimeout(() => {
+          if (!user) {
+            setActiveTab('feed'); // Default to feed instead of redirecting
+          }
+        }, 500);
+        return () => clearTimeout(waitForAuth);
       }
     }
   }, [user, navigate]);
