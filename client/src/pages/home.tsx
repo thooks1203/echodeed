@@ -38,13 +38,13 @@ export default function Home() {
   const [, navigate] = useLocation();
   const { user, isStudent, isTeacher, isAdmin, isAuthenticated } = useAuth();
 
-  // Redirect to landing page if not authenticated
+  // Auto-authenticate demo users (for production demo)
   useEffect(() => {
     if (!isAuthenticated) {
-      navigate('/?show=roles');
-      return;
+      // Should not happen with auto-setup, but prevent infinite redirects
+      console.warn('Authentication failed - this should not happen in demo mode');
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated]);
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState('global');
   const [activeTab, setActiveTab] = useState('feed'); // FORCE FEED FOR DEBUGGING
