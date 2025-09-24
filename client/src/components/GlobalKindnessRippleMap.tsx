@@ -11,7 +11,9 @@ interface RippleEvent {
 
 export function GlobalKindnessRippleMap() {
   const [ripples, setRipples] = useState<RippleEvent[]>([]);
-  const { isConnected } = useWebSocket();
+  // Temporarily disabled for debugging
+  // const { isConnected } = useWebSocket();
+  const isConnected = false;
 
   // Mock WebSocket message handling for demo
   useEffect(() => {

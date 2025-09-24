@@ -120,19 +120,19 @@ export default function Home() {
     queryFn: () => fetch('/api/tokens').then(r => r.json())
   });
 
-  // WebSocket for real-time updates
-  useWebSocket((message: WebSocketMessage) => {
-    if (message.type === 'NEW_POST') {
-      queryClient.invalidateQueries({ queryKey: ['/api/posts'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/counter'] });
-      setCounterPulse(true);
-      setTimeout(() => setCounterPulse(false), 1000);
-    } else if (message.type === 'COUNTER_UPDATE') {
-      queryClient.invalidateQueries({ queryKey: ['/api/counter'] });
-      setCounterPulse(true);
-      setTimeout(() => setCounterPulse(false), 1000);
-    }
-  });
+  // WebSocket temporarily disabled for debugging
+  // useWebSocket((message: WebSocketMessage) => {
+  //   if (message.type === 'NEW_POST') {
+  //     queryClient.invalidateQueries({ queryKey: ['/api/posts'] });
+  //     queryClient.invalidateQueries({ queryKey: ['/api/counter'] });
+  //     setCounterPulse(true);
+  //     setTimeout(() => setCounterPulse(false), 1000);
+  //   } else if (message.type === 'COUNTER_UPDATE') {
+  //     queryClient.invalidateQueries({ queryKey: ['/api/counter'] });
+  //     setCounterPulse(true);
+  //     setTimeout(() => setCounterPulse(false), 1000);
+  //   }
+  // });
 
   const handleFilterChange = useCallback((filter: string, newFilters: PostFilters) => {
     setActiveFilter(filter);
