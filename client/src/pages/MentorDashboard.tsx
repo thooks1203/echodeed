@@ -138,6 +138,7 @@ export default function MentorDashboard() {
         <BackButton 
           onClick={() => {
             console.log('🔙 Back button clicked, navigating to /app');
+            alert('Back button clicked! Navigating to /app');
             setLocation('/app');
           }} 
           variant="minimal" 
