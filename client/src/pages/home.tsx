@@ -84,6 +84,7 @@ export default function Home() {
       } else if (user?.schoolRole === 'student') {
         console.log('🎓 Setting student default: feed');
         setActiveTab('feed');
+        alert('🔍 DEBUG: Student role detected, activeTab set to: feed');
       } else if (user?.schoolRole === 'parent') {
         // Redirect parents to their dedicated dashboard
         window.location.href = '/parent';
@@ -96,7 +97,7 @@ export default function Home() {
     }
   }, [user]);
 
-  // Fetch data
+  // Fetch data - FORCE QUERY TO RUN
   const { data: posts = [], isLoading: postsLoading } = useQuery<KindnessPost[]>({
     queryKey: ['/api/posts', filters],
     queryFn: async () => {
@@ -106,8 +107,10 @@ export default function Home() {
       if (filters.schoolId) params.append('schoolId', filters.schoolId);
       
       const response = await fetch(`/api/posts?${params}`);
-      return response.json();
-    }
+      const data = await response.json();
+      return data;
+    },
+    enabled: true // Force query to always run
   });
 
   const { data: counter } = useQuery<KindnessCounter>({
@@ -271,6 +274,7 @@ export default function Home() {
 
 
   // Default: Show main feed
+  alert(`🔍 DEBUG: Rendering main feed, activeTab: ${activeTab}, user role: ${user?.schoolRole || 'none'}`);
   return (
     <div style={{ 
       maxWidth: '430px', 
@@ -293,10 +297,18 @@ export default function Home() {
           onFilterChange={handleFilterChange}
         />
         
-        <KindnessFeed 
-          posts={posts} 
-          isLoading={postsLoading} 
-        />
+        <div>
+          {console.log('🔍 Rendering KindnessFeed:', { 
+            postsCount: posts?.length || 0, 
+            isLoading: postsLoading,
+            activeTab,
+            firstPost: posts?.[0]?.content?.substring(0, 30) 
+          })}
+          <KindnessFeed 
+            posts={posts} 
+            isLoading={postsLoading} 
+          />
+        </div>
       </div>
       
       <FloatingActionButton onClick={() => setIsPostModalOpen(true)} />
