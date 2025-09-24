@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Debug EchoDeed</title>
+</head>
+<body>
+    <h2>EchoDeed Debug Page</h2>
+    <div id="debug-info">Testing...</div>
+    
+    <script type="module">
+        const debugDiv = document.getElementById('debug-info');
+        debugDiv.innerHTML = 'JavaScript module loading works!<br>';
+        
+        try {
+            // Try importing main.tsx to see where it fails
+            import('/src/main.tsx')
+                .then(() => {
+                    debugDiv.innerHTML += '✅ main.tsx imported successfully<br>';
+                })
+                .catch(error => {
+                    debugDiv.innerHTML += '❌ main.tsx import failed: ' + error.message + '<br>';
+                    debugDiv.innerHTML += 'Stack: ' + error.stack + '<br>';
+                });
+            
+            // Test individual imports
+            import('/src/App.tsx')
+                .then(() => {
+                    debugDiv.innerHTML += '✅ App.tsx imported successfully<br>';
+                })
+                .catch(error => {
+                    debugDiv.innerHTML += '❌ App.tsx import failed: ' + error.message + '<br>';
+                });
+            
+        } catch(error) {
+            debugDiv.innerHTML += '❌ Script error: ' + error.message + '<br>';
+        }
+    </script>
+</body>
+</html>

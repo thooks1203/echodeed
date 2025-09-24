@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EchoDeed Test Page</title>
+</head>
+<body>
+    <h1>JavaScript Test Page</h1>
+    <div id="test-output">Loading...</div>
+    
+    <script>
+        console.log('Basic JavaScript is working');
+        document.getElementById('test-output').innerHTML = 'JavaScript is working! Time: ' + new Date().toLocaleTimeString();
+        
+        // Test if we can load the main.tsx file
+        fetch('/src/main.tsx')
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('test-output').innerHTML += '<br>✅ main.tsx loads successfully';
+                } else {
+                    document.getElementById('test-output').innerHTML += '<br>❌ main.tsx failed to load: ' + response.status;
+                }
+            })
+            .catch(error => {
+                document.getElementById('test-output').innerHTML += '<br>❌ Error loading main.tsx: ' + error.message;
+            });
+    </script>
+</body>
+</html>
