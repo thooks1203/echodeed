@@ -3169,6 +3169,23 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: 'Offer or partner not found' });
       }
 
+      // Check redemption limit - CRITICAL FOR SPONSOR BUDGET PROTECTION
+      const maxRedemptions = offer.maxRedemptions ?? -1;
+      const currentRedemptions = offer.currentRedemptions ?? 0;
+      
+      if (maxRedemptions !== -1 && currentRedemptions >= maxRedemptions) {
+        // Refund tokens
+        await storage.updateUserTokens(userId, {
+          echoBalance: userTokens.echoBalance
+        });
+        return res.status(400).json({ 
+          message: 'This reward is temporarily unavailable. Please try again next month!',
+          code: 'REDEMPTION_LIMIT_REACHED',
+          maxRedemptions: maxRedemptions,
+          currentRedemptions: currentRedemptions
+        });
+      }
+
       // Create initial redemption
       const redemption = await storage.redeemReward({
         userId,
@@ -3191,6 +3208,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           'active', 
           fulfillmentResult.redemptionCode
         );
+
+        // INCREMENT REDEMPTION COUNTER - CRITICAL FOR SPONSOR BUDGET PROTECTION
+        await storage.incrementRedemptionCounter(offerId);
 
         res.status(201).json({
           ...redemption,

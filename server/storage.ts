@@ -401,6 +401,7 @@ export interface IStorage {
   getUserRedemptions(userId: string): Promise<RewardRedemption[]>;
   getRedemption(id: string): Promise<RewardRedemption | undefined>;
   updateRedemptionStatus(id: string, status: string, code?: string): Promise<RewardRedemption | undefined>;
+  incrementRedemptionCounter(offerId: string): Promise<void>;
   
   // Verification system
   submitKindnessVerification(verification: InsertKindnessVerification): Promise<KindnessVerification>;
@@ -2037,6 +2038,14 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return updatedRedemption;
+  }
+
+  async incrementRedemptionCounter(offerId: string): Promise<void> {
+    await db.update(rewardOffers)
+      .set({
+        currentRedemptions: sql`${rewardOffers.currentRedemptions} + 1`
+      })
+      .where(eq(rewardOffers.id, offerId));
   }
 
   // Verification system implementation
