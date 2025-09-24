@@ -98,9 +98,10 @@ export default function Home() {
   }, [user]);
 
   // Fetch data - FORCE QUERY TO RUN
-  const { data: posts = [], isLoading: postsLoading } = useQuery<KindnessPost[]>({
+  const { data: posts = [], isLoading: postsLoading, error, status } = useQuery<KindnessPost[]>({
     queryKey: ['/api/posts', filters],
     queryFn: async () => {
+      alert(`🔍 React Query executing! Filters: ${JSON.stringify(filters)}`);
       const params = new URLSearchParams();
       if (filters.city) params.append('city', filters.city);
       if (filters.category) params.append('category', filters.category);
@@ -108,10 +109,16 @@ export default function Home() {
       
       const response = await fetch(`/api/posts?${params}`);
       const data = await response.json();
+      alert(`🔍 Got ${data?.length || 0} posts from API`);
       return data;
     },
-    enabled: true // Force query to always run
+    enabled: true, // Force query to always run
+    staleTime: 0, // Always refetch
+    refetchOnMount: true
   });
+
+  // Debug React Query state
+  alert(`🔍 Query Status: ${status}, Loading: ${postsLoading}, Error: ${error?.message || 'none'}, Posts: ${posts?.length || 0}`);
 
   const { data: counter } = useQuery<KindnessCounter>({
     queryKey: ['/api/counter'],
