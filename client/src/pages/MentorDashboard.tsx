@@ -137,8 +137,6 @@ export default function MentorDashboard() {
       <div className="container mx-auto max-w-7xl">
         <BackButton 
           onClick={() => {
-            console.log('🔙 Back button clicked, navigating to /app');
-            alert('Back button clicked! Navigating to /app');
             setLocation('/app');
           }} 
           variant="minimal" 
