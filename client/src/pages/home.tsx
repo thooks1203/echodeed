@@ -224,7 +224,7 @@ export default function Home() {
   if (activeTab === 'schools') {
     // Only teachers and admins can access Schools Dashboard
     if (!canAccessSchoolsDashboard(user?.schoolRole || 'student')) {
-      setTimeout(() => setActiveTab('student-dashboard'), 0);
+      setTimeout(() => setActiveTab('feed'), 0);
       return (
         <div style={{ 
           minHeight: '100vh', 
