@@ -11,6 +11,9 @@ export interface WeeklyChallengeTheme {
 }
 
 export class SummerChallengeEngine {
+  // Parent notification storage
+  private parentNotifications: any[] = [];
+  
   // Weekly themes for the 12-week summer program
   private readonly weeklyThemes: WeeklyChallengeTheme[] = [
     { week: 1, theme: "Acts of Service", description: "Help others without being asked", focus: "Community helpers and everyday kindness", color: "#3B82F6" },
@@ -226,7 +229,8 @@ export class SummerChallengeEngine {
     };
 
     // Return templates for the specific theme and age group, defaulting to Acts of Service if not found
-    return baseTemplates[theme]?.['6-8'] || baseTemplates['Acts of Service']['6-8'] || [];
+    const themeTemplates = baseTemplates[theme as keyof typeof baseTemplates];
+    return themeTemplates?.['6-8'] || baseTemplates['Acts of Service']['6-8'] || [];
   }
 
   // Initialize all challenges for the summer
