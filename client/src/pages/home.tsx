@@ -81,7 +81,6 @@ export default function Home() {
       } else if (user?.schoolRole === 'student') {
         console.log('🎓 Setting student default: feed');
         setActiveTab('feed');
-        console.log('🔍 DEBUG: Student role detected, activeTab set to: feed');
       } else if (user?.schoolRole === 'parent') {
         // Redirect parents to their dedicated dashboard
         window.location.href = '/parent';
@@ -278,7 +277,6 @@ export default function Home() {
 
 
   // Default: Show main feed
-  console.log(`🔍 DEBUG: Rendering main feed, activeTab: ${activeTab}, user role: ${user?.schoolRole || 'none'}`);
   return (
     <div style={{ 
       maxWidth: '430px', 
@@ -301,18 +299,10 @@ export default function Home() {
           onFilterChange={handleFilterChange}
         />
         
-        <div>
-          {console.log('🔍 Rendering KindnessFeed:', { 
-            postsCount: posts?.length || 0, 
-            isLoading: postsLoading,
-            activeTab,
-            firstPost: posts?.[0]?.content?.substring(0, 30) 
-          })}
-          <KindnessFeed 
-            posts={posts} 
-            isLoading={postsLoading} 
-          />
-        </div>
+        <KindnessFeed 
+          posts={posts} 
+          isLoading={postsLoading} 
+        />
       </div>
       
       <FloatingActionButton onClick={() => setIsPostModalOpen(true)} />
