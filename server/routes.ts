@@ -9085,7 +9085,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get challenges for specific age group
   app.get('/api/summer/challenges/:ageGroup', async (req, res) => {
     try {
-      const { ageGroup } = req.params as { ageGroup: 'k-2' | '3-5' | '6-8' };
+      const { ageGroup } = req.params as { ageGroup: '6-8' };
       const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
       const challenges = await summerChallengeEngine.getCurrentWeekChallenges(ageGroup);
       res.json(challenges);
@@ -9211,6 +9211,124 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error initializing family program:', error);
       res.status(500).json({ message: 'Failed to initialize family program' });
+    }
+  });
+
+  // SCHOOL YEAR CHALLENGES SYSTEM (September-May, Grades 6-12)
+  // Get current school year week and theme  
+  app.get('/api/school-year/current-week', async (req, res) => {
+    try {
+      const { schoolYearChallengeEngine } = await import('./services/schoolYearChallengeEngine');
+      const currentWeek = schoolYearChallengeEngine.getCurrentSchoolWeek();
+      const theme = schoolYearChallengeEngine.getWeekTheme(currentWeek);
+      res.json({ week: currentWeek, theme });
+    } catch (error) {
+      console.error('Error getting current school week:', error);
+      res.status(500).json({ message: 'Failed to get current school week' });
+    }
+  });
+
+  // Get school year challenges for grade level (6-8 or 9-12)
+  app.get('/api/school-year/challenges/:gradeLevel', async (req, res) => {
+    try {
+      const { gradeLevel } = req.params as { gradeLevel: '6-8' | '9-12' };
+      const { schoolYearChallengeEngine } = await import('./services/schoolYearChallengeEngine');
+      const challenges = await schoolYearChallengeEngine.getCurrentWeekChallenges(gradeLevel);
+      res.json(challenges);
+    } catch (error) {
+      console.error('Error fetching school year challenges:', error);
+      res.status(500).json({ message: 'Failed to fetch school year challenges' });
+    }
+  });
+
+  // Complete a school year challenge
+  app.post('/api/school-year/complete', isAuthenticated, async (req, res) => {
+    try {
+      // Import validation schema
+      const { completeSchoolYearChallengeSchema } = await import('../shared/schema');
+      
+      // Validate request body
+      const validatedData = completeSchoolYearChallengeSchema.parse(req.body);
+      
+      // Get userId from authenticated user (security fix)
+      const userId = req.user.claims.sub;
+      
+      const { schoolYearChallengeEngine } = await import('./services/schoolYearChallengeEngine');
+      const completion = await schoolYearChallengeEngine.completeChallenge(
+        userId, 
+        validatedData.challengeId, 
+        validatedData.studentReflection,
+        validatedData.photoEvidence
+      );
+      res.json(completion);
+    } catch (error) {
+      console.error('Error completing school year challenge:', error);
+      if (error.name === 'ZodError') {
+        return res.status(400).json({ message: 'Invalid request data', errors: error.errors });
+      }
+      res.status(500).json({ message: 'Failed to complete school year challenge' });
+    }
+  });
+
+  // Approve a completed school year challenge (teacher-only)
+  app.post('/api/school-year/approve/:progressId', requireTeacherRole, async (req, res) => {
+    try {
+      // Import validation schema
+      const { approveSchoolYearChallengeSchema } = await import('../shared/schema');
+      
+      // Validate request body
+      const validatedData = approveSchoolYearChallengeSchema.parse(req.body);
+      
+      const { progressId } = req.params;
+      const { schoolYearChallengeEngine } = await import('./services/schoolYearChallengeEngine');
+      const approved = await schoolYearChallengeEngine.approveCompletion(
+        progressId, 
+        validatedData.pointsAwarded,
+        validatedData.teacherFeedback
+      );
+      res.json(approved);
+    } catch (error) {
+      console.error('Error approving school year challenge:', error);
+      if (error.name === 'ZodError') {
+        return res.status(400).json({ message: 'Invalid request data', errors: error.errors });
+      }
+      res.status(500).json({ message: 'Failed to approve school year challenge' });
+    }
+  });
+
+  // Get user's school year challenge progress
+  app.get('/api/school-year/progress/:userId', isAuthenticated, async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const authenticatedUserId = req.user.claims.sub;
+      
+      // Security check: Users can only access their own progress
+      // Teachers and admins can access any user's progress
+      if (userId !== authenticatedUserId) {
+        const user = await storage.getUser(authenticatedUserId);
+        if (!user || (user.role !== 'teacher' && user.role !== 'admin')) {
+          return res.status(403).json({ message: 'Access denied. You can only view your own progress.' });
+        }
+      }
+      
+      const { schoolYearChallengeEngine } = await import('./services/schoolYearChallengeEngine');
+      const progress = await schoolYearChallengeEngine.getUserProgress(userId);
+      res.json(progress);
+    } catch (error) {
+      console.error('Error fetching school year progress:', error);
+      res.status(500).json({ message: 'Failed to fetch school year progress' });
+    }
+  });
+
+  // Initialize school year challenge program (admin-only)
+  app.post('/api/school-year/initialize', requireTeacherRole, async (req, res) => {
+    try {
+      const { schoolYearChallengeEngine } = await import('./services/schoolYearChallengeEngine');
+      await schoolYearChallengeEngine.initializeSchoolYearProgram();
+      res.json({ message: 'School Year Challenge Program initialized successfully with 36 weeks for grades 6-12!' });
+    } catch (error) {
+      console.error('Error initializing school year challenges:', error);
+      res.status(500).json({ message: 'Failed to initialize school year challenges' });
     }
   });
 

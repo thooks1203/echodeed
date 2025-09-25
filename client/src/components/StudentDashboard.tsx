@@ -1,8 +1,17 @@
 import { useState } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { BackButton } from '@/components/BackButton';
+import { apiRequest } from '@/lib/queryClient';
+import { useToast } from '@/hooks/use-toast';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { Textarea } from '@/components/ui/textarea';
+import { Button } from '@/components/ui/button';
 
 interface StudentStats {
   totalKindnessPoints: number;
@@ -16,6 +25,302 @@ interface StudentStats {
 interface StudentDashboardProps {
   onNavigateToTab?: (tab: string) => void;
   activeBottomTab?: string;
+}
+
+interface WeeklyChallenge {
+  id: string;
+  title: string;
+  description: string;
+  theme: string;
+  category: string;
+  difficulty: 'easy' | 'medium' | 'hard';
+  points: number;
+  timeEstimate: number;
+  week: number;
+  gradeLevel: string;
+}
+
+interface WeekTheme {
+  week: number;
+  theme: string;
+  description: string;
+  focus: string;
+  color: string;
+}
+
+// Challenge reflection form schema
+const challengeReflectionSchema = z.object({
+  reflection: z.string().min(10, 'Reflection must be at least 10 characters').max(1000, 'Reflection must be less than 1000 characters')
+});
+
+type ChallengeReflectionForm = z.infer<typeof challengeReflectionSchema>;
+
+function WeeklyChallengesView() {
+  const { user } = useAuth();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  
+  // Fetch current week theme
+  const { data: currentWeek } = useQuery({
+    queryKey: ['/api/school-year/current-week'],
+    queryFn: () => fetch('/api/school-year/current-week').then(r => r.json())
+  });
+
+  // Determine grade level from user data
+  const gradeLevel = user?.grade ? 
+    (parseInt(user.grade) >= 6 && parseInt(user.grade) <= 8) ? '6-8' : '9-12'
+    : '6-8'; // Default fallback
+
+  // Fetch challenges based on user's grade level
+  const { data: challenges, isLoading } = useQuery<WeeklyChallenge[]>({
+    queryKey: ['/api/school-year/challenges', gradeLevel],
+    queryFn: () => fetch(`/api/school-year/challenges/${gradeLevel}`).then(r => r.json())
+  });
+
+  // Mutation for completing challenges
+  const completeMutation = useMutation({
+    mutationFn: async ({ challengeId, reflection }: { challengeId: string; reflection: string }) => {
+      const response = await apiRequest('POST', '/api/school-year/complete', {
+        challengeId,
+        studentReflection: reflection
+        // userId no longer needed - server gets it from auth token
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: 'Challenge Completed!',
+        description: 'Your challenge submission has been sent for teacher approval.',
+      });
+      // Fixed cache invalidation to match API route pattern
+      queryClient.invalidateQueries({ queryKey: ['/api/school-year/progress', user?.id] });
+      // Also invalidate challenges and tokens so UI refreshes immediately
+      queryClient.invalidateQueries({ queryKey: ['/api/school-year/challenges', gradeLevel] });
+      queryClient.invalidateQueries({ queryKey: ['/api/tokens'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Error',
+        description: error.message || 'Failed to complete challenge.',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  // State for challenge completion dialog
+  const [selectedChallenge, setSelectedChallenge] = useState<WeeklyChallenge | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleCompleteChallenge = (challenge: WeeklyChallenge) => {
+    setSelectedChallenge(challenge);
+    setIsDialogOpen(true);
+  };
+
+  // Form for challenge reflection
+  const form = useForm<ChallengeReflectionForm>({
+    resolver: zodResolver(challengeReflectionSchema),
+    defaultValues: {
+      reflection: ''
+    }
+  });
+
+  const handleSubmitReflection = (data: ChallengeReflectionForm) => {
+    if (selectedChallenge && data.reflection.trim()) {
+      completeMutation.mutate({ 
+        challengeId: selectedChallenge.id, 
+        reflection: data.reflection.trim() 
+      });
+      setIsDialogOpen(false);
+      setSelectedChallenge(null);
+      form.reset();
+    }
+  };
+
+  const getDifficultyColor = (difficulty: string) => {
+    switch (difficulty) {
+      case 'easy': return '#10B981';
+      case 'medium': return '#F59E0B';
+      case 'hard': return '#EF4444';
+      default: return '#6B7280';
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div style={{ textAlign: 'center', padding: '40px' }}>
+        <div style={{ fontSize: '18px', color: '#6b7280' }}>Loading challenges...</div>
+      </div>
+    );
+  }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      {/* Current Week Theme */}
+      {currentWeek && (
+        <div style={{
+          background: `linear-gradient(135deg, ${currentWeek.theme?.color || '#10B981'}, ${currentWeek.theme?.color || '#10B981'}CC)`,
+          color: 'white',
+          borderRadius: '12px',
+          padding: '20px',
+          textAlign: 'center'
+        }}>
+          <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px' }}>
+            Week {currentWeek.week}: {currentWeek.theme?.theme}
+          </h3>
+          <p style={{ fontSize: '14px', opacity: 0.9, marginBottom: '4px' }}>
+            {currentWeek.theme?.description}
+          </p>
+          <p style={{ fontSize: '12px', opacity: 0.8 }}>
+            Focus: {currentWeek.theme?.focus}
+          </p>
+        </div>
+      )}
+
+      {/* Challenges List */}
+      <div style={{
+        background: 'white',
+        borderRadius: '12px',
+        padding: '20px',
+        boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+      }}>
+        <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>
+          🎯 This Week's Challenges
+        </h3>
+        
+        {challenges && challenges.length > 0 ? (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {challenges.map((challenge) => (
+              <div
+                key={challenge.id}
+                style={{
+                  border: '1px solid #e5e7eb',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                  <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '4px', flex: 1 }}>
+                    {challenge.title}
+                  </h4>
+                  <div style={{
+                    fontSize: '11px',
+                    padding: '2px 8px',
+                    borderRadius: '12px',
+                    backgroundColor: getDifficultyColor(challenge.difficulty),
+                    color: 'white',
+                    fontWeight: '600',
+                    textTransform: 'uppercase'
+                  }}>
+                    {challenge.difficulty}
+                  </div>
+                </div>
+                
+                <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '12px' }}>
+                  {challenge.description}
+                </p>
+                
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', gap: '16px', fontSize: '12px', color: '#6b7280' }}>
+                    <span>⚡ {challenge.points} points</span>
+                    <span>⏱️ {challenge.timeEstimate} min</span>
+                  </div>
+                  
+                  <button
+                    onClick={() => handleCompleteChallenge(challenge)}
+                    disabled={completeMutation.isPending}
+                    style={{
+                      background: '#10B981',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '6px',
+                      padding: '8px 16px',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      opacity: completeMutation.isPending ? 0.7 : 1
+                    }}
+                    data-testid={`complete-challenge-${challenge.id}`}
+                  >
+                    {completeMutation.isPending ? 'Submitting...' : 'Complete'}
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div style={{ textAlign: 'center', padding: '40px' }}>
+            <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎯</div>
+            <p style={{ fontSize: '14px', color: '#6b7280' }}>
+              No challenges available for this week yet.
+            </p>
+          </div>
+        )}
+      </div>
+
+      {/* Challenge Completion Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[525px]">
+          <DialogHeader>
+            <DialogTitle>Complete Challenge</DialogTitle>
+          </DialogHeader>
+          {selectedChallenge && (
+            <div>
+              <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+                <h3 className="font-semibold text-sm">{selectedChallenge.title}</h3>
+                <p className="text-xs text-gray-600 mt-1">{selectedChallenge.description}</p>
+              </div>
+              
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleSubmitReflection)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="reflection"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Your Reflection *</FormLabel>
+                        <FormControl>
+                          <Textarea
+                            placeholder="Please describe how you completed this challenge and what you learned..."
+                            className="min-h-[120px]"
+                            {...field}
+                            data-testid="textarea-challenge-reflection"
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  
+                  <DialogFooter>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => {
+                        setIsDialogOpen(false);
+                        setSelectedChallenge(null);
+                        form.reset();
+                      }}
+                      data-testid="button-cancel-challenge"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      type="submit"
+                      disabled={completeMutation.isPending}
+                      data-testid="button-submit-challenge"
+                    >
+                      {completeMutation.isPending ? 'Submitting...' : 'Submit Challenge'}
+                    </Button>
+                  </DialogFooter>
+                </form>
+              </Form>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
 }
 
 export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: StudentDashboardProps) {
@@ -358,39 +663,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         </div>
       )}
 
-      {activeTab === 'challenges' && (
-        <div style={{
-          background: 'white',
-          borderRadius: '12px',
-          padding: '20px',
-          boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '48px', marginBottom: '16px' }}>🎯</div>
-          <h3 style={{ fontSize: '18px', fontWeight: '600', marginBottom: '8px' }}>
-            Challenge Center
-          </h3>
-          <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '20px' }}>
-            Complete kindness challenges to earn points and make a difference!
-          </p>
-          <button
-            onClick={() => onNavigateToTab && onNavigateToTab('summer')}
-            style={{
-              background: '#10B981',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              padding: '12px 24px',
-              fontSize: '14px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-            data-testid="button-view-challenges"
-          >
-            View Available Challenges
-          </button>
-        </div>
-      )}
+      {activeTab === 'challenges' && <WeeklyChallengesView />}
 
       {activeTab === 'progress' && (
         <div style={{

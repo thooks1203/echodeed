@@ -2011,6 +2011,18 @@ export const insertCommunityServiceLogSchema = createInsertSchema(communityServi
 export const insertServiceVerificationSchema = createInsertSchema(serviceVerifications);
 export const insertStudentServiceSummarySchema = createInsertSchema(studentServiceSummaries);
 
+// API validation schemas for school year challenges
+export const completeSchoolYearChallengeSchema = z.object({
+  challengeId: z.string().min(1, "Challenge ID is required"),
+  studentReflection: z.string().min(10, "Student reflection must be at least 10 characters").max(1000, "Student reflection must be less than 1000 characters"),
+  photoEvidence: z.string().url("Photo evidence must be a valid URL").optional()
+});
+
+export const approveSchoolYearChallengeSchema = z.object({
+  pointsAwarded: z.number().min(0).max(50, "Points awarded cannot exceed 50"),
+  teacherFeedback: z.string().max(500, "Teacher feedback must be less than 500 characters").optional()
+});
+
 // Types for new tables
 export type SchoolYearChallenge = typeof schoolYearChallenges.$inferSelect;
 export type InsertSchoolYearChallenge = typeof schoolYearChallenges.$inferInsert;
