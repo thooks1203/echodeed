@@ -128,9 +128,9 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
-  // Demo mode: Allow access with session ID header in development
-  if (process.env.NODE_ENV === 'development' && req.headers['x-session-id']) {
-    const sessionId = req.headers['x-session-id'] as string;
+  // Demo mode: Allow access with session ID header in development  
+  const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
+  if (process.env.NODE_ENV === 'development' && sessionId) {
     
     // Use Sarah Chen's actual user ID for demo consistency
     const demoUserId = 'eeea79c7-114d-4d7d-8d16-b58cd7887c21'; // Sarah Chen's ID
