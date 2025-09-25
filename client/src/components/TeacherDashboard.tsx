@@ -65,7 +65,7 @@ const sampleStudents: StudentParticipation[] = [
     id: '1',
     name: 'Emma S.',
     kindnessActs: 8,
-    lastActive: '2024-12-09',
+    lastActive: '2025-09-24',
     characterTraits: ['Empathy', 'Helpfulness'],
     needsEncouragement: false
   },
@@ -73,7 +73,7 @@ const sampleStudents: StudentParticipation[] = [
     id: '2',
     name: 'Marcus R.',
     kindnessActs: 3,
-    lastActive: '2024-12-06',
+    lastActive: '2025-09-20',
     characterTraits: ['Respect'],
     needsEncouragement: true
   },
@@ -81,7 +81,7 @@ const sampleStudents: StudentParticipation[] = [
     id: '3',
     name: 'Sophia L.',
     kindnessActs: 12,
-    lastActive: '2024-12-09',
+    lastActive: '2025-09-24',
     characterTraits: ['Leadership', 'Empathy', 'Kindness'],
     needsEncouragement: false
   },
@@ -89,7 +89,7 @@ const sampleStudents: StudentParticipation[] = [
     id: '4',
     name: 'James W.',
     kindnessActs: 1,
-    lastActive: '2024-12-04',
+    lastActive: '2025-09-18',
     characterTraits: [],
     needsEncouragement: true
   }
@@ -569,7 +569,7 @@ export function TeacherDashboard() {
                 <CardContent>
                   <div className="space-y-4">
                     <div className="text-sm">
-                      <strong>Week of December 2-9, 2024</strong>
+                      <strong>Week of September 22-28, 2025</strong>
                     </div>
                     <div className="space-y-2 text-sm">
                       <div>• 47 acts of kindness shared by students</div>
