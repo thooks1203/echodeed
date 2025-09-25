@@ -12,7 +12,7 @@ export function FloatingActionButton({ onClick }: FloatingActionButtonProps) {
       data-testid="button-post-deed"
       style={{
         right: '16px', 
-        bottom: '90px', // Much closer to feed content, just above bottom nav
+        bottom: '75px', // Closer to feed content, just above bottom nav
         zIndex: 1000, 
         minWidth: 'auto',
         height: 'auto',

@@ -50,10 +50,10 @@ export async function initializeSampleData() {
     const { eq } = await import('drizzle-orm');
     
     await db.update(kindnessCounter)
-      .set({ count: 0, updatedAt: new Date() })
+      .set({ count: 287435, updatedAt: new Date() })
       .where(eq(kindnessCounter.id, "global"));
     
-    log('✅ Global kindness counter reset to 0');
+    log('✅ Global kindness counter set to 287,435');
     
     if (hasAdultContent) {
       log('Found adult content in posts, will add kid-friendly posts...');
