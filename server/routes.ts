@@ -1401,16 +1401,84 @@ export async function registerRoutes(app: Express): Promise<Server> {
         bonusReasons.push(`Surprise Bonus (+${surpriseBonus})`);
       }
       
-      // Streak bonus (placeholder - could check user's posting history)
-      const isConsecutiveDay = Math.random() < 0.3; // Simulate streak detection
-      if (isConsecutiveDay) {
-        totalReward += 5;
-        bonusReasons.push('Daily Streak (+5)');
+      // Real streak calculation based on user's posting history
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // Start of today
+      
+      const yesterday = new Date(today);
+      yesterday.setDate(yesterday.getDate() - 1); // Start of yesterday
+      
+      let streakReward = 0;
+      let streakBonus = '';
+      let newStreakDays = userTokens.streakDays || 0;
+      let newLongestStreak = userTokens.longestStreak || 0;
+      
+      // Check if user posted yesterday (to continue streak) or if this is their first post
+      const lastPostDate = userTokens.lastPostDate;
+      
+      if (!lastPostDate) {
+        // First post ever - start streak
+        newStreakDays = 1;
+        streakReward = 2;
+        streakBonus = 'First Deed Ever (+2)';
+      } else {
+        const lastPostStart = new Date(lastPostDate);
+        lastPostStart.setHours(0, 0, 0, 0);
+        
+        if (lastPostStart.getTime() === yesterday.getTime()) {
+          // Posted yesterday - continue streak
+          newStreakDays = (userTokens.streakDays || 0) + 1;
+          
+          // Progressive streak rewards
+          if (newStreakDays >= 30) {
+            streakReward = 20;
+            streakBonus = `🔥 30+ Day Streak (+${streakReward})`;
+          } else if (newStreakDays >= 14) {
+            streakReward = 15;
+            streakBonus = `🔥 ${newStreakDays} Day Streak (+${streakReward})`;
+          } else if (newStreakDays >= 7) {
+            streakReward = 10;
+            streakBonus = `🔥 ${newStreakDays} Day Streak (+${streakReward})`;
+          } else if (newStreakDays >= 3) {
+            streakReward = 7;
+            streakBonus = `🔥 ${newStreakDays} Day Streak (+${streakReward})`;
+          } else {
+            streakReward = 5;
+            streakBonus = `🔥 ${newStreakDays} Day Streak (+${streakReward})`;
+          }
+        } else if (lastPostStart.getTime() === today.getTime()) {
+          // Already posted today - no additional streak bonus but maintain streak
+          newStreakDays = userTokens.streakDays || 0;
+          streakReward = 0;
+          streakBonus = '';
+        } else {
+          // Streak broken - reset to 1
+          newStreakDays = 1;
+          streakReward = 0;
+          streakBonus = '';
+        }
+      }
+      
+      // Update longest streak record
+      if (newStreakDays > newLongestStreak) {
+        newLongestStreak = newStreakDays;
+        if (newLongestStreak >= 7 && newLongestStreak % 7 === 0) {
+          streakReward += 10;
+          streakBonus = streakBonus ? `${streakBonus} + Personal Record (+10)` : 'New Personal Record (+10)';
+        }
+      }
+      
+      if (streakReward > 0 && streakBonus) {
+        totalReward += streakReward;
+        bonusReasons.push(streakBonus);
       }
       
       await storage.updateUserTokens(userId, { 
         echoBalance: userTokens.echoBalance + totalReward,
-        totalEarned: userTokens.totalEarned + totalReward 
+        totalEarned: userTokens.totalEarned + totalReward,
+        streakDays: newStreakDays,
+        lastPostDate: today,
+        longestStreak: newLongestStreak
       });
       
       // Store bonus info for the response

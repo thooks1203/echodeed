@@ -10,6 +10,7 @@ interface StudentStats {
   monthlyGoal: number;
   completedChallenges: number;
   currentStreak: number;
+  longestStreak: number;
 }
 
 interface StudentDashboardProps {
@@ -21,19 +22,28 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'overview' | 'challenges' | 'progress'>('overview');
 
+  // Fetch student's personal data from tokens endpoint
+  const { data: userTokens } = useQuery({
+    queryKey: ['/api/tokens'],
+    queryFn: () => fetch('/api/tokens').then(r => r.json())
+  });
+
   // Fetch student's personal data only (no access to other students' data)
   const { data: studentStats } = useQuery<StudentStats>({
     queryKey: ['/api/students/my-stats'],
     queryFn: () => {
-      // Mock data for student - in production this would be a secure endpoint
+      // Combine real token data with calculated stats
+      const tokens = userTokens || { echoBalance: 0, streakDays: 0, longestStreak: 0 };
       return Promise.resolve({
-        totalKindnessPoints: 245,
-        weeklyProgress: 15,
+        totalKindnessPoints: tokens.echoBalance || 245,
+        weeklyProgress: 15, // Would be calculated from recent posts
         monthlyGoal: 50,
         completedChallenges: 8,
-        currentStreak: 5
+        currentStreak: tokens.streakDays || 0,
+        longestStreak: tokens.longestStreak || 0
       });
-    }
+    },
+    enabled: !!userTokens // Only run after tokens are loaded
   });
 
   const stats = studentStats || {
@@ -41,7 +51,8 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
     weeklyProgress: 15,
     monthlyGoal: 50,
     completedChallenges: 8,
-    currentStreak: 5
+    currentStreak: 5,
+    longestStreak: 5
   };
 
   return (
@@ -243,30 +254,43 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
       {activeTab === 'overview' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {/* Personal Stats Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
             <div style={{
               background: 'white',
               borderRadius: '12px',
-              padding: '20px',
+              padding: '16px',
               textAlign: 'center',
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
             }}>
-              <div style={{ fontSize: '32px', fontWeight: '700', color: '#10B981' }}>
+              <div style={{ fontSize: '28px', fontWeight: '700', color: '#10B981' }}>
                 {stats.weeklyProgress}
               </div>
-              <div style={{ fontSize: '12px', color: '#6b7280' }}>This Week</div>
+              <div style={{ fontSize: '11px', color: '#6b7280' }}>This Week</div>
             </div>
             <div style={{
               background: 'white',
               borderRadius: '12px',
-              padding: '20px',
+              padding: '16px',
+              textAlign: 'center',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              border: stats.currentStreak >= 3 ? '2px solid #F59E0B' : 'none'
+            }}>
+              <div style={{ fontSize: '28px', fontWeight: '700', color: '#F59E0B', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '4px' }}>
+                {stats.currentStreak >= 3 ? '🔥' : '⚡'} {stats.currentStreak}
+              </div>
+              <div style={{ fontSize: '11px', color: '#6b7280' }}>Current Streak</div>
+            </div>
+            <div style={{
+              background: 'white',
+              borderRadius: '12px',
+              padding: '16px',
               textAlign: 'center',
               boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
             }}>
-              <div style={{ fontSize: '32px', fontWeight: '700', color: '#F59E0B' }}>
-                {stats.currentStreak}
+              <div style={{ fontSize: '28px', fontWeight: '700', color: '#8B5CF6' }}>
+                🏆{stats.longestStreak}
               </div>
-              <div style={{ fontSize: '12px', color: '#6b7280' }}>Day Streak</div>
+              <div style={{ fontSize: '11px', color: '#6b7280' }}>Best Streak</div>
             </div>
           </div>
 

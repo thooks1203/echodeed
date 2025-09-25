@@ -82,6 +82,9 @@ export const userTokens = pgTable("user_tokens", {
   userId: varchar("user_id").notNull().unique().references(() => users.id), // Link to authenticated user
   echoBalance: integer("echo_balance").default(0).notNull(),
   totalEarned: integer("total_earned").default(0).notNull(),
+  streakDays: integer("streak_days").default(0).notNull(), // Consecutive days of kindness posting
+  lastPostDate: timestamp("last_post_date"), // Last date user posted kindness
+  longestStreak: integer("longest_streak").default(0).notNull(), // Record longest streak achieved
   createdAt: timestamp("created_at").defaultNow().notNull(),
   lastActive: timestamp("last_active").defaultNow().notNull(),
 });
