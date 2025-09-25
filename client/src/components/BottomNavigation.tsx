@@ -37,6 +37,9 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     ? [...baseTabs, ...adminTabs]
     : [...baseTabs, ...studentTabs];
 
+  // Remove sign-in tab when user is already authenticated
+  const filteredTabs = user ? tabs.filter(tab => tab.id !== 'sign-in') : tabs;
+
   return (
     <div style={{
       position: 'fixed',
@@ -53,7 +56,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
       padding: '4px 6px',
       zIndex: 100
     }}>
-      {tabs.map((tab) => (
+      {filteredTabs.map((tab) => (
         <button 
           key={tab.id}
           onClick={() => onTabChange(tab.id)}
