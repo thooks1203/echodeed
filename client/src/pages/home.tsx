@@ -145,7 +145,10 @@ export default function Home() {
 
   const handlePostSuccess = useCallback(() => {
     console.log('🎆 POST SUCCESS - About to trigger sparks!');
+    console.log('🎆 triggerSparks function:', triggerSparks);
+    console.log('🎆 Calling triggerSparks now...');
     triggerSparks(); // TRIGGER THE SPARKS!
+    console.log('🎆 triggerSparks called successfully!');
     
     setIsPostModalOpen(false);
     toast({
