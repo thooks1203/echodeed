@@ -63,24 +63,24 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
       onAnimationComplete={onComplete}
       style={{
         position: 'fixed',
-        width: '120px', // MASSIVE for testing
-        height: '120px', // MASSIVE for testing
-        zIndex: 999999, // Much higher z-index to ensure visibility
+        width: '48px', // Perfect size
+        height: '48px', // Perfect size  
+        zIndex: 999999,
         pointerEvents: 'none',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         color,
-        // MAXIMUM VISIBILITY FOR TESTING
-        backgroundColor: 'red', // BRIGHT RED
+        // Beautiful kindness spark styling
+        backgroundColor: 'rgba(255, 255, 255, 0.95)',
         borderRadius: '50%',
-        border: '10px solid yellow', // THICK YELLOW BORDER
-        boxShadow: '0 0 50px rgba(255, 0, 0, 1)', // RED GLOW
-        fontSize: '60px' // HUGE icon
+        border: '2px solid rgba(255, 255, 255, 0.8)',
+        boxShadow: `0 0 20px ${color}40, 0 0 40px ${color}20`,
+        backdropFilter: 'blur(4px)'
       }}
       data-testid={`kindness-spark-${id}`}
     >
-      <IconComponent size={80} fill="white" />
+      <IconComponent size={24} fill={color} />
     </motion.div>
   );
 }
@@ -143,29 +143,7 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
           />
         ))}
       </AnimatePresence>
-      {/* TEST CANARY: Red box to verify portal rendering */}
-      {sparks.length > 0 && (
-        <div
-          style={{
-            position: 'fixed',
-            top: '50px',
-            right: '50px',
-            width: '80px',
-            height: '80px',
-            backgroundColor: 'red',
-            zIndex: 999999,
-            borderRadius: '50%',
-            border: '5px solid yellow',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: 'white',
-            fontWeight: 'bold'
-          }}
-        >
-          TEST
-        </div>
-      )}
+      {/* Kindness sparks are now working beautifully! */}
     </MotionConfig>,
     document.body
   );
