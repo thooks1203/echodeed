@@ -21,6 +21,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'community-service', label: 'Service', icon: '🏥' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
+    { id: 'sign-in', label: 'Sign In', icon: '👤' },
   ];
 
   const adminTabs = [
@@ -29,6 +30,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'sponsors', label: 'Sponsors', icon: '🤝' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
+    { id: 'sign-in', label: 'Sign In', icon: '👤' },
   ];
 
   const tabs = canAccessSchoolsDashboard(user?.schoolRole || 'student') 
