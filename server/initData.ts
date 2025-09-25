@@ -334,20 +334,36 @@ export async function initializeSampleData() {
     log(`✓ Added ${samplePosts.length} sample posts`);
     log(`✓ Counter will reflect actual post count`);
 
-    // Initialize sample community service hours for Sarah Chen
+    // Initialize sample community service hours for Sarah Chen (authenticated student user)
     try {
       const { CommunityServiceEngine } = await import('./services/communityServiceEngine');
       const serviceEngine = new CommunityServiceEngine();
       
+      // Use the actual authenticated student user ID instead of hardcoded ID
+      const studentUserId = 'eeea79c7-114d-4d7d-8d16-b58cd7887c21'; // Sarah Chen's actual auth ID
+      
+      // First, ensure the user exists in the database
+      const existingUser = await storage.getUser(studentUserId);
+      if (!existingUser) {
+        log('👤 Creating database record for Sarah Chen...');
+        await storage.upsertUser({
+          id: studentUserId,
+          firstName: 'Sarah',
+          lastName: 'Chen',
+          email: 'sarah@bca.edu'
+        });
+        log('✅ Created user record for Sarah Chen');
+      }
+      
       // Check if Sarah Chen already has service hours
-      const existingServiceHours = await serviceEngine.getStudentServiceLogs('student-student-mfy11oq5jmch05j2xp', 1);
+      const existingServiceHours = await serviceEngine.getStudentServiceLogs(studentUserId, 1);
       
       if (existingServiceHours.length === 0) {
         log('🏥 Creating sample community service hours for Sarah Chen...');
         
         // Add some sample service hours for demonstration
         await serviceEngine.logServiceHours({
-          userId: 'student-student-mfy11oq5jmch05j2xp',
+          userId: studentUserId,
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
           serviceName: 'Food Bank Volunteer',
           serviceDescription: 'Helped sort and package food donations for local families',
@@ -364,7 +380,7 @@ export async function initializeSampleData() {
         });
 
         await serviceEngine.logServiceHours({
-          userId: 'student-student-mfy11oq5jmch05j2xp',
+          userId: studentUserId,
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
           serviceName: 'Park Cleanup',
           serviceDescription: 'Picked up litter and helped maintain trails at City Park',
