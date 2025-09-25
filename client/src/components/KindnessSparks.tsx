@@ -27,11 +27,11 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
   const IconComponent = icons[Math.floor(Math.random() * icons.length)];
   const color = colors[Math.floor(Math.random() * colors.length)];
   
-  // HUGE size for visibility test
-  const size = 64; // Fixed 64px - impossible to miss!
+  // MASSIVE size for guaranteed visibility!
+  const size = 120; // 120px - absolutely impossible to miss!
   
-  // Slower for visibility 
-  const duration = 5; // 5 seconds - easier to see
+  // VERY slow for guaranteed visibility 
+  const duration = 8; // 8 seconds - super slow and visible
   
   return (
     <motion.div
@@ -66,26 +66,26 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
       }}
       style={{
         position: 'fixed',
-        left: startX - 24, // Center the 48px circle
-        top: startY - 24,  // Center the 48px circle
-        width: '48px', // Perfect size
-        height: '48px', // Perfect size  
+        left: startX - size/2, // Center the circle
+        top: startY - size/2,  // Center the circle
+        width: `${size}px`, // Use our MASSIVE size variable
+        height: `${size}px`, // Use our MASSIVE size variable  
         zIndex: 999999,
         pointerEvents: 'none',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         color,
-        // Beautiful kindness spark styling
-        backgroundColor: 'rgba(255, 255, 255, 0.95)',
+        // MASSIVELY BRIGHT kindness spark styling
+        backgroundColor: color, // Use the bright spark color directly!
         borderRadius: '50%',
-        border: '2px solid rgba(255, 255, 255, 0.8)',
-        boxShadow: `0 0 20px ${color}40, 0 0 40px ${color}20`,
+        border: `4px solid ${color}`,
+        boxShadow: `0 0 40px ${color}, 0 0 80px ${color}, 0 0 120px ${color}99`, // TRIPLE glow effect!
         backdropFilter: 'blur(4px)'
       }}
       data-testid={`kindness-spark-${id}`}
     >
-      <IconComponent size={24} fill={color} />
+      <IconComponent size={size/2} fill="white" style={{ filter: 'drop-shadow(0 0 4px rgba(0,0,0,0.5))' }} />
     </motion.div>
   );
 }
@@ -105,7 +105,7 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
       const cleanup = setTimeout(() => {
         console.log('🎆 FORCE CLEANUP - clearing all sparks');
         setSparks([]);
-      }, 7000); // 7 seconds - longer display time
+      }, 12000); // 12 seconds - MUCH longer display time
       
       return () => clearTimeout(cleanup);
     }
