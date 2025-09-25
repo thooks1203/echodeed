@@ -58,7 +58,7 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
       onAnimationComplete={onComplete}
       style={{
         position: 'fixed',
-        zIndex: 9999,
+        zIndex: 999999, // Much higher z-index to ensure visibility
         pointerEvents: 'none',
         color
       }}
@@ -80,9 +80,14 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
 
   useEffect(() => {
     if (isActive) {
+      console.log('🎆 KindnessSparks effect triggered, isActive:', isActive);
+      
       // Respect user's reduced motion preference
       const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      console.log('🎆 Reduced motion preference:', prefersReducedMotion);
+      
       if (prefersReducedMotion) {
+        console.log('🎆 Skipping animation due to reduced motion preference');
         onComplete?.();
         return;
       }
@@ -91,11 +96,13 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
       const numSparks = 8 + Math.floor(Math.random() * 5);
       const newSparks = Array.from({ length: numSparks }, (_, i) => sparkCounter + i);
       
+      console.log('🎆 Creating', numSparks, 'sparks:', newSparks);
       setSparks(newSparks);
       setSparkCounter(prev => prev + numSparks);
       
       // Auto-complete after all animations should be done
       const timeout = setTimeout(() => {
+        console.log('🎆 Auto-completing sparks animation');
         setSparks([]);
         onComplete?.();
       }, 6000); // Max duration for all animations
@@ -126,10 +133,12 @@ export function useKindnessSparks() {
   const [isActive, setIsActive] = useState(false);
 
   const triggerSparks = () => {
+    console.log('🎆 KINDNESS SPARKS TRIGGERED!', new Date().toLocaleTimeString());
     setIsActive(true);
   };
 
   const handleComplete = () => {
+    console.log('✨ KINDNESS SPARKS COMPLETE!', new Date().toLocaleTimeString());
     setIsActive(false);
   };
 

@@ -159,6 +159,7 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
       setCategory('Helping Others');
       
       // Trigger the sparks animation!
+      console.log('🎆 POST SUCCESS - Calling onPostSuccess (should trigger sparks)');
       onPostSuccess?.();
       
       onClose();
