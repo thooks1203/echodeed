@@ -18,15 +18,15 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
   
   // Random icon and color
   const icons = [Heart, Sparkles, Star];
-  const colors = ['#EF4444', '#F59E0B', '#8B5CF6', '#EC4899', '#10B981'];
+  const colors = ['#ff1744', '#00e676', '#2196f3', '#ff9800', '#e91e63', '#9c27b0', '#ffeb3b']; // Much brighter colors
   const IconComponent = icons[Math.floor(Math.random() * icons.length)];
   const color = colors[Math.floor(Math.random() * colors.length)];
   
-  // Random size
-  const size = 16 + Math.random() * 16; // 16-32px
+  // Random size - BIGGER for visibility
+  const size = 32 + Math.random() * 24; // 32-56px
   
-  // Random animation duration
-  const duration = 2 + Math.random() * 2; // 2-4 seconds
+  // Random animation duration - SLOWER for visibility
+  const duration = 4 + Math.random() * 3; // 4-7 seconds
   
   return (
     <motion.div
@@ -41,7 +41,7 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
         x: endX,
         y: endY,
         opacity: [0, 1, 1, 0],
-        scale: [0, 1.2, 1, 0],
+        scale: [0, 1.5, 1.2, 0], // Bigger scale
         rotate: 360
       }}
       exit={{
@@ -105,7 +105,7 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
         console.log('🎆 Auto-completing sparks animation');
         setSparks([]);
         onComplete?.();
-      }, 6000); // Max duration for all animations
+      }, 8000); // Longer duration to see the animation
       
       return () => clearTimeout(timeout);
     }
