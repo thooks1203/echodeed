@@ -36,15 +36,15 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
   return (
     <motion.div
       initial={{
-        x: startX,
-        y: startY,
+        left: startX,
+        top: startY,
         opacity: 1, // VISIBLE from start!
         scale: 1,   // VISIBLE from start!
         rotate: 0
       }}
       animate={{
-        x: endX,
-        y: endY,
+        left: endX,
+        top: endY,
         opacity: [1, 1, 1, 0], // Stay visible, fade only at end
         scale: [1, 1.5, 1.2, 0.8], // Start visible, end smaller (not 0)
         rotate: 360
@@ -63,19 +63,24 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
       onAnimationComplete={onComplete}
       style={{
         position: 'fixed',
+        width: '120px', // MASSIVE for testing
+        height: '120px', // MASSIVE for testing
         zIndex: 999999, // Much higher z-index to ensure visibility
         pointerEvents: 'none',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
         color,
-        // TEST: Add visible background to make absolutely sure it's visible
-        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        // MAXIMUM VISIBILITY FOR TESTING
+        backgroundColor: 'red', // BRIGHT RED
         borderRadius: '50%',
-        padding: '8px',
-        border: '3px solid black',
-        boxShadow: '0 0 20px rgba(0,0,0,0.5)'
+        border: '10px solid yellow', // THICK YELLOW BORDER
+        boxShadow: '0 0 50px rgba(255, 0, 0, 1)', // RED GLOW
+        fontSize: '60px' // HUGE icon
       }}
       data-testid={`kindness-spark-${id}`}
     >
-      <IconComponent size={size} fill="currentColor" />
+      <IconComponent size={80} fill="white" />
     </motion.div>
   );
 }
