@@ -132,37 +132,29 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
   if (process.env.NODE_ENV === 'development' && req.headers['x-session-id']) {
     const sessionId = req.headers['x-session-id'] as string;
     
-    // Create the demo user in the database if it doesn't exist
-    try {
-      await storage.upsertUser({
-        id: sessionId,
-        email: 'demo@echodeed.com',
-        firstName: 'Demo',
-        lastName: 'User',
-        profileImageUrl: null,
-      });
-    } catch (error) {
-      console.error('Error creating demo user:', error);
-    }
+    // Use Sarah Chen's actual user ID for demo consistency
+    const demoUserId = 'eeea79c7-114d-4d7d-8d16-b58cd7887c21'; // Sarah Chen's ID
     
-    // Create mock user for smooth demo experience
+    // Create mock user for smooth demo experience with Sarah's data
     req.user = {
       claims: { 
-        sub: sessionId,
-        email: 'demo@echodeed.com',
-        first_name: 'Demo',
-        last_name: 'User'
+        sub: demoUserId,
+        email: 'sarah@bca.edu',
+        first_name: 'Sarah',
+        last_name: 'Chen',
+        role: 'student',
+        schoolRole: 'student'
       },
       expires_at: Math.floor(Date.now() / 1000) + 3600 // 1 hour from now
     };
     
-    // Ensure demo user exists in database
+    // Ensure Sarah Chen exists in database (already created during init)
     try {
       await storage.upsertUser({
-        id: sessionId,
-        email: `demo+${sessionId}@echodeed.com`, // Unique email per session
-        firstName: 'Demo',
-        lastName: 'User'
+        id: demoUserId,
+        email: 'sarah@bca.edu',
+        firstName: 'Sarah',
+        lastName: 'Chen'
       });
     } catch (error) {
       console.error('Failed to create demo user:', error);
