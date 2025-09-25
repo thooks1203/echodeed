@@ -24,7 +24,7 @@ import RewardsPage from '@/pages/rewards';
 import { SummerChallenges } from '@/components/SummerChallenges';
 import { SponsorsPage } from '@/components/SponsorsPage';
 import { CommunityService } from '@/components/CommunityService';
-import { useKindnessSparks } from '@/components/KindnessSparks';
+import { useKindnessSparksContext } from '@/contexts/KindnessSparksContext';
 
 interface RewardOffer {
   id: string;
@@ -39,7 +39,7 @@ export default function Home() {
   const queryClient = useQueryClient();
   const [, navigate] = useLocation();
   const { user, isStudent, isTeacher, isAdmin, isAuthenticated } = useAuth();
-  const { triggerSparks, KindnessSparksComponent } = useKindnessSparks();
+  const { triggerSparks } = useKindnessSparksContext();
 
   // Remove auto-authentication check that was causing issues
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
@@ -144,6 +144,9 @@ export default function Home() {
   }, []);
 
   const handlePostSuccess = useCallback(() => {
+    console.log('🎆 POST SUCCESS - About to trigger sparks!');
+    triggerSparks(); // TRIGGER THE SPARKS!
+    
     setIsPostModalOpen(false);
     toast({
       title: "Thank you for sharing!",
@@ -154,7 +157,7 @@ export default function Home() {
       setTokenEarning({ amount: 10, reason: "Posted a deed!" });
       setTimeout(() => setTokenEarning(null), 3000);
     }, 500);
-  }, [toast]);
+  }, [toast, triggerSparks]);
 
   const handleWelcomeClose = () => {
     setShowWelcomeModal(false);

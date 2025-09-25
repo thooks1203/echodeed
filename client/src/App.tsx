@@ -23,6 +23,8 @@ import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 import { RewardNotificationManager } from "@/components/RewardNotificationManager";
 import { SchoolRegistration } from "@/components/SchoolRegistration";
 import { SurpriseGiveawayManager } from "@/components/SurpriseGiveawayManager";
+import { useKindnessSparks } from "@/components/KindnessSparks";
+import { KindnessSparksContext } from "@/contexts/KindnessSparksContext";
 // import TVDisplayMode from "@/pages/TVDisplayMode";
 
 function Router() {
@@ -68,15 +70,22 @@ function Router() {
 }
 
 function App() {
+  // Mount kindness sparks at app root so they're always available
+  const { triggerSparks, KindnessSparksComponent } = useKindnessSparks();
+  
   return (
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-        <PWAInstall />
-        <RewardNotificationManager />
-        <SurpriseGiveawayManager />
-      </TooltipProvider>
+      <KindnessSparksContext.Provider value={{ triggerSparks }}>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+          {/* Always-mounted kindness sparks via portal */}
+          <KindnessSparksComponent />
+          <PWAInstall />
+          <RewardNotificationManager />
+          <SurpriseGiveawayManager />
+        </TooltipProvider>
+      </KindnessSparksContext.Provider>
     </QueryClientProvider>
   );
 }

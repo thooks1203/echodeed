@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { Heart, Sparkles, Star } from "lucide-react";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 
 interface KindnessSparkProps {
   id: number;
@@ -92,9 +93,9 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
     if (isActive) {
       console.log('🎆 KindnessSparks effect triggered, isActive:', isActive);
       
-      // Respect user's reduced motion preference
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      console.log('🎆 Reduced motion preference:', prefersReducedMotion);
+      // TEMPORARILY BYPASS reduced motion for debugging - we need to see if portal works
+      const prefersReducedMotion = false; // window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      console.log('🎆 Reduced motion preference (BYPASSED FOR TESTING):', prefersReducedMotion);
       
       if (prefersReducedMotion) {
         console.log('🎆 Skipping animation due to reduced motion preference');
@@ -125,7 +126,8 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
     setSparks(prev => prev.filter(id => id !== sparkId));
   };
 
-  return (
+  // Use React Portal to render directly to document.body to escape any clipping containers
+  return createPortal(
     <AnimatePresence>
       {sparks.map(sparkId => (
         <KindnessSpark
@@ -134,7 +136,8 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
           onComplete={() => handleSparkComplete(sparkId)}
         />
       ))}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
 
