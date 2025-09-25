@@ -30,8 +30,8 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
   // HUGE size for visibility test
   const size = 64; // Fixed 64px - impossible to miss!
   
-  // Faster animation for production
-  const duration = 3; // 3 seconds - good speed
+  // Slower for visibility 
+  const duration = 5; // 5 seconds - easier to see
   
   return (
     <motion.div
@@ -105,7 +105,7 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
       const cleanup = setTimeout(() => {
         console.log('🎆 FORCE CLEANUP - clearing all sparks');
         setSparks([]);
-      }, 5000); // 5 seconds - guaranteed cleanup
+      }, 7000); // 7 seconds - longer display time
       
       return () => clearTimeout(cleanup);
     }
