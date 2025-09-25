@@ -36,15 +36,15 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
   return (
     <motion.div
       initial={{
-        left: startX,
-        top: startY,
+        x: 0,
+        y: 0,
         opacity: 1, // VISIBLE from start!
         scale: 1,   // VISIBLE from start!
         rotate: 0
       }}
       animate={{
-        left: endX,
-        top: endY,
+        x: endX - startX, // Use transform instead
+        y: endY - startY, // Use transform instead  
         opacity: [1, 1, 1, 0], // Stay visible, fade only at end
         scale: [1, 1.5, 1.2, 0], // End at 0 so they disappear
         rotate: 360
@@ -66,6 +66,8 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
       }}
       style={{
         position: 'fixed',
+        left: startX - 24, // Center the 48px circle
+        top: startY - 24,  // Center the 48px circle
         width: '48px', // Perfect size
         height: '48px', // Perfect size  
         zIndex: 999999,
@@ -119,12 +121,12 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
       setSparks(newSparks);
       setSparkCounter(prev => prev + numSparks);
       
-      // Auto-complete after all animations should be done
+      // Force cleanup after animation duration + buffer
       const timeout = setTimeout(() => {
-        console.log('🎆 Auto-completing sparks animation');
+        console.log('🎆 Force cleanup - clearing all sparks');
         setSparks([]);
         onComplete?.();
-      }, 8000); // Longer duration to see the animation
+      }, duration * 1000 + 1000); // Animation duration + 1 second buffer
       
       return () => clearTimeout(timeout);
     }
