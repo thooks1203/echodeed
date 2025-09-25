@@ -577,37 +577,53 @@ export async function initializeSampleRewardData() {
     // ===== CREATE DEMO REDEMPTIONS FOR STUDENT EMMA =====
     console.log('🎁 Creating demo student redemptions for realistic demo...');
     
-    const existingRedemptions = await db.select().from(rewardRedemptions).limit(1);
+    // 🚀 FORCE RE-SEEDING: Always recreate redemptions for comprehensive demo
+    console.log('🔄 Re-creating demo redemptions for comprehensive Monday demo');
     
-    if (existingRedemptions.length === 0) {
-      // Add realistic redemptions for Emma (student-001) - shows working reward system
+    // Clear existing redemptions for clean demo
+    await db.delete(rewardRedemptions);
+    
+    const forceCreateRedemptions = true;
+    
+    if (forceCreateRedemptions) {
+      // Add redemptions for current demo user (Sarah Chen) for Monday demo
       const demoRedemptions = [
         {
-          userId: 'student-001', // Emma Johnson
-          offerId: createdOffers[0].id, // Burlington Carousel - 2 Free Rides
-          partnerId: createdPartners[0].id, // Burlington City Park Carousel
-          echoSpent: 100,
-          redemptionCode: 'CAROUSEL2024',
-          status: 'used',
-          redeemedAt: new Date('2025-09-15T10:30:00Z'),
-          usedAt: new Date('2025-09-16T14:20:00Z'),
-          expiresAt: new Date('2025-12-31T23:59:59Z')
+          userId: 'eeea79c7-114d-4d7d-8d16-b58cd7887c21', // Sarah Chen (current demo user)
+          offerId: createdOffers[5].id, // Chick-fil-A Kids Meal + Playground Time
+          partnerId: createdPartners[5].id, // Chick-fil-A Burlington
+          echoSpent: 200,
+          redemptionCode: 'CFA2025SEPT',
+          status: 'active', // Ready to use - perfect for demo
+          redeemedAt: new Date('2025-09-22T11:30:00Z'),
+          expiresAt: new Date('2025-10-22T23:59:59Z')
         },
         {
-          userId: 'student-001', // Emma Johnson
-          offerId: createdOffers[3].id, // Sir Pizza - Kids Meal
-          partnerId: createdPartners[3].id, // Sir Pizza Burlington
-          echoSpent: 150,
-          redemptionCode: 'PIZZA2024KIDS',
-          status: 'active', // Ready to use
-          redeemedAt: new Date('2025-09-20T16:45:00Z'),
-          expiresAt: new Date('2025-10-31T23:59:59Z')
+          userId: 'eeea79c7-114d-4d7d-8d16-b58cd7887c21', // Sarah Chen
+          offerId: createdOffers[1].id, // Putt-Putt Mini Golf Game Pass
+          partnerId: createdPartners[1].id, // Putt-Putt Fun Center Burlington
+          echoSpent: 250,
+          redemptionCode: 'GOLF2025',
+          status: 'pending', // Shows pending status
+          redeemedAt: new Date('2025-09-21T14:15:00Z'),
+          expiresAt: new Date('2025-11-21T23:59:59Z')
+        },
+        {
+          userId: 'eeea79c7-114d-4d7d-8d16-b58cd7887c21', // Sarah Chen
+          offerId: createdOffers[12].id, // Muffin's Ice Cream Shoppe
+          partnerId: createdPartners[12].id, // Muffin's Ice Cream Shoppe
+          echoSpent: 120,
+          redemptionCode: 'ICECREAM24',
+          status: 'used', // Shows completed redemption
+          redeemedAt: new Date('2025-09-18T16:00:00Z'),
+          usedAt: new Date('2025-09-19T15:30:00Z'),
+          expiresAt: new Date('2025-10-18T23:59:59Z')
         }
       ];
 
       await db.insert(rewardRedemptions).values(demoRedemptions);
-      console.log('✅ Demo redemptions created for Emma - shows working reward system!');
-      console.log(`✓ Emma now has 2 redemptions: 1 used (carousel), 1 active (pizza)`);
+      console.log('✅ Demo redemptions created for Sarah Chen - shows working reward system!');
+      console.log(`✓ Sarah has 3 redemptions: 1 active (CFA), 1 pending (Golf), 1 used (Ice Cream)`);
     } else {
       console.log('📋 Demo redemptions already exist, skipping initialization');
     }
