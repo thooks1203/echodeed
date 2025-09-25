@@ -9,6 +9,7 @@ import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { WelcomeModal } from '@/components/WelcomeModal';
 import { SchoolsDashboard } from '@/components/SchoolsDashboard';
+import { TeacherDashboard } from '@/components/TeacherDashboard';
 import { useWebSocket } from '@/hooks/use-websocket';
 import { useGeolocation } from '@/hooks/use-geolocation';
 import { KindnessPost, KindnessCounter, UserTokens } from '@shared/schema';
@@ -63,8 +64,10 @@ export default function Home() {
       window.history.replaceState({}, '', window.location.pathname);
     } else {
       // Set default tab based on role if no URL param
-      if (user?.schoolRole === 'admin' || user?.schoolRole === 'teacher') {
-        setActiveTab('schools');
+      if (user?.schoolRole === 'admin') {
+        setActiveTab('schools'); // Only admins see district data
+      } else if (user?.schoolRole === 'teacher') {
+        setActiveTab('teacher-dashboard'); // Teachers get their own dashboard
       } else if (user?.schoolRole === 'student') {
         setActiveTab('feed');
       } else if (user?.schoolRole === 'parent') {
@@ -153,12 +156,13 @@ export default function Home() {
   };
 
   const handleBackToDashboard = () => {
-    // For demo purposes, always go to student dashboard for better flow
-    // Students should see their dashboard when hitting back
+    // Role-based dashboard routing
     if (isStudent) {
       setActiveTab('student-dashboard');
-    } else if (isTeacher || isAdmin) {
-      setActiveTab('schools');
+    } else if (isTeacher) {
+      setActiveTab('teacher-dashboard'); // Teachers get their own dashboard
+    } else if (isAdmin) {
+      setActiveTab('schools'); // Only admins see district-wide data
     } else {
       // Default fallback to student dashboard for demo
       setActiveTab('student-dashboard');
@@ -218,13 +222,27 @@ export default function Home() {
   }
   
   if (activeTab === 'schools') {
-    // Only teachers and admins can access Schools Dashboard
-    if (!canAccessSchoolsDashboard(user?.schoolRole || 'student')) {
+    // Only admins can access district-wide Schools Dashboard
+    if (user?.schoolRole !== 'admin') {
       return null; // useEffect will redirect to feed
     }
     
     return (
       <SchoolsDashboard 
+        onNavigateToTab={navigateToTab} 
+        activeBottomTab={activeTab}
+      />
+    );
+  }
+  
+  if (activeTab === 'teacher-dashboard') {
+    // Only teachers can access teacher dashboard
+    if (user?.schoolRole !== 'teacher') {
+      return null; // useEffect will redirect to feed
+    }
+    
+    return (
+      <TeacherDashboard 
         onNavigateToTab={navigateToTab} 
         activeBottomTab={activeTab}
       />
