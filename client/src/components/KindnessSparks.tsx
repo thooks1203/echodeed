@@ -8,13 +8,17 @@ interface KindnessSparkProps {
 }
 
 function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
-  // Random starting position
-  const startX = Math.random() * window.innerWidth;
-  const startY = window.innerHeight;
+  // TEST VERSION: Fixed visible positions in center of screen
+  const centerX = window.innerWidth / 2;
+  const centerY = window.innerHeight / 2;
   
-  // Random end position (somewhere in upper portion of screen)
-  const endX = Math.random() * window.innerWidth;
-  const endY = Math.random() * (window.innerHeight * 0.3);
+  // Start from bottom center, move to top center (guaranteed visible)
+  const startX = centerX + (Math.random() - 0.5) * 200; // Small spread around center
+  const startY = window.innerHeight - 100; // Start near bottom
+  const endX = centerX + (Math.random() - 0.5) * 200; // End near center
+  const endY = 50; // End near top
+  
+  console.log(`🎆 Spark ${id} position: start(${startX}, ${startY}) -> end(${endX}, ${endY})`);
   
   // Random icon and color
   const icons = [Heart, Sparkles, Star];
@@ -22,11 +26,11 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
   const IconComponent = icons[Math.floor(Math.random() * icons.length)];
   const color = colors[Math.floor(Math.random() * colors.length)];
   
-  // Random size - BIGGER for visibility
-  const size = 32 + Math.random() * 24; // 32-56px
+  // HUGE size for visibility test
+  const size = 64; // Fixed 64px - impossible to miss!
   
-  // Random animation duration - SLOWER for visibility
-  const duration = 4 + Math.random() * 3; // 4-7 seconds
+  // VERY SLOW for visibility test
+  const duration = 6; // Fixed 6 seconds - very slow
   
   return (
     <motion.div
@@ -60,7 +64,13 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
         position: 'fixed',
         zIndex: 999999, // Much higher z-index to ensure visibility
         pointerEvents: 'none',
-        color
+        color,
+        // TEST: Add visible background to make absolutely sure it's visible
+        backgroundColor: 'rgba(255, 255, 255, 0.8)',
+        borderRadius: '50%',
+        padding: '8px',
+        border: '3px solid black',
+        boxShadow: '0 0 20px rgba(0,0,0,0.5)'
       }}
       data-testid={`kindness-spark-${id}`}
     >
