@@ -199,8 +199,8 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-end justify-center">
-      <div className="bg-card w-full max-w-lg mx-4 mb-4 rounded-t-2xl shadow-2xl transform transition-transform">
+    <div className="fixed inset-0 bg-background/95 backdrop-blur-sm z-50 flex items-center justify-center p-4 overflow-y-auto">
+      <div className="bg-card w-full max-w-lg rounded-2xl shadow-2xl transform transition-transform max-h-[90vh] overflow-y-auto my-auto">
         <div className="p-4 border-b border-border flex items-center justify-between">
           <h3 className="text-lg font-semibold text-foreground">Share Your Deed</h3>
           <button 
