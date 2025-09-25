@@ -31,7 +31,11 @@ type StudentSignupForm = z.infer<typeof studentSignupSchema>;
 const gradeOptions = [
   { value: "6", label: "6th Grade" },
   { value: "7", label: "7th Grade" },
-  { value: "8", label: "8th Grade" }
+  { value: "8", label: "8th Grade" },
+  { value: "9", label: "9th Grade" },
+  { value: "10", label: "10th Grade" },
+  { value: "11", label: "11th Grade" },
+  { value: "12", label: "12th Grade" }
 ];
 
 export default function StudentSignup() {

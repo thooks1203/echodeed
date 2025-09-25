@@ -23,6 +23,7 @@ import RewardsPage from '@/pages/rewards';
 import { SummerChallenges } from '@/components/SummerChallenges';
 import { SponsorsPage } from '@/components/SponsorsPage';
 import { CommunityService } from '@/components/CommunityService';
+import { useKindnessSparks } from '@/components/KindnessSparks';
 
 interface RewardOffer {
   id: string;
@@ -37,6 +38,7 @@ export default function Home() {
   const queryClient = useQueryClient();
   const [, navigate] = useLocation();
   const { user, isStudent, isTeacher, isAdmin, isAuthenticated } = useAuth();
+  const { triggerSparks, KindnessSparksComponent } = useKindnessSparks();
 
   // Remove auto-authentication check that was causing issues
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
@@ -277,6 +279,7 @@ export default function Home() {
         isOpen={isPostModalOpen} 
         onClose={() => setIsPostModalOpen(false)}
         location={location}
+        onPostSuccess={triggerSparks}
       />
       
       <WelcomeModal 
@@ -309,6 +312,9 @@ export default function Home() {
           </div>
         </div>
       )}
+      
+      {/* Kindness Sparks Animation */}
+      <KindnessSparksComponent />
     </div>
   );
 }

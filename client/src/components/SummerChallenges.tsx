@@ -41,7 +41,7 @@ interface SummerChallengesProps {
 }
 
 export function SummerChallenges({ onBack }: SummerChallengesProps) {
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'6-8'>('6-8');
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'6-12'>('6-12');
   const [selectedChallenge, setSelectedChallenge] = useState<SummerChallenge | null>(null);
   const [showActivities, setShowActivities] = useState(false);
   const { toast } = useToast();
@@ -172,7 +172,7 @@ export function SummerChallenges({ onBack }: SummerChallengesProps) {
             Choose Your Grade Level
           </h3>
           <div style={{ display: 'flex', gap: '8px' }}>
-            {(['6-8'] as const).map((ageGroup) => (
+            {(['6-12'] as const).map((ageGroup) => (
               <button
                 key={ageGroup}
                 onClick={() => setSelectedAgeGroup(ageGroup)}
@@ -190,7 +190,7 @@ export function SummerChallenges({ onBack }: SummerChallengesProps) {
                 }}
                 data-testid={`age-group-${ageGroup}`}
               >
-                6th-8th Grade
+                6th-12th Grade
               </button>
             ))}
           </div>

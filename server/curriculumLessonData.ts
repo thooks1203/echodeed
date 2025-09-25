@@ -5,7 +5,7 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
   {
     title: "Community Impact Research & Action",
     description: "Students conduct research on local community issues, interview stakeholders, and develop data-driven service projects that create measurable positive impact in their community.",
-    gradeLevel: "6-8",
+    gradeLevel: "6-12",
     subject: "Social Studies", 
     kindnessTheme: "Community Service", 
     difficulty: "Advanced",
@@ -49,7 +49,7 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
   {
     title: "Breaking Down Barriers: Understanding Differences",
     description: "Students explore diversity, unconscious bias, and privilege while developing strategies to create inclusive environments for all classmates.",
-    gradeLevel: "6-8",
+    gradeLevel: "6-12",
     subject: "Language Arts",
     kindnessTheme: "Inclusion",
     difficulty: "Hard",
@@ -94,7 +94,7 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
   {
     title: "Digital Citizenship and Online Kindness",
     description: "Students develop skills for positive online interactions, learn to combat cyberbullying, and create digital content that spreads kindness.",
-    gradeLevel: "6-8",
+    gradeLevel: "6-12",
     subject: "Technology/Language Arts",
     kindnessTheme: "Digital Kindness",
     difficulty: "Hard",
@@ -138,7 +138,7 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
   {
     title: "Restorative Justice Circle: Healing Harm with Kindness",
     description: "Students learn restorative justice principles to repair relationships, build empathy, and create classroom communities focused on healing rather than punishment.",
-    gradeLevel: "6-8",
+    gradeLevel: "6-12",
     subject: "Character Education",
     kindnessTheme: "Conflict Resolution",
     difficulty: "Hard", 
@@ -182,7 +182,7 @@ export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
   {
     title: "Emotional Intelligence & Advanced Empathy Skills",
     description: "Students develop sophisticated emotional intelligence by analyzing complex social situations, practicing advanced perspective-taking, and creating comprehensive empathy action plans.",
-    gradeLevel: "6-8",
+    gradeLevel: "6-12",
     subject: "Character Education",
     kindnessTheme: "Empathy Development",
     difficulty: "Intermediate",
@@ -242,7 +242,7 @@ export async function initializeCurriculumLessons(storage: any) {
     }
 
     console.log(`✅ Middle School Curriculum initialized with ${kindnessLessonTemplates.length} lessons!`);
-    console.log('📚 All lessons designed specifically for grades 6-8 (ages 11-14)');
+    console.log('📚 All lessons designed specifically for grades 6-12 (ages 11-18)');
     console.log('🎯 Themes: Community Service, Inclusion, Digital Kindness, Conflict Resolution, Empathy');
     console.log('🏫 Ready to transform middle school classrooms with evidence-based character education!');
     

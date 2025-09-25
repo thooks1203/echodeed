@@ -32,7 +32,7 @@ A content filtering system ensures a positive environment through profanity dete
 - **AI Integration**: Powers a predictive wellness engine, content intelligence (sentiment analysis, moderation, trend detection), and corporate analytics.
 - **Dual Reward System**: Implemented for both kids and parents.
 - **COPPA Compliance System**: Production-ready digital consent, automated workflows, and annual renewal system for K-8.
-- **Middle School Curriculum**: 5 comprehensive lessons focused on character education for grades 6-8.
+- **Middle and High School Curriculum**: 5 comprehensive lessons focused on character education for grades 6-12.
 - **B2B Sponsor Monetization Platform**: Infrastructure for sponsor analytics, tiered sponsorships, and targeted campaigns (currently preserved).
 - **Anonymous Workplace Wellness**: AI-powered predictive analytics for burnout risk and sentiment analysis using anonymized data.
 

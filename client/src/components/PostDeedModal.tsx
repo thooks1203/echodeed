@@ -11,6 +11,7 @@ interface PostDeedModalProps {
   isOpen: boolean;
   onClose: () => void;
   location: LocationData | null;
+  onPostSuccess?: () => void;
 }
 
 interface PostData {
@@ -22,7 +23,7 @@ interface PostData {
   country: string;
 }
 
-export function PostDeedModal({ isOpen, onClose, location }: PostDeedModalProps) {
+export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: PostDeedModalProps) {
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('Helping Others');
   const { toast } = useToast();
@@ -63,6 +64,10 @@ export function PostDeedModal({ isOpen, onClose, location }: PostDeedModalProps)
       queryClient.invalidateQueries({ queryKey: ['/api/counter'] });
       setContent('');
       setCategory('Helping Others');
+      
+      // Trigger the sparks animation!
+      onPostSuccess?.();
+      
       onClose();
     },
     onError: (error: any) => {
