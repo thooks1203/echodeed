@@ -97,7 +97,7 @@ export function SurpriseGiveawayManager() {
       title: '🎉 Surprise Giveaway!',
       body: `You won: ${giveaway.title} from ${giveaway.partnerName}!`,
       tag: 'surprise_giveaway',
-      data: { type: 'surprise_giveaway', giveaway }
+      data: { type: 'surprise_giveaway' }
     });
   };
 

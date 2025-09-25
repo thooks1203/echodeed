@@ -23,8 +23,10 @@ export function clearSession(): void {
 
 // Add session ID to fetch headers
 export function addSessionHeaders(headers: HeadersInit = {}): HeadersInit {
+  const userRole = localStorage.getItem('echodeed_demo_role') || 'student';
   return {
     ...headers,
     'X-Session-ID': getSessionId(),
+    'X-Demo-Role': userRole, // Send user's actual role to server
   };
 }

@@ -152,11 +152,13 @@ const requireSchoolAccess = async (req: any, res: any, next: any) => {
       });
       
       if (sessionId) {
-        console.log('✅ DEVELOPMENT BYPASS: Granting school access');
+        // Get the user's actual role from demo session - don't automatically grant admin!
+        const demoRole = req.headers['x-demo-role'] || 'student'; // Default to student, not admin
+        console.log('✅ DEVELOPMENT BYPASS: Granting school access with role:', demoRole);
         req.userSchools = [{
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // BURLINGTON CHRISTIAN ACADEMY
           schoolName: 'Burlington Christian Academy',
-          role: 'admin'
+          role: demoRole // Use actual user role instead of forcing admin
         }];
         req.primarySchoolId = 'bc016cad-fa89-44fb-aab0-76f82c574f78';
         return next();
