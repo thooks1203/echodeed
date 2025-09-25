@@ -68,10 +68,10 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
               <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border-3 border-yellow-300 z-[100]">
                 <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-green-50">
                   <div className="text-center">
-                    <div className="text-lg font-bold text-gray-800">👋 Hi {user.name.split(' ')[0]}!</div>
-                    <div className="text-sm text-gray-600">{user.email}</div>
+                    <div className="text-lg font-bold text-gray-800">👋 Hi {user?.name?.split(' ')[0] || 'User'}!</div>
+                    <div className="text-sm text-gray-600">{user?.email || 'No email'}</div>
                     <div className="inline-block px-3 py-1 mt-2 text-xs font-bold bg-blue-100 text-blue-800 rounded-full">
-                      You are: {user.schoolRole.toUpperCase()}
+                      You are: {user?.schoolRole?.toUpperCase() || 'STUDENT'}
                     </div>
                   </div>
                 </div>
@@ -82,7 +82,7 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
                     <button
                       key={roleInfo.role}
                       onClick={() => handleRoleSwitch(roleInfo.role)}
-                      className={`w-full text-left px-3 py-3 text-sm hover:bg-yellow-50 rounded-lg border-2 mb-2 transition-colors ${user.schoolRole === roleInfo.role ? 'bg-blue-50 border-blue-300' : 'border-gray-200'}`}
+                      className={`w-full text-left px-3 py-3 text-sm hover:bg-yellow-50 rounded-lg border-2 mb-2 transition-colors ${user?.schoolRole === roleInfo.role ? 'bg-blue-50 border-blue-300' : 'border-gray-200'}`}
                       data-testid={`switch-to-${roleInfo.role}`}
                     >
                       <div className="font-bold text-gray-800">{roleInfo.label}</div>
