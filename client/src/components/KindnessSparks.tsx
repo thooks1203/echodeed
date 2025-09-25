@@ -80,6 +80,13 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
 
   useEffect(() => {
     if (isActive) {
+      // Respect user's reduced motion preference
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReducedMotion) {
+        onComplete?.();
+        return;
+      }
+      
       // Create 8-12 sparks
       const numSparks = 8 + Math.floor(Math.random() * 5);
       const newSparks = Array.from({ length: numSparks }, (_, i) => sparkCounter + i);

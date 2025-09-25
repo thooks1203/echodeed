@@ -1,6 +1,6 @@
 import type { InsertCurriculumLesson } from '@shared/schema';
 
-// Middle School Kindness Curriculum (Grades 6-8) - Character Education for Ages 11-14
+// Middle and High School Kindness Curriculum (Grades 6-12) - Character Education for Ages 11-18
 export const kindnessLessonTemplates: InsertCurriculumLesson[] = [
   {
     title: "Community Impact Research & Action",
