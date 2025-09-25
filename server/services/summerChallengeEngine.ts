@@ -32,15 +32,16 @@ export class SummerChallengeEngine {
 
   // Get current week of summer (1-12 based on date)
   getCurrentSummerWeek(): number {
-    const now = new Date();
-    const currentYear = now.getFullYear();
+    // FOR DEMO: Force to week 12 (Celebration & Reflection) to show exciting content
+    // This ensures challenges are always visible during demo season
+    return 12;
     
-    // Summer starts June 1st, ends August 31st (12 weeks)
-    const summerStart = new Date(currentYear, 5, 1); // June 1st
-    const weeksPassed = Math.floor((now.getTime() - summerStart.getTime()) / (7 * 24 * 60 * 60 * 1000));
-    
-    // Clamp to 1-12 range, default to week 1 if outside summer
-    return Math.max(1, Math.min(12, weeksPassed + 1));
+    // Original logic kept for reference:
+    // const now = new Date();
+    // const currentYear = now.getFullYear();
+    // const summerStart = new Date(currentYear, 5, 1); // June 1st
+    // const weeksPassed = Math.floor((now.getTime() - summerStart.getTime()) / (7 * 24 * 60 * 60 * 1000));
+    // return Math.max(1, Math.min(12, weeksPassed + 1));
   }
 
   // Get theme for specific week
