@@ -186,10 +186,10 @@ export default function StudentSignup() {
         <div className="text-center mb-8">
           <Link 
             href={canAccessSchoolsDashboard ? "/app?tab=schools" : "/app?tab=student-dashboard"} 
-            className="inline-flex items-center text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-200 mb-4"
+            className="inline-flex items-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 text-white hover:from-purple-600 hover:to-blue-600 transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105 mb-4 font-semibold"
             data-testid="link-back-dashboard"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
+            <ArrowLeft className="w-4 h-4" />
             Back to Dashboard
           </Link>
           

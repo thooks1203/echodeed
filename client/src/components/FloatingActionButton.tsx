@@ -8,7 +8,7 @@ export function FloatingActionButton({ onClick }: FloatingActionButtonProps) {
   return (
     <button 
       onClick={onClick}
-      className="fixed bg-gradient-to-r from-red-400 to-yellow-400 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center hover:scale-110 px-4 py-3 gap-2 font-semibold text-sm animate-pulse"
+      className="fixed bg-gradient-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600 text-white rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 flex items-center justify-center hover:scale-110 px-4 py-3 gap-2 font-semibold text-sm animate-pulse"
       data-testid="button-post-deed"
       style={{
         right: '16px', 
