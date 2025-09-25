@@ -1,4 +1,4 @@
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { Heart, Sparkles, Star } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
@@ -38,15 +38,15 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
       initial={{
         x: startX,
         y: startY,
-        opacity: 0,
-        scale: 0,
+        opacity: 1, // VISIBLE from start!
+        scale: 1,   // VISIBLE from start!
         rotate: 0
       }}
       animate={{
         x: endX,
         y: endY,
-        opacity: [0, 1, 1, 0],
-        scale: [0, 1.5, 1.2, 0], // Bigger scale
+        opacity: [1, 1, 1, 0], // Stay visible, fade only at end
+        scale: [1, 1.5, 1.2, 0.8], // Start visible, end smaller (not 0)
         rotate: 360
       }}
       exit={{
@@ -128,15 +128,40 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
 
   // Use React Portal to render directly to document.body to escape any clipping containers
   return createPortal(
-    <AnimatePresence>
-      {sparks.map(sparkId => (
-        <KindnessSpark
-          key={sparkId}
-          id={sparkId}
-          onComplete={() => handleSparkComplete(sparkId)}
-        />
-      ))}
-    </AnimatePresence>,
+    <MotionConfig reducedMotion="never">
+      <AnimatePresence>
+        {sparks.map(sparkId => (
+          <KindnessSpark
+            key={sparkId}
+            id={sparkId}
+            onComplete={() => handleSparkComplete(sparkId)}
+          />
+        ))}
+      </AnimatePresence>
+      {/* TEST CANARY: Red box to verify portal rendering */}
+      {sparks.length > 0 && (
+        <div
+          style={{
+            position: 'fixed',
+            top: '50px',
+            right: '50px',
+            width: '80px',
+            height: '80px',
+            backgroundColor: 'red',
+            zIndex: 999999,
+            borderRadius: '50%',
+            border: '5px solid yellow',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontWeight: 'bold'
+          }}
+        >
+          TEST
+        </div>
+      )}
+    </MotionConfig>,
     document.body
   );
 }
