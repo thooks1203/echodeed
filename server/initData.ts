@@ -373,11 +373,21 @@ export async function initializeSampleData() {
       // Check if Sarah Chen already has service hours
       const existingServiceHours = await serviceEngine.getStudentServiceLogs(studentUserId, 1);
       
-      if (existingServiceHours.length === 0) {
-        log('🏥 Creating sample community service hours for Sarah Chen...');
-        
-        // Add some sample service hours for demonstration
-        await serviceEngine.logServiceHours({
+      // FORCE RE-CREATION: Always create fresh service hours for demo
+      log('🏥 Force creating fresh community service hours for Sarah Chen...');
+      
+      // Delete any existing service hours for this user to ensure clean demo data
+      try {
+        const { communityServiceLogs, studentServiceSummaries } = await import('@shared/schema');
+        await db.delete(communityServiceLogs).where(eq(communityServiceLogs.userId, studentUserId));
+        await db.delete(studentServiceSummaries).where(eq(studentServiceSummaries.userId, studentUserId));
+        log('🧹 Cleared existing service hours data for clean demo');
+      } catch (error) {
+        log('⚠️ Note: No existing service hours to clear (normal for first run)');
+      }
+      
+      // Add some sample service hours for demonstration
+      await serviceEngine.logServiceHours({
           userId: studentUserId,
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
           serviceName: 'Food Bank Volunteer',
@@ -411,10 +421,8 @@ export async function initializeSampleData() {
           photoEvidence: undefined
         });
 
-        log('✅ Created sample community service hours for Sarah Chen');
-      } else {
-        log('🔄 Re-creating sample community service hours for comprehensive demo');
-      }
+      log('✅ Force created fresh community service hours for Sarah Chen');
+      log('📊 Sarah Chen now has 7.5 total service hours (4.5 + 3.0)');
     } catch (error: any) {
       log('⚠️ Could not initialize community service hours:', error.message || error);
     }
