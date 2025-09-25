@@ -479,12 +479,12 @@ export function LandingPage() {
           color: '#1f2937',
           textAlign: 'center'
         }}>
-          ✨ 6-8 Character Education Features
+          ✨ 6-12 Character Education Features
         </h2>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {[
-            { icon: '📚', title: 'Curriculum Integration', desc: 'Aligned with SEL standards for 6-8 character education' },
+            { icon: '📚', title: 'Curriculum Integration', desc: 'Aligned with SEL standards for 6-12 character education' },
             { icon: '👩‍🏫', title: 'Teacher Tools', desc: 'Classroom management and student progress tracking' },
             { icon: '🏅', title: 'Student Achievements', desc: 'Badge system and kindness point rewards' },
             { icon: '👨‍👩‍👧‍👦', title: 'Parent Communication', desc: 'Weekly reports and progress updates' },
