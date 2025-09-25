@@ -341,9 +341,46 @@ export async function initializeSampleData() {
     ];
 
     // Create sample posts
+    const createdPosts: any[] = [];
     for (const post of samplePosts) {
-      await storage.createPost(post);
+      const createdPost = await storage.createPost(post);
+      createdPosts.push(createdPost);
     }
+
+    // Add realistic engagement to demo posts (hearts and echoes)
+    log('💫 Adding realistic engagement to demo posts...');
+    
+    // Get all posts to add engagement
+    const allPosts = await storage.getPosts({});
+    const recentDemoPosts = allPosts.slice(0, Math.min(15, allPosts.length)); // Last 15 posts
+    
+    for (const post of recentDemoPosts) {
+      // Randomly add hearts (60% chance)
+      if (Math.random() < 0.6) {
+        const heartCount = Math.floor(Math.random() * 8) + 1; // 1-8 hearts
+        for (let i = 0; i < heartCount; i++) {
+          try {
+            await storage.addHeartToPost(post.id, `demo_session_${i}_${Date.now()}`);
+          } catch (error) {
+            // Ignore duplicate heart errors for demo
+          }
+        }
+      }
+      
+      // Randomly add echoes (35% chance)
+      if (Math.random() < 0.35) {
+        const echoCount = Math.floor(Math.random() * 4) + 1; // 1-4 echoes
+        for (let i = 0; i < echoCount; i++) {
+          try {
+            await storage.addEchoToPost(post.id, `demo_echo_${i}_${Date.now()}`);
+          } catch (error) {
+            // Ignore duplicate echo errors for demo
+          }
+        }
+      }
+    }
+    
+    log('✨ Added realistic hearts and echoes to demo posts');
 
     // The global counter will automatically increment as posts are added
     log(`✓ Added ${samplePosts.length} sample posts`);
