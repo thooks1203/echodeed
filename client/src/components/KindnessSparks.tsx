@@ -30,8 +30,8 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
   // HUGE size for visibility test
   const size = 64; // Fixed 64px - impossible to miss!
   
-  // VERY SLOW for visibility test
-  const duration = 6; // Fixed 6 seconds - very slow
+  // Faster animation for production
+  const duration = 3; // 3 seconds - good speed
   
   return (
     <motion.div
@@ -46,7 +46,7 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
         left: endX,
         top: endY,
         opacity: [1, 1, 1, 0], // Stay visible, fade only at end
-        scale: [1, 1.5, 1.2, 0.8], // Start visible, end smaller (not 0)
+        scale: [1, 1.5, 1.2, 0], // End at 0 so they disappear
         rotate: 360
       }}
       exit={{
@@ -60,7 +60,10 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
           times: [0, 0.2, 0.8, 1]
         }
       }}
-      onAnimationComplete={onComplete}
+      onAnimationComplete={() => {
+        console.log(`🎆 Spark ${id} animation completed - removing`);
+        onComplete();
+      }}
       style={{
         position: 'fixed',
         width: '48px', // Perfect size
