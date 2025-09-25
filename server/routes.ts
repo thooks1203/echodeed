@@ -1570,17 +1570,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
         let demoBalance = 0;
         let demoTotalEarned = 0;
         
+        // Check user role to determine demo token balance
+        const userRole = req.user.claims.role || req.user.claims.schoolRole;
+        
         // Demo users get different realistic balances to show engagement variety
-        if (userId.startsWith('student-')) {
+        if (userRole === 'student' || userId.startsWith('student-')) {
           demoBalance = 67;  // Student has earned tokens from service hours
           demoTotalEarned = 344; // They've earned tokens and may have redeemed some rewards
-        } else if (userId === 'teacher-001') {
+        } else if (userRole === 'teacher' || userId === 'teacher-001') {
           demoBalance = 45;  // Ms. Wilson has moderate balance
           demoTotalEarned = 45; // Hasn't redeemed rewards yet
-        } else if (userId === 'admin-001') {
+        } else if (userRole === 'admin' || userId === 'admin-001') {
           demoBalance = 23;  // Admin has fewer tokens (different activity pattern)
           demoTotalEarned = 38; // Has redeemed some rewards (15 tokens spent)
-        } else if (userId === 'parent-001') {
+        } else if (userRole === 'parent' || userId === 'parent-001') {
           demoBalance = 83;  // Parent has high balance from dual reward system
           demoTotalEarned = 128; // Parent has earned most tokens and redeemed some (45 tokens spent)
         } else {
