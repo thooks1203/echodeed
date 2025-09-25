@@ -6,6 +6,7 @@ EchoDeed™ is a mobile-first web application that fosters and tracks anonymous 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
 Business planning approach: Conservative, realistic projections always. Under-promise, over-deliver.
+**IMPORTANT: Do NOT ask about Stripe integration - it is not needed for this educational platform.**
 
 ## System Architecture
 ### Frontend
