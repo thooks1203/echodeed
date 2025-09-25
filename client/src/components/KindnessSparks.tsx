@@ -99,19 +99,21 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
   const [sparks, setSparks] = useState<number[]>([]);
   const [sparkCounter, setSparkCounter] = useState(0);
 
+  // Simple cleanup effect - clear sparks after 5 seconds no matter what
+  useEffect(() => {
+    if (sparks.length > 0) {
+      const cleanup = setTimeout(() => {
+        console.log('🎆 FORCE CLEANUP - clearing all sparks');
+        setSparks([]);
+      }, 5000); // 5 seconds - guaranteed cleanup
+      
+      return () => clearTimeout(cleanup);
+    }
+  }, [sparks.length]);
+
   useEffect(() => {
     if (isActive) {
       console.log('🎆 KindnessSparks effect triggered, isActive:', isActive);
-      
-      // TEMPORARILY BYPASS reduced motion for debugging - we need to see if portal works
-      const prefersReducedMotion = false; // window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      console.log('🎆 Reduced motion preference (BYPASSED FOR TESTING):', prefersReducedMotion);
-      
-      if (prefersReducedMotion) {
-        console.log('🎆 Skipping animation due to reduced motion preference');
-        onComplete?.();
-        return;
-      }
       
       // Create 8-12 sparks
       const numSparks = 8 + Math.floor(Math.random() * 5);
@@ -121,16 +123,9 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
       setSparks(newSparks);
       setSparkCounter(prev => prev + numSparks);
       
-      // Force cleanup after animation duration + buffer
-      const timeout = setTimeout(() => {
-        console.log('🎆 Force cleanup - clearing all sparks');
-        setSparks([]);
-        onComplete?.();
-      }, duration * 1000 + 1000); // Animation duration + 1 second buffer
-      
-      return () => clearTimeout(timeout);
+      onComplete?.();
     }
-  }, [isActive, sparkCounter, onComplete]);
+  }, [isActive]);
 
   const handleSparkComplete = (sparkId: number) => {
     setSparks(prev => prev.filter(id => id !== sparkId));
