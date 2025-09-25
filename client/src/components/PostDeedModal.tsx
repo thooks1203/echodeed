@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { X, Heart, MapPin, HandHeart, Users, Smile, Lightbulb, Sparkles } from 'lucide-react';
+import { X, Heart, MapPin, HandHeart, Users, Smile, Lightbulb, Sparkles, BookOpen, TreePine, Smartphone, Crown, UserPlus } from 'lucide-react';
 // import electricLogoUrl from '../assets/echodeed_electric_logo.png';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
@@ -42,6 +42,56 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
         "I walked a friend's dog when they were sick",
         "I helped my sibling with their project even though I was busy",
         "I volunteered to help clean up after the school assembly"
+      ],
+      'Academic Support': [
+        "I created a study group for students struggling with chemistry",
+        "I tutored middle schoolers in reading during my free period",
+        "I shared my organized notes with classmates before the big test",
+        "I helped a new student navigate the school's online learning portal",
+        "I volunteered as a peer mentor for incoming freshmen",
+        "I stayed after school to help classmates with college applications",
+        "I created flashcards and shared them with my entire class",
+        "I partnered with a struggling student for our group project"
+      ],
+      'Environmental Action': [
+        "I started a school-wide campaign to reduce plastic waste",
+        "I organized a creek cleanup with my environmental club",
+        "I created a community garden at our school",
+        "I convinced our cafeteria to start composting food scraps",
+        "I led a team to plant trees in our neighborhood",
+        "I organized a clothing swap to reduce textile waste",
+        "I started a bike-to-school initiative to reduce emissions",
+        "I created educational posters about sustainable living"
+      ],
+      'Digital Kindness': [
+        "I stood up for someone being bullied online and reported it",
+        "I shared positive comments on my classmates' social media posts",
+        "I created a supportive group chat for students feeling anxious",
+        "I used technology to help elderly neighbors video call family",
+        "I shared helpful study resources in our class Discord server",
+        "I started an online kindness challenge that went viral at school",
+        "I helped a teacher learn new technology for virtual teaching",
+        "I created an app to help students find study partners"
+      ],
+      'Leadership & Mentoring': [
+        "I organized a school spirit week to bring everyone together",
+        "I started a peer mediation program to resolve conflicts",
+        "I led a team of volunteers for our school's food drive",
+        "I mentored a younger student who was having trouble making friends",
+        "I created and ran a workshop on study skills for freshmen",
+        "I organized a talent show to showcase our school's diversity",
+        "I led my debate team to help shy students find their voice",
+        "I coordinated with teachers to start an anti-bullying campaign"
+      ],
+      'Inclusion & Belonging': [
+        "I invited a lonely student to join our lunch table",
+        "I learned sign language to communicate with a deaf classmate",
+        "I organized a cultural celebration to honor our school's diversity",
+        "I made sure the new exchange student felt welcome in our class",
+        "I stood up for a student being excluded from group activities",
+        "I started a club for students who felt like they didn't fit in anywhere",
+        "I helped translate for a non-English speaking parent at school events",
+        "I created a buddy system for students with special needs"
       ],
       'Community Action': [
         "I organized a book drive for the local elementary school",
@@ -218,9 +268,14 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
             {/* Category Selection */}
             <div className="mt-4">
               <label className="block text-sm font-medium text-foreground mb-2">Category</label>
-              <div className="flex flex-wrap gap-2">
+              <div className="grid grid-cols-2 gap-2">
                 {[
                   { value: 'Helping Others', icon: HandHeart, label: 'Helping Others' },
+                  { value: 'Academic Support', icon: BookOpen, label: 'Academic Support' },
+                  { value: 'Environmental Action', icon: TreePine, label: 'Environmental Action' },
+                  { value: 'Digital Kindness', icon: Smartphone, label: 'Digital Kindness' },
+                  { value: 'Leadership & Mentoring', icon: Crown, label: 'Leadership & Mentoring' },
+                  { value: 'Inclusion & Belonging', icon: UserPlus, label: 'Inclusion & Belonging' },
                   { value: 'Community Action', icon: Users, label: 'Community Action' },
                   { value: 'Spreading Positivity', icon: Smile, label: 'Spreading Positivity' },
                 ].map(({ value, icon: Icon, label }) => (

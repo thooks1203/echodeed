@@ -1,4 +1,4 @@
-import { Heart, MapPin, Loader2, HandHeart, Users, Smile, Coffee, TreePine, Zap, TrendingUp, Star } from 'lucide-react';
+import { Heart, MapPin, Loader2, HandHeart, Users, Smile, Coffee, TreePine, Zap, TrendingUp, Star, BookOpen, Smartphone, Crown, UserPlus } from 'lucide-react';
 import { KindnessPost } from '@shared/schema';
 import { formatDistance } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -71,10 +71,20 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
     switch (category) {
       case 'Helping Others':
         return HandHeart;
-      case 'Spreading Positivity':
-        return Smile;
+      case 'Academic Support':
+        return BookOpen;
+      case 'Environmental Action':
+        return TreePine;
+      case 'Digital Kindness':
+        return Smartphone;
+      case 'Leadership & Mentoring':
+        return Crown;
+      case 'Inclusion & Belonging':
+        return UserPlus;
       case 'Community Action':
         return Users;
+      case 'Spreading Positivity':
+        return Smile;
       case 'Environmental':
         return TreePine;
       case 'Random Acts':
@@ -88,10 +98,20 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
     switch (category) {
       case 'Helping Others':
         return 'from-emerald-400 to-teal-500';
-      case 'Spreading Positivity':
-        return 'from-yellow-400 to-orange-500';
+      case 'Academic Support':
+        return 'from-blue-400 to-cyan-500';
+      case 'Environmental Action':
+        return 'from-green-400 to-emerald-500';
+      case 'Digital Kindness':
+        return 'from-purple-400 to-indigo-500';
+      case 'Leadership & Mentoring':
+        return 'from-amber-400 to-yellow-500';
+      case 'Inclusion & Belonging':
+        return 'from-rose-400 to-pink-500';
       case 'Community Action':
         return 'from-blue-400 to-indigo-500';
+      case 'Spreading Positivity':
+        return 'from-yellow-400 to-orange-500';
       case 'Environmental':
         return 'from-green-400 to-emerald-500';
       case 'Random Acts':
