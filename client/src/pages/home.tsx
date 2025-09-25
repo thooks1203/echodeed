@@ -379,7 +379,7 @@ export default function Home() {
         isOpen={isPostModalOpen} 
         onClose={() => setIsPostModalOpen(false)}
         location={location}
-        onPostSuccess={triggerSparks}
+        onPostSuccess={handlePostSuccess}
       />
       
       <WelcomeModal 
@@ -413,8 +413,7 @@ export default function Home() {
         </div>
       )}
       
-      {/* Kindness Sparks Animation */}
-      <KindnessSparksComponent />
+      {/* Kindness Sparks Animation - Now mounted globally at App root */}
     </div>
   );
 }
