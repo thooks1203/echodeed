@@ -23,7 +23,7 @@ export function SurpriseGiveawayManager() {
   // Check for surprise giveaways periodically
   const { data: campaigns } = useQuery({
     queryKey: ['/api/surprise-giveaways/campaigns'],
-    refetchInterval: 30000, // Check every 30 seconds
+    refetchInterval: 60000, // Check every 60 seconds (1 minute)
   });
 
   // Initialize surprise giveaway checking
@@ -46,10 +46,10 @@ export function SurpriseGiveawayManager() {
   }, []);
 
   const startGiveawayPolling = () => {
-    // Check for surprise giveaway notifications every 10 seconds
+    // Check for surprise giveaway notifications every 60 seconds
     checkInterval.current = setInterval(async () => {
       await checkForSurpriseGiveaway();
-    }, 10000);
+    }, 60000);
     
     // Also check immediately
     checkForSurpriseGiveaway();
@@ -96,8 +96,8 @@ export function SurpriseGiveawayManager() {
     pushNotifications.sendNotification({
       title: '🎉 Surprise Giveaway!',
       body: `You won: ${giveaway.title} from ${giveaway.partnerName}!`,
-      tag: 'surprise-giveaway',
-      data: { type: 'surprise-giveaway', giveaway }
+      tag: 'surprise_giveaway',
+      data: { type: 'surprise_giveaway', giveaway }
     });
   };
 
