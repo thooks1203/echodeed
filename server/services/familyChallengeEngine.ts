@@ -311,6 +311,50 @@ export class FamilyChallengeEngine {
             ]
           }
         ]
+      },
+      'Creativity & Kindness': {
+        'family': [
+          {
+            title: "Family Art & Kindness Project",
+            description: "Create art together that spreads kindness to others",
+            difficulty: "medium",
+            kidPoints: 18,
+            parentPoints: 12,
+            activities: [
+              {
+                title: "Community Art Installation",
+                description: "Create art that brings joy to your community",
+                kidInstructions: "Work with your family to create chalk art, painted rocks, or a community mural that will make people smile. Think about colors and messages that spread happiness.",
+                parentInstructions: "Guide your child in planning and creating public art that's appropriate and uplifting. Help them understand how art can be a gift to the community.",
+                timeEstimate: 90,
+                materials: "Chalk, paint, brushes, rocks, poster board, or permission for mural space",
+                location: "community",
+                discussionPrompts: "How do you think people will feel when they see our art? What makes art meaningful? How can creativity be an act of kindness?"
+              }
+            ]
+          }
+        ],
+        '6-8': [
+          {
+            title: "Creative Kindness Leadership",
+            description: "Use your creativity to inspire and lead kindness in your community",
+            difficulty: "hard",
+            kidPoints: 25,
+            parentPoints: 15,
+            activities: [
+              {
+                title: "Kindness Campaign Creation",
+                description: "Design and execute a creative campaign to promote kindness at school",
+                kidInstructions: "Create posters, videos, or a social media campaign about kindness. Work with friends to organize a school-wide kindness event or challenge.",
+                parentInstructions: "Support your child's creativity while helping them understand project management and teamwork. Guide them in organizing others effectively.",
+                timeEstimate: 120,
+                materials: "Art supplies, camera/phone for videos, poster materials, computer access",
+                location: "school",
+                discussionPrompts: "How can art and creativity change people's hearts? What leadership skills did you use? How will you measure the impact of your campaign?"
+              }
+            ]
+          }
+        ]
       }
     };
 
@@ -338,15 +382,45 @@ export class FamilyChallengeEngine {
   async getCurrentWeekChallenges(ageGroup: '6-8' | 'family'): Promise<YearRoundFamilyChallenge[]> {
     const currentWeek = this.getCurrentWeek();
     
-    const challenges = await db.select()
-      .from(yearRoundFamilyChallenges)
-      .where(and(
-        eq(yearRoundFamilyChallenges.week, currentWeek),
-        eq(yearRoundFamilyChallenges.ageGroup, ageGroup),
-        eq(yearRoundFamilyChallenges.isActive, true)
-      ));
+    try {
+      const challenges = await db.select()
+        .from(yearRoundFamilyChallenges)
+        .where(and(
+          eq(yearRoundFamilyChallenges.week, currentWeek),
+          eq(yearRoundFamilyChallenges.ageGroup, ageGroup),
+          eq(yearRoundFamilyChallenges.isActive, true)
+        ));
 
-    return challenges;
+      // If database has challenges, return them
+      if (challenges.length > 0) {
+        return challenges;
+      }
+    } catch (error) {
+      console.log(`📋 Database table not found, using fallback templates for week ${currentWeek}, age group: ${ageGroup}`);
+    }
+
+    // 🚀 DEMO FALLBACK: Return templates directly when database is empty or table missing
+    const theme = this.getWeekTheme(currentWeek);
+    const templates = this.getChallengeTemplatesForAge(theme.theme, ageGroup);
+    
+    console.log(`🎯 FALLBACK DEBUG: Week ${currentWeek}, Theme: "${theme.theme}", Age Group: ${ageGroup}, Templates found: ${templates.length}`);
+    
+    return templates.map((template, index) => ({
+      id: `demo-${ageGroup}-${currentWeek}-${index}`,
+      week: currentWeek,
+      title: template.title,
+      description: template.description,
+      theme: theme.theme.toLowerCase().replace(/\s+/g, '_'),
+      difficulty: template.difficulty,
+      kidPoints: template.kidPoints,
+      parentPoints: template.parentPoints,
+      ageGroup,
+      startDate: new Date(),
+      endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
+      isActive: true,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    }));
   }
 
   // Get activities for a specific challenge
