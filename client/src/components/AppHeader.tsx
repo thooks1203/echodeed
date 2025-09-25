@@ -48,7 +48,7 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
           <div className="relative">
             <button 
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex flex-col items-center gap-1 p-4 rounded-xl bg-gradient-to-r from-green-500 to-blue-500 text-white hover:from-green-600 hover:to-blue-600 transition-all duration-300 shadow-lg border-3 border-yellow-300 hover:scale-105"
+              className="flex flex-col items-center gap-1 p-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg border-3 border-yellow-300 hover:scale-105"
               data-testid="button-user-menu"
               style={{ 
                 minWidth: '200px',
