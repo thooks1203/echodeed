@@ -37,13 +37,28 @@ export async function initializeSampleData() {
     // FORCE COMPREHENSIVE RE-SEEDING FOR COMPLETE DEMO DATA
     log('🔄 FORCE RE-SEEDING: Adding comprehensive demo data regardless of existing content');
     
+    // CRITICAL FIX: Reset the counter to prevent doubling
+    log('🔄 Resetting global kindness counter to prevent accumulation...');
+    
+    // Get current counter and reset it to 0
+    const currentCounter = await storage.getCounter();
+    log(`📊 Current counter value: ${currentCounter.count}`);
+    
+    // Import database directly to reset counter
+    const { db } = await import('./db');
+    const { kindnessCounter } = await import('@shared/schema');
+    const { eq } = await import('drizzle-orm');
+    
+    await db.update(kindnessCounter)
+      .set({ count: 0, updatedAt: new Date() })
+      .where(eq(kindnessCounter.id, "global"));
+    
+    log('✅ Global kindness counter reset to 0');
+    
     if (hasAdultContent) {
       log('Found adult content in posts, will add kid-friendly posts...');
       // Continue to add kid-friendly posts rather than trying to delete
     }
-    
-    // TEMPORARILY DISABLED - Allow comprehensive re-seeding
-    log('⏭️ Skipping counter checks to allow comprehensive demo data restoration');
 
     // Sample kindness posts - diverse content across all categories
     const samplePosts = [
