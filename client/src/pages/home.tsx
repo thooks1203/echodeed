@@ -92,13 +92,18 @@ export default function Home() {
   // Fetch data - with console debugging
   const { data: posts = [], isLoading: postsLoading, error, status } = useQuery<KindnessPost[]>({
     queryKey: ['/api/posts', filters],
-    queryFn: async () => {
+    queryFn: async ({ queryKey }) => {
       const params = new URLSearchParams();
       if (filters.city) params.append('city', filters.city);
       if (filters.category) params.append('category', filters.category);
       if (filters.schoolId) params.append('schoolId', filters.schoolId);
       
-      const response = await fetch(`/api/posts?${params}`);
+      // Use queryKey but append query params
+      const url = params.toString() ? `${queryKey[0]}?${params}` : queryKey[0] as string;
+      const response = await fetch(url, {
+        headers: { 'X-Session-ID': localStorage.getItem('echodeed_session') || 'demo-session' },
+        credentials: 'include'
+      });
       const data = await response.json();
       return data;
     },
@@ -110,15 +115,13 @@ export default function Home() {
 
   const { data: counter } = useQuery<KindnessCounter>({
     queryKey: ['/api/counter'],
-    queryFn: () => fetch('/api/counter').then(r => r.json()),
     enabled: true,
     staleTime: 0,
     refetchOnMount: true
   });
 
   const { data: tokens } = useQuery<UserTokens>({
-    queryKey: ['/api/tokens'],
-    queryFn: () => fetch('/api/tokens').then(r => r.json())
+    queryKey: ['/api/tokens']
   });
 
   // WebSocket temporarily disabled for debugging
