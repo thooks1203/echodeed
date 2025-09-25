@@ -273,6 +273,7 @@ export default function Home() {
         isPulse={counterPulse} 
         showBackButton={true}
         onBack={handleBackToDashboard}
+        tokens={tokens}
       />
       
       

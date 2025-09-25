@@ -1,5 +1,5 @@
-import { Heart, Sliders, User, LogOut } from 'lucide-react';
-import { KindnessCounter } from '@shared/schema';
+import { Heart, Sliders, User, LogOut, Coins } from 'lucide-react';
+import { KindnessCounter, UserTokens } from '@shared/schema';
 import { ElectricHeart } from './ElectricHeart';
 import { BackButton } from './BackButton';
 import { useAuth, switchDemoRole, getDemoRoles } from '@/hooks/useAuth';
@@ -10,9 +10,10 @@ interface AppHeaderProps {
   isPulse: boolean;
   onBack?: () => void;
   showBackButton?: boolean;
+  tokens?: UserTokens;
 }
 
-export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeaderProps) {
+export function AppHeader({ counter, isPulse, onBack, showBackButton, tokens }: AppHeaderProps) {
   const { user } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const demoRoles = getDemoRoles();
@@ -42,6 +43,16 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton }: AppHeade
             </div>
           </div>
         </div>
+
+        {/* Echo Balance Display - Top Right */}
+        {tokens && (
+          <div className="absolute top-4 right-4">
+            <div className="flex items-center gap-2 bg-gradient-to-r from-emerald-500 to-cyan-600 text-white px-4 py-2 rounded-full shadow-lg">
+              <Coins size={16} className="animate-spin" />
+              <span className="font-bold text-sm">{tokens.echoBalance.toLocaleString()} $ECHO</span>
+            </div>
+          </div>
+        )}
 
         {/* Kid-Friendly User Menu - Prominent Position */}
         <div className="flex justify-center mb-4">
