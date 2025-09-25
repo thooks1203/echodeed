@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { X, Heart, MapPin, HandHeart, Users, Smile } from 'lucide-react';
+import { useState, useMemo } from 'react';
+import { X, Heart, MapPin, HandHeart, Users, Smile, Lightbulb, Sparkles } from 'lucide-react';
 // import electricLogoUrl from '../assets/echodeed_electric_logo.png';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
@@ -26,8 +26,51 @@ interface PostData {
 export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: PostDeedModalProps) {
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('Helping Others');
+  const [showSuggestions, setShowSuggestions] = useState(true);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Intelligent kindness suggestions for grades 6-12
+  const kindnessSuggestions = useMemo(() => {
+    const suggestions = {
+      'Helping Others': [
+        "I helped a classmate understand their homework in math class",
+        "I carried groceries for an elderly neighbor after school", 
+        "I tutored a younger student who was struggling in science",
+        "I offered my seat to someone on the bus who looked tired",
+        "I helped my teacher organize classroom materials during lunch",
+        "I walked a friend's dog when they were sick",
+        "I helped my sibling with their project even though I was busy",
+        "I volunteered to help clean up after the school assembly"
+      ],
+      'Community Action': [
+        "I organized a book drive for the local elementary school",
+        "I started a recycling initiative in our school cafeteria",
+        "I created posters to promote kindness week at school",
+        "I volunteered at the community food bank on Saturday",
+        "I picked up litter around our school parking lot",
+        "I helped plant flowers in the community garden",
+        "I organized a coat drive for families in need",
+        "I started a peer mentoring group for new students"
+      ],
+      'Spreading Positivity': [
+        "I complimented a classmate on their presentation today",
+        "I wrote encouraging notes and left them in random lockers",
+        "I smiled and said good morning to everyone I passed in the hallway",
+        "I cheered up a friend who was having a rough day",
+        "I congratulated someone on their achievement in sports",
+        "I thanked our custodian for keeping our school clean",
+        "I sent a positive message to someone who seemed lonely",
+        "I celebrated a teammate's improvement even though they're still learning"
+      ]
+    };
+    return suggestions[category as keyof typeof suggestions] || suggestions['Helping Others'];
+  }, [category]);
+
+  const handleSuggestionClick = (suggestion: string) => {
+    setContent(suggestion);
+    setShowSuggestions(false);
+  };
 
   const postMutation = useMutation({
     mutationFn: async (postData: PostData) => {
@@ -123,7 +166,11 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
           <form onSubmit={handleSubmit}>
             <textarea 
               value={content}
-              onChange={(e) => setContent(e.target.value)}
+              onChange={(e) => {
+                setContent(e.target.value);
+                setShowSuggestions(e.target.value.length === 0);
+              }}
+              onFocus={() => setShowSuggestions(content.length === 0)}
               placeholder="What kind act did you do today? Be specific and inspiring..."
               className="w-full p-4 border border-input rounded-lg resize-none bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               rows={4}
@@ -137,6 +184,36 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
                 <span data-testid="text-current-location">{location?.fullLocation || 'Location not available'}</span>
               </div>
             </div>
+
+            {/* Kindness Suggestions */}
+            {showSuggestions && content.length === 0 && (
+              <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                <div className="flex items-center gap-2 mb-3">
+                  <Lightbulb className="text-blue-600 dark:text-blue-400" size={16} />
+                  <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                    Need inspiration? Try these kindness ideas:
+                  </h4>
+                  <Sparkles className="text-purple-500" size={14} />
+                </div>
+                <div className="grid gap-2 max-h-32 overflow-y-auto">
+                  {kindnessSuggestions.slice(0, 4).map((suggestion, index) => (
+                    <button
+                      key={index}
+                      type="button"
+                      onClick={() => handleSuggestionClick(suggestion)}
+                      className="text-left p-2 text-sm bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 text-gray-700 dark:text-gray-300"
+                      data-testid={`suggestion-${index}`}
+                    >
+                      <span className="text-blue-600 dark:text-blue-400 mr-2">•</span>
+                      {suggestion}
+                    </button>
+                  ))}
+                </div>
+                <p className="text-xs text-blue-600 dark:text-blue-400 mt-2 italic">
+                  💡 Click any idea to use it, or write your own unique act of kindness!
+                </p>
+              </div>
+            )}
             
             {/* Category Selection */}
             <div className="mt-4">
