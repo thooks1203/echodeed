@@ -110,7 +110,10 @@ export default function Home() {
 
   const { data: counter } = useQuery<KindnessCounter>({
     queryKey: ['/api/counter'],
-    queryFn: () => fetch('/api/counter').then(r => r.json())
+    queryFn: () => fetch('/api/counter').then(r => r.json()),
+    enabled: true,
+    staleTime: 0,
+    refetchOnMount: true
   });
 
   const { data: tokens } = useQuery<UserTokens>({
