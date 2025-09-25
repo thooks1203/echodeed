@@ -76,7 +76,10 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
     mutationFn: async (postData: InsertSupportPost) => {
       const response = await fetch('/api/support-posts', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'X-Session-ID': localStorage.getItem('echodeed_session') || 'anonymous'
+        },
         body: JSON.stringify(postData),
       });
       if (!response.ok) throw new Error('Failed to post support request');
@@ -104,6 +107,9 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
     mutationFn: async (postId: string) => {
       const response = await fetch(`/api/support-posts/${postId}/heart`, {
         method: 'POST',
+        headers: {
+          'X-Session-ID': localStorage.getItem('echodeed_session') || 'anonymous'
+        }
       });
       if (!response.ok) throw new Error('Failed to heart post');
       return response.json();
