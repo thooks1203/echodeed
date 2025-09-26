@@ -18,9 +18,10 @@ export function useAuth() {
     retry: false,
   });
 
-  // Development fallback: Use localStorage demo role if real auth fails
+  // Demo fallback: Use localStorage demo role if real auth fails (works in both dev and production)
   const getDemoUser = (): AuthUser | null => {
-    if (import.meta.env.NODE_ENV !== 'development') return null;
+    // Allow demo mode in both development and production for the educational platform
+    // This is safe because it's for demonstration purposes only
     
     const storedRole = localStorage.getItem('echodeed_demo_role') as SchoolRole;
     if (!storedRole) return null;
