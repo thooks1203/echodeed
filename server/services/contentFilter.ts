@@ -9,6 +9,68 @@ export class ContentFilterService {
     'useless', 'worthless', 'failure', 'loser', 'stupid', 'dumb'
   ];
 
+  // Common first names to protect student anonymity
+  private commonNames = [
+    // Popular names in schools (K-12)
+    'aaron', 'abby', 'adam', 'alex', 'alice', 'amanda', 'amy', 'andrew', 'anna', 'anthony',
+    'ashley', 'austin', 'benjamin', 'brandon', 'brian', 'brittany', 'brooke', 'caleb', 'cameron',
+    'carlos', 'charlotte', 'chloe', 'chris', 'christian', 'christopher', 'claire', 'daniel',
+    'david', 'derek', 'dylan', 'elizabeth', 'emily', 'emma', 'eric', 'ethan', 'evan', 'grace',
+    'hannah', 'hunter', 'isabella', 'jack', 'jacob', 'james', 'jason', 'jennifer', 'jessica',
+    'john', 'jonathan', 'jordan', 'joseph', 'joshua', 'justin', 'kayla', 'kevin', 'lauren',
+    'lily', 'logan', 'lucas', 'madison', 'maria', 'mark', 'matthew', 'megan', 'michael',
+    'michelle', 'nicholas', 'nicole', 'noah', 'olivia', 'paige', 'rachel', 'rebecca', 'ryan',
+    'samantha', 'sarah', 'sophia', 'stephanie', 'taylor', 'thomas', 'tyler', 'victoria', 'william',
+    'zachary', 'zoe'
+  ];
+
+  // Check if a word could be a proper name (capitalized word that's not at sentence start)
+  private isPotentialProperName(content: string): { isName: boolean; name?: string } {
+    // Look for capitalized words that aren't at the start of sentences
+    const sentences = content.split(/[.!?]+/);
+    
+    for (const sentence of sentences) {
+      const words = sentence.trim().split(/\s+/);
+      
+      // Skip first word of each sentence (normal capitalization)
+      for (let i = 1; i < words.length; i++) {
+        const word = words[i].replace(/[^\w]/g, ''); // Remove punctuation
+        
+        // Check if word is capitalized and could be a name
+        if (word.length > 1 && 
+            word[0] === word[0].toUpperCase() && 
+            word.slice(1) === word.slice(1).toLowerCase() &&
+            !this.isCommonNonNameWord(word)) {
+          
+          // Check if it's a known name
+          if (this.commonNames.includes(word.toLowerCase())) {
+            return { isName: true, name: word };
+          }
+          
+          // Check if it looks like a name (not a common word like "Monday", "Math", etc.)
+          if (word.length >= 3 && !this.isCommonNonNameWord(word)) {
+            return { isName: true, name: word };
+          }
+        }
+      }
+    }
+    
+    return { isName: false };
+  }
+
+  // Common capitalized words that aren't names
+  private isCommonNonNameWord(word: string): boolean {
+    const commonWords = [
+      'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday',
+      'january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december',
+      'math', 'english', 'science', 'history', 'spanish', 'french', 'chinese', 'german',
+      'christmas', 'halloween', 'thanksgiving', 'easter', 'valentine', 'america', 'american',
+      'school', 'teacher', 'principal', 'library', 'cafeteria', 'gym', 'office'
+    ];
+    
+    return commonWords.includes(word.toLowerCase());
+  }
+
   isContentAppropriate(content: string, context: 'kindness' | 'support' = 'kindness'): { isValid: boolean; reason?: string } {
     const lowerContent = content.toLowerCase();
     
@@ -22,6 +84,15 @@ export class ContentFilterService {
       }
     }
     
+    // Check for proper names to maintain anonymity (applies to all contexts)
+    const nameCheck = this.isPotentialProperName(content);
+    if (nameCheck.isName) {
+      return { 
+        isValid: false, 
+        reason: `To protect everyone's privacy and maintain anonymity, please don't use specific names. Try "I helped a friend" or "I helped a classmate" instead.` 
+      };
+    }
+
     // For support posts, negative keywords are expected (students sharing challenges)
     // For kindness posts, we want positive content only
     if (context === 'kindness') {
