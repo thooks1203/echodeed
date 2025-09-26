@@ -1,6 +1,55 @@
 # EchoDeed™ - Anonymous Kindness Platform
 
-## Overview
+## CRITICAL DEPLOYMENT ISSUE - REPLIT SUPPORT TICKET
+
+**STATUS**: PRODUCTION BROKEN - Development works, published app fails  
+**MEETING**: Monday, September 22nd, 2025 with Burlington Christian Academy  
+**PRIORITY**: URGENT  
+
+### Problem Summary
+- **Build Process**: ✅ Succeeds (npm run build completes without TypeScript errors)
+- **Development Environment**: ✅ Works (Emma's 7.5 service hours visible, teacher dashboard functional)
+- **Published Production App**: ❌ BROKEN (shows 0 hours, authentication fails)
+
+### Root Cause
+Fixes were implemented with development-only bypasses. Production environment lacks:
+1. Emma Johnson demo data (7.5 service hours + 4-day streak)
+2. Authentication bypasses for teacher dashboard access
+3. Database migration for `follow_up_required` column
+
+### Technical Details
+- **Development Auth**: Uses headers `X-Demo-Role: teacher` and `X-Session-ID: demo-session`
+- **Production Auth**: Requires actual Replit OAuth (currently broken)
+- **Database**: Development has demo data, production database empty/different
+
+### Evidence
+**Development working** (logs show):
+```
+✅ DEVELOPMENT BYPASS: Granting teacher access with role: teacher
+GET /api/community-service/pending-verifications 200 in 196ms
+[{"serviceLog":{"id":"5431c5f7...","userId":"student-001","hours":7.5}}
+```
+
+**Production failing**: Published app shows 0 hours instead of Emma's 7.5 hours
+
+### Required Production Environment Variables
+**CRITICAL**: Production deployment requires:
+```
+DEMO_MODE=true
+```
+Without this, Emma Johnson's demo data (7.5 service hours + 4-day streak) will not be seeded.
+
+### Production Authentication Issues
+- Frontend uses mock authentication (`useAuth.ts` bypasses real Replit OAuth)
+- Backend teacher routes require real authentication in production
+- Development bypasses do not work in published app
+
+### Files Requiring Production Fixes
+1. `client/src/hooks/useAuth.ts` - Replace mock auth with real Replit OAuth
+2. `server/index.ts` line 538 - Demo data gated by DEMO_MODE
+3. `server/routes.ts` lines 92-102 - Teacher auth bypasses only work in development
+
+## Overview (Original)
 EchoDeed™ is a mobile-first web application that fosters and tracks anonymous acts of kindness through a community-driven feed. It allows users to anonymously share kind acts, browse a global feed with filtering options, and view a real-time global kindness counter. The platform operates without user profiles or personal information, prioritizing anonymity. Its strategic focus is on the K-8 education market to build empathy during critical developmental years, with future expansion into the corporate wellness market. Key capabilities include anonymous posting, a global kindness feed, real-time filtering and counting, robust content moderation, and AI integration for predictive wellness and content intelligence. The project also incorporates comprehensive frameworks for AI liability protection, customer validation, privacy communication, user adoption, competitive moat defense, regulatory compliance, enterprise architecture, founder execution, and cultural sensitivity.
 
 ## User Preferences
