@@ -4,6 +4,7 @@ import { formatDistance } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { addSessionHeaders } from '@/lib/session';
+import { EmojiRegistry } from '@/assets/emojis';
 
 interface KindnessFeedProps {
   posts: KindnessPost[];
@@ -180,6 +181,31 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
                       <p className="text-foreground leading-relaxed text-[15px] pr-2" data-testid={`text-post-content-${index}`}>
                         {post.content}
                       </p>
+                      
+                      {/* Custom Kindness Emojis */}
+                      {post.emojis && post.emojis.length > 0 && (
+                        <div className="flex gap-2 mt-2 mb-1" data-testid={`emoji-row-${index}`}>
+                          {post.emojis.map((emojiKey: string, emojiIndex: number) => {
+                            const emoji = EmojiRegistry[emojiKey as keyof typeof EmojiRegistry];
+                            if (!emoji) return null;
+                            
+                            const EmojiComponent = emoji.component;
+                            return (
+                              <div
+                                key={`${emojiKey}-${emojiIndex}`}
+                                className="flex items-center gap-1 bg-muted/50 dark:bg-muted/30 rounded-full px-2 py-1 transition-all duration-200 hover:bg-muted/70 hover:scale-105"
+                                title={emoji.label}
+                                data-testid={`post-emoji-${emojiKey}-${index}`}
+                              >
+                                <EmojiComponent size={20} />
+                                <span className="text-xs font-medium text-muted-foreground">
+                                  {emoji.label}
+                                </span>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                     
                     {/* Right side info - properly spaced */}
