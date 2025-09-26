@@ -69,9 +69,14 @@ export default function Home() {
       // Remove the tab parameter from URL to keep it clean
       window.history.replaceState({}, '', window.location.pathname);
     } else {
-      // When navigating to /app, always show feed (main platform) regardless of role
-      // This allows the "Back to Platform" button to work properly for teachers
-      setActiveTab('feed');
+      // Set appropriate default tab based on user role
+      if (isTeacher) {
+        setActiveTab('teacher-dashboard');
+      } else if (isAdmin) {
+        setActiveTab('schools');
+      } else {
+        setActiveTab('feed'); // Default for students
+      }
     }
   }, [user, navigate, isAuthenticated]);
 
