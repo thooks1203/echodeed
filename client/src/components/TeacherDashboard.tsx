@@ -499,7 +499,7 @@ export function TeacherDashboard() {
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <h4 className="font-semibold text-lg">Food Bank Volunteer</h4>
-                        <p className="text-sm text-gray-600">Sarah C. • 4.5 hours • September 15, 2025</p>
+                        <p className="text-sm text-gray-600">Emma Johnson • 4.5 hours • September 19, 2025</p>
                       </div>
                       <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>
                     </div>
