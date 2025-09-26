@@ -143,7 +143,8 @@ const requireTeacherRole = async (req: any, res: any, next: any) => {
 const requireSchoolAccess = async (req: any, res: any, next: any) => {
   try {
     // Development bypass - REQUIRES proper demo role selection
-    if (process.env.NODE_ENV === 'development') {
+    // PRODUCTION FIX: Only enable demo mode when explicitly configured
+    if (process.env.NODE_ENV === 'development' && process.env.DEMO_MODE === 'true') {
       const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
       const demoRole = req.headers['x-demo-role'];
       
@@ -6847,7 +6848,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUser(userId);
       
       // 🔧 DEVELOPMENT BYPASS: Allow admin access in development mode
-      if (process.env.NODE_ENV === 'development' && req.headers['x-session-id']) {
+      if (process.env.NODE_ENV === 'development' && process.env.DEMO_MODE === 'true' && req.headers['x-session-id']) {
         console.log('🔧 DEV BYPASS: Granting students consent dashboard access for demo user');
       } else if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
         return res.status(403).json({ 
@@ -6935,7 +6936,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUser(userId);
       
       // 🔧 DEVELOPMENT BYPASS: Allow admin access in development mode
-      if (process.env.NODE_ENV === 'development' && req.headers['x-session-id']) {
+      if (process.env.NODE_ENV === 'development' && process.env.DEMO_MODE === 'true' && req.headers['x-session-id']) {
         console.log('🔧 DEV BYPASS: Granting consent stats access for demo user');
       } else if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
         return res.status(403).json({ 
@@ -6984,7 +6985,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUser(userId);
       
       // 🔧 DEVELOPMENT BYPASS: Allow admin access in development mode
-      if (process.env.NODE_ENV === 'development' && req.headers['x-session-id']) {
+      if (process.env.NODE_ENV === 'development' && process.env.DEMO_MODE === 'true' && req.headers['x-session-id']) {
         console.log('🔧 DEV BYPASS: Granting expiring consents access for demo user');
       } else if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
         return res.status(403).json({ 
@@ -7490,7 +7491,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = await storage.getUser(userId);
       
       // 🔧 DEVELOPMENT BYPASS: Allow admin access in development mode
-      if (process.env.NODE_ENV === 'development' && req.headers['x-session-id']) {
+      if (process.env.NODE_ENV === 'development' && process.env.DEMO_MODE === 'true' && req.headers['x-session-id']) {
         console.log('🔧 DEV BYPASS: Granting renewals dashboard access for demo user');
       } else if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
         return res.status(403).json({ 
