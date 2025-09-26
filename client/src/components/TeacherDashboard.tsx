@@ -526,7 +526,7 @@ export function TeacherDashboard() {
                     <div className="flex justify-between items-start mb-3">
                       <div>
                         <h4 className="font-semibold text-lg">Senior Center Assistant</h4>
-                        <p className="text-sm text-gray-600">Jessica M. • 3.5 hours • September 20, 2025</p>
+                        <p className="text-sm text-gray-600">Emma Johnson • 3.0 hours • September 22, 2025</p>
                       </div>
                       <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>
                     </div>
@@ -541,7 +541,7 @@ export function TeacherDashboard() {
                     <div className="flex gap-2">
                       <Button size="sm" className="bg-green-600 hover:bg-green-700">
                         <CheckCircle className="w-4 h-4 mr-2" />
-                        Approve (Award 18 tokens)
+                        Approve (Award 15 tokens)
                       </Button>
                       <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700 border-red-300">
                         ❌ Request More Info
