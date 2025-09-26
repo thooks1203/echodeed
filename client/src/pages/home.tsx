@@ -326,9 +326,7 @@ export default function Home() {
     }
     
     return (
-      <TeacherDashboard 
-        teacherId="teacher-demo"
-      />
+      <TeacherDashboard />
     );
   }
   
