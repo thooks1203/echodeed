@@ -142,27 +142,32 @@ const requireTeacherRole = async (req: any, res: any, next: any) => {
 // 🔒 SECURITY: School Access Control Middleware
 const requireSchoolAccess = async (req: any, res: any, next: any) => {
   try {
-    // Development bypass - allow access with mock school data
+    // Development bypass - REQUIRES proper demo role selection
     if (process.env.NODE_ENV === 'development') {
       const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
+      const demoRole = req.headers['x-demo-role'];
+      
       console.log('🔧 DEBUG requireSchoolAccess:', { 
         nodeEnv: process.env.NODE_ENV, 
         sessionId,
+        demoRole,
         allHeaders: Object.keys(req.headers)
       });
       
-      if (sessionId) {
-        // Get the user's actual role from demo session - don't automatically grant admin!
-        const demoRole = req.headers['x-demo-role'] || 'student'; // Default to student, not admin
+      // CRITICAL: Only allow access if BOTH sessionId AND demoRole are provided
+      if (sessionId && demoRole && ['student', 'teacher', 'admin', 'parent'].includes(demoRole)) {
         console.log('✅ DEVELOPMENT BYPASS: Granting school access with role:', demoRole);
         req.userSchools = [{
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // BURLINGTON CHRISTIAN ACADEMY
           schoolName: 'Burlington Christian Academy',
-          role: demoRole // Use actual user role instead of forcing admin
+          role: demoRole
         }];
         req.primarySchoolId = 'bc016cad-fa89-44fb-aab0-76f82c574f78';
         return next();
       }
+      
+      // If in dev mode but missing demoRole, require authentication
+      console.log('❌ DEVELOPMENT: Missing demo role, requiring authentication');
     }
 
     if (!req.user?.claims?.sub) {

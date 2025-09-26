@@ -107,7 +107,10 @@ export default function Home() {
       // Use queryKey but append query params
       const url = params.toString() ? `${queryKey[0]}?${params}` : queryKey[0] as string;
       const response = await fetch(url, {
-        headers: { 'X-Session-ID': localStorage.getItem('echodeed_session') || 'demo-session' },
+        headers: { 
+          'X-Session-ID': localStorage.getItem('echodeed_session') || 'demo-session',
+          'X-Demo-Role': localStorage.getItem('echodeed_demo_role') || ''
+        },
         credentials: 'include'
       });
       const data = await response.json();
