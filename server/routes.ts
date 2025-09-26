@@ -9382,7 +9382,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get pending verifications for teachers/admins
-  app.get('/api/community-service/pending-verifications', requireTeacherRole, async (req: any, res) => {
+  app.get('/api/community-service/pending-verifications', requireSchoolAccess, async (req: any, res) => {
     try {
       const schoolId = req.query.schoolId as string;
       const verifierType = req.query.verifierType as string;
