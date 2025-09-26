@@ -133,31 +133,49 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
   if (process.env.NODE_ENV === 'development' && sessionId) {
     
-    // Use Emma Johnson's data for consistent demo experience
-    const demoUserId = DEMO_USER_STUDENT.id; // Emma Johnson's ID
+    // Get demo role from query params, headers, or User-Agent to determine role
+    const demoRole = req.query.demo_role || req.headers['x-demo-role'] || 
+                     (req.headers['user-agent']?.includes('Teacher') ? 'teacher' : 'student');
     
-    // Create mock user for smooth demo experience with Emma's data
+    let demoUser;
+    if (demoRole === 'teacher') {
+      demoUser = {
+        id: 'teacher-001',
+        name: 'Ms. Sarah Wilson', 
+        email: 'sarah.wilson@school.edu',
+        role: 'teacher',
+        schoolRole: 'teacher',
+        schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
+      };
+    } else {
+      // Default to Emma Johnson for student or any other role
+      demoUser = DEMO_USER_STUDENT;
+    }
+    
+    // Create mock user for smooth demo experience
     req.user = {
       claims: { 
-        sub: demoUserId,
-        email: DEMO_USER_STUDENT.email,
-        first_name: DEMO_USER_STUDENT.name.split(' ')[0], // 'Emma'
-        last_name: DEMO_USER_STUDENT.name.split(' ')[1], // 'Johnson'
-        role: DEMO_USER_STUDENT.role,
-        schoolRole: DEMO_USER_STUDENT.schoolRole,
-        schoolId: DEMO_USER_STUDENT.schoolId,
-        grade: DEMO_USER_STUDENT.grade
+        sub: demoUser.id,
+        email: demoUser.email,
+        first_name: demoUser.name.split(' ')[0],
+        last_name: demoUser.name.split(' ')[1] || '',
+        role: demoUser.role,
+        schoolRole: demoUser.schoolRole,
+        schoolId: demoUser.schoolId,
+        grade: demoUser.grade
       },
       expires_at: Math.floor(Date.now() / 1000) + 3600 // 1 hour from now
     };
     
-    // Ensure Emma Johnson exists in database
+    // Ensure demo user exists in database
     try {
       await storage.upsertUser({
-        id: demoUserId,
-        email: DEMO_USER_STUDENT.email,
-        firstName: DEMO_USER_STUDENT.name.split(' ')[0],
-        lastName: DEMO_USER_STUDENT.name.split(' ')[1]
+        id: demoUser.id,
+        email: demoUser.email,
+        firstName: demoUser.name.split(' ')[0],
+        lastName: demoUser.name.split(' ')[1] || '',
+        schoolRole: demoUser.schoolRole,
+        schoolId: demoUser.schoolId
       });
     } catch (error) {
       console.error('Failed to create demo user:', error);
