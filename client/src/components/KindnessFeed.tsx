@@ -26,6 +26,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/posts'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/tokens'] });
     }
   });
 
@@ -40,6 +41,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/posts'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/tokens'] });
     }
   });
 

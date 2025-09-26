@@ -5,7 +5,6 @@ import { AppHeader } from '@/components/AppHeader';
 import { FilterBar } from '@/components/FilterBar';
 import { KindnessFeed } from '@/components/KindnessFeed';
 import { PostDeedModal } from '@/components/PostDeedModal';
-import { FloatingActionButton } from '@/components/FloatingActionButton';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { WelcomeModal } from '@/components/WelcomeModal';
 import { SchoolsDashboard } from '@/components/SchoolsDashboard';
@@ -16,6 +15,7 @@ import { KindnessPost, KindnessCounter, UserTokens } from '@shared/schema';
 import { PostFilters, WebSocketMessage, TokenEarning } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { addSessionHeaders } from '@/lib/session';
 import { canAccessSchoolsDashboard } from '@/lib/roleUtils';
 import { StudentDashboard } from '@/components/StudentDashboard';
 import MentorDashboard from '@/pages/MentorDashboard';
@@ -121,7 +121,15 @@ export default function Home() {
   });
 
   const { data: tokens } = useQuery<UserTokens>({
-    queryKey: ['/api/tokens']
+    queryKey: ['/api/tokens'],
+    queryFn: async () => {
+      const response = await fetch('/api/tokens', {
+        headers: addSessionHeaders(),
+        credentials: 'include'
+      });
+      if (!response.ok) throw new Error('Failed to fetch tokens');
+      return response.json();
+    }
   });
 
   // WebSocket temporarily disabled for debugging
@@ -362,13 +370,25 @@ export default function Home() {
           onFilterChange={handleFilterChange}
         />
         
+        {/* Share Kindness Button - Positioned close to feed */}
+        <div className="px-4 py-3 bg-gradient-to-r from-emerald-500 to-cyan-600 border-b border-border">
+          <button
+            onClick={() => setIsPostModalOpen(true)}
+            className="w-full bg-white text-emerald-700 py-4 px-6 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3"
+            data-testid="button-share-kindness"
+          >
+            <span className="text-2xl">💝</span>
+            Share Your Act of Kindness
+            <span className="text-2xl">✨</span>
+          </button>
+        </div>
+        
         <KindnessFeed 
           posts={posts} 
           isLoading={postsLoading} 
         />
       </div>
       
-      <FloatingActionButton onClick={() => setIsPostModalOpen(true)} />
       <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       
       {/* Modals */}
