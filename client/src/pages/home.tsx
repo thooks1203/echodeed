@@ -390,6 +390,30 @@ export default function Home() {
         onClose={handleWelcomeClose}
       />
 
+      {/* TEST BUTTON - REMOVE AFTER TESTING */}
+      <button
+        onClick={() => {
+          console.log('🧪 TEST BUTTON CLICKED - Manually triggering sparks');
+          triggerSparks();
+        }}
+        style={{
+          position: 'fixed',
+          top: '10px',
+          right: '10px',
+          zIndex: 999999,
+          padding: '10px 20px',
+          backgroundColor: '#ff0000',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          fontSize: '16px',
+          fontWeight: 'bold'
+        }}
+        data-testid="test-sparks-button"
+      >
+        🧪 TEST SPARKS
+      </button>
+
       {/* Token earning notification */}
       {tokenEarning && (
         <div style={{
