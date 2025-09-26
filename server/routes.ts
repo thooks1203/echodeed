@@ -267,6 +267,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // CRITICAL FIX: Wire storage to app.locals for counselor middleware
   app.locals.storage = storage;
 
+  // Dev-only content filter testing endpoint (for development testing only)
+  if (process.env.NODE_ENV === 'development') {
+    app.get('/api/dev/content-filter', (req, res) => {
+      const text = req.query.text as string;
+      if (!text) {
+        return res.status(400).json({ error: 'text parameter required' });
+      }
+      
+      const result = contentFilter.isContentAppropriate(text, 'kindness');
+      res.json(result);
+    });
+  }
+
   // Auth routes - Get current user info
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
