@@ -144,11 +144,8 @@ export default function Home() {
   }, []);
 
   const handlePostSuccess = useCallback(() => {
-    console.log('🎆 POST SUCCESS - About to trigger sparks!');
-    console.log('🎆 triggerSparks function:', triggerSparks);
-    console.log('🎆 Calling triggerSparks now...');
-    triggerSparks(); // TRIGGER THE SPARKS!
-    console.log('🎆 triggerSparks called successfully!');
+    console.log('🎆 POST SUCCESS - Triggering kindness sparks!');
+    triggerSparks(); // TRIGGER THE BEAUTIFUL SPARKS!
     
     setIsPostModalOpen(false);
     toast({
@@ -387,29 +384,6 @@ export default function Home() {
         onClose={handleWelcomeClose}
       />
 
-      {/* TEST BUTTON - REMOVE AFTER TESTING */}
-      <button
-        onClick={() => {
-          console.log('🧪 TEST BUTTON CLICKED - Manually triggering sparks');
-          triggerSparks();
-        }}
-        style={{
-          position: 'fixed',
-          top: '10px',
-          right: '10px',
-          zIndex: 999999,
-          padding: '10px 20px',
-          backgroundColor: '#ff0000',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          fontSize: '16px',
-          fontWeight: 'bold'
-        }}
-        data-testid="test-sparks-button"
-      >
-        🧪 TEST SPARKS
-      </button>
 
       {/* Token earning notification */}
       {tokenEarning && (
