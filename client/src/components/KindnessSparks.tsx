@@ -28,8 +28,8 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
   // MASSIVE size for guaranteed visibility!
   const size = 120; // 120px - absolutely impossible to miss!
   
-  // Perfect 3-second duration for effective visibility 
-  const duration = 3; // 3 seconds - perfect timing for impact!
+  // Perfect 5-second duration for poster appreciation 
+  const duration = 5; // 5 seconds - gives time to appreciate the celebration!
   
   console.log(`🎆 SPARK ${id} CREATED at position:`, { startX, startY, endX, endY, windowSize: { width: window.innerWidth, height: window.innerHeight } });
   console.log(`🎆 SPARK ${id} STYLING:`, { color, size, duration });
@@ -46,8 +46,8 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
       animate={{
         x: endX - startX, // Use transform instead
         y: endY - startY, // Use transform instead  
-        opacity: [1, 1, 1, 0], // Stay bright for 2.5 seconds, quick fade at end
-        scale: [1, 1.3, 1.2, 0], // Nice size progression over 3 seconds
+        opacity: [1, 1, 1, 1, 0], // Stay bright for 4 seconds, fade in final 1 second
+        scale: [1, 1.3, 1.2, 1.2, 0], // Stay big for 4 seconds, shrink in final 1 second
         rotate: 360
       }}
       exit={{
@@ -58,7 +58,7 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
         duration,
         ease: "easeOut",
         opacity: {
-          times: [0, 0.1, 0.8, 1] // Visible for 2.4 seconds, fade in last 0.6 seconds
+          times: [0, 0.05, 0.8, 0.95, 1] // Bright for 4.75 seconds, gentle fade in last 0.25 seconds
         }
       }}
       onAnimationComplete={() => {
@@ -110,7 +110,7 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
       const cleanup = setTimeout(() => {
         console.log('🎆 FORCE CLEANUP - clearing all sparks');
         setSparks([]);
-      }, 5000); // 5 seconds - perfect cleanup timing
+      }, 7000); // 7 seconds - ensures sparks complete full animation
       
       return () => clearTimeout(cleanup);
     }
