@@ -285,6 +285,24 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
               maxLength={280}
               data-testid="input-deed-content"
             />
+            
+            {/* Privacy Notice */}
+            <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg">
+              <div className="flex items-start space-x-2">
+                <div className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+                  <Users className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-1">
+                    Keep It Anonymous
+                  </p>
+                  <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
+                    To protect everyone's privacy, please don't use specific names. Instead of "I helped Emma with math," try "I helped a classmate with math."
+                  </p>
+                </div>
+              </div>
+            </div>
+
             <div className="flex items-center justify-between mt-3 text-sm text-muted-foreground">
               <span>Characters: <span data-testid="text-char-count">{content.length}</span>/280</span>
               <div className="flex items-center space-x-2">
