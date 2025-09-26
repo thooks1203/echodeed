@@ -224,7 +224,7 @@ export function TeacherDashboard() {
             <div className="flex items-center gap-3">
               <Button
                 size="sm"
-                onClick={() => navigate('/app')}
+                onClick={() => navigate('/')}
                 className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                 data-testid="back-to-platform"
               >
