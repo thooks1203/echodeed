@@ -175,15 +175,14 @@ export function TeacherDashboard() {
 
   // Mutation for approving service hours
   const approveServiceHoursMutation = useMutation({
-    mutationFn: async ({ serviceLogId, tokensToAward }: { serviceLogId: string; tokensToAward: number }) => {
+    mutationFn: async ({ serviceLogId }: { serviceLogId: string }) => {
       return apiRequest('/api/community-service/verify', 'POST', {
         serviceLogId,
         verifierType: 'teacher',
-        verifierId: 'teacher-001', // Demo teacher ID
         verificationMethod: 'teacher_review',
         status: 'approved',
-        feedback: 'Service hours approved by teacher',
-        tokensAwarded: tokensToAward
+        feedback: 'Service hours approved by teacher'
+        // Remove tokensAwarded and verifierId - let backend compute from auth and service hours
       });
     },
     onSuccess: () => {
@@ -204,10 +203,12 @@ export function TeacherDashboard() {
     }
   });
 
-  const handleApproveServiceHours = (serviceLogId: string, hours: number) => {
-    const tokensToAward = Math.floor(hours * 5); // 5 tokens per hour
-    approveServiceHoursMutation.mutate({ serviceLogId, tokensToAward });
+  const handleApproveServiceHours = (serviceLogId: string) => {
+    approveServiceHoursMutation.mutate({ serviceLogId });
   };
+
+  // Calculate tokens for display (5 tokens per hour, rounded)
+  const calculateTokens = (hours: number) => Math.round(hours * 5);
 
   const stats = sampleClassroomStats;
   const students = filterNeedsEncouragement 
@@ -556,82 +557,63 @@ export function TeacherDashboard() {
                     <div className="animate-spin w-8 h-8 border-4 border-green-600 border-t-transparent rounded-full mx-auto" />
                     <p className="mt-2 text-gray-600">Loading pending service hours...</p>
                   </div>
-                ) : (
+                ) : pendingServiceHours.length > 0 ? (
                   <div className="space-y-4">
-                    {/* Mock data for demo - Emma's service hours */}
-                    <div className="border rounded-lg p-4 bg-yellow-50">
-                      <div className="flex justify-between items-start mb-3">
-                        <div>
-                          <h4 className="font-semibold text-lg">Food Bank Volunteer</h4>
-                          <p className="text-sm text-gray-600">Emma Johnson • 4.5 hours • September 19, 2025</p>
+                    {pendingServiceHours.map((serviceHour: any) => {
+                      const hours = parseFloat(serviceHour.hoursLogged?.toString() || '0');
+                      const tokens = calculateTokens(hours);
+                      const serviceDate = new Date(serviceHour.serviceDate).toLocaleDateString('en-US', { 
+                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+                      });
+                      
+                      return (
+                        <div key={serviceHour.id} className="border rounded-lg p-4 bg-yellow-50">
+                          <div className="flex justify-between items-start mb-3">
+                            <div>
+                              <h4 className="font-semibold text-lg">{serviceHour.serviceName}</h4>
+                              <p className="text-sm text-gray-600">
+                                {serviceHour.studentName || 'Emma Johnson'} • {hours} hours • {serviceDate}
+                              </p>
+                            </div>
+                            <Badge className="bg-yellow-100 text-yellow-800">{serviceHour.verificationStatus || 'Pending'}</Badge>
+                          </div>
+                          <p className="text-sm mb-3">
+                            <strong>Organization:</strong> {serviceHour.organizationName}<br />
+                            {serviceHour.contactPerson && (
+                              <><strong>Contact:</strong> {serviceHour.contactPerson} 
+                              {serviceHour.contactEmail && `(${serviceHour.contactEmail})`}<br /></>
+                            )}
+                            <strong>Description:</strong> {serviceHour.serviceDescription}
+                          </p>
+                          {serviceHour.studentReflection && (
+                            <p className="text-sm mb-4 italic">
+                              <strong>Student Reflection:</strong> "{serviceHour.studentReflection}"
+                            </p>
+                          )}
+                          <div className="flex gap-2">
+                            <Button 
+                              size="sm" 
+                              className="bg-green-600 hover:bg-green-700"
+                              onClick={() => handleApproveServiceHours(serviceHour.id)}
+                              disabled={approveServiceHoursMutation.isPending}
+                              data-testid={`button-approve-service-${serviceHour.id}`}
+                            >
+                              <CheckCircle className="w-4 h-4 mr-2" />
+                              {approveServiceHoursMutation.isPending ? 'Processing...' : `Approve (Award ${tokens} tokens)`}
+                            </Button>
+                            <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700 border-red-300">
+                              ❌ Request More Info
+                            </Button>
+                          </div>
                         </div>
-                        <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>
-                      </div>
-                      <p className="text-sm mb-3">
-                        <strong>Organization:</strong> Burlington Food Pantry<br />
-                        <strong>Contact:</strong> Ms. Rodriguez (rodriguez@burlingtonfood.org)<br />
-                        <strong>Description:</strong> Helped sort and package donated food items for families in need
-                      </p>
-                      <p className="text-sm mb-4 italic">
-                        <strong>Student Reflection:</strong> "It felt really good to help families get the food they need. I learned how much work goes into organizing donations!"
-                      </p>
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          className="bg-green-600 hover:bg-green-700"
-                          onClick={() => handleApproveServiceHours('847e5917-8545-4554-8709-cc835d29be40', 4.5)}
-                          disabled={approveServiceHoursMutation.isPending}
-                          data-testid="button-approve-service-1"
-                        >
-                          <CheckCircle className="w-4 h-4 mr-2" />
-                          {approveServiceHoursMutation.isPending ? 'Processing...' : 'Approve (Award 23 tokens)'}
-                        </Button>
-                        <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700 border-red-300">
-                          ❌ Request More Info
-                        </Button>
-                      </div>
-                    </div>
-
-                    <div className="border rounded-lg p-4 bg-yellow-50">
-                      <div className="flex justify-between items-start mb-3">
-                        <div>
-                          <h4 className="font-semibold text-lg">Senior Center Assistant</h4>
-                          <p className="text-sm text-gray-600">Emma Johnson • 3.0 hours • September 22, 2025</p>
-                        </div>
-                        <Badge className="bg-yellow-100 text-yellow-800">Pending</Badge>
-                      </div>
-                      <p className="text-sm mb-3">
-                        <strong>Organization:</strong> Burlington Senior Living Center<br />
-                        <strong>Contact:</strong> Ms. Martinez (martinez@burlingtonseniors.org)<br />
-                        <strong>Description:</strong> Helped serve lunch and played games with elderly residents
-                      </p>
-                      <p className="text-sm mb-4 italic">
-                        <strong>Student Reflection:</strong> "The residents had so many interesting stories to share! Mrs. Williams taught me how to play bridge."
-                      </p>
-                      <div className="flex gap-2">
-                        <Button 
-                          size="sm" 
-                          className="bg-green-600 hover:bg-green-700"
-                          onClick={() => handleApproveServiceHours('501f5b8b-5c63-4cb8-ad1c-35dee2ba0613', 3.0)}
-                          disabled={approveServiceHoursMutation.isPending}
-                          data-testid="button-approve-service-2"
-                        >
-                          <CheckCircle className="w-4 h-4 mr-2" />
-                          {approveServiceHoursMutation.isPending ? 'Processing...' : 'Approve (Award 15 tokens)'}
-                        </Button>
-                        <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700 border-red-300">
-                          ❌ Request More Info
-                        </Button>
-                      </div>
-                    </div>
-
-                    {pendingServiceHours.length === 0 && (
-                      <div className="text-center py-8 text-gray-500">
-                        <CheckCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-                        <p>All service hours have been verified.</p>
-                        <p className="text-sm">Great job keeping up with verifications!</p>
-                      </div>
-                    )}
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <CheckCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                    <p>All service hours have been verified.</p>
+                    <p className="text-sm">Great job keeping up with verifications!</p>
                   </div>
                 )}
               </CardContent>
