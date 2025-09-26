@@ -5167,7 +5167,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           id: 'msg-weekly-motivation',
           subject: 'Weekly Team Motivation Boost 🚀',
           content: 'Hey team! Just wanted to remind you how amazing you all are. This week, take a moment to celebrate the small wins and remember that your dedication to wellness and kindness is making a real difference in our workplace culture. Keep up the incredible work!',
-          senderName: 'Sarah Chen',
+          senderName: 'Emma Johnson',
           senderAvatar: '/avatars/sarah.jpg',
           recipientType: 'team',
           recipients: ['marketing-team'],
