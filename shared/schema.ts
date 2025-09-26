@@ -54,6 +54,7 @@ export const kindnessPosts = pgTable("kindness_posts", {
   city: text("city"),
   state: text("state"), 
   country: text("country"),
+  emojis: text("emojis").array().default([]).notNull(), // Custom kindness emojis (max 3)
   heartsCount: integer("hearts_count").default(0).notNull(),
   echoesCount: integer("echoes_count").default(0).notNull(),
   isAnonymous: integer("is_anonymous").default(1).notNull(), // 1 = anonymous, 0 = show user
@@ -236,6 +237,12 @@ export const corporateAnalytics = pgTable("corporate_analytics", {
 export const insertKindnessPostSchema = createInsertSchema(kindnessPosts).omit({
   id: true,
   createdAt: true,
+}).extend({
+  emojis: z.array(z.enum([
+    'heart_hand', 'spark_heart', 'high_five', 'thank_you_note', 'recycle_leaf', 'mentor_crown',
+    'inclusion_rainbow', 'community_hands', 'positivity_sun', 'study_buddy', 'clean_up_leaf',
+    'kind_words_bubble', 'locker_note', 'bus_seat', 'cafeteria_tray', 'tree_plant'
+  ])).max(3).default([])
 });
 
 export const insertKindnessCounterSchema = createInsertSchema(kindnessCounter).omit({
