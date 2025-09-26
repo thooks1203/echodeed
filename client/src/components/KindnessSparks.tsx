@@ -19,8 +19,6 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
   const endX = centerX + (Math.random() - 0.5) * 200; // End near center
   const endY = 50; // End near top
   
-  console.log(`🎆 Spark ${id} position: start(${startX}, ${startY}) -> end(${endX}, ${endY})`);
-  
   // Random icon and color
   const icons = [Heart, Sparkles, Star];
   const colors = ['#ff1744', '#00e676', '#2196f3', '#ff9800', '#e91e63', '#9c27b0', '#ffeb3b']; // Much brighter colors
@@ -32,6 +30,9 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
   
   // VERY slow for guaranteed visibility 
   const duration = 8; // 8 seconds - super slow and visible
+  
+  console.log(`🎆 SPARK ${id} CREATED at position:`, { startX, startY, endX, endY, windowSize: { width: window.innerWidth, height: window.innerHeight } });
+  console.log(`🎆 SPARK ${id} STYLING:`, { color, size, duration });
   
   return (
     <motion.div
@@ -81,7 +82,11 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
         borderRadius: '50%',
         border: `4px solid ${color}`,
         boxShadow: `0 0 40px ${color}, 0 0 80px ${color}, 0 0 120px ${color}99`, // TRIPLE glow effect!
-        backdropFilter: 'blur(4px)'
+        backdropFilter: 'blur(4px)',
+        // EMERGENCY DEBUG STYLING - MAKE VISIBLE NO MATTER WHAT
+        outline: '5px solid red !important',
+        opacity: 1,
+        visibility: 'visible'
       }}
       data-testid={`kindness-spark-${id}`}
     >
@@ -114,6 +119,8 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
   useEffect(() => {
     if (isActive) {
       console.log('🎆 KindnessSparks effect triggered, isActive:', isActive);
+      console.log('🎆 Document body exists:', !!document.body);
+      console.log('🎆 Window dimensions:', { width: window.innerWidth, height: window.innerHeight });
       
       // Create 8-12 sparks
       const numSparks = 8 + Math.floor(Math.random() * 5);
