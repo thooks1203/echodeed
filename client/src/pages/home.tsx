@@ -327,8 +327,7 @@ export default function Home() {
     
     return (
       <TeacherDashboard 
-        onNavigateToTab={navigateToTab} 
-        activeBottomTab={activeTab}
+        teacherId="teacher-demo"
       />
     );
   }
