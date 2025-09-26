@@ -3598,8 +3598,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get offer and partner details
-      const offer = await storage.getRewardOffer(redemption.offerId);
-      const partner = await storage.getRewardPartner(redemption.partnerId);
+      const offers = await storage.getRewardOffers({});
+      const offer = offers.find(o => o.id === redemption.offerId);
+      const partners = await storage.getRewardPartners({});
+      const partner = partners.find(p => p.id === redemption.partnerId);
       
       if (!offer || !partner) {
         return res.status(404).json({ message: 'Offer or partner not found' });
@@ -3657,7 +3659,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       // Get partner details to verify PIN
-      const partner = await storage.getRewardPartner(redemption.partnerId);
+      const partners = await storage.getRewardPartners({});
+      const partner = partners.find(p => p.id === redemption.partnerId);
       
       if (!partner) {
         return res.status(404).json({ message: 'Partner not found' });
@@ -3680,7 +3683,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       // Get updated details for response
-      const offer = await storage.getRewardOffer(redemption.offerId);
+      const offers = await storage.getRewardOffers({});
+      const offer = offers.find(o => o.id === redemption.offerId);
       const user = await storage.getUser(redemption.userId);
       
       res.json({
