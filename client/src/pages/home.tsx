@@ -384,6 +384,80 @@ export default function Home() {
         onClose={handleWelcomeClose}
       />
 
+      {/* EMERGENCY DOM TEST BUTTON */}
+      <button
+        onClick={() => {
+          console.log('🚨 EMERGENCY DOM TEST CLICKED');
+          
+          // Test 1: Remove any existing test element
+          const existing = document.getElementById('dom-test-element');
+          if (existing) existing.remove();
+          
+          // Test 2: Create simple red square directly in DOM
+          const testDiv = document.createElement('div');
+          testDiv.id = 'dom-test-element';
+          testDiv.innerHTML = 'DOM TEST WORKS!';
+          testDiv.style.cssText = `
+            position: fixed !important;
+            top: 200px !important;
+            left: 200px !important;
+            width: 300px !important;
+            height: 100px !important;
+            background: red !important;
+            color: white !important;
+            font-size: 20px !important;
+            font-weight: bold !important;
+            z-index: 999999 !important;
+            display: flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            border: 5px solid black !important;
+          `;
+          document.body.appendChild(testDiv);
+          console.log('🚨 Red square added to DOM');
+          
+          // Test 3: Also trigger sparks for comparison
+          console.log('🚨 Now triggering sparks...');
+          triggerSparks();
+          
+          // Test 4: After 2 seconds, inspect the DOM
+          setTimeout(() => {
+            console.log('🚨 DOM INSPECTION:');
+            console.log('🚨 document.body children count:', document.body.children.length);
+            console.log('🚨 Elements with kindness-spark data-testid:', document.querySelectorAll('[data-testid*="kindness-spark"]').length);
+            
+            const sparkElements = document.querySelectorAll('[data-testid*="kindness-spark"]');
+            sparkElements.forEach((el, i) => {
+              const rect = el.getBoundingClientRect();
+              const computed = window.getComputedStyle(el);
+              console.log(`🚨 SPARK ELEMENT ${i}:`, {
+                element: el,
+                position: { top: rect.top, left: rect.left, width: rect.width, height: rect.height },
+                visibility: computed.visibility,
+                opacity: computed.opacity,
+                display: computed.display,
+                zIndex: computed.zIndex,
+                backgroundColor: computed.backgroundColor
+              });
+            });
+          }, 2000);
+        }}
+        style={{
+          position: 'fixed',
+          top: '10px',
+          right: '10px',
+          zIndex: 999999,
+          padding: '8px 16px',
+          backgroundColor: '#ff0000',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          fontSize: '12px',
+          fontWeight: 'bold'
+        }}
+      >
+        🚨 DOM TEST
+      </button>
 
       {/* Token earning notification */}
       {tokenEarning && (
