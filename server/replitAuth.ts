@@ -7,6 +7,7 @@ import type { Express, RequestHandler } from "express";
 import memoize from "memoizee";
 import connectPg from "connect-pg-simple";
 import { storage } from "./storage";
+import { DEMO_USER_STUDENT } from "@shared/demoConfig";
 
 if (!process.env.REPLIT_DOMAINS) {
   throw new Error("Environment variable REPLIT_DOMAINS not provided");
@@ -132,29 +133,31 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
   const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
   if (process.env.NODE_ENV === 'development' && sessionId) {
     
-    // Use Sarah Chen's actual user ID for demo consistency
-    const demoUserId = 'eeea79c7-114d-4d7d-8d16-b58cd7887c21'; // Sarah Chen's ID
+    // Use Emma Johnson's data for consistent demo experience
+    const demoUserId = DEMO_USER_STUDENT.id; // Emma Johnson's ID
     
-    // Create mock user for smooth demo experience with Sarah's data
+    // Create mock user for smooth demo experience with Emma's data
     req.user = {
       claims: { 
         sub: demoUserId,
-        email: 'sarah@bca.edu',
-        first_name: 'Sarah',
-        last_name: 'Chen',
-        role: 'student',
-        schoolRole: 'student'
+        email: DEMO_USER_STUDENT.email,
+        first_name: DEMO_USER_STUDENT.name.split(' ')[0], // 'Emma'
+        last_name: DEMO_USER_STUDENT.name.split(' ')[1], // 'Johnson'
+        role: DEMO_USER_STUDENT.role,
+        schoolRole: DEMO_USER_STUDENT.schoolRole,
+        schoolId: DEMO_USER_STUDENT.schoolId,
+        grade: DEMO_USER_STUDENT.grade
       },
       expires_at: Math.floor(Date.now() / 1000) + 3600 // 1 hour from now
     };
     
-    // Ensure Sarah Chen exists in database (already created during init)
+    // Ensure Emma Johnson exists in database
     try {
       await storage.upsertUser({
         id: demoUserId,
-        email: 'sarah@bca.edu',
-        firstName: 'Sarah',
-        lastName: 'Chen'
+        email: DEMO_USER_STUDENT.email,
+        firstName: DEMO_USER_STUDENT.name.split(' ')[0],
+        lastName: DEMO_USER_STUDENT.name.split(' ')[1]
       });
     } catch (error) {
       console.error('Failed to create demo user:', error);
