@@ -160,7 +160,7 @@ export function TeacherDashboard() {
     queryKey: ['/api/community-service/pending-verifications'],
     queryFn: async () => {
       try {
-        const response = await fetch('/api/community-service/pending-verifications?schoolId=bc016cad-fa89-44fb-aab0-76f82c574f78&verifierType=teacher');
+        const response = await apiRequest('GET', '/api/community-service/pending-verifications?schoolId=bc016cad-fa89-44fb-aab0-76f82c574f78&verifierType=teacher');
         if (!response.ok) {
           console.log('Service hours API not available, using mock data');
           return [];
