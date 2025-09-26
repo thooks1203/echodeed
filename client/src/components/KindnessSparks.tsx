@@ -130,12 +130,24 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
       setSparks(newSparks);
       setSparkCounter(prev => prev + numSparks);
       
-      onComplete?.();
+      // ✅ DON'T call onComplete immediately! Let the sparks animate first!
+      // onComplete will be called when all sparks finish their animations
     }
   }, [isActive]);
 
   const handleSparkComplete = (sparkId: number) => {
-    setSparks(prev => prev.filter(id => id !== sparkId));
+    setSparks(prev => {
+      const remaining = prev.filter(id => id !== sparkId);
+      console.log(`🎆 Spark ${sparkId} completed. Remaining: ${remaining.length}`);
+      
+      // If this was the last spark, call onComplete
+      if (remaining.length === 0) {
+        console.log('🎆 All sparks completed! Calling onComplete...');
+        setTimeout(() => onComplete?.(), 100); // Small delay to ensure cleanup
+      }
+      
+      return remaining;
+    });
   };
 
   // Use React Portal to render directly to document.body to escape any clipping containers
