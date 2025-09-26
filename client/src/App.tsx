@@ -7,7 +7,7 @@ import Home from "@/pages/home";
 import AdminDashboard from "@/pages/AdminDashboard";
 import ParentDashboard from "@/pages/ParentDashboard";
 import RewardsPage from "@/pages/rewards";
-import TeacherDashboard from "@/components/TeacherDashboard";
+import { TeacherDashboard } from "@/components/TeacherDashboard";
 import { LandingPage } from "@/components/landing-page";
 import PWAInstall from "@/components/PWAInstall";
 import WellnessCheckInPage from "@/pages/wellness-checkin";
