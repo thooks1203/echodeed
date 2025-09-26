@@ -386,32 +386,32 @@ export async function initializeSampleData() {
     log(`✓ Added ${samplePosts.length} sample posts`);
     log(`✓ Counter will reflect actual post count`);
 
-    // Initialize sample community service hours for Sarah Chen (authenticated student user)
+    // Initialize sample community service hours for Emma Johnson (primary demo student)
     try {
       const { CommunityServiceEngine } = await import('./services/communityServiceEngine');
       const serviceEngine = new CommunityServiceEngine();
       
-      // Use the actual authenticated student user ID instead of hardcoded ID
-      const studentUserId = 'eeea79c7-114d-4d7d-8d16-b58cd7887c21'; // Sarah Chen's actual auth ID
+      // Use Emma Johnson's ID from parent dashboard for consistency
+      const studentUserId = 'student-001'; // Emma Johnson's ID
       
       // First, ensure the user exists in the database
       const existingUser = await storage.getUser(studentUserId);
       if (!existingUser) {
-        log('👤 Creating database record for Sarah Chen...');
+        log('👤 Creating database record for Emma Johnson...');
         await storage.upsertUser({
           id: studentUserId,
-          firstName: 'Sarah',
-          lastName: 'Chen',
-          email: 'sarah@bca.edu'
+          firstName: 'Emma',
+          lastName: 'Johnson',
+          email: 'emma.johnson@bca.edu'
         });
-        log('✅ Created user record for Sarah Chen');
+        log('✅ Created user record for Emma Johnson');
       }
       
-      // Check if Sarah Chen already has service hours
+      // Check if Emma Johnson already has service hours
       const existingServiceHours = await serviceEngine.getStudentServiceLogs(studentUserId, 1);
       
       // FORCE RE-CREATION: Always create fresh service hours for demo
-      log('🏥 Force creating fresh community service hours for Sarah Chen...');
+      log('🏥 Force creating fresh community service hours for Emma Johnson...');
       
       // Delete any existing service hours for this user to ensure clean demo data
       try {
@@ -458,8 +458,8 @@ export async function initializeSampleData() {
           photoEvidence: undefined
         });
 
-      log('✅ Force created fresh community service hours for Sarah Chen');
-      log('📊 Sarah Chen now has 7.5 total service hours (4.5 + 3.0)');
+      log('✅ Force created fresh community service hours for Emma Johnson');
+      log('📊 Emma Johnson now has 7.5 total service hours (4.5 + 3.0)');
     } catch (error: any) {
       log('⚠️ Could not initialize community service hours:', error.message || error);
     }

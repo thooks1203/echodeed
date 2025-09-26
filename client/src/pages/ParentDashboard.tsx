@@ -92,9 +92,9 @@ interface LinkedStudent {
 
 // Service Hours Section Component - Parent view of child's community service
 function ServiceHoursSection() {
-  // Demo parent viewing child's service hours (Sarah Chen is the primary demo child)
+  // Demo parent viewing child's service hours (Emma Johnson is the primary demo child)
   const { data: serviceData, isLoading: serviceLoading } = useQuery({
-    queryKey: ['/api/community-service/parent', 'demo-parent', 'child', 'eeea79c7-114d-4d7d-8d16-b58cd7887c21'],
+    queryKey: ['/api/community-service/parent', 'demo-parent', 'child', 'student-001'],
     enabled: true
   });
 
