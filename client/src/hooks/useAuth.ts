@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { SchoolRole } from "@shared/schema";
+import { DEMO_USER_STUDENT } from "@shared/demoConfig";
 
 interface AuthUser {
   id: string;
@@ -13,16 +14,12 @@ interface AuthUser {
 // Mock user data for different roles (for development/testing)
 const MOCK_USERS: Record<string, AuthUser> = {
   student: {
-    id: 'student-' + (sessionStorage.getItem('echodeed_student_id') || (() => {
-      const uniqueId = 'student-' + Date.now().toString(36) + Math.random().toString(36).substr(2);
-      sessionStorage.setItem('echodeed_student_id', uniqueId);
-      return uniqueId;
-    })()),
-    name: 'Emma Johnson',
-    email: 'emma.johnson@bca.edu',
-    schoolRole: 'student',
-    schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Burlington Christian Academy
-    grade: '6'
+    id: DEMO_USER_STUDENT.id,
+    name: DEMO_USER_STUDENT.name,
+    email: DEMO_USER_STUDENT.email,
+    schoolRole: DEMO_USER_STUDENT.schoolRole as SchoolRole,
+    schoolId: DEMO_USER_STUDENT.schoolId,
+    grade: DEMO_USER_STUDENT.grade
   },
   teacher: {
     id: 'teacher-001', 
