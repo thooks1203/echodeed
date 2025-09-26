@@ -304,8 +304,8 @@ export const DEMO_USERS = {
     role: 'student',
     schoolRole: 'student',
     schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // BCA
-    grade: '6',
-    title: '6th Grade Student'
+    grade: '9',
+    title: '9th Grade Student'
   },
   admin: {
     name: 'Sarah Henderson',

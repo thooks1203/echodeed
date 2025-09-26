@@ -137,7 +137,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Stayed after school to help Mrs. Johnson clean up the art room. Teamwork makes everything better! 🎨",
+        content: "Stayed after school to help Mrs. Smith clean up the art room. Teamwork makes everything better! 🎨",
         category: "Helping Others",
         location: "Elon, North Carolina",
         city: "Elon",

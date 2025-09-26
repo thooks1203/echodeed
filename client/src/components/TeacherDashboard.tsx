@@ -236,7 +236,7 @@ export function TeacherDashboard() {
                   📚 Teacher Dashboard
                 </h1>
                 <p className="text-gray-600">
-                  Mrs. Johnson's 9th Grade Class • Character Education & Kindness Tracking
+                  Mrs. Smith's 9th Grade Class • Character Education & Kindness Tracking
                 </p>
               </div>
             </div>

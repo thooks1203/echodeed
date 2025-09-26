@@ -265,10 +265,10 @@ export default function Home() {
             <div className="space-y-3">
               <div className="text-sm font-bold text-gray-700 text-center mb-3">Want to try someone else? Click below!</div>
               {[
-                { role: 'student', name: 'Emma Johnson', desc: '6th Grade Student', emoji: '👩‍🎓' },
+                { role: 'student', name: 'Emma Johnson', desc: '9th Grade Student', emoji: '👩‍🎓' },
                 { role: 'teacher', name: 'Ms. Wilson', desc: 'Math Teacher', emoji: '👩‍🏫' },
                 { role: 'admin', name: 'Dr. Brown', desc: 'Principal', emoji: '👨‍💼' },
-                { role: 'parent', name: 'Mrs. Johnson', desc: 'Parent', emoji: '👩‍👧' }
+                { role: 'parent', name: 'Mrs. Smith', desc: 'Parent', emoji: '👩‍👧' }
               ].map((roleInfo) => (
                 <button
                   key={roleInfo.role}
