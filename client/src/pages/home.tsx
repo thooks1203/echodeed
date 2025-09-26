@@ -69,21 +69,9 @@ export default function Home() {
       // Remove the tab parameter from URL to keep it clean
       window.history.replaceState({}, '', window.location.pathname);
     } else {
-      // Set default tab based on role if no URL param
-      if (user?.schoolRole === 'admin') {
-        setActiveTab('schools'); // Only admins see district data
-      } else if (user?.schoolRole === 'teacher') {
-        setActiveTab('teacher-dashboard'); // Teachers get their own dashboard
-      } else if (user?.schoolRole === 'student') {
-        setActiveTab('feed');
-      } else if (user?.schoolRole === 'parent') {
-        // Redirect parents to their dedicated dashboard
-        window.location.href = '/parent';
-        return;
-      } else {
-        // Default to feed for all users (including when user is loading)
-        setActiveTab('feed');
-      }
+      // When navigating to /app, always show feed (main platform) regardless of role
+      // This allows the "Back to Platform" button to work properly for teachers
+      setActiveTab('feed');
     }
   }, [user, navigate, isAuthenticated]);
 
