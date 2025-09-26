@@ -18,11 +18,11 @@ const MOCK_USERS: Record<string, AuthUser> = {
       sessionStorage.setItem('echodeed_student_id', uniqueId);
       return uniqueId;
     })()),
-    name: 'Sarah Chen',
-    email: 'sarah@techflow.com',
+    name: 'Emma Johnson',
+    email: 'emma.johnson@bca.edu',
     schoolRole: 'student',
     schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Burlington Christian Academy
-    grade: '7'
+    grade: '6'
   },
   teacher: {
     id: 'teacher-001', 
@@ -84,7 +84,7 @@ export function switchDemoRole(role: SchoolRole) {
 // Get available demo roles for testing
 export function getDemoRoles() {
   return [
-    { role: 'student', label: 'Student (Emma)', description: 'Limited access - can only see own data' },
+    { role: 'student', label: 'Student (Emma Johnson)', description: 'Limited access - can only see own data' },
     { role: 'teacher', label: 'Teacher (Ms. Wilson)', description: 'Can access classroom tools and some school data' },
     { role: 'admin', label: 'Admin (Dr. Brown)', description: 'Full access to school management dashboard' },
     { role: 'parent', label: 'Parent (Mrs. Johnson)', description: 'Track children\'s kindness journey and approve activities' }
