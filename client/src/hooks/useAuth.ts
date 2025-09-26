@@ -61,8 +61,9 @@ export function useAuth() {
     return demoUsers[storedRole] || null;
   };
 
-  // Use real user if available, otherwise fallback to demo user in development
-  const finalUser = user || (error ? getDemoUser() : null);
+  // Use real user if available, otherwise always fallback to demo user
+  const demo = getDemoUser();
+  const finalUser = user ?? demo;
 
   return {
     user: finalUser,
@@ -76,16 +77,17 @@ export function useAuth() {
   };
 }
 
-// Demo utility functions (maintained for development compatibility)
+// Demo utility functions (works in both development and production)
 export function switchDemoRole(role: SchoolRole) {
-  // In production, redirect to login
-  if (import.meta.env.NODE_ENV === 'production') {
-    window.location.href = '/api/login';
-    return;
+  // Always set demo role and session for educational demo purposes
+  localStorage.setItem('echodeed_demo_role', role);
+  
+  // Ensure session exists for API calls
+  if (!localStorage.getItem('echodeed_session')) {
+    localStorage.setItem('echodeed_session', 'demo-session');
   }
   
-  // In development, maintain localStorage behavior for testing
-  localStorage.setItem('echodeed_demo_role', role);
+  // Reload to apply new role
   window.location.reload();
 }
 
