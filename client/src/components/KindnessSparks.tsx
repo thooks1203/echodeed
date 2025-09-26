@@ -56,10 +56,18 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
       }}
       transition={{
         duration,
-        ease: "easeOut",
-        opacity: {
-          times: [0, 0.05, 0.8, 0.95, 1] // Bright for 4.75 seconds, gentle fade in last 0.25 seconds
-        }
+        ease: "linear",
+        opacity: { 
+          duration, // CRITICAL: Explicitly set duration for opacity
+          times: [0, 0.05, 0.8, 0.95, 1] 
+        },
+        scale: { 
+          duration, // CRITICAL: Explicitly set duration for scale
+          times: [0, 0.8, 0.95, 1] 
+        },
+        x: { duration }, // CRITICAL: Explicitly set duration for x movement
+        y: { duration }, // CRITICAL: Explicitly set duration for y movement
+        rotate: { duration } // CRITICAL: Explicitly set duration for rotation
       }}
       onAnimationComplete={() => {
         console.log(`🎆 Spark ${id} animation completed - removing`);
@@ -110,7 +118,7 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
       const cleanup = setTimeout(() => {
         console.log('🎆 FORCE CLEANUP - clearing all sparks');
         setSparks([]);
-      }, 7000); // 7 seconds - ensures sparks complete full animation
+      }, 7000); // 7 seconds - ensures 5s animation + 2s buffer
       
       return () => clearTimeout(cleanup);
     }
