@@ -612,7 +612,7 @@ export function TeacherDashboard() {
                         <Button 
                           size="sm" 
                           className="bg-green-600 hover:bg-green-700"
-                          onClick={() => handleApproveServiceHours('501f5b8b-5c63-4cb8-ad1c-35dee2ba0613', 3.0)
+                          onClick={() => handleApproveServiceHours('501f5b8b-5c63-4cb8-ad1c-35dee2ba0613', 3.0)}
                           disabled={approveServiceHoursMutation.isPending}
                           data-testid="button-approve-service-2"
                         >
