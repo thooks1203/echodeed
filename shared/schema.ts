@@ -870,7 +870,7 @@ export const parentalConsentRequests = pgTable("parental_consent_requests", {
 });
 
 // 🛡️ ENHANCED COPPA COMPLIANCE - IMMUTABLE CONSENT RECORDS
-export const parentalConsentRecords = pgTable("parental_consent_records", {
+export const parentalConsentRecords: any = pgTable("parental_consent_records", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   // Linkage
   studentAccountId: varchar("student_account_id").notNull().references(() => studentAccounts.id),
