@@ -55,6 +55,12 @@ export default function Home() {
 
   // Handle URL parameters for tab navigation and role-based defaults
   useEffect(() => {
+    // If user is not authenticated, always show sign-in screen
+    if (!isAuthenticated) {
+      setActiveTab('sign-in');
+      return;
+    }
+
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
     
@@ -79,7 +85,7 @@ export default function Home() {
         setActiveTab('feed');
       }
     }
-  }, [user, navigate]);
+  }, [user, navigate, isAuthenticated]);
 
   // Guard against unauthorized access to schools dashboard
   useEffect(() => {
@@ -249,21 +255,18 @@ export default function Home() {
         />
         <div className="p-6 max-w-md mx-auto">
           <div className="bg-white rounded-xl shadow-lg p-6 border-4 border-blue-200">
-            <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">👤 Who Are You?</h2>
+            <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">🔐 Please Sign In</h2>
             
-            <div className="bg-gradient-to-r from-green-100 to-blue-100 p-4 rounded-lg mb-6 border-2 border-green-300">
+            <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-4 rounded-lg mb-6 border-2 border-blue-300">
               <div className="text-center">
-                <div className="text-lg font-bold text-gray-800 mb-2">🎉 You're signed in as:</div>
-                <div className="text-xl font-black text-blue-600">{user?.name || 'User'}</div>
-                <div className="text-sm text-gray-600 mt-1">{user?.email || 'No email'}</div>
-                <div className="inline-block px-3 py-1 mt-2 text-sm font-bold bg-blue-200 text-blue-800 rounded-full">
-                  {user?.schoolRole?.toUpperCase() || 'STUDENT'}
-                </div>
+                <div className="text-lg font-bold text-gray-800 mb-2">🏫 Burlington Christian Academy</div>
+                <div className="text-sm text-gray-600">Character Education Demo</div>
+                <div className="text-xs text-gray-500 mt-1">Select your role to access the platform</div>
               </div>
             </div>
 
             <div className="space-y-3">
-              <div className="text-sm font-bold text-gray-700 text-center mb-3">Want to try someone else? Click below!</div>
+              <div className="text-sm font-bold text-gray-700 text-center mb-3">👤 Who are you? Select your role:</div>
               {[
                 { role: 'student', name: 'Emma Johnson', desc: '9th Grade Student', emoji: '👩‍🎓' },
                 { role: 'teacher', name: 'Ms. Wilson', desc: 'Math Teacher', emoji: '👩‍🏫' },
@@ -276,11 +279,7 @@ export default function Home() {
                     localStorage.setItem('echodeed_demo_role', roleInfo.role);
                     window.location.reload();
                   }}
-                  className={`w-full p-4 text-left rounded-lg border-3 transition-all hover:scale-105 ${
-                    user?.schoolRole === roleInfo.role 
-                      ? 'bg-yellow-100 border-yellow-400 shadow-lg' 
-                      : 'bg-gray-50 border-gray-300 hover:bg-blue-50 hover:border-blue-400'
-                  }`}
+                  className="w-full p-4 text-left rounded-lg border-3 transition-all hover:scale-105 bg-white border-gray-300 hover:bg-blue-50 hover:border-blue-400 shadow-sm hover:shadow-md"
                   data-testid={`sign-in-as-${roleInfo.role}`}
                 >
                   <div className="flex items-center gap-3">
@@ -289,18 +288,16 @@ export default function Home() {
                       <div className="font-bold text-gray-800">{roleInfo.name}</div>
                       <div className="text-sm text-gray-600">{roleInfo.desc}</div>
                     </div>
-                    {user?.schoolRole === roleInfo.role && (
-                      <div className="ml-auto text-green-600 font-bold">✓ Current</div>
-                    )}
+                    <div className="ml-auto text-blue-600 font-bold">→</div>
                   </div>
                 </button>
               ))}
             </div>
 
-            <div className="mt-6 p-3 bg-blue-50 rounded-lg border-2 border-blue-200">
-              <div className="text-center text-sm text-blue-800">
-                <div className="font-bold">🏫 Burlington Christian Academy</div>
-                <div>Character Education Demo</div>
+            <div className="mt-6 p-3 bg-green-50 rounded-lg border-2 border-green-200">
+              <div className="text-center text-sm text-green-800">
+                <div className="font-bold">🔒 Demo Mode Active</div>
+                <div>Select any role to explore the platform</div>
               </div>
             </div>
           </div>

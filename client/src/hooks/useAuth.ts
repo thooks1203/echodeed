@@ -50,19 +50,18 @@ function getCurrentMockUser(): AuthUser | null {
   if (storedRole && MOCK_USERS[storedRole]) {
     return MOCK_USERS[storedRole];
   }
-  // AUTO-SET STUDENT ROLE FOR DEMO if no role is stored
-  localStorage.setItem('echodeed_demo_role', 'student');
-  return MOCK_USERS['student'];
+  // Return null if no role is selected - user must sign in first
+  return null;
 }
 
 export function useAuth() {
-  // Use mock data for role-based testing - always authenticated in demo
+  // Use mock data for role-based testing - require explicit role selection
   const mockUser = getCurrentMockUser();
 
   return {
     user: mockUser,
     isLoading: false,
-    isAuthenticated: true, // Always authenticated in demo mode
+    isAuthenticated: !!mockUser, // Only authenticated if user has selected a role
     // Helper methods for role checking
     isStudent: mockUser?.schoolRole === 'student',
     isTeacher: mockUser?.schoolRole === 'teacher',
