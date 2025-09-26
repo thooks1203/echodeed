@@ -370,16 +370,23 @@ export default function Home() {
           onFilterChange={handleFilterChange}
         />
         
-        {/* Share Kindness Button - Positioned close to feed */}
-        <div className="px-4 py-3 bg-gradient-to-r from-emerald-500 to-cyan-600 border-b border-border">
+        {/* Share Kindness Button - Enhanced to stand out more */}
+        <div className="px-4 py-4 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 border-b border-border relative">
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 animate-pulse opacity-75"></div>
           <button
             onClick={() => setIsPostModalOpen(true)}
-            className="w-full bg-white text-emerald-700 py-4 px-6 rounded-2xl font-bold text-lg shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105 flex items-center justify-center gap-3"
+            className="relative w-full bg-gradient-to-r from-white to-yellow-50 text-purple-700 py-6 px-8 rounded-3xl font-black text-xl shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex items-center justify-center gap-4 border-4 border-white/50"
             data-testid="button-share-kindness"
+            style={{
+              background: 'linear-gradient(135deg, #ffffff 0%, #fef3c7 50%, #fde68a 100%)',
+              boxShadow: '0 20px 40px rgba(168, 85, 247, 0.4), 0 8px 16px rgba(236, 72, 153, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.8)'
+            }}
           >
-            <span className="text-2xl">💝</span>
-            Share Your Act of Kindness
-            <span className="text-2xl">✨</span>
+            <span className="text-3xl animate-bounce">🌟</span>
+            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent font-black tracking-wide">
+              SHARE YOUR KINDNESS
+            </span>
+            <span className="text-3xl animate-bounce" style={{ animationDelay: '0.1s' }}>✨</span>
           </button>
         </div>
         
