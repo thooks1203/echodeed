@@ -28,8 +28,8 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
   // MASSIVE size for guaranteed visibility!
   const size = 120; // 120px - absolutely impossible to miss!
   
-  // VERY slow for guaranteed visibility 
-  const duration = 8; // 8 seconds - super slow and visible
+  // MUCH LONGER for guaranteed visibility 
+  const duration = 15; // 15 seconds - extremely slow and impossible to miss!
   
   console.log(`🎆 SPARK ${id} CREATED at position:`, { startX, startY, endX, endY, windowSize: { width: window.innerWidth, height: window.innerHeight } });
   console.log(`🎆 SPARK ${id} STYLING:`, { color, size, duration });
@@ -46,8 +46,8 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
       animate={{
         x: endX - startX, // Use transform instead
         y: endY - startY, // Use transform instead  
-        opacity: [1, 1, 1, 0], // Stay visible, fade only at end
-        scale: [1, 1.5, 1.2, 0], // End at 0 so they disappear
+        opacity: [1, 1, 1, 1, 0], // Stay visible much longer, fade only at very end
+        scale: [1, 1.5, 1.2, 1.2, 0], // Stay big longer, end at 0 so they disappear
         rotate: 360
       }}
       exit={{
@@ -58,7 +58,7 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
         duration,
         ease: "easeOut",
         opacity: {
-          times: [0, 0.2, 0.8, 1]
+          times: [0, 0.1, 0.8, 0.95, 1] // Stay visible much longer
         }
       }}
       onAnimationComplete={() => {
@@ -104,13 +104,13 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
   const [sparks, setSparks] = useState<number[]>([]);
   const [sparkCounter, setSparkCounter] = useState(0);
 
-  // Simple cleanup effect - clear sparks after 5 seconds no matter what
+  // Simple cleanup effect - clear sparks after enough time
   useEffect(() => {
     if (sparks.length > 0) {
       const cleanup = setTimeout(() => {
         console.log('🎆 FORCE CLEANUP - clearing all sparks');
         setSparks([]);
-      }, 12000); // 12 seconds - MUCH longer display time
+      }, 20000); // 20 seconds - MUCH longer display time
       
       return () => clearTimeout(cleanup);
     }
