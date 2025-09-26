@@ -297,6 +297,16 @@ export const DEMO_ALERTS = {
 
 // 📱 DEMO USER ROLES & ACCESS
 export const DEMO_USERS = {
+  student: {
+    id: 'student-001',
+    name: 'Emma Johnson',
+    email: 'emma.johnson@bca.edu',
+    role: 'student',
+    schoolRole: 'student',
+    schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // BCA
+    grade: '6',
+    title: '6th Grade Student'
+  },
   admin: {
     name: 'Sarah Henderson',
     role: 'admin',
@@ -316,6 +326,9 @@ export const DEMO_USERS = {
     students: ['Emma S.', 'Liam S.']
   }
 };
+
+// 👨‍🎓 PRIMARY DEMO STUDENT (for consistent auth across frontend/backend)
+export const DEMO_USER_STUDENT = DEMO_USERS.student;
 
 // 🎯 DEMO SUCCESS METRICS TO HIGHLIGHT
 export const DEMO_HIGHLIGHTS = {
