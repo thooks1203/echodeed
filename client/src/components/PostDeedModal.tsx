@@ -1,11 +1,16 @@
 import { useState, useMemo } from 'react';
-import { X, Heart, MapPin, HandHeart, Users, Smile, Lightbulb, Sparkles, BookOpen, TreePine, Smartphone, Crown, UserPlus } from 'lucide-react';
+import { X, Heart, MapPin, HandHeart, Users, Smile, Lightbulb, Sparkles, BookOpen, TreePine, Smartphone, Crown, UserPlus, Plus, Search } from 'lucide-react';
 // import electricLogoUrl from '../assets/echodeed_electric_logo.png';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { pushNotifications } from '../services/pushNotifications';
 import { useToast } from '@/hooks/use-toast';
 import { LocationData } from '@/lib/types';
+import { EmojiRegistry, emojiKeys, type EmojiKey } from '@/assets/emojis';
+import { Button } from '@/components/ui/button';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+import { Input } from '@/components/ui/input';
+import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
 
 interface PostDeedModalProps {
   isOpen: boolean;
@@ -21,12 +26,16 @@ interface PostData {
   city: string;
   state: string;
   country: string;
+  emojis: string[];
 }
 
 export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: PostDeedModalProps) {
   const [content, setContent] = useState('');
   const [category, setCategory] = useState('Helping Others');
   const [showSuggestions, setShowSuggestions] = useState(true);
+  const [selectedEmojis, setSelectedEmojis] = useState<EmojiKey[]>([]);
+  const [emojiSearch, setEmojiSearch] = useState('');
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -122,6 +131,51 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
     setShowSuggestions(false);
   };
 
+  // Filter emojis based on search and category relevance
+  const filteredEmojis = useMemo(() => {
+    let emojis = emojiKeys.filter(key => {
+      const emoji = EmojiRegistry[key];
+      const searchLower = emojiSearch.toLowerCase();
+      return emoji.label.toLowerCase().includes(searchLower) ||
+             emoji.tags.some(tag => tag.toLowerCase().includes(searchLower)) ||
+             key.toLowerCase().includes(searchLower);
+    });
+    
+    // Prioritize emojis that match the current category
+    emojis.sort((a, b) => {
+      const aRelevant = EmojiRegistry[a].category === category.toLowerCase().replace(' ', '_') || 
+                       EmojiRegistry[a].tags.some(tag => category.toLowerCase().includes(tag));
+      const bRelevant = EmojiRegistry[b].category === category.toLowerCase().replace(' ', '_') ||
+                       EmojiRegistry[b].tags.some(tag => category.toLowerCase().includes(tag));
+      
+      if (aRelevant && !bRelevant) return -1;
+      if (!aRelevant && bRelevant) return 1;
+      return 0;
+    });
+    
+    return emojis;
+  }, [emojiSearch, category]);
+
+  const handleEmojiSelect = (emojiKey: EmojiKey) => {
+    if (selectedEmojis.includes(emojiKey)) {
+      // Remove emoji if already selected
+      setSelectedEmojis(prev => prev.filter(key => key !== emojiKey));
+    } else if (selectedEmojis.length < 3) {
+      // Add emoji if under limit
+      setSelectedEmojis(prev => [...prev, emojiKey]);
+    } else {
+      toast({
+        title: 'Emoji limit reached',
+        description: 'You can only add up to 3 emojis per post.',
+        variant: 'destructive',
+      });
+    }
+  };
+
+  const removeEmoji = (emojiKey: EmojiKey) => {
+    setSelectedEmojis(prev => prev.filter(key => key !== emojiKey));
+  };
+
   const postMutation = useMutation({
     mutationFn: async (postData: PostData) => {
       const response = await apiRequest('POST', '/api/posts', postData);
@@ -157,6 +211,8 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
       queryClient.invalidateQueries({ queryKey: ['/api/counter'] });
       setContent('');
       setCategory('Helping Others');
+      setSelectedEmojis([]);
+      setEmojiSearch('');
       
       // Trigger the sparks animation!
       console.log('🎆 POST SUCCESS - Calling onPostSuccess (should trigger sparks)');
@@ -192,6 +248,7 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
       city: location?.city || 'Unknown',
       state: location?.state || 'Unknown',
       country: location?.country || 'Unknown',
+      emojis: selectedEmojis,
     };
 
     postMutation.mutate(postData);
@@ -234,6 +291,97 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
                 <MapPin size={12} />
                 <span data-testid="text-current-location">{location?.fullLocation || 'Location not available'}</span>
               </div>
+            </div>
+
+            {/* Custom Emoji Picker */}
+            <div className="mt-4">
+              <div className="flex items-center justify-between mb-2">
+                <label className="text-sm font-medium text-foreground">Add Kindness Emojis (max 3)</label>
+                <span className="text-xs text-muted-foreground">{selectedEmojis.length}/3</span>
+              </div>
+              
+              {/* Selected Emojis */}
+              {selectedEmojis.length > 0 && (
+                <div className="flex flex-wrap gap-2 mb-3 p-2 bg-muted/50 rounded-lg">
+                  {selectedEmojis.map((emojiKey) => {
+                    const emoji = EmojiRegistry[emojiKey];
+                    const EmojiComponent = emoji.component;
+                    return (
+                      <div
+                        key={emojiKey}
+                        className="flex items-center gap-1 bg-background border border-border rounded-full px-2 py-1 text-xs"
+                        data-testid={`selected-emoji-${emojiKey}`}
+                      >
+                        <EmojiComponent size={16} />
+                        <span>{emoji.label}</span>
+                        <button
+                          type="button"
+                          onClick={() => removeEmoji(emojiKey)}
+                          className="ml-1 text-muted-foreground hover:text-destructive transition-colors"
+                          data-testid={`remove-emoji-${emojiKey}`}
+                        >
+                          <X size={12} />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Emoji Picker Button/Grid */}
+              <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
+                <PopoverTrigger asChild>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full justify-start h-auto p-3"
+                    data-testid="button-open-emoji-picker"
+                  >
+                    <Plus size={16} className="mr-2" />
+                    <span>Choose kindness emojis</span>
+                    <Sparkles size={14} className="ml-auto text-primary" />
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-80 p-0" data-testid="popover-emoji-picker">
+                  <Command>
+                    <div className="flex items-center border-b px-3">
+                      <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+                      <CommandInput
+                        placeholder="Search kindness emojis..."
+                        value={emojiSearch}
+                        onValueChange={setEmojiSearch}
+                        data-testid="input-emoji-search"
+                      />
+                    </div>
+                    <CommandList className="max-h-60">
+                      <CommandEmpty>No emojis found.</CommandEmpty>
+                      <CommandGroup>
+                        <div className="grid grid-cols-3 gap-2 p-2">
+                          {filteredEmojis.map((emojiKey) => {
+                            const emoji = EmojiRegistry[emojiKey];
+                            const EmojiComponent = emoji.component;
+                            const isSelected = selectedEmojis.includes(emojiKey);
+                            
+                            return (
+                              <CommandItem
+                                key={emojiKey}
+                                onSelect={() => handleEmojiSelect(emojiKey)}
+                                className={`flex flex-col items-center p-3 cursor-pointer rounded-lg hover:bg-muted ${
+                                  isSelected ? 'bg-primary/10 border-primary' : 'border border-transparent'
+                                }`}
+                                data-testid={`emoji-option-${emojiKey}`}
+                              >
+                                <EmojiComponent size={24} />
+                                <span className="text-xs mt-1 text-center leading-tight">{emoji.label}</span>
+                              </CommandItem>
+                            );
+                          })}
+                        </div>
+                      </CommandGroup>
+                    </CommandList>
+                  </Command>
+                </PopoverContent>
+              </Popover>
             </div>
 
             {/* Kindness Suggestions */}
