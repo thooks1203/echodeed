@@ -31,8 +31,7 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
   // Perfect 5-second duration for poster appreciation 
   const duration = 5; // 5 seconds - gives time to appreciate the celebration!
   
-  console.log(`🎆 SPARK ${id} CREATED at position:`, { startX, startY, endX, endY, windowSize: { width: window.innerWidth, height: window.innerHeight } });
-  console.log(`🎆 SPARK ${id} STYLING:`, { color, size, duration });
+  // Sparks are working beautifully! 🎆
   
   return (
     <motion.div
@@ -70,7 +69,7 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
         rotate: { duration } // CRITICAL: Explicitly set duration for rotation
       }}
       onAnimationComplete={() => {
-        console.log(`🎆 Spark ${id} animation completed - removing`);
+        // Spark animation completed gracefully
         onComplete();
       }}
       style={{
@@ -91,8 +90,7 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
         border: `4px solid ${color}`,
         boxShadow: `0 0 40px ${color}, 0 0 80px ${color}, 0 0 120px ${color}99`, // TRIPLE glow effect!
         backdropFilter: 'blur(4px)',
-        // EMERGENCY DEBUG STYLING - MAKE VISIBLE NO MATTER WHAT
-        outline: '5px solid red !important',
+        // Beautiful kindness spark styling
         opacity: 1,
         visibility: 'visible'
       }}
@@ -116,7 +114,7 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
   useEffect(() => {
     if (sparks.length > 0) {
       const cleanup = setTimeout(() => {
-        console.log('🎆 FORCE CLEANUP - clearing all sparks');
+        // Cleanup completed sparks
         setSparks([]);
       }, 7000); // 7 seconds - ensures 5s animation + 2s buffer
       
@@ -126,15 +124,9 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
 
   useEffect(() => {
     if (isActive) {
-      console.log('🎆 KindnessSparks effect triggered, isActive:', isActive);
-      console.log('🎆 Document body exists:', !!document.body);
-      console.log('🎆 Window dimensions:', { width: window.innerWidth, height: window.innerHeight });
-      
-      // Create 8-12 sparks
+      // Create 8-12 beautiful kindness sparks
       const numSparks = 8 + Math.floor(Math.random() * 5);
       const newSparks = Array.from({ length: numSparks }, (_, i) => sparkCounter + i);
-      
-      console.log('🎆 Creating', numSparks, 'sparks:', newSparks);
       setSparks(newSparks);
       setSparkCounter(prev => prev + numSparks);
       
@@ -146,11 +138,9 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
   const handleSparkComplete = (sparkId: number) => {
     setSparks(prev => {
       const remaining = prev.filter(id => id !== sparkId);
-      console.log(`🎆 Spark ${sparkId} completed. Remaining: ${remaining.length}`);
       
       // If this was the last spark, call onComplete
       if (remaining.length === 0) {
-        console.log('🎆 All sparks completed! Calling onComplete...');
         setTimeout(() => onComplete?.(), 100); // Small delay to ensure cleanup
       }
       
@@ -181,12 +171,10 @@ export function useKindnessSparks() {
   const [isActive, setIsActive] = useState(false);
 
   const triggerSparks = () => {
-    console.log('🎆 KINDNESS SPARKS TRIGGERED!', new Date().toLocaleTimeString());
     setIsActive(true);
   };
 
   const handleComplete = () => {
-    console.log('✨ KINDNESS SPARKS COMPLETE!', new Date().toLocaleTimeString());
     setIsActive(false);
   };
 

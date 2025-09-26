@@ -29,6 +29,7 @@ A content filtering system ensures a positive environment through profanity dete
 - **Global Kindness Feed**: Real-time display of all shared acts.
 - **Filtering**: Posts can be filtered by location and category.
 - **Real-time Counter**: Tracks the total number of acts shared globally.
+- **Kindness Sparks Celebration**: Beautiful 5-second animated celebration with colorful 120px circles, hearts, stars, and sparkles that trigger after posting deeds, providing visual appreciation and engagement.
 - **Surprise Giveaway System**: Automated reward distribution to boost engagement.
 - **AI Integration**: Powers a predictive wellness engine, content intelligence (sentiment analysis, moderation, trend detection), and corporate analytics.
 - **Dual Reward System**: Implemented for both kids and parents.
