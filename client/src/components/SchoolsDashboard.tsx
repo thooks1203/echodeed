@@ -42,43 +42,43 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
     queryKey: ['/api/schools/student-points'],
   });
 
-  // Sample data for demonstration
+  // Sample data for demonstration - Burlington Christian Academy Demo
   const sampleSchools: School[] = schools.length > 0 ? schools : [
     {
-      id: '1',
-      name: 'Riverside Elementary School',
-      type: 'elementary',
-      studentCount: 345,
+      id: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+      name: 'Burlington Christian Academy',
+      type: 'private',
+      studentCount: 425,
       teacherCount: 28,
-      totalKindnessActs: 1247,
-      avgKindnessScore: 8.4
+      totalKindnessActs: 1847,
+      avgKindnessScore: 8.7
     },
     {
       id: '2', 
-      name: 'Jefferson Middle School',
+      name: 'Roosevelt Middle School',
       type: 'middle',
-      studentCount: 567,
-      teacherCount: 42,
-      totalKindnessActs: 2156,
-      avgKindnessScore: 7.9
+      studentCount: 680,
+      teacherCount: 45,
+      totalKindnessActs: 1523,
+      avgKindnessScore: 8.3
     },
     {
       id: '3',
-      name: 'Lincoln High School', 
-      type: 'high',
-      studentCount: 892,
-      teacherCount: 67,
-      totalKindnessActs: 3489,
-      avgKindnessScore: 8.1
+      name: 'Lincoln Elementary', 
+      type: 'elementary',
+      studentCount: 425,
+      teacherCount: 28,
+      totalKindnessActs: 1342,
+      avgKindnessScore: 8.7
     },
     {
       id: '4',
-      name: 'State University',
-      type: 'university', 
-      studentCount: 12450,
-      teacherCount: 234,
-      totalKindnessActs: 8967,
-      avgKindnessScore: 7.6
+      name: 'Eastern Alamance Middle School',
+      type: 'middle', 
+      studentCount: 567,
+      teacherCount: 42,
+      totalKindnessActs: 1156,
+      avgKindnessScore: 7.9
     }
   ];
 
