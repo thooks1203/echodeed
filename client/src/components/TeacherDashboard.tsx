@@ -165,6 +165,14 @@ export function TeacherDashboard() {
   const queryClient = useQueryClient();
   const { user } = useAuth();
 
+  // Ensure teacher role is set for demo authentication
+  useEffect(() => {
+    console.log('🔧 Setting up teacher authentication...');
+    localStorage.setItem('echodeed_demo_role', 'teacher');
+    localStorage.setItem('echodeed_session', 'demo-session');
+    console.log('✅ Teacher role set:', localStorage.getItem('echodeed_demo_role'));
+  }, []);
+
   // Fetch pending service hours for verification
   const { data: pendingServiceHours = [], isLoading: serviceHoursLoading } = useQuery({
     queryKey: ['/api/community-service/pending-verifications'],
@@ -230,6 +238,13 @@ export function TeacherDashboard() {
   });
 
   const handleApproveServiceHours = (serviceLogId: string) => {
+    console.log('🎯 handleApproveServiceHours called with:', serviceLogId);
+    console.log('🎯 Mutation state:', {
+      isPending: approveServiceHoursMutation.isPending,
+      isError: approveServiceHoursMutation.isError,
+      error: approveServiceHoursMutation.error
+    });
+    
     approveServiceHoursMutation.mutate({ serviceLogId });
   };
 
@@ -246,9 +261,9 @@ export function TeacherDashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          {/* Top Button Row */}
+          {/* Top Button Row - Balanced Layout */}
           <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 flex-1">
               <Button
                 size="sm"
                 onClick={() => navigate('/?tab=feed')}
@@ -274,7 +289,7 @@ export function TeacherDashboard() {
               </Button>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex items-center gap-3 flex-1 justify-end">
               <Button size="sm" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0">
                 <Download className="w-4 h-4 mr-2" />
                 Export Report
