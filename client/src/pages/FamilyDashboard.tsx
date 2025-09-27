@@ -328,7 +328,7 @@ export default function FamilyDashboard({
         </Card>
 
         <Tabs defaultValue="challenges" className="space-y-3 sm:space-y-6">
-          <TabsList className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 snap-x snap-mandatory sm:mx-0 sm:px-0 sm:grid sm:grid-cols-4 sm:gap-0">
+          <TabsList className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 snap-x snap-mandatory sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-0">
             <TabsTrigger value="challenges" className="shrink-0 snap-start whitespace-nowrap text-xs px-3 py-2 rounded-full sm:text-sm sm:py-2 sm:px-4 sm:rounded-md">
               Current
             </TabsTrigger>
@@ -337,9 +337,6 @@ export default function FamilyDashboard({
             </TabsTrigger>
             <TabsTrigger value="rewards" className="shrink-0 snap-start whitespace-nowrap text-xs px-3 py-2 rounded-full sm:text-sm sm:py-2 sm:px-4 sm:rounded-md">
               Rewards
-            </TabsTrigger>
-            <TabsTrigger value="fundraising" className="shrink-0 snap-start whitespace-nowrap text-xs px-3 py-2 rounded-full sm:text-sm sm:py-2 sm:px-4 sm:rounded-md">
-              School
             </TabsTrigger>
           </TabsList>
 
@@ -612,126 +609,6 @@ export default function FamilyDashboard({
             </Card>
           </TabsContent>
 
-          {/* School Fundraising Tab */}
-          <TabsContent value="fundraising" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <DollarSign className="h-5 w-5" />
-                  School Fundraising Campaigns
-                </CardTitle>
-                <CardDescription>
-                  Support your school and earn DOUBLE tokens for donations!
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-6">
-                  {Array.isArray(fundraisers) && fundraisers.length > 0 ? (
-                    fundraisers.map((fundraiser: SchoolFundraiser) => (
-                      <div key={fundraiser.id} className="border rounded-lg p-4">
-                        <div className="flex justify-between items-start mb-4">
-                          <div>
-                            <h4 className="font-semibold">{fundraiser.campaignName}</h4>
-                            <p className="text-sm text-gray-600">{fundraiser.description}</p>
-                          </div>
-                          <Badge className="bg-orange-100 text-orange-800">{fundraiser.tokenMultiplier}x Tokens!</Badge>
-                        </div>
-                        
-                        <div className="space-y-2 mb-4">
-                          <div className="flex flex-col sm:flex-row sm:justify-between gap-1 text-sm">
-                            <span>Progress</span>
-                            <span className="font-medium">${(fundraiser.currentAmount / 100).toLocaleString()} of ${(fundraiser.goalAmount / 100).toLocaleString()}</span>
-                          </div>
-                          <Progress value={(fundraiser.currentAmount / fundraiser.goalAmount) * 100} className="h-2" />
-                        </div>
-
-                        <div className="flex flex-wrap gap-2">
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button 
-                                size="sm" 
-                                className="flex-1" 
-                                onClick={() => setSelectedFundraiser(fundraiser)}
-                                data-testid={`button-donate-${fundraiser.id}`}
-                              >
-                                Donate Now
-                              </Button>
-                            </DialogTrigger>
-                            <DialogContent className="w-[92vw] max-w-none sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
-                              <DialogHeader>
-                                <DialogTitle>Donate to {fundraiser.campaignName}</DialogTitle>
-                                <DialogDescription>
-                                  {fundraiser.description}
-                                </DialogDescription>
-                              </DialogHeader>
-                              <div className="space-y-4 py-4">
-                                <div className="space-y-2">
-                                  <label htmlFor="amount" className="text-sm font-medium">Donation Amount ($)</label>
-                                  <Input
-                                    id="amount"
-                                    type="number"
-                                    value={donationAmount}
-                                    onChange={(e) => setDonationAmount(e.target.value)}
-                                    placeholder="25.00"
-                                    min="1"
-                                    step="1"
-                                    data-testid="input-donation-amount"
-                                  />
-                                </div>
-                                
-                                {donationAmount && !isNaN(parseFloat(donationAmount)) && (
-                                  <div className="bg-gradient-to-r from-green-50 to-blue-50 p-4 rounded-lg">
-                                    <h4 className="font-semibold mb-2 text-green-800">You'll Earn (Double Tokens!) 🎁</h4>
-                                    <div className="grid grid-cols-2 gap-4">
-                                      <div className="text-center">
-                                        <div className="text-2xl font-bold text-blue-600">
-                                          {calculateTokens(parseFloat(donationAmount), fundraiser.tokenMultiplier).kidTokens}
-                                        </div>
-                                        <div className="text-sm text-gray-600">Kid Tokens</div>
-                                      </div>
-                                      <div className="text-center">
-                                        <div className="text-2xl font-bold text-purple-600">
-                                          {calculateTokens(parseFloat(donationAmount), fundraiser.tokenMultiplier).parentTokens}
-                                        </div>
-                                        <div className="text-sm text-gray-600">Parent Tokens</div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-                                
-                                <Button 
-                                  onClick={handleDonation} 
-                                  disabled={donateMutation.isPending || !donationAmount}
-                                  className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-sm sm:text-base"
-                                  data-testid="button-confirm-donation"
-                                >
-                                  {donateMutation.isPending ? 'Processing...' : `Donate $${donationAmount}`}
-                                </Button>
-                              </div>
-                            </DialogContent>
-                          </Dialog>
-                          <Button 
-                            size="sm" 
-                            variant="outline"
-                            className="bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white border-0" 
-                            data-testid={`button-learn-more-${fundraiser.id}`}
-                          >
-                            Learn More
-                          </Button>
-                        </div>
-                      </div>
-                    ))
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">
-                      <DollarSign className="h-12 w-12 mx-auto mb-4 text-gray-300" />
-                      <p className="text-lg font-medium">No Active Fundraisers</p>
-                      <p className="text-sm">Check back soon for new school fundraising campaigns!</p>
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
         </Tabs>
       </div>
       <RoleSwitcherDemo />
