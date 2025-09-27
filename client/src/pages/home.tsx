@@ -196,20 +196,28 @@ export default function Home() {
   
   
   if (activeTab === 'mentor-dashboard') {
-    return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
-        <div style={{ padding: '20px', textAlign: 'center' }}>
+    try {
+      return (
+        <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+          <MentorDashboard />
+          <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+        </div>
+      );
+    } catch (error) {
+      console.error('❌ MentorDashboard error:', error);
+      return (
+        <div style={{ minHeight: '100vh', background: '#F0F9FF', padding: '20px', textAlign: 'center' }}>
           <h1 style={{ fontSize: '24px', color: '#333', marginBottom: '20px' }}>🌟 Mentor Dashboard</h1>
           <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)' }}>
-            <p style={{ fontSize: '16px', color: '#666', marginBottom: '20px' }}>Welcome to the Mentor Dashboard!</p>
+            <p style={{ fontSize: '16px', color: '#666', marginBottom: '20px' }}>Loading mentor features...</p>
             <div style={{ background: '#e7f3ff', padding: '15px', borderRadius: '8px', border: '1px solid #b3d9ff' }}>
-              <p style={{ color: '#0066cc', margin: 0 }}>🚀 Full mentor features coming soon for Burlington Christian Academy!</p>
+              <p style={{ color: '#0066cc', margin: 0 }}>🚀 Please refresh the page if this persists</p>
             </div>
           </div>
+          <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
         </div>
-        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
-      </div>
-    );
+      );
+    }
   }
 
   if (activeTab === 'support') {
@@ -349,9 +357,20 @@ export default function Home() {
   }
   
   if (activeTab === 'student-dashboard') {
-    return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
-        <div style={{ padding: '20px', textAlign: 'center' }}>
+    try {
+      return (
+        <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+          <StudentDashboard 
+            onNavigateToTab={navigateToTab} 
+            activeBottomTab={activeTab}
+          />
+          <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+        </div>
+      );
+    } catch (error) {
+      console.error('❌ StudentDashboard error:', error);
+      return (
+        <div style={{ minHeight: '100vh', background: '#F0F9FF', padding: '20px', textAlign: 'center' }}>
           <h1 style={{ fontSize: '24px', color: '#333', marginBottom: '20px' }}>👨‍🎓 Emma's Dashboard</h1>
           <div style={{ background: 'white', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', marginBottom: '20px' }}>
             <h2 style={{ fontSize: '18px', color: '#333', marginBottom: '15px' }}>🏥 Community Service Progress</h2>
@@ -367,10 +386,10 @@ export default function Home() {
               <p style={{ color: '#ff9800', margin: 0 }}>🌟 You're building an amazing habit of kindness!</p>
             </div>
           </div>
+          <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
         </div>
-        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
-      </div>
-    );
+      );
+    }
   }
 
 
