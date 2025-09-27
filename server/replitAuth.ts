@@ -153,12 +153,16 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     }
     
     // Create mock user for smooth demo experience
+    const nameParts = demoUser.name.split(' ');
+    const firstName = nameParts.slice(0, -1).join(' '); // "Ms. Sarah" 
+    const lastName = nameParts[nameParts.length - 1]; // "Wilson"
+    
     req.user = {
       claims: { 
         sub: demoUser.id,
         email: demoUser.email,
-        first_name: demoUser.name.split(' ')[0],
-        last_name: demoUser.name.split(' ')[1] || '',
+        first_name: firstName,
+        last_name: lastName,
         role: demoUser.role,
         schoolRole: demoUser.schoolRole,
         schoolId: demoUser.schoolId,
@@ -172,8 +176,8 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
       await storage.upsertUser({
         id: demoUser.id,
         email: demoUser.email,
-        firstName: demoUser.name.split(' ')[0],
-        lastName: demoUser.name.split(' ')[1] || '',
+        firstName: firstName,
+        lastName: lastName,
         schoolRole: demoUser.schoolRole,
         schoolId: demoUser.schoolId
       });

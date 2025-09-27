@@ -305,7 +305,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes - Get current user info
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user.claims.sub;
+      const userId = req.user?.claims?.sub || req.user?.id;
       const user = await storage.getUser(userId);
       
       if (user) {
