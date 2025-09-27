@@ -9411,8 +9411,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Verify service hours (teachers/parents)
   app.post('/api/community-service/verify', requireTeacherRole, async (req: any, res) => {
     try {
+      console.log('🔍 DEBUG - Teacher Context:', req.teacherContext);
+      console.log('🔍 DEBUG - Request Body:', req.body);
+      
+      // Include teacher's ID from authenticated context
+      const verificationData = {
+        ...req.body,
+        verifierId: req.teacherContext?.userId || 'demo-session' // Fallback for demo
+      };
+      
+      console.log('🔍 Verifying service hours:', verificationData.serviceLogId, 'by teacher:', verificationData.verifierId);
+      console.log('🔍 DEBUG - Full verification data:', verificationData);
+      
       const { communityServiceEngine } = await import('./services/communityServiceEngine');
-      const verification = await communityServiceEngine.verifyServiceHours(req.body);
+      const verification = await communityServiceEngine.verifyServiceHours(verificationData);
       res.json(verification);
     } catch (error) {
       console.error('Failed to verify service hours:', error);
