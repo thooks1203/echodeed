@@ -7,7 +7,7 @@ import { BackButton } from '@/components/BackButton';
 interface School {
   id: string;
   name: string;
-  type: 'elementary' | 'middle' | 'high' | 'university';
+  type: 'elementary' | 'middle' | 'high' | 'university' | 'preschool' | 'private';
   studentCount: number;
   teacherCount: number;
   totalKindnessActs: number;
