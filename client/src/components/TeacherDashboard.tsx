@@ -275,7 +275,12 @@ export function TeacherDashboard() {
                 <Download className="w-4 h-4 mr-2" />
                 Export Report
               </Button>
-              <Button size="sm" className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white">
+              <Button 
+                size="sm" 
+                onClick={() => navigate('/class-settings')}
+                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white"
+                data-testid="button-class-settings"
+              >
                 <Settings className="w-4 h-4 mr-2" />
                 Class Settings
               </Button>
