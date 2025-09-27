@@ -65,8 +65,13 @@ export function RoleSwitcherDemo() {
             <button
               key={roleOption.role}
               onClick={() => {
-                switchDemoRole(roleOption.role);
-                setShowDropdown(false);
+                console.log('🔄 Role button clicked:', roleOption.role, roleOption.label);
+                try {
+                  switchDemoRole(roleOption.role);
+                  setShowDropdown(false);
+                } catch (error) {
+                  console.error('❌ Error switching role:', error);
+                }
               }}
               style={{
                 width: '100%',

@@ -37,7 +37,6 @@ import { useLocation } from 'wouter';
 import PushNotificationSetup from '@/components/PushNotificationSetup';
 import { SponsorsPage } from '@/components/SponsorsPage';
 import { BottomNavigation } from '@/components/BottomNavigation';
-import { RoleSwitcherDemo } from '@/components/RoleSwicherDemo';
 
 interface ParentNotification {
   id: string;
@@ -1154,8 +1153,37 @@ export default function ParentDashboard() {
         onTabChange={handleBottomTabChange} 
       />
       
-      {/* Universal Role Switcher */}
-      <RoleSwitcherDemo />
+      {/* Simple Role Switcher */}
+      <div style={{ position: 'fixed', top: '10px', right: '10px', zIndex: 1000 }}>
+        <select 
+          onChange={(e) => {
+            const role = e.target.value;
+            if (role) {
+              console.log('🔄 Switching to role:', role);
+              localStorage.setItem('echodeed_demo_role', role);
+              localStorage.setItem('echodeed_session', 'demo-session');
+              window.location.reload();
+            }
+          }}
+          style={{
+            background: '#7C3AED',
+            color: 'white',
+            border: 'none',
+            borderRadius: '6px',
+            padding: '8px 12px',
+            fontSize: '12px',
+            fontWeight: '600',
+            cursor: 'pointer'
+          }}
+          defaultValue=""
+        >
+          <option value="" disabled>🔄 Switch Role</option>
+          <option value="student">👩‍🎓 Student (Emma)</option>
+          <option value="teacher">👩‍🏫 Teacher (Ms. Wilson)</option>
+          <option value="admin">👨‍💼 Admin (Dr. Brown)</option>
+          <option value="parent">👩‍👧 Parent (Mrs. Johnson)</option>
+        </select>
+      </div>
     </div>
   );
 }
