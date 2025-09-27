@@ -23,8 +23,9 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
   ];
 
-  // FIXED: Teacher tabs now include Reports moved from top + Support & Rewards
+  // FIXED: Teacher tabs now include Feed + Reports moved from top + Support & Rewards
   const teacherTabs = [
+    { id: 'feed', label: 'Feed', icon: '🏠' },
     { id: 'teacher-dashboard', label: 'Dashboard', icon: '👩‍🏫' },
     { id: 'reports', label: 'Reports', icon: '📊' },
     { id: 'support', label: 'Support', icon: '💜' },
@@ -96,7 +97,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
   if (user?.schoolRole === 'parent') {
     tabs = parentTabs; // Parents get only Parent + Family + Support + Rewards
   } else if (canAccessSchoolsDashboard(user?.schoolRole || 'student')) {
-    tabs = [...baseTabs, ...teacherTabs]; // Teachers get Feed + Teacher tabs
+    tabs = teacherTabs; // Teachers get their dedicated tabs including Feed
   } else {
     tabs = [...baseTabs, ...studentTabs]; // Students get Feed + Student tabs
   }

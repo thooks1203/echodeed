@@ -25,7 +25,9 @@ import {
   BarChart3,
   Clock,
   CheckCircle,
-  ArrowLeft
+  ArrowLeft,
+  AlertTriangle,
+  HeartPulse
 } from 'lucide-react';
 
 interface ClassroomStats {
@@ -240,6 +242,31 @@ export function TeacherDashboard() {
                 <ArrowLeft className="w-4 h-4" />
                 Back to Platform
               </Button>
+
+              {/* Teacher Wellness Alert Button */}
+              <Button
+                size="sm"
+                onClick={() => navigate('/wellness-checkin?from=teacher-dashboard')}
+                className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 animate-pulse"
+                style={{
+                  animation: 'pulse 2s infinite, glow 2s ease-in-out infinite alternate'
+                }}
+                data-testid="teacher-wellness-alert"
+              >
+                <HeartPulse className="w-4 h-4" />
+                Wellness Check Needed
+              </Button>
+
+              <style jsx>{`
+                @keyframes glow {
+                  from {
+                    box-shadow: 0 0 5px #f59e0b, 0 0 10px #f59e0b, 0 0 15px #f59e0b;
+                  }
+                  to {
+                    box-shadow: 0 0 10px #f59e0b, 0 0 20px #f59e0b, 0 0 30px #f59e0b;
+                  }
+                }
+              `}</style>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
                   📚 Teacher Dashboard
