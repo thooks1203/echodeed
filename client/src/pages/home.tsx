@@ -272,7 +272,10 @@ export default function Home() {
                 <button
                   key={roleInfo.role}
                   onClick={() => {
+                    console.log('🔐 Sign-in button clicked for role:', roleInfo.role);
                     localStorage.setItem('echodeed_demo_role', roleInfo.role);
+                    localStorage.setItem('echodeed_session', 'demo-session');
+                    console.log('✅ LocalStorage updated, reloading...');
                     window.location.reload();
                   }}
                   className="w-full p-4 text-left rounded-lg border-3 transition-all hover:scale-105 bg-white border-gray-300 hover:bg-blue-50 hover:border-blue-400 shadow-sm hover:shadow-md"

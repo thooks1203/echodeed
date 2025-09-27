@@ -694,7 +694,7 @@ export default function AdminDashboard() {
         }
       } else {
         // Show report preview
-        alert(`Weekly Report Preview:\n\nSchool: ${reportData.schoolName}\nPeriod: ${reportData.weekPeriod}\n\nTotal Kindness Acts: ${reportData.summary.totalKindnessActs}\nTotal Hearts: ${reportData.summary.totalHeartsReceived}\nParticipating Students: ${reportData.summary.participatingStudents}\n\nTop Categories: ${reportData.topCategories.map(c => `${c.category} (${c.count})`).join(', ')}`);
+        alert(`Weekly Report Preview:\n\nSchool: ${reportData.schoolName}\nPeriod: ${reportData.weekPeriod}\n\nTotal Kindness Acts: ${reportData.summary.totalKindnessActs}\nTotal Hearts: ${reportData.summary.totalHeartsReceived}\nParticipating Students: ${reportData.summary.participatingStudents}\n\nTop Categories: ${reportData.topCategories.map((c: any) => `${c.category} (${c.count})`).join(', ')}`);
       }
       
       console.log('✅ Report generated successfully:', reportData);
@@ -746,12 +746,11 @@ export default function AdminDashboard() {
           return;
       }
       
-      const params = new URLSearchParams({
-        schoolId,
-        startDate,
-        endDate,
-        anonymize: privacyMode.toString()
-      });
+      const params = new URLSearchParams();
+      params.append('schoolId', schoolId);
+      if (startDate) params.append('startDate', startDate);
+      if (endDate) params.append('endDate', endDate);
+      params.append('anonymize', privacyMode.toString());
       
       // Create download link for quick export
       const url = `/api/admin/export/posts?${params}`;
@@ -816,7 +815,7 @@ export default function AdminDashboard() {
         
         <div class="category-list">
           <h3>Top Categories This Week</h3>
-          ${data.topCategories.map(cat => `
+          ${data.topCategories.map((cat: any) => `
             <div class="category-item">
               <strong>${cat.category}</strong> - ${cat.count} acts
             </div>
@@ -825,7 +824,7 @@ export default function AdminDashboard() {
         
         <div class="recent-posts">
           <h3>Recent Highlights</h3>
-          ${data.recentHighlights.map(post => `
+          ${data.recentHighlights.map((post: any) => `
             <div class="post-item">
               <p><strong>${post.student}</strong> (${post.hearts} ❤️)</p>
               <p><em>${post.category}</em></p>
