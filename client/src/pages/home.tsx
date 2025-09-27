@@ -68,8 +68,8 @@ export default function Home() {
       setActiveTab(tabParam);
       // Remove the tab parameter from URL to keep it clean
       window.history.replaceState({}, '', window.location.pathname);
-    } else {
-      // Set appropriate default tab based on user role
+    } else if (activeTab === 'sign-in') {
+      // Only set default tab if coming from sign-in, don't override user navigation
       if (isTeacher) {
         setActiveTab('teacher-dashboard');
       } else if (isAdmin) {
@@ -78,7 +78,7 @@ export default function Home() {
         setActiveTab('feed'); // Default for students
       }
     }
-  }, [user, navigate, isAuthenticated]);
+  }, [isAuthenticated]); // Only depend on authentication status
 
   // Guard against unauthorized access to schools dashboard
   useEffect(() => {
