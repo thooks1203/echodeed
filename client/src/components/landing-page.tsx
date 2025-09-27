@@ -30,7 +30,10 @@ export function LandingPage() {
   };
 
   const handleTeacherLogin = () => {
-    navigate('/teacher-dashboard');
+    // Set teacher role in localStorage for demo purposes
+    localStorage.setItem('echodeed_demo_role', 'teacher');
+    localStorage.setItem('echodeed_session', 'demo-session');
+    navigate('/app?tab=teacher-dashboard');
   };
 
   const handleAdminLogin = () => {
