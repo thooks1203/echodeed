@@ -305,7 +305,7 @@ export function TeacherDashboard() {
         </div>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-4">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="overview" className="flex items-center gap-1">
               <BarChart3 className="w-4 h-4" />
               Overview
@@ -313,6 +313,10 @@ export function TeacherDashboard() {
             <TabsTrigger value="students" className="flex items-center gap-1">
               <Users className="w-4 h-4" />
               Students
+            </TabsTrigger>
+            <TabsTrigger value="student-feed" className="flex items-center gap-1">
+              <Heart className="w-4 h-4" />
+              Student Feed
             </TabsTrigger>
             <TabsTrigger value="lessons" className="flex items-center gap-1">
               <BookOpen className="w-4 h-4" />
@@ -498,6 +502,31 @@ export function TeacherDashboard() {
                     </div>
                   ))}
                 </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          {/* Student Feed Tab */}
+          <TabsContent value="student-feed" className="space-y-6" data-testid="tab-content-student-feed">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Heart className="w-5 h-5 text-pink-600" />
+                  Student Kindness Posts
+                </CardTitle>
+                <CardDescription>
+                  Monitor student posts for character development and community building
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {postsLoading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin w-8 h-8 border-4 border-pink-600 border-t-transparent rounded-full mx-auto" />
+                    <p className="mt-2 text-gray-600">Loading student posts...</p>
+                  </div>
+                ) : (
+                  <KindnessFeed posts={posts || []} isLoading={postsLoading} />
+                )}
               </CardContent>
             </Card>
           </TabsContent>
