@@ -759,18 +759,19 @@ export function TeacherDashboard() {
         onTabChange={(tab) => {
           // Handle tab navigation properly
           if (tab === 'feed') {
-            navigate('/app?tab=feed');
+            // Navigate to main app with feed
+            navigate('/app');
           } else if (tab === 'reports') {
             // Switch to reports tab in the current teacher dashboard
             setSelectedTab('reports');
           } else if (tab === 'support') {
-            // Navigate to support page
+            // Navigate to app with support tab
             navigate('/app?tab=support');
           } else if (tab === 'rewards') {
             // Navigate to rewards page  
-            navigate('/app?tab=rewards');
+            navigate('/rewards');
           } else if (tab === 'sign-in') {
-            // Handle role switching
+            // Handle role switching - go to landing page
             navigate('/');
           } else if (tab === 'teacher-dashboard') {
             // Stay on teacher dashboard but switch to overview
