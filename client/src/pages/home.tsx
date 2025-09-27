@@ -36,17 +36,10 @@ interface RewardOffer {
 }
 
 export default function Home() {
-  console.log('🏠 Home component loading...');
   const queryClient = useQueryClient();
   const [, navigate] = useLocation();
   const { user, isStudent, isTeacher, isAdmin, isAuthenticated } = useAuth();
   const { triggerSparks } = useKindnessSparksContext();
-  console.log('🔐 Auth state:', { user: user?.name, isAuthenticated, role: user?.schoolRole });
-  
-  // Add debug alert to ensure JavaScript is working
-  if (typeof window !== 'undefined') {
-    console.log('✅ JavaScript is executing!');
-  }
 
   // Remove auto-authentication check that was causing issues
   const [isPostModalOpen, setIsPostModalOpen] = useState(false);
@@ -196,9 +189,7 @@ export default function Home() {
   };
 
   const navigateToTab = (tab: string) => {
-    console.log('🔄 Tab navigation requested:', tab, 'Current tab:', activeTab, 'User:', user?.name, 'Auth:', isAuthenticated);
     setActiveTab(tab);
-    console.log('✅ Tab state updated to:', tab);
   };
 
   // Show different content based on active tab
