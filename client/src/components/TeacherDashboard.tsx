@@ -5,10 +5,11 @@ import { apiRequest } from '@/lib/queryClient';
 import { useLocation } from 'wouter';
 import { useAuth } from '@/hooks/useAuth';
 import { BottomNavigation } from '@/components/BottomNavigation';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { KindnessFeed } from '@/components/KindnessFeed';
 import { 
   Users, 
   Heart, 
@@ -176,6 +177,11 @@ export function TeacherDashboard() {
     },
   });
 
+  // Fetch posts for student feed
+  const { data: posts = [], isLoading: postsLoading } = useQuery({
+    queryKey: ['/api/posts'],
+  });
+
   // Mutation for approving service hours
   const approveServiceHoursMutation = useMutation({
     mutationFn: async ({ serviceLogId }: { serviceLogId: string }) => {
@@ -320,23 +326,22 @@ export function TeacherDashboard() {
 
           {/* Overview Tab */}
           <TabsContent value="overview" className="space-y-6">
-            {/* Quick Access to Student Feed */}
+            {/* Student Posts Feed */}
             <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
-              <CardContent className="pt-6">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xl">🏠</span>
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">View Student Posts</h3>
-                      <p className="text-sm text-gray-600">See what your students are sharing in the kindness feed</p>
-                    </div>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                    <span className="text-white text-sm">🏠</span>
                   </div>
-                  <div className="text-center">
-                    <div className="text-sm text-blue-600 font-medium">Click "Feed" tab below</div>
-                    <div className="text-xs text-gray-500">↓ Bottom navigation</div>
-                  </div>
+                  Student Kindness Posts
+                </CardTitle>
+                <CardDescription>
+                  Recent kindness acts shared by your students
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="max-h-96 overflow-y-auto">
+                  <KindnessFeed posts={posts || []} isLoading={postsLoading} />
                 </div>
               </CardContent>
             </Card>
