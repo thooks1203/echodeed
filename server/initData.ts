@@ -464,6 +464,65 @@ export async function initializeSampleData() {
       log('⚠️ Could not initialize community service hours:', error.message || error);
     }
 
+    // Initialize Burlington Christian Academy fundraising campaigns
+    try {
+      log('🎯 Initializing Burlington Christian Academy fundraising campaigns...');
+      
+      // Check if fundraisers already exist
+      const existingFundraisers = await storage.getActiveFundraisers();
+      
+      if (existingFundraisers.length === 0) {
+        // Create BCA Playground Improvement fundraiser
+        await storage.createFundraiser({
+          schoolName: 'Burlington Christian Academy',
+          campaignName: 'New Playground Equipment Fund',
+          description: 'Help us create an amazing new playground where BCA students can play, learn, and grow together! Our goal is to install modern, safe playground equipment that promotes physical activity and social interaction.',
+          goalAmount: 15000, // $150.00 in cents
+          currentAmount: 8750, // $87.50 in cents (58% progress)
+          startDate: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000), // Started 30 days ago
+          endDate: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000), // Ends in 60 days
+          isActive: true,
+          tokenMultiplier: 2 // Double tokens for donations!
+        });
+
+        // Create BCA Library Enhancement fundraiser
+        await storage.createFundraiser({
+          schoolName: 'Burlington Christian Academy',
+          campaignName: 'Library Technology Upgrade',
+          description: 'Transform our library into a modern learning hub! We\'re raising funds for new computers, tablets, and interactive learning stations to help our students explore, research, and create.',
+          goalAmount: 12000, // $120.00 in cents
+          currentAmount: 4200, // $42.00 in cents (35% progress)
+          startDate: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000), // Started 15 days ago
+          endDate: new Date(Date.now() + 75 * 24 * 60 * 60 * 1000), // Ends in 75 days
+          isActive: true,
+          tokenMultiplier: 2 // Double tokens for donations!
+        });
+
+        // Create BCA Garden Project fundraiser
+        await storage.createFundraiser({
+          schoolName: 'Burlington Christian Academy',
+          campaignName: 'School Garden Project',
+          description: 'Plant the seeds of learning! Our school garden will teach students about science, nutrition, and environmental stewardship while providing fresh produce for our cafeteria.',
+          goalAmount: 5000, // $50.00 in cents
+          currentAmount: 3100, // $31.00 in cents (62% progress)
+          startDate: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000), // Started 20 days ago
+          endDate: new Date(Date.now() + 40 * 24 * 60 * 60 * 1000), // Ends in 40 days
+          isActive: true,
+          tokenMultiplier: 2 // Double tokens for donations!
+        });
+
+        log('✅ Created 3 active Burlington Christian Academy fundraising campaigns');
+        log('🎁 All campaigns offer double tokens (2x multiplier) for family donations');
+        log('🏫 Playground Equipment Fund: $87.50/$150.00 (58% complete)');
+        log('💻 Library Technology: $42.00/$120.00 (35% complete)');
+        log('🌱 School Garden: $31.00/$50.00 (62% complete)');
+      } else {
+        log(`ℹ️ ${existingFundraisers.length} fundraising campaigns already exist, skipping creation`);
+      }
+    } catch (error: any) {
+      log('⚠️ Could not initialize fundraising campaigns:', error.message || error);
+    }
+
     // Initialize sample reward partners
     const existingPartners = await storage.getRewardPartners();
     if (existingPartners.length === 0) {
