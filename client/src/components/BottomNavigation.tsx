@@ -94,10 +94,10 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     );
   }
 
-  // Role-based tab selection
+  // Role-based tab selection - Only show relevant tabs for each role
   let tabs;
   if (user?.schoolRole === 'parent') {
-    tabs = [...baseTabs, ...parentTabs]; // Parents get Feed + Parent + Family tabs
+    tabs = parentTabs; // Parents get only Parent + Family + Support + Rewards
   } else if (canAccessSchoolsDashboard(user?.schoolRole || 'student')) {
     tabs = [...baseTabs, ...teacherTabs]; // Teachers get Feed + Teacher tabs
   } else {
@@ -119,8 +119,8 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
       backdropFilter: 'blur(12px)',
       boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
       display: 'flex',
-      justifyContent: 'space-between',
-      padding: '4px 6px',
+      justifyContent: 'space-around',
+      padding: '6px 8px',
       zIndex: 100
     }}>
       {filteredTabs.map((tab) => (
