@@ -292,7 +292,7 @@ export function TeacherDashboard() {
         </div>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview" className="flex items-center gap-1">
               <BarChart3 className="w-4 h-4" />
               Overview
@@ -308,10 +308,6 @@ export function TeacherDashboard() {
             <TabsTrigger value="service-hours" className="flex items-center gap-1">
               <CheckCircle className="w-4 h-4" />
               Service Hours
-            </TabsTrigger>
-            <TabsTrigger value="reports" className="flex items-center gap-1">
-              <TrendingUp className="w-4 h-4" />
-              Reports
             </TabsTrigger>
           </TabsList>
 

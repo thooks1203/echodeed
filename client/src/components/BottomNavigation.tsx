@@ -24,9 +24,10 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'sign-in', label: 'Sign In', icon: '👤' },
   ];
 
-  // FIXED: Teacher tabs now include all 4 tabs they need
+  // FIXED: Teacher tabs now include Reports moved from top + Support & Rewards
   const teacherTabs = [
     { id: 'teacher-dashboard', label: 'Dashboard', icon: '👩‍🏫' },
+    { id: 'reports', label: 'Reports', icon: '📊' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
     { id: 'sign-in', label: 'Sign In', icon: '👤' },
