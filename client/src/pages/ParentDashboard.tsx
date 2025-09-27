@@ -620,22 +620,32 @@ export default function ParentDashboard() {
 
         {/* Main Dashboard */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-8">
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="activity">Live Activity</TabsTrigger>
-            <TabsTrigger value="notifications">Notifications</TabsTrigger>
-            <TabsTrigger value="rewards">Dual Rewards</TabsTrigger>
-            <TabsTrigger value="service-hours">
-              <Shield className="h-4 w-4 mr-1" />
-              Service Hours
+          <TabsList className="flex w-full flex-wrap justify-center gap-1 h-auto p-1">
+            <TabsTrigger value="overview" className="flex-1 min-w-fit px-3 py-2">
+              Overview
             </TabsTrigger>
-            <TabsTrigger value="fundraising">
-              <Target className="h-4 w-4 mr-1" />
-              School Fundraising
+            <TabsTrigger value="activity" className="flex-1 min-w-fit px-3 py-2">
+              Activity
             </TabsTrigger>
-            <TabsTrigger value="insights">Insights</TabsTrigger>
-            <TabsTrigger value="sponsors">
-              <Building2 className="h-4 w-4 mr-1" />
+            <TabsTrigger value="notifications" className="flex-1 min-w-fit px-3 py-2">
+              Alerts
+            </TabsTrigger>
+            <TabsTrigger value="rewards" className="flex-1 min-w-fit px-3 py-2">
+              Rewards
+            </TabsTrigger>
+            <TabsTrigger value="service-hours" className="flex-1 min-w-fit px-3 py-2">
+              <Shield className="h-3 w-3 mr-1" />
+              Service
+            </TabsTrigger>
+            <TabsTrigger value="fundraising" className="flex-1 min-w-fit px-3 py-2">
+              <Target className="h-3 w-3 mr-1" />
+              Fundraising
+            </TabsTrigger>
+            <TabsTrigger value="insights" className="flex-1 min-w-fit px-3 py-2">
+              Insights
+            </TabsTrigger>
+            <TabsTrigger value="sponsors" className="flex-1 min-w-fit px-3 py-2">
+              <Building2 className="h-3 w-3 mr-1" />
               Sponsors
             </TabsTrigger>
           </TabsList>
