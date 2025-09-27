@@ -1024,21 +1024,21 @@ export default function ParentDashboard() {
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">🏰 New Playground Equipment</h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">Creating a safe, inclusive play space for all students</p>
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">🏰 New Playground Fund</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">Help us build a new playground for our students! Every donation earns DOUBLE tokens for your family.</p>
                         </div>
                         <Badge className="bg-green-100 text-green-800">Active</Badge>
                       </div>
                       
                       <div className="space-y-3 mb-4">
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-600">Progress toward $150 goal</span>
+                          <span className="text-gray-600">Progress toward $20,000 goal</span>
                           <span className="text-green-600 font-medium">58% complete</span>
                         </div>
                         <Progress value={58} className="h-2" />
                         <div className="flex items-center justify-between text-sm text-gray-500">
-                          <span>$87 raised</span>
-                          <span>$63 remaining</span>
+                          <span>$11,600 raised</span>
+                          <span>$8,400 remaining</span>
                         </div>
                       </div>
 
@@ -1062,21 +1062,21 @@ export default function ParentDashboard() {
                     <CardContent className="p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div>
-                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">📚 Library Book Drive</h3>
-                          <p className="text-sm text-gray-600 dark:text-gray-300">Expanding our reading collection for middle school students</p>
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">📚 New Library Equipment</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">Expanding our library with new books and technology for middle school students</p>
                         </div>
                         <Badge className="bg-blue-100 text-blue-800">Active</Badge>
                       </div>
                       
                       <div className="space-y-3 mb-4">
                         <div className="flex items-center justify-between text-sm">
-                          <span className="text-gray-600">Progress toward $200 goal</span>
+                          <span className="text-gray-600">Progress toward $15,000 goal</span>
                           <span className="text-blue-600 font-medium">34% complete</span>
                         </div>
                         <Progress value={34} className="h-2" />
                         <div className="flex items-center justify-between text-sm text-gray-500">
-                          <span>$68 raised</span>
-                          <span>$132 remaining</span>
+                          <span>$5,100 raised</span>
+                          <span>$9,900 remaining</span>
                         </div>
                       </div>
 
