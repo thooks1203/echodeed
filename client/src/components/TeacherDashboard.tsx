@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useLocation } from 'wouter';
+import { useAuth } from '@/hooks/useAuth';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -155,6 +156,7 @@ export function TeacherDashboard() {
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { user } = useAuth();
 
   // Fetch pending service hours for verification
   const { data: pendingServiceHours = [], isLoading: serviceHoursLoading } = useQuery({
@@ -237,7 +239,11 @@ export function TeacherDashboard() {
                   📚 Teacher Dashboard
                 </h1>
                 <p className="text-gray-600">
-                  Mrs. Smith's 9th Grade Class • Character Education & Kindness Tracking
+                  {user?.firstName && user?.lastName 
+                    ? `${user.firstName} ${user.lastName}'s Class` 
+                    : user?.name 
+                    ? `${user.name}'s Class`
+                    : "Teacher's Class"} • Character Education & Kindness Tracking
                 </p>
               </div>
             </div>
