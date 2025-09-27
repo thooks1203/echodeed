@@ -191,16 +191,26 @@ export function TeacherDashboard() {
   // Mutation for approving service hours
   const approveServiceHoursMutation = useMutation({
     mutationFn: async ({ serviceLogId }: { serviceLogId: string }) => {
-      return apiRequest('/api/community-service/verify', 'POST', {
-        serviceLogId,
-        verifierType: 'teacher',
-        verificationMethod: 'teacher_review',
-        status: 'approved',
-        feedback: 'Service hours approved by teacher'
-        // Remove tokensAwarded and verifierId - let backend compute from auth and service hours
-      });
+      console.log('🔍 Attempting to approve service hours:', serviceLogId);
+      
+      try {
+        const response = await apiRequest('/api/community-service/verify', 'POST', {
+          serviceLogId,
+          verifierType: 'teacher',
+          verificationMethod: 'teacher_review',
+          status: 'approved',
+          feedback: 'Service hours approved by teacher'
+        });
+        
+        console.log('✅ Service hours approval response:', response);
+        return response;
+      } catch (error) {
+        console.error('❌ Service hours approval error:', error);
+        throw error;
+      }
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
+      console.log('✅ Service hours approved successfully:', data);
       toast({
         title: "✅ Service Hours Approved!",
         description: "Tokens have been awarded to the student.",
@@ -209,10 +219,11 @@ export function TeacherDashboard() {
       queryClient.invalidateQueries({ queryKey: ['/api/community-service/summary'] });
       queryClient.invalidateQueries({ queryKey: ['/api/community-service/logs'] });
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error('❌ Service hours approval failed:', error);
       toast({
         title: "Error",
-        description: "Failed to approve service hours. Please try again.",
+        description: `Failed to approve service hours: ${error?.message || 'Please try again.'}`,
         variant: "destructive"
       });
     }
@@ -231,7 +242,7 @@ export function TeacherDashboard() {
     : sampleStudents;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 p-6 pb-24">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
