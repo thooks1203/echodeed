@@ -29,7 +29,9 @@ import {
   Target,
   Award,
   ArrowLeft,
-  Building2
+  Building2,
+  Zap,
+  BookOpen
 } from 'lucide-react';
 import { useLocation } from 'wouter';
 import PushNotificationSetup from '@/components/PushNotificationSetup';
@@ -286,7 +288,7 @@ function ServiceHoursSection() {
 }
 
 export default function ParentDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'notifications' | 'rewards' | 'service-hours' | 'insights' | 'sponsors'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'notifications' | 'rewards' | 'service-hours' | 'fundraising' | 'insights' | 'sponsors'>('overview');
   const [selectedStudent, setSelectedStudent] = useState<string>('');
   const [, navigate] = useLocation();
 
@@ -618,7 +620,7 @@ export default function ParentDashboard() {
 
         {/* Main Dashboard */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-7">
+          <TabsList className="grid w-full grid-cols-8">
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="activity">Live Activity</TabsTrigger>
             <TabsTrigger value="notifications">Notifications</TabsTrigger>
@@ -626,6 +628,10 @@ export default function ParentDashboard() {
             <TabsTrigger value="service-hours">
               <Shield className="h-4 w-4 mr-1" />
               Service Hours
+            </TabsTrigger>
+            <TabsTrigger value="fundraising">
+              <Target className="h-4 w-4 mr-1" />
+              School Fundraising
             </TabsTrigger>
             <TabsTrigger value="insights">Insights</TabsTrigger>
             <TabsTrigger value="sponsors">
@@ -960,6 +966,136 @@ export default function ParentDashboard() {
           {/* Service Hours Tab - NEW FEATURE! */}
           <TabsContent value="service-hours">
             <ServiceHoursSection />
+          </TabsContent>
+
+          {/* School Fundraising Tab */}
+          <TabsContent value="fundraising">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5 text-purple-600" />
+                  🎯 Burlington Christian Academy Campaigns
+                </CardTitle>
+                <CardDescription>
+                  Support your school's fundraising goals and earn double tokens for donations
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <Alert className="border-purple-200 bg-purple-50 dark:bg-purple-900/10">
+                  <Zap className="h-4 w-4 text-purple-600" />
+                  <AlertTitle className="text-purple-900 dark:text-purple-100">
+                    ⚡ Double Token Rewards Active!
+                  </AlertTitle>
+                  <AlertDescription className="text-purple-700 dark:text-purple-200">
+                    All donations to school fundraising campaigns earn 2x tokens as part of our dual reward system.
+                  </AlertDescription>
+                </Alert>
+
+                <div className="grid gap-6">
+                  {/* Playground Campaign */}
+                  <Card className="border-green-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">🏰 New Playground Equipment</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">Creating a safe, inclusive play space for all students</p>
+                        </div>
+                        <Badge className="bg-green-100 text-green-800">Active</Badge>
+                      </div>
+                      
+                      <div className="space-y-3 mb-4">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-gray-600">Progress toward $150 goal</span>
+                          <span className="text-green-600 font-medium">58% complete</span>
+                        </div>
+                        <Progress value={58} className="h-2" />
+                        <div className="flex items-center justify-between text-sm text-gray-500">
+                          <span>$87 raised</span>
+                          <span>$63 remaining</span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        <Button className="bg-purple-600 hover:bg-purple-700" size="sm" data-testid="button-donate-playground">
+                          <Heart className="h-4 w-4 mr-2" />
+                          Donate $5 (10 tokens)
+                        </Button>
+                        <Button variant="outline" size="sm" data-testid="button-donate-playground-10">
+                          Donate $10 (20 tokens)
+                        </Button>
+                        <Button variant="outline" size="sm" data-testid="button-donate-playground-25">
+                          Donate $25 (50 tokens)
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  {/* Library Books Campaign */}
+                  <Card className="border-blue-200">
+                    <CardContent className="p-6">
+                      <div className="flex items-start justify-between mb-4">
+                        <div>
+                          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">📚 Library Book Drive</h3>
+                          <p className="text-sm text-gray-600 dark:text-gray-300">Expanding our reading collection for middle school students</p>
+                        </div>
+                        <Badge className="bg-blue-100 text-blue-800">Active</Badge>
+                      </div>
+                      
+                      <div className="space-y-3 mb-4">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="text-gray-600">Progress toward $200 goal</span>
+                          <span className="text-blue-600 font-medium">34% complete</span>
+                        </div>
+                        <Progress value={34} className="h-2" />
+                        <div className="flex items-center justify-between text-sm text-gray-500">
+                          <span>$68 raised</span>
+                          <span>$132 remaining</span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-2">
+                        <Button className="bg-blue-600 hover:bg-blue-700" size="sm" data-testid="button-donate-library">
+                          <BookOpen className="h-4 w-4 mr-2" />
+                          Donate $5 (10 tokens)
+                        </Button>
+                        <Button variant="outline" size="sm" data-testid="button-donate-library-10">
+                          Donate $10 (20 tokens)
+                        </Button>
+                        <Button variant="outline" size="sm" data-testid="button-donate-library-25">
+                          Donate $25 (50 tokens)
+                        </Button>
+                      </div>
+                    </CardContent>
+                  </Card>
+                </div>
+
+                <Card className="bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 border-purple-200">
+                  <CardContent className="p-6">
+                    <div className="text-center">
+                      <h4 className="font-semibold text-purple-900 dark:text-purple-100 mb-2">🏫 Why Support School Fundraising?</h4>
+                      <p className="text-sm text-purple-700 dark:text-purple-200 mb-4">
+                        Your donations directly improve the learning environment for Emma and all students at Burlington Christian Academy.
+                        Plus, you earn double tokens that can be redeemed for family rewards!
+                      </p>
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
+                        <div className="text-center">
+                          <div className="text-purple-600 font-bold">💝 Direct Impact</div>
+                          <div className="text-purple-600">Every dollar goes to your child's school</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-purple-600 font-bold">⚡ Double Rewards</div>
+                          <div className="text-purple-600">2x tokens for family rewards</div>
+                        </div>
+                        <div className="text-center">
+                          <div className="text-purple-600 font-bold">🏆 School Pride</div>
+                          <div className="text-purple-600">Building stronger community</div>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* Insights Tab */}

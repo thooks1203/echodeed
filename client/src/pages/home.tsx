@@ -25,6 +25,8 @@ import { SummerChallenges } from '@/components/SummerChallenges';
 import { SponsorsPage } from '@/components/SponsorsPage';
 import { CommunityService } from '@/components/CommunityService';
 import { useKindnessSparksContext } from '@/contexts/KindnessSparksContext';
+import ParentDashboard from '@/pages/ParentDashboard';
+import FamilyDashboard from '@/pages/FamilyDashboard';
 
 interface RewardOffer {
   id: string;
@@ -64,7 +66,7 @@ export default function Home() {
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
     
-    if (tabParam && ['feed', 'schools', 'support', 'summer', 'community-service', 'rewards', 'mentor-dashboard', 'student-dashboard', 'teacher-dashboard', 'sponsors'].includes(tabParam)) {
+    if (tabParam && ['feed', 'schools', 'support', 'summer', 'community-service', 'rewards', 'mentor-dashboard', 'student-dashboard', 'teacher-dashboard', 'parent-dashboard', 'family-dashboard', 'sponsors'].includes(tabParam)) {
       setActiveTab(tabParam);
       // Remove the tab parameter from URL to keep it clean
       window.history.replaceState({}, '', window.location.pathname);
@@ -390,6 +392,27 @@ export default function Home() {
         </div>
       );
     }
+  }
+  
+  if (activeTab === 'parent-dashboard') {
+    // Only parents can access parent dashboard
+    if (user?.schoolRole !== 'parent') {
+      return null; // useEffect will redirect to feed
+    }
+    
+    return (
+      <ParentDashboard />
+    );
+  }
+  
+  if (activeTab === 'family-dashboard') {
+    // Family dashboard accessible to parents and family members
+    return (
+      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+        <FamilyDashboard />
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
+    );
   }
 
 

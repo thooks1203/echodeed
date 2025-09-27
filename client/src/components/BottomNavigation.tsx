@@ -33,6 +33,15 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'sign-in', label: 'Sign In', icon: '👤' },
   ];
 
+  // Parent tabs for family engagement
+  const parentTabs = [
+    { id: 'parent-dashboard', label: 'Parent', icon: '👨‍👩‍👧‍👦' },
+    { id: 'family-dashboard', label: 'Family', icon: '🎯' },
+    { id: 'support', label: 'Support', icon: '💜' },
+    { id: 'rewards', label: 'Rewards', icon: '🔥' },
+    { id: 'sign-in', label: 'Sign In', icon: '👤' },
+  ];
+
   // If not authenticated, only show sign-in tab
   if (!user) {
     const signInTabs = [{ id: 'sign-in', label: 'Sign In', icon: '👤' }];
@@ -85,10 +94,15 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     );
   }
 
-  // FIXED: Use teacherTabs for teachers, ensure all tabs are visible
-  const tabs = canAccessSchoolsDashboard(user?.schoolRole || 'student') 
-    ? [...baseTabs, ...teacherTabs]  // Teachers get Feed + Teacher tabs (4 total: Feed, Dashboard, Support, Rewards, Sign In)
-    : [...baseTabs, ...studentTabs]; // Students get Feed + Student tabs
+  // Role-based tab selection
+  let tabs;
+  if (user?.schoolRole === 'parent') {
+    tabs = [...baseTabs, ...parentTabs]; // Parents get Feed + Parent + Family tabs
+  } else if (canAccessSchoolsDashboard(user?.schoolRole || 'student')) {
+    tabs = [...baseTabs, ...teacherTabs]; // Teachers get Feed + Teacher tabs
+  } else {
+    tabs = [...baseTabs, ...studentTabs]; // Students get Feed + Student tabs
+  }
 
   // Keep all tabs for role switching (educational demo platform)
   const filteredTabs = tabs;
