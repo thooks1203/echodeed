@@ -189,7 +189,9 @@ export default function Home() {
   };
 
   const navigateToTab = (tab: string) => {
+    console.log('🔄 Tab navigation requested:', tab, 'Current tab:', activeTab);
     setActiveTab(tab);
+    console.log('✅ Tab state updated to:', tab);
   };
 
   // Show different content based on active tab
