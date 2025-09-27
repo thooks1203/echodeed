@@ -64,7 +64,7 @@ export default function Home() {
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
     
-    if (tabParam && ['feed', 'schools', 'support', 'summer', 'community-service', 'rewards', 'mentor-dashboard', 'student-dashboard'].includes(tabParam)) {
+    if (tabParam && ['feed', 'schools', 'support', 'summer', 'community-service', 'rewards', 'mentor-dashboard', 'student-dashboard', 'teacher-dashboard', 'sponsors'].includes(tabParam)) {
       setActiveTab(tabParam);
       // Remove the tab parameter from URL to keep it clean
       window.history.replaceState({}, '', window.location.pathname);
@@ -214,7 +214,10 @@ export default function Home() {
 
   if (activeTab === 'support') {
     return (
-      <SupportCircle onBack={handleBackToDashboard} />
+      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+        <SupportCircle onBack={handleBackToDashboard} />
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
     );
   }
 
@@ -247,7 +250,10 @@ export default function Home() {
 
   if (activeTab === 'rewards') {
     return (
-      <RewardsPage onBack={handleBackToDashboard} />
+      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+        <RewardsPage onBack={handleBackToDashboard} />
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
     );
   }
 
