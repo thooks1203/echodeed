@@ -899,7 +899,7 @@ export function TeacherDashboard() {
 
       {/* Auto-opening Teacher Wellness Overview Modal */}
       <Dialog open={showWellnessModal} onOpenChange={setShowWellnessModal}>
-        <DialogContent className="max-w-lg border-0 shadow-2xl">
+        <DialogContent className="max-w-lg border-0 shadow-2xl fixed top-8 left-1/2 transform -translate-x-1/2 max-h-[80vh] overflow-y-auto z-50 mb-24">
           <TeacherWellnessOverview
             onClose={() => setShowWellnessModal(false)}
             onStartCheck={() => {
