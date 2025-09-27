@@ -202,7 +202,7 @@ export function TeacherDashboard() {
       console.log('🔍 Attempting to approve service hours:', serviceLogId);
       
       try {
-        const response = await apiRequest('/api/community-service/verify', 'POST', {
+        const response = await apiRequest('POST', '/api/community-service/verify', {
           serviceLogId,
           verifierType: 'teacher',
           verificationMethod: 'teacher_review',
