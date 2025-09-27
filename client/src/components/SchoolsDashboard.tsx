@@ -42,43 +42,43 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
     queryKey: ['/api/schools/student-points'],
   });
 
-  // Sample data for demonstration - Burlington Christian Academy Demo
+  // Sample data for demonstration - Burlington Christian Academy School System
   const sampleSchools: School[] = schools.length > 0 ? schools : [
     {
-      id: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
-      name: 'Burlington Christian Academy',
-      type: 'private',
-      studentCount: 425,
-      teacherCount: 28,
-      totalKindnessActs: 1847,
-      avgKindnessScore: 8.7
+      id: 'bca-high-school',
+      name: 'BCA High School',
+      type: 'high',
+      studentCount: 380,
+      teacherCount: 32,
+      totalKindnessActs: 2156,
+      avgKindnessScore: 8.9
     },
     {
-      id: '2', 
-      name: 'Roosevelt Middle School',
+      id: 'bca-middle-school', 
+      name: 'BCA Middle School',
       type: 'middle',
-      studentCount: 680,
-      teacherCount: 45,
-      totalKindnessActs: 1523,
-      avgKindnessScore: 8.3
-    },
-    {
-      id: '3',
-      name: 'Lincoln Elementary', 
-      type: 'elementary',
-      studentCount: 425,
-      teacherCount: 28,
-      totalKindnessActs: 1342,
+      studentCount: 285,
+      teacherCount: 24,
+      totalKindnessActs: 1674,
       avgKindnessScore: 8.7
     },
     {
-      id: '4',
-      name: 'Eastern Alamance Middle School',
-      type: 'middle', 
-      studentCount: 567,
-      teacherCount: 42,
-      totalKindnessActs: 1156,
-      avgKindnessScore: 7.9
+      id: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+      name: 'Burlington Christian Academy Elementary', 
+      type: 'elementary',
+      studentCount: 195,
+      teacherCount: 18,
+      totalKindnessActs: 1289,
+      avgKindnessScore: 8.5
+    },
+    {
+      id: 'bca-pre-k',
+      name: 'BCA Early Learning Center',
+      type: 'preschool', 
+      studentCount: 90,
+      teacherCount: 12,
+      totalKindnessActs: 456,
+      avgKindnessScore: 8.3
     }
   ];
 
