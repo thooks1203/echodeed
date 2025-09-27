@@ -695,6 +695,61 @@ export function TeacherDashboard() {
               </Card>
             </div>
           </TabsContent>
+          
+          {/* Reports Tab - Moved from top navigation */}
+          <TabsContent value="reports" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    📊 Weekly Summary Report
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <p className="text-sm text-gray-600">
+                      Comprehensive weekly analysis of character development progress
+                    </p>
+                    <div className="space-y-2">
+                      <Button size="sm" className="w-full justify-start">
+                        📈 Generate Class Report
+                      </Button>
+                      <Button size="sm" variant="outline" className="w-full justify-start">
+                        📋 Individual Student Reports
+                      </Button>
+                      <Button size="sm" variant="outline" className="w-full justify-start">
+                        📧 Email Reports to Principal
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Parent Communication</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <p className="text-sm text-gray-600">
+                      Send positive updates to parents about their child's character development
+                    </p>
+                    <div className="space-y-2">
+                      <Button size="sm" className="w-full justify-start">
+                        📧 Send Individual Praise Notes
+                      </Button>
+                      <Button size="sm" variant="outline" className="w-full justify-start">
+                        📊 Share Class Progress
+                      </Button>
+                      <Button size="sm" variant="outline" className="w-full justify-start">
+                        📝 Monthly Character Newsletter
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
       
@@ -702,21 +757,24 @@ export function TeacherDashboard() {
       <BottomNavigation 
         activeTab="teacher-dashboard" 
         onTabChange={(tab) => {
-          // Handle tab navigation
+          // Handle tab navigation properly
           if (tab === 'feed') {
-            window.location.href = '/app?tab=feed';
+            navigate('/app?tab=feed');
           } else if (tab === 'reports') {
-            // Handle reports tab - could show reports in a modal or navigate
-            console.log('Reports tab clicked');
+            // Switch to reports tab in the current teacher dashboard
+            setSelectedTab('reports');
           } else if (tab === 'support') {
-            // Handle support tab
-            console.log('Support tab clicked');
+            // Navigate to support page
+            navigate('/app?tab=support');
           } else if (tab === 'rewards') {
-            // Handle rewards tab
-            console.log('Rewards tab clicked');
+            // Navigate to rewards page  
+            navigate('/app?tab=rewards');
           } else if (tab === 'sign-in') {
             // Handle role switching
-            window.location.href = '/';
+            navigate('/');
+          } else if (tab === 'teacher-dashboard') {
+            // Stay on teacher dashboard but switch to overview
+            setSelectedTab('overview');
           }
         }} 
       />
