@@ -37,6 +37,7 @@ import { useLocation } from 'wouter';
 import PushNotificationSetup from '@/components/PushNotificationSetup';
 import { SponsorsPage } from '@/components/SponsorsPage';
 import { BottomNavigation } from '@/components/BottomNavigation';
+import { RoleSwitcherDemo } from '@/components/RoleSwicherDemo';
 
 interface ParentNotification {
   id: string;
@@ -1152,6 +1153,9 @@ export default function ParentDashboard() {
         activeTab={activeBottomTab} 
         onTabChange={handleBottomTabChange} 
       />
+      
+      {/* Universal Role Switcher */}
+      <RoleSwitcherDemo />
     </div>
   );
 }
