@@ -588,43 +588,62 @@ export function TeacherDashboard() {
                 ) : pendingServiceHours.length > 0 ? (
                   <div className="space-y-4">
                     {pendingServiceHours.map((serviceHour: any) => {
-                      const hours = parseFloat(serviceHour.hoursLogged?.toString() || '0');
+                      // Normalize data structure - API returns nested objects
+                      const serviceLog = serviceHour.serviceLog || serviceHour;
+                      const student = serviceHour.student || {};
+                      
+                      const hours = parseFloat(serviceLog.hoursLogged?.toString() || '0');
                       const tokens = calculateTokens(hours);
-                      const serviceDate = new Date(serviceHour.serviceDate).toLocaleDateString('en-US', { 
-                        weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
-                      });
+                      
+                      // Handle date formatting with fallback
+                      let serviceDate = 'Invalid Date';
+                      try {
+                        const date = new Date(serviceLog.serviceDate);
+                        if (!isNaN(date.getTime())) {
+                          serviceDate = date.toLocaleDateString('en-US', { 
+                            weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' 
+                          });
+                        }
+                      } catch (e) {
+                        serviceDate = 'Date not available';
+                      }
+                      
+                      // Build student name from nested structure
+                      const studentName = student.firstName && student.lastName 
+                        ? `${student.firstName} ${student.lastName}`
+                        : serviceLog.studentName || 'Student';
                       
                       return (
-                        <div key={serviceHour.id} className="border rounded-lg p-4 bg-yellow-50">
+                        <div key={serviceLog.id || serviceHour.id} className="border rounded-lg p-4 bg-yellow-50">
                           <div className="flex justify-between items-start mb-3">
                             <div>
-                              <h4 className="font-semibold text-lg">{serviceHour.serviceName}</h4>
+                              <h4 className="font-semibold text-lg">{serviceLog.serviceName}</h4>
                               <p className="text-sm text-gray-600">
-                                {serviceHour.studentName || 'Emma Johnson'} • {hours} hours • {serviceDate}
+                                {studentName} • {hours} hours • {serviceDate}
                               </p>
                             </div>
-                            <Badge className="bg-yellow-100 text-yellow-800">{serviceHour.verificationStatus || 'Pending'}</Badge>
+                            <Badge className="bg-yellow-100 text-yellow-800">{serviceLog.verificationStatus || 'Pending'}</Badge>
                           </div>
                           <p className="text-sm mb-3">
-                            <strong>Organization:</strong> {serviceHour.organizationName}<br />
-                            {serviceHour.contactPerson && (
-                              <><strong>Contact:</strong> {serviceHour.contactPerson} 
-                              {serviceHour.contactEmail && `(${serviceHour.contactEmail})`}<br /></>
+                            <strong>Organization:</strong> {serviceLog.organizationName}<br />
+                            {serviceLog.contactPerson && (
+                              <><strong>Contact:</strong> {serviceLog.contactPerson} 
+                              {serviceLog.contactEmail && ` (${serviceLog.contactEmail})`}<br /></>
                             )}
-                            <strong>Description:</strong> {serviceHour.serviceDescription}
+                            <strong>Description:</strong> {serviceLog.serviceDescription}
                           </p>
-                          {serviceHour.studentReflection && (
+                          {serviceLog.studentReflection && (
                             <p className="text-sm mb-4 italic">
-                              <strong>Student Reflection:</strong> "{serviceHour.studentReflection}"
+                              <strong>Student Reflection:</strong> "{serviceLog.studentReflection}"
                             </p>
                           )}
                           <div className="flex gap-2">
                             <Button 
                               size="sm" 
                               className="bg-green-600 hover:bg-green-700"
-                              onClick={() => handleApproveServiceHours(serviceHour.id)}
+                              onClick={() => handleApproveServiceHours(serviceLog.id)}
                               disabled={approveServiceHoursMutation.isPending}
-                              data-testid={`button-approve-service-${serviceHour.id}`}
+                              data-testid={`button-approve-service-${serviceLog.id}`}
                             >
                               <CheckCircle className="w-4 h-4 mr-2" />
                               {approveServiceHoursMutation.isPending ? 'Processing...' : `Approve (Award ${tokens} tokens)`}
