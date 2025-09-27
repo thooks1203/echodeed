@@ -241,7 +241,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
           )}
           <div>
             <h1 className="text-2xl font-bold">Community Service Hours</h1>
-            <p className="text-muted-foreground">Track your service toward the 30+ hour graduation requirement</p>
+            <p className="text-muted-foreground">Track your service toward the 30+ hour yearly requirement</p>
           </div>
         </div>
       </div>
