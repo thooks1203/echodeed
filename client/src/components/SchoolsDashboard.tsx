@@ -42,7 +42,7 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
     queryKey: ['/api/schools/student-points'],
   });
 
-  // Sample data for demonstration - Burlington Christian Academy School System
+  // Sample data for demonstration - BCA Middle & High Schools
   const sampleSchools: School[] = [
     {
       id: 'bca-high-school',
@@ -61,24 +61,6 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
       teacherCount: 24,
       totalKindnessActs: 1674,
       avgKindnessScore: 8.7
-    },
-    {
-      id: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
-      name: 'Burlington Christian Academy Elementary', 
-      type: 'elementary',
-      studentCount: 195,
-      teacherCount: 18,
-      totalKindnessActs: 1289,
-      avgKindnessScore: 8.5
-    },
-    {
-      id: 'bca-pre-k',
-      name: 'BCA Early Learning Center',
-      type: 'preschool', 
-      studentCount: 90,
-      teacherCount: 12,
-      totalKindnessActs: 456,
-      avgKindnessScore: 8.3
     }
   ];
 
