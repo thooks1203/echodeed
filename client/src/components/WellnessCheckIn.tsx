@@ -31,10 +31,7 @@ export function WellnessCheckIn({ onComplete, gradeLevel, schoolId }: WellnessCh
 
   const checkInMutation = useMutation({
     mutationFn: async (data: any) => {
-      return apiRequest("/api/wellness-checkin", {
-        method: "POST",
-        body: JSON.stringify(data),
-      });
+      return apiRequest("/api/wellness-checkin", "POST", data);
     },
     onSuccess: () => {
       onComplete?.();
