@@ -36,6 +36,7 @@ import {
 import { useLocation } from 'wouter';
 import PushNotificationSetup from '@/components/PushNotificationSetup';
 import { SponsorsPage } from '@/components/SponsorsPage';
+import { BottomNavigation } from '@/components/BottomNavigation';
 
 interface ParentNotification {
   id: string;
@@ -291,6 +292,22 @@ export default function ParentDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'notifications' | 'rewards' | 'service-hours' | 'fundraising' | 'insights' | 'sponsors'>('overview');
   const [selectedStudent, setSelectedStudent] = useState<string>('');
   const [, navigate] = useLocation();
+  const [activeBottomTab, setActiveBottomTab] = useState('parent-dashboard');
+
+  const handleBottomTabChange = (tab: string) => {
+    setActiveBottomTab(tab);
+    if (tab === 'family-dashboard') {
+      navigate('/family-dashboard');
+    } else if (tab === 'parent-dashboard') {
+      // Already on parent dashboard
+    } else if (tab === 'feed') {
+      navigate('/');
+    } else if (tab === 'support') {
+      navigate('/?tab=support');
+    } else if (tab === 'rewards') {
+      navigate('/rewards');
+    }
+  };
 
   // Mock parent data - in production, get from auth context
   const parentInfo = {
@@ -1129,6 +1146,12 @@ export default function ParentDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+      
+      {/* Bottom Navigation for Parents */}
+      <BottomNavigation 
+        activeTab={activeBottomTab} 
+        onTabChange={handleBottomTabChange} 
+      />
     </div>
   );
 }
