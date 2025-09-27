@@ -249,7 +249,7 @@ export function TeacherDashboard() {
                 onClick={() => navigate('/wellness-checkin?from=teacher-dashboard')}
                 className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 animate-pulse"
                 style={{
-                  animation: 'pulse 2s infinite, glow 2s ease-in-out infinite alternate'
+                  animation: 'pulse 2s infinite'
                 }}
                 data-testid="teacher-wellness-alert"
               >
@@ -257,16 +257,6 @@ export function TeacherDashboard() {
                 Wellness Check Needed
               </Button>
 
-              <style jsx>{`
-                @keyframes glow {
-                  from {
-                    box-shadow: 0 0 5px #f59e0b, 0 0 10px #f59e0b, 0 0 15px #f59e0b;
-                  }
-                  to {
-                    box-shadow: 0 0 10px #f59e0b, 0 0 20px #f59e0b, 0 0 30px #f59e0b;
-                  }
-                }
-              `}</style>
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
                   📚 Teacher Dashboard
@@ -372,7 +362,7 @@ export function TeacherDashboard() {
               </CardHeader>
               <CardContent>
                 <div className="max-h-96 overflow-y-auto">
-                  <KindnessFeed posts={posts || []} isLoading={postsLoading} />
+                  <KindnessFeed posts={Array.isArray(posts) ? posts : []} isLoading={postsLoading} />
                 </div>
               </CardContent>
             </Card>
@@ -552,7 +542,7 @@ export function TeacherDashboard() {
                     <p className="mt-2 text-gray-600">Loading student posts...</p>
                   </div>
                 ) : (
-                  <KindnessFeed posts={posts || []} isLoading={postsLoading} />
+                  <KindnessFeed posts={Array.isArray(posts) ? posts : []} isLoading={postsLoading} />
                 )}
               </CardContent>
             </Card>
@@ -851,8 +841,8 @@ export function TeacherDashboard() {
             // Switch to reports tab in the current teacher dashboard
             setSelectedTab('reports');
           } else if (tab === 'support') {
-            // Navigate to app with support tab
-            navigate('/app?tab=support');
+            // Navigate to support page
+            navigate('/support');
           } else if (tab === 'rewards') {
             // Navigate to rewards page  
             navigate('/rewards');
