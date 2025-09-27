@@ -21,7 +21,6 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'community-service', label: 'Service', icon: '🏥' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
-    { id: 'sign-in', label: 'Sign In', icon: '👤' },
   ];
 
   // FIXED: Teacher tabs now include Reports moved from top + Support & Rewards
@@ -30,7 +29,6 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'reports', label: 'Reports', icon: '📊' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
-    { id: 'sign-in', label: 'Sign In', icon: '👤' },
   ];
 
   // Parent tabs for family engagement
@@ -39,7 +37,6 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'family-dashboard', label: 'Family', icon: '🎯' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
-    { id: 'sign-in', label: 'Sign In', icon: '👤' },
   ];
 
   // If not authenticated, only show sign-in tab
