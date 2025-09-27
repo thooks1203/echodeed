@@ -9,8 +9,8 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { WellnessCheckIn } from '@/components/WellnessCheckIn';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
+import { TeacherWellnessOverview } from '@/components/TeacherWellnessOverview';
 import { KindnessFeed } from '@/components/KindnessFeed';
 import { 
   Users, 
@@ -882,39 +882,16 @@ export function TeacherDashboard() {
         }} 
       />
 
-      {/* Auto-opening Wellness Check Modal */}
+      {/* Auto-opening Teacher Wellness Overview Modal */}
       <Dialog open={showWellnessModal} onOpenChange={setShowWellnessModal}>
-        <DialogContent className="max-w-md max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <HeartPulse className="w-5 h-5 text-orange-500" />
-                Quick Wellness Check
-              </div>
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setShowWellnessModal(false)}
-                className="h-6 w-6 p-0 hover:bg-gray-100"
-                data-testid="close-wellness-modal"
-              >
-                <X className="h-4 w-4" />
-              </Button>
-            </DialogTitle>
-          </DialogHeader>
-          <div className="pt-4">
-            <WellnessCheckIn
-              onComplete={() => {
-                setShowWellnessModal(false);
-                toast({
-                  title: "✅ Wellness Check Complete",
-                  description: "Thank you for taking care of your wellbeing!",
-                });
-              }}
-              gradeLevel="7"
-              schoolId="burlington-christian-academy"
-            />
-          </div>
+        <DialogContent className="max-w-lg border-0 shadow-2xl">
+          <TeacherWellnessOverview
+            onClose={() => setShowWellnessModal(false)}
+            onStartCheck={() => {
+              setShowWellnessModal(false);
+              navigate('/wellness-checkin?from=teacher-dashboard');
+            }}
+          />
         </DialogContent>
       </Dialog>
     </div>
