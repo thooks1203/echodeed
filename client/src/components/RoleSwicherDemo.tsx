@@ -34,7 +34,7 @@ export function RoleSwitcherDemo() {
         }}
         data-testid="role-switcher-demo"
       >
-        🔒 {user.name} ({user.schoolRole.toUpperCase()})
+        🔒 {user.name} ({user.schoolRole?.toUpperCase() || 'UNKNOWN'})
       </button>
 
       {showDropdown && (

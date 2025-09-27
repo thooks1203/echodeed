@@ -24,6 +24,7 @@ export function useAuth() {
     // This is safe because it's for demonstration purposes only
     
     const storedRole = localStorage.getItem('echodeed_demo_role') as SchoolRole;
+    console.log('🔍 getDemoUser - stored role from localStorage:', storedRole);
     if (!storedRole) return null;
     
     const demoUsers = {
@@ -80,12 +81,15 @@ export function useAuth() {
 // Demo utility functions (works in both development and production)
 export function switchDemoRole(role: SchoolRole) {
   // Always set demo role and session for educational demo purposes
+  console.log('🔄 Switching to role:', role);
   localStorage.setItem('echodeed_demo_role', role);
+  console.log('✅ Set localStorage echodeed_demo_role to:', localStorage.getItem('echodeed_demo_role'));
   
   // Ensure session exists for API calls
   if (!localStorage.getItem('echodeed_session')) {
     localStorage.setItem('echodeed_session', 'demo-session');
   }
+  console.log('🔄 About to reload page...');
   
   // Reload to apply new role
   window.location.reload();
