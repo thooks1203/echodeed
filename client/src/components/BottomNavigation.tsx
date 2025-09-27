@@ -87,8 +87,8 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     ? [...baseTabs, ...adminTabs]
     : [...baseTabs, ...studentTabs];
 
-  // Remove sign-in tab when user is authenticated
-  const filteredTabs = tabs.filter(tab => tab.id !== 'sign-in');
+  // Keep sign-in tab for role switching (educational demo platform)
+  const filteredTabs = tabs;
 
   return (
     <div style={{
