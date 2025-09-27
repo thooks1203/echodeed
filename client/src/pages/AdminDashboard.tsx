@@ -562,37 +562,26 @@ export default function AdminDashboard() {
 
   const mockSchoolMetrics: SchoolMetrics[] = [
     {
-      schoolId: 'school-001',
-      schoolName: 'Lincoln Elementary',
-      totalStudents: 425,
-      totalTeachers: 28,
-      kindnessActsThisWeek: 89,
-      kindnessActsThisMonth: 342,
-      avgSelScore: 8.7,
-      parentEngagementRate: 78,
+      schoolId: 'bca-high-school',
+      schoolName: 'BCA High School',
+      totalStudents: 380,
+      totalTeachers: 32,
+      kindnessActsThisWeek: 156,
+      kindnessActsThisMonth: 612,
+      avgSelScore: 8.9,
+      parentEngagementRate: 85,
       teacherAdoptionRate: 95
     },
     {
-      schoolId: 'school-002',
-      schoolName: 'Roosevelt Middle School',
-      totalStudents: 680,
-      totalTeachers: 45,
+      schoolId: 'bca-middle-school',
+      schoolName: 'BCA Middle School',
+      totalStudents: 285,
+      totalTeachers: 24,
       kindnessActsThisWeek: 134,
-      kindnessActsThisMonth: 523,
-      avgSelScore: 8.3,
-      parentEngagementRate: 65,
+      kindnessActsThisMonth: 456,
+      avgSelScore: 8.7,
+      parentEngagementRate: 78,
       teacherAdoptionRate: 88
-    },
-    {
-      schoolId: 'school-003',
-      schoolName: 'Washington High School',
-      totalStudents: 1240,
-      totalTeachers: 78,
-      kindnessActsThisWeek: 156,
-      kindnessActsThisMonth: 612,
-      avgSelScore: 7.9,
-      parentEngagementRate: 58,
-      teacherAdoptionRate: 82
     }
   ];
 
