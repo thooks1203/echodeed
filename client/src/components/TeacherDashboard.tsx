@@ -874,6 +874,12 @@ export function TeacherDashboard() {
       <BottomNavigation 
         activeTab="teacher-dashboard" 
         onTabChange={(tab) => {
+          // Don't navigate away if wellness modal is open
+          if (showWellnessModal) {
+            console.log('🚫 Blocked navigation while wellness modal is open:', tab);
+            return;
+          }
+          
           // Handle tab navigation properly
           if (tab === 'feed') {
             // Navigate to main app with feed
@@ -899,7 +905,7 @@ export function TeacherDashboard() {
 
       {/* Auto-opening Teacher Wellness Overview Modal */}
       <Dialog open={showWellnessModal} onOpenChange={setShowWellnessModal}>
-        <DialogContent className="max-w-lg border-0 shadow-2xl fixed top-8 left-1/2 transform -translate-x-1/2 max-h-[80vh] overflow-y-auto z-50 mb-24">
+        <DialogContent className="max-w-lg border-0 shadow-2xl max-h-[90vh] overflow-y-auto">
           <TeacherWellnessOverview
             onClose={() => setShowWellnessModal(false)}
             onStartCheck={() => {
