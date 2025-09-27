@@ -861,20 +861,7 @@ export default function AdminDashboard() {
       {/* Header */}
       <div className="flex justify-between items-center">
         <div className="flex items-center gap-3">
-          {activeTab !== 'overview' && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => {
-                setActiveTab('overview');
-              }}
-              className="flex items-center gap-2"
-              data-testid="back-to-overview"
-            >
-              <ArrowLeft className="w-4 h-4" />
-              Back to Overview
-            </Button>
-          )}
+          {/* Remove duplicate back button for cleaner UI */}
           <div>
             <h1 className="text-3xl font-bold text-gray-900 dark:text-white" data-testid="admin-dashboard-title">
               Administrator Dashboard
@@ -916,7 +903,7 @@ export default function AdminDashboard() {
                 data-testid="user-menu"
               >
                 <User className="w-4 h-4" />
-                <span className="font-medium">{user?.name}</span>
+                <span className="font-medium truncate max-w-32">{user?.firstName || user?.name}</span>
                 <span className="text-xs opacity-90">({user?.schoolRole})</span>
                 <ChevronDown className="w-3 h-3 ml-1 opacity-75" />
               </Button>
