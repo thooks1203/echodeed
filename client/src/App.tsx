@@ -9,6 +9,7 @@ import ParentDashboard from "@/pages/ParentDashboard";
 import RewardsPage from "@/pages/rewards";
 import { TeacherDashboard } from "@/components/TeacherDashboard";
 import ClassSettings from "@/pages/ClassSettings";
+import SupportPage from "@/pages/support";
 import { LandingPage } from "@/components/landing-page";
 import PWAInstall from "@/components/PWAInstall";
 import WellnessCheckInPage from "@/pages/wellness-checkin";
@@ -37,6 +38,7 @@ function Router() {
       <Switch>
         <Route path="/teacher-dashboard"><TeacherDashboard /></Route>
         <Route path="/class-settings" component={ClassSettings} />
+        <Route path="/support" component={SupportPage} />
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/admin-dashboard" component={AdminDashboard} />
         <Route path="/admin/consents" component={SchoolConsentDashboard} />
