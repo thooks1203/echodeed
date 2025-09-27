@@ -504,7 +504,7 @@ export default function ParentDashboard() {
               <div className="flex items-center gap-3 mb-2">
                 <Button
                   size="sm"
-                  onClick={() => navigate('/')}
+                  onClick={() => navigate('/?tab=feed')}
                   className="flex items-center gap-2 bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
                   data-testid="back-to-platform"
                 >
