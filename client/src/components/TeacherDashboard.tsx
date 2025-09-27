@@ -235,7 +235,8 @@ export function TeacherDashboard() {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
-          <div className="flex items-center justify-between">
+          {/* Top Button Row */}
+          <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
               <Button
                 size="sm"
@@ -260,20 +261,8 @@ export function TeacherDashboard() {
                 <HeartPulse className="w-4 h-4" />
                 Wellness Check Needed
               </Button>
-
-              <div>
-                <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  📚 Teacher Dashboard
-                </h1>
-                <p className="text-gray-600">
-                  {user?.firstName && user?.lastName 
-                    ? `${user.firstName} ${user.lastName}'s Class` 
-                    : user?.name 
-                    ? `${user.name}'s Class`
-                    : "Teacher's Class"} • Character Education & Kindness Tracking
-                </p>
-              </div>
             </div>
+            
             <div className="flex gap-2">
               <Button size="sm" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0">
                 <Download className="w-4 h-4 mr-2" />
@@ -289,6 +278,23 @@ export function TeacherDashboard() {
                 Class Settings
               </Button>
             </div>
+          </div>
+
+          {/* Title Section - Clean and Centered */}
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2 flex items-center justify-center gap-3">
+              <div className="w-10 h-10 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-lg flex items-center justify-center">
+                <BookOpen className="w-6 h-6 text-white" />
+              </div>
+              Teacher Dashboard
+            </h1>
+            <p className="text-gray-600 text-lg">
+              {user?.firstName && user?.lastName 
+                ? `Ms. ${user.firstName} ${user.lastName}'s Class` 
+                : user?.name 
+                ? `${user.name}'s Class`
+                : "Ms. Sarah Wilson's Class"} • Character Education & Kindness Tracking
+            </p>
           </div>
         </div>
 
