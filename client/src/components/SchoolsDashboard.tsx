@@ -43,7 +43,7 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
   });
 
   // Sample data for demonstration - Burlington Christian Academy School System
-  const sampleSchools: School[] = schools.length > 0 ? schools : [
+  const sampleSchools: School[] = [
     {
       id: 'bca-high-school',
       name: 'BCA High School',
@@ -104,20 +104,7 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
     <div style={{ padding: '20px' }}>
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '24px', position: 'relative' }}>
-        {/* Back Button */}
-        <div style={{ position: 'absolute', left: 0, top: 0 }}>
-          <BackButton 
-            onClick={() => onNavigateToTab ? onNavigateToTab('feed') : navigate('/')}
-            label="Feed"
-            variant="minimal"
-            style={{
-              color: '#6B7280',
-              fontSize: '12px',
-              padding: '4px 8px',
-              borderRadius: '6px'
-            }}
-          />
-        </div>
+        {/* Remove duplicate back button - parent dashboard handles navigation */}
         
         <div style={{ 
           display: 'flex', 
