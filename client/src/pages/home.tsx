@@ -198,9 +198,23 @@ export default function Home() {
   
   
   if (activeTab === 'mentor-dashboard') {
-    return (
-      <MentorDashboard />
-    );
+    console.log('🌟 Rendering MentorDashboard for user:', user?.name, 'role:', user?.schoolRole);
+    try {
+      return (
+        <div style={{ minHeight: '100vh' }}>
+          <MentorDashboard />
+        </div>
+      );
+    } catch (error) {
+      console.error('❌ MentorDashboard error:', error);
+      return (
+        <div style={{ minHeight: '100vh', background: '#F0F9FF', padding: '20px' }}>
+          <h1>🚧 Mentor Dashboard Loading...</h1>
+          <p>Please try again or use the Feed tab</p>
+          <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+        </div>
+      );
+    }
   }
 
   if (activeTab === 'support') {
@@ -334,12 +348,27 @@ export default function Home() {
   }
   
   if (activeTab === 'student-dashboard') {
-    return (
-      <StudentDashboard 
-        onNavigateToTab={navigateToTab} 
-        activeBottomTab={activeTab}
-      />
-    );
+    console.log('🎓 Rendering StudentDashboard for user:', user?.name, 'role:', user?.schoolRole);
+    try {
+      return (
+        <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+          <StudentDashboard 
+            onNavigateToTab={navigateToTab} 
+            activeBottomTab={activeTab}
+          />
+          <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+        </div>
+      );
+    } catch (error) {
+      console.error('❌ StudentDashboard error:', error);
+      return (
+        <div style={{ minHeight: '100vh', background: '#F0F9FF', padding: '20px' }}>
+          <h1>🚧 Dashboard Loading...</h1>
+          <p>Please try again or use the Feed tab</p>
+          <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+        </div>
+      );
+    }
   }
 
 
