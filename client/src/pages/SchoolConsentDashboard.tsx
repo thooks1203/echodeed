@@ -1042,7 +1042,7 @@ export default function SchoolConsentDashboard() {
               Consent Renewals
             </CardTitle>
             <CardDescription>
-              Annual consent renewals for Burlington Christian Academy (grades 6-8)
+              Annual consent renewals for Burlington Christian Academy (grades 6-12)
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -1138,7 +1138,7 @@ export default function SchoolConsentDashboard() {
           <AlertCircle className="h-4 w-4" />
           <AlertTitle>Burlington Christian Academy Policy</AlertTitle>
           <AlertDescription>
-            All student technology consents must be renewed annually for grades 6-8. 
+            All student technology consents must be renewed annually for grades 6-12. 
             School year validity: August 1 - July 31. Renewal notifications begin 75 days before expiry.
           </AlertDescription>
         </Alert>

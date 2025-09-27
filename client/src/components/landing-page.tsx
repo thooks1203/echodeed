@@ -233,7 +233,7 @@ export function LandingPage() {
             margin: 0,
             opacity: '0.95'
           }}>
-            Where middle school students (grades 6-8) discover the power of anonymous kindness
+            Where middle and high school students (grades 6-12) discover the power of anonymous kindness
           </p>
         </div>
         <p style={{ 

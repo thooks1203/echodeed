@@ -84,7 +84,7 @@ export default function WellnessCheckInPage() {
           <div className="text-4xl mb-2">🔔</div>
           <CardTitle className="text-xl">Daily Wellness Check-In</CardTitle>
           <p className="text-sm text-gray-600">
-            This simulates the daily notification that students in grades 6-8 would receive.
+            This simulates the daily notification that students in grades 6-12 would receive.
           </p>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -103,7 +103,7 @@ export default function WellnessCheckInPage() {
           <div className="text-sm text-gray-600">
             <h4 className="font-medium mb-2">This system provides:</h4>
             <ul className="space-y-1 text-xs">
-              <li>• Anonymous daily mood tracking for grades 6-8</li>
+              <li>• Anonymous daily mood tracking for grades 6-12</li>
               <li>• Proactive mental health monitoring</li>
               <li>• Early intervention for concerning trends</li>
               <li>• Aggregated analytics for school administrators</li>
