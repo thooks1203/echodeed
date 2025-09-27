@@ -8,6 +8,13 @@ interface BottomNavigationProps {
 
 export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationProps) {
   const { user } = useAuth();
+  
+  // Debug: Check what role is being detected
+  console.log('🔍 BottomNavigation Debug:', {
+    user: user,
+    schoolRole: user?.schoolRole,
+    canAccessSchoolsDashboard: canAccessSchoolsDashboard(user?.schoolRole || 'student')
+  });
 
   // Different tabs for students vs teachers/admins
   const baseTabs = [
@@ -89,6 +96,15 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
 
   // Keep sign-in tab for role switching (educational demo platform)
   const filteredTabs = tabs;
+  
+  // Debug: Show what tabs are being calculated
+  console.log('📱 Tabs Debug:', {
+    baseTabs: baseTabs.map(t => t.label),
+    adminTabs: adminTabs.map(t => t.label),
+    studentTabs: studentTabs.map(t => t.label),
+    finalTabs: filteredTabs.map(t => t.label),
+    tabCount: filteredTabs.length
+  });
 
   return (
     <div style={{
