@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useLocation } from 'wouter';
+import { BottomNavigation } from '@/components/BottomNavigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -696,6 +697,29 @@ export function TeacherDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+      
+      {/* Bottom Navigation for Teacher Tools */}
+      <BottomNavigation 
+        activeTab="teacher-dashboard" 
+        onTabChange={(tab) => {
+          // Handle tab navigation
+          if (tab === 'feed') {
+            window.location.href = '/app?tab=feed';
+          } else if (tab === 'reports') {
+            // Handle reports tab - could show reports in a modal or navigate
+            console.log('Reports tab clicked');
+          } else if (tab === 'support') {
+            // Handle support tab
+            console.log('Support tab clicked');
+          } else if (tab === 'rewards') {
+            // Handle rewards tab
+            console.log('Rewards tab clicked');
+          } else if (tab === 'sign-in') {
+            // Handle role switching
+            window.location.href = '/';
+          }
+        }} 
+      />
     </div>
   );
 }
