@@ -9,13 +9,6 @@ interface BottomNavigationProps {
 export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationProps) {
   const { user } = useAuth();
   
-  // Debug: Check what role is being detected
-  console.log('🔍 BottomNavigation Debug:', {
-    user: user,
-    schoolRole: user?.schoolRole,
-    canAccessSchoolsDashboard: canAccessSchoolsDashboard(user?.schoolRole || 'student')
-  });
-
   // Different tabs for students vs teachers/admins
   const baseTabs = [
     { id: 'feed', label: 'Feed', icon: '🏠' },
@@ -31,7 +24,8 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'sign-in', label: 'Sign In', icon: '👤' },
   ];
 
-  const adminTabs = [
+  // FIXED: Teacher tabs now include all 4 tabs they need
+  const teacherTabs = [
     { id: 'teacher-dashboard', label: 'Dashboard', icon: '👩‍🏫' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
@@ -90,21 +84,13 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     );
   }
 
+  // FIXED: Use teacherTabs for teachers, ensure all tabs are visible
   const tabs = canAccessSchoolsDashboard(user?.schoolRole || 'student') 
-    ? [...baseTabs, ...adminTabs]
-    : [...baseTabs, ...studentTabs];
+    ? [...baseTabs, ...teacherTabs]  // Teachers get Feed + Teacher tabs (4 total: Feed, Dashboard, Support, Rewards, Sign In)
+    : [...baseTabs, ...studentTabs]; // Students get Feed + Student tabs
 
-  // Keep sign-in tab for role switching (educational demo platform)
+  // Keep all tabs for role switching (educational demo platform)
   const filteredTabs = tabs;
-  
-  // Debug: Show what tabs are being calculated
-  console.log('📱 Tabs Debug:', {
-    baseTabs: baseTabs.map(t => t.label),
-    adminTabs: adminTabs.map(t => t.label),
-    studentTabs: studentTabs.map(t => t.label),
-    finalTabs: filteredTabs.map(t => t.label),
-    tabCount: filteredTabs.length
-  });
 
   return (
     <div style={{
