@@ -311,7 +311,7 @@ export default function FamilyDashboard({
           </CardHeader>
           <CardContent>
             <div className="flex gap-4 flex-wrap">
-              {(['6-8', 'family'] as const).map((age) => (
+              {(['6-8', '9-12', 'family'] as const).map((age) => (
                 <Button
                   key={age}
                   variant={selectedAgeGroup === age ? "default" : "outline"}
