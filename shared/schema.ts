@@ -354,6 +354,24 @@ export const communityServiceVerifications = pgTable("service_verifications", {
   followUpRequired: integer("follow_up_required").default(0),
 });
 
+// Student service hours summary - aggregated view to prevent duplicates
+export const studentServiceSummaries = pgTable("student_service_summaries", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id"), // Link to school
+  totalHours: decimal("total_hours", { precision: 10, scale: 2 }).default("0").notNull(),
+  verifiedHours: decimal("verified_hours", { precision: 10, scale: 2 }).default("0").notNull(),
+  pendingHours: decimal("pending_hours", { precision: 10, scale: 2 }).default("0").notNull(),
+  rejectedHours: decimal("rejected_hours", { precision: 10, scale: 2 }).default("0").notNull(),
+  totalTokensEarned: integer("total_tokens_earned").default(0).notNull(),
+  totalServiceSessions: integer("total_service_sessions").default(0).notNull(),
+  currentStreak: integer("current_streak").default(0).notNull(), // Days with continuous service
+  longestStreak: integer("longest_streak").default(0).notNull(),
+  lastServiceDate: timestamp("last_service_date"),
+  lastUpdated: timestamp("last_updated").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // COPPA consent tracking for students under 13
 export const coppaConsent = pgTable("coppa_consent", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -989,6 +1007,12 @@ export const insertCommunityServiceVerificationSchema = createInsertSchema(commu
   createdAt: true,
 });
 
+export const insertStudentServiceSummarySchema = createInsertSchema(studentServiceSummaries).omit({
+  id: true,
+  createdAt: true,
+  lastUpdated: true,
+});
+
 export const insertCoppaConsentSchema = createInsertSchema(coppaConsent).omit({
   id: true,
   createdAt: true,
@@ -1068,6 +1092,9 @@ export type InsertCommunityServiceLog = z.infer<typeof insertCommunityServiceLog
 
 export type CommunityServiceVerification = typeof communityServiceVerifications.$inferSelect;
 export type InsertCommunityServiceVerification = z.infer<typeof insertCommunityServiceVerificationSchema>;
+
+export type StudentServiceSummary = typeof studentServiceSummaries.$inferSelect;
+export type InsertStudentServiceSummary = z.infer<typeof insertStudentServiceSummarySchema>;
 
 export type CoppaConsent = typeof coppaConsent.$inferSelect;
 export type InsertCoppaConsent = z.infer<typeof insertCoppaConsentSchema>;
