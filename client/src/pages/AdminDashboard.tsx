@@ -530,10 +530,10 @@ export default function AdminDashboard() {
   // Mock admin data (in production, get from auth context)
   const currentAdmin: SchoolAdmin = {
     id: 'admin-001',
-    name: 'Dr. Sarah Wilson',
-    role: 'district_admin',
+    name: 'Mr. Murr',
+    role: 'principal',
     districtId: 'district-001',
-    email: 'swilson@district.edu'
+    email: 'murr@bca.edu'
   };
 
   // Real API calls for customer validation
@@ -550,13 +550,13 @@ export default function AdminDashboard() {
   // Mock data for demonstration
   const mockDistrictMetrics: DistrictMetrics = {
     districtId: 'district-001',
-    districtName: 'Riverside Unified School District',
-    totalSchools: 12,
-    totalStudents: 8450,
-    totalTeachers: 425,
+    districtName: 'Burlington Christian Academy',
+    totalSchools: 1,
+    totalStudents: 665,
+    totalTeachers: 56,
     totalKindnessActs: 15670,
-    avgSelScore: 8.2,
-    topPerformingSchools: ['Lincoln Elementary', 'Roosevelt Middle', 'Washington High'],
+    avgSelScore: 8.9,
+    topPerformingSchools: ['BCA High School', 'BCA Middle School'],
     complianceStatus: 'compliant'
   };
 
@@ -873,7 +873,7 @@ export default function AdminDashboard() {
               )}
             </h1>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              {maskName(currentAdmin.name)} • {currentAdmin.role.replace('_', ' ')} • {bcaDemoMode ? 'Burlington Christian Academy' : mockDistrictMetrics.districtName}
+              {maskName(currentAdmin.name)} • head of school • Burlington Christian Academy
             </p>
           </div>
         </div>

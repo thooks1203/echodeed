@@ -44,8 +44,8 @@ export function useAuth() {
       },
       admin: {
         id: 'admin-001',
-        name: 'Dr. Michael Brown',
-        email: 'michael.brown@district.edu', 
+        name: 'Mr. Murr',
+        email: 'murr@bca.edu', 
         schoolRole: 'admin' as SchoolRole,
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
       },
