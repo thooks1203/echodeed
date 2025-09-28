@@ -166,14 +166,6 @@ export function LandingPage() {
           🚀 Discover EchoDeed™
         </button>
 
-        <p style={{ 
-          fontSize: '14px', 
-          opacity: '0.7',
-          margin: '30px 0 0 0',
-          fontStyle: 'italic'
-        }}>
-          Something extraordinary is waiting inside...
-        </p>
       </div>
     );
   }
