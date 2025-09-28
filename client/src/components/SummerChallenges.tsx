@@ -41,7 +41,7 @@ interface SummerChallengesProps {
 }
 
 export function SummerChallenges({ onBack }: SummerChallengesProps) {
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'6-12'>('6-12');
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'6-8'>('6-8');
   const [selectedChallenge, setSelectedChallenge] = useState<SummerChallenge | null>(null);
   const [showActivities, setShowActivities] = useState(false);
   const { toast } = useToast();
