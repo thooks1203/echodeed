@@ -690,6 +690,7 @@ export interface IStorage {
   createTeacherClaimCode(claimCode: InsertTeacherClaimCode): Promise<TeacherClaimCode>;
   getTeacherClaimCodes(teacherUserId: string): Promise<TeacherClaimCode[]>;
   getSchoolClaimCodes(schoolId: string): Promise<TeacherClaimCode[]>;
+  getTeacherVerificationCount(teacherId: string, month: string): Promise<number>;
   getActiveClaimCode(claimCode: string): Promise<TeacherClaimCode | undefined>;
   validateClaimCode(claimCode: string, context?: {
     ipAddress?: string;
@@ -5592,6 +5593,31 @@ export class DatabaseStorage implements IStorage {
       claimCodeHash,
     }).returning();
     return newClaimCode;
+  }
+
+  async getTeacherVerificationCount(teacherId: string, month: string): Promise<number> {
+    try {
+      // Simple implementation using existing community service data
+      // Count service hours verifications for this teacher in the given month
+      const monthStart = new Date(month + '-01');
+      const monthEnd = new Date(monthStart.getFullYear(), monthStart.getMonth() + 1, 0);
+      
+      const result = await db
+        .select({ count: sql<number>`count(*)` })
+        .from(communityServiceLogs)
+        .where(
+          and(
+            eq(communityServiceLogs.verifiedBy, teacherId),
+            gte(communityServiceLogs.verifiedDate, monthStart.toISOString()),
+            lte(communityServiceLogs.verifiedDate, monthEnd.toISOString())
+          )
+        );
+      
+      return result[0]?.count || 0;
+    } catch (error) {
+      console.error('Error getting teacher verification count:', error);
+      return 0; // Return 0 for demo purposes
+    }
   }
 
   async getTeacherClaimCodes(teacherUserId: string): Promise<TeacherClaimCode[]> {
