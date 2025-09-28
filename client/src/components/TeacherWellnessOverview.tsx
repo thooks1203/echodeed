@@ -10,20 +10,6 @@ interface TeacherWellnessOverviewProps {
 export function TeacherWellnessOverview({ onClose, onStartCheck }: TeacherWellnessOverviewProps) {
   return (
     <div className="max-w-md mx-auto p-6 space-y-6">
-      {/* Header with Prominent Close Button */}
-      <div className="flex items-center justify-between mb-2">
-        <div className="flex-1" />
-        <Button
-          variant="ghost"
-          size="lg"
-          onClick={onClose}
-          className="h-12 w-12 p-0 hover:bg-red-50 hover:border-red-200 border-2 border-transparent rounded-full bg-red-500 text-white hover:bg-red-600 shadow-lg"
-          data-testid="close-wellness-overview"
-        >
-          <X className="h-6 w-6 font-bold" />
-        </Button>
-      </div>
-
       {/* Bell Icon */}
       <div className="text-center">
         <div className="w-16 h-16 bg-gradient-to-r from-orange-400 to-amber-500 rounded-full flex items-center justify-center mx-auto mb-4">
