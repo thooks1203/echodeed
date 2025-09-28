@@ -681,6 +681,7 @@ function TeacherRewardsSection() {
 
   const progress = rewardProgress?.progress || {};
   const rewards = availableRewards?.availableRewards || [];
+  const sponsorMessage = rewardProgress?.sponsorMessage || "Discover local Burlington partners supporting your teaching excellence!";
 
   return (
     <div className="space-y-6">
@@ -692,7 +693,7 @@ function TeacherRewardsSection() {
             <CardTitle className="text-2xl">Teacher Recognition Program</CardTitle>
           </div>
           <CardDescription className="text-purple-100">
-            {availableRewards?.sponsorMessage || 'Local Burlington businesses supporting our dedicated educators!'}
+            {sponsorMessage}
           </CardDescription>
         </CardHeader>
       </Card>
