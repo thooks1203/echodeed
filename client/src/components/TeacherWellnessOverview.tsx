@@ -33,9 +33,9 @@ export function TeacherWellnessOverview({ onClose, onStartCheck }: TeacherWellne
 
       {/* Title and Description */}
       <div className="text-center space-y-4">
-        <h2 className="text-2xl font-bold text-gray-900">Daily Wellness Check-In</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Student Wellness Check-In Manager</h2>
         <p className="text-gray-600 text-sm leading-relaxed">
-          This simulates the daily notification that students in grades 6-12 would receive.
+          Manage daily wellness check-ins for your students in grades 6-12. Students receive anonymous notifications to support their mental health.
         </p>
       </div>
 
@@ -79,15 +79,13 @@ export function TeacherWellnessOverview({ onClose, onStartCheck }: TeacherWellne
 
       {/* Action Buttons */}
       <div className="space-y-3 pt-4">
-        {onStartCheck && (
-          <Button 
-            onClick={onStartCheck}
-            className="w-full bg-gradient-to-r from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700 text-white"
-            data-testid="start-daily-check"
-          >
-            Start Daily Check-In
-          </Button>
-        )}
+        <Button 
+          onClick={onClose}
+          className="w-full bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white"
+          data-testid="activate-student-checkins"
+        >
+          Activate Student Check-Ins
+        </Button>
         <Button 
           variant="ghost" 
           onClick={onClose}
