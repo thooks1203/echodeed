@@ -274,17 +274,19 @@ export function TeacherDashboard() {
                 Back to Platform
               </Button>
 
-              {/* Teacher Wellness Alert Button */}
+              {/* Teacher Wellness Alert Button - PROMINENT */}
               <Button
-                size="sm"
+                size="lg"
                 onClick={() => navigate('/wellness-checkin?from=teacher-dashboard')}
-                className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 animate-pulse"
+                className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-200 border-4 border-orange-300 hover:border-orange-200 px-6 py-4 text-lg"
                 style={{
-                  animation: 'pulse 2s infinite'
+                  animation: 'flash 1s infinite alternate, bounce 2s infinite',
+                  fontSize: '18px',
+                  minWidth: '220px'
                 }}
                 data-testid="teacher-wellness-alert"
               >
-                <HeartPulse className="w-4 h-4" />
+                <HeartPulse className="w-6 h-6" />
                 Wellness Check Needed
               </Button>
             </div>
