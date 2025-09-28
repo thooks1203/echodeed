@@ -283,22 +283,21 @@ export const communityServiceLogs = pgTable("community_service_logs", {
   userId: varchar("user_id").notNull().references(() => users.id),
   schoolId: varchar("school_id"), // Link to school
   serviceName: text("service_name").notNull(),
-  organization: text("organization").notNull(),
+  organizationName: text("organization_name"),
   contactPerson: text("contact_person"),
   contactEmail: text("contact_email"),
   contactPhone: text("contact_phone"),
-  hours: decimal("hours", { precision: 4, scale: 2 }).notNull(), // Allow decimal hours
+  hoursLogged: decimal("hours_logged", { precision: 4, scale: 2 }).notNull(), // Allow decimal hours
   serviceDate: timestamp("service_date").notNull(),
   category: varchar("category", { length: 50 }).notNull(), // environmental, community, education, etc.
-  description: text("description").notNull(),
-  reflection: text("reflection"), // Student reflection on the experience
-  photoUrl: text("photo_url"), // Optional photo evidence
-  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, verified, rejected
+  serviceDescription: text("service_description").notNull(),
+  studentReflection: text("student_reflection"), // Student reflection on the experience
+  photoEvidence: text("photo_evidence"), // Optional photo evidence
+  verificationStatus: varchar("verification_status", { length: 20 }).default("pending").notNull(), // pending, verified, rejected
   verifiedBy: varchar("verified_by"), // Teacher/parent who verified
   verifiedAt: timestamp("verified_at"),
-  rejectionReason: text("rejection_reason"),
-  tokensAwarded: integer("tokens_awarded").default(0),
-  followUpRequired: integer("follow_up_required").default(0).notNull(), // For tracking if additional verification needed
+  verificationNotes: text("verification_notes"),
+  tokensEarned: integer("tokens_earned").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });

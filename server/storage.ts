@@ -132,34 +132,6 @@ import {
   type InsertCrisisEscalation,
   type LicensedCounselor,
   type InsertLicensedCounselor,
-  wellnessCheckIns,
-  pushSubscriptions,
-  wellnessTrends,
-  type WellnessCheckIn,
-  type InsertWellnessCheckIn,
-  type PushSubscription,
-  type InsertPushSubscription,
-  type WellnessTrend,
-  yearRoundFamilyChallenges,
-  familyProgress,
-  familyActivities,
-  schoolFundraisers,
-  familyDonations,
-  // Kindness Mentors
-  mentorships,
-  mentorActivities,
-  mentorBadges,
-  userMentorBadges,
-  mentorTraining,
-  userMentorTraining,
-  mentorScenarios,
-  mentorConversations,
-  curriculumLessons,
-  curriculumProgress,
-  studentCurriculumResponses,
-  curriculumResources,
-  mentorPreferences,
-  mentorStats,
   type YearRoundFamilyChallenge,
   type InsertYearRoundFamilyChallenge,
   type FamilyProgress,
@@ -2407,9 +2379,7 @@ export class DatabaseStorage implements IStorage {
           monthlyPrice: 0,
           yearlyPrice: 0,
           features: ['basic_posting', 'view_feed', 'basic_filters', 'global_counter'],
-          limits: { postsPerMonth: 10, filtersPerDay: 5 },
           isActive: 1,
-          sortOrder: 1,
         },
         {
           planName: 'Basic',
@@ -4907,7 +4877,7 @@ export class DatabaseStorage implements IStorage {
   // School Fundraiser operations - DOUBLE TOKEN REWARDS! 🎯💰
   async createSchoolFundraiser(fundraiser: InsertSchoolFundraiser): Promise<SchoolFundraiser> {
     const [newFundraiser] = await db
-      .insert(schoolFundraisers)
+      .insert(fundraisingCampaigns)
       .values(fundraiser)
       .returning();
     return newFundraiser;
@@ -4916,22 +4886,22 @@ export class DatabaseStorage implements IStorage {
   async getActiveFundraisers(schoolName?: string): Promise<SchoolFundraiser[]> {
     const now = new Date();
     const conditions = [
-      eq(schoolFundraisers.isActive, true),
-      gte(schoolFundraisers.endDate, now)
+      eq(fundraisingCampaigns.isActive, true),
+      gte(fundraisingCampaigns.endDate, now)
     ];
     if (schoolName) {
-      conditions.push(eq(schoolFundraisers.schoolName, schoolName));
+      conditions.push(eq(fundraisingCampaigns.title, schoolName));
     }
 
     return await db.select()
-      .from(schoolFundraisers)
+      .from(fundraisingCampaigns)
       .where(and(...conditions));
   }
 
   async getFundraiserById(id: string): Promise<SchoolFundraiser | undefined> {
     const [fundraiser] = await db
       .select()
-      .from(schoolFundraisers)
+      .from(fundraisingCampaigns)
       .where(eq(schoolFundraisers.id, id));
     return fundraiser || undefined;
   }
