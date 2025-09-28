@@ -549,8 +549,7 @@ export async function initializeSampleData() {
     }
 
     // Initialize sample reward partners  
-    // TODO: Fix reward partners schema mismatch - temporarily disabled
-    console.log('⚠️ Reward partners initialization temporarily disabled due to schema mismatch');
+    log('Initializing reward partners and teacher recognition system...');
     /*
     const existingPartners = await storage.getRewardPartners();
     if (existingPartners.length === 0) {

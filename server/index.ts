@@ -524,7 +524,12 @@ app.use((req, res, next) => {
     log('Initializing sample data...');
     try {
       await initializeSampleData();
-      // await initializeSampleRewardData(); // TODO: Fix reward offers schema mismatch  
+      try {
+        await initializeSampleRewardData();
+        log('✓ Reward partners initialized');
+      } catch (error) {
+        log('⚠️ Reward partners initialization failed:', error);
+      }  
       await storage.initializeEducationSubscriptionPlans();
       // await initializeMentorBadges(); // TODO: Fix mentor badges schema mismatch
       // await initializeMentorTraining(); // TODO: Fix mentor training schema issues
@@ -557,6 +562,17 @@ app.use((req, res, next) => {
       const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
       await summerChallengeEngine.initializeSummerProgram();
       log('✓ Summer Challenge Program initialized');
+
+      // Initialize Teacher Reward System
+      // TODO: Re-enable after fixing database schema conflicts
+      try {
+        log('Initializing Teacher Reward System...');
+        const { initializeTeacherRewardSystem } = await import('./initTeacherRewards');
+        await initializeTeacherRewardSystem();
+        log('✓ Teacher Reward System initialized');
+      } catch (error) {
+        log('⚠️ Teacher Reward System initialization temporarily disabled due to schema mismatch:', error.message);
+      }
 
       // Initialize Family Challenge Program
       // TODO: Fix Family Challenge Program schema issues

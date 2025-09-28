@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Filter, Search } from 'lucide-react';
+import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Filter, Search, Award, Gift, Coffee, Trophy } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -162,7 +162,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
         </header>
 
         <Tabs defaultValue="lessons" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-6">
+          <TabsList className="grid w-full grid-cols-4 mb-6">
             <TabsTrigger value="lessons" data-testid="tab-lessons">
               <BookOpen className="h-4 w-4 mr-2" />
               Lesson Library
@@ -174,6 +174,10 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
             <TabsTrigger value="resources" data-testid="tab-resources">
               <Star className="h-4 w-4 mr-2" />
               Resources
+            </TabsTrigger>
+            <TabsTrigger value="rewards" data-testid="tab-rewards">
+              <Award className="h-4 w-4 mr-2" />
+              Teacher Rewards
             </TabsTrigger>
           </TabsList>
 
@@ -535,7 +539,332 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
             </Card>
           </div>
         )}
+
+          {/* Teacher Rewards Tab */}
+          <TabsContent value="rewards" className="space-y-6">
+            <TeacherRewardsSection />
+          </TabsContent>
+        </Tabs>
+
+        {selectedLesson && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+            <Card className="max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+              <CardHeader>
+                <div className="flex justify-between items-start">
+                  <div>
+                    <CardTitle>{selectedLesson.title}</CardTitle>
+                    <CardDescription className="mt-2">{selectedLesson.description}</CardDescription>
+                  </div>
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    onClick={() => setSelectedLesson(null)}
+                    data-testid="button-close-lesson-modal"
+                  >
+                    ✕
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <Label className="text-sm font-medium">Grade Level</Label>
+                      <p className="text-sm text-gray-600">{selectedLesson.gradeLevel}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium">Subject</Label>
+                      <p className="text-sm text-gray-600">{selectedLesson.subject}</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium">Duration</Label>
+                      <p className="text-sm text-gray-600">{selectedLesson.estimatedTime} minutes</p>
+                    </div>
+                    <div>
+                      <Label className="text-sm font-medium">Difficulty</Label>
+                      <Badge className={getDifficultyColor(selectedLesson.difficulty)}>
+                        {selectedLesson.difficulty}
+                      </Badge>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold mb-2">Learning Objectives</h4>
+                    <ul className="list-disc list-inside space-y-1 text-gray-600">
+                      {selectedLesson.objectives?.map((objective, index) => (
+                        <li key={index}>{objective}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold mb-2">Required Materials</h4>
+                    <ul className="list-disc list-inside space-y-1 text-gray-600">
+                      {selectedLesson.materials?.map((material, index) => (
+                        <li key={index}>{material}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  
+                  <div>
+                    <h4 className="font-semibold mb-2">Kindness Skills Developed</h4>
+                    <div className="flex flex-wrap gap-2">
+                      {selectedLesson.kindnessSkills?.map((skill, index) => (
+                        <Badge key={index} variant="secondary">{skill}</Badge>
+                      ))}
+                    </div>
+                  </div>
+                  
+                  <div className="flex gap-3 pt-4">
+                    <Button 
+                      onClick={() => {
+                        if (!isLessonImplemented(selectedLesson.id)) {
+                          handleImplementLesson(selectedLesson);
+                        }
+                        setSelectedLesson(null);
+                      }}
+                      disabled={isLessonImplemented(selectedLesson.id) || implementLessonMutation.isPending}
+                      data-testid="button-implement-selected"
+                    >
+                      {isLessonImplemented(selectedLesson.id) ? 'Already Implemented ✓' : 'Mark as Implemented'}
+                    </Button>
+                    <Button variant="outline" data-testid="button-download-lesson">
+                      Download Lesson Plan
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
+    </div>
+  );
+}
+
+// Teacher Rewards Component
+function TeacherRewardsSection() {
+  const { toast } = useToast();
+  
+  // Fetch teacher reward progress
+  const { data: rewardProgress, isLoading: progressLoading } = useQuery({
+    queryKey: ['/api/teacher/rewards/progress'],
+    staleTime: 300000 // 5 minutes
+  });
+  
+  // Fetch available rewards
+  const { data: availableRewards, isLoading: rewardsLoading } = useQuery({
+    queryKey: ['/api/teacher/rewards/available'],
+    staleTime: 300000 // 5 minutes
+  });
+
+  if (progressLoading || rewardsLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading your teacher rewards...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const progress = rewardProgress?.progress || {};
+  const rewards = availableRewards?.availableRewards || [];
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <Card className="bg-gradient-to-r from-purple-500 to-pink-500 text-white border-0">
+        <CardHeader className="text-center">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Trophy className="h-8 w-8" />
+            <CardTitle className="text-2xl">Teacher Recognition Program</CardTitle>
+          </div>
+          <CardDescription className="text-purple-100">
+            {availableRewards?.sponsorMessage || 'Local Burlington businesses supporting our dedicated educators!'}
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
+      {/* Progress Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Service Hours Excellence */}
+        <Card className="relative overflow-hidden">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className={`p-3 rounded-full ${progress.serviceHoursExcellence?.eligible ? 'bg-green-100' : 'bg-blue-100'}`}>
+                <CheckCircle className={`h-6 w-6 ${progress.serviceHoursExcellence?.eligible ? 'text-green-600' : 'text-blue-600'}`} />
+              </div>
+              <div>
+                <CardTitle className="text-lg">Service Hours Excellence</CardTitle>
+                <CardDescription>{progress.serviceHoursExcellence?.description}</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">Progress</span>
+                <span className="font-semibold">{progress.serviceHoursExcellence?.monthlyProgress || 0}/{progress.serviceHoursExcellence?.monthlyThreshold || 10}</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-3">
+                <div 
+                  className={`h-3 rounded-full ${progress.serviceHoursExcellence?.eligible ? 'bg-green-500' : 'bg-blue-500'}`}
+                  style={{ width: `${Math.min(((progress.serviceHoursExcellence?.monthlyProgress || 0) / (progress.serviceHoursExcellence?.monthlyThreshold || 10)) * 100, 100)}%` }}
+                ></div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Coffee className="h-4 w-4 text-amber-600" />
+                <span className="text-sm font-medium">{progress.serviceHoursExcellence?.reward}</span>
+              </div>
+              {progress.serviceHoursExcellence?.eligible && (
+                <Badge className="bg-green-100 text-green-800">Reward Earned! 🎉</Badge>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Wellness Champion */}
+        <Card className="relative overflow-hidden">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className={`p-3 rounded-full ${progress.wellnessChampion?.eligible ? 'bg-green-100' : 'bg-purple-100'}`}>
+                <Heart className={`h-6 w-6 ${progress.wellnessChampion?.eligible ? 'text-green-600' : 'text-purple-600'}`} />
+              </div>
+              <div>
+                <CardTitle className="text-lg">Wellness Champion</CardTitle>
+                <CardDescription>{progress.wellnessChampion?.description}</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">Weekly Progress</span>
+                <span className="font-semibold">{progress.wellnessChampion?.weeklyProgress || 0}/{progress.wellnessChampion?.weeklyThreshold || 3}</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-3">
+                <div 
+                  className={`h-3 rounded-full ${progress.wellnessChampion?.eligible ? 'bg-green-500' : 'bg-purple-500'}`}
+                  style={{ width: `${Math.min(((progress.wellnessChampion?.weeklyProgress || 0) / (progress.wellnessChampion?.weeklyThreshold || 3)) * 100, 100)}%` }}
+                ></div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Coffee className="h-4 w-4 text-amber-600" />
+                <span className="text-sm font-medium">{progress.wellnessChampion?.reward}</span>
+              </div>
+              {progress.wellnessChampion?.eligible && (
+                <Badge className="bg-green-100 text-green-800">Reward Earned! 🎉</Badge>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Community Builder */}
+        <Card className="relative overflow-hidden">
+          <CardHeader>
+            <div className="flex items-center gap-3">
+              <div className={`p-3 rounded-full ${progress.communityBuilder?.eligible ? 'bg-green-100' : 'bg-orange-100'}`}>
+                <Users className={`h-6 w-6 ${progress.communityBuilder?.eligible ? 'text-green-600' : 'text-orange-600'}`} />
+              </div>
+              <div>
+                <CardTitle className="text-lg">Community Builder</CardTitle>
+                <CardDescription>{progress.communityBuilder?.description}</CardDescription>
+              </div>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-sm text-gray-600">Monthly Posts</span>
+                <span className="font-semibold">{progress.communityBuilder?.monthlyProgress || 0}/{progress.communityBuilder?.monthlyThreshold || 5}</span>
+              </div>
+              <div className="w-full bg-gray-200 rounded-full h-3">
+                <div 
+                  className={`h-3 rounded-full ${progress.communityBuilder?.eligible ? 'bg-green-500' : 'bg-orange-500'}`}
+                  style={{ width: `${Math.min(((progress.communityBuilder?.monthlyProgress || 0) / (progress.communityBuilder?.monthlyThreshold || 5)) * 100, 100)}%` }}
+                ></div>
+              </div>
+              <div className="flex items-center gap-2">
+                <Gift className="h-4 w-4 text-red-600" />
+                <span className="text-sm font-medium">{progress.communityBuilder?.reward}</span>
+              </div>
+              {progress.communityBuilder?.eligible && (
+                <Badge className="bg-green-100 text-green-800">Reward Earned! 🎉</Badge>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Summary Card */}
+      <Card className="bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-blue-900">
+            <Award className="h-5 w-5" />
+            Your Achievement Summary
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="font-semibold text-blue-800 mb-2">Current Month Progress</h4>
+              <p className="text-blue-700">
+                🏆 <strong>{rewardProgress?.summary?.totalEligibleRewards || 0}</strong> rewards earned this period
+              </p>
+              <p className="text-blue-600 mt-1">
+                📅 Tracking period: {rewardProgress?.currentPeriod?.month || 'Current month'}
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-blue-800 mb-2">Next Goal</h4>
+              <p className="text-blue-700">
+                🎯 {rewardProgress?.summary?.nextReward || 'All current rewards achieved!'}
+              </p>
+              <p className="text-blue-600 mt-1">Keep up the excellent work! 🌟</p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Available Partner Rewards */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Gift className="h-5 w-5" />
+            Available Partner Rewards
+          </CardTitle>
+          <CardDescription>
+            Local Burlington businesses supporting our educators
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {rewards.map((partner: any) => (
+              <Card key={partner.id} className="border-2 hover:border-purple-300 transition-colors">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg">{partner.partnerName}</CardTitle>
+                  <CardDescription>{partner.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2">
+                    {partner.rewardTypes?.map((rewardType: any, index: number) => (
+                      <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
+                        <Coffee className="h-4 w-4 text-amber-600" />
+                        <div>
+                          <p className="font-medium text-sm">{rewardType.name}</p>
+                          <p className="text-xs text-gray-600">{rewardType.value}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

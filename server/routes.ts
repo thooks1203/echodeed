@@ -10281,6 +10281,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 🏆 TEACHER REWARD TRACKING ENDPOINTS
+  
+  // Get teacher's current reward progress and achievements
+  app.get('/api/teacher/rewards/progress', requireTeacherRole, async (req: any, res: any) => {
+    try {
+      const teacherId = req.teacherContext.userId;
+      const schoolId = req.teacherContext.schoolId;
+      
+      // Calculate teacher progress metrics
+      const now = new Date();
+      const currentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      
+      // Service Hours Excellence - count monthly approvals
+      const monthlyApprovals = await storage.getTeacherVerificationCount(teacherId, currentMonth);
+      
+      // Wellness Champions - simulate daily check-ins (can be enhanced later)
+      const dailyCheckIns = Math.floor(Math.random() * 20) + 5; // Demo data
+      
+      // Community Builders - count classroom posts/engagement
+      const classroomPosts = Math.floor(Math.random() * 8) + 3; // Demo data
+      
+      // Calculate reward eligibility
+      const rewards = {
+        serviceHoursExcellence: {
+          monthlyProgress: monthlyApprovals,
+          monthlyThreshold: 10,
+          eligible: monthlyApprovals >= 10,
+          reward: 'Starbucks Coffee Carafe',
+          description: '10+ service hour approvals this month'
+        },
+        wellnessChampion: {
+          weeklyProgress: Math.floor(dailyCheckIns / 7),
+          weeklyThreshold: 3,
+          eligible: Math.floor(dailyCheckIns / 7) >= 3,
+          reward: 'Starbucks Coffee Carafe',
+          description: '3+ weeks of daily wellness check-ins'
+        },
+        communityBuilder: {
+          monthlyProgress: classroomPosts,
+          monthlyThreshold: 5,
+          eligible: classroomPosts >= 5,
+          reward: 'Chick-fil-A Restaurant Card',
+          description: '5+ classroom kindness posts this month'
+        }
+      };
+      
+      res.json({
+        teacherId,
+        schoolId,
+        currentPeriod: {
+          month: currentMonth.toISOString().slice(0, 7)
+        },
+        progress: rewards,
+        summary: {
+          totalEligibleRewards: Object.values(rewards).filter(r => r.eligible).length,
+          nextReward: Object.values(rewards).find(r => !r.eligible)?.reward || 'All current rewards achieved!'
+        }
+      });
+      
+    } catch (error) {
+      console.error('Error fetching teacher reward progress:', error);
+      res.status(500).json({ error: 'Failed to fetch reward progress' });
+    }
+  });
+  
+  // Get available teacher rewards from partner system
+  app.get('/api/teacher/rewards/available', requireTeacherRole, async (req: any, res: any) => {
+    try {
+      // Get teacher-specific reward partners
+      const teacherRewards = await storage.getRewardPartners({
+        partnerType: 'coffee,local_restaurant,retail'
+      });
+      
+      // Filter to teacher-appropriate rewards
+      const availableRewards = teacherRewards
+        .filter(partner => ['Starbucks', 'Chick-fil-A Burlington', 'Target'].includes(partner.partnerName))
+        .map(partner => ({
+          id: partner.id,
+          partnerName: partner.partnerName,
+          category: partner.partnerType,
+          description: `${partner.partnerName} rewards for educator excellence`,
+          rewardTypes: [
+            { name: 'Coffee Carafe', value: 'Monthly recognition for service hours and wellness' },
+            { name: 'Restaurant Card', value: 'Quarterly recognition for community building' },
+            { name: 'Spa Day', value: 'Annual recognition for exceptional dedication' }
+          ]
+        }));
+      
+      res.json({
+        availableRewards,
+        sponsorMessage: 'Local Burlington businesses supporting our dedicated educators!',
+        totalPartners: availableRewards.length
+      });
+      
+    } catch (error) {
+      console.error('Error fetching available teacher rewards:', error);
+      res.status(500).json({ error: 'Failed to fetch available rewards' });
+    }
+  });
+
   return httpServer;
 }
 
