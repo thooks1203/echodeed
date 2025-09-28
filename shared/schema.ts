@@ -584,27 +584,34 @@ export const mentorBadgeAwards = pgTable("mentor_badge_awards", {
 });
 
 // Mentor training modules for skill development
-export const mentorTrainingModules = pgTable("mentor_training_modules", {
+export const mentorTraining = pgTable("mentor_training", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   title: text("title").notNull(),
-  description: text("description").notNull(),
-  content: text("content").notNull(), // Training content/curriculum
-  order: integer("order").notNull(), // Module sequence
-  estimatedMinutes: integer("estimated_minutes").default(30), // Time to complete
-  requiredForCertification: integer("required_for_certification").default(1).notNull(),
+  description: text("description"),
+  trainingType: varchar("training_type", { length: 50 }),
+  ageGroupFocus: varchar("age_group_focus", { length: 50 }),
+  durationMinutes: integer("duration_minutes"),
+  isRequired: integer("is_required").default(0),
+  prerequisites: text("prerequisites"),
+  content: text("content").notNull(),
+  completionCriteria: text("completion_criteria"),
+  certificateReward: varchar("certificate_reward", { length: 100 }),
   isActive: integer("is_active").default(1).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 // Track mentor training progress
-export const mentorTrainingProgress = pgTable("mentor_training_progress", {
+export const userMentorTraining = pgTable("user_mentor_training", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  moduleId: varchar("module_id").notNull().references(() => mentorTrainingModules.id),
-  mentorId: varchar("mentor_id").notNull().references(() => users.id),
-  status: varchar("status", { length: 20 }).default("not_started").notNull(), // not_started, in_progress, completed
+  userId: varchar("user_id").notNull().references(() => users.id),
+  trainingId: varchar("training_id").notNull().references(() => mentorTraining.id),
   startedAt: timestamp("started_at"),
   completedAt: timestamp("completed_at"),
-  timeSpentMinutes: integer("time_spent_minutes").default(0),
+  progressPercentage: integer("progress_percentage").default(0),
+  currentModule: varchar("current_module", { length: 100 }),
+  timeSpent: integer("time_spent").default(0),
+  passed: integer("passed").default(0),
+  certificateIssued: integer("certificate_issued").default(0),
 });
 
 // Mentor practice scenarios for skill building
