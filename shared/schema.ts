@@ -44,6 +44,25 @@ export const users = pgTable("users", {
   updatedAt: timestamp("updated_at").defaultNow(),
 });
 
+// Student accounts - Extended student information for COPPA compliance
+export const studentAccounts = pgTable("student_accounts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id), // Links to main user record
+  schoolId: varchar("school_id").notNull(), // Links to school
+  firstName: varchar("first_name").notNull(),
+  lastName: varchar("last_name").notNull(),
+  grade: varchar("grade", { length: 5 }).notNull(), // 6, 7, 8, 9, 10, 11, 12
+  birthYear: integer("birth_year"), // For COPPA age calculation
+  parentNotificationEmail: varchar("parent_notification_email"), // Parent contact email
+  isAccountActive: integer("is_account_active").default(0).notNull(), // 1 = active, 0 = pending
+  parentalConsentStatus: varchar("parental_consent_status", { length: 20 }).default("pending").notNull(), // pending, approved, denied, revoked
+  parentalConsentMethod: varchar("parental_consent_method", { length: 50 }), // email, phone, in-person
+  parentalConsentDate: timestamp("parental_consent_date"),
+  parentalConsentIP: varchar("parental_consent_ip"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 export const kindnessPosts = pgTable("kindness_posts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").references(() => users.id), // Link to authenticated user
@@ -944,6 +963,12 @@ export const insertSchoolSchema = createInsertSchema(schools).omit({
   kindnessPostsCount: true,
 });
 
+export const insertStudentAccountSchema = createInsertSchema(studentAccounts).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
 export const insertRewardPartnerSchema = createInsertSchema(rewardPartners).omit({
   id: true,
   createdAt: true,
@@ -1029,6 +1054,9 @@ export type InsertWellnessCheckin = z.infer<typeof insertWellnessCheckinSchema>;
 
 export type School = typeof schools.$inferSelect;
 export type InsertSchool = z.infer<typeof insertSchoolSchema>;
+
+export type StudentAccount = typeof studentAccounts.$inferSelect;
+export type InsertStudentAccount = z.infer<typeof insertStudentAccountSchema>;
 
 export type RewardPartner = typeof rewardPartners.$inferSelect;
 export type InsertRewardPartner = z.infer<typeof insertRewardPartnerSchema>;
