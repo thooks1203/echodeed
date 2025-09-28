@@ -172,7 +172,7 @@ export function SummerChallenges({ onBack }: SummerChallengesProps) {
             Choose Your Grade Level
           </h3>
           <div style={{ display: 'flex', gap: '8px' }}>
-            {(['6-12'] as const).map((ageGroup) => (
+            {(['6-8'] as const).map((ageGroup) => (
               <button
                 key={ageGroup}
                 onClick={() => setSelectedAgeGroup(ageGroup)}
@@ -190,7 +190,7 @@ export function SummerChallenges({ onBack }: SummerChallengesProps) {
                 }}
                 data-testid={`age-group-${ageGroup}`}
               >
-                6th-12th Grade
+                6th-8th Grade
               </button>
             ))}
           </div>

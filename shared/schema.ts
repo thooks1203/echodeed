@@ -484,17 +484,14 @@ export const surpriseGiveawayWinners = pgTable("surprise_giveaway_winners", {
 // Summer Challenge Program for out-of-school engagement
 export const summerChallenges = pgTable("summer_challenges", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  weekNumber: integer("week_number").notNull(), // 1-12 for summer weeks
+  week: integer("week").notNull(), // 1-12 for summer weeks
   title: text("title").notNull(),
   description: text("description").notNull(),
   category: varchar("category", { length: 50 }).notNull(), // family, community, creativity, learning, outdoor
   difficulty: varchar("difficulty", { length: 20 }).default("medium").notNull(), // easy, medium, hard
   ageGroup: varchar("age_group", { length: 50 }).default("all").notNull(), // elementary, middle, high, all
-  tokenReward: integer("token_reward").default(15).notNull(),
-  bonusReward: integer("bonus_reward").default(0), // Extra rewards for exceptional completion
-  isActive: integer("is_active").default(1).notNull(),
-  startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date").notNull(),
+  points: integer("points").default(15).notNull(),
+  isActive: boolean("is_active").default(true).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
