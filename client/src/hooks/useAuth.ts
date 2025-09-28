@@ -96,7 +96,7 @@ export function getDemoRoles() {
   return [
     { role: 'student' as const, label: 'Student (Emma Johnson)', description: 'Limited access - can only see own data' },
     { role: 'teacher' as const, label: 'Teacher (Ms. Wilson)', description: 'Can access classroom tools and some school data' },
-    { role: 'admin' as const, label: 'Admin (Dr. Brown)', description: 'Full access to school management dashboard' },
+    { role: 'admin' as const, label: 'Admin (Mr. Murr)', description: 'Full access to school management dashboard' },
     { role: 'parent' as const, label: 'Parent (Mrs. Smith)', description: 'Track children\'s kindness journey and approve activities' }
   ] as const;
 }

@@ -295,7 +295,7 @@ export default function Home() {
               {[
                 { role: 'student', name: 'Emma Johnson', desc: '9th Grade Student', emoji: '👩‍🎓' },
                 { role: 'teacher', name: 'Ms. Wilson', desc: 'Math Teacher', emoji: '👩‍🏫' },
-                { role: 'admin', name: 'Dr. Brown', desc: 'Principal', emoji: '👨‍💼' },
+                { role: 'admin', name: 'Mr. Murr', desc: 'Principal', emoji: '👨‍💼' },
                 { role: 'parent', name: 'Mrs. Smith', desc: 'Parent', emoji: '👩‍👧' }
               ].map((roleInfo) => (
                 <button
