@@ -312,18 +312,18 @@ export const communityServiceLogs = pgTable("community_service_logs", {
 });
 
 // Community service verifications - tracking verification process
-export const communityServiceVerifications = pgTable("community_service_verifications", {
+export const communityServiceVerifications = pgTable("service_verifications", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   serviceLogId: varchar("service_log_id").notNull().references(() => communityServiceLogs.id),
   verifierType: varchar("verifier_type", { length: 20 }).notNull(), // parent, teacher, organization
   verifierId: varchar("verifier_id"), // User ID of verifier if applicable
-  verifierName: text("verifier_name"),
-  verifierEmail: text("verifier_email"),
   verificationMethod: varchar("verification_method", { length: 50 }).notNull(), // email, phone, in-person, document
   status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, approved, rejected
   feedback: text("feedback"),
+  requestedChanges: text("requested_changes"),
   verifiedAt: timestamp("verified_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  followUpRequired: integer("follow_up_required").default(0),
 });
 
 // COPPA consent tracking for students under 13
