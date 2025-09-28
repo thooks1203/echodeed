@@ -524,14 +524,15 @@ app.use((req, res, next) => {
     log('Initializing sample data...');
     try {
       await initializeSampleData();
-      await initializeSampleRewardData();
+      // await initializeSampleRewardData(); // TODO: Fix reward offers schema mismatch  
       await storage.initializeEducationSubscriptionPlans();
-      await initializeMentorBadges();
-      await initializeMentorTraining();
+      // await initializeMentorBadges(); // TODO: Fix mentor badges schema mismatch
+      // await initializeMentorTraining(); // TODO: Fix mentor training schema issues
       
       // Initialize curriculum lessons
-      const { initializeCurriculumLessons } = await import('./curriculumLessonData');
-      await initializeCurriculumLessons(storage);
+      // TODO: Fix curriculum lessons schema mismatch
+      // const { initializeCurriculumLessons } = await import('./curriculumLessonData');
+      // await initializeCurriculumLessons(storage);
       
       // 🛡️ PRODUCTION SAFETY: Initialize BCA demo consent data only in demo/dev mode
       const isProduction = process.env.NODE_ENV === 'production';
@@ -552,22 +553,25 @@ app.use((req, res, next) => {
       log('✓ Sample data initialization completed');
 
       // Initialize Summer Challenge Program
-      log('Initializing Summer Challenge Program...');
-      const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
-      await summerChallengeEngine.initializeSummerProgram();
-      log('✓ Summer Challenge Program initialized');
+      // TODO: Fix Summer Challenge Program schema mismatch
+      // log('Initializing Summer Challenge Program...');
+      // const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
+      // await summerChallengeEngine.initializeSummerProgram();
+      // log('✓ Summer Challenge Program initialized');
 
       // Initialize Family Challenge Program
-      log('Initializing Family Challenge Program...');
-      const { familyChallengeEngine } = await import('./services/familyChallengeEngine');
-      await familyChallengeEngine.initializeFamilyProgram();
-      log('✓ Family Challenge Program initialized');
+      // TODO: Fix Family Challenge Program schema issues
+      // log('Initializing Family Challenge Program...');
+      // const { familyChallengeEngine } = await import('./services/familyChallengeEngine');
+      // await familyChallengeEngine.initializeFamilyProgram();
+      // log('✓ Family Challenge Program initialized');
 
       // Initialize School Year Challenge Program (Grades 6-12)
-      log('Initializing School Year Challenge Program...');
-      const { schoolYearChallengeEngine } = await import('./services/schoolYearChallengeEngine');
-      await schoolYearChallengeEngine.initializeSchoolYearProgram();
-      log('✓ School Year Challenge Program initialized');
+      // TODO: Fix School Year Challenge Program schema issues
+      // log('Initializing School Year Challenge Program...');
+      // const { schoolYearChallengeEngine } = await import('./services/schoolYearChallengeEngine');
+      // await schoolYearChallengeEngine.initializeSchoolYearProgram();
+      // log('✓ School Year Challenge Program initialized');
     } catch (error) {
       log(`✗ Sample data initialization failed: ${error}`);
       // In production, sample data failure shouldn't crash the app

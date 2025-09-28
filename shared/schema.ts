@@ -237,14 +237,23 @@ export const schools = pgTable("schools", {
 // Reward partners for the token redemption system
 export const rewardPartners = pgTable("reward_partners", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  name: varchar("name", { length: 100 }).notNull(),
+  partnerName: varchar("partner_name", { length: 100 }).notNull(),
+  partnerLogo: text("partner_logo"),
+  partnerType: varchar("partner_type", { length: 50 }).notNull(),
+  websiteUrl: text("website_url"),
   description: text("description"),
-  logo: text("logo"), // URL or emoji
-  website: text("website"),
-  category: varchar("category", { length: 50 }).notNull(), // food, entertainment, education, retail, local
-  location: text("location"), // For local businesses
   isActive: integer("is_active").default(1).notNull(),
+  isFeatured: integer("is_featured").default(0).notNull(),
+  minRedemptionAmount: integer("min_redemption_amount"),
+  maxRedemptionAmount: integer("max_redemption_amount"),
+  contactEmail: text("contact_email"),
+  apiEndpoint: text("api_endpoint"),
+  apiKey: text("api_key"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  merchantPinHash: text("merchant_pin_hash"),
+  allowsQrVerification: integer("allows_qr_verification").default(0),
+  redemptionInstructions: text("redemption_instructions"),
+  locations: jsonb("locations"),
 });
 
 // Reward offers from partners

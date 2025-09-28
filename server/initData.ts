@@ -527,7 +527,10 @@ export async function initializeSampleData() {
       log('⚠️ Could not initialize fundraising campaigns:', error.message || error);
     }
 
-    // Initialize sample reward partners
+    // Initialize sample reward partners  
+    // TODO: Fix reward partners schema mismatch - temporarily disabled
+    console.log('⚠️ Reward partners initialization temporarily disabled due to schema mismatch');
+    /*
     const existingPartners = await storage.getRewardPartners();
     if (existingPartners.length === 0) {
       log('Initializing sample reward partners...');
@@ -591,6 +594,7 @@ export async function initializeSampleData() {
     } else {
       log('🔄 Re-creating reward partners for comprehensive demo');
     }
+    */
 
     log(`✓ Successfully initialized ${samplePosts.length} sample posts and updated global counter`);
   } catch (error: any) {
