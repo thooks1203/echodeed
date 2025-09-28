@@ -260,17 +260,26 @@ export const rewardPartners = pgTable("reward_partners", {
 export const rewardOffers = pgTable("reward_offers", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   partnerId: varchar("partner_id").notNull().references(() => rewardPartners.id),
+  offerType: varchar("offer_type", { length: 50 }),
   title: varchar("title", { length: 200 }).notNull(),
   description: text("description"),
-  tokenCost: integer("token_cost").notNull(),
-  category: varchar("category", { length: 50 }).notNull(),
-  ageGroup: varchar("age_group", { length: 50 }).default("all").notNull(), // kids, teens, adults, all
-  location: text("location"), // For location-specific offers
+  offerValue: text("offer_value"),
+  echoCost: integer("echo_cost").notNull(),
+  badgeRequirement: varchar("badge_requirement", { length: 100 }),
   maxRedemptions: integer("max_redemptions"), // Optional limit
   currentRedemptions: integer("current_redemptions").default(0),
   isActive: integer("is_active").default(1).notNull(),
-  validUntil: timestamp("valid_until"),
+  isFeatured: integer("is_featured").default(0),
+  requiresVerification: integer("requires_verification").default(0),
+  expiresAt: timestamp("expires_at"),
+  termsAndConditions: text("terms_and_conditions"),
+  imageUrl: text("image_url"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  sponsorCompany: varchar("sponsor_company", { length: 200 }),
+  sponsorLogo: text("sponsor_logo"),
+  sponsorshipType: varchar("sponsorship_type", { length: 50 }),
+  sponsorshipMessage: text("sponsorship_message"),
+  monthlySponsorship: integer("monthly_sponsorship").default(0),
 });
 
 // Track reward redemptions
