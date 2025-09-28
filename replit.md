@@ -64,6 +64,27 @@ Preferred communication style: Simple, everyday language.
 Business planning approach: Conservative, realistic projections always. Under-promise, over-deliver.
 **IMPORTANT: Do NOT ask about Stripe integration - it is not needed for this educational platform.**
 
+## Sustainable Reward Frequency Framework (September 2025)
+### Student Surprise Giveaways (OPTIMIZED)
+- **1 winner per week** (52/year) with $10 gift cards from local sponsors
+- **85+ activity score threshold** for quality engagement
+- **Perfect cost balance**: 7x more sustainable than daily giveaways
+- **Local sponsor partnerships**: Chick-fil-A Burlington confirmed working
+
+### Teacher Reward System (IMPLEMENTED)
+- **Service Hours Excellence**: Monthly coffee carafes for 10+ approvals, quarterly restaurant cards for 90% 24-hour response rate
+- **Wellness Champions**: Coffee carafes for 3+ weeks of daily check-ins, $75 restaurant cards for 80%+ student participation
+- **Community Builders**: Rewards for 5+ classroom kindness posts monthly, parent engagement excellence
+- **Sponsor-Covered Frequency**: Monthly coffee rewards, quarterly restaurant cards (sustainable with 2-3 sponsors per school)
+- **Platform-Funded Frequency**: Semester recognition, annual appreciation (strategic timing only)
+- **Budget Management**: $500-1000 monthly sponsor budget vs $3000+ without partnerships
+
+### Cost Sustainability Model
+- **High-frequency rewards**: Sponsor partnerships required (Starbucks coffee carafes, local restaurant gift cards)
+- **Strategic rewards**: Platform-funded for major milestones only
+- **Analytics tracking**: Built-in ROI measurement for sponsor retention
+- **Burlington Christian Academy**: Ready for Monday demo with Emma Johnson's 7.5 service hours and working teacher dashboard
+
 ## System Architecture
 ### Frontend
 The client is a single-page application built with React 18, TypeScript, and Vite. It leverages Radix UI primitives and shadcn/ui components styled with TailwindCSS for a consistent, mobile-first design. Wouter manages routing, and TanStack Query handles server state. Real-time features are powered by WebSockets. The UI/UX emphasizes a minimalist design with a custom color palette, consistent iconography (Lucide React), and responsive design, including an "Electric Heart Logo" with gradient ripple effects.
