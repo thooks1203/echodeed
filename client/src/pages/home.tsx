@@ -40,7 +40,7 @@ interface RewardOffer {
 export default function Home() {
   const queryClient = useQueryClient();
   const [, navigate] = useLocation();
-  const { user, isStudent, isTeacher, isAdmin, isAuthenticated } = useAuth();
+  const { user, isStudent, isTeacher, isAdmin, isParent, isAuthenticated } = useAuth();
   const { triggerSparks } = useKindnessSparksContext();
 
   // Remove auto-authentication check that was causing issues
@@ -76,6 +76,8 @@ export default function Home() {
         setActiveTab('teacher-dashboard');
       } else if (isAdmin) {
         setActiveTab('schools');
+      } else if (isParent) {
+        setActiveTab('parent-dashboard'); // CRITICAL FIX: Route parents to parent dashboard
       } else {
         setActiveTab('feed'); // Default for students
       }
