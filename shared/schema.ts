@@ -527,24 +527,35 @@ export const familyChallengeCompletions = pgTable("family_challenge_completions"
 // School Year Kindness Curriculum for classroom integration
 export const schoolYearChallenges = pgTable("school_year_challenges", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  weekNumber: integer("week_number").notNull(), // 1-36 for school year
-  gradeLevel: varchar("grade_level", { length: 20 }).notNull(), // 6-8, 9-12, 6-12
+  week: integer("week").notNull(), // 1-36 for school year
   title: text("title").notNull(),
   description: text("description").notNull(),
-  learningObjective: text("learning_objective").notNull(), // Educational goal
-  category: varchar("category", { length: 50 }).notNull(), // empathy, inclusion, service, leadership, conflict-resolution
-  activities: jsonb("activities").notNull(), // JSON array of suggested activities
-  discussionQuestions: text("discussion_questions").array().default([]), // For classroom discussion
-  assessmentCriteria: text("assessment_criteria"), // How to evaluate student engagement
-  tokenReward: integer("token_reward").default(20).notNull(),
-  teacherResources: jsonb("teacher_resources"), // Links, materials, etc.
-  isActive: integer("is_active").default(1).notNull(),
-  startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date").notNull(),
+  theme: text("theme"),
+  category: varchar("category", { length: 50 }),
+  difficulty: varchar("difficulty", { length: 20 }),
+  points: integer("points"),
+  gradeLevel: varchar("grade_level", { length: 20 }).notNull(),
+  timeEstimateMinutes: integer("time_estimate_minutes"),
+  isActive: boolean("is_active").default(true).notNull(),
+  seasonalFocus: text("seasonal_focus"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 // Track classroom engagement with school year challenges
+export const schoolYearProgress = pgTable("school_year_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  challengeId: varchar("challenge_id").notNull().references(() => schoolYearChallenges.id),
+  completedAt: timestamp("completed_at"),
+  pointsEarned: integer("points_earned").default(0),
+  studentReflection: text("student_reflection"),
+  photoEvidence: text("photo_evidence"),
+  teacherApproved: integer("teacher_approved").default(0),
+  teacherFeedback: text("teacher_feedback"),
+  parentNotified: integer("parent_notified").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const schoolYearChallengeEngagement = pgTable("school_year_challenge_engagement", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   challengeId: varchar("challenge_id").notNull().references(() => schoolYearChallenges.id),

@@ -239,7 +239,21 @@ export class SchoolYearChallengeEngine {
   async getCurrentWeekChallenges(gradeLevel: '6-8' | '9-12') {
     const currentWeek = this.getCurrentSchoolWeek();
     
-    return await db.select()
+    return await db.select({
+      id: schoolYearChallenges.id,
+      week: schoolYearChallenges.week,
+      title: schoolYearChallenges.title,
+      description: schoolYearChallenges.description,
+      theme: schoolYearChallenges.theme,
+      category: schoolYearChallenges.category,
+      difficulty: schoolYearChallenges.difficulty,
+      points: schoolYearChallenges.points,
+      gradeLevel: schoolYearChallenges.gradeLevel,
+      timeEstimateMinutes: schoolYearChallenges.timeEstimateMinutes,
+      isActive: schoolYearChallenges.isActive,
+      seasonalFocus: schoolYearChallenges.seasonalFocus,
+      createdAt: schoolYearChallenges.createdAt
+    })
       .from(schoolYearChallenges)
       .where(and(
         eq(schoolYearChallenges.week, currentWeek),
