@@ -415,12 +415,33 @@ export async function initializeSampleData() {
       
       // Delete any existing service hours for this user to ensure clean demo data
       try {
-        const { communityServiceLogs, studentServiceSummaries } = await import('@shared/schema');
-        await db.delete(communityServiceLogs).where(eq(communityServiceLogs.userId, studentUserId));
+        const { eq, inArray } = await import('drizzle-orm');
+        const { communityServiceLogs, studentServiceSummaries, communityServiceVerifications } = await import('@shared/schema');
+        const { db } = await import('./db');
+        
+        // First, get all service log IDs for this user
+        const userServiceLogs = await db.select({ id: communityServiceLogs.id })
+          .from(communityServiceLogs)
+          .where(eq(communityServiceLogs.userId, studentUserId));
+        
+        if (userServiceLogs.length > 0) {
+          const serviceLogIds = userServiceLogs.map(log => log.id);
+          
+          // Delete verification records that reference these service logs
+          await db.delete(communityServiceVerifications)
+            .where(inArray(communityServiceVerifications.serviceLogId, serviceLogIds));
+        }
+        
+        // Then delete the service summaries
         await db.delete(studentServiceSummaries).where(eq(studentServiceSummaries.userId, studentUserId));
+        
+        // Finally delete the main service logs
+        await db.delete(communityServiceLogs).where(eq(communityServiceLogs.userId, studentUserId));
+        
         log('🧹 Cleared existing service hours data for clean demo');
-      } catch (error) {
-        log('⚠️ Note: No existing service hours to clear (normal for first run)');
+      } catch (error: any) {
+        log('⚠️ Failed to clear existing service hours:', error.message);
+        // Continue with creation anyway to ensure demo works
       }
       
       // Add some sample service hours for demonstration
