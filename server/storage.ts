@@ -2363,8 +2363,11 @@ export class DatabaseStorage implements IStorage {
   // Sample corporate data initialization
   async initializeSampleSubscriptionPlans(): Promise<void> {
     try {
+      // TODO: Fix subscription plans schema mismatch - temporarily disabled
+      console.log('⚠️ Subscription plans initialization temporarily disabled due to schema mismatch');
+      return;
       // Check if subscription plans already exist
-      const existingPlans = await db.select().from(subscriptionPlans);
+      // const existingPlans = await db.select().from(subscriptionPlans);
       
       if (existingPlans.length > 0) {
         console.log('Subscription plans already exist, skipping initialization');
@@ -2374,31 +2377,31 @@ export class DatabaseStorage implements IStorage {
       // Individual Subscription Plans for Revenue Diversification
       const individualPlans = [
         {
-          planName: 'Free',
-          planType: 'individual',
-          monthlyPrice: 0,
-          yearlyPrice: 0,
+          plan_name: 'Free',
+          plan_type: 'individual',
+          monthly_price: 0,
+          yearly_price: 0,
           features: ['basic_posting', 'view_feed', 'basic_filters', 'global_counter'],
-          isActive: 1,
+          is_active: 1,
         },
         {
-          planName: 'Basic',
-          planType: 'individual',
-          monthlyPrice: 999, // $9.99
-          yearlyPrice: 9990, // $99.90 (save 2 months)
+          plan_name: 'Basic',
+          plan_type: 'individual',
+          monthly_price: 999, // $9.99
+          yearly_price: 9990, // $99.90 (save 2 months)
           features: [
             'basic_posting', 'view_feed', 'basic_filters', 'global_counter',
             'unlimited_posts', 'advanced_filters', 'kindness_analytics', 'personal_insights'
           ],
           limits: { postsPerMonth: -1, filtersPerDay: -1 },
-          isActive: 1,
-          sortOrder: 2,
+          is_active: 1,
+          sort_order: 2,
         },
         {
-          planName: 'Premium',
-          planType: 'individual',
-          monthlyPrice: 1999, // $19.99
-          yearlyPrice: 19990, // $199.90 (save 2 months)
+          plan_name: 'Premium',
+          plan_type: 'individual',
+          monthly_price: 1999, // $19.99
+          yearly_price: 19990, // $199.90 (save 2 months)
           features: [
             'basic_posting', 'view_feed', 'basic_filters', 'global_counter',
             'unlimited_posts', 'advanced_filters', 'kindness_analytics', 'personal_insights',
@@ -2406,14 +2409,14 @@ export class DatabaseStorage implements IStorage {
             'export_data', 'premium_support'
           ],
           limits: { postsPerMonth: -1, filtersPerDay: -1 },
-          isActive: 1,
-          sortOrder: 3,
+          is_active: 1,
+          sort_order: 3,
         },
         {
-          planName: 'Pro',
-          planType: 'individual',
-          monthlyPrice: 4999, // $49.99
-          yearlyPrice: 49990, // $499.90 (save 2 months)
+          plan_name: 'Pro',
+          plan_type: 'individual',
+          monthly_price: 4999, // $49.99
+          yearly_price: 49990, // $499.90 (save 2 months)
           features: [
             'basic_posting', 'view_feed', 'basic_filters', 'global_counter',
             'unlimited_posts', 'advanced_filters', 'kindness_analytics', 'personal_insights',
@@ -2422,8 +2425,8 @@ export class DatabaseStorage implements IStorage {
             'custom_challenges', 'priority_support', 'beta_features'
           ],
           limits: { postsPerMonth: -1, filtersPerDay: -1 },
-          isActive: 1,
-          sortOrder: 4,
+          is_active: 1,
+          sort_order: 4,
         }
       ];
 

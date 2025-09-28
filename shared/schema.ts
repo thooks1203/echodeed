@@ -398,19 +398,15 @@ export const fundraisingDonations = pgTable("fundraising_donations", {
 // Subscription plans for schools and users
 export const subscriptionPlans = pgTable("subscription_plans", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  name: varchar("name", { length: 100 }).notNull(),
-  description: text("description"),
-  tier: varchar("tier", { length: 20 }).notNull(), // free, basic, premium, enterprise
-  userType: varchar("user_type", { length: 20 }).notNull(), // individual, school, district
-  priceMonthly: integer("price_monthly"), // Price in cents
-  priceAnnual: integer("price_annual"), // Price in cents
+  planName: varchar("plan_name", { length: 100 }).notNull(),
+  planType: varchar("plan_type", { length: 20 }).notNull(),
+  monthlyPrice: integer("monthly_price"), // Price in cents
+  yearlyPrice: integer("yearly_price"), // Price in cents
   features: jsonb("features"), // JSON array of features
-  studentLimit: integer("student_limit"), // Max students for school plans
-  teacherLimit: integer("teacher_limit"), // Max teachers for school plans
-  storageLimit: integer("storage_limit"), // Storage limit in MB
+  limits: jsonb("limits"), // JSON object of limits
   isActive: integer("is_active").default(1).notNull(),
+  sortOrder: integer("sort_order"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 // Surprise giveaway campaigns

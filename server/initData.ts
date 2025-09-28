@@ -466,6 +466,9 @@ export async function initializeSampleData() {
 
     // Initialize Burlington Christian Academy fundraising campaigns
     try {
+      log('🎯 Fundraising campaigns temporarily disabled due to schema mismatch');
+      // TODO: Fix fundraising campaigns schema mismatch
+      /*
       log('🎯 Initializing Burlington Christian Academy fundraising campaigns...');
       
       // Check if fundraisers already exist
@@ -519,6 +522,7 @@ export async function initializeSampleData() {
       } else {
         log(`ℹ️ ${existingFundraisers.length} fundraising campaigns already exist, skipping creation`);
       }
+      */
     } catch (error: any) {
       log('⚠️ Could not initialize fundraising campaigns:', error.message || error);
     }
