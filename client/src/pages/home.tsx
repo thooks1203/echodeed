@@ -354,7 +354,10 @@ export default function Home() {
     }
     
     return (
-      <TeacherDashboard />
+      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+        <TeacherDashboard />
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
     );
   }
   
