@@ -41,7 +41,7 @@ interface SummerChallengesProps {
 }
 
 export function SummerChallenges({ onBack }: SummerChallengesProps) {
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'6-8'>('6-8');
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'6-8' | '9-12'>('6-8');
   const [selectedChallenge, setSelectedChallenge] = useState<SummerChallenge | null>(null);
   const [showActivities, setShowActivities] = useState(false);
   const { toast } = useToast();
@@ -172,15 +172,15 @@ export function SummerChallenges({ onBack }: SummerChallengesProps) {
             Choose Your Grade Level
           </h3>
           <div style={{ display: 'flex', gap: '8px' }}>
-            {(['6-8'] as const).map((ageGroup) => (
+            {([{value: '6-8', label: '6th-8th Grade'}, {value: '9-12', label: '9th-12th Grade'}] as const).map((option) => (
               <button
-                key={ageGroup}
-                onClick={() => setSelectedAgeGroup(ageGroup)}
+                key={option.value}
+                onClick={() => setSelectedAgeGroup(option.value)}
                 style={{
-                  background: selectedAgeGroup === ageGroup ? '#3B82F6' : 'white',
-                  color: selectedAgeGroup === ageGroup ? 'white' : '#374151',
+                  background: selectedAgeGroup === option.value ? '#3B82F6' : 'white',
+                  color: selectedAgeGroup === option.value ? 'white' : '#374151',
                   border: '2px solid #E5E7EB',
-                  borderColor: selectedAgeGroup === ageGroup ? '#3B82F6' : '#E5E7EB',
+                  borderColor: selectedAgeGroup === option.value ? '#3B82F6' : '#E5E7EB',
                   borderRadius: '8px',
                   padding: '8px 16px',
                   fontSize: '14px',
@@ -188,9 +188,9 @@ export function SummerChallenges({ onBack }: SummerChallengesProps) {
                   cursor: 'pointer',
                   transition: 'all 0.2s',
                 }}
-                data-testid={`age-group-${ageGroup}`}
+                data-testid={`age-group-${option.value}`}
               >
-                6th-8th Grade
+                {option.label}
               </button>
             ))}
           </div>

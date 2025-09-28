@@ -553,11 +553,10 @@ app.use((req, res, next) => {
       log('✓ Sample data initialization completed');
 
       // Initialize Summer Challenge Program
-      // TODO: Fix Summer Challenge Program schema mismatch
-      // log('Initializing Summer Challenge Program...');
-      // const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
-      // await summerChallengeEngine.initializeSummerProgram();
-      // log('✓ Summer Challenge Program initialized');
+      log('Initializing Summer Challenge Program...');
+      const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
+      await summerChallengeEngine.initializeSummerProgram();
+      log('✓ Summer Challenge Program initialized');
 
       // Initialize Family Challenge Program
       // TODO: Fix Family Challenge Program schema issues
