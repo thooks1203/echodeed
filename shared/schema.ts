@@ -123,232 +123,762 @@ export const challengeCompletions = pgTable("challenge_completions", {
 });
 
 // Achievement badges system
-export const achievements = pgTable("achievements", {
+export const achievementBadges = pgTable("achievement_badges", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  title: varchar("title", { length: 100 }).notNull(),
+  name: varchar("name", { length: 100 }).notNull(),
   description: text("description").notNull(),
-  badge: text("badge").notNull(), // Emoji or icon for the badge
-  category: varchar("category", { length: 50 }).notNull(), // kindness, challenges, social, milestones
-  tier: varchar("tier", { length: 20 }).default("bronze").notNull(), // bronze, silver, gold, diamond, legendary
-  requirement: text("requirement").notNull(), // JSON string describing unlock condition
-  echoReward: integer("echo_reward").default(0).notNull(), // Bonus tokens for unlocking
+  category: varchar("category", { length: 50 }).notNull(), // kindness, engagement, challenge, milestone, special
+  icon: varchar("icon", { length: 50 }).notNull(), // Emoji or icon identifier
+  tier: varchar("tier", { length: 20 }).default("bronze").notNull(), // bronze, silver, gold, platinum, diamond
+  requirements: jsonb("requirements").notNull(), // Flexible JSON requirements
+  echoReward: integer("echo_reward").default(5).notNull(),
   isActive: integer("is_active").default(1).notNull(),
-  sortOrder: integer("sort_order").default(0).notNull(), // Display order
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// User achievement unlocks - now user-based
+// User achievement tracking
 export const userAchievements = pgTable("user_achievements", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id),
-  achievementId: varchar("achievement_id").notNull(),
-  unlockedAt: timestamp("unlocked_at").defaultNow().notNull(),
-  progress: integer("progress").default(0), // For progress-based achievements
+  badgeId: varchar("badge_id").notNull().references(() => achievementBadges.id),
+  earnedAt: timestamp("earned_at").defaultNow().notNull(),
 });
 
-// B2B SaaS Features - Corporate Accounts
-export const corporateAccounts = pgTable("corporate_accounts", {
+// Heart reactions - track who hearted what posts
+export const heartReactions = pgTable("heart_reactions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  companyName: varchar("company_name", { length: 200 }).notNull(),
-  companyLogo: text("company_logo"), // URL to company logo
-  domain: varchar("domain", { length: 100 }).notNull().unique(), // email domain for employee verification
-  industry: varchar("industry", { length: 100 }),
-  companySize: varchar("company_size", { length: 50 }), // startup, small, medium, large, enterprise
-  subscriptionTier: varchar("subscription_tier", { length: 50 }).default("basic").notNull(), // basic, pro, enterprise
-  maxEmployees: integer("max_employees").default(50).notNull(),
-  monthlyBudget: integer("monthly_budget").default(1000).notNull(), // $ECHO budget for challenges
-  primaryColor: varchar("primary_color", { length: 7 }).default("#8B5CF6"), // Brand color
-  contactEmail: varchar("contact_email", { length: 200 }).notNull(),
-  contactName: varchar("contact_name", { length: 100 }),
-  isActive: integer("is_active").default(1).notNull(),
-  billingStatus: varchar("billing_status", { length: 50 }).default("trial").notNull(), // trial, active, suspended, cancelled
-  trialEndsAt: timestamp("trial_ends_at"),
+  postId: varchar("post_id").notNull().references(() => kindnessPosts.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Echo reactions - track who echoed what posts
+export const echoReactions = pgTable("echo_reactions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  postId: varchar("post_id").notNull().references(() => kindnessPosts.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Support posts for community support and resource sharing
+export const supportPosts = pgTable("support_posts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id"), // Link to school for school-specific support
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // mental-health, academic, social, physical, family, other
+  priority: varchar("priority", { length: 20 }).default("medium").notNull(), // low, medium, high, urgent
+  isAnonymous: integer("is_anonymous").default(1).notNull(), // 1 = anonymous, 0 = show user
+  status: varchar("status", { length: 20 }).default("open").notNull(), // open, in-progress, resolved, closed
+  helpfulCount: integer("helpful_count").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
-// Corporate teams/departments
-export const corporateTeams = pgTable("corporate_teams", {
+// Support responses to help community members
+export const supportResponses = pgTable("support_responses", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  corporateAccountId: varchar("corporate_account_id").notNull(),
-  teamName: varchar("team_name", { length: 100 }).notNull(),
-  department: varchar("department", { length: 100 }), // HR, Engineering, Marketing, Sales, etc.
-  teamLead: varchar("team_lead", { length: 100 }), // Team lead name
-  teamLeadEmail: varchar("team_lead_email", { length: 200 }),
-  targetSize: integer("target_size").default(10), // Target team size
-  currentSize: integer("current_size").default(0), // Current enrolled employees
-  monthlyKindnessGoal: integer("monthly_kindness_goal").default(20), // Team kindness goal
-  isActive: integer("is_active").default(1).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Corporate employees (links users to corporate structure)
-export const corporateEmployees = pgTable("corporate_employees", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().unique().references(() => users.id), // Links to authenticated users
-  corporateAccountId: varchar("corporate_account_id").notNull(),
-  teamId: varchar("team_id"), // Optional team assignment
-  employeeEmail: varchar("employee_email", { length: 200 }).notNull(),
-  displayName: varchar("display_name", { length: 100 }), // Optional display name for leaderboards
-  role: varchar("role", { length: 50 }).default("employee").notNull(), // employee, team_lead, hr_admin, corporate_admin
-  department: varchar("department", { length: 100 }),
-  startDate: timestamp("start_date").defaultNow().notNull(),
-  isActive: integer("is_active").default(1).notNull(),
-  enrolledAt: timestamp("enrolled_at").defaultNow().notNull(),
-});
-
-// Corporate-specific challenges
-export const corporateChallenges = pgTable("corporate_challenges", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  corporateAccountId: varchar("corporate_account_id").notNull(),
-  title: text("title").notNull(),
+  postId: varchar("post_id").notNull().references(() => supportPosts.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id),
   content: text("content").notNull(),
-  challengeType: varchar("challenge_type", { length: 50 }).default("company_wide").notNull(), // company_wide, team_based, department, individual
-  targetTeamIds: text("target_team_ids"), // JSON array of team IDs (for team-based challenges)
-  echoReward: integer("echo_reward").default(15).notNull(), // Higher rewards for corporate challenges
-  bonusReward: integer("bonus_reward").default(0),
-  participationGoal: integer("participation_goal").default(10), // How many employees should participate
-  currentParticipation: integer("current_participation").default(0),
-  completionCount: integer("completion_count").default(0).notNull(),
-  isActive: integer("is_active").default(1).notNull(),
-  isInternal: integer("is_internal").default(1).notNull(), // 1 = internal only, 0 = public
-  createdByEmployeeId: varchar("created_by_employee_id"), // Which employee created it
-  startsAt: timestamp("starts_at").defaultNow().notNull(),
-  expiresAt: timestamp("expires_at"),
+  isAnonymous: integer("is_anonymous").default(1).notNull(),
+  helpfulCount: integer("helpful_count").default(0).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
-// Corporate analytics tracking
-export const corporateAnalytics = pgTable("corporate_analytics", {
+// Track which responses users found helpful
+export const helpfulReactions = pgTable("helpful_reactions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  corporateAccountId: varchar("corporate_account_id").notNull(),
-  analyticsDate: timestamp("analytics_date").notNull(), // Daily snapshot
-  activeEmployees: integer("active_employees").default(0), // Employees active that day
-  totalKindnessPosts: integer("total_kindness_posts").default(0),
-  totalChallengesCompleted: integer("total_challenges_completed").default(0),
-  totalEchoTokensEarned: integer("total_echo_tokens_earned").default(0),
-  averageEngagementScore: integer("average_engagement_score").default(0), // 0-100 scale
-  topPerformingTeamId: varchar("top_performing_team_id"),
-  topPerformingDepartment: varchar("top_performing_department"),
-  wellnessImpactScore: integer("wellness_impact_score").default(0), // Calculated wellness metric
+  responseId: varchar("response_id").notNull().references(() => supportResponses.id, { onDelete: "cascade" }),
+  userId: varchar("user_id").notNull().references(() => users.id),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Wellness check-ins for students
+export const wellnessCheckins = pgTable("wellness_checkins", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id"), // Link to school
+  moodScore: integer("mood_score").notNull(), // 1-5 scale
+  stressLevel: integer("stress_level").notNull(), // 1-5 scale  
+  energyLevel: integer("energy_level").notNull(), // 1-5 scale
+  socialConnection: integer("social_connection").notNull(), // 1-5 scale
+  notes: text("notes"), // Optional notes
+  flaggedForReview: integer("flagged_for_review").default(0).notNull(), // 1 if needs attention
+  reviewedBy: varchar("reviewed_by"), // Teacher/counselor who reviewed
+  reviewedAt: timestamp("reviewed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Schools table for educational institution management
+export const schools = pgTable("schools", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name", { length: 200 }).notNull(),
+  address: text("address"),
+  city: varchar("city", { length: 100 }),
+  state: varchar("state", { length: 50 }),
+  country: varchar("country", { length: 50 }).default("United States"),
+  zipCode: varchar("zip_code", { length: 10 }),
+  phoneNumber: varchar("phone_number", { length: 20 }),
+  emailDomain: varchar("email_domain", { length: 100 }), // For auto-assigning users to schools
+  studentCount: integer("student_count").default(0),
+  teacherCount: integer("teacher_count").default(0),
+  kindnessPostsCount: integer("kindness_posts_count").default(0),
+  subscriptionTier: varchar("subscription_tier", { length: 20 }).default("free").notNull(),
+  subscriptionStatus: varchar("subscription_status", { length: 20 }).default("active").notNull(),
+  subscriptionStartDate: timestamp("subscription_start_date"),
+  subscriptionEndDate: timestamp("subscription_end_date"),
+  isActive: integer("is_active").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Reward partners for the token redemption system
+export const rewardPartners = pgTable("reward_partners", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description"),
+  logo: text("logo"), // URL or emoji
+  website: text("website"),
+  category: varchar("category", { length: 50 }).notNull(), // food, entertainment, education, retail, local
+  location: text("location"), // For local businesses
+  isActive: integer("is_active").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Reward offers from partners
+export const rewardOffers = pgTable("reward_offers", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  partnerId: varchar("partner_id").notNull().references(() => rewardPartners.id),
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description"),
+  tokenCost: integer("token_cost").notNull(),
+  category: varchar("category", { length: 50 }).notNull(),
+  ageGroup: varchar("age_group", { length: 50 }).default("all").notNull(), // kids, teens, adults, all
+  location: text("location"), // For location-specific offers
+  maxRedemptions: integer("max_redemptions"), // Optional limit
+  currentRedemptions: integer("current_redemptions").default(0),
+  isActive: integer("is_active").default(1).notNull(),
+  validUntil: timestamp("valid_until"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Track reward redemptions
+export const rewardRedemptions = pgTable("reward_redemptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  offerId: varchar("offer_id").notNull().references(() => rewardOffers.id),
+  tokensCost: integer("tokens_cost").notNull(),
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, active, used, expired
+  redemptionCode: varchar("redemption_code"), // Code provided to user
+  redeemedAt: timestamp("redeemed_at").defaultNow().notNull(),
+  usedAt: timestamp("used_at"),
+  expiresAt: timestamp("expires_at"),
+});
+
+// Community service hours tracking for students
+export const communityServiceLogs = pgTable("community_service_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id"), // Link to school
+  serviceName: text("service_name").notNull(),
+  organization: text("organization").notNull(),
+  contactPerson: text("contact_person"),
+  contactEmail: text("contact_email"),
+  contactPhone: text("contact_phone"),
+  hours: decimal("hours", { precision: 4, scale: 2 }).notNull(), // Allow decimal hours
+  serviceDate: timestamp("service_date").notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // environmental, community, education, etc.
+  description: text("description").notNull(),
+  reflection: text("reflection"), // Student reflection on the experience
+  photoUrl: text("photo_url"), // Optional photo evidence
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, verified, rejected
+  verifiedBy: varchar("verified_by"), // Teacher/parent who verified
+  verifiedAt: timestamp("verified_at"),
+  rejectionReason: text("rejection_reason"),
+  tokensAwarded: integer("tokens_awarded").default(0),
+  followUpRequired: integer("follow_up_required").default(0).notNull(), // For tracking if additional verification needed
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Community service verifications - tracking verification process
+export const communityServiceVerifications = pgTable("community_service_verifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceLogId: varchar("service_log_id").notNull().references(() => communityServiceLogs.id),
+  verifierType: varchar("verifier_type", { length: 20 }).notNull(), // parent, teacher, organization
+  verifierId: varchar("verifier_id"), // User ID of verifier if applicable
+  verifierName: text("verifier_name"),
+  verifierEmail: text("verifier_email"),
+  verificationMethod: varchar("verification_method", { length: 50 }).notNull(), // email, phone, in-person, document
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, approved, rejected
+  feedback: text("feedback"),
+  verifiedAt: timestamp("verified_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// COPPA consent tracking for students under 13
+export const coppaConsent = pgTable("coppa_consent", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentId: varchar("student_id").notNull().references(() => users.id),
+  parentEmail: text("parent_email").notNull(),
+  parentName: text("parent_name").notNull(),
+  schoolId: varchar("school_id").notNull(),
+  consentStatus: varchar("consent_status", { length: 20 }).default("pending").notNull(), // pending, granted, denied, expired
+  consentDate: timestamp("consent_date"),
+  expirationDate: timestamp("expiration_date"), // Annual renewal required
+  digitalSignature: text("digital_signature"), // Parent's digital signature
+  ipAddress: varchar("ip_address", { length: 45 }), // For audit trail
+  userAgent: text("user_agent"), // For audit trail
+  verificationToken: varchar("verification_token"), // For email verification
+  lastReminderSent: timestamp("last_reminder_sent"),
+  reminderCount: integer("reminder_count").default(0),
+  withdrawnAt: timestamp("withdrawn_at"),
+  withdrawalReason: text("withdrawal_reason"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// COPPA consent requests - tracking consent workflow
+export const coppaConsentRequests = pgTable("coppa_consent_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentId: varchar("student_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id").notNull(),
+  requestType: varchar("request_type", { length: 20 }).notNull(), // initial, renewal, update
+  parentEmail: text("parent_email").notNull(),
+  parentName: text("parent_name").notNull(),
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, sent, completed, failed, expired
+  emailSentAt: timestamp("email_sent_at"),
+  respondedAt: timestamp("responded_at"),
+  expiresAt: timestamp("expires_at"),
+  remindersSent: integer("reminders_sent").default(0),
+  lastReminderAt: timestamp("last_reminder_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Fundraising campaigns for schools
+export const fundraisingCampaigns = pgTable("fundraising_campaigns", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolId: varchar("school_id").notNull().references(() => schools.id),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  goalAmount: integer("goal_amount").notNull(), // Goal in cents
+  currentAmount: integer("current_amount").default(0).notNull(), // Current raised in cents
+  currency: varchar("currency", { length: 3 }).default("USD").notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // sports, arts, technology, general, etc.
+  imageUrl: text("image_url"),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  status: varchar("status", { length: 20 }).default("active").notNull(), // active, paused, completed, cancelled
+  donorCount: integer("donor_count").default(0).notNull(),
+  createdBy: varchar("created_by").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Track fundraising donations
+export const fundraisingDonations = pgTable("fundraising_donations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  campaignId: varchar("campaign_id").notNull().references(() => fundraisingCampaigns.id),
+  donorId: varchar("donor_id"), // Optional - for anonymous donations
+  donorName: text("donor_name"), // Display name for donor
+  donorEmail: text("donor_email"),
+  amount: integer("amount").notNull(), // Amount in cents
+  currency: varchar("currency", { length: 3 }).default("USD").notNull(),
+  isAnonymous: integer("is_anonymous").default(0).notNull(),
+  message: text("message"), // Optional message from donor
+  paymentMethod: varchar("payment_method", { length: 50 }), // stripe, paypal, etc.
+  paymentId: text("payment_id"), // External payment ID
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, completed, failed, refunded
+  processedAt: timestamp("processed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Subscription plans for schools and users
+export const subscriptionPlans = pgTable("subscription_plans", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description"),
+  tier: varchar("tier", { length: 20 }).notNull(), // free, basic, premium, enterprise
+  userType: varchar("user_type", { length: 20 }).notNull(), // individual, school, district
+  priceMonthly: integer("price_monthly"), // Price in cents
+  priceAnnual: integer("price_annual"), // Price in cents
+  features: jsonb("features"), // JSON array of features
+  studentLimit: integer("student_limit"), // Max students for school plans
+  teacherLimit: integer("teacher_limit"), // Max teachers for school plans
+  storageLimit: integer("storage_limit"), // Storage limit in MB
+  isActive: integer("is_active").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Surprise giveaway campaigns
+export const surpriseGiveawayCampaigns = pgTable("surprise_giveaway_campaigns", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: text("name").notNull(),
+  description: text("description"),
+  type: varchar("type", { length: 50 }).notNull(), // user_gift_card, school_fee_refund
+  isActive: integer("is_active").default(1).notNull(),
+  frequency: varchar("frequency", { length: 20 }).notNull(), // daily, weekly, monthly, quarterly
+  maxWinnersPerPeriod: integer("max_winners_per_period").default(1),
+  giftCardValue: integer("gift_card_value"), // For gift card campaigns
+  partnerId: varchar("partner_id").references(() => rewardPartners.id), // For gift card campaigns
+  refundPercentage: integer("refund_percentage"), // For school refund campaigns (0-100)
+  minActivityScore: integer("min_activity_score").default(75),
+  startDate: timestamp("start_date").defaultNow(),
+  endDate: timestamp("end_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Track surprise giveaway winners
+export const surpriseGiveawayWinners = pgTable("surprise_giveaway_winners", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  campaignId: varchar("campaign_id").notNull().references(() => surpriseGiveawayCampaigns.id),
+  winnerId: varchar("winner_id").notNull(), // User ID or School ID
+  winnerType: varchar("winner_type", { length: 20 }).notNull(), // user, school
+  activityScore: integer("activity_score").notNull(),
+  prize: text("prize").notNull(), // Description of what they won
+  prizeValue: integer("prize_value"), // Value in cents
+  redemptionId: varchar("redemption_id"), // Link to reward redemption if applicable
+  notifiedAt: timestamp("notified_at"),
+  claimedAt: timestamp("claimed_at"),
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, claimed, expired
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Summer Challenge Program for out-of-school engagement
+export const summerChallenges = pgTable("summer_challenges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  weekNumber: integer("week_number").notNull(), // 1-12 for summer weeks
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // family, community, creativity, learning, outdoor
+  difficulty: varchar("difficulty", { length: 20 }).default("medium").notNull(), // easy, medium, hard
+  ageGroup: varchar("age_group", { length: 50 }).default("all").notNull(), // elementary, middle, high, all
+  tokenReward: integer("token_reward").default(15).notNull(),
+  bonusReward: integer("bonus_reward").default(0), // Extra rewards for exceptional completion
+  isActive: integer("is_active").default(1).notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Track summer challenge completions
+export const summerChallengeCompletions = pgTable("summer_challenge_completions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  challengeId: varchar("challenge_id").notNull().references(() => summerChallenges.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  submissionText: text("submission_text"), // Student's description of completion
+  photoUrls: text("photo_urls").array().default([]), // Optional photos
+  parentVerified: integer("parent_verified").default(0).notNull(), // 1 if parent verified
+  tokensAwarded: integer("tokens_awarded").default(0),
+  completedAt: timestamp("completed_at").defaultNow().notNull(),
+});
+
+// Family Challenge Program for parent-child engagement
+export const familyChallenges = pgTable("family_challenges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  weekNumber: integer("week_number").notNull(), // School year week
+  ageGroup: varchar("age_group", { length: 20 }).notNull(), // elementary, middle-high
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // bonding, service, learning, creativity, outdoor
+  difficulty: varchar("difficulty", { length: 20 }).default("medium").notNull(),
+  parentTokens: integer("parent_tokens").default(10).notNull(), // Tokens for parent
+  studentTokens: integer("student_tokens").default(15).notNull(), // Tokens for student
+  familyBonusTokens: integer("family_bonus_tokens").default(5).notNull(), // Extra family bonus
+  isActive: integer("is_active").default(1).notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Track family challenge completions
+export const familyChallengeCompletions = pgTable("family_challenge_completions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  challengeId: varchar("challenge_id").notNull().references(() => familyChallenges.id),
+  studentId: varchar("student_id").notNull().references(() => users.id),
+  parentId: varchar("parent_id"), // Optional if parent not registered
+  parentEmail: text("parent_email"), // For unregistered parents
+  familyReflection: text("family_reflection").notNull(), // Joint reflection
+  photoUrls: text("photo_urls").array().default([]), // Family photos
+  parentTokensAwarded: integer("parent_tokens_awarded").default(0),
+  studentTokensAwarded: integer("student_tokens_awarded").default(0),
+  familyBonusAwarded: integer("family_bonus_awarded").default(0),
+  completedAt: timestamp("completed_at").defaultNow().notNull(),
+});
+
+// School Year Kindness Curriculum for classroom integration
+export const schoolYearChallenges = pgTable("school_year_challenges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  weekNumber: integer("week_number").notNull(), // 1-36 for school year
+  gradeLevel: varchar("grade_level", { length: 20 }).notNull(), // 6-8, 9-12, 6-12
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  learningObjective: text("learning_objective").notNull(), // Educational goal
+  category: varchar("category", { length: 50 }).notNull(), // empathy, inclusion, service, leadership, conflict-resolution
+  activities: jsonb("activities").notNull(), // JSON array of suggested activities
+  discussionQuestions: text("discussion_questions").array().default([]), // For classroom discussion
+  assessmentCriteria: text("assessment_criteria"), // How to evaluate student engagement
+  tokenReward: integer("token_reward").default(20).notNull(),
+  teacherResources: jsonb("teacher_resources"), // Links, materials, etc.
+  isActive: integer("is_active").default(1).notNull(),
+  startDate: timestamp("start_date").notNull(),
+  endDate: timestamp("end_date").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Track classroom engagement with school year challenges
+export const schoolYearChallengeEngagement = pgTable("school_year_challenge_engagement", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  challengeId: varchar("challenge_id").notNull().references(() => schoolYearChallenges.id),
+  userId: varchar("user_id").notNull().references(() => users.id), // Student
+  teacherId: varchar("teacher_id").references(() => users.id), // Teacher facilitating
+  classroomId: varchar("classroom_id"), // Classroom identifier
+  participationLevel: varchar("participation_level", { length: 20 }).default("active").notNull(), // low, medium, active, leadership
+  reflection: text("reflection"), // Student reflection
+  teacherNotes: text("teacher_notes"), // Teacher observations
+  tokenEarned: integer("token_earned").default(0),
+  completedAt: timestamp("completed_at").defaultNow().notNull(),
+});
+
+// Mentor badge system for peer mentorship
+export const mentorBadges = pgTable("mentor_badges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description").notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // connection, communication, guidance, leadership, etc.
+  tier: varchar("tier", { length: 20 }).notNull(), // starter, bronze, silver, gold, special
+  icon: varchar("icon", { length: 50 }).notNull(), // Emoji or icon
+  requirements: jsonb("requirements").notNull(), // What's needed to earn this badge
+  tokenReward: integer("token_reward").default(25).notNull(),
+  isActive: integer("is_active").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Track mentor badge awards
+export const mentorBadgeAwards = pgTable("mentor_badge_awards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  badgeId: varchar("badge_id").notNull().references(() => mentorBadges.id),
+  mentorId: varchar("mentor_id").notNull().references(() => users.id),
+  awardedBy: varchar("awarded_by"), // System or admin who awarded
+  evidence: text("evidence"), // Why they earned it
+  tokenAwarded: integer("token_awarded").default(0),
+  awardedAt: timestamp("awarded_at").defaultNow().notNull(),
+});
+
+// Mentor training modules for skill development
+export const mentorTrainingModules = pgTable("mentor_training_modules", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  content: text("content").notNull(), // Training content/curriculum
+  order: integer("order").notNull(), // Module sequence
+  estimatedMinutes: integer("estimated_minutes").default(30), // Time to complete
+  requiredForCertification: integer("required_for_certification").default(1).notNull(),
+  isActive: integer("is_active").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Track mentor training progress
+export const mentorTrainingProgress = pgTable("mentor_training_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  moduleId: varchar("module_id").notNull().references(() => mentorTrainingModules.id),
+  mentorId: varchar("mentor_id").notNull().references(() => users.id),
+  status: varchar("status", { length: 20 }).default("not_started").notNull(), // not_started, in_progress, completed
+  startedAt: timestamp("started_at"),
+  completedAt: timestamp("completed_at"),
+  timeSpentMinutes: integer("time_spent_minutes").default(0),
+});
+
+// Mentor practice scenarios for skill building
+export const mentorScenarios = pgTable("mentor_scenarios", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  scenario: text("scenario").notNull(), // The situation to respond to
+  category: varchar("category", { length: 50 }).notNull(), // conflict, wellness, academic, social
+  difficulty: varchar("difficulty", { length: 20 }).default("medium").notNull(),
+  suggestedResponse: text("suggested_response"), // Example good response
+  learningPoints: text("learning_points").array().default([]), // Key takeaways
+  isActive: integer("is_active").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Track mentor scenario responses
+export const mentorScenarioResponses = pgTable("mentor_scenario_responses", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  scenarioId: varchar("scenario_id").notNull().references(() => mentorScenarios.id),
+  mentorId: varchar("mentor_id").notNull().references(() => users.id),
+  response: text("response").notNull(), // Mentor's response to scenario
+  feedback: text("feedback"), // System or peer feedback
+  score: integer("score"), // 0-100 assessment score
+  submittedAt: timestamp("submitted_at").defaultNow().notNull(),
+});
+
+// Sample mentor conversations for learning
+export const mentorConversations = pgTable("mentor_conversations", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  conversation: jsonb("conversation").notNull(), // Array of messages showing good mentoring
+  category: varchar("category", { length: 50 }).notNull(),
+  ageGroup: varchar("age_group", { length: 20 }).notNull(), // middle, high
+  learningObjectives: text("learning_objectives").array().default([]),
+  isActive: integer("is_active").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Mentor certification tracking
+export const mentorCertifications = pgTable("mentor_certifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  mentorId: varchar("mentor_id").notNull().references(() => users.id),
+  level: varchar("level", { length: 20 }).default("certified").notNull(), // certified, advanced, master
+  certifiedAt: timestamp("certified_at").defaultNow().notNull(),
+  expiresAt: timestamp("expires_at"), // Optional expiration
+  certifyingAdmin: varchar("certifying_admin").references(() => users.id),
+  notes: text("notes"), // Admin notes about certification
+});
+
+// GDPR and privacy compliance logging
+export const privacyLogs = pgTable("privacy_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").references(() => users.id),
+  action: varchar("action", { length: 50 }).notNull(), // data_export, data_deletion, consent_granted, consent_withdrawn
+  details: jsonb("details"), // Additional context about the action
+  ipAddress: varchar("ip_address", { length: 45 }),
+  userAgent: text("user_agent"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Teacher reward system for educator engagement
+export const teacherRewards = pgTable("teacher_rewards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  teacherId: varchar("teacher_id").notNull().references(() => users.id),
+  rewardType: varchar("reward_type", { length: 50 }).notNull(), // service_hours_champion, wellness_guardian, community_builder
+  criteria: varchar("criteria", { length: 100 }).notNull(), // Specific achievement
+  sponsorId: varchar("sponsor_id"), // Link to sponsor if applicable
+  rewardValue: integer("reward_value"), // Value in cents or tokens
+  rewardDescription: text("reward_description").notNull(), // What they earned
+  status: varchar("status", { length: 20 }).default("earned").notNull(), // earned, redeemed, expired
+  earnedAt: timestamp("earned_at").defaultNow().notNull(),
+  redeemedAt: timestamp("redeemed_at"),
+  expiresAt: timestamp("expires_at"),
+});
+
+// Teacher reward criteria tracking
+export const teacherRewardCriteria = pgTable("teacher_reward_criteria", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description").notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // service_hours, wellness, engagement, professional_dev
+  threshold: integer("threshold").notNull(), // Number needed to qualify
+  period: varchar("period", { length: 20 }).notNull(), // monthly, quarterly, semester, annual
+  rewardType: varchar("reward_type", { length: 50 }).notNull(), // coffee_carafe, restaurant_card, spa_day
+  sponsorRequired: integer("sponsor_required").default(1).notNull(), // 1 if needs sponsor funding
+  isActive: integer("is_active").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Sponsor partnership management
+export const sponsors = pgTable("sponsors", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  companyName: varchar("company_name", { length: 200 }).notNull(),
+  contactName: text("contact_name"),
+  contactEmail: text("contact_email"),
+  contactPhone: text("contact_phone"),
+  category: varchar("category", { length: 50 }).notNull(), // local_restaurant, coffee, retail, entertainment
+  location: text("location"), // For local sponsors
+  monthlyBudget: integer("monthly_budget"), // Budget in cents
+  currentSpent: integer("current_spent").default(0), // Current month spending
+  sponsorshipTier: varchar("sponsorship_tier", { length: 20 }).default("local").notNull(), // local, regional, national
+  isActive: integer("is_active").default(1).notNull(),
+  partnershipStartDate: timestamp("partnership_start_date").defaultNow(),
+  partnershipEndDate: timestamp("partnership_end_date"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Sponsor analytics tracking
+export const sponsorAnalytics = pgTable("sponsor_analytics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  sponsorId: varchar("sponsor_id").notNull().references(() => sponsors.id),
+  month: varchar("month", { length: 7 }).notNull(), // YYYY-MM format
+  teacherRewardsProvided: integer("teacher_rewards_provided").default(0),
+  studentRewardsProvided: integer("student_rewards_provided").default(0),
+  totalSpent: integer("total_spent").default(0), // Amount in cents
+  teacherEngagement: integer("teacher_engagement").default(0), // Number of teachers reached
+  brandImpressions: integer("brand_impressions").default(0), // Number of times brand was seen
+  communityImpact: integer("community_impact").default(0), // Kindness posts influenced
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Table relations
+export const usersRelations = relations(users, ({ one, many }) => ({
+  tokens: one(userTokens),
+  posts: many(kindnessPosts),
+  hearts: many(heartReactions),
+  echoes: many(echoReactions),
+  achievements: many(userAchievements),
+  supportPosts: many(supportPosts),
+  supportResponses: many(supportResponses),
+  helpfulReactions: many(helpfulReactions),
+  wellnessCheckins: many(wellnessCheckins),
+  rewardRedemptions: many(rewardRedemptions),
+  communityServiceLogs: many(communityServiceLogs),
+  challengeCompletions: many(challengeCompletions),
+  school: one(schools, {
+    fields: [users.schoolId],
+    references: [schools.id],
+  }),
+}));
+
+export const schoolsRelations = relations(schools, ({ many }) => ({
+  users: many(users),
+  posts: many(kindnessPosts),
+  fundraisingCampaigns: many(fundraisingCampaigns),
+}));
+
+export const kindnessPostsRelations = relations(kindnessPosts, ({ one, many }) => ({
+  user: one(users, {
+    fields: [kindnessPosts.userId],
+    references: [users.id],
+  }),
+  school: one(schools, {
+    fields: [kindnessPosts.schoolId],
+    references: [schools.id],
+  }),
+  hearts: many(heartReactions),
+  echoes: many(echoReactions),
+}));
+
+export const userTokensRelations = relations(userTokens, ({ one }) => ({
+  user: one(users, {
+    fields: [userTokens.userId],
+    references: [users.id],
+  }),
+}));
+
+export const rewardPartnersRelations = relations(rewardPartners, ({ many }) => ({
+  offers: many(rewardOffers),
+}));
+
+export const rewardOffersRelations = relations(rewardOffers, ({ one, many }) => ({
+  partner: one(rewardPartners, {
+    fields: [rewardOffers.partnerId],
+    references: [rewardPartners.id],
+  }),
+  redemptions: many(rewardRedemptions),
+}));
+
+export const rewardRedemptionsRelations = relations(rewardRedemptions, ({ one }) => ({
+  user: one(users, {
+    fields: [rewardRedemptions.userId],
+    references: [users.id],
+  }),
+  offer: one(rewardOffers, {
+    fields: [rewardRedemptions.offerId],
+    references: [rewardOffers.id],
+  }),
+}));
+
+export const communityServiceLogsRelations = relations(communityServiceLogs, ({ one, many }) => ({
+  user: one(users, {
+    fields: [communityServiceLogs.userId],
+    references: [users.id],
+  }),
+  verifications: many(communityServiceVerifications),
+}));
+
+export const communityServiceVerificationsRelations = relations(communityServiceVerifications, ({ one }) => ({
+  serviceLog: one(communityServiceLogs, {
+    fields: [communityServiceVerifications.serviceLogId],
+    references: [communityServiceLogs.id],
+  }),
+}));
+
+export const fundraisingCampaignsRelations = relations(fundraisingCampaigns, ({ one, many }) => ({
+  school: one(schools, {
+    fields: [fundraisingCampaigns.schoolId],
+    references: [schools.id],
+  }),
+  creator: one(users, {
+    fields: [fundraisingCampaigns.createdBy],
+    references: [users.id],
+  }),
+  donations: many(fundraisingDonations),
+}));
+
+export const fundraisingDonationsRelations = relations(fundraisingDonations, ({ one }) => ({
+  campaign: one(fundraisingCampaigns, {
+    fields: [fundraisingDonations.campaignId],
+    references: [fundraisingCampaigns.id],
+  }),
+}));
+
+export const surpriseGiveawayCampaignsRelations = relations(surpriseGiveawayCampaigns, ({ one, many }) => ({
+  partner: one(rewardPartners, {
+    fields: [surpriseGiveawayCampaigns.partnerId],
+    references: [rewardPartners.id],
+  }),
+  winners: many(surpriseGiveawayWinners),
+}));
+
+export const surpriseGiveawayWinnersRelations = relations(surpriseGiveawayWinners, ({ one }) => ({
+  campaign: one(surpriseGiveawayCampaigns, {
+    fields: [surpriseGiveawayWinners.campaignId],
+    references: [surpriseGiveawayCampaigns.id],
+  }),
+}));
+
+export const teacherRewardsRelations = relations(teacherRewards, ({ one }) => ({
+  teacher: one(users, {
+    fields: [teacherRewards.teacherId],
+    references: [users.id],
+  }),
+  sponsor: one(sponsors, {
+    fields: [teacherRewards.sponsorId],
+    references: [sponsors.id],
+  }),
+}));
+
+export const sponsorsRelations = relations(sponsors, ({ many }) => ({
+  rewards: many(teacherRewards),
+  analytics: many(sponsorAnalytics),
+}));
+
+export const sponsorAnalyticsRelations = relations(sponsorAnalytics, ({ one }) => ({
+  sponsor: one(sponsors, {
+    fields: [sponsorAnalytics.sponsorId],
+    references: [sponsors.id],
+  }),
+}));
+
+// Insert schemas for form validation
+export const insertUserSchema = createInsertSchema(users).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
 });
 
 export const insertKindnessPostSchema = createInsertSchema(kindnessPosts).omit({
   id: true,
   createdAt: true,
-}).extend({
-  emojis: z.array(z.enum([
-    'heart_hand', 'spark_heart', 'high_five', 'thank_you_note', 'recycle_leaf', 'mentor_crown',
-    'inclusion_rainbow', 'community_hands', 'positivity_sun', 'study_buddy', 'clean_up_leaf',
-    'kind_words_bubble', 'locker_note', 'bus_seat', 'cafeteria_tray', 'tree_plant'
-  ])).max(3).default([])
+  heartsCount: true,
+  echoesCount: true,
+  sentimentScore: true,
+  impactScore: true,
+  emotionalUplift: true,
+  kindnessCategory: true,
+  rippleEffect: true,
+  wellnessContribution: true,
+  aiConfidence: true,
+  aiTags: true,
+  analyzedAt: true,
 });
-
-export const insertKindnessCounterSchema = createInsertSchema(kindnessCounter).omit({
-  id: true,
-  updatedAt: true,
-});
-
-export const insertUserTokensSchema = createInsertSchema(userTokens).omit({
-  id: true,
-  createdAt: true,
-  lastActive: true,
-});
-
-// Replit Auth schemas - Required for authentication
-export const upsertUserSchema = createInsertSchema(users);
-export type UpsertUser = typeof users.$inferInsert;
-export type User = typeof users.$inferSelect;
-
-// School role types
-export type SchoolRole = 'student' | 'teacher' | 'admin' | 'parent';
-
-// ==========================================
-// CURRICULUM INTEGRATION TABLES
-// ==========================================
-
-// Curriculum lesson plans and activities
-export const curriculumLessons = pgTable("curriculum_lessons", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  title: varchar("title").notNull(),
-  description: text("description").notNull(),
-  gradeLevel: varchar("grade_level").notNull(), // K, 1, 2, 3, 4, 5, 6, 7, 8
-  subject: varchar("subject").notNull(), // "Character Education", "Social Studies", "Language Arts"
-  duration: integer("duration_minutes").notNull(), // 30, 45, 60 minutes
-  kindnessTheme: varchar("kindness_theme").notNull(), // "Empathy", "Inclusion", "Helping Others"
-  learningObjectives: text("learning_objectives").array().notNull(),
-  materials: text("materials").array().notNull(),
-  activities: text("activities").array().notNull(),
-  reflectionQuestions: text("reflection_questions").array().notNull(),
-  vocabulary: text("vocabulary").array(), // Key terms and definitions for the lesson
-  assessmentRubric: text("assessment_rubric"),
-  extensionActivities: text("extension_activities").array(),
-  crossCurricularConnections: text("cross_curricular_connections").array(),
-  difficulty: varchar("difficulty").notNull().default("beginner"), // beginner, intermediate, advanced
-  tags: text("tags").array(),
-  isActive: boolean("is_active").notNull().default(true),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-// Teacher curriculum progress and implementation
-export const curriculumProgress = pgTable("curriculum_progress", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  teacherId: varchar("teacher_id").notNull(),
-  lessonId: varchar("lesson_id").notNull().references(() => curriculumLessons.id),
-  classId: varchar("class_id"), // Optional class identifier
-  implementedAt: timestamp("implemented_at").notNull(),
-  studentCount: integer("student_count").notNull(),
-  engagementScore: integer("engagement_score"), // 1-10 teacher rating
-  effectivenessScore: integer("effectiveness_score"), // 1-10 teacher rating
-  teacherNotes: text("teacher_notes"),
-  adaptations: text("adaptations"), // How teacher modified the lesson
-  studentFeedback: text("student_feedback"),
-  wouldRecommend: boolean("would_recommend"),
-  completionStatus: varchar("completion_status").notNull().default("completed"), // planned, in_progress, completed, cancelled
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Student individual responses to curriculum activities
-export const studentCurriculumResponses = pgTable("student_curriculum_responses", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  studentId: varchar("student_id").notNull(),
-  progressId: varchar("progress_id").notNull().references(() => curriculumProgress.id),
-  lessonId: varchar("lesson_id").notNull().references(() => curriculumLessons.id),
-  activityType: varchar("activity_type").notNull(), // "reflection", "role_play", "creative", "discussion"
-  response: text("response"),
-  kindnessAction: text("kindness_action"), // What kindness act did they commit to?
-  completedAction: boolean("completed_action").default(false),
-  actionReflection: text("action_reflection"),
-  peerFeedback: text("peer_feedback"),
-  teacherFeedback: text("teacher_feedback"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Curriculum resource library (videos, worksheets, etc.)
-export const curriculumResources = pgTable("curriculum_resources", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  lessonId: varchar("lesson_id").references(() => curriculumLessons.id),
-  title: varchar("title").notNull(),
-  resourceType: varchar("resource_type").notNull(), // "video", "worksheet", "book", "website", "app"
-  url: varchar("url"),
-  description: text("description"),
-  gradeLevel: varchar("grade_level"),
-  isRequired: boolean("is_required").default(false),
-  downloadCount: integer("download_count").default(0),
-  rating: decimal("rating", { precision: 3, scale: 2 }),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export type CurriculumLesson = typeof curriculumLessons.$inferSelect;
-export type InsertCurriculumLesson = typeof curriculumLessons.$inferInsert;
-export type CurriculumProgress = typeof curriculumProgress.$inferSelect;
-export type InsertCurriculumProgress = typeof curriculumProgress.$inferInsert;
-export type StudentCurriculumResponse = typeof studentCurriculumResponses.$inferSelect;
-export type InsertStudentCurriculumResponse = typeof studentCurriculumResponses.$inferInsert;
-export type CurriculumResource = typeof curriculumResources.$inferSelect;
-export type InsertCurriculumResource = typeof curriculumResources.$inferInsert;
 
 export const insertBrandChallengeSchema = createInsertSchema(brandChallenges).omit({
   id: true,
@@ -356,898 +886,33 @@ export const insertBrandChallengeSchema = createInsertSchema(brandChallenges).om
   completionCount: true,
 });
 
-export const insertChallengeCompletionSchema = createInsertSchema(challengeCompletions).omit({
-  id: true,
-  completedAt: true,
-});
-
-export const insertAchievementSchema = createInsertSchema(achievements).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertUserAchievementSchema = createInsertSchema(userAchievements).omit({
-  id: true,
-  unlockedAt: true,
-});
-
-// Rewards & Partners System
-export const rewardPartners = pgTable("reward_partners", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  partnerName: varchar("partner_name", { length: 200 }).notNull(),
-  partnerLogo: text("partner_logo"), // URL to partner logo
-  partnerType: varchar("partner_type", { length: 50 }).default("retail").notNull(), // retail, food, wellness, tech, travel
-  websiteUrl: text("website_url"),
-  description: text("description").notNull(),
-  isActive: integer("is_active").default(1).notNull(),
-  isFeatured: integer("is_featured").default(0).notNull(),
-  minRedemptionAmount: integer("min_redemption_amount").default(100).notNull(), // Minimum $ECHO to redeem
-  maxRedemptionAmount: integer("max_redemption_amount").default(5000).notNull(), // Maximum $ECHO per redemption
-  contactEmail: varchar("contact_email", { length: 200 }),
-  apiEndpoint: text("api_endpoint"), // For automated discount code generation
-  // SECURITY: Removed direct apiKey storage - use environment variables instead
-  // Merchant verification settings
-  merchantPinHash: varchar("merchant_pin_hash", { length: 100 }), // Hashed PIN for verification
-  allowsQrVerification: integer("allows_qr_verification").default(1).notNull(), // 1 = supports QR verification
-  locations: jsonb("locations"), // Array of store locations with addresses
-  redemptionInstructions: text("redemption_instructions"), // Instructions for customers
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const rewardOffers = pgTable("reward_offers", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  partnerId: varchar("partner_id").notNull(),
-  offerType: varchar("offer_type", { length: 50 }).default("discount").notNull(), // discount, freebie, cashback, experience
-  title: varchar("title", { length: 200 }).notNull(),
-  description: text("description").notNull(),
-  offerValue: varchar("offer_value", { length: 50 }).notNull(), // "20%", "$5", "Buy 1 Get 1"
-  echoCost: integer("echo_cost").notNull(), // Cost in $ECHO tokens
-  badgeRequirement: varchar("badge_requirement"), // Required achievement badge
-  maxRedemptions: integer("max_redemptions").default(-1), // -1 = unlimited
-  currentRedemptions: integer("current_redemptions").default(0),
-  isActive: integer("is_active").default(1).notNull(),
-  isFeatured: integer("is_featured").default(0).notNull(),
-  requiresVerification: integer("requires_verification").default(0).notNull(), // 1 = requires kindness verification
-  expiresAt: timestamp("expires_at"),
-  termsAndConditions: text("terms_and_conditions"),
-  imageUrl: text("image_url"), // Offer banner image
-  // Corporate Sponsorship Fields
-  sponsorCompany: varchar("sponsor_company", { length: 200 }), // Company sponsoring this reward
-  sponsorLogo: text("sponsor_logo"), // Sponsor's logo URL
-  sponsorshipType: varchar("sponsorship_type", { length: 50 }).default("full").notNull(), // full, partial, co-sponsor
-  sponsorshipMessage: text("sponsorship_message"), // Custom message from sponsor
-  monthlySponsorship: integer("monthly_sponsorship").default(0), // Monthly sponsorship revenue in cents
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const rewardRedemptions = pgTable("reward_redemptions", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  offerId: varchar("offer_id").notNull(),
-  partnerId: varchar("partner_id").notNull(),
-  echoSpent: integer("echo_spent").notNull(),
-  redemptionCode: varchar("redemption_code", { length: 50 }), // Generated discount/promo code
-  codeHash: varchar("code_hash", { length: 100 }), // Hashed version for security
-  status: varchar("status", { length: 50 }).default("pending").notNull(), // pending, active, used, expired, refunded
-  verificationRequired: integer("verification_required").default(0).notNull(),
-  verificationStatus: varchar("verification_status", { length: 50 }).default("none").notNull(), // none, pending, approved, rejected
-  verificationData: jsonb("verification_data"), // Photo/proof of kindness act
-  // Merchant verification fields
-  verifiedByMerchant: integer("verified_by_merchant").default(0).notNull(), // 0 = not verified, 1 = verified
-  verifyMethod: varchar("verify_method", { length: 20 }), // "qr", "manual", "api"
-  merchantLocationId: varchar("merchant_location_id"), // Which store/location verified
-  cashierId: varchar("cashier_id"), // Optional - which cashier processed
-  verificationNotes: text("verification_notes"), // Optional merchant notes
-  expiresAt: timestamp("expires_at"),
-  usedAt: timestamp("used_at"),
-  redeemedAt: timestamp("redeemed_at").defaultNow().notNull(),
-  refundedAt: timestamp("refunded_at"),
-});
-
-export const kindnessVerifications = pgTable("kindness_verifications", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  postId: varchar("post_id"), // Optional - link to kindness post
-  redemptionId: varchar("redemption_id"), // Link to reward redemption requiring verification
-  verificationType: varchar("verification_type", { length: 50 }).default("photo").notNull(), // photo, video, witness, receipt
-  verificationData: jsonb("verification_data").notNull(), // URLs, witness info, etc.
-  description: text("description").notNull(), // User's description of the act
-  location: text("location"),
-  witnessName: varchar("witness_name", { length: 100 }),
-  witnessContact: varchar("witness_contact", { length: 200 }),
-  status: varchar("status", { length: 50 }).default("pending").notNull(), // pending, approved, rejected
-  reviewedBy: varchar("reviewed_by"), // Admin user ID
-  reviewNotes: text("review_notes"),
-  bonusEchoAwarded: integer("bonus_echo_awarded").default(0), // Extra tokens for verified acts
-  submittedAt: timestamp("submitted_at").defaultNow().notNull(),
-  reviewedAt: timestamp("reviewed_at"),
-});
-
-// SUPPORT CIRCLE FEATURE - Anonymous peer support for grades 6-8
-export const supportPosts = pgTable("support_posts", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").references(() => users.id), // Optional link to authenticated user
-  content: text("content").notNull(), // The struggle/challenge being shared
-  category: varchar("category", { length: 50 }).notNull(), // academic, social, family, emotional, physical, other
-  schoolId: varchar("school_id"), // School identifier for filtering (Phase 1: text field)
-  city: text("city"),
-  state: text("state"), 
-  country: text("country"),
-  gradeLevel: varchar("grade_level", { length: 10 }), // "6", "7", "8" for age-appropriate filtering
-  isAnonymous: integer("is_anonymous").default(1).notNull(), // Always anonymous for safety
-  heartsCount: integer("hearts_count").default(0).notNull(), // Support reactions
-  // Crisis Detection Fields
-  isCrisis: integer("is_crisis").default(0).notNull(), // 1 = flagged as crisis
-  crisisKeywords: jsonb("crisis_keywords"), // Array of detected crisis keywords
-  crisisScore: integer("crisis_score").default(0), // 0-100 AI-determined crisis severity
-  urgencyLevel: varchar("urgency_level", { length: 20 }).default("low").notNull(), // low, medium, high, critical
-  flaggedAt: timestamp("flagged_at"), // When crisis was first detected
-  // Safety Classification System
-  safetyLevel: varchar("safety_level", { length: 20 }).default("pending").notNull(), // Safe, Sensitive, High_Risk, Crisis, pending
-  isVisibleToPublic: integer("is_visible_to_public").default(1).notNull(), // 0 = counselor-only, 1 = public
-  safetyAnalyzedAt: timestamp("safety_analyzed_at"), // When safety analysis was completed
-  // Emergency Contact Fields (COPPA Safety Exception)
-  emergencyContactName: varchar("emergency_contact_name", { length: 100 }), // For crisis situations only
-  emergencyContactPhone: varchar("emergency_contact_phone", { length: 20 }), // For crisis situations only
-  emergencyContactRelation: varchar("emergency_contact_relation", { length: 50 }), // parent, guardian, family
-  safetyDisclosureAccepted: integer("safety_disclosure_accepted").default(0).notNull(), // 1 = accepted safety terms
-  // Professional Response Fields
-  hasResponse: integer("has_response").default(0).notNull(), // 1 = professional has responded
-  responseCount: integer("response_count").default(0).notNull(), // Number of professional responses
-  lastResponseAt: timestamp("last_response_at"), // Most recent professional response
-  assignedCounselorId: varchar("assigned_counselor_id"), // Counselor handling this case
-  // Aggregation & Analytics
-  viewCount: integer("view_count").default(0).notNull(), // How many times viewed
-  reportCount: integer("report_count").default(0).notNull(), // Times reported as inappropriate
-  isResolved: integer("is_resolved").default(0).notNull(), // 1 = student marked as resolved
-  resolutionNote: text("resolution_note"), // Student's follow-up on how they're doing
-  resolvedAt: timestamp("resolved_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Professional responses to support posts
-export const supportResponses = pgTable("support_responses", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  supportPostId: varchar("support_post_id").notNull().references(() => supportPosts.id),
-  counselorId: varchar("counselor_id").notNull(), // Professional responder ID
-  counselorName: varchar("counselor_name", { length: 100 }), // Display name (e.g., "Ms. Johnson, School Counselor")
-  counselorCredentials: varchar("counselor_credentials", { length: 200 }), // "Licensed Professional Counselor"
-  responseContent: text("response_content").notNull(), // The professional's supportive response
-  responseType: varchar("response_type", { length: 50 }).default("support").notNull(), // support, resource, referral, follow_up
-  includedResources: jsonb("included_resources"), // Array of helpful resources/links
-  isPrivate: integer("is_private").default(0).notNull(), // 1 = private response (direct message style)
-  heartsCount: integer("hearts_count").default(0).notNull(), // Student appreciation reactions
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Crisis escalation tracking
-export const crisisEscalations = pgTable("crisis_escalations", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  supportPostId: varchar("support_post_id").notNull().references(() => supportPosts.id),
-  escalatedBy: varchar("escalated_by").notNull(), // Counselor or admin who escalated
-  escalationLevel: varchar("escalation_level", { length: 50 }).notNull(), // principal, parent, emergency, external
-  escalationReason: text("escalation_reason").notNull(), // Why it was escalated
-  actionsTaken: text("actions_taken"), // What steps were taken
-  contactedParties: jsonb("contacted_parties"), // Who was contacted
-  status: varchar("status", { length: 50 }).default("active").notNull(), // active, resolved, transferred
-  resolution: text("resolution"), // How the crisis was resolved
-  escalatedAt: timestamp("escalated_at").defaultNow().notNull(),
-  resolvedAt: timestamp("resolved_at"),
-});
-
-// School-level support analytics for administrators
-export const schoolSupportAnalytics = pgTable("school_support_analytics", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  schoolId: varchar("school_id").notNull(), // School identifier
-  analyticsDate: timestamp("analytics_date").notNull(), // Daily snapshot
-  totalSupportPosts: integer("total_support_posts").default(0),
-  activeCrises: integer("active_crises").default(0),
-  resolvedSupportCases: integer("resolved_support_cases").default(0),
-  topConcernCategory: varchar("top_concern_category", { length: 50 }), // Most common struggle category
-  averageResponseTime: integer("average_response_time_hours").default(0), // Professional response time
-  suggestedInterventions: jsonb("suggested_interventions"), // AI-suggested school-wide activities
-  wellbeingScore: integer("wellbeing_score").default(75), // 0-100 overall school wellbeing
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Licensed professional credentials (Phase 2 - keeping for structure)
-export const licensedCounselors = pgTable("licensed_counselors", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").references(() => users.id), // Optional link to user account
-  displayName: varchar("display_name", { length: 100 }).notNull(), // "Ms. Johnson"
-  credentials: varchar("credentials", { length: 200 }).notNull(), // "Licensed Professional Counselor"
-  licenseNumber: varchar("license_number", { length: 100 }),
-  licenseState: varchar("license_state", { length: 50 }),
-  specializations: jsonb("specializations"), // Array of specialization areas
-  schoolsAuthorized: jsonb("schools_authorized"), // Which schools they can respond at
-  isActive: integer("is_active").default(1).notNull(),
-  verificationStatus: varchar("verification_status", { length: 50 }).default("pending").notNull(), // pending, verified, rejected
-  verifiedBy: varchar("verified_by"), // Admin who verified credentials
-  verifiedAt: timestamp("verified_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// ===== DAILY WELLNESS CHECK-INS FOR GRADES 6-8 =====
-
-// Daily wellness check-ins with mood tracking and proactive monitoring
-export const wellnessCheckIns = pgTable("wellness_check_ins", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  schoolId: varchar("school_id").notNull(),
-  gradeLevel: varchar("grade_level").notNull(), // "6", "7", "8"
-  studentId: varchar("student_id"), // Anonymous identifier, optional
-  mood: varchar("mood").notNull(), // "great", "good", "okay", "struggling", "terrible"
-  moodScore: integer("mood_score").notNull(), // 1-5 scale (5=great, 1=terrible)
-  selectedEmoji: varchar("selected_emoji"), // 😄😊😐😔😢
-  stressLevel: integer("stress_level"), // 1-5 scale (1=no stress, 5=very stressed)
-  sleepQuality: integer("sleep_quality"), // 1-5 scale (1=terrible, 5=excellent)
-  socialConnection: integer("social_connection"), // 1-5 scale (1=isolated, 5=very connected)
-  academicPressure: integer("academic_pressure"), // 1-5 scale (1=none, 5=overwhelming)
-  homeEnvironment: integer("home_environment"), // 1-5 scale (1=difficult, 5=supportive)
-  notes: text("notes"), // Optional additional thoughts
-  triggeredByNotification: integer("triggered_by_notification").default(1),
-  notificationTime: timestamp("notification_time"),
-  responseTime: timestamp("response_time").defaultNow(),
-  completedAt: timestamp("completed_at").defaultNow(),
-  checkInDate: timestamp("check_in_date").defaultNow(),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Push notification subscriptions for daily wellness check-ins
-export const pushSubscriptions = pgTable("push_subscriptions", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  schoolId: varchar("school_id").notNull(),
-  gradeLevel: varchar("grade_level").notNull(), // "6", "7", "8"
-  deviceId: varchar("device_id").notNull(), // Unique device identifier
-  endpoint: text("endpoint").notNull(), // Web Push endpoint URL
-  p256dh: text("p256dh").notNull(), // Public key for encryption
-  auth: text("auth").notNull(), // Auth secret for encryption
-  isActive: integer("is_active").default(1),
-  preferredTime: varchar("preferred_time").default("09:00"), // "HH:MM" format
-  timezone: varchar("timezone").default("America/New_York"),
-  lastNotificationSent: timestamp("last_notification_sent"),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-// Wellness trend analytics for school administrators
-export const wellnessTrends = pgTable("wellness_trends", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  schoolId: varchar("school_id").notNull(),
-  gradeLevel: varchar("grade_level").notNull(),
-  analysisDate: timestamp("analysis_date").defaultNow(),
-  totalCheckIns: integer("total_check_ins").default(0),
-  averageMoodScore: decimal("average_mood_score", { precision: 3, scale: 2 }),
-  averageStressLevel: decimal("average_stress_level", { precision: 3, scale: 2 }),
-  criticalConcerns: integer("critical_concerns").default(0), // Mood score 1-2
-  positiveReports: integer("positive_reports").default(0), // Mood score 4-5
-  trendDirection: varchar("trend_direction"), // "improving", "declining", "stable"
-  alertLevel: varchar("alert_level").default("normal"), // "normal", "watch", "concern", "critical"
-  recommendations: jsonb("recommendations"), // Array of automated recommendations
-  generatedAt: timestamp("generated_at").defaultNow(),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-export const badgeRewards = pgTable("badge_rewards", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  badgeId: varchar("badge_id").notNull(), // Links to achievement ID
-  rewardType: varchar("reward_type", { length: 50 }).default("echo_multiplier").notNull(), // echo_multiplier, exclusive_offers, priority_access
-  rewardValue: varchar("reward_value", { length: 100 }).notNull(), // "2x", "exclusive_partner_access", "early_access"
-  description: text("description").notNull(),
-  isActive: integer("is_active").default(1).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const weeklyPrizes = pgTable("weekly_prizes", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  prizeType: varchar("prize_type", { length: 50 }).default("grand_prize").notNull(), // grand_prize, category_winner, participation
-  title: varchar("title", { length: 200 }).notNull(),
-  description: text("description").notNull(),
-  prizeValue: varchar("prize_value", { length: 50 }), // "$500 Gift Card", "Apple Watch"
-  eligibilityCriteria: text("eligibility_criteria").notNull(), // JSON criteria for winning
-  maxWinners: integer("max_winners").default(1).notNull(),
-  weekStartDate: timestamp("week_start_date").notNull(),
-  weekEndDate: timestamp("week_end_date").notNull(),
-  drawDate: timestamp("draw_date").notNull(),
-  status: varchar("status", { length: 50 }).default("upcoming").notNull(), // upcoming, active, drawn, completed
-  sponsorId: varchar("sponsor_id"), // Partner sponsor
-  imageUrl: text("image_url"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const prizeWinners = pgTable("prize_winners", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  prizeId: varchar("prize_id").notNull(),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  winningCriteria: text("winning_criteria"), // What they won for
-  contactStatus: varchar("contact_status", { length: 50 }).default("pending").notNull(), // pending, contacted, claimed, delivered
-  claimCode: varchar("claim_code", { length: 50 }), // Code to claim prize
-  deliveryInfo: jsonb("delivery_info"), // Shipping address, etc.
-  wonAt: timestamp("won_at").defaultNow().notNull(),
-  contactedAt: timestamp("contacted_at"),
-  claimedAt: timestamp("claimed_at"),
-  deliveredAt: timestamp("delivered_at"),
-});
-
-// Marketing & Viral Growth System
-export const referrals = pgTable("referrals", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  referrerId: varchar("referrer_id").references(() => users.id),
-  refereeId: varchar("referee_id").references(() => users.id),
-  referralCode: varchar("referral_code").notNull(),
-  rewardAmount: integer("reward_amount").default(50),
-  status: varchar("status").default("pending").notNull(), // pending, completed, paid
-  completedAt: timestamp("completed_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const shareableAchievements = pgTable("shareable_achievements", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").references(() => users.id),
-  achievementType: varchar("achievement_type").notNull(), // milestone, badge, streak, company_stats
-  title: varchar("title").notNull(),
-  description: varchar("description").notNull(),
-  imageUrl: varchar("image_url"),
-  shareData: jsonb("share_data"), // Custom data for different share types
-  shareCount: integer("share_count").default(0),
-  clickCount: integer("click_count").default(0),
-  conversionCount: integer("conversion_count").default(0),
-  isPublic: integer("is_public").default(1).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const companyLeaderboards = pgTable("company_leaderboards", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  corporateAccountId: varchar("corporate_account_id").notNull(),
-  leaderboardType: varchar("leaderboard_type").notNull(), // kindness_count, echo_earnings, streak, wellness_score
-  period: varchar("period").notNull(), // daily, weekly, monthly, all_time
-  title: varchar("title").notNull(),
-  description: text("description"),
-  prizes: jsonb("prizes"), // Prize structure for winners
-  isPublic: integer("is_public").default(0).notNull(), // 0 = internal only, 1 = public
-  isActive: integer("is_active").default(1).notNull(),
-  startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const leaderboardEntries = pgTable("leaderboard_entries", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  leaderboardId: varchar("leaderboard_id").notNull(),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  score: integer("score").notNull(),
-  rank: integer("rank"),
-  metadata: jsonb("metadata"), // Additional stats for display
-  calculatedAt: timestamp("calculated_at").defaultNow().notNull(),
-});
-
-export const marketingCampaigns = pgTable("marketing_campaigns", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  campaignName: varchar("campaign_name").notNull(),
-  campaignType: varchar("campaign_type").notNull(), // referral, social_share, leaderboard, viral_challenge
-  targetAudience: varchar("target_audience"), // new_users, active_users, corporate_admins
-  title: varchar("title").notNull(),
-  description: text("description"),
-  callToAction: varchar("call_to_action"),
-  rewardStructure: jsonb("reward_structure"), // How rewards are calculated
-  trackingData: jsonb("tracking_data"), // UTM codes, attribution
-  isActive: integer("is_active").default(1).notNull(),
-  startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-export const marketingAnalytics = pgTable("marketing_analytics", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  analyticsDate: timestamp("analytics_date").notNull(),
-  metric: varchar("metric").notNull(), // referrals_sent, shares_made, clicks_received, conversions
-  source: varchar("source"), // referral, social, email, direct
-  value: integer("value").notNull(),
-  metadata: jsonb("metadata"), // Additional context
-  corporateAccountId: varchar("corporate_account_id"), // Optional - for company-specific metrics
-  campaignId: varchar("campaign_id"), // Optional - for campaign attribution
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// INDIVIDUAL SUBSCRIPTION PLANS (Revenue Diversification)
-export const subscriptionPlans = pgTable("subscription_plans", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  planName: varchar("plan_name", { length: 50 }).notNull(), // Free, Basic, Premium, Enterprise, Education
-  planType: varchar("plan_type", { length: 20 }).default("individual").notNull(), // individual, corporate, education
-  monthlyPrice: integer("monthly_price").default(0).notNull(), // Price in cents
-  yearlyPrice: integer("yearly_price").default(0).notNull(), // Price in cents (usually discounted)
-  features: jsonb("features").notNull(), // Array of features included
-  limits: jsonb("limits").notNull(), // Usage limits (posts per month, etc.)
-  isActive: integer("is_active").default(1).notNull(),
-  sortOrder: integer("sort_order").default(0).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// SCHOOL-SPECIFIC FEATURES
-// Parent engagement system for schools
-export const parentAccounts = pgTable("parent_accounts", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  parentEmail: varchar("parent_email", { length: 200 }).notNull().unique(),
-  parentName: varchar("parent_name", { length: 100 }).notNull(),
-  phoneNumber: varchar("phone_number", { length: 20 }),
-  preferredContact: varchar("preferred_contact", { length: 20 }).default("email").notNull(), // email, sms, both
-  isVerified: integer("is_verified").default(0).notNull(),
-  verificationCode: varchar("verification_code", { length: 10 }),
-  consentGiven: integer("consent_given").default(0).notNull(), // COPPA compliance
-  consentDate: timestamp("consent_date"),
-  notificationsEnabled: integer("notifications_enabled").default(1).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Administrator accounts for school management
-export const schoolAdministrators = pgTable("school_administrators", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  role: varchar("role", { length: 50 }).notNull(), // principal, vice_principal, district_admin, superintendent
-  schoolId: varchar("school_id"), // Link to corporate account representing school
-  districtId: varchar("district_id").notNull(), // Link to district
-  permissions: jsonb("permissions"), // JSON array of permission strings
-  isActive: integer("is_active").default(1).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-// Google Classroom integration table
-export const googleClassroomIntegrations = pgTable("google_classroom_integrations", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  schoolId: varchar("school_id").notNull(), // Link to school
-  teacherUserId: varchar("teacher_user_id").notNull().references(() => users.id),
-  googleClassroomId: varchar("google_classroom_id").notNull(),
-  courseName: varchar("course_name", { length: 255 }).notNull(),
-  section: varchar("section", { length: 100 }),
-  gradeLevel: varchar("grade_level", { length: 20 }),
-  studentCount: integer("student_count").default(0),
-  syncEnabled: integer("sync_enabled").default(1).notNull(),
-  lastSyncAt: timestamp("last_sync_at"),
-  accessToken: text("access_token"), // Encrypted Google access token
-  refreshToken: text("refresh_token"), // Encrypted Google refresh token
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-// Link students to their parents (COPPA compliance)
-// 🎓 COPPA-Compliant Student Accounts
-export const studentAccounts = pgTable("student_accounts", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().unique().references(() => users.id), // Links to main users table
-  schoolId: varchar("school_id").notNull(), // School restriction for safety
-  // COPPA-compliant minimal data collection
-  firstName: varchar("first_name", { length: 50 }).notNull(),
-  lastName: varchar("last_name", { length: 50 }).notNull(),
-  grade: varchar("grade", { length: 5 }).notNull(), // K, 1, 2, 3, 4, 5, 6, 7, 8
-  birthYear: integer("birth_year").notNull(), // For age verification, not birth date
-  // Parental consent tracking
-  parentalConsentStatus: varchar("parental_consent_status", { length: 20 }).default("pending").notNull(), // pending, approved, denied
-  parentalConsentMethod: varchar("parental_consent_method", { length: 20 }), // email, phone, in_person
-  parentalConsentDate: timestamp("parental_consent_date"),
-  parentalConsentIP: varchar("parental_consent_ip"),
-  consentVerificationCode: varchar("consent_verification_code"),
-  // Privacy and safety
-  isAccountActive: integer("is_account_active").default(0).notNull(), // Inactive until parental consent
-  allowDirectMessages: integer("allow_direct_messages").default(0).notNull(), // Disabled by default
-  allowPublicProfile: integer("allow_public_profile").default(0).notNull(), // Anonymous by default
-  // Parent notification preferences  
-  parentNotificationEmail: varchar("parent_notification_email"),
-  parentNotificationPhone: varchar("parent_notification_phone"),
-  // Account safety
-  lastActiveAt: timestamp("last_active_at"),
-  accountCreatedAt: timestamp("account_created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export const studentParentLinks = pgTable("student_parent_links", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  studentUserId: varchar("student_user_id").notNull().references(() => users.id),
-  parentAccountId: varchar("parent_account_id").notNull().references(() => parentAccounts.id),
-  relationshipType: varchar("relationship_type", { length: 20 }).default("parent").notNull(), // parent, guardian, caregiver
-  isPrimary: integer("is_primary").default(0).notNull(), // Primary contact parent
-  canViewActivity: integer("can_view_activity").default(1).notNull(),
-  canReceiveReports: integer("can_receive_reports").default(1).notNull(),
-  linkedAt: timestamp("linked_at").defaultNow().notNull(),
-});
-
-// 📧 Parental Consent Tracking for COPPA Compliance
-export const parentalConsentRequests = pgTable("parental_consent_requests", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  studentAccountId: varchar("student_account_id").notNull().references(() => studentAccounts.id),
-  schoolId: varchar("school_id").notNull(), // Links to school for compliance reporting
-  parentEmail: varchar("parent_email", { length: 200 }).notNull(),
-  parentName: varchar("parent_name", { length: 100 }),
-  verificationCode: varchar("verification_code", { length: 32 }).notNull(), // Increased length for high-entropy codes
-  consentStatus: varchar("consent_status", { length: 20 }).default("sent").notNull(), // sent, clicked, approved, denied, expired
-  requestedAt: timestamp("requested_at").defaultNow().notNull(),
-  clickedAt: timestamp("clicked_at"),
-  consentedAt: timestamp("consented_at"),
-  expiredAt: timestamp("expired_at"), // 14-day expiration for Burlington policy
-  reminderCount: integer("reminder_count").default(0).notNull(), // Track number of reminders sent
-  lastReminderAt: timestamp("last_reminder_at"), // When last reminder was sent
-  ipAddress: varchar("ip_address"),
-  userAgent: text("user_agent"),
-});
-
-// 🛡️ ENHANCED COPPA COMPLIANCE - IMMUTABLE CONSENT RECORDS
-export const parentalConsentRecords: any = pgTable("parental_consent_records", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  // Linkage
-  studentAccountId: varchar("student_account_id").notNull().references(() => studentAccounts.id),
-  parentConsentRequestId: varchar("parent_consent_request_id").references(() => parentalConsentRequests.id),
-  schoolId: varchar("school_id").notNull(), // Links to school for compliance reporting
-  
-  // 🔒 IMMUTABLE CONSENT DATA - SET SERVER-SIDE ONLY
-  consentVersion: varchar("consent_version", { length: 10 }).notNull(), // e.g., "v2025.1" - canonical version set by server
-  parentName: varchar("parent_name", { length: 100 }).notNull(), // Server-validated parent name
-  parentEmail: varchar("parent_email", { length: 200 }).notNull(),
-  parentPhone: varchar("parent_phone", { length: 20 }),
-  relationshipToStudent: varchar("relationship_to_student", { length: 50 }).notNull(), // parent, guardian, etc.
-  
-  // 🛡️ GRANULAR CONSENT FLAGS - COPPA COMPLIANT
-  consentToDataCollection: boolean("consent_to_data_collection").notNull(),
-  consentToDataSharing: boolean("consent_to_data_sharing").notNull(),
-  consentToEmailCommunication: boolean("consent_to_email_communication").notNull(),
-  consentToEducationalReports: boolean("consent_to_educational_reports").notNull(),
-  consentToKindnessActivityTracking: boolean("consent_to_kindness_activity_tracking").notNull(),
-  
-  // 📊 GRANULAR OPT-OUT FLAGS
-  optOutOfDataAnalytics: boolean("opt_out_of_data_analytics").default(false).notNull(),
-  optOutOfThirdPartySharing: boolean("opt_out_of_third_party_sharing").default(true).notNull(), // Default to privacy
-  optOutOfMarketingCommunications: boolean("opt_out_of_marketing_communications").default(true).notNull(),
-  optOutOfPlatformNotifications: boolean("opt_out_of_platform_notifications").default(false).notNull(),
-  
-  // 🔒 SECURITY & AUDIT TRAIL
-  verificationCode: varchar("verification_code", { length: 30 }).notNull(), // nanoid with high entropy
-  codeUsedAt: timestamp("code_used_at"), // When verification code was used (one-time use)
-  isCodeUsed: boolean("is_code_used").default(false).notNull(), // Prevents replay attacks
-  verificationMethod: varchar("verification_method", { length: 20 }).notNull(), // email_link, manual_verification
-  
-  // 📋 COMPLIANCE METADATA
-  consentStatus: varchar("consent_status", { length: 20 }).notNull(), // pending, approved, denied, revoked, expired
-  consentSubmittedAt: timestamp("consent_submitted_at"),
-  consentApprovedAt: timestamp("consent_approved_at"),
-  consentRevokedAt: timestamp("consent_revoked_at"),
-  revokedReason: text("revoked_reason"),
-  
-  // 🌐 TECHNICAL AUDIT DATA - SERVER CAPTURED
-  ipAddress: varchar("ip_address").notNull(), // Server-captured IP
-  userAgent: text("user_agent").notNull(), // Server-captured user agent
-  geolocation: jsonb("geolocation"), // Geographic data for compliance
-  sessionId: varchar("session_id"), // Browser session tracking
-  deviceFingerprint: varchar("device_fingerprint"), // Device identification
-  
-  // ⏰ COMPLIANCE TIMING
-  linkExpiresAt: timestamp("link_expires_at").notNull(), // Strict 72-hour expiry
-  recordCreatedAt: timestamp("record_created_at").defaultNow().notNull(),
-  recordUpdatedAt: timestamp("record_updated_at").defaultNow().notNull(),
-  
-  // 🔐 IMMUTABILITY PROTECTION
-  isImmutable: boolean("is_immutable").default(false).notNull(), // Once true, record cannot be modified
-  immutableSince: timestamp("immutable_since"), // When record became immutable
-  
-  // 📅 ANNUAL RENEWAL REQUIREMENTS - BURLINGTON POLICY
-  renewalDueAt: timestamp("renewal_due_at"), // Annual consent renewal date (separate from linkExpiresAt)
-  validFrom: timestamp("valid_from"), // School year start date (Aug 1)
-  validUntil: timestamp("valid_until"), // School year end date (Jul 31)
-  renewalWindowStart: timestamp("renewal_window_start"), // When renewal window opens (75 days before)
-  renewalStatus: varchar("renewal_status", { length: 20 }).default("active"), // active, scheduled, pending, approved, expired, overdue
-  renewalSource: varchar("renewal_source", { length: 10 }).default("auto"), // auto (system), manual (admin)
-  parentContactSnapshot: jsonb("parent_contact_snapshot"), // Snapshot of parent info at renewal time
-  renewalVerificationCode: varchar("renewal_verification_code", { length: 32 }), // nanoid(32) for renewal
-  supersedesConsentId: varchar("supersedes_consent_id").references(() => parentalConsentRecords.id), // Links to previous consent record
-  
-  // ✍️ DIGITAL SIGNATURE CAPABILITY - LEGAL VERIFICATION
-  digitalSignatureHash: varchar("digital_signature_hash", { length: 128 }), // SHA-256 hash of consent payload + metadata
-  signaturePayload: text("signature_payload"), // JSON of signed data (consent + timestamp + IP + UA + version)
-  signerFullName: varchar("signer_full_name", { length: 100 }), // Parent's typed full name for signature
-  finalConsentConfirmed: boolean("final_consent_confirmed").default(false), // Final consent checkbox confirmation
-  signatureTimestamp: timestamp("signature_timestamp"), // When digital signature was created
-  signatureMetadata: jsonb("signature_metadata"), // Additional signer details (IP, UA, device fingerprint, etc.)
-  
-  // 👤 AUDIT TRACKING
-  lastUpdatedBy: varchar("last_updated_by").references(() => users.id), // User who last modified this record
-});
-
-// 📋 CONSENT AUDIT EVENTS - Complete tracking of all consent lifecycle events
-export const consentAuditEvents = pgTable("consent_audit_events", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  studentUserId: varchar("student_user_id").notNull().references(() => users.id),
-  schoolId: varchar("school_id").notNull(), // For school-specific filtering and compliance
-  eventType: varchar("event_type", { length: 50 }).notNull(), // consent_requested, consent_approved, consent_denied, consent_revoked, consent_expired, signature_verified, audit_accessed, report_generated
-  details: jsonb("details").notNull(), // Event-specific data (status changes, reasons, etc.)
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  actorUserId: varchar("actor_user_id").references(() => users.id), // Who performed the action
-  actorRole: varchar("actor_role", { length: 50 }), // admin, parent, system, counselor
-});
-
-// SEL (Social-Emotional Learning) standards alignment
-export const selStandards = pgTable("sel_standards", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  standardCode: varchar("standard_code", { length: 20 }).notNull().unique(), // SEL.1A, SEL.2B, etc.
-  competencyArea: varchar("competency_area", { length: 50 }).notNull(), // self_awareness, self_management, social_awareness, relationship_skills, responsible_decision_making
-  gradeLevel: varchar("grade_level", { length: 20 }).notNull(), // K-2, 3-5, 6-8, 9-12
-  title: varchar("title", { length: 200 }).notNull(),
-  description: text("description").notNull(),
-  kindnessCategories: jsonb("kindness_categories"), // Which kindness categories map to this standard
-  isActive: integer("is_active").default(1).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Track student progress on SEL standards
-export const studentSelProgress = pgTable("student_sel_progress", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  studentUserId: varchar("student_user_id").notNull().references(() => users.id),
-  corporateAccountId: varchar("corporate_account_id").notNull(), // School/District ID
-  selStandardId: varchar("sel_standard_id").notNull().references(() => selStandards.id),
-  progressLevel: varchar("progress_level", { length: 20 }).default("beginning").notNull(), // beginning, developing, proficient, advanced
-  evidenceCount: integer("evidence_count").default(0).notNull(), // Number of kindness posts supporting this standard
-  lastActivityDate: timestamp("last_activity_date"),
-  teacherNotes: text("teacher_notes"),
-  isVisible: integer("is_visible").default(1).notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-// Parent notifications and reports
-export const parentNotifications = pgTable("parent_notifications", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  parentAccountId: varchar("parent_account_id").notNull().references(() => parentAccounts.id),
-  studentUserId: varchar("student_user_id").notNull().references(() => users.id),
-  notificationType: varchar("notification_type", { length: 30 }).notNull(), // weekly_report, achievement, milestone, concern
-  title: varchar("title", { length: 200 }).notNull(),
-  message: text("message").notNull(),
-  relatedData: jsonb("related_data"), // Achievement details, report data, etc.
-  isRead: integer("is_read").default(0).notNull(),
-  isSent: integer("is_sent").default(0).notNull(),
-  sentAt: timestamp("sent_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// School safety and content monitoring (enhanced for schools)
-export const schoolContentReports = pgTable("school_content_reports", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  corporateAccountId: varchar("corporate_account_id").notNull(), // School ID
-  postId: varchar("post_id").references(() => kindnessPosts.id),
-  reporterUserId: varchar("reporter_user_id").references(() => users.id), // Who reported it
-  reportType: varchar("report_type", { length: 30 }).notNull(), // inappropriate, bullying, concerning, urgent
-  description: text("description"),
-  moderatorNotes: text("moderator_notes"),
-  actionTaken: varchar("action_taken", { length: 50 }), // removed, flagged, cleared, escalated
-  priority: varchar("priority", { length: 20 }).default("normal").notNull(), // low, normal, high, urgent
-  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, reviewed, resolved
-  reviewedBy: varchar("reviewed_by"), // Teacher/admin who reviewed
-  reviewedAt: timestamp("reviewed_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// ANONYMOUS WORKPLACE SENTIMENT (No Personal Data)
-export const workplaceSentimentData = pgTable("workplace_sentiment_data", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  corporateAccountId: varchar("corporate_account_id").notNull(),
-  department: varchar("department", { length: 100 }),
-  teamSize: varchar("team_size", { length: 20 }), // small, medium, large
-  sentimentScore: integer("sentiment_score").notNull(), // 0-100
-  stressIndicators: jsonb("stress_indicators"), // Anonymous patterns detected
-  positivityTrends: jsonb("positivity_trends"), // Upward/downward trends
-  riskFactors: jsonb("risk_factors"), // Warning signs without personal data
-  categoryBreakdown: jsonb("category_breakdown"), // Kindness categories by frequency
-  isAnonymized: integer("is_anonymized").default(1).notNull(), // Always 1 for privacy
-  dataDate: timestamp("data_date").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-
-// Individual Subscription Insert Schemas
-export const insertSubscriptionPlanSchema = createInsertSchema(subscriptionPlans).omit({
-  id: true,
-  createdAt: true,
-});
-
-// Individual Subscription Insert Schemas
-export const insertWorkplaceSentimentDataSchema = createInsertSchema(workplaceSentimentData).omit({
-  id: true,
-  createdAt: true,
-});
-
-// School system insert schemas
-export const insertParentAccountSchema = createInsertSchema(parentAccounts).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertStudentAccountSchema = createInsertSchema(studentAccounts).omit({
-  id: true,
-  accountCreatedAt: true,
-  updatedAt: true,
-  isAccountActive: true,
-  parentalConsentStatus: true,
-});
-
-export const insertParentalConsentRequestSchema = createInsertSchema(parentalConsentRequests).omit({
-  id: true,
-  requestedAt: true,
-  consentStatus: true,
-  reminderCount: true,
-  expiredAt: true,
-});
-
-// 🛡️ ENHANCED COPPA CONSENT VALIDATION - SERVER-SIDE ONLY
-export const insertParentalConsentRecordSchema = createInsertSchema(parentalConsentRecords).omit({
-  id: true,
-  recordCreatedAt: true,
-  recordUpdatedAt: true,
-  isImmutable: true,
-  immutableSince: true,
-  codeUsedAt: true,
-  isCodeUsed: true,
-  consentSubmittedAt: true,
-  consentApprovedAt: true,
-  consentRevokedAt: true,
-}).extend({
-  // 🔒 ENHANCED SERVER-SIDE VALIDATION
-  parentEmail: z.string().email("Invalid parent email address").min(5).max(200),
-  parentName: z.string().min(2, "Parent name must be at least 2 characters").max(100),
-  relationshipToStudent: z.enum(["parent", "guardian", "caregiver", "legal_guardian"], {
-    errorMap: () => ({ message: "Must be parent, guardian, caregiver, or legal_guardian" })
-  }),
-  
-  // 🛡️ MANDATORY CONSENT VALIDATION - ALL REQUIRED FOR COPPA
-  consentToDataCollection: z.boolean({
-    required_error: "Consent to data collection is required for COPPA compliance"
-  }),
-  consentToDataSharing: z.boolean({
-    required_error: "Consent to data sharing must be explicitly addressed"
-  }),
-  consentToEmailCommunication: z.boolean({
-    required_error: "Email communication consent must be specified"
-  }),
-  consentToEducationalReports: z.boolean({
-    required_error: "Educational reports consent must be specified"
-  }),
-  consentToKindnessActivityTracking: z.boolean({
-    required_error: "Activity tracking consent must be specified"
-  }),
-  
-  // 📊 OPT-OUT FLAGS - DEFAULTS PROVIDED BUT VALIDATION REQUIRED
-  optOutOfDataAnalytics: z.boolean().default(false),
-  optOutOfThirdPartySharing: z.boolean().default(true), // Privacy-first default
-  optOutOfMarketingCommunications: z.boolean().default(true), // Privacy-first default
-  optOutOfPlatformNotifications: z.boolean().default(false),
-  
-  // 🔒 SECURITY FIELDS - SERVER VALIDATES BUT CLIENT CAN PROVIDE
-  verificationMethod: z.enum(["email_link", "manual_verification"]).default("email_link"),
-  consentStatus: z.enum(["pending", "approved", "denied", "revoked", "expired"]).default("pending"),
-  
-  // ⚠️ NEVER TRUST CLIENT DATA FOR THESE FIELDS (Server overrides):
-  // - consentVersion (server sets canonical version)
-  // - ipAddress (server captures real IP)
-  // - userAgent (server captures real user agent) 
-  // - verificationCode (server generates with nanoid)
-  // - linkExpiresAt (server enforces 72-hour limit)
-});
-
-// 📋 CONSENT AUDIT EVENT INSERT SCHEMA
-export const insertConsentAuditEventSchema = createInsertSchema(consentAuditEvents).omit({
-  id: true,
-  createdAt: true,
-});
-
-// 🔍 CONSENT VERIFICATION SCHEMA - For link verification endpoint
-export const verifyConsentSchema = z.object({
-  verificationCode: z.string().min(10, "Invalid verification code").max(30),
-  consentRecordId: z.string().uuid("Invalid consent record ID"),
-});
-
-// 📊 CONSENT REVOCATION SCHEMA - For parent rights compliance
-export const revokeConsentSchema = z.object({
-  consentRecordId: z.string().uuid("Invalid consent record ID"),
-  revokedReason: z.string().min(10, "Revocation reason must be at least 10 characters").max(500),
-  parentEmail: z.string().email("Valid parent email required for verification"),
-});
-
-export const insertStudentParentLinkSchema = createInsertSchema(studentParentLinks).omit({
-  id: true,
-  linkedAt: true,
-});
-
-export const insertSelStandardSchema = createInsertSchema(selStandards).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertStudentSelProgressSchema = createInsertSchema(studentSelProgress).omit({
-  id: true,
-  updatedAt: true,
-});
-
-export const insertParentNotificationSchema = createInsertSchema(parentNotifications).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertSchoolContentReportSchema = createInsertSchema(schoolContentReports).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertSchoolAdministratorSchema = createInsertSchema(schoolAdministrators).omit({
+export const insertSupportPostSchema = createInsertSchema(supportPosts).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+  helpfulCount: true,
 });
 
-export const insertGoogleClassroomIntegrationSchema = createInsertSchema(googleClassroomIntegrations).omit({
+export const insertSupportResponseSchema = createInsertSchema(supportResponses).omit({
+  id: true,
+  createdAt: true,
+  helpfulCount: true,
+});
+
+export const insertWellnessCheckinSchema = createInsertSchema(wellnessCheckins).omit({
+  id: true,
+  createdAt: true,
+});
+
+export const insertSchoolSchema = createInsertSchema(schools).omit({
   id: true,
   createdAt: true,
   updatedAt: true,
+  studentCount: true,
+  teacherCount: true,
+  kindnessPostsCount: true,
 });
 
-// Type exports for the subscription and school systems
-export type SubscriptionPlan = typeof subscriptionPlans.$inferSelect;
-export type InsertSubscriptionPlan = z.infer<typeof insertSubscriptionPlanSchema>;
-export type WorkplaceSentimentData = typeof workplaceSentimentData.$inferSelect;
-export type InsertWorkplaceSentimentData = z.infer<typeof insertWorkplaceSentimentDataSchema>;
-
-// School system types
-export type ParentAccount = typeof parentAccounts.$inferSelect;
-export type InsertParentAccount = z.infer<typeof insertParentAccountSchema>;
-export type StudentAccount = typeof studentAccounts.$inferSelect;
-export type InsertStudentAccount = z.infer<typeof insertStudentAccountSchema>;
-export type ParentalConsentRequest = typeof parentalConsentRequests.$inferSelect;
-export type InsertParentalConsentRequest = z.infer<typeof insertParentalConsentRequestSchema>;
-
-// 🛡️ ENHANCED COPPA CONSENT TYPES
-export type ParentalConsentRecord = typeof parentalConsentRecords.$inferSelect;
-export type InsertParentalConsentRecord = z.infer<typeof insertParentalConsentRecordSchema>;
-export type VerifyConsent = z.infer<typeof verifyConsentSchema>;
-export type RevokeConsent = z.infer<typeof revokeConsentSchema>;
-export type ConsentAuditEvent = typeof consentAuditEvents.$inferSelect;
-export type InsertConsentAuditEvent = z.infer<typeof insertConsentAuditEventSchema>;
-export type StudentParentLink = typeof studentParentLinks.$inferSelect;
-export type InsertStudentParentLink = z.infer<typeof insertStudentParentLinkSchema>;
-export type SelStandard = typeof selStandards.$inferSelect;
-export type InsertSelStandard = z.infer<typeof insertSelStandardSchema>;
-export type StudentSelProgress = typeof studentSelProgress.$inferSelect;
-export type InsertStudentSelProgress = z.infer<typeof insertStudentSelProgressSchema>;
-export type ParentNotification = typeof parentNotifications.$inferSelect;
-export type InsertParentNotification = z.infer<typeof insertParentNotificationSchema>;
-export type SchoolContentReport = typeof schoolContentReports.$inferSelect;
-export type InsertSchoolContentReport = z.infer<typeof insertSchoolContentReportSchema>;
-export type SchoolAdministrator = typeof schoolAdministrators.$inferSelect;
-export type InsertSchoolAdministrator = z.infer<typeof insertSchoolAdministratorSchema>;
-export type GoogleClassroomIntegration = typeof googleClassroomIntegrations.$inferSelect;
-export type InsertGoogleClassroomIntegration = z.infer<typeof insertGoogleClassroomIntegrationSchema>;
-
-// B2B SaaS Insert Schemas
-export const insertCorporateAccountSchema = createInsertSchema(corporateAccounts).omit({
-  id: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export const insertCorporateTeamSchema = createInsertSchema(corporateTeams).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertCorporateEmployeeSchema = createInsertSchema(corporateEmployees).omit({
-  id: true,
-  enrolledAt: true,
-});
-
-export const insertCorporateChallengeSchema = createInsertSchema(corporateChallenges).omit({
-  id: true,
-  createdAt: true,
-  completionCount: true,
-  currentParticipation: true,
-});
-
-export const insertCorporateAnalyticsSchema = createInsertSchema(corporateAnalytics).omit({
-  id: true,
-  createdAt: true,
-});
-
-// Rewards System Insert Schemas
 export const insertRewardPartnerSchema = createInsertSchema(rewardPartners).omit({
   id: true,
   createdAt: true,
@@ -1259,1226 +924,134 @@ export const insertRewardOfferSchema = createInsertSchema(rewardOffers).omit({
   currentRedemptions: true,
 });
 
-export const insertRewardRedemptionSchema = createInsertSchema(rewardRedemptions).omit({
+export const insertCommunityServiceLogSchema = createInsertSchema(communityServiceLogs).omit({
   id: true,
-  redeemedAt: true,
+  createdAt: true,
+  updatedAt: true,
+  tokensAwarded: true,
 });
 
-export const insertKindnessVerificationSchema = createInsertSchema(kindnessVerifications).omit({
-  id: true,
-  submittedAt: true,
-});
-
-export const insertBadgeRewardSchema = createInsertSchema(badgeRewards).omit({
+export const insertCommunityServiceVerificationSchema = createInsertSchema(communityServiceVerifications).omit({
   id: true,
   createdAt: true,
 });
 
-export const insertWeeklyPrizeSchema = createInsertSchema(weeklyPrizes).omit({
+export const insertCoppaConsentSchema = createInsertSchema(coppaConsent).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+});
+
+export const insertFundraisingCampaignSchema = createInsertSchema(fundraisingCampaigns).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  currentAmount: true,
+  donorCount: true,
+});
+
+export const insertFundraisingDonationSchema = createInsertSchema(fundraisingDonations).omit({
   id: true,
   createdAt: true,
 });
 
-export const insertPrizeWinnerSchema = createInsertSchema(prizeWinners).omit({
+export const insertTeacherRewardSchema = createInsertSchema(teacherRewards).omit({
   id: true,
-  wonAt: true,
+  earnedAt: true,
 });
 
-// Marketing System Insert Schemas
-export const insertReferralSchema = createInsertSchema(referrals).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertShareableAchievementSchema = createInsertSchema(shareableAchievements).omit({
+export const insertTeacherRewardCriteriaSchema = createInsertSchema(teacherRewardCriteria).omit({
   id: true,
   createdAt: true,
 });
 
-export const insertCompanyLeaderboardSchema = createInsertSchema(companyLeaderboards).omit({
+export const insertSponsorSchema = createInsertSchema(sponsors).omit({
+  id: true,
+  createdAt: true,
+  updatedAt: true,
+  currentSpent: true,
+});
+
+export const insertSponsorAnalyticsSchema = createInsertSchema(sponsorAnalytics).omit({
   id: true,
   createdAt: true,
 });
 
-export const insertLeaderboardEntrySchema = createInsertSchema(leaderboardEntries).omit({
-  id: true,
-  calculatedAt: true,
-});
+// Type exports
+export type User = typeof users.$inferSelect;
+export type InsertUser = z.infer<typeof insertUserSchema>;
 
-export const insertMarketingCampaignSchema = createInsertSchema(marketingCampaigns).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertMarketingAnalyticsSchema = createInsertSchema(marketingAnalytics).omit({
-  id: true,
-  createdAt: true,
-});
-
-// 🔮 AI Kindness Prediction Engine
-export const wellnessPredictions = pgTable("wellness_predictions", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").references(() => users.id),
-  corporateAccountId: varchar("corporate_account_id"),
-  predictionType: varchar("prediction_type").notNull(), // stress_risk, burnout_warning, team_tension, support_needed
-  riskScore: integer("risk_score").notNull(), // 1-100, higher = more urgent
-  confidence: integer("confidence").notNull(), // 1-100, how confident AI is
-  reasoning: text("reasoning"), // Why AI made this prediction
-  suggestedActions: jsonb("suggested_actions"), // What kindness actions to take
-  triggerPatterns: jsonb("trigger_patterns"), // What patterns caused this prediction
-  isActive: integer("is_active").default(1).notNull(),
-  resolvedAt: timestamp("resolved_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  predictionFor: timestamp("prediction_for").notNull(), // When this event is predicted to occur
-});
-
-// 🌍 Real-time Global Wellness Heatmap
-export const wellnessHeatmapData = pgTable("wellness_heatmap_data", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  corporateAccountId: varchar("corporate_account_id"), // null for global data
-  region: varchar("region"), // continent, country, or state
-  city: varchar("city"),
-  latitude: real("latitude"),
-  longitude: real("longitude"),
-  moodScore: integer("mood_score").notNull(), // 1-100, anonymized mood
-  kindnessActivity: integer("kindness_activity").notNull(), // Acts per hour
-  stressLevel: integer("stress_level").notNull(), // 1-100, derived from activity patterns
-  teamCollaboration: integer("team_collaboration").default(50), // 1-100
-  positivityTrend: varchar("positivity_trend").default("stable"), // rising, falling, stable
-  lastUpdated: timestamp("last_updated").defaultNow().notNull(),
-  anonymizedUserCount: integer("anonymized_user_count").default(1),
-});
-
-// 🎯 Smart Kindness Matching
-export const kindnessOpportunities = pgTable("kindness_opportunities", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  createdForUserId: varchar("created_for_user_id").references(() => users.id),
-  opportunityType: varchar("opportunity_type").notNull(), // colleague_support, skill_sharing, mentor_moment, team_boost
-  title: varchar("title").notNull(),
-  description: text("description").notNull(),
-  suggestedAction: text("suggested_action"), // Specific action to take
-  targetUserId: varchar("target_user_id"), // Who might benefit (anonymized)
-  matchingScore: integer("matching_score").notNull(), // 1-100, how good this match is
-  aiReasoning: text("ai_reasoning"), // Why AI suggested this
-  estimatedImpact: integer("estimated_impact"), // 1-100, predicted wellness impact
-  difficulty: varchar("difficulty").default("easy"), // easy, medium, hard
-  timeRequired: integer("time_required_minutes"), // Estimated time
-  tags: jsonb("tags"), // Skills, departments, interests involved
-  isCompleted: integer("is_completed").default(0),
-  completedAt: timestamp("completed_at"),
-  impactRating: integer("impact_rating"), // 1-5 stars from participant
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  expiresAt: timestamp("expires_at"), // When this opportunity expires
-});
-
-// 📊 ESG Impact Integration
-export const esgReports = pgTable("esg_reports", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  corporateAccountId: varchar("corporate_account_id").notNull(),
-  reportPeriod: varchar("report_period").notNull(), // monthly, quarterly, yearly
-  startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date").notNull(),
-  employeeWellnessScore: integer("employee_wellness_score"), // 1-100
-  kindnessActivities: integer("kindness_activities"),
-  stressReductionPercent: real("stress_reduction_percent"),
-  engagementImprovement: real("engagement_improvement"),
-  anonymousParticipation: real("anonymous_participation"),
-  diversityInclusionScore: integer("diversity_inclusion_score"),
-  mentalHealthSupport: integer("mental_health_support_instances"),
-  communityImpactHours: real("community_impact_hours"),
-  carbonFootprintReduced: real("carbon_footprint_reduced"), // From remote kindness activities
-  sdgAlignment: jsonb("sdg_alignment"), // Which UN SDGs this supports
-  complianceStandards: jsonb("compliance_standards"), // Which standards met
-  reportData: jsonb("report_data"), // Full JSON report
-  reportUrl: varchar("report_url"), // Generated PDF URL
-  isPublished: integer("is_published").default(0),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// 🏆 Kindness Impact Certificates  
-export const kindnessCertificates = pgTable("kindness_certificates", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").references(() => users.id),
-  certificateType: varchar("certificate_type").notNull(), // kindness_champion, wellness_advocate, culture_builder
-  title: varchar("title").notNull(),
-  description: text("description").notNull(),
-  criteriaMetadata: jsonb("criteria_metadata"), // What achievement unlocked this
-  blockchainHash: varchar("blockchain_hash"), // Immutable proof of achievement
-  blockchainNetwork: varchar("blockchain_network").default("polygon"), // Which blockchain
-  nftTokenId: varchar("nft_token_id"), // Optional NFT representation
-  shareableUrl: varchar("shareable_url"), // Public verification URL
-  anonymousDisplayName: varchar("anonymous_display_name"), // For public sharing
-  impactMetrics: jsonb("impact_metrics"), // Quantified impact data
-  badgeImageUrl: varchar("badge_image_url"), // Generated certificate image
-  isVerified: integer("is_verified").default(1),
-  isPubliclyShareable: integer("is_publicly_shareable").default(1),
-  linkedinShareCount: integer("linkedin_share_count").default(0),
-  verificationClicks: integer("verification_clicks").default(0),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  validUntil: timestamp("valid_until"), // Some certificates may expire
-});
-
-// ⏰ Time-Locked Wellness Messages
-export const timeLockedMessages = pgTable("time_locked_messages", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  senderUserId: varchar("sender_user_id").references(() => users.id),
-  recipientUserId: varchar("recipient_user_id").references(() => users.id),
-  messageType: varchar("message_type").notNull(), // encouragement, milestone_celebration, anniversary_note, support_message
-  subject: varchar("subject").notNull(),
-  message: text("message").notNull(),
-  unlockCondition: varchar("unlock_condition").notNull(), // date, achievement, milestone, stress_detected
-  unlockValue: varchar("unlock_value").notNull(), // Specific date/condition value
-  unlockDate: timestamp("unlock_date"), // When message becomes available
-  emotionalTone: varchar("emotional_tone"), // uplifting, supportive, celebratory, motivational
-  attachedReward: integer("attached_reward").default(0), // $ECHO tokens to unlock with message
-  isAnonymous: integer("is_anonymous").default(1),
-  isUnlocked: integer("is_unlocked").default(0),
-  unlockedAt: timestamp("unlocked_at"),
-  wasRead: integer("was_read").default(0),
-  readAt: timestamp("read_at"),
-  recipientRating: integer("recipient_rating"), // 1-5 stars for message impact
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  scheduledFor: timestamp("scheduled_for"), // Future delivery date
-});
-
-// Advanced Features Insert Schemas (after table definitions)
-export const insertWellnessPredictionSchema = createInsertSchema(wellnessPredictions).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertWellnessHeatmapDataSchema = createInsertSchema(wellnessHeatmapData).omit({
-  id: true,
-  lastUpdated: true,
-});
-
-export const insertKindnessOpportunitySchema = createInsertSchema(kindnessOpportunities).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertEsgReportSchema = createInsertSchema(esgReports).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertKindnessCertificateSchema = createInsertSchema(kindnessCertificates).omit({
-  id: true,
-  createdAt: true,
-});
-
-export const insertTimeLockedMessageSchema = createInsertSchema(timeLockedMessages).omit({
-  id: true,
-  createdAt: true,
-});
-
-export type InsertKindnessPost = z.infer<typeof insertKindnessPostSchema>;
 export type KindnessPost = typeof kindnessPosts.$inferSelect;
-export type KindnessCounter = typeof kindnessCounter.$inferSelect;
-export type UserTokens = typeof userTokens.$inferSelect;
-export type InsertUserTokens = z.infer<typeof insertUserTokensSchema>;
+export type InsertKindnessPost = z.infer<typeof insertKindnessPostSchema>;
+
 export type BrandChallenge = typeof brandChallenges.$inferSelect;
 export type InsertBrandChallenge = z.infer<typeof insertBrandChallengeSchema>;
-export type ChallengeCompletion = typeof challengeCompletions.$inferSelect;
-export type InsertChallengeCompletion = z.infer<typeof insertChallengeCompletionSchema>;
-export type Achievement = typeof achievements.$inferSelect;
-export type InsertAchievement = z.infer<typeof insertAchievementSchema>;
-export type UserAchievement = typeof userAchievements.$inferSelect;
-export type InsertUserAchievement = z.infer<typeof insertUserAchievementSchema>;
 
-// B2B SaaS Types
-export type CorporateAccount = typeof corporateAccounts.$inferSelect;
-export type InsertCorporateAccount = z.infer<typeof insertCorporateAccountSchema>;
-export type CorporateTeam = typeof corporateTeams.$inferSelect;
-export type InsertCorporateTeam = z.infer<typeof insertCorporateTeamSchema>;
-export type CorporateEmployee = typeof corporateEmployees.$inferSelect;
-export type InsertCorporateEmployee = z.infer<typeof insertCorporateEmployeeSchema>;
-export type CorporateChallenge = typeof corporateChallenges.$inferSelect;
-export type InsertCorporateChallenge = z.infer<typeof insertCorporateChallengeSchema>;
-export type CorporateAnalytics = typeof corporateAnalytics.$inferSelect;
-export type InsertCorporateAnalytics = z.infer<typeof insertCorporateAnalyticsSchema>;
+export type SupportPost = typeof supportPosts.$inferSelect;
+export type InsertSupportPost = z.infer<typeof insertSupportPostSchema>;
 
-// Rewards System Types
+export type SupportResponse = typeof supportResponses.$inferSelect;
+export type InsertSupportResponse = z.infer<typeof insertSupportResponseSchema>;
+
+export type WellnessCheckin = typeof wellnessCheckins.$inferSelect;
+export type InsertWellnessCheckin = z.infer<typeof insertWellnessCheckinSchema>;
+
+export type School = typeof schools.$inferSelect;
+export type InsertSchool = z.infer<typeof insertSchoolSchema>;
+
 export type RewardPartner = typeof rewardPartners.$inferSelect;
 export type InsertRewardPartner = z.infer<typeof insertRewardPartnerSchema>;
+
 export type RewardOffer = typeof rewardOffers.$inferSelect;
 export type InsertRewardOffer = z.infer<typeof insertRewardOfferSchema>;
+
 export type RewardRedemption = typeof rewardRedemptions.$inferSelect;
-export type InsertRewardRedemption = z.infer<typeof insertRewardRedemptionSchema>;
-export type KindnessVerification = typeof kindnessVerifications.$inferSelect;
-export type InsertKindnessVerification = z.infer<typeof insertKindnessVerificationSchema>;
-export type BadgeReward = typeof badgeRewards.$inferSelect;
 
-// Marketing & Viral Growth Types
-export type Referral = typeof referrals.$inferSelect;
-export type InsertReferral = z.infer<typeof insertReferralSchema>;
-export type ShareableAchievement = typeof shareableAchievements.$inferSelect;
-export type InsertShareableAchievement = z.infer<typeof insertShareableAchievementSchema>;
-export type CompanyLeaderboard = typeof companyLeaderboards.$inferSelect;
-export type InsertCompanyLeaderboard = z.infer<typeof insertCompanyLeaderboardSchema>;
-export type LeaderboardEntry = typeof leaderboardEntries.$inferSelect;
-export type InsertLeaderboardEntry = z.infer<typeof insertLeaderboardEntrySchema>;
-export type MarketingCampaign = typeof marketingCampaigns.$inferSelect;
-export type InsertMarketingCampaign = z.infer<typeof insertMarketingCampaignSchema>;
-export type MarketingAnalytics = typeof marketingAnalytics.$inferSelect;
-export type InsertMarketingAnalytics = z.infer<typeof insertMarketingAnalyticsSchema>;
+export type CommunityServiceLog = typeof communityServiceLogs.$inferSelect;
+export type InsertCommunityServiceLog = z.infer<typeof insertCommunityServiceLogSchema>;
 
-// Advanced Features Types
-export type WellnessPrediction = typeof wellnessPredictions.$inferSelect;
-export type InsertWellnessPrediction = z.infer<typeof insertWellnessPredictionSchema>;
-export type WellnessHeatmapData = typeof wellnessHeatmapData.$inferSelect;
-export type InsertWellnessHeatmapData = z.infer<typeof insertWellnessHeatmapDataSchema>;
-export type KindnessOpportunity = typeof kindnessOpportunities.$inferSelect;
-export type InsertKindnessOpportunity = z.infer<typeof insertKindnessOpportunitySchema>;
-export type EsgReport = typeof esgReports.$inferSelect;
-export type InsertEsgReport = z.infer<typeof insertEsgReportSchema>;
-export type KindnessCertificate = typeof kindnessCertificates.$inferSelect;
-export type InsertKindnessCertificate = z.infer<typeof insertKindnessCertificateSchema>;
-export type TimeLockedMessage = typeof timeLockedMessages.$inferSelect;
-export type InsertTimeLockedMessage = z.infer<typeof insertTimeLockedMessageSchema>;
-export type InsertBadgeReward = z.infer<typeof insertBadgeRewardSchema>;
-export type WeeklyPrize = typeof weeklyPrizes.$inferSelect;
-export type InsertWeeklyPrize = z.infer<typeof insertWeeklyPrizeSchema>;
-export type PrizeWinner = typeof prizeWinners.$inferSelect;
-export type InsertPrizeWinner = z.infer<typeof insertPrizeWinnerSchema>;
+export type CommunityServiceVerification = typeof communityServiceVerifications.$inferSelect;
+export type InsertCommunityServiceVerification = z.infer<typeof insertCommunityServiceVerificationSchema>;
 
-// PREMIUM SPONSOR ANALYTICS & TRACKING SYSTEM
+export type CoppaConsent = typeof coppaConsent.$inferSelect;
+export type InsertCoppaConsent = z.infer<typeof insertCoppaConsentSchema>;
 
-// Sponsor analytics tracking
-export const sponsorAnalytics = pgTable("sponsor_analytics", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  sponsorCompany: varchar("sponsor_company", { length: 200 }).notNull(),
-  offerId: varchar("offer_id"), // Links to specific reward offer
-  eventType: varchar("event_type", { length: 50 }).notNull(), // impression, click, redemption, conversion
-  userId: varchar("user_id").references(() => users.id),
-  sessionId: varchar("session_id", { length: 100 }),
-  location: text("location"), // User location for geographic analytics
-  userAgent: text("user_agent"), // Device/browser info
-  referrerUrl: text("referrer_url"), // Where they came from
-  targetUrl: text("target_url"), // Sponsor website visited
-  engagementDuration: integer("engagement_duration").default(0), // Time spent viewing
-  conversionValue: integer("conversion_value").default(0), // Business value generated
-  metadata: jsonb("metadata"), // Additional tracking data
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+export type FundraisingCampaign = typeof fundraisingCampaigns.$inferSelect;
+export type InsertFundraisingCampaign = z.infer<typeof insertFundraisingCampaignSchema>;
 
-// Enhanced sponsor profiles with custom branding
-export const sponsorProfiles = pgTable("sponsor_profiles", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  companyName: varchar("company_name", { length: 200 }).notNull(),
-  logoUrl: text("logo_url"),
-  logoAltText: varchar("logo_alt_text", { length: 100 }),
-  websiteUrl: text("website_url").notNull(),
-  primaryColor: varchar("primary_color", { length: 7 }).default("#3b82f6"), // Brand hex color
-  secondaryColor: varchar("secondary_color", { length: 7 }).default("#8b5cf6"),
-  brandMessage: text("brand_message"), // Custom tagline
-  description: text("description"), // Company description
-  industry: varchar("industry", { length: 100 }),
-  companySize: varchar("company_size", { length: 50 }), // startup, small, medium, large, enterprise
-  sponsorshipTier: varchar("sponsorship_tier", { length: 50 }).default("basic").notNull(), // basic, premium, enterprise
-  monthlyBudget: integer("monthly_budget").default(2000).notNull(), // Monthly sponsorship budget in cents
-  targetGeography: jsonb("target_geography"), // Countries, states, cities to target
-  targetDemographics: jsonb("target_demographics"), // Age, interests, user types
-  socialMediaLinks: jsonb("social_media_links"), // Twitter, LinkedIn, etc.
-  contactEmail: varchar("contact_email", { length: 200 }),
-  accountManagerName: varchar("account_manager_name", { length: 100 }),
-  isActive: integer("is_active").default(1).notNull(),
-  contractStartDate: timestamp("contract_start_date"),
-  contractEndDate: timestamp("contract_end_date"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
+export type FundraisingDonation = typeof fundraisingDonations.$inferSelect;
+export type InsertFundraisingDonation = z.infer<typeof insertFundraisingDonationSchema>;
 
-// Sponsor impact reporting
-export const sponsorImpactReports = pgTable("sponsor_impact_reports", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  sponsorCompany: varchar("sponsor_company", { length: 200 }).notNull(),
-  reportPeriodStart: timestamp("report_period_start").notNull(),
-  reportPeriodEnd: timestamp("report_period_end").notNull(),
-  totalImpressions: integer("total_impressions").default(0),
-  totalClicks: integer("total_clicks").default(0),
-  totalRedemptions: integer("total_redemptions").default(0),
-  clickThroughRate: real("click_through_rate").default(0), // CTR percentage
-  conversionRate: real("conversion_rate").default(0), // Redemption rate
-  kindnessActsEnabled: integer("kindness_acts_enabled").default(0), // Acts sponsored enabled
-  usersReached: integer("users_reached").default(0), // Unique users who saw sponsorship
-  engagementScore: integer("engagement_score").default(0), // 0-100 engagement rating
-  brandSentiment: integer("brand_sentiment").default(0), // 0-100 positive sentiment
-  costPerEngagement: integer("cost_per_engagement").default(0), // Cost in cents
-  roi: real("roi").default(0), // Return on investment percentage
-  reportData: jsonb("report_data"), // Detailed analytics JSON
-  generatedAt: timestamp("generated_at").defaultNow().notNull(),
-});
+export type TeacherReward = typeof teacherRewards.$inferSelect;
+export type InsertTeacherReward = z.infer<typeof insertTeacherRewardSchema>;
 
-// Sponsor campaign management
-export const sponsorCampaigns = pgTable("sponsor_campaigns", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  sponsorCompany: varchar("sponsor_company", { length: 200 }).notNull(),
-  campaignName: varchar("campaign_name", { length: 200 }).notNull(),
-  campaignType: varchar("campaign_type", { length: 50 }).default("reward_sponsorship").notNull(), // reward_sponsorship, challenge_sponsorship, branded_content
-  targetAudience: jsonb("target_audience"), // Demographics, geography, interests
-  campaignMessage: text("campaign_message"),
-  specialOffers: jsonb("special_offers"), // Holiday promotions, limited time offers
-  budget: integer("budget").notNull(), // Campaign budget in cents
-  startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date").notNull(),
-  isActive: integer("is_active").default(1).notNull(),
-  priority: integer("priority").default(1), // 1-10 priority level
-  successMetrics: jsonb("success_metrics"), // KPIs and goals
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+export type TeacherRewardCriteria = typeof teacherRewardCriteria.$inferSelect;
+export type InsertTeacherRewardCriteria = z.infer<typeof insertTeacherRewardCriteriaSchema>;
 
-// Newsletter and communication tracking
-export const sponsorCommunications = pgTable("sponsor_communications", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  sponsorCompany: varchar("sponsor_company", { length: 200 }).notNull(),
-  communicationType: varchar("communication_type", { length: 50 }).notNull(), // newsletter, social_media, push_notification, email
-  subject: varchar("subject", { length: 200 }),
-  content: text("content"),
-  targetAudience: jsonb("target_audience"), // Who received the communication
-  recipientCount: integer("recipient_count").default(0),
-  openRate: real("open_rate").default(0), // Email open rate
-  clickRate: real("click_rate").default(0), // Click-through rate
-  sentAt: timestamp("sent_at").defaultNow().notNull(),
-});
+export type Sponsor = typeof sponsors.$inferSelect;
+export type InsertSponsor = z.infer<typeof insertSponsorSchema>;
 
-// Create insert schemas for new tables
-// ========== REVOLUTIONARY FEATURES - INDUSTRY FIRST ==========
-
-// REVOLUTIONARY #1: AI-Powered Anonymous Conflict Resolution Engine
-export const conflictReports = pgTable('conflict_reports', {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  reporterId: varchar("reporter_id"), // Anonymous - can be null
-  conflictType: varchar("conflict_type", { length: 50 }).notNull(), // 'peer_conflict', 'exclusion', 'verbal_disagreement', 'physical_incident'
-  conflictDescription: text("conflict_description").notNull(),
-  involvedParties: text("involved_parties").notNull(), // Anonymized descriptions like "two students in grade 3"
-  location: text("location").notNull(),
-  severityLevel: varchar("severity_level", { length: 20 }).notNull(), // 'low', 'medium', 'high', 'urgent'
-  emotionalImpact: text("emotional_impact").notNull(), // AI-detected emotional state
-  aiAnalysis: text("ai_analysis"), // AI conflict analysis and insights
-  status: varchar("status", { length: 30 }).notNull().default('reported'), // 'reported', 'ai_processing', 'mediation_suggested', 'teacher_alerted', 'resolved'
-  schoolId: varchar("school_id"),
-  gradeLevel: varchar("grade_level", { length: 10 }),
-  isAnonymous: integer("is_anonymous").notNull().default(1),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  updatedAt: timestamp("updated_at").notNull().defaultNow()
-});
-
-export const conflictResolutions = pgTable('conflict_resolutions', {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  conflictReportId: varchar("conflict_report_id").notNull().references(() => conflictReports.id),
-  resolutionType: varchar("resolution_type", { length: 30 }).notNull(), // 'ai_mediated', 'peer_mediation', 'teacher_intervention', 'self_resolved'
-  resolutionSteps: text("resolution_steps").notNull(), // JSON array of suggested resolution steps
-  aiMediationScript: text("ai_mediation_script"), // AI-generated mediation dialogue
-  outcomeTracking: text("outcome_tracking"), // Follow-up check results
-  effectivenessScore: integer("effectiveness_score"), // 1-10 based on follow-up
-  teacherNotified: integer("teacher_notified").notNull().default(0),
-  isSuccessful: integer("is_successful"),
-  followUpScheduled: timestamp("follow_up_scheduled"),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  completedAt: timestamp("completed_at")
-});
-
-// REVOLUTIONARY #2: Predictive Bullying Prevention Analytics
-export const bullyingPredictions = pgTable('bullying_predictions', {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  schoolId: varchar("school_id").notNull(),
-  gradeLevel: varchar("grade_level", { length: 10 }).notNull(),
-  riskLevel: varchar("risk_level", { length: 20 }).notNull(), // 'low', 'moderate', 'high', 'critical'
-  predictionConfidence: integer("prediction_confidence").notNull(), // 0-100
-  riskFactors: jsonb("risk_factors").notNull(), // JSON array of detected risk patterns
-  socialDynamicsScore: integer("social_dynamics_score").notNull(), // Anonymized social health score
-  interventionSuggestions: text("intervention_suggestions").notNull(), // AI-generated prevention strategies
-  predictedTimeframe: varchar("predicted_timeframe", { length: 30 }).notNull(), // 'next_week', 'next_month', etc.
-  teacherAlerted: integer("teacher_alerted").notNull().default(0),
-  preventionActionsCount: integer("prevention_actions_count").notNull().default(0),
-  actualIncidentOccurred: integer("actual_incident_occurred"), // For ML model improvement
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  validUntil: timestamp("valid_until").notNull()
-});
-
-// REVOLUTIONARY #3: Cross-School Anonymous Kindness Exchange
-export const kindnessExchanges = pgTable('kindness_exchanges', {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  senderSchoolId: varchar("sender_school_id").notNull(),
-  recipientSchoolId: varchar("recipient_school_id").notNull(),
-  senderGrade: varchar("sender_grade", { length: 10 }).notNull(),
-  recipientGrade: varchar("recipient_grade", { length: 10 }).notNull(),
-  kindnessMessage: text("kindness_message").notNull(),
-  kindnessType: varchar("kindness_type", { length: 30 }).notNull(), // 'encouragement', 'support', 'celebration', 'sympathy'
-  isMatched: integer("is_matched").notNull().default(0),
-  matchingScore: integer("matching_score"), // AI-calculated compatibility
-  deliveryStatus: varchar("delivery_status", { length: 20 }).notNull().default('pending'), // 'pending', 'delivered', 'acknowledged'
-  impactRating: integer("impact_rating"), // 1-5 from recipient
-  crossCulturalFlag: integer("cross_cultural_flag").notNull().default(0), // International exchanges
-  distanceKm: integer("distance_km"), // Geographic distance for impact measurement
-  languageFrom: varchar("language_from", { length: 20 }).notNull().default('English'),
-  languageTo: varchar("language_to", { length: 20 }).notNull().default('English'),
-  aiTranslated: integer("ai_translated").notNull().default(0),
-  createdAt: timestamp("created_at").notNull().defaultNow(),
-  deliveredAt: timestamp("delivered_at"),
-  acknowledgedAt: timestamp("acknowledged_at")
-});
-
-export const insertSponsorAnalyticsSchema = createInsertSchema(sponsorAnalytics);
-export const insertSponsorProfileSchema = createInsertSchema(sponsorProfiles);
-export const insertSponsorImpactReportSchema = createInsertSchema(sponsorImpactReports);
-export const insertSponsorCampaignSchema = createInsertSchema(sponsorCampaigns);
-export const insertSponsorCommunicationSchema = createInsertSchema(sponsorCommunications);
-
-// Revolutionary features insert schemas
-export const insertConflictReportSchema = createInsertSchema(conflictReports);
-export const insertConflictResolutionSchema = createInsertSchema(conflictResolutions);
-export const insertBullyingPredictionSchema = createInsertSchema(bullyingPredictions);
-export const insertKindnessExchangeSchema = createInsertSchema(kindnessExchanges);
-
-// Type exports for new tables
 export type SponsorAnalytics = typeof sponsorAnalytics.$inferSelect;
 export type InsertSponsorAnalytics = z.infer<typeof insertSponsorAnalyticsSchema>;
-export type SponsorProfile = typeof sponsorProfiles.$inferSelect;
-export type InsertSponsorProfile = z.infer<typeof insertSponsorProfileSchema>;
-export type SponsorImpactReport = typeof sponsorImpactReports.$inferSelect;
-export type InsertSponsorImpactReport = z.infer<typeof insertSponsorImpactReportSchema>;
-export type SponsorCampaign = typeof sponsorCampaigns.$inferSelect;
-export type InsertSponsorCampaign = z.infer<typeof insertSponsorCampaignSchema>;
-export type SponsorCommunication = typeof sponsorCommunications.$inferSelect;
-export type InsertSponsorCommunication = z.infer<typeof insertSponsorCommunicationSchema>;
 
-// Revolutionary features type exports - INDUSTRY FIRST
-export type ConflictReport = typeof conflictReports.$inferSelect;
-export type InsertConflictReport = z.infer<typeof insertConflictReportSchema>;
-export type ConflictResolution = typeof conflictResolutions.$inferSelect;
-export type InsertConflictResolution = z.infer<typeof insertConflictResolutionSchema>;
-export type BullyingPrediction = typeof bullyingPredictions.$inferSelect;
-export type InsertBullyingPrediction = z.infer<typeof insertBullyingPredictionSchema>;
-export type KindnessExchange = typeof kindnessExchanges.$inferSelect;
-export type InsertKindnessExchange = z.infer<typeof insertKindnessExchangeSchema>;
+export type UserTokens = typeof userTokens.$inferSelect;
+export type SurpriseGiveawayCampaign = typeof surpriseGiveawayCampaigns.$inferSelect;
+export type SurpriseGiveawayWinner = typeof surpriseGiveawayWinners.$inferSelect;
 
-// Summer Engagement Program Tables
-export const summerChallenges = pgTable("summer_challenges", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  week: integer("week").notNull(), // Week 1-12 for summer
-  title: varchar("title", { length: 200 }).notNull(),
-  description: text("description").notNull(),
-  category: varchar("category", { length: 50 }).notNull(), // "kindness", "family", "creativity", "community"
-  difficulty: varchar("difficulty", { length: 20 }).notNull(), // "easy", "medium", "hard"
-  points: integer("points").default(10),
-  ageGroup: varchar("age_group", { length: 20 }).notNull(), // "k-2", "3-5", "6-8"
-  isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-export const userSummerProgress = pgTable("user_summer_progress", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull(),
-  challengeId: varchar("challenge_id").notNull().references(() => summerChallenges.id),
-  completedAt: timestamp("completed_at"),
-  pointsEarned: integer("points_earned").default(0),
-  parentApproved: boolean("parent_approved").default(false),
-  notes: text("notes"), // Student reflection on the activity
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-export const summerActivities = pgTable("summer_activities", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  challengeId: varchar("challenge_id").notNull().references(() => summerChallenges.id),
-  title: varchar("title", { length: 200 }).notNull(),
-  description: text("description").notNull(),
-  timeEstimate: integer("time_estimate_minutes").default(30), // in minutes
-  materialsNeeded: text("materials_needed"), // comma-separated list
-  instructions: text("instructions").notNull(),
-  parentInvolvement: boolean("parent_involvement").default(false),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Family Kindness Challenges - Year-round family engagement system  
-export const yearRoundFamilyChallenges = pgTable("year_round_family_challenges", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  week: integer("week").notNull(), // Week 1-52 for year-round
-  title: varchar("title", { length: 200 }).notNull(),
-  description: text("description").notNull(),
-  theme: varchar("theme", { length: 50 }).notNull(), // "family_gratitude", "community_helper", "kindness_coach", etc.
-  difficulty: varchar("difficulty", { length: 20 }).notNull(), // "easy", "medium", "hard"
-  kidPoints: integer("kid_points").default(10), // Points for kids
-  parentPoints: integer("parent_points").default(5), // Points for parents (dual reward system)
-  ageGroup: varchar("age_group", { length: 20 }).notNull(), // "k-2", "3-5", "6-8", "family"
-  isActive: boolean("is_active").default(true),
-  startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Family challenge participation tracking
-export const familyProgress = pgTable("family_progress", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  challengeId: varchar("challenge_id").notNull().references(() => yearRoundFamilyChallenges.id),
-  studentId: varchar("student_id").notNull(), // The child participant
-  parentId: varchar("parent_id"), // Optional parent participant
-  completedAt: timestamp("completed_at"),
-  kidPointsEarned: integer("kid_points_earned").default(0),
-  parentPointsEarned: integer("parent_points_earned").default(0),
-  familyReflection: text("family_reflection"), // Family reflection on the activity
-  photoSubmitted: boolean("photo_submitted").default(false),
-  teacherApproved: boolean("teacher_approved").default(false),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Family challenge activities (detailed instructions)
-export const familyActivities = pgTable("family_activities", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  challengeId: varchar("challenge_id").notNull().references(() => yearRoundFamilyChallenges.id),
-  title: varchar("title", { length: 200 }).notNull(),
-  description: text("description").notNull(),
-  kidInstructions: text("kid_instructions").notNull(), // Instructions for the child
-  parentInstructions: text("parent_instructions"), // Instructions for the parent
-  timeEstimate: integer("time_estimate_minutes").default(30),
-  materialsNeeded: text("materials_needed"),
-  locationSuggestion: varchar("location_suggestion", { length: 100 }), // "home", "school", "community", "outdoors"
-  discussionPrompts: text("discussion_prompts"), // Family discussion questions
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// School fundraising campaigns - DOUBLE TOKEN REWARDS FOR DONATIONS! 
-export const schoolFundraisers = pgTable("school_fundraisers", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  schoolName: varchar("school_name").notNull(),
-  campaignName: varchar("campaign_name").notNull(),
-  description: text("description").notNull(),
-  goalAmount: integer("goal_amount").notNull(), // in cents
-  currentAmount: integer("current_amount").default(0), // in cents
-  startDate: timestamp("start_date").notNull(),
-  endDate: timestamp("end_date").notNull(),
-  isActive: boolean("is_active").default(true),
-  tokenMultiplier: integer("token_multiplier").default(2), // 2x = double tokens!
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Track family donations to school fundraisers
-export const familyDonations = pgTable("family_donations", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  fundraiserId: varchar("fundraiser_id").notNull().references(() => schoolFundraisers.id),
-  userTokenId: varchar("user_token_id").notNull().references(() => userTokens.id),
-  donationAmount: integer("donation_amount").notNull(), // in cents
-  kidTokensEarned: integer("kid_tokens_earned").notNull(),
-  parentTokensEarned: integer("parent_tokens_earned").notNull(),
-  isVerified: boolean("is_verified").default(false),
-  donationDate: timestamp("donation_date").defaultNow(),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-export const summerNotifications = pgTable("summer_notifications", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  parentId: varchar("parent_id").notNull(),
-  studentId: varchar("student_id").notNull(),
-  type: varchar("type", { length: 50 }).notNull(), // "activity_reminder", "progress_update", "weekly_summary"
-  title: varchar("title", { length: 200 }).notNull(),
-  message: text("message").notNull(),
-  isRead: boolean("is_read").default(false),
-  scheduledFor: timestamp("scheduled_for"),
-  sentAt: timestamp("sent_at"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Legacy family challenges (keeping for compatibility)
-export const legacyFamilyChallenges = pgTable("family_challenges", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  title: varchar("title", { length: 200 }).notNull(),
-  description: text("description").notNull(),
-  category: varchar("category", { length: 50 }).notNull(),
-  difficulty: varchar("difficulty", { length: 20 }).notNull(),
-  estimatedTime: integer("estimated_time_minutes").default(60),
-  parentChildActivity: boolean("parent_child_activity").default(true),
-  pointsForFamily: integer("points_for_family").default(25),
-  weekAvailable: integer("week_available"), // Which summer week this becomes available
-  isActive: boolean("is_active").default(true),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Summer Engagement insert schemas
-export const insertSummerChallengeSchema = createInsertSchema(summerChallenges);
-export const insertUserSummerProgressSchema = createInsertSchema(userSummerProgress);
-export const insertSummerActivitySchema = createInsertSchema(summerActivities);
-export const insertSummerNotificationSchema = createInsertSchema(summerNotifications);
-export const insertFamilyChallengeSchema = createInsertSchema(legacyFamilyChallenges);
-
-// New Family Kindness Challenge types
-export const insertYearRoundFamilyChallengeSchema = createInsertSchema(yearRoundFamilyChallenges);
-export const insertFamilyProgressSchema = createInsertSchema(familyProgress);
-export const insertFamilyActivitySchema = createInsertSchema(familyActivities);
-
-// School Fundraiser types - DOUBLE TOKEN REWARDS!
-export const insertSchoolFundraiserSchema = createInsertSchema(schoolFundraisers)
-  .extend({
-    startDate: z.coerce.date(),
-    endDate: z.coerce.date()
-  });
-export const insertFamilyDonationSchema = createInsertSchema(familyDonations);
-
-// ==========================================
-// YEAR-ROUND SCHOOL CHALLENGES & COMMUNITY SERVICE SYSTEM
-// ==========================================
-
-// Year-Round School Challenges (September-May) - Individual student challenges
-export const schoolYearChallenges = pgTable("school_year_challenges", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  week: integer("week").notNull(), // Week 1-36 for school year (Sept-May)
-  title: varchar("title", { length: 200 }).notNull(),
-  description: text("description").notNull(),
-  theme: varchar("theme", { length: 50 }).notNull(), // "leadership", "empathy", "community_action", "peer_support"
-  category: varchar("category", { length: 50 }).notNull(), // "kindness", "leadership", "community_service", "academic_support"
-  difficulty: varchar("difficulty", { length: 20 }).notNull(), // "easy", "medium", "hard"
-  points: integer("points").default(10), // 10-25 points based on difficulty
-  gradeLevel: varchar("grade_level", { length: 10 }).notNull(), // "6-8", "9-12" (expanding to high school!)
-  timeEstimate: integer("time_estimate_minutes").default(30), // Expected completion time
-  isActive: boolean("is_active").default(true),
-  seasonalFocus: varchar("seasonal_focus", { length: 20 }), // "fall", "winter", "spring", null for general
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Student progress on year-round school challenges
-export const schoolYearProgress = pgTable("school_year_progress", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  challengeId: varchar("challenge_id").notNull().references(() => schoolYearChallenges.id),
-  completedAt: timestamp("completed_at"),
-  pointsEarned: integer("points_earned").default(0),
-  studentReflection: text("student_reflection"), // Student's reflection on what they learned
-  photoEvidence: text("photo_evidence"), // Optional photo URL
-  teacherApproved: boolean("teacher_approved").default(false),
-  teacherFeedback: text("teacher_feedback"), // Teacher comments and approval notes
-  parentNotified: boolean("parent_notified").default(false),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Community Service Hours Tracking System
-export const communityServiceLogs = pgTable("community_service_logs", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  schoolId: varchar("school_id"), // Link to school for school-wide tracking
-  serviceName: varchar("service_name", { length: 200 }).notNull(), // "Food Bank Volunteer", "Library Helper"
-  serviceDescription: text("service_description").notNull(), // What did they do?
-  organizationName: varchar("organization_name", { length: 200 }), // "Burlington Food Pantry", "Boys & Girls Club"
-  contactPerson: varchar("contact_person", { length: 100 }), // Supervisor contact
-  contactEmail: varchar("contact_email", { length: 200 }), // For verification
-  contactPhone: varchar("contact_phone", { length: 20 }), // For verification
-  hoursLogged: decimal("hours_logged", { precision: 4, scale: 2 }).notNull(), // 2.5 hours, etc.
-  serviceDate: timestamp("service_date").notNull(), // When did they serve?
-  location: varchar("location", { length: 200 }), // Service location
-  category: varchar("category", { length: 50 }).default("general"), // "environmental", "elderly_care", "education", "food_service", "animal_care"
-  studentReflection: text("student_reflection").notNull(), // Required reflection on experience
-  photoEvidence: text("photo_evidence"), // Optional photo URL
-  verificationStatus: varchar("verification_status", { length: 20 }).default("pending"), // "pending", "approved", "rejected", "needs_info"
-  verifiedBy: varchar("verified_by"), // Teacher/admin who verified
-  verifiedAt: timestamp("verified_at"),
-  verificationNotes: text("verification_notes"), // Verification comments
-  tokensEarned: integer("tokens_earned").default(0), // 5 tokens per verified hour
-  parentNotified: boolean("parent_notified").default(false),
-  createdAt: timestamp("created_at").defaultNow(),
-  updatedAt: timestamp("updated_at").defaultNow(),
-});
-
-// Community Service Verification System
-export const serviceVerifications = pgTable("service_verifications", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  serviceLogId: varchar("service_log_id").notNull().references(() => communityServiceLogs.id),
-  verifierType: varchar("verifier_type", { length: 20 }).notNull(), // "teacher", "parent", "organization", "peer"
-  verifierId: varchar("verifier_id").notNull(), // User ID of person verifying
-  verificationMethod: varchar("verification_method", { length: 30 }).notNull(), // "photo", "form", "interview", "organization_contact"
-  status: varchar("status", { length: 20 }).default("pending"), // "pending", "approved", "rejected"
-  feedback: text("feedback"), // Verifier comments
-  requestedChanges: text("requested_changes"), // What needs to be updated?
-  followUpRequired: boolean("follow_up_required").default(false),
-  verifiedAt: timestamp("verified_at"),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Student Community Service Totals (for easy reporting)
-export const studentServiceSummaries = pgTable("student_service_summaries", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().unique().references(() => users.id),
-  schoolId: varchar("school_id"),
-  gradeLevel: varchar("grade_level", { length: 10 }), // "6", "7", "8", "9", "10", "11", "12"
-  totalHoursCompleted: decimal("total_hours_completed", { precision: 6, scale: 2 }).default(sql`0.00`),
-  totalHoursVerified: decimal("total_hours_verified", { precision: 6, scale: 2 }).default(sql`0.00`),
-  totalHoursPending: decimal("total_hours_pending", { precision: 6, scale: 2 }).default(sql`0.00`),
-  schoolYearGoal: decimal("school_year_goal", { precision: 4, scale: 2 }).default(sql`30.00`), // 30+ hour requirement
-  goalProgress: decimal("goal_progress", { precision: 5, scale: 2 }).default(sql`0.00`), // Percentage toward goal
-  tokensEarnedFromService: integer("tokens_earned_from_service").default(0),
-  lastServiceDate: timestamp("last_service_date"),
-  currentStreak: integer("current_streak").default(0), // Days with consecutive service
-  longestStreak: integer("longest_streak").default(0),
-  updatedAt: timestamp("updated_at").defaultNow(),
-  createdAt: timestamp("created_at").defaultNow(),
-});
-
-// Insert schemas for new tables
-export const insertSchoolYearChallengeSchema = createInsertSchema(schoolYearChallenges);
-export const insertSchoolYearProgressSchema = createInsertSchema(schoolYearProgress);
-export const insertCommunityServiceLogSchema = createInsertSchema(communityServiceLogs);
-export const insertServiceVerificationSchema = createInsertSchema(serviceVerifications);
-export const insertStudentServiceSummarySchema = createInsertSchema(studentServiceSummaries);
-
-// API validation schemas for school year challenges
-export const completeSchoolYearChallengeSchema = z.object({
-  challengeId: z.string().min(1, "Challenge ID is required"),
-  studentReflection: z.string().min(10, "Student reflection must be at least 10 characters").max(1000, "Student reflection must be less than 1000 characters"),
-  photoEvidence: z.string().url("Photo evidence must be a valid URL").optional()
-});
-
-export const approveSchoolYearChallengeSchema = z.object({
-  pointsAwarded: z.number().min(0).max(50, "Points awarded cannot exceed 50"),
-  teacherFeedback: z.string().max(500, "Teacher feedback must be less than 500 characters").optional()
-});
-
-// Types for new tables
-export type SchoolYearChallenge = typeof schoolYearChallenges.$inferSelect;
-export type InsertSchoolYearChallenge = typeof schoolYearChallenges.$inferInsert;
-export type SchoolYearProgress = typeof schoolYearProgress.$inferSelect;
-export type InsertSchoolYearProgress = typeof schoolYearProgress.$inferInsert;
-export type CommunityServiceLog = typeof communityServiceLogs.$inferSelect;
-export type InsertCommunityServiceLog = typeof communityServiceLogs.$inferInsert;
-export type ServiceVerification = typeof serviceVerifications.$inferSelect;
-export type InsertServiceVerification = typeof serviceVerifications.$inferInsert;
-export type StudentServiceSummary = typeof studentServiceSummaries.$inferSelect;
-export type InsertStudentServiceSummary = typeof studentServiceSummaries.$inferInsert;
-
-// ===============================
-// 🎓 KINDNESS MENTORS SYSTEM - PEER GUIDANCE & RECOGNITION! 
-// ===============================
-
-// Mentor-Mentee Relationships
-export const mentorships = pgTable("mentorships", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  mentorUserId: varchar("mentor_user_id").notNull().references(() => users.id),
-  menteeUserId: varchar("mentee_user_id").notNull().references(() => users.id),
-  schoolId: varchar("school_id"), // For school-based mentoring programs
-  mentorAgeGroup: varchar("mentor_age_group", { length: 20 }).notNull(), // 6-8, 9-12, teen, adult
-  menteeAgeGroup: varchar("mentee_age_group", { length: 20 }).notNull(), // k-2, 3-5, 6-8
-  status: varchar("status", { length: 20 }).default("active").notNull(), // active, paused, completed, discontinued
-  matchingReason: text("matching_reason"), // Why they were matched
-  startDate: timestamp("start_date").defaultNow().notNull(),
-  expectedEndDate: timestamp("expected_end_date"), // Mentoring program duration
-  totalSessions: integer("total_sessions").default(0).notNull(),
-  mentorRating: real("mentor_rating"), // 1-5 rating from mentee/parent
-  menteeProgress: integer("mentee_progress").default(0).notNull(), // 0-100 kindness growth
-  specialNotes: text("special_notes"), // Any special considerations
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-// Mentoring Session Activities
-export const mentorActivities = pgTable("mentor_activities", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  mentorshipId: varchar("mentorship_id").notNull().references(() => mentorships.id),
-  activityType: varchar("activity_type", { length: 50 }).notNull(), // guidance, challenge_together, skill_share, reflection
-  title: varchar("title", { length: 200 }).notNull(),
-  description: text("description").notNull(),
-  sessionDate: timestamp("session_date").notNull(),
-  durationMinutes: integer("duration_minutes").default(30).notNull(),
-  mentorReflection: text("mentor_reflection"), // What the mentor learned
-  menteeReflection: text("mentee_reflection"), // What the mentee learned
-  kindnessActsCompleted: integer("kindness_acts_completed").default(0).notNull(),
-  skillsShared: jsonb("skills_shared"), // Array of skills taught/learned
-  mentorTokensEarned: integer("mentor_tokens_earned").default(0).notNull(),
-  menteeTokensEarned: integer("mentee_tokens_earned").default(0).notNull(),
-  parentApproval: boolean("parent_approval").default(false).notNull(),
-  isCompleted: boolean("is_completed").default(false).notNull(),
-  completedAt: timestamp("completed_at"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Mentor Badge System
-export const mentorBadges = pgTable("mentor_badges", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  badgeName: varchar("badge_name", { length: 100 }).notNull(),
-  badgeIcon: varchar("badge_icon", { length: 10 }).notNull(), // Emoji for badge
-  description: text("description").notNull(),
-  category: varchar("category", { length: 50 }).notNull(), // leadership, compassion, growth, impact, special
-  tier: varchar("tier", { length: 20 }).default("bronze").notNull(), // bronze, silver, gold, platinum, legendary
-  requirements: jsonb("requirements").notNull(), // Complex requirements object
-  tokenReward: integer("token_reward").default(50).notNull(),
-  isActive: boolean("is_active").default(true).notNull(),
-  rarity: varchar("rarity", { length: 20 }).default("common").notNull(), // common, rare, epic, legendary
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// User's Earned Mentor Badges
-export const userMentorBadges = pgTable("user_mentor_badges", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  badgeId: varchar("badge_id").notNull().references(() => mentorBadges.id),
-  mentorshipId: varchar("mentorship_id").references(() => mentorships.id), // Which mentorship earned this
-  earnedAt: timestamp("earned_at").defaultNow().notNull(),
-  isDisplayed: boolean("is_displayed").default(true).notNull(), // Show on profile
-  celebrationViewed: boolean("celebration_viewed").default(false).notNull(),
-});
-
-// Mentor Training & Certification
-export const mentorTraining = pgTable("mentor_training", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  title: varchar("title", { length: 200 }).notNull(),
-  description: text("description").notNull(),
-  trainingType: varchar("training_type", { length: 50 }).notNull(), // orientation, skills, safety, advanced
-  ageGroupFocus: varchar("age_group_focus", { length: 20 }).notNull(), // k-2, 3-5, 6-8, all
-  durationMinutes: integer("duration_minutes").default(30).notNull(),
-  isRequired: boolean("is_required").default(false).notNull(),
-  prerequisites: jsonb("prerequisites"), // Array of required training IDs
-  content: jsonb("content").notNull(), // Training modules/activities
-  completionCriteria: jsonb("completion_criteria").notNull(),
-  certificateReward: integer("certificate_reward").default(25).notNull(), // Tokens for completion
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  isActive: boolean("is_active").default(true).notNull(),
-});
-
-// User Training Progress
-export const userMentorTraining = pgTable("user_mentor_training", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
-  trainingId: varchar("training_id").notNull().references(() => mentorTraining.id),
-  startedAt: timestamp("started_at").defaultNow().notNull(),
-  completedAt: timestamp("completed_at"),
-  progressPercentage: integer("progress_percentage").default(0).notNull(),
-  currentModule: integer("current_module").default(1).notNull(),
-  timeSpent: integer("time_spent").default(0).notNull(), // Minutes
-  passed: boolean("passed").default(false).notNull(),
-  certificateIssued: boolean("certificate_issued").default(false).notNull(),
-});
-
-// Mentor Matching Preferences
-export const mentorPreferences = pgTable("mentor_preferences", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().unique().references(() => users.id),
-  availableAsMentor: boolean("available_as_mentor").default(false).notNull(),
-  seekingMentor: boolean("seeking_mentor").default(false).notNull(),
-  preferredMenteeAgeGroups: jsonb("preferred_mentee_age_groups"), // Array of age groups
-  interests: jsonb("interests"), // Array of interests/skills
-  mentorStyle: varchar("mentor_style", { length: 50 }).default("encouraging").notNull(), // encouraging, structured, creative, patient
-  availabilityDays: jsonb("availability_days"), // Array of days available
-  maxMentees: integer("max_mentees").default(2).notNull(),
-  experienceLevel: varchar("experience_level", { length: 20 }).default("beginner").notNull(),
-  specialSkills: jsonb("special_skills"), // What they can teach
-  communicationStyle: varchar("communication_style", { length: 20 }).default("friendly").notNull(),
-  parentPermission: boolean("parent_permission").default(false).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-// Mentor Training Scenarios - Practice Situations  
-export const mentorScenarios = pgTable("mentor_scenarios", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  title: varchar("title", { length: 200 }).notNull(),
-  category: varchar("category", { length: 50 }).notNull(), // connection, guidance, challenges
-  difficulty: varchar("difficulty", { length: 20 }).notNull(),
-  description: text("description").notNull(),
-  scenario: text("scenario").notNull(), // full scenario description
-  learningPoints: jsonb("learning_points").notNull(), // key learning outcomes
-  suggestedApproaches: jsonb("suggested_approaches").notNull(), // recommended strategies
-  extensionActivities: jsonb("extension_activities").notNull(), // follow-up activities
-  isActive: boolean("is_active").default(true).notNull(),
-  sortOrder: integer("sort_order").default(1).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Sample Mentor Conversations - Training Examples
-export const mentorConversations = pgTable("mentor_conversations", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  title: varchar("title", { length: 200 }).notNull(),
-  category: varchar("category", { length: 50 }).notNull(),
-  description: text("description").notNull(),
-  participants: jsonb("participants").notNull(), // array of participant descriptions
-  conversationFlow: jsonb("conversation_flow").notNull(), // detailed conversation with notes
-  learningPoints: jsonb("learning_points").notNull(), // key takeaways
-  isActive: boolean("is_active").default(true).notNull(),
-  sortOrder: integer("sort_order").default(1).notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// Mentor Performance Analytics
-export const mentorStats = pgTable("mentor_stats", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().unique().references(() => users.id),
-  totalMentees: integer("total_mentees").default(0).notNull(),
-  activeMentorships: integer("active_mentorships").default(0).notNull(),
-  completedMentorships: integer("completed_mentorships").default(0).notNull(),
-  totalSessions: integer("total_sessions").default(0).notNull(),
-  avgMenteeGrowth: real("avg_mentee_growth").default(0).notNull(), // Average mentee progress
-  avgRating: real("avg_rating").default(0).notNull(), // Average mentor rating
-  totalKindnessActsGuided: integer("total_kindness_acts_guided").default(0).notNull(),
-  totalTokensEarned: integer("total_tokens_earned").default(0).notNull(),
-  badgesEarned: integer("badges_earned").default(0).notNull(),
-  mentorLevel: integer("mentor_level").default(1).notNull(), // Gamification level
-  nextLevelProgress: integer("next_level_progress").default(0).notNull(), // 0-100
-  impactScore: integer("impact_score").default(0).notNull(), // Overall impact rating
-  lastActiveAt: timestamp("last_active_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-export type SchoolFundraiser = typeof schoolFundraisers.$inferSelect;
-export type InsertSchoolFundraiser = typeof schoolFundraisers.$inferInsert;
-export type FamilyDonation = typeof familyDonations.$inferSelect;
-export type InsertFamilyDonation = typeof familyDonations.$inferInsert;
-
-// Kindness Mentors types
-export const insertMentorshipSchema = createInsertSchema(mentorships);
-export const insertMentorActivitySchema = createInsertSchema(mentorActivities);
-export const insertMentorBadgeSchema = createInsertSchema(mentorBadges);
-export const insertMentorPreferencesSchema = createInsertSchema(mentorPreferences);
-
-export type Mentorship = typeof mentorships.$inferSelect;
-export type InsertMentorship = typeof mentorships.$inferInsert;
-export type MentorActivity = typeof mentorActivities.$inferSelect;
-export type InsertMentorActivity = typeof mentorActivities.$inferInsert;
-export type MentorBadge = typeof mentorBadges.$inferSelect;
-export type InsertMentorBadge = typeof mentorBadges.$inferInsert;
-export type MentorPreferences = typeof mentorPreferences.$inferSelect;
-export type InsertMentorPreferences = typeof mentorPreferences.$inferInsert;
-export type MentorStats = typeof mentorStats.$inferSelect;
-export type InsertMentorStats = typeof mentorStats.$inferInsert;
-export type MentorTraining = typeof mentorTraining.$inferSelect;
-export type InsertMentorTraining = typeof mentorTraining.$inferInsert;
-export type MentorScenario = typeof mentorScenarios.$inferSelect;
-export type InsertMentorScenario = typeof mentorScenarios.$inferInsert;
-export type MentorConversation = typeof mentorConversations.$inferSelect;
-export type InsertMentorConversation = typeof mentorConversations.$inferInsert;
-
-export type YearRoundFamilyChallenge = typeof yearRoundFamilyChallenges.$inferSelect;
-export type InsertYearRoundFamilyChallenge = typeof yearRoundFamilyChallenges.$inferInsert;
-export type FamilyProgress = typeof familyProgress.$inferSelect;
-export type InsertFamilyProgress = typeof familyProgress.$inferInsert;
-export type FamilyActivity = typeof familyActivities.$inferSelect;
-export type InsertFamilyActivity = typeof familyActivities.$inferInsert;
-
-// Support Circle Feature Schema Exports
-export const insertSupportPostSchema = createInsertSchema(supportPosts).omit({
-  id: true,
-  createdAt: true,
-  heartsCount: true,
-  isCrisis: true,
-  flaggedAt: true,
-  hasResponse: true,
-  responseCount: true,
-  lastResponseAt: true,
-  viewCount: true,
-  reportCount: true,
-  isResolved: true,
-  resolvedAt: true,
-});
-
-// Wellness check-in insert schemas for daily mood tracking
-export const insertWellnessCheckInSchema = createInsertSchema(wellnessCheckIns).omit({
-  id: true,
-  triggeredByNotification: true,
-  notificationTime: true,
-  responseTime: true,
-  completedAt: true,
-  checkInDate: true,
-  createdAt: true,
-});
-
-export const insertPushSubscriptionSchema = createInsertSchema(pushSubscriptions).omit({
-  id: true,
-  isActive: true,
-  lastNotificationSent: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export const insertSupportResponseSchema = createInsertSchema(supportResponses).omit({
-  id: true,
-  createdAt: true,
-  heartsCount: true,
-});
-
-export const insertCrisisEscalationSchema = createInsertSchema(crisisEscalations).omit({
-  id: true,
-  escalatedAt: true,
-  resolvedAt: true,
-});
-
-export const insertLicensedCounselorSchema = createInsertSchema(licensedCounselors).omit({
-  id: true,
-  createdAt: true,
-  verifiedAt: true,
-});
-
-// Summer Engagement type exports
 export type SummerChallenge = typeof summerChallenges.$inferSelect;
-export type InsertSummerChallenge = z.infer<typeof insertSummerChallengeSchema>;
-export type UserSummerProgress = typeof userSummerProgress.$inferSelect;
-export type InsertUserSummerProgress = z.infer<typeof insertUserSummerProgressSchema>;
-export type SummerActivity = typeof summerActivities.$inferSelect;
-export type InsertSummerActivity = z.infer<typeof insertSummerActivitySchema>;
-export type SummerNotification = typeof summerNotifications.$inferSelect;
-export type InsertSummerNotification = z.infer<typeof insertSummerNotificationSchema>;
-export type FamilyChallenge = typeof legacyFamilyChallenges.$inferSelect;
-export type InsertFamilyChallenge = z.infer<typeof insertFamilyChallengeSchema>;
+export type SummerChallengeCompletion = typeof summerChallengeCompletions.$inferSelect;
 
-// Support Circle Feature Type Exports
-export type InsertSupportPost = z.infer<typeof insertSupportPostSchema>;
-export type SupportPost = typeof supportPosts.$inferSelect;
-export type InsertSupportResponse = z.infer<typeof insertSupportResponseSchema>;
-export type SupportResponse = typeof supportResponses.$inferSelect;
-export type InsertCrisisEscalation = z.infer<typeof insertCrisisEscalationSchema>;
-export type CrisisEscalation = typeof crisisEscalations.$inferSelect;
-export type InsertLicensedCounselor = z.infer<typeof insertLicensedCounselorSchema>;
-export type LicensedCounselor = typeof licensedCounselors.$inferSelect;
-export type SchoolSupportAnalytics = typeof schoolSupportAnalytics.$inferSelect;
+export type FamilyChallenge = typeof familyChallenges.$inferSelect;
+export type FamilyChallengeCompletion = typeof familyChallengeCompletions.$inferSelect;
 
-// Wellness check-in types for daily mood tracking
-export type WellnessCheckIn = typeof wellnessCheckIns.$inferSelect;
-export type InsertWellnessCheckIn = z.infer<typeof insertWellnessCheckInSchema>;
-export type PushSubscription = typeof pushSubscriptions.$inferSelect;
-export type InsertPushSubscription = z.infer<typeof insertPushSubscriptionSchema>;
-export type WellnessTrend = typeof wellnessTrends.$inferSelect;
+export type SchoolYearChallenge = typeof schoolYearChallenges.$inferSelect;
+export type SchoolYearChallengeEngagement = typeof schoolYearChallengeEngagement.$inferSelect;
 
-// Claim code system types - COPPA-compliant school registration
-export type TeacherClaimCode = typeof teacherClaimCodes.$inferSelect;
-export type InsertTeacherClaimCode = z.infer<typeof insertTeacherClaimCodeSchema>;
-export type ClaimCodeUsage = typeof claimCodeUsages.$inferSelect;
-export type InsertClaimCodeUsage = z.infer<typeof insertClaimCodeUsageSchema>;
-
-// Emergency contact encryption types - LIFE-CRITICAL FOR CHILD SAFETY
-export type EncryptionKey = typeof encryptionKeys.$inferSelect;
-export type InsertEncryptionKey = z.infer<typeof insertEncryptionKeySchema>;
-export type DualAuthRequest = typeof dualAuthRequests.$inferSelect;
-export type InsertDualAuthRequest = z.infer<typeof insertDualAuthRequestSchema>;
-export type EncryptedEmergencyContact = typeof encryptedEmergencyContacts.$inferSelect;
-export type InsertEncryptedEmergencyContact = z.infer<typeof insertEncryptedEmergencyContactSchema>;
-
-// EMERGENCY CONTACT ENCRYPTION KEY STORAGE - LIFE-CRITICAL FOR CHILD SAFETY
-export const encryptionKeys = pgTable("encryption_keys", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  keyId: varchar("key_id").notNull().unique(), // The key identifier used by encryption service
-  encryptedKey: text("encrypted_key").notNull(), // AES-256 key encrypted with master key
-  keyType: varchar("key_type", { length: 50 }).default("emergency_contact").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  lastUsedAt: timestamp("last_used_at"),
-  isActive: boolean("is_active").default(true).notNull(),
-  // Audit fields for security compliance
-  createdBy: varchar("created_by").default("system").notNull(),
-  accessCount: integer("access_count").default(0).notNull(),
-});
-
-// DUAL AUTH REQUESTS - EMERGENCY CONTACT ACCESS CONTROL
-export const dualAuthRequests = pgTable("dual_auth_requests", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  requestId: varchar("request_id").notNull().unique(),
-  requesterId: varchar("requester_id").notNull(),
-  requesterRole: varchar("requester_role", { length: 50 }).notNull(),
-  emergencyContactId: varchar("emergency_contact_id").notNull(),
-  justification: text("justification").notNull(),
-  urgencyLevel: varchar("urgency_level", { length: 20 }).notNull(), // ROUTINE, URGENT, EMERGENCY, COURT_ORDER
-  status: varchar("status", { length: 20 }).default("PENDING").notNull(), // PENDING, APPROVED, DENIED, EXPIRED
-  approvals: jsonb("approvals"), // Array of approval records
-  expiresAt: timestamp("expires_at").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-// ENCRYPTED EMERGENCY CONTACTS - SECURE STORAGE FOR CRISIS INTERVENTION
-export const encryptedEmergencyContacts = pgTable("encrypted_emergency_contacts", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  contactId: varchar("contact_id").notNull().unique(),
-  encryptedName: text("encrypted_name").notNull(),
-  encryptedPhone: text("encrypted_phone").notNull(), 
-  encryptedRelation: text("encrypted_relation").notNull(),
-  encryptionKeyId: varchar("encryption_key_id").notNull(),
-  // Access tracking for audit compliance
-  accessCount: integer("access_count").default(0).notNull(),
-  lastAccessedAt: timestamp("last_accessed_at"),
-  lastAccessedBy: varchar("last_accessed_by"),
-  // Consent tracking for COPPA/FERPA compliance
-  consentRecord: jsonb("consent_record").notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-});
-
-// 🎓 TEACHER CLAIM CODES - School-issued student registration codes
-export const teacherClaimCodes = pgTable("teacher_claim_codes", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  claimCode: varchar("claim_code", { length: 15 }).notNull().unique(), // 12-character alphanumeric code with dashes
-  claimCodeHash: varchar("claim_code_hash", { length: 64 }).notNull().unique(), // SHA-256 hash for secure validation
-  teacherUserId: varchar("teacher_user_id").notNull().references(() => users.id),
-  schoolId: varchar("school_id").notNull(), // Links to corporateAccounts table
-  className: varchar("class_name", { length: 100 }).notNull(), // e.g., "Ms. Smith's 6th Grade Math"
-  gradeLevel: varchar("grade_level", { length: 5 }).notNull(), // 6, 7, 8, etc.
-  subject: varchar("subject", { length: 50 }), // optional subject (Math, Science, etc.)
-  maxUses: integer("max_uses").default(30).notNull(), // Maximum number of students who can use this code
-  currentUses: integer("current_uses").default(0).notNull(), // How many times it's been used
-  isActive: integer("is_active").default(1).notNull(), // 1 = active, 0 = disabled
-  expiresAt: timestamp("expires_at").notNull(), // Expiration date for security
-  // 🔒 ENHANCED SECURITY FIELDS
-  generatedBy: varchar("generated_by").notNull(), // User ID who generated the code
-  lastUsedAt: timestamp("last_used_at"),
-  // Rate limiting and anti-enumeration protection
-  failedAttempts: integer("failed_attempts").default(0).notNull(), // Track failed validation attempts
-  lastFailureAt: timestamp("last_failure_at"), // Last failed attempt timestamp
-  lockedUntil: timestamp("locked_until"), // Temporary lock for too many failures
-  validationAttempts: integer("validation_attempts").default(0).notNull(), // Total validation attempts
-  // Geographic restrictions for security
-  allowedSchoolIds: jsonb("allowed_school_ids"), // Array of allowed school IDs (defaults to creating school)
-  generationIP: varchar("generation_ip"), // IP address where code was generated
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
-// 📋 CLAIM CODE USAGE TRACKING - Audit trail for security and compliance
-export const claimCodeUsages = pgTable("claim_code_usages", {
-  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  claimCodeId: varchar("claim_code_id").notNull().references(() => teacherClaimCodes.id),
-  studentUserId: varchar("student_user_id").notNull().references(() => users.id),
-  studentAccountId: varchar("student_account_id").notNull().references(() => studentAccounts.id),
-  usageResult: varchar("usage_result", { length: 20 }).notNull(), // success, already_used, expired, invalid, max_uses_reached, locked, rate_limited
-  // 🛡️ COPPA COMPLIANCE TRACKING
-  parentConsentTriggered: integer("parent_consent_triggered").default(1).notNull(),
-  parentConsentRequestId: varchar("parent_consent_request_id"), // Links to parentalConsentRequests
-  studentAge: integer("student_age"), // Age at time of registration for compliance tracking
-  coppaRequired: integer("coppa_required").default(1).notNull(), // Whether COPPA consent was required
-  consentStatus: varchar("consent_status", { length: 20 }).default("pending").notNull(), // pending, approved, denied
-  // 🔒 ENHANCED SECURITY TRACKING
-  ipAddress: varchar("ip_address"),
-  userAgent: text("user_agent"),
-  sessionId: varchar("session_id"), // Browser session identifier
-  deviceFingerprint: varchar("device_fingerprint"), // Device identification for security
-  geoLocation: jsonb("geo_location"), // Geographic location data
-  schoolValidated: integer("school_validated").default(0).notNull(), // Whether school affiliation was validated
-  preventedReason: varchar("prevented_reason"), // If usage was prevented, why?
-  usedAt: timestamp("used_at").defaultNow().notNull(),
-});
-
-// Schema exports for claim code system
-export const insertTeacherClaimCodeSchema = createInsertSchema(teacherClaimCodes).omit({
-  id: true,
-  currentUses: true,
-  lastUsedAt: true,
-  failedAttempts: true,
-  lastFailureAt: true,
-  lockedUntil: true,
-  validationAttempts: true,
-  createdAt: true,
-  updatedAt: true,
-});
-
-export const insertClaimCodeUsageSchema = createInsertSchema(claimCodeUsages).omit({
-  id: true,
-  usedAt: true,
-});
-
-// Schema exports for encryption key management
-export const insertEncryptionKeySchema = createInsertSchema(encryptionKeys);
-export const insertDualAuthRequestSchema = createInsertSchema(dualAuthRequests);
-export const insertEncryptedEmergencyContactSchema = createInsertSchema(encryptedEmergencyContacts);
-
-// User relations for better query performance
-export const usersRelations = relations(users, ({ many }) => ({
-  posts: many(kindnessPosts),
-  tokens: many(userTokens),
-  achievements: many(userAchievements),
-  challengeCompletions: many(challengeCompletions),
-}));
-
-export const kindnessPostsRelations = relations(kindnessPosts, ({ one }) => ({
-  user: one(users, {
-    fields: [kindnessPosts.userId],
-    references: [users.id],
-  }),
-}));
+export type MentorBadge = typeof mentorBadges.$inferSelect;
+export type MentorBadgeAward = typeof mentorBadgeAwards.$inferSelect;
+export type MentorTrainingModule = typeof mentorTrainingModules.$inferSelect;
+export type MentorTrainingProgress = typeof mentorTrainingProgress.$inferSelect;
+export type MentorScenario = typeof mentorScenarios.$inferSelect;
+export type MentorScenarioResponse = typeof mentorScenarioResponses.$inferSelect;
+export type MentorConversation = typeof mentorConversations.$inferSelect;
+export type MentorCertification = typeof mentorCertifications.$inferSelect;
