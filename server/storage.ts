@@ -13,6 +13,7 @@ import {
   subscriptionPlans,
   wellnessCheckins,
   schools,
+  studentAccounts,
   communityServiceLogs,
   communityServiceVerifications,
   coppaConsent,
