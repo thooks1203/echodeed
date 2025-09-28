@@ -222,10 +222,11 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
     );
   }
 
-  const progressPercentage = summary ? parseFloat(summary.goalProgress) : 0;
-  const hoursVerified = summary ? parseFloat(summary.totalHoursVerified) : 0;
-  const hoursPending = summary ? parseFloat(summary.totalHoursPending) : 0;
-  const goalHours = summary ? parseFloat(summary.schoolYearGoal) : 30;
+  const hoursVerified = summary ? parseFloat(summary.verifiedHours || '0') : 0;
+  const hoursPending = summary ? parseFloat(summary.pendingHours || '0') : 0;
+  const goalHours = 30; // BCA's 30-hour yearly requirement
+  const progressPercentage = (hoursVerified / goalHours) * 100;
+  const tokensEarned = summary ? summary.totalTokensEarned || 0 : 0;
 
   return (
     <div className="space-y-6 p-6" data-testid="community-service-page">
@@ -263,7 +264,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-green-600">{hoursVerified}</div>
-                <p className="text-xs text-muted-foreground">+{summary?.tokensEarnedFromService || 0} tokens earned</p>
+                <p className="text-xs text-muted-foreground">+{tokensEarned} tokens earned</p>
               </CardContent>
             </Card>
 
@@ -295,7 +296,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
                 <Award className="h-4 w-4 text-purple-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-purple-600">{summary?.tokensEarnedFromService || 0}</div>
+                <div className="text-2xl font-bold text-purple-600">{tokensEarned}</div>
                 <p className="text-xs text-muted-foreground">5 tokens per verified hour</p>
               </CardContent>
             </Card>
