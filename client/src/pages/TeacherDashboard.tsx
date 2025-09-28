@@ -48,9 +48,10 @@ interface CurriculumProgress {
 
 interface TeacherDashboardProps {
   teacherId?: string;
+  initialTab?: string;
 }
 
-export default function TeacherDashboard({ teacherId = "teacher-demo" }: TeacherDashboardProps) {
+export default function TeacherDashboard({ teacherId = "teacher-demo", initialTab = "lessons" }: TeacherDashboardProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -161,7 +162,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
           </p>
         </header>
 
-        <Tabs defaultValue="lessons" className="w-full">
+        <Tabs defaultValue={initialTab.toLowerCase()} className="w-full">
           <TabsList className="grid w-full grid-cols-5 mb-6">
             <TabsTrigger value="lessons" data-testid="tab-lessons">
               <BookOpen className="h-4 w-4 mr-2" />

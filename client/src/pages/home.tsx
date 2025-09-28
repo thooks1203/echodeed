@@ -66,7 +66,7 @@ export default function Home() {
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
     
-    if (tabParam && ['feed', 'schools', 'support', 'summer', 'community-service', 'rewards', 'mentor-dashboard', 'student-dashboard', 'teacher-dashboard', 'parent-dashboard', 'family-dashboard', 'sponsors'].includes(tabParam)) {
+    if (tabParam && ['feed', 'schools', 'support', 'summer', 'community-service', 'rewards', 'mentor-dashboard', 'student-dashboard', 'teacher-dashboard', 'parent-dashboard', 'family-dashboard', 'sponsors', 'reports'].includes(tabParam)) {
       setActiveTab(tabParam);
       // Remove the tab parameter from URL to keep it clean
       window.history.replaceState({}, '', window.location.pathname);
@@ -358,6 +358,20 @@ export default function Home() {
     return (
       <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
         <TeacherDashboard />
+        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      </div>
+    );
+  }
+  
+  if (activeTab === 'reports') {
+    // Only teachers can access reports - redirect to teacher dashboard with Reports tab
+    if (user?.schoolRole !== 'teacher') {
+      return null; // useEffect will redirect to feed
+    }
+    
+    return (
+      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+        <TeacherDashboard initialTab="reports" />
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
