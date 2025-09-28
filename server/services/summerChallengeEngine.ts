@@ -1,5 +1,5 @@
 import { db } from '../db';
-import { summerChallenges, summerActivities, userSummerProgress, legacyFamilyChallenges, summerNotifications } from '@shared/schema';
+import { summerChallenges, summerChallengeCompletions, familyChallenges } from '@shared/schema';
 import { eq, and, sql } from 'drizzle-orm';
 
 export interface WeeklyChallengeTheme {
@@ -68,12 +68,12 @@ export class SummerChallengeEngine {
       if (existingChallenge.length === 0) {
         const [challenge] = await db.insert(summerChallenges)
           .values({
-            week,
+            week: week,
             title: template.title,
             description: template.description,
             category: theme.theme.toLowerCase().replace(/\s+/g, '_'),
             difficulty: template.difficulty,
-            points: template.points,
+            points: template.points || 15,
             ageGroup,
             isActive: true
           })
@@ -286,11 +286,11 @@ export class SummerChallengeEngine {
 
     for (const template of familyChallengeTemplates) {
       const existing = await db.select()
-        .from(legacyFamilyChallenges)
-        .where(eq(legacyFamilyChallenges.title, template.title));
+        .from(familyChallenges)
+        .where(eq(familyChallenges.title, template.title));
 
       if (existing.length === 0) {
-        await db.insert(legacyFamilyChallenges).values(template);
+        await db.insert(familyChallenges).values(template);
       }
     }
   }
@@ -310,21 +310,19 @@ export class SummerChallengeEngine {
 
   // Get activities for a specific challenge
   async getChallengeActivities(challengeId: string) {
-    return await db.select()
-      .from(summerActivities)
-      .where(eq(summerActivities.challengeId, challengeId));
+    // TODO: summerActivities table not yet implemented
+    return [];
   }
 
   // Record challenge completion
   async completeChallenge(userId: string, challengeId: string, notes?: string) {
-    const [completion] = await db.insert(userSummerProgress)
+    const [completion] = await db.insert(summerChallengeCompletions)
       .values({
         userId,
         challengeId,
-        completedAt: new Date(),
-        pointsEarned: 0, // Will be updated when parent approves
-        parentApproved: false,
-        notes: notes || null
+        submissionText: notes || null,
+        parentVerified: 0, // Will be updated when parent approves
+        tokensAwarded: 0
       })
       .returning();
 
@@ -358,24 +356,24 @@ export class SummerChallengeEngine {
   // Get user's summer progress
   async getUserProgress(userId: string) {
     return await db.select({
-      progress: userSummerProgress,
+      progress: summerChallengeCompletions,
       challenge: summerChallenges
     })
-    .from(userSummerProgress)
-    .leftJoin(summerChallenges, eq(userSummerProgress.challengeId, summerChallenges.id))
-    .where(eq(userSummerProgress.userId, userId));
+    .from(summerChallengeCompletions)
+    .leftJoin(summerChallenges, eq(summerChallengeCompletions.challengeId, summerChallenges.id))
+    .where(eq(summerChallengeCompletions.userId, userId));
   }
 
   // Get weekly summary for parents
   async getWeeklySummary(userId: string, week: number) {
     const weekProgress = await db.select({
-      progress: userSummerProgress,
+      progress: summerChallengeCompletions,
       challenge: summerChallenges
     })
-    .from(userSummerProgress)
-    .leftJoin(summerChallenges, eq(userSummerProgress.challengeId, summerChallenges.id))
+    .from(summerChallengeCompletions)
+    .leftJoin(summerChallenges, eq(summerChallengeCompletions.challengeId, summerChallenges.id))
     .where(and(
-      eq(userSummerProgress.userId, userId),
+      eq(summerChallengeCompletions.userId, userId),
       eq(summerChallenges.week, week)
     ));
 
@@ -393,12 +391,12 @@ export class SummerChallengeEngine {
   // Approve a completed challenge and award points
   async approveCompletion(progressId: string, pointsAwarded: number) {
     try {
-      const [updatedProgress] = await db.update(userSummerProgress)
+      const [updatedProgress] = await db.update(summerChallengeCompletions)
         .set({
-          parentApproved: true,
-          pointsEarned: pointsAwarded
+          parentVerified: 1,
+          tokensAwarded: pointsAwarded
         })
-        .where(eq(userSummerProgress.id, progressId))
+        .where(eq(summerChallengeCompletions.id, progressId))
         .returning();
 
       // Check if user qualifies for bonus partner reward based on progress
@@ -415,13 +413,13 @@ export class SummerChallengeEngine {
     try {
       // Get user's total approved summer points
       const userTotalProgress = await db.select()
-        .from(userSummerProgress)
+        .from(summerChallengeCompletions)
         .where(and(
-          eq(userSummerProgress.userId, userId),
-          eq(userSummerProgress.parentApproved, true)
+          eq(summerChallengeCompletions.userId, userId),
+          eq(summerChallengeCompletions.parentVerified, 1)
         ));
 
-      const totalPoints = userTotalProgress.reduce((sum, p) => sum + (p.pointsEarned || 0), 0);
+      const totalPoints = userTotalProgress.reduce((sum, p) => sum + (p.tokensAwarded || 0), 0);
       
       // Award partner rewards at milestone achievements
       const milestones = [
