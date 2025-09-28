@@ -162,7 +162,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
         </header>
 
         <Tabs defaultValue="lessons" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-6">
+          <TabsList className="grid w-full grid-cols-5 mb-6">
             <TabsTrigger value="lessons" data-testid="tab-lessons">
               <BookOpen className="h-4 w-4 mr-2" />
               Lesson Library
@@ -174,6 +174,10 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
             <TabsTrigger value="resources" data-testid="tab-resources">
               <Star className="h-4 w-4 mr-2" />
               Resources
+            </TabsTrigger>
+            <TabsTrigger value="reports" data-testid="tab-reports">
+              <Users className="h-4 w-4 mr-2" />
+              Reports
             </TabsTrigger>
             <TabsTrigger value="rewards" data-testid="tab-rewards">
               <Award className="h-4 w-4 mr-2" />
@@ -540,6 +544,11 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
           </div>
         )}
 
+          {/* Reports Tab */}
+          <TabsContent value="reports" className="space-y-6">
+            <ReportsSection />
+          </TabsContent>
+
           {/* Teacher Rewards Tab */}
           <TabsContent value="rewards" className="space-y-6">
             <TeacherRewardsSection />
@@ -862,6 +871,223 @@ function TeacherRewardsSection() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// Reports Component
+function ReportsSection() {
+  const { toast } = useToast();
+
+  return (
+    <div className="space-y-6">
+      {/* Header */}
+      <Card className="bg-gradient-to-r from-blue-500 to-purple-500 text-white border-0">
+        <CardHeader className="text-center">
+          <div className="flex items-center justify-center gap-3 mb-2">
+            <Users className="h-8 w-8" />
+            <CardTitle className="text-2xl">Teacher Reports</CardTitle>
+          </div>
+          <CardDescription className="text-blue-100">
+            Generate comprehensive reports for students, parents, and administration
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
+      {/* Report Generation Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Class Reports */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Users className="h-5 w-5" />
+              Class Reports
+            </CardTitle>
+            <CardDescription>
+              Generate reports for your entire class progress
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <Button 
+                className="w-full justify-start" 
+                data-testid="button-class-progress"
+                onClick={() => toast({ title: "Class Progress Report", description: "Generating comprehensive class report..." })}
+              >
+                📊 Weekly Class Progress
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                data-testid="button-kindness-summary"
+                onClick={() => toast({ title: "Kindness Summary", description: "Generating kindness activities summary..." })}
+              >
+                💝 Kindness Activities Summary
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                data-testid="button-service-hours"
+                onClick={() => toast({ title: "Service Hours Report", description: "Generating community service report..." })}
+              >
+                🏥 Community Service Hours
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Individual Student Reports */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CheckCircle className="h-5 w-5" />
+              Student Reports
+            </CardTitle>
+            <CardDescription>
+              Individual progress and achievement reports
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <Button 
+                className="w-full justify-start"
+                data-testid="button-individual-progress"
+                onClick={() => toast({ title: "Individual Reports", description: "Generating individual student reports..." })}
+              >
+                📋 Individual Progress Reports
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                data-testid="button-parent-updates"
+                onClick={() => toast({ title: "Parent Updates", description: "Preparing parent communication..." })}
+              >
+                📧 Parent Progress Updates
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                data-testid="button-achievement-certificates"
+                onClick={() => toast({ title: "Achievement Certificates", description: "Generating achievement certificates..." })}
+              >
+                🏆 Achievement Certificates
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Administrative Reports */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="h-5 w-5" />
+              Administrative Reports
+            </CardTitle>
+            <CardDescription>
+              Reports for school administration and compliance
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <Button 
+                className="w-full justify-start"
+                data-testid="button-principal-summary"
+                onClick={() => toast({ title: "Principal Summary", description: "Generating administrative summary..." })}
+              >
+                🏫 Principal Summary Report
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                data-testid="button-curriculum-alignment"
+                onClick={() => toast({ title: "Curriculum Alignment", description: "Generating curriculum alignment report..." })}
+              >
+                📚 Curriculum Alignment Report
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                data-testid="button-sel-assessment"
+                onClick={() => toast({ title: "SEL Assessment", description: "Generating SEL assessment report..." })}
+              >
+                🧠 SEL Assessment Report
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Parent Communication */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Heart className="h-5 w-5" />
+              Parent Communication
+            </CardTitle>
+            <CardDescription>
+              Positive communication tools for parent engagement
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              <Button 
+                className="w-full justify-start"
+                data-testid="button-positive-notes"
+                onClick={() => toast({ title: "Positive Notes", description: "Preparing positive parent communication..." })}
+              >
+                💌 Send Positive Notes Home
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                data-testid="button-character-highlights"
+                onClick={() => toast({ title: "Character Highlights", description: "Generating character development highlights..." })}
+              >
+                ⭐ Character Development Highlights
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full justify-start"
+                data-testid="button-monthly-newsletter"
+                onClick={() => toast({ title: "Monthly Newsletter", description: "Creating monthly character education newsletter..." })}
+              >
+                📰 Monthly Character Newsletter
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Quick Actions Summary */}
+      <Card className="bg-gradient-to-r from-green-50 to-blue-50 border-green-200">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-green-900">
+            <Clock className="h-5 w-5" />
+            Quick Report Actions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <h4 className="font-semibold text-green-800 mb-2">One-Click Reports</h4>
+              <p className="text-green-700 text-sm">
+                📊 Generate weekly class summaries instantly
+              </p>
+              <p className="text-green-700 text-sm">
+                💝 Export kindness activity logs for parents
+              </p>
+            </div>
+            <div>
+              <h4 className="font-semibold text-green-800 mb-2">Scheduled Reports</h4>
+              <p className="text-green-700 text-sm">
+                📅 Automated monthly progress reports
+              </p>
+              <p className="text-green-700 text-sm">
+                📧 Weekly parent communication summaries
+              </p>
+            </div>
           </div>
         </CardContent>
       </Card>
