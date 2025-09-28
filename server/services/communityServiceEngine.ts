@@ -2,7 +2,9 @@ import { db } from '../db';
 import { 
   communityServiceLogs, 
   communityServiceVerifications, 
-  users
+  userTokens,
+  users,
+  studentServiceSummaries
 } from '@shared/schema';
 import { eq, and, sql, desc } from 'drizzle-orm';
 // Import email service dynamically to avoid circular dependency
@@ -65,8 +67,7 @@ export class CommunityServiceEngine {
         .returning();
 
       // Update or create student service summary
-      // TODO: Fix studentServiceSummaries table reference
-      // await this.updateStudentSummary(submission.userId, submission.hoursLogged, 'pending');
+      await this.updateStudentSummary(submission.userId, submission.hoursLogged, 'pending');
       
       // 📧 Send parent notification email
       try {
@@ -224,8 +225,7 @@ export class CommunityServiceEngine {
           await this.awardTokensForService(userId, Math.floor(hours * 5));
           
           // Update student summary 
-          // TODO: Fix studentServiceSummaries table reference
-          // await this.updateStudentSummary(userId, hours, 'verified');
+          await this.updateStudentSummary(userId, hours, 'verified');
         }
       }
 
