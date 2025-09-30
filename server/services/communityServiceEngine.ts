@@ -127,28 +127,26 @@ export class CommunityServiceEngine {
         await db.insert(studentServiceSummaries)
           .values({
             userId,
-            totalHoursCompleted: status === 'pending' ? hours.toString() : '0',
-            totalHoursVerified: status === 'verified' ? hours.toString() : '0',
-            totalHoursPending: status === 'pending' ? hours.toString() : '0',
-            schoolYearGoal: '30.00',
-            goalProgress: status === 'verified' ? (hours / 30 * 100).toString() : '0',
-            tokensEarnedFromService: status === 'verified' ? Math.floor(hours * 5) : 0,
+            totalHours: status === 'pending' ? hours.toString() : '0',
+            verifiedHours: status === 'verified' ? hours.toString() : '0',
+            pendingHours: status === 'pending' ? hours.toString() : '0',
+            totalTokensEarned: status === 'verified' ? Math.floor(hours * 5) : 0,
             lastServiceDate: new Date(),
-            updatedAt: new Date()
+            lastUpdated: new Date()
           });
       } else {
         // Update existing summary
         const current = existingSummary[0];
-        const currentCompleted = parseFloat((current.totalHoursCompleted || 0).toString());
-        const currentVerified = parseFloat((current.totalHoursVerified || 0).toString());
-        const currentPending = parseFloat((current.totalHoursPending || 0).toString());
+        const currentTotal = parseFloat((current.totalHours || 0).toString());
+        const currentVerified = parseFloat((current.verifiedHours || 0).toString());
+        const currentPending = parseFloat((current.pendingHours || 0).toString());
 
-        let newCompleted = currentCompleted;
+        let newTotal = currentTotal;
         let newVerified = currentVerified;
         let newPending = currentPending;
 
         if (status === 'pending') {
-          newCompleted += hours;
+          newTotal += hours;
           newPending += hours;
         } else if (status === 'verified') {
           newVerified += hours;
@@ -156,18 +154,16 @@ export class CommunityServiceEngine {
           newPending = Math.max(0, newPending - hours);
         }
 
-        const newProgress = (newVerified / 30) * 100;
         const tokensFromVerified = Math.floor(newVerified * 5);
 
         await db.update(studentServiceSummaries)
           .set({
-            totalHoursCompleted: newCompleted.toString(),
-            totalHoursVerified: newVerified.toString(),
-            totalHoursPending: newPending.toString(),
-            goalProgress: newProgress.toString(),
-            tokensEarnedFromService: tokensFromVerified,
+            totalHours: newTotal.toString(),
+            verifiedHours: newVerified.toString(),
+            pendingHours: newPending.toString(),
+            totalTokensEarned: tokensFromVerified,
             lastServiceDate: new Date(),
-            updatedAt: new Date()
+            lastUpdated: new Date()
           })
           .where(eq(studentServiceSummaries.userId, userId));
       }
@@ -297,12 +293,14 @@ export class CommunityServiceEngine {
         const [newSummary] = await db.insert(studentServiceSummaries)
           .values({
             userId,
-            totalHoursCompleted: '0.00',
-            totalHoursVerified: '0.00',
-            totalHoursPending: '0.00',
-            schoolYearGoal: '30.00',
-            goalProgress: '0.00',
-            tokensEarnedFromService: 0
+            totalHours: '0.00',
+            verifiedHours: '0.00',
+            pendingHours: '0.00',
+            rejectedHours: '0.00',
+            totalTokensEarned: 0,
+            totalServiceSessions: 0,
+            currentStreak: 0,
+            longestStreak: 0
           })
           .returning();
         

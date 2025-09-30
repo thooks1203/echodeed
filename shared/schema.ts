@@ -306,12 +306,15 @@ export const rewardRedemptions = pgTable("reward_redemptions", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id),
   offerId: varchar("offer_id").notNull().references(() => rewardOffers.id),
-  tokensCost: integer("tokens_cost").notNull(),
+  partnerId: varchar("partner_id"),
+  echoSpent: integer("echo_spent").notNull(),
   status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, active, used, expired
   redemptionCode: varchar("redemption_code"), // Code provided to user
   redeemedAt: timestamp("redeemed_at").defaultNow().notNull(),
   usedAt: timestamp("used_at"),
   expiresAt: timestamp("expires_at"),
+  verificationRequired: integer("verification_required").default(0),
+  verificationStatus: varchar("verification_status", { length: 20 }),
 });
 
 // Community service hours tracking for students
@@ -359,14 +362,17 @@ export const studentServiceSummaries = pgTable("student_service_summaries", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id),
   schoolId: varchar("school_id"), // Link to school
-  gradeLevel: varchar("grade_level", { length: 5 }), // Production column
-  totalHoursCompleted: decimal("total_hours_completed", { precision: 10, scale: 2 }).default("0").notNull(), // Production column
-  totalHoursVerified: decimal("total_hours_verified", { precision: 10, scale: 2 }).default("0").notNull(), // Production column
-  totalHoursPending: decimal("total_hours_pending", { precision: 10, scale: 2 }).default("0").notNull(), // Production column
-  schoolYearGoal: decimal("school_year_goal", { precision: 10, scale: 2 }), // Production column
-  goalProgress: decimal("goal_progress", { precision: 5, scale: 2 }), // Production column (percentage)
-  tokensEarnedFromService: integer("tokens_earned_from_service").default(0), // Production column
-  updatedAt: timestamp("updated_at").defaultNow().notNull(), // Production column
+  totalHours: decimal("total_hours", { precision: 10, scale: 2 }).default("0").notNull(),
+  verifiedHours: decimal("verified_hours", { precision: 10, scale: 2 }).default("0").notNull(),
+  pendingHours: decimal("pending_hours", { precision: 10, scale: 2 }).default("0").notNull(),
+  rejectedHours: decimal("rejected_hours", { precision: 10, scale: 2 }).default("0"),
+  totalTokensEarned: integer("total_tokens_earned").default(0),
+  totalServiceSessions: integer("total_service_sessions").default(0),
+  currentStreak: integer("current_streak").default(0),
+  longestStreak: integer("longest_streak").default(0),
+  lastServiceDate: timestamp("last_service_date"),
+  lastUpdated: timestamp("last_updated").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 // COPPA consent tracking for students under 13
@@ -778,6 +784,103 @@ export const sponsorAnalytics = pgTable("sponsor_analytics", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// Corporate accounts for workplace wellness
+export const corporateAccounts = pgTable("corporate_accounts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  companyName: varchar("company_name", { length: 200 }).notNull(),
+  companyLogo: text("company_logo"),
+  domain: varchar("domain", { length: 100 }),
+  industry: varchar("industry", { length: 100 }),
+  companySize: varchar("company_size", { length: 50 }),
+  subscriptionTier: varchar("subscription_tier", { length: 50 }),
+  maxEmployees: integer("max_employees"),
+  monthlyBudget: integer("monthly_budget"),
+  primaryColor: varchar("primary_color", { length: 7 }),
+  contactEmail: varchar("contact_email", { length: 200 }),
+  contactName: varchar("contact_name", { length: 200 }),
+  isActive: integer("is_active").default(1),
+  billingStatus: varchar("billing_status", { length: 50 }),
+  trialEndsAt: timestamp("trial_ends_at"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+export const corporateEmployees = pgTable("corporate_employees", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull(),
+  corporateAccountId: varchar("corporate_account_id").notNull(),
+  department: varchar("department", { length: 100 }),
+  role: varchar("role", { length: 100 }),
+  isActive: integer("is_active").default(1),
+  joinedAt: timestamp("joined_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const corporateTeams = pgTable("corporate_teams", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  corporateAccountId: varchar("corporate_account_id").notNull(),
+  teamName: varchar("team_name", { length: 200 }).notNull(),
+  teamDescription: text("team_description"),
+  isActive: integer("is_active").default(1),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const corporateChallenges = pgTable("corporate_challenges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  corporateAccountId: varchar("corporate_account_id").notNull(),
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description"),
+  isActive: integer("is_active").default(1),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+export const corporateAnalytics = pgTable("corporate_analytics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  corporateAccountId: varchar("corporate_account_id").notNull(),
+  metricType: varchar("metric_type", { length: 100 }),
+  metricValue: integer("metric_value"),
+  recordedAt: timestamp("recorded_at").defaultNow(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+// Parental consent records for COPPA compliance
+export const parentalConsentRecords = pgTable("parental_consent_records", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentAccountId: varchar("student_account_id").notNull(),
+  parentConsentRequestId: varchar("parent_consent_request_id"),
+  schoolId: varchar("school_id").notNull(),
+  consentVersion: varchar("consent_version", { length: 10 }),
+  parentName: varchar("parent_name", { length: 200 }),
+  parentEmail: varchar("parent_email", { length: 200 }),
+  parentPhone: varchar("parent_phone", { length: 20 }),
+  relationshipToStudent: varchar("relationship_to_student", { length: 50 }),
+  consentStatus: varchar("consent_status", { length: 20 }).default("pending"),
+  consentSubmittedAt: timestamp("consent_submitted_at"),
+  consentApprovedAt: timestamp("consent_approved_at"),
+  consentRevokedAt: timestamp("consent_revoked_at"),
+  verificationMethod: varchar("verification_method", { length: 50 }),
+  linkExpiresAt: timestamp("link_expires_at"),
+  recordCreatedAt: timestamp("record_created_at").defaultNow(),
+  recordUpdatedAt: timestamp("record_updated_at").defaultNow(),
+  isImmutable: integer("is_immutable").default(0),
+  digitalSignatureHash: varchar("digital_signature_hash", { length: 200 }),
+  signerFullName: varchar("signer_full_name", { length: 200 }),
+  signatureTimestamp: timestamp("signature_timestamp"),
+  renewalDueAt: timestamp("renewal_due_at"),
+  lastUpdatedBy: varchar("last_updated_by", { length: 200 }),
+});
+
+export const parentalConsentRequests = pgTable("parental_consent_requests", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentAccountId: varchar("student_account_id").notNull(),
+  schoolId: varchar("school_id").notNull(),
+  requestType: varchar("request_type", { length: 20 }),
+  parentEmail: varchar("parent_email", { length: 200 }),
+  status: varchar("status", { length: 20 }).default("pending"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
 // Table relations
 export const usersRelations = relations(users, ({ one, many }) => ({
   tokens: one(userTokens),
@@ -1133,3 +1236,19 @@ export type MentorScenario = typeof mentorScenarios.$inferSelect;
 export type MentorScenarioResponse = typeof mentorScenarioResponses.$inferSelect;
 export type MentorConversation = typeof mentorConversations.$inferSelect;
 export type MentorCertification = typeof mentorCertifications.$inferSelect;
+
+export type CorporateAccount = typeof corporateAccounts.$inferSelect;
+export type InsertCorporateAccount = typeof corporateAccounts.$inferInsert;
+export type CorporateEmployee = typeof corporateEmployees.$inferSelect;
+export type InsertCorporateEmployee = typeof corporateEmployees.$inferInsert;
+export type CorporateTeam = typeof corporateTeams.$inferSelect;
+export type InsertCorporateTeam = typeof corporateTeams.$inferInsert;
+export type CorporateChallenge = typeof corporateChallenges.$inferSelect;
+export type InsertCorporateChallenge = typeof corporateChallenges.$inferInsert;
+export type CorporateAnalytics = typeof corporateAnalytics.$inferSelect;
+export type InsertCorporateAnalytics = typeof corporateAnalytics.$inferInsert;
+
+export type ParentalConsentRecord = typeof parentalConsentRecords.$inferSelect;
+export type InsertParentalConsentRecord = typeof parentalConsentRecords.$inferInsert;
+export type ParentalConsentRequest = typeof parentalConsentRequests.$inferSelect;
+export type InsertParentalConsentRequest = typeof parentalConsentRequests.$inferInsert;
