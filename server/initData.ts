@@ -462,7 +462,7 @@ export async function initializeSampleData() {
           photoEvidence: undefined
         });
 
-        await serviceEngine.logServiceHours({
+        const parkCleanup = await serviceEngine.logServiceHours({
           userId: studentUserId,
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
           serviceName: 'Park Cleanup',
@@ -479,8 +479,48 @@ export async function initializeSampleData() {
           photoEvidence: undefined
         });
 
+      // Get the service log IDs that were just created
+      const recentLogs = await serviceEngine.getStudentServiceLogs(studentUserId, 5);
+      log(`📝 Found ${recentLogs.length} service logs to verify`);
+      
+      // Directly approve both service hours for Emma in the database for demo
+      if (recentLogs.length >= 2) {
+        const { eq } = await import('drizzle-orm');
+        const { communityServiceLogs } = await import('@shared/schema');
+        const { db } = await import('./db');
+        
+        for (const serviceLog of recentLogs.slice(0, 2)) {
+          try {
+            const hours = parseFloat(serviceLog.hoursLogged.toString());
+            const tokensToAward = Math.floor(hours * 5);
+            
+            // Update service log to approved status
+            await db.update(communityServiceLogs)
+              .set({
+                verificationStatus: 'approved',
+                verifiedBy: 'teacher-001',
+                verifiedAt: new Date(),
+                verificationNotes: 'Verified during demo data initialization - excellent community service work!',
+                tokensEarned: tokensToAward,
+                updatedAt: new Date()
+              })
+              .where(eq(communityServiceLogs.id, serviceLog.id));
+            
+            // Award tokens to Emma
+            await serviceEngine.awardTokensForService(studentUserId, tokensToAward);
+            
+            // Update student summary
+            await serviceEngine.updateStudentSummary(studentUserId, hours, 'verified');
+            
+            log(`✅ Approved service log: ${serviceLog.serviceName} (${hours} hours, ${tokensToAward} tokens)`);
+          } catch (verifyError: any) {
+            log(`⚠️ Failed to approve service log ${serviceLog.id}:`, verifyError.message);
+          }
+        }
+      }
+
       log('✅ Force created fresh community service hours for Emma Johnson');
-      log('📊 Emma Johnson now has 7.5 total service hours (4.5 + 3.0)');
+      log('📊 Emma Johnson now has 7.5 total verified service hours (4.5 + 3.0)');
     } catch (error: any) {
       log('⚠️ Could not initialize community service hours:', error.message || error);
     }
