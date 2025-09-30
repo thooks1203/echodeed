@@ -357,21 +357,21 @@ export const communityServiceVerifications = pgTable("service_verifications", {
   followUpRequired: integer("follow_up_required").default(0),
 });
 
-// Student service hours summary - MATCHES PRODUCTION DATABASE
+// Student service hours summary - MATCHES ACTUAL PRODUCTION DATABASE COLUMNS
 export const studentServiceSummaries = pgTable("student_service_summaries", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id),
   schoolId: varchar("school_id"), // Link to school
-  totalHours: decimal("total_hours", { precision: 10, scale: 2 }).default("0").notNull(),
-  verifiedHours: decimal("verified_hours", { precision: 10, scale: 2 }).default("0").notNull(),
-  pendingHours: decimal("pending_hours", { precision: 10, scale: 2 }).default("0").notNull(),
+  totalHours: decimal("total_hours_completed", { precision: 10, scale: 2 }).default("0").notNull(),
+  verifiedHours: decimal("total_hours_verified", { precision: 10, scale: 2 }).default("0").notNull(),
+  pendingHours: decimal("total_hours_pending", { precision: 10, scale: 2 }).default("0").notNull(),
   rejectedHours: decimal("rejected_hours", { precision: 10, scale: 2 }).default("0"),
-  totalTokensEarned: integer("total_tokens_earned").default(0),
+  totalTokensEarned: decimal("tokens_earned_from_service", { precision: 10, scale: 2 }).default("0"),
   totalServiceSessions: integer("total_service_sessions").default(0),
   currentStreak: integer("current_streak").default(0),
   longestStreak: integer("longest_streak").default(0),
   lastServiceDate: timestamp("last_service_date"),
-  lastUpdated: timestamp("last_updated").defaultNow(),
+  lastUpdated: timestamp("updated_at").defaultNow(),
   createdAt: timestamp("created_at").defaultNow(),
 });
 
