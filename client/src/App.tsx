@@ -32,7 +32,7 @@ import { KindnessSparksContext } from "@/contexts/KindnessSparksContext";
 
 function Router() {
   const [location, setLocation] = useLocation();
-  const showFloatingButton = location !== '/rewards' && location !== '/' && location !== '/demo-login';
+  const showFloatingButton = location !== '/rewards' && location !== '/' && location !== '/demo-login' && location !== '/admin' && location !== '/admin-dashboard' && location !== '/teacher' && location !== '/teacher-dashboard';
 
   return (
     <>
