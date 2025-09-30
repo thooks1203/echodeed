@@ -10398,6 +10398,106 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 💰 FUNDRAISING CAMPAIGN ENDPOINTS
+  
+  // Get all fundraising campaigns for a school (admin access)
+  app.get('/api/fundraising/campaigns/:schoolId', async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      
+      const campaigns = await db.execute(sql`
+        SELECT 
+          fc.*,
+          u.first_name || ' ' || u.last_name as creator_name,
+          (SELECT COUNT(*) FROM fundraising_donations WHERE campaign_id = fc.id AND status = 'completed') as donation_count
+        FROM fundraising_campaigns fc
+        LEFT JOIN users u ON fc.created_by = u.id
+        WHERE fc.school_id = ${schoolId}
+        ORDER BY fc.created_at DESC
+      `);
+      
+      res.json(campaigns.rows || []);
+    } catch (error) {
+      console.error('Error fetching fundraising campaigns:', error);
+      res.status(500).json({ error: 'Failed to fetch campaigns' });
+    }
+  });
+  
+  // Get single campaign details with donations
+  app.get('/api/fundraising/campaigns/:schoolId/:campaignId', async (req: any, res) => {
+    try {
+      const { schoolId, campaignId } = req.params;
+      
+      const [campaign] = await db.execute(sql`
+        SELECT 
+          fc.*,
+          u.first_name || ' ' || u.last_name as creator_name
+        FROM fundraising_campaigns fc
+        LEFT JOIN users u ON fc.created_by = u.id
+        WHERE fc.id = ${campaignId} AND fc.school_id = ${schoolId}
+      `);
+      
+      if (!campaign.rows || campaign.rows.length === 0) {
+        return res.status(404).json({ error: 'Campaign not found' });
+      }
+      
+      // Get recent donations
+      const donations = await db.execute(sql`
+        SELECT 
+          id,
+          donor_name,
+          amount,
+          is_anonymous,
+          message,
+          created_at,
+          status
+        FROM fundraising_donations
+        WHERE campaign_id = ${campaignId} AND status = 'completed'
+        ORDER BY created_at DESC
+        LIMIT 20
+      `);
+      
+      res.json({
+        campaign: campaign.rows[0],
+        recentDonations: donations.rows || []
+      });
+    } catch (error) {
+      console.error('Error fetching campaign details:', error);
+      res.status(500).json({ error: 'Failed to fetch campaign details' });
+    }
+  });
+  
+  // Manual donation recording (for external payments tracked by admin)
+  app.post('/api/fundraising/record-donation', async (req: any, res) => {
+    try {
+      const { campaignId, donorName, amount, isAnonymous, message, paymentMethod } = req.body;
+      
+      // Record the donation
+      const [donation] = await db.execute(sql`
+        INSERT INTO fundraising_donations 
+          (campaign_id, donor_name, amount, is_anonymous, message, payment_method, status, processed_at)
+        VALUES 
+          (${campaignId}, ${donorName}, ${amount}, ${isAnonymous ? 1 : 0}, ${message}, ${paymentMethod}, 'completed', NOW())
+        RETURNING *
+      `);
+      
+      // Update campaign current amount and donor count
+      await db.execute(sql`
+        UPDATE fundraising_campaigns
+        SET 
+          current_amount = current_amount + ${amount},
+          donor_count = donor_count + 1,
+          updated_at = NOW()
+        WHERE id = ${campaignId}
+      `);
+      
+      res.json({ success: true, donation: donation.rows[0] });
+    } catch (error) {
+      console.error('Error recording donation:', error);
+      res.status(500).json({ error: 'Failed to record donation' });
+    }
+  });
+
   return httpServer;
 }
 

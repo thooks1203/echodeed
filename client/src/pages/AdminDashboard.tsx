@@ -110,6 +110,189 @@ interface AdminSafetyStats {
   averageResponseTime: number;
 }
 
+function FundraisingContent() {
+  const schoolId = 'bc016cad-fa89-44fb-aab0-76f82c574f78'; // Burlington Christian Academy
+  
+  const { data: campaigns = [], isLoading } = useQuery({
+    queryKey: ['/api/fundraising/campaigns', schoolId],
+    queryFn: async () => {
+      const response = await fetch(`/api/fundraising/campaigns/${schoolId}`);
+      if (!response.ok) return [];
+      return response.json();
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-12">
+        <div className="animate-spin w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full mx-auto mb-4" />
+        <p className="text-gray-600">Loading fundraising campaigns...</p>
+      </div>
+    );
+  }
+
+  const activeCampaigns = campaigns.filter((c: any) => c.status === 'active');
+  const completedCampaigns = campaigns.filter((c: any) => c.status === 'completed');
+  const totalRaised = campaigns.reduce((sum: number, c: any) => sum + (c.current_amount || 0), 0);
+  const totalGoal = campaigns.reduce((sum: number, c: any) => sum + (c.goal_amount || 0), 0);
+
+  return (
+    <div className="space-y-6">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600">Total Raised</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-green-600">
+              ${(totalRaised / 100).toLocaleString()}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600">Total Goal</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-purple-600">
+              ${(totalGoal / 100).toLocaleString()}
+            </div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600">Active Campaigns</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-blue-600">{activeCampaigns.length}</div>
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-gray-600">Overall Progress</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold text-orange-600">
+              {totalGoal > 0 ? Math.round((totalRaised / totalGoal) * 100) : 0}%
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Active Campaigns */}
+      {activeCampaigns.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Target className="w-5 h-5 text-green-600" />
+              Active Campaigns
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {activeCampaigns.map((campaign: any) => {
+              const progress = campaign.goal_amount > 0 
+                ? (campaign.current_amount / campaign.goal_amount) * 100 
+                : 0;
+              
+              return (
+                <div key={campaign.id} className="border rounded-lg p-4 space-y-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <h4 className="font-semibold text-lg">{campaign.title}</h4>
+                      <p className="text-sm text-gray-600">{campaign.description}</p>
+                      <Badge className="mt-2">{campaign.category}</Badge>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-2xl font-bold text-green-600">
+                        ${(campaign.current_amount / 100).toLocaleString()}
+                      </div>
+                      <div className="text-sm text-gray-600">
+                        of ${(campaign.goal_amount / 100).toLocaleString()}
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Progress value={progress} className="h-2" />
+                  
+                  <div className="flex justify-between items-center text-sm">
+                    <div className="text-gray-600">
+                      {campaign.donor_count || 0} donors • {Math.round(progress)}% complete
+                    </div>
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        className="bg-blue-600 hover:bg-blue-700"
+                        onClick={() => {
+                          // Show external payment link or manual donation form
+                          alert('For Mr. Murr demo:\n\nParents contribute via:\n• School payment portal link\n• GoFundMe/external platform\n• Check/cash tracked manually\n\nNo Stripe needed - admin updates totals from external systems');
+                        }}
+                        data-testid={`button-contribute-${campaign.id}`}
+                      >
+                        💳 Contribute (External)
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => window.open(`https://school-payment-portal.com/donate/${campaign.id}`, '_blank')}
+                      >
+                        🔗 Share Link
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Completed Campaigns */}
+      {completedCampaigns.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-blue-600" />
+              Completed Campaigns
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            {completedCampaigns.map((campaign: any) => (
+              <div key={campaign.id} className="border rounded-lg p-3 bg-green-50 border-green-200">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h4 className="font-semibold">{campaign.title}</h4>
+                    <p className="text-sm text-gray-600">{campaign.category}</p>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-bold text-green-700">
+                      ${(campaign.current_amount / 100).toLocaleString()}
+                    </div>
+                    <Badge className="bg-green-600 text-white">✓ Completed</Badge>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {campaigns.length === 0 && (
+        <Card>
+          <CardContent className="text-center py-12">
+            <Target className="w-16 h-16 mx-auto mb-4 text-gray-300" />
+            <h3 className="text-lg font-semibold mb-2">No fundraising campaigns yet</h3>
+            <p className="text-gray-600 mb-4">Create your first campaign to start raising funds for your school</p>
+            <Button className="bg-purple-600 hover:bg-purple-700">
+              + Create Campaign
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
 function SafetyMonitoringContent() {
   const [selectedAlert, setSelectedAlert] = useState<SafetyAlert | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>('active');
@@ -1013,10 +1196,14 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-8">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="schools">Schools</TabsTrigger>
           <TabsTrigger value="analytics">Analytics</TabsTrigger>
+          <TabsTrigger value="fundraising" data-testid="tab-fundraising">
+            <Target className="w-4 h-4 mr-1" />
+            Fundraising
+          </TabsTrigger>
           <TabsTrigger value="reports">
             <FileSpreadsheet className="w-4 h-4 mr-1" />
             Reports
@@ -1560,6 +1747,11 @@ export default function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Fundraising Tab */}
+        <TabsContent value="fundraising" className="space-y-6" data-testid="tab-content-fundraising">
+          <FundraisingContent />
         </TabsContent>
 
         {/* Safety Monitoring Tab */}
