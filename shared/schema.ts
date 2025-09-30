@@ -338,6 +338,7 @@ export const communityServiceLogs = pgTable("community_service_logs", {
   verifiedAt: timestamp("verified_at"),
   verificationNotes: text("verification_notes"),
   tokensEarned: integer("tokens_earned").default(0),
+  parentNotified: boolean("parent_notified").default(false),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
