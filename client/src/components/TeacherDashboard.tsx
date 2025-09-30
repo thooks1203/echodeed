@@ -318,6 +318,7 @@ export function TeacherDashboard() {
   const [selectedTab, setSelectedTab] = useState<string>('overview');
   const [filterNeedsEncouragement, setFilterNeedsEncouragement] = useState<boolean>(false);
   const [showWellnessModal, setShowWellnessModal] = useState(true); // Auto-open on load
+  const [selectedStudent, setSelectedStudent] = useState<StudentParticipation | null>(null);
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -736,7 +737,12 @@ export function TeacherDashboard() {
                           ))}
                         </div>
                         
-                        <Button size="sm" variant="outline">
+                        <Button 
+                          size="sm" 
+                          variant="outline"
+                          onClick={() => setSelectedStudent(student)}
+                          data-testid={`button-view-details-${student.id}`}
+                        >
                           View Details
                         </Button>
                       </div>
@@ -1158,6 +1164,148 @@ export function TeacherDashboard() {
           }
         }} 
       />
+
+      {/* Student Details Modal */}
+      <Dialog open={selectedStudent !== null} onOpenChange={(open) => !open && setSelectedStudent(null)}>
+        <DialogContent className="max-w-2xl border-0 shadow-2xl max-h-[90vh] overflow-y-auto" data-testid="modal-student-details">
+          {selectedStudent && (
+            <div className="space-y-6">
+              {/* Header */}
+              <div className="flex items-center gap-4 pb-4 border-b">
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center text-2xl ${
+                  selectedStudent.needsEncouragement ? 'bg-orange-100' : 'bg-green-100'
+                }`}>
+                  {selectedStudent.needsEncouragement ? '⚠️' : '✅'}
+                </div>
+                <div>
+                  <h2 className="text-2xl font-bold">{selectedStudent.name}</h2>
+                  <p className="text-sm text-gray-600">Last active: {new Date(selectedStudent.lastActive).toLocaleDateString()}</p>
+                </div>
+              </div>
+
+              {/* Stats Grid */}
+              <div className="grid grid-cols-3 gap-4">
+                <Card>
+                  <CardContent className="pt-4 text-center">
+                    <div className="text-3xl font-bold text-purple-600">{selectedStudent.kindnessActs}</div>
+                    <div className="text-sm text-gray-600">Kind Acts</div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-4 text-center">
+                    <div className="text-3xl font-bold text-green-600">
+                      {selectedStudent.id === '1' ? '7.5' : selectedStudent.id === '2' ? '0' : selectedStudent.id === '3' ? '5.0' : '0'}
+                    </div>
+                    <div className="text-sm text-gray-600">Service Hours</div>
+                  </CardContent>
+                </Card>
+                <Card>
+                  <CardContent className="pt-4 text-center">
+                    <div className="text-3xl font-bold text-blue-600">
+                      {selectedStudent.id === '1' ? '45' : selectedStudent.id === '2' ? '15' : selectedStudent.id === '3' ? '60' : '5'}
+                    </div>
+                    <div className="text-sm text-gray-600">Tokens</div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Character Traits */}
+              <div>
+                <h3 className="font-semibold mb-3">Character Strengths</h3>
+                <div className="flex flex-wrap gap-2">
+                  {selectedStudent.characterTraits.map((trait) => (
+                    <Badge key={trait} className="bg-purple-100 text-purple-800 border-purple-300">
+                      {trait}
+                    </Badge>
+                  ))}
+                </div>
+              </div>
+
+              {/* Service Hours Details (for Emma) */}
+              {selectedStudent.id === '1' && (
+                <div>
+                  <h3 className="font-semibold mb-3">Recent Service Hours</h3>
+                  <div className="space-y-2">
+                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-medium">Food Bank Volunteer</p>
+                          <p className="text-sm text-gray-600">Burlington Community Food Bank</p>
+                        </div>
+                        <Badge className="bg-green-600 text-white">4.5 hrs</Badge>
+                      </div>
+                    </div>
+                    <div className="p-3 bg-green-50 border border-green-200 rounded-lg">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <p className="font-medium">Park Cleanup</p>
+                          <p className="text-sm text-gray-600">Burlington Parks & Recreation</p>
+                        </div>
+                        <Badge className="bg-green-600 text-white">3.0 hrs</Badge>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Wellness Status */}
+              <div>
+                <h3 className="font-semibold mb-3">Wellness Check-ins</h3>
+                <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <HeartPulse className="w-5 h-5 text-blue-600" />
+                      <span className="text-sm">
+                        {selectedStudent.id === '1' ? 'Completed 4 check-ins this week' : 
+                         selectedStudent.id === '2' ? 'Last check-in: 6 days ago' :
+                         selectedStudent.id === '3' ? 'Completed 5 check-ins this week' : 
+                         'Last check-in: 8 days ago'}
+                      </span>
+                    </div>
+                    <Badge className={selectedStudent.id === '1' || selectedStudent.id === '3' ? 'bg-green-100 text-green-800' : 'bg-orange-100 text-orange-800'}>
+                      {selectedStudent.id === '1' || selectedStudent.id === '3' ? 'Active' : 'Needs Attention'}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Parent Engagement */}
+              <div>
+                <h3 className="font-semibold mb-3">Parent Engagement</h3>
+                <div className="p-4 bg-purple-50 border border-purple-200 rounded-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Users className="w-5 h-5 text-purple-600" />
+                      <span className="text-sm">
+                        {selectedStudent.id === '1' ? 'Parent reviewed service hours yesterday' :
+                         selectedStudent.id === '2' ? 'No recent parent activity' :
+                         selectedStudent.id === '3' ? 'Parent approved activities this week' :
+                         'Parent engaged last week'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-3 pt-4 border-t">
+                <Button className="flex-1" variant="outline">
+                  📧 Contact Parent
+                </Button>
+                <Button className="flex-1" variant="outline">
+                  📊 View Full Report
+                </Button>
+                <Button 
+                  className="flex-1"
+                  onClick={() => setSelectedStudent(null)}
+                >
+                  Close
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Auto-opening Teacher Wellness Overview Modal */}
       <Dialog open={showWellnessModal} onOpenChange={setShowWellnessModal}>
