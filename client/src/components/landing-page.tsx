@@ -279,20 +279,85 @@ export function LandingPage() {
           <p style={{ 
             fontSize: '14px', 
             color: '#6b7280',
-            margin: '0 0 8px 0'
-          }}>
-            🎓 Demo Mode - One-click login for testing
-          </p>
-          <p style={{ 
-            fontSize: '12px', 
-            color: '#9ca3af',
             margin: 0
           }}>
-            Ready for Monday, September 22nd demo with Burlington Christian Academy
+            🎓 Demo Mode - One-click login for testing
           </p>
         </div>
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          {/* Register Your School - Orange/Amber */}
+          <button 
+            onClick={handleSchoolRegistration}
+            style={{
+              backgroundColor: '#F59E0B',
+              color: 'white',
+              border: 'none',
+              borderRadius: '14px',
+              padding: '18px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 14px rgba(245, 158, 11, 0.3)',
+              lineHeight: 1.3
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#D97706';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-2px)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(245, 158, 11, 0.4)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#F59E0B';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 4px 14px rgba(245, 158, 11, 0.3)';
+            }}
+            data-testid="button-register-school"
+          >
+            <span style={{ fontSize: '20px' }}>🏫</span>
+            Register Your School
+          </button>
+
+          {/* Student Sign Up - Cyan/Teal */}
+          <button 
+            onClick={handleStudentSignup}
+            style={{
+              backgroundColor: '#06B6D4',
+              color: 'white',
+              border: 'none',
+              borderRadius: '14px',
+              padding: '18px 24px',
+              fontSize: '16px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 14px rgba(6, 182, 212, 0.3)',
+              lineHeight: 1.3
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#0891B2';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-2px)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(6, 182, 212, 0.4)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#06B6D4';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 4px 14px rgba(6, 182, 212, 0.3)';
+            }}
+            data-testid="button-student-signup"
+          >
+            <span style={{ fontSize: '20px' }}>✍️</span>
+            Student Sign Up
+          </button>
+
           {/* Beautiful Demo Login Buttons */}
           <button 
             onClick={() => {
@@ -448,94 +513,6 @@ export function LandingPage() {
           >
             <span style={{ fontSize: '22px' }}>❤️</span>
             Try as Parent (Mrs. Sarah Johnson)
-          </button>
-
-          {/* Divider */}
-          <div style={{
-            borderTop: '1px solid #e5e7eb',
-            margin: '8px 0',
-            padding: '8px 0'
-          }}>
-            <p style={{
-              fontSize: '13px',
-              color: '#9ca3af',
-              textAlign: 'center',
-              margin: 0
-            }}>
-              New School Setup
-            </p>
-          </div>
-
-          {/* Register Your School - Orange/Amber */}
-          <button 
-            onClick={handleSchoolRegistration}
-            style={{
-              backgroundColor: '#F59E0B',
-              color: 'white',
-              border: 'none',
-              borderRadius: '14px',
-              padding: '18px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 14px rgba(245, 158, 11, 0.3)',
-              lineHeight: 1.3
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#D97706';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-2px)';
-              (e.target as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(245, 158, 11, 0.4)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#F59E0B';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-              (e.target as HTMLButtonElement).style.boxShadow = '0 4px 14px rgba(245, 158, 11, 0.3)';
-            }}
-            data-testid="button-register-school"
-          >
-            <span style={{ fontSize: '20px' }}>🏫</span>
-            Register Your School
-          </button>
-
-          {/* Student Sign Up - Cyan/Teal */}
-          <button 
-            onClick={handleStudentSignup}
-            style={{
-              backgroundColor: '#06B6D4',
-              color: 'white',
-              border: 'none',
-              borderRadius: '14px',
-              padding: '18px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '10px',
-              transition: 'all 0.3s ease',
-              boxShadow: '0 4px 14px rgba(6, 182, 212, 0.3)',
-              lineHeight: 1.3
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#0891B2';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-2px)';
-              (e.target as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(6, 182, 212, 0.4)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#06B6D4';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-              (e.target as HTMLButtonElement).style.boxShadow = '0 4px 14px rgba(6, 182, 212, 0.3)';
-            }}
-            data-testid="button-student-signup"
-          >
-            <span style={{ fontSize: '20px' }}>✍️</span>
-            Student Sign Up
           </button>
         </div>
       </div>
