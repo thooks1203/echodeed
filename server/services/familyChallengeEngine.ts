@@ -1,7 +1,7 @@
 import { db } from '../db';
 import { eq, and } from 'drizzle-orm';
-import { yearRoundFamilyChallenges, familyActivities, familyProgress } from '@shared/schema';
-import type { YearRoundFamilyChallenge, FamilyActivity, InsertYearRoundFamilyChallenge, InsertFamilyActivity } from '@shared/schema';
+import { familyChallenges, familyChallengeCompletions } from '@shared/schema';
+import type { FamilyChallenge, FamilyChallengeCompletion } from '@shared/schema';
 
 interface WeeklyFamilyTheme {
   week: number;
