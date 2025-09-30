@@ -249,212 +249,206 @@ export function LandingPage() {
         </p>
       </div>
 
-      {/* School Role Selection */}
+      {/* Demo Login - Beautiful Role Selection */}
       <div id="roles" style={{
         background: 'white',
-        borderRadius: '16px',
-        padding: '24px',
+        borderRadius: '20px',
+        padding: '32px 24px',
         marginBottom: '32px',
-        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
-        width: '100%'
+        boxShadow: '0 10px 40px rgba(0, 0, 0, 0.15)',
+        width: '100%',
+        maxWidth: '500px'
       }}>
-        <h2 style={{ 
-          fontSize: '20px', 
-          fontWeight: '600',
-          margin: '0 0 16px 0',
-          color: '#1f2937',
-          textAlign: 'center'
+        <div style={{
+          textAlign: 'center',
+          marginBottom: '24px'
         }}>
-          🏫 Choose Your Role
-        </h2>
+          <div style={{
+            width: '64px',
+            height: '64px',
+            margin: '0 auto 16px',
+            background: 'linear-gradient(135deg, #8B5CF6, #3B82F6)',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '32px'
+          }}>
+            ❤️
+          </div>
+          <p style={{ 
+            fontSize: '14px', 
+            color: '#6b7280',
+            margin: '0 0 8px 0'
+          }}>
+            🎓 Demo Mode - One-click login for testing
+          </p>
+          <p style={{ 
+            fontSize: '12px', 
+            color: '#9ca3af',
+            margin: 0
+          }}>
+            Ready for Monday, September 22nd demo with Burlington Christian Academy
+          </p>
+        </div>
         
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {/* 1. SCHOOL SETUP PHASE - Start Here - UPDATED */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+          {/* Beautiful Demo Login Buttons */}
           <button 
-            onClick={handleSchoolRegistration}
-            style={{
-              backgroundColor: '#F59E0B',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
-              lineHeight: 1
+            onClick={() => {
+              localStorage.setItem('echodeed_demo_role', 'student');
+              localStorage.setItem('echodeed_session', 'demo-session');
+              window.location.reload();
             }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#D97706';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#F59E0B';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            🏫 Register Your School
-          </button>
-
-          {/* 2. ADMIN CONFIGURATION */}
-          <button 
-            onClick={handleAdminLogin}
-            style={{
-              backgroundColor: '#10B981',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease',
-              lineHeight: 1
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#059669';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#10B981';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            👨‍💼 Administrator Dashboard
-          </button>
-
-          {/* 3. TEACHER PREPARATION */}
-          <button 
-            onClick={handleTeacherLogin}
-            style={{
-              backgroundColor: '#8B5CF6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease',
-              lineHeight: 1
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#7C3AED';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#8B5CF6';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-            }}
-          >
-            👩‍🏫 Teacher Dashboard
-          </button>
-
-          {/* 4. STUDENT REGISTRATION (TRIGGERS PARENT CONSENT) */}
-          <button 
-            onClick={handleStudentSignup}
             style={{
               backgroundColor: '#3B82F6',
               color: 'white',
               border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
+              borderRadius: '14px',
+              padding: '20px 24px',
+              fontSize: '17px',
               fontWeight: '600',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'all 0.2s ease',
-              lineHeight: 1
+              gap: '10px',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 14px rgba(59, 130, 246, 0.4)',
+              lineHeight: 1.3
             }}
             onMouseOver={(e) => {
               (e.target as HTMLButtonElement).style.backgroundColor = '#2563EB';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-2px)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(59, 130, 246, 0.5)';
             }}
             onMouseOut={(e) => {
               (e.target as HTMLButtonElement).style.backgroundColor = '#3B82F6';
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 4px 14px rgba(59, 130, 246, 0.4)';
             }}
+            data-testid="button-demo-student"
           >
-            🎓 Student Sign Up
+            <span style={{ fontSize: '22px' }}>🎓</span>
+            Try as Student (Emma Johnson)
           </button>
 
-          {/* 5. PARENT CONSENT VERIFICATION */}
           <button 
-            onClick={handleParentLogin}
+            onClick={() => {
+              localStorage.setItem('echodeed_demo_role', 'teacher');
+              localStorage.setItem('echodeed_session', 'demo-session');
+              window.location.reload();
+            }}
+            style={{
+              backgroundColor: '#10B981',
+              color: 'white',
+              border: 'none',
+              borderRadius: '14px',
+              padding: '20px 24px',
+              fontSize: '17px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 14px rgba(16, 185, 129, 0.4)',
+              lineHeight: 1.3
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#059669';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-2px)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(16, 185, 129, 0.5)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#10B981';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 4px 14px rgba(16, 185, 129, 0.4)';
+            }}
+            data-testid="button-demo-teacher"
+          >
+            <span style={{ fontSize: '22px' }}>👩‍🏫</span>
+            Try as Teacher (Ms. Sarah Wilson)
+          </button>
+
+          <button 
+            onClick={() => {
+              localStorage.setItem('echodeed_demo_role', 'admin');
+              localStorage.setItem('echodeed_session', 'demo-session');
+              window.location.reload();
+            }}
+            style={{
+              backgroundColor: '#8B5CF6',
+              color: 'white',
+              border: 'none',
+              borderRadius: '14px',
+              padding: '20px 24px',
+              fontSize: '17px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '10px',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 14px rgba(139, 92, 246, 0.4)',
+              lineHeight: 1.3
+            }}
+            onMouseOver={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#7C3AED';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-2px)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(139, 92, 246, 0.5)';
+            }}
+            onMouseOut={(e) => {
+              (e.target as HTMLButtonElement).style.backgroundColor = '#8B5CF6';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 4px 14px rgba(139, 92, 246, 0.4)';
+            }}
+            data-testid="button-demo-admin"
+          >
+            <span style={{ fontSize: '22px' }}>🛡️</span>
+            Try as Administrator (Mr. Murr)
+          </button>
+
+          <button 
+            onClick={() => {
+              localStorage.setItem('echodeed_demo_role', 'parent');
+              localStorage.setItem('echodeed_session', 'demo-session');
+              window.location.reload();
+            }}
             style={{
               backgroundColor: '#EC4899',
               color: 'white',
               border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
+              borderRadius: '14px',
+              padding: '20px 24px',
+              fontSize: '17px',
               fontWeight: '600',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              transition: 'all 0.2s ease',
-              lineHeight: 1
+              gap: '10px',
+              transition: 'all 0.3s ease',
+              boxShadow: '0 4px 14px rgba(236, 72, 153, 0.4)',
+              lineHeight: 1.3
             }}
             onMouseOver={(e) => {
               (e.target as HTMLButtonElement).style.backgroundColor = '#DB2777';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
+              (e.target as HTMLButtonElement).style.transform = 'translateY(-2px)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 6px 20px rgba(236, 72, 153, 0.5)';
             }}
             onMouseOut={(e) => {
               (e.target as HTMLButtonElement).style.backgroundColor = '#EC4899';
               (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
+              (e.target as HTMLButtonElement).style.boxShadow = '0 4px 14px rgba(236, 72, 153, 0.4)';
             }}
+            data-testid="button-demo-parent"
           >
-            👨‍👩‍👧‍👦 Parent Dashboard
+            <span style={{ fontSize: '22px' }}>❤️</span>
+            Try as Parent (Mrs. Sarah Johnson)
           </button>
-
-          {/* 6. STUDENT PARTICIPATION (ONLY AFTER CONSENT) */}
-          <button 
-            onClick={handleGetStarted}
-            style={{
-              backgroundColor: '#DC2626',
-              color: 'white',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '16px 24px',
-              fontSize: '16px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'all 0.2s ease',
-              boxShadow: '0 4px 12px rgba(220, 38, 38, 0.3)',
-              lineHeight: 1
-            }}
-            onMouseOver={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#B91C1C';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(-1px)';
-              (e.target as HTMLButtonElement).style.boxShadow = '0 6px 16px rgba(220, 38, 38, 0.4)';
-            }}
-            onMouseOut={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = '#DC2626';
-              (e.target as HTMLButtonElement).style.transform = 'translateY(0)';
-              (e.target as HTMLButtonElement).style.boxShadow = '0 4px 12px rgba(220, 38, 38, 0.3)';
-            }}
-          >
-            🏠 Student Feed
-          </button>
-
-
-
         </div>
       </div>
 
