@@ -237,7 +237,7 @@ function FundraisingContent() {
                       </Button>
                       <Button 
                         size="sm" 
-                        variant="outline"
+                        className="bg-purple-600 hover:bg-purple-700 text-white"
                         onClick={() => window.open(`https://school-payment-portal.com/donate/${campaign.id}`, '_blank')}
                       >
                         🔗 Share Link
@@ -555,7 +555,7 @@ function SafetyMonitoringContent() {
                   <div className="flex gap-2">
                     <Button
                       onClick={() => handleMarkAsReviewed(selectedAlert.id)}
-                      variant="outline"
+                      className="bg-green-600 hover:bg-green-700 text-white"
                       size="sm"
                       data-testid="button-mark-reviewed"
                     >
@@ -1576,7 +1576,7 @@ export default function AdminDashboard() {
                       <div className="grid grid-cols-2 gap-2">
                         <Button
                           onClick={() => handleGenerateReport(false)}
-                          variant="outline"
+                          className="bg-indigo-600 hover:bg-indigo-700 text-white"
                           data-testid="button-preview-report"
                         >
                           <Eye className="w-4 h-4 mr-2" />
@@ -1584,6 +1584,7 @@ export default function AdminDashboard() {
                         </Button>
                         <Button
                           onClick={() => handleGenerateReport(true)}
+                          className="bg-blue-600 hover:bg-blue-700 text-white"
                           data-testid="button-print-report"
                         >
                           <Printer className="w-4 h-4 mr-2" />
@@ -1608,8 +1609,7 @@ export default function AdminDashboard() {
                 <div className="grid md:grid-cols-4 gap-3">
                   <Button
                     onClick={() => handleQuickExport('today')}
-                    variant="outline"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 bg-teal-600 hover:bg-teal-700 text-white"
                     data-testid="button-export-today"
                   >
                     <Calendar className="w-4 h-4" />
@@ -1617,8 +1617,7 @@ export default function AdminDashboard() {
                   </Button>
                   <Button
                     onClick={() => handleQuickExport('week')}
-                    variant="outline"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 bg-cyan-600 hover:bg-cyan-700 text-white"
                     data-testid="button-export-week"
                   >
                     <CalendarDays className="w-4 h-4" />
@@ -1626,8 +1625,7 @@ export default function AdminDashboard() {
                   </Button>
                   <Button
                     onClick={() => handleQuickExport('month')}
-                    variant="outline"
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 bg-sky-600 hover:bg-sky-700 text-white"
                     data-testid="button-export-month"
                   >
                     <CalendarRange className="w-4 h-4" />
