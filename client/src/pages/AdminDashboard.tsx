@@ -502,8 +502,36 @@ function SafetyMonitoringContent() {
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'overview' | 'schools' | 'analytics' | 'compliance' | 'safety' | 'integrations'>('overview');
   const [, navigate] = useLocation();
-  const { user } = useAuth();
+  const { user, isAdmin, isTeacher, isStudent, isParent } = useAuth();
   const demoRoles = getDemoRoles();
+  
+  // ROLE-BASED ACCESS CONTROL: Only admins can access this dashboard
+  useEffect(() => {
+    if (!user) return; // Wait for auth to load
+    
+    // Redirect non-admins to their appropriate dashboards
+    if (isTeacher) {
+      navigate('/teacher-dashboard');
+      return;
+    }
+    if (isStudent) {
+      navigate('/app');
+      return;
+    }
+    if (isParent) {
+      navigate('/parent-dashboard');
+      return;
+    }
+    if (!isAdmin) {
+      navigate('/'); // Redirect to landing page if no valid role
+      return;
+    }
+  }, [user, isAdmin, isTeacher, isStudent, isParent, navigate]);
+  
+  // Show loading state while checking authorization
+  if (!user || !isAdmin) {
+    return null;
+  }
   
   // BCA Demo Mode State
   const [bcaDemoMode, setBcaDemoMode] = useState(() => 
