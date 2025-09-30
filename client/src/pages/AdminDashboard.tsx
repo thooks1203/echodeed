@@ -762,7 +762,7 @@ export default function AdminDashboard() {
   const mockDistrictMetrics: DistrictMetrics = {
     districtId: 'district-001',
     districtName: 'Burlington Christian Academy',
-    totalSchools: 1,
+    totalSchools: 2,
     totalStudents: 665,
     totalTeachers: 56,
     totalKindnessActs: 15670,
