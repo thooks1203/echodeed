@@ -21,6 +21,7 @@ import StudentSignup from "@/pages/StudentSignup";
 import ParentConsent from "@/pages/ParentConsent";
 import SchoolConsentDashboard from "@/pages/SchoolConsentDashboard";
 import MerchantVerifyPage from "@/pages/MerchantVerifyPage";
+import DemoLogin from "@/pages/DemoLogin";
 import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 import { RewardNotificationManager } from "@/components/RewardNotificationManager";
 import { SchoolRegistration } from "@/components/SchoolRegistration";
@@ -31,11 +32,12 @@ import { KindnessSparksContext } from "@/contexts/KindnessSparksContext";
 
 function Router() {
   const [location, setLocation] = useLocation();
-  const showFloatingButton = location !== '/rewards' && location !== '/';
+  const showFloatingButton = location !== '/rewards' && location !== '/' && location !== '/demo-login';
 
   return (
     <>
       <Switch>
+        <Route path="/demo-login" component={DemoLogin} />
         <Route path="/teacher-dashboard"><TeacherDashboard /></Route>
         <Route path="/class-settings" component={ClassSettings} />
         <Route path="/support" component={SupportPage} />
