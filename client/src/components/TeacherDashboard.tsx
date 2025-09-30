@@ -669,15 +669,15 @@ export function TeacherDashboard() {
                     <Plus className="w-6 h-6" />
                     <span className="text-sm">New Activity</span>
                   </Button>
-                  <Button variant="outline" className="h-20 flex flex-col gap-2">
+                  <Button className="h-20 flex flex-col gap-2 bg-amber-600 hover:bg-amber-700 text-white">
                     <Award className="w-6 h-6" />
                     <span className="text-sm">Give Recognition</span>
                   </Button>
-                  <Button variant="outline" className="h-20 flex flex-col gap-2">
+                  <Button className="h-20 flex flex-col gap-2 bg-violet-600 hover:bg-violet-700 text-white">
                     <Share className="w-6 h-6" />
                     <span className="text-sm">Share with Parents</span>
                   </Button>
-                  <Button variant="outline" className="h-20 flex flex-col gap-2">
+                  <Button className="h-20 flex flex-col gap-2 bg-rose-600 hover:bg-rose-700 text-white">
                     <Target className="w-6 h-6" />
                     <span className="text-sm">Set Class Goal</span>
                   </Button>
@@ -739,7 +739,7 @@ export function TeacherDashboard() {
                         
                         <Button 
                           size="sm" 
-                          variant="outline"
+                          className="bg-indigo-600 hover:bg-indigo-700 text-white"
                           onClick={() => setSelectedStudent(student)}
                           data-testid={`button-view-details-${student.id}`}
                         >
@@ -924,7 +924,7 @@ export function TeacherDashboard() {
                               <CheckCircle className="w-4 h-4 mr-2" />
                               {approveServiceHoursMutation.isPending ? 'Processing...' : `Approve (Award ${tokens} tokens)`}
                             </Button>
-                            <Button size="sm" variant="outline" className="text-red-600 hover:text-red-700 border-red-300">
+                            <Button size="sm" className="bg-orange-600 hover:bg-orange-700 text-white">
                               ❌ Request More Info
                             </Button>
                           </div>
@@ -1289,10 +1289,10 @@ export function TeacherDashboard() {
 
               {/* Action Buttons */}
               <div className="flex gap-3 pt-4 border-t">
-                <Button className="flex-1" variant="outline">
+                <Button className="flex-1 bg-purple-600 hover:bg-purple-700 text-white">
                   📧 Contact Parent
                 </Button>
-                <Button className="flex-1" variant="outline">
+                <Button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white">
                   📊 View Full Report
                 </Button>
                 <Button 

@@ -886,7 +886,7 @@ export default function ParentDashboard() {
               <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                 📱 All Notifications
               </h3>
-              <Button variant="outline" size="sm" data-testid="button-mark-all-read">
+              <Button className="bg-teal-600 hover:bg-teal-700 text-white" size="sm" data-testid="button-mark-all-read">
                 <CheckCircle className="h-4 w-4 mr-1" />
                 Mark All Read
               </Button>
@@ -934,7 +934,7 @@ export default function ParentDashboard() {
                           {!notification.isRead && (
                             <Button
                               onClick={() => handleMarkAsRead(notification.id)}
-                              variant="outline"
+                              className="bg-cyan-600 hover:bg-cyan-700 text-white"
                               size="sm"
                               data-testid={`button-mark-read-${notification.id}`}
                             >
@@ -1047,10 +1047,10 @@ export default function ParentDashboard() {
                           <Heart className="h-4 w-4 mr-2" />
                           Donate $5 (10 tokens)
                         </Button>
-                        <Button variant="outline" size="sm" data-testid="button-donate-playground-10">
+                        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" size="sm" data-testid="button-donate-playground-10">
                           Donate $10 (20 tokens)
                         </Button>
-                        <Button variant="outline" size="sm" data-testid="button-donate-playground-25">
+                        <Button className="bg-green-600 hover:bg-green-700 text-white" size="sm" data-testid="button-donate-playground-25">
                           Donate $25 (50 tokens)
                         </Button>
                       </div>
@@ -1085,10 +1085,10 @@ export default function ParentDashboard() {
                           <BookOpen className="h-4 w-4 mr-2" />
                           Donate $5 (10 tokens)
                         </Button>
-                        <Button variant="outline" size="sm" data-testid="button-donate-library-10">
+                        <Button className="bg-sky-600 hover:bg-sky-700 text-white" size="sm" data-testid="button-donate-library-10">
                           Donate $10 (20 tokens)
                         </Button>
-                        <Button variant="outline" size="sm" data-testid="button-donate-library-25">
+                        <Button className="bg-blue-600 hover:bg-blue-700 text-white" size="sm" data-testid="button-donate-library-25">
                           Donate $25 (50 tokens)
                         </Button>
                       </div>
