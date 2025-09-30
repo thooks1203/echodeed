@@ -5628,6 +5628,34 @@ export class DatabaseStorage implements IStorage {
     }
   }
 
+  async getTeacherRewardCriteria(): Promise<any[]> {
+    try {
+      const criteria = await db.execute(sql`
+        SELECT * FROM teacher_reward_criteria 
+        WHERE is_active = 1 
+        ORDER BY category, period, threshold
+      `);
+      return criteria.rows || [];
+    } catch (error) {
+      console.error('Error fetching teacher reward criteria:', error);
+      return [];
+    }
+  }
+
+  async getTeacherRewardSponsors(): Promise<any[]> {
+    try {
+      const sponsors = await db.execute(sql`
+        SELECT * FROM sponsors 
+        WHERE is_active = 1 
+        ORDER BY monthly_budget DESC
+      `);
+      return sponsors.rows || [];
+    } catch (error) {
+      console.error('Error fetching teacher reward sponsors:', error);
+      return [];
+    }
+  }
+
   async getTeacherClaimCodes(teacherUserId: string): Promise<TeacherClaimCode[]> {
     const codes = await db
       .select()

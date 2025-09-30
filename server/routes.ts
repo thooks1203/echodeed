@@ -10360,33 +10360,36 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Get available teacher rewards from partner system
+  // Get available teacher rewards and criteria
   app.get('/api/teacher/rewards/available', requireTeacherRole, async (req: any, res: any) => {
     try {
-      // Get teacher-specific reward partners
-      const teacherRewards = await storage.getRewardPartners({
-        partnerType: 'coffee,local_restaurant,retail'
-      });
+      // Fetch real reward criteria from database
+      const criteria = await storage.getTeacherRewardCriteria();
       
-      // Filter to teacher-appropriate rewards
-      const availableRewards = teacherRewards
-        .filter(partner => ['Starbucks', 'Chick-fil-A Burlington', 'Target'].includes(partner.partnerName))
-        .map(partner => ({
-          id: partner.id,
-          partnerName: partner.partnerName,
-          category: partner.partnerType,
-          description: `${partner.partnerName} rewards for educator excellence`,
-          rewardTypes: [
-            { name: 'Coffee Carafe', value: 'Monthly recognition for service hours and wellness' },
-            { name: 'Restaurant Card', value: 'Quarterly recognition for community building' },
-            { name: 'Spa Day', value: 'Annual recognition for exceptional dedication' }
-          ]
-        }));
+      // Fetch sponsors
+      const sponsors = await storage.getTeacherRewardSponsors();
+      
+      // Group criteria by category for better display
+      const groupedCriteria = {
+        service_hours: criteria.filter(c => c.category === 'service_hours'),
+        wellness: criteria.filter(c => c.category === 'wellness'),
+        engagement: criteria.filter(c => c.category === 'engagement')
+      };
       
       res.json({
-        availableRewards,
+        criteria: groupedCriteria,
+        allCriteria: criteria,
+        sponsors: sponsors.map(s => ({
+          id: s.id,
+          companyName: s.companyName,
+          category: s.category,
+          monthlyBudget: s.monthlyBudget,
+          location: s.location,
+          sponsorshipTier: s.sponsorshipTier
+        })),
         sponsorMessage: 'Local Burlington businesses supporting our dedicated educators!',
-        totalPartners: availableRewards.length
+        totalSponsors: sponsors.length,
+        totalMonthlyBudget: sponsors.reduce((sum, s) => sum + (s.monthlyBudget || 0), 0)
       });
       
     } catch (error) {

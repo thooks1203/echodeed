@@ -156,6 +156,164 @@ const sampleLessonPlans: LessonPlan[] = [
   }
 ];
 
+// Teacher Rewards Tab Component
+function RewardsTabContent() {
+  const { data: rewardsData, isLoading } = useQuery({
+    queryKey: ['/api/teacher/rewards/available'],
+    queryFn: async () => {
+      const response = await apiRequest('GET', '/api/teacher/rewards/available');
+      if (!response.ok) return { criteria: { service_hours: [], wellness: [], engagement: [] }, sponsors: [], totalMonthlyBudget: 0 };
+      return response.json();
+    }
+  });
+
+  if (isLoading) {
+    return (
+      <div className="text-center py-12">
+        <div className="animate-spin w-12 h-12 border-4 border-green-600 border-t-transparent rounded-full mx-auto mb-4" />
+        <p className="text-gray-600">Loading teacher rewards...</p>
+      </div>
+    );
+  }
+
+  const { criteria, sponsors, totalMonthlyBudget = 0, sponsorMessage } = rewardsData || {};
+  const serviceHours = criteria?.service_hours || [];
+  const wellness = criteria?.wellness || [];
+  const engagement = criteria?.engagement || [];
+
+  return (
+    <div className="space-y-6">
+      {/* Sponsor Header */}
+      <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Award className="w-6 h-6 text-purple-600" />
+            Teacher Recognition Program
+          </CardTitle>
+          <CardDescription className="text-base">
+            {sponsorMessage || 'Local sponsors supporting our dedicated educators!'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="bg-white rounded-lg p-4 mb-4">
+            <h4 className="font-semibold text-lg mb-3">Our Generous Sponsors</h4>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {sponsors && sponsors.map((sponsor: any) => (
+                <div key={sponsor.id} className="border rounded-lg p-3 bg-gradient-to-br from-white to-gray-50">
+                  <h5 className="font-semibold text-purple-700">{sponsor.companyName}</h5>
+                  <p className="text-sm text-gray-600">{sponsor.location}</p>
+                  <p className="text-sm font-medium text-green-600 mt-1">
+                    ${(sponsor.monthlyBudget / 100).toFixed(0)}/month
+                  </p>
+                </div>
+              ))}
+            </div>
+            <p className="text-sm text-gray-600 mt-4 text-center">
+              <strong>Total Monthly Budget:</strong> ${(totalMonthlyBudget / 100).toFixed(0)} for teacher recognition
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Service Hours Excellence */}
+      {serviceHours.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <CheckCircle className="w-5 h-5 text-green-600" />
+              Service Hours Excellence Rewards
+            </CardTitle>
+            <CardDescription>Recognition for exceptional service hour verification</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {serviceHours.map((criterion: any) => (
+              <div key={criterion.id} className="border rounded-lg p-4 bg-green-50 border-green-200">
+                <h4 className="font-semibold text-lg text-green-800">{criterion.name}</h4>
+                <p className="text-sm text-gray-700 mt-1">{criterion.description}</p>
+                <div className="flex items-center gap-4 mt-3 text-sm">
+                  <Badge className="bg-green-600 text-white">
+                    {criterion.period === 'monthly' ? 'Monthly' : criterion.period === 'quarterly' ? 'Quarterly' : 'Annual'}
+                  </Badge>
+                  <span className="text-gray-600">
+                    <strong>Goal:</strong> {criterion.threshold}{criterion.period === 'quarterly' ? '%' : '+'} {criterion.description.includes('response') ? 'response rate' : 'approvals'}
+                  </span>
+                  <span className="text-green-700 font-medium">
+                    → {criterion.reward_type === 'coffee_carafe' ? '☕ Coffee Carafe' : '🍽️ Restaurant Card'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Wellness Champions */}
+      {wellness.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <HeartPulse className="w-5 h-5 text-blue-600" />
+              Wellness Champion Rewards
+            </CardTitle>
+            <CardDescription>Recognition for promoting student wellness</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {wellness.map((criterion: any) => (
+              <div key={criterion.id} className="border rounded-lg p-4 bg-blue-50 border-blue-200">
+                <h4 className="font-semibold text-lg text-blue-800">{criterion.name}</h4>
+                <p className="text-sm text-gray-700 mt-1">{criterion.description}</p>
+                <div className="flex items-center gap-4 mt-3 text-sm">
+                  <Badge className="bg-blue-600 text-white">
+                    {criterion.period === 'monthly' ? 'Monthly' : criterion.period === 'quarterly' ? 'Quarterly' : 'Annual'}
+                  </Badge>
+                  <span className="text-gray-600">
+                    <strong>Goal:</strong> {criterion.threshold}{criterion.period === 'quarterly' ? '%' : '+'} {criterion.description.includes('participation') ? 'participation' : 'check-ins'}
+                  </span>
+                  <span className="text-blue-700 font-medium">
+                    → {criterion.reward_type === 'coffee_carafe' ? '☕ Coffee Carafe' : '🍽️ Restaurant Card'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Community Builders */}
+      {engagement.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Heart className="w-5 h-5 text-pink-600" />
+              Community Builder Rewards
+            </CardTitle>
+            <CardDescription>Recognition for fostering classroom community</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {engagement.map((criterion: any) => (
+              <div key={criterion.id} className="border rounded-lg p-4 bg-pink-50 border-pink-200">
+                <h4 className="font-semibold text-lg text-pink-800">{criterion.name}</h4>
+                <p className="text-sm text-gray-700 mt-1">{criterion.description}</p>
+                <div className="flex items-center gap-4 mt-3 text-sm">
+                  <Badge className="bg-pink-600 text-white">
+                    {criterion.period === 'monthly' ? 'Monthly' : criterion.period === 'quarterly' ? 'Quarterly' : 'Annual'}
+                  </Badge>
+                  <span className="text-gray-600">
+                    <strong>Goal:</strong> {criterion.threshold}+ {criterion.description.includes('posts') ? 'posts' : 'engagements'}
+                  </span>
+                  <span className="text-pink-700 font-medium">
+                    → {criterion.reward_type === 'coffee_carafe' ? '☕ Coffee Carafe' : criterion.reward_type === 'spa_day' ? '💆 Spa Day' : '🍽️ Restaurant Card'}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+      )}
+    </div>
+  );
+}
+
 export function TeacherDashboard() {
   const [selectedTab, setSelectedTab] = useState<string>('overview');
   const [filterNeedsEncouragement, setFilterNeedsEncouragement] = useState<boolean>(false);
@@ -384,7 +542,7 @@ export function TeacherDashboard() {
         </div>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5">
+          <TabsList className="grid w-full grid-cols-6">
             <TabsTrigger value="overview" className="flex items-center gap-1">
               <BarChart3 className="w-4 h-4" />
               Overview
@@ -404,6 +562,10 @@ export function TeacherDashboard() {
             <TabsTrigger value="service-hours" className="flex items-center gap-1">
               <CheckCircle className="w-4 h-4" />
               Service Hours
+            </TabsTrigger>
+            <TabsTrigger value="rewards" className="flex items-center gap-1" data-testid="tab-rewards">
+              <Award className="w-4 h-4" />
+              Rewards
             </TabsTrigger>
           </TabsList>
 
@@ -841,6 +1003,11 @@ export function TeacherDashboard() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Rewards Tab */}
+          <TabsContent value="rewards" className="space-y-6" data-testid="tab-content-rewards">
+            <RewardsTabContent />
           </TabsContent>
 
           {/* Reports Tab */}
