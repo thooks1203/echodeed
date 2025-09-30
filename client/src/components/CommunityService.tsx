@@ -222,11 +222,11 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
     );
   }
 
-  const hoursVerified = summary ? parseFloat(summary.verifiedHours || '0') : 0;
-  const hoursPending = summary ? parseFloat(summary.pendingHours || '0') : 0;
+  const hoursVerified = summary ? parseFloat(summary.totalHoursVerified || '0') : 0;
+  const hoursPending = summary ? parseFloat(summary.totalHoursPending || '0') : 0;
   const goalHours = 30; // BCA's 30-hour yearly requirement
   const progressPercentage = (hoursVerified / goalHours) * 100;
-  const tokensEarned = summary ? summary.totalTokensEarned || 0 : 0;
+  const tokensEarned = summary ? summary.tokensEarnedFromService || 0 : 0;
 
   return (
     <div className="space-y-6 p-6" data-testid="community-service-page">

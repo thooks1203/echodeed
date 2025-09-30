@@ -354,22 +354,19 @@ export const communityServiceVerifications = pgTable("service_verifications", {
   followUpRequired: integer("follow_up_required").default(0),
 });
 
-// Student service hours summary - aggregated view to prevent duplicates
+// Student service hours summary - MATCHES PRODUCTION DATABASE
 export const studentServiceSummaries = pgTable("student_service_summaries", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   userId: varchar("user_id").notNull().references(() => users.id),
   schoolId: varchar("school_id"), // Link to school
-  totalHours: decimal("total_hours", { precision: 10, scale: 2 }).default("0").notNull(),
-  verifiedHours: decimal("verified_hours", { precision: 10, scale: 2 }).default("0").notNull(),
-  pendingHours: decimal("pending_hours", { precision: 10, scale: 2 }).default("0").notNull(),
-  rejectedHours: decimal("rejected_hours", { precision: 10, scale: 2 }).default("0").notNull(),
-  totalTokensEarned: integer("total_tokens_earned").default(0).notNull(),
-  totalServiceSessions: integer("total_service_sessions").default(0).notNull(),
-  currentStreak: integer("current_streak").default(0).notNull(), // Days with continuous service
-  longestStreak: integer("longest_streak").default(0).notNull(),
-  lastServiceDate: timestamp("last_service_date"),
-  lastUpdated: timestamp("last_updated").defaultNow().notNull(),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
+  gradeLevel: varchar("grade_level", { length: 5 }), // Production column
+  totalHoursCompleted: decimal("total_hours_completed", { precision: 10, scale: 2 }).default("0").notNull(), // Production column
+  totalHoursVerified: decimal("total_hours_verified", { precision: 10, scale: 2 }).default("0").notNull(), // Production column
+  totalHoursPending: decimal("total_hours_pending", { precision: 10, scale: 2 }).default("0").notNull(), // Production column
+  schoolYearGoal: decimal("school_year_goal", { precision: 10, scale: 2 }), // Production column
+  goalProgress: decimal("goal_progress", { precision: 5, scale: 2 }), // Production column (percentage)
+  tokensEarnedFromService: integer("tokens_earned_from_service").default(0), // Production column
+  updatedAt: timestamp("updated_at").defaultNow().notNull(), // Production column
 });
 
 // COPPA consent tracking for students under 13
@@ -1009,8 +1006,7 @@ export const insertCommunityServiceVerificationSchema = createInsertSchema(commu
 
 export const insertStudentServiceSummarySchema = createInsertSchema(studentServiceSummaries).omit({
   id: true,
-  createdAt: true,
-  lastUpdated: true,
+  updatedAt: true,
 });
 
 export const insertCoppaConsentSchema = createInsertSchema(coppaConsent).omit({
