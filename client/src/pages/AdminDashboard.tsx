@@ -111,25 +111,29 @@ interface AdminSafetyStats {
 }
 
 function FundraisingContent() {
-  const schoolId = 'bc016cad-fa89-44fb-aab0-76f82c574f78'; // Burlington Christian Academy
-  
-  const { data: campaigns = [], isLoading } = useQuery({
-    queryKey: ['/api/fundraising/campaigns', schoolId],
-    queryFn: async () => {
-      const response = await fetch(`/api/fundraising/campaigns/${schoolId}`);
-      if (!response.ok) return [];
-      return response.json();
+  // Demo campaigns - same data parents see on their dashboard
+  const campaigns = [
+    {
+      id: 'playground-2025',
+      title: '🏰 New Playground Fund',
+      description: 'Building a new playground for our students',
+      category: 'Facilities',
+      status: 'active',
+      goal_amount: 2000000, // $20,000 in cents
+      current_amount: 1160000, // $11,600 in cents
+      donor_count: 87
+    },
+    {
+      id: 'library-2025',
+      title: '📚 New Library Equipment',
+      description: 'Expanding our library with new books and technology for middle school students',
+      category: 'Education',
+      status: 'active',
+      goal_amount: 1500000, // $15,000 in cents
+      current_amount: 510000, // $5,100 in cents
+      donor_count: 34
     }
-  });
-
-  if (isLoading) {
-    return (
-      <div className="text-center py-12">
-        <div className="animate-spin w-12 h-12 border-4 border-purple-600 border-t-transparent rounded-full mx-auto mb-4" />
-        <p className="text-gray-600">Loading fundraising campaigns...</p>
-      </div>
-    );
-  }
+  ];
 
   const activeCampaigns = campaigns.filter((c: any) => c.status === 'active');
   const completedCampaigns = campaigns.filter((c: any) => c.status === 'completed');
