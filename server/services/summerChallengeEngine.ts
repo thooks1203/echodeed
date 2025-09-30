@@ -143,6 +143,38 @@ export class SummerChallengeEngine {
         ],
         '6-8': [
           {
+            title: "Helping Hand Helper",
+            description: "Assist a neighbor or community member with a helpful task",
+            difficulty: "easy",
+            points: 15,
+            activities: [
+              {
+                title: "Neighbor's Yard Helper",
+                description: "Help a neighbor with yard work or outdoor tasks",
+                instructions: "1. Ask a parent which neighbor might need help. 2. Offer to help with raking, weeding, or watering. 3. Work for at least 30 minutes. 4. Politely decline payment - it's an act of service!",
+                timeEstimate: 30,
+                materials: "Rake, gloves, or watering can (provided by neighbor)",
+                parentRequired: true
+              }
+            ]
+          },
+          {
+            title: "Service Star",
+            description: "Complete multiple small acts of service throughout the week",
+            difficulty: "medium",
+            points: 20,
+            activities: [
+              {
+                title: "Weekly Service Challenge",
+                description: "Help different people with tasks they need",
+                instructions: "1. Make a list of 3-5 people you can help this week. 2. Offer specific help (carrying groceries, walking a dog, helping with tech). 3. Complete at least 3 acts of service. 4. Write down how each person reacted.",
+                timeEstimate: 60,
+                materials: "None needed - just your willingness to help",
+                parentRequired: false
+              }
+            ]
+          },
+          {
             title: "Community Service Leader",
             description: "Organize and lead a service project involving others",
             difficulty: "hard",
@@ -160,6 +192,38 @@ export class SummerChallengeEngine {
           }
         ],
         '9-12': [
+          {
+            title: "Service Squad Volunteer",
+            description: "Volunteer with an organization or help community members with meaningful tasks",
+            difficulty: "easy",
+            points: 20,
+            activities: [
+              {
+                title: "Organization Volunteer Session",
+                description: "Volunteer at a local nonprofit, church, or community center",
+                instructions: "1. Research local organizations that need volunteers. 2. Contact them to schedule a volunteer session (2-3 hours). 3. Complete your volunteer work professionally. 4. Reflect on what you learned about the cause.",
+                timeEstimate: 120,
+                materials: "Contact information for local organizations",
+                parentRequired: false
+              }
+            ]
+          },
+          {
+            title: "Community Action Coordinator",
+            description: "Plan and execute a service project that benefits multiple people",
+            difficulty: "medium",
+            points: 25,
+            activities: [
+              {
+                title: "Group Service Initiative",
+                description: "Organize a group of friends or classmates to complete a service project together",
+                instructions: "1. Identify a need in your school or community. 2. Recruit 3-5 participants. 3. Plan the logistics (time, location, materials). 4. Execute the project and document the impact.",
+                timeEstimate: 180,
+                materials: "Project-specific materials, communication tools",
+                parentRequired: false
+              }
+            ]
+          },
           {
             title: "Community Impact Leader",
             description: "Design and execute a comprehensive service project that addresses a real community need",
@@ -225,6 +289,38 @@ export class SummerChallengeEngine {
         ],
         '6-8': [
           {
+            title: "Family Appreciation Star",
+            description: "Show gratitude to your family members in thoughtful ways",
+            difficulty: "easy",
+            points: 15,
+            activities: [
+              {
+                title: "Family Gratitude Week",
+                description: "Do something special for each family member this week",
+                instructions: "1. Make a list of everyone in your household. 2. Think of something specific each person would appreciate. 3. Do one kind act for each person. 4. Notice and write down their reactions.",
+                timeEstimate: 45,
+                materials: "None needed, or materials for small gifts/cards",
+                parentRequired: false
+              }
+            ]
+          },
+          {
+            title: "Family Connection Builder",
+            description: "Create meaningful experiences that bring your family closer together",
+            difficulty: "medium",
+            points: 20,
+            activities: [
+              {
+                title: "Family Traditions Revival",
+                description: "Learn about and practice a family tradition",
+                instructions: "1. Interview a parent or grandparent about a family tradition. 2. Research the history behind it. 3. Plan an event to practice this tradition. 4. Invite extended family to participate if possible.",
+                timeEstimate: 60,
+                materials: "Tradition-specific materials, interview recording device",
+                parentRequired: true
+              }
+            ]
+          },
+          {
             title: "Family Heritage Guardian",
             description: "Create a family appreciation project that honors your family's story",
             difficulty: "hard",
@@ -242,6 +338,38 @@ export class SummerChallengeEngine {
           }
         ],
         '9-12': [
+          {
+            title: "Family Gratitude Champion",
+            description: "Express meaningful appreciation to family members through thoughtful actions",
+            difficulty: "easy",
+            points: 20,
+            activities: [
+              {
+                title: "Personalized Family Appreciation",
+                description: "Create personalized appreciation gestures for each family member",
+                instructions: "1. Identify what each family member values most (quality time, acts of service, words of affirmation). 2. Create a customized appreciation plan for each person. 3. Execute your plan throughout the week. 4. Document the impact on family relationships.",
+                timeEstimate: 60,
+                materials: "Varies based on chosen appreciation method",
+                parentRequired: false
+              }
+            ]
+          },
+          {
+            title: "Family Unity Architect",
+            description: "Design and facilitate experiences that strengthen family bonds",
+            difficulty: "medium",
+            points: 25,
+            activities: [
+              {
+                title: "Family Development Workshop",
+                description: "Organize a family meeting focused on appreciation and connection",
+                instructions: "1. Plan a family gathering with structured activities. 2. Include appreciation sharing, family goal setting, or conflict resolution. 3. Facilitate the discussion professionally. 4. Create action items for ongoing family growth.",
+                timeEstimate: 120,
+                materials: "Meeting agenda, discussion prompts, activity materials",
+                parentRequired: false
+              }
+            ]
+          },
           {
             title: "Family Legacy Project",
             description: "Create a comprehensive family history project that preserves and celebrates your family's journey",

@@ -351,6 +351,13 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
     enabled: !!userTokens // Only run after tokens are loaded
   });
 
+  // Fetch service hours summary
+  const { data: serviceHoursSummary } = useQuery({
+    queryKey: ['/api/community-service/summary', user?.id],
+    queryFn: () => fetch(`/api/community-service/summary/${user?.id}`).then(r => r.json()),
+    enabled: !!user?.id
+  });
+
   const stats = studentStats || {
     totalKindnessPoints: 245,
     weeklyProgress: 15,
@@ -632,6 +639,81 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
               }} />
             </div>
           </div>
+
+          {/* Community Service Hours Summary */}
+          {serviceHoursSummary && serviceHoursSummary.totalHours > 0 && (
+            <div style={{
+              background: 'linear-gradient(135deg, #8B5CF6, #EC4899)',
+              borderRadius: '12px',
+              padding: '20px',
+              boxShadow: '0 4px 16px rgba(139, 92, 246, 0.3)',
+              color: 'white'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0 }}>
+                  🏥 Community Service Hours
+                </h3>
+                <button
+                  onClick={() => onNavigateToTab ? onNavigateToTab('community-service') : window.location.href = '/app?tab=community-service'}
+                  style={{
+                    background: 'rgba(255, 255, 255, 0.2)',
+                    color: 'white',
+                    border: 'none',
+                    borderRadius: '8px',
+                    padding: '6px 12px',
+                    fontSize: '12px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    transition: 'all 0.2s ease'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                  }}
+                  data-testid="button-view-all-hours"
+                >
+                  View All →
+                </button>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                <div style={{
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '24px', fontWeight: '700' }}>
+                    {serviceHoursSummary.totalHours}
+                  </div>
+                  <div style={{ fontSize: '11px', opacity: 0.9 }}>Total Hours</div>
+                </div>
+                <div style={{
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '24px', fontWeight: '700' }}>
+                    {serviceHoursSummary.verifiedHours}
+                  </div>
+                  <div style={{ fontSize: '11px', opacity: 0.9 }}>Verified</div>
+                </div>
+                <div style={{
+                  background: 'rgba(255, 255, 255, 0.15)',
+                  borderRadius: '8px',
+                  padding: '12px',
+                  textAlign: 'center'
+                }}>
+                  <div style={{ fontSize: '24px', fontWeight: '700' }}>
+                    {serviceHoursSummary.pendingHours}
+                  </div>
+                  <div style={{ fontSize: '11px', opacity: 0.9 }}>Pending</div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Recent Achievements */}
           <div style={{
