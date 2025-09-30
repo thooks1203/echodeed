@@ -1109,7 +1109,8 @@ export const insertCommunityServiceVerificationSchema = createInsertSchema(commu
 
 export const insertStudentServiceSummarySchema = createInsertSchema(studentServiceSummaries).omit({
   id: true,
-  updatedAt: true,
+  lastUpdated: true,
+  createdAt: true,
 });
 
 export const insertCoppaConsentSchema = createInsertSchema(coppaConsent).omit({
