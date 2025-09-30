@@ -9446,6 +9446,20 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get recently approved service hours for teachers
+  app.get('/api/community-service/recently-approved', requireSchoolAccess, async (req: any, res) => {
+    try {
+      const schoolId = req.query.schoolId as string;
+      const limit = parseInt(req.query.limit as string) || 20;
+      const { communityServiceEngine } = await import('./services/communityServiceEngine');
+      const approved = await communityServiceEngine.getRecentlyApprovedHours(schoolId, limit);
+      res.json(approved);
+    } catch (error) {
+      console.error('Failed to get recently approved hours:', error);
+      res.status(500).json({ error: 'Failed to get recently approved hours' });
+    }
+  });
+
   // Generate school service report
   app.get('/api/community-service/school-report/:schoolId', requireSchoolAccess, async (req: any, res) => {
     try {

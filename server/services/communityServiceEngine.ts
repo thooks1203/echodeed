@@ -356,6 +356,33 @@ export class CommunityServiceEngine {
     }
   }
 
+  // Get recently approved/verified service hours for teachers
+  async getRecentlyApprovedHours(schoolId?: string, limit = 20) {
+    try {
+      let conditions = eq(communityServiceLogs.verificationStatus, 'approved');
+
+      if (schoolId) {
+        conditions = and(
+          eq(communityServiceLogs.verificationStatus, 'approved'),
+          eq(communityServiceLogs.schoolId, schoolId)
+        );
+      }
+
+      return await db.select({
+        serviceLog: communityServiceLogs,
+        student: users
+      })
+      .from(communityServiceLogs)
+      .leftJoin(users, eq(users.id, communityServiceLogs.userId))
+      .where(conditions)
+      .orderBy(desc(communityServiceLogs.verifiedAt))
+      .limit(limit);
+    } catch (error) {
+      console.error('❌ Error getting recently approved hours:', error);
+      throw error;
+    }
+  }
+
   // Generate service hours report for school
   async generateSchoolServiceReport(schoolId: string) {
     try {

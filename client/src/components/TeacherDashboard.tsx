@@ -191,6 +191,24 @@ export function TeacherDashboard() {
     },
   });
 
+  // Fetch recently approved service hours
+  const { data: approvedServiceHours = [], isLoading: approvedHoursLoading } = useQuery({
+    queryKey: ['/api/community-service/recently-approved'],
+    queryFn: async () => {
+      try {
+        const response = await apiRequest('GET', '/api/community-service/recently-approved?schoolId=bc016cad-fa89-44fb-aab0-76f82c574f78&limit=10');
+        if (!response.ok) {
+          console.log('Recently approved hours API not available');
+          return [];
+        }
+        return response.json();
+      } catch (error) {
+        console.log('Recently approved hours API error:', error);
+        return [];
+      }
+    },
+  });
+
   // Fetch posts for student feed
   const { data: posts = [], isLoading: postsLoading } = useQuery({
     queryKey: ['/api/posts'],
@@ -224,6 +242,7 @@ export function TeacherDashboard() {
         description: "Tokens have been awarded to the student.",
       });
       queryClient.invalidateQueries({ queryKey: ['/api/community-service/pending-verifications'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/community-service/recently-approved'] });
       queryClient.invalidateQueries({ queryKey: ['/api/community-service/summary'] });
       queryClient.invalidateQueries({ queryKey: ['/api/community-service/logs'] });
     },
@@ -750,6 +769,74 @@ export function TeacherDashboard() {
                     <CheckCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
                     <p>All service hours have been verified.</p>
                     <p className="text-sm">Great job keeping up with verifications!</p>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Recently Approved Service Hours */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle className="w-5 h-5 text-blue-600" />
+                  Recently Approved Service Hours
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                {approvedHoursLoading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full mx-auto" />
+                    <p className="mt-2 text-gray-600">Loading approved hours...</p>
+                  </div>
+                ) : approvedServiceHours.length > 0 ? (
+                  <div className="space-y-4">
+                    {approvedServiceHours.map((serviceHour: any) => {
+                      const serviceLog = serviceHour.serviceLog || serviceHour;
+                      const student = serviceHour.student || {};
+                      
+                      const hours = parseFloat(serviceLog.hoursLogged?.toString() || '0');
+                      const tokens = calculateTokens(hours);
+                      const studentName = student.firstName && student.lastName 
+                        ? `${student.firstName} ${student.lastName}` 
+                        : 'Student';
+                      
+                      let verifiedDate = 'Recently';
+                      try {
+                        const date = new Date(serviceLog.verifiedAt);
+                        if (!isNaN(date.getTime())) {
+                          verifiedDate = date.toLocaleDateString('en-US', { 
+                            month: 'short', day: 'numeric' 
+                          });
+                        }
+                      } catch (e) {
+                        // Use default
+                      }
+                      
+                      return (
+                        <div key={serviceLog.id} className="border rounded-lg p-4 bg-green-50 border-green-200" data-testid={`approved-service-${serviceLog.id}`}>
+                          <div className="flex justify-between items-start mb-2">
+                            <div>
+                              <h4 className="font-semibold text-lg">{serviceLog.serviceName}</h4>
+                              <p className="text-sm text-gray-600">
+                                {studentName} • {hours} hours • Approved {verifiedDate}
+                              </p>
+                            </div>
+                            <Badge className="bg-green-600 text-white">✓ Approved</Badge>
+                          </div>
+                          <p className="text-sm text-gray-700">
+                            <strong>Organization:</strong> {serviceLog.organizationName}
+                          </p>
+                          <p className="text-sm text-green-700 font-medium mt-2">
+                            ✅ {tokens} tokens awarded
+                          </p>
+                        </div>
+                      );
+                    })}
+                  </div>
+                ) : (
+                  <div className="text-center py-8 text-gray-500">
+                    <CheckCircle className="w-12 h-12 mx-auto mb-4 text-gray-300" />
+                    <p>No recently approved service hours.</p>
                   </div>
                 )}
               </CardContent>
