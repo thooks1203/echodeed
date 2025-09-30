@@ -999,7 +999,7 @@ export const insertCommunityServiceLogSchema = createInsertSchema(communityServi
   id: true,
   createdAt: true,
   updatedAt: true,
-  tokensAwarded: true,
+  tokensEarned: true,
 });
 
 export const insertCommunityServiceVerificationSchema = createInsertSchema(communityServiceVerifications).omit({
@@ -1132,8 +1132,7 @@ export type SchoolYearChallengeEngagement = typeof schoolYearChallengeEngagement
 
 export type MentorBadge = typeof mentorBadges.$inferSelect;
 export type MentorBadgeAward = typeof mentorBadgeAwards.$inferSelect;
-export type MentorTrainingModule = typeof mentorTrainingModules.$inferSelect;
-export type MentorTrainingProgress = typeof mentorTrainingProgress.$inferSelect;
+export type MentorTraining = typeof mentorTraining.$inferSelect;
 export type MentorScenario = typeof mentorScenarios.$inferSelect;
 export type MentorScenarioResponse = typeof mentorScenarioResponses.$inferSelect;
 export type MentorConversation = typeof mentorConversations.$inferSelect;
