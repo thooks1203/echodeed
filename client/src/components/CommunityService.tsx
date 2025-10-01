@@ -251,10 +251,28 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
       </div>
 
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
-          <TabsTrigger value="overview" data-testid="tab-overview">Overview</TabsTrigger>
-          <TabsTrigger value="log-hours" data-testid="tab-log-hours">Log Hours</TabsTrigger>
-          <TabsTrigger value="history" data-testid="tab-history">History</TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3 bg-transparent gap-2 p-0">
+          <TabsTrigger 
+            value="overview" 
+            data-testid="tab-overview"
+            className="bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg transition-all"
+          >
+            Overview
+          </TabsTrigger>
+          <TabsTrigger 
+            value="log-hours" 
+            data-testid="tab-log-hours"
+            className="bg-green-600 text-white hover:bg-green-700 data-[state=active]:bg-green-700 data-[state=active]:shadow-lg transition-all"
+          >
+            Log Hours
+          </TabsTrigger>
+          <TabsTrigger 
+            value="history" 
+            data-testid="tab-history"
+            className="bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg transition-all"
+          >
+            History
+          </TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
