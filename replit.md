@@ -12,6 +12,38 @@ Business planning approach: Conservative, realistic projections always. Under-pr
 ### UI/UX Decisions
 The frontend is a React 18, TypeScript, and Vite single-page application. It utilizes Radix UI primitives and shadcn/ui components with TailwindCSS for a mobile-first, responsive design. The UI/UX emphasizes minimalism, a custom color palette, consistent iconography (Lucide React), and an "Electric Heart Logo" with gradient ripple effects. All dashboard tabs feature permanent vibrant colors for enhanced visual engagement, and role-based logic ensures specific UI elements (e.g., Echo Tokens button) are displayed only to relevant user roles (students/parents). Quick action buttons are proportionally sized for a professional appearance.
 
+### Production Database Configuration (CRITICAL)
+**Development vs Production Database Separation:**
+- Development and production use **completely separate PostgreSQL databases**
+- Each environment has its own DATABASE_URL
+- Demo data (Emma's 7.5 service hours, tokens, streaks) must be initialized in BOTH databases
+
+**Required Production Secrets (MUST be configured):**
+1. **DEMO_MODE=true** - CRITICAL for demo data initialization in production
+   - Without this, production database remains empty (0 hours, 0 tokens)
+   - Set in: Replit Secrets → Production app secrets → DEMO_MODE = true
+2. **DATABASE_URL** - Automatically configured by Replit for production
+3. **OPENAI_API_KEY** - For AI features
+4. **SESSION_SECRET** - For session management
+
+**Production Deployment Checklist:**
+1. ✅ Verify DEMO_MODE=true exists in "Production app secrets"
+2. ✅ Click "Publish/Deploy" to trigger server restart
+3. ✅ Production logs will show initialization:
+   ```
+   🚀 INITIALIZING DEMO DATA
+   🎭 DEMO_MODE: true
+   🔍 DATABASE VERIFICATION FOR EMMA JOHNSON:
+      💰 Tokens: 1103 balance, 1380 earned, streak: 4/4
+      📝 Service Logs: 2 records (7.5 hours total)
+   ```
+4. ✅ Verify www.echodeed.com shows Emma's data correctly
+
+**Troubleshooting Production Issues:**
+- **Problem:** Production shows 0 hours/0 tokens
+- **Cause:** DEMO_MODE secret not enabled for production OR server not restarted after adding secret
+- **Fix:** Add DEMO_MODE=true to production secrets, then republish app
+
 ### Technical Implementations
 - **Frontend**: React 18, TypeScript, Vite, Wouter for routing, TanStack Query for server state.
 - **Backend**: Express.js, TypeScript, RESTful API with WebSocket support, layered and modular architecture.
