@@ -396,23 +396,23 @@ export default function Home() {
         
         {/* Share Kindness Button - Enhanced to stand out more */}
         <div className="px-4 py-4 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 border-b border-border relative overflow-visible">
-          <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 animate-pulse opacity-75"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 animate-pulse opacity-75 z-0"></div>
           
-          {/* Animated Corner Sparkles */}
-          <div className="absolute -top-1 -left-1 text-3xl animate-ping" style={{ animationDuration: '1.5s' }}>✨</div>
-          <div className="absolute -top-1 -right-1 text-3xl animate-ping" style={{ animationDuration: '1.8s', animationDelay: '0.3s' }}>💫</div>
-          <div className="absolute -bottom-1 -left-1 text-3xl animate-ping" style={{ animationDuration: '2s', animationDelay: '0.6s' }}>⭐</div>
-          <div className="absolute -bottom-1 -right-1 text-3xl animate-ping" style={{ animationDuration: '1.6s', animationDelay: '0.9s' }}>✨</div>
+          {/* Animated Corner Sparkles - z-20 to appear on top */}
+          <div className="absolute -top-1 -left-1 text-3xl animate-ping z-20" style={{ animationDuration: '1.5s' }}>✨</div>
+          <div className="absolute -top-1 -right-1 text-3xl animate-ping z-20" style={{ animationDuration: '1.8s', animationDelay: '0.3s' }}>💫</div>
+          <div className="absolute -bottom-1 -left-1 text-3xl animate-ping z-20" style={{ animationDuration: '2s', animationDelay: '0.6s' }}>⭐</div>
+          <div className="absolute -bottom-1 -right-1 text-3xl animate-ping z-20" style={{ animationDuration: '1.6s', animationDelay: '0.9s' }}>✨</div>
           
-          {/* Rotating Burst Effects at Corners */}
-          <div className="absolute -top-2 -left-2 w-8 h-8 bg-yellow-300 rounded-full opacity-60 animate-pulse" style={{ animationDuration: '2s' }}></div>
-          <div className="absolute -top-2 -right-2 w-8 h-8 bg-pink-400 rounded-full opacity-60 animate-pulse" style={{ animationDuration: '2.2s', animationDelay: '0.5s' }}></div>
-          <div className="absolute -bottom-2 -left-2 w-8 h-8 bg-purple-400 rounded-full opacity-60 animate-pulse" style={{ animationDuration: '1.8s', animationDelay: '1s' }}></div>
-          <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-orange-400 rounded-full opacity-60 animate-pulse" style={{ animationDuration: '2.4s', animationDelay: '1.5s' }}></div>
+          {/* Rotating Burst Effects at Corners - z-20 to appear on top */}
+          <div className="absolute -top-2 -left-2 w-8 h-8 bg-yellow-300 rounded-full opacity-60 animate-pulse z-20" style={{ animationDuration: '2s' }}></div>
+          <div className="absolute -top-2 -right-2 w-8 h-8 bg-pink-400 rounded-full opacity-60 animate-pulse z-20" style={{ animationDuration: '2.2s', animationDelay: '0.5s' }}></div>
+          <div className="absolute -bottom-2 -left-2 w-8 h-8 bg-purple-400 rounded-full opacity-60 animate-pulse z-20" style={{ animationDuration: '1.8s', animationDelay: '1s' }}></div>
+          <div className="absolute -bottom-2 -right-2 w-8 h-8 bg-orange-400 rounded-full opacity-60 animate-pulse z-20" style={{ animationDuration: '2.4s', animationDelay: '1.5s' }}></div>
           
           <button
             onClick={() => setIsPostModalOpen(true)}
-            className="relative w-full bg-gradient-to-r from-white to-yellow-50 text-purple-700 py-6 px-8 rounded-3xl font-black text-xl shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex items-center justify-center gap-4 border-4 border-white/50"
+            className="relative w-full bg-gradient-to-r from-white to-yellow-50 text-purple-700 py-6 px-8 rounded-3xl font-black text-xl shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex items-center justify-center gap-4 border-4 border-white/50 z-10"
             data-testid="button-share-kindness"
             style={{
               background: 'linear-gradient(135deg, #ffffff 0%, #fef3c7 50%, #fde68a 100%)',
