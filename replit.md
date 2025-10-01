@@ -61,6 +61,14 @@ Without this, Emma Johnson's demo data (7.5 service hours + 4-day streak) will n
 2. `server/index.ts` line 538 - Demo data gated by DEMO_MODE
 3. `server/routes.ts` lines 92-102 - Teacher auth bypasses only work in development
 
+## Recent Fixes and Updates (October 1, 2025)
+### Authentication Flow Improvement
+**Issue Fixed**: Old generic sign-in UI showing Global Kindness Counter when accessing `/app` unauthenticated
+- **Problem**: Users saw outdated sign-in screen with "Please Sign In" dialog over Global Kindness Counter
+- **Solution**: Unauthenticated users now automatically redirect to clean `/demo-login` page
+- **Impact**: Better first impression, cleaner UX for published app at www.echodeed.com
+- **Files Modified**: `client/src/pages/home.tsx` (removed obsolete sign-in tab, added redirect)
+
 ## Recent UI Enhancements (October 1, 2025)
 ### Vibrant Colorful Tab System - PERMANENT COLORS
 All dashboard tabs now display permanent vibrant colors (not just on active state) for better visual engagement:

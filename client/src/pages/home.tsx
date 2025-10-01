@@ -57,9 +57,9 @@ export default function Home() {
 
   // Handle URL parameters for tab navigation and role-based defaults
   useEffect(() => {
-    // If user is not authenticated, always show sign-in screen
+    // If user is not authenticated, redirect to demo login page
     if (!isAuthenticated) {
-      setActiveTab('sign-in');
+      navigate('/demo-login');
       return;
     }
 
@@ -269,72 +269,6 @@ export default function Home() {
     );
   }
 
-  if (activeTab === 'sign-in') {
-    return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF', paddingBottom: '100px' }}>
-        <AppHeader 
-          counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} 
-          isPulse={counterPulse} 
-          showBackButton={false}
-          tokens={tokens}
-        />
-        <div className="p-6 max-w-md mx-auto">
-          <div className="bg-white rounded-xl shadow-lg p-6 border-4 border-blue-200">
-            <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">🔐 Please Sign In</h2>
-            
-            <div className="bg-gradient-to-r from-blue-100 to-purple-100 p-4 rounded-lg mb-6 border-2 border-blue-300">
-              <div className="text-center">
-                <div className="text-lg font-bold text-gray-800 mb-2">🏫 Burlington Christian Academy</div>
-                <div className="text-sm text-gray-600">Character Education Demo</div>
-                <div className="text-xs text-gray-500 mt-1">Select your role to access the platform</div>
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <div className="text-sm font-bold text-gray-700 text-center mb-3">👤 Who are you? Select your role:</div>
-              {[
-                { role: 'student', name: 'Emma Johnson', desc: '9th Grade Student', emoji: '👩‍🎓' },
-                { role: 'teacher', name: 'Ms. Wilson', desc: 'Math Teacher', emoji: '👩‍🏫' },
-                { role: 'admin', name: 'Mr. Murr', desc: 'Principal', emoji: '👨‍💼' },
-                { role: 'parent', name: 'Mrs. Smith', desc: 'Parent', emoji: '👩‍👧' }
-              ].map((roleInfo) => (
-                <button
-                  key={roleInfo.role}
-                  onClick={() => {
-                    console.log('🔐 Sign-in button clicked for role:', roleInfo.role);
-                    localStorage.setItem('echodeed_demo_role', roleInfo.role);
-                    localStorage.setItem('echodeed_session', 'demo-session');
-                    console.log('✅ LocalStorage updated, reloading...');
-                    window.location.reload();
-                  }}
-                  className="w-full p-4 text-left rounded-lg border-3 transition-all hover:scale-105 bg-white border-gray-300 hover:bg-blue-50 hover:border-blue-400 shadow-sm hover:shadow-md"
-                  data-testid={`sign-in-as-${roleInfo.role}`}
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-2xl">{roleInfo.emoji}</span>
-                    <div>
-                      <div className="font-bold text-gray-800">{roleInfo.name}</div>
-                      <div className="text-sm text-gray-600">{roleInfo.desc}</div>
-                    </div>
-                    <div className="ml-auto text-blue-600 font-bold">→</div>
-                  </div>
-                </button>
-              ))}
-            </div>
-
-            <div className="mt-6 p-3 bg-green-50 rounded-lg border-2 border-green-200">
-              <div className="text-center text-sm text-green-800">
-                <div className="font-bold">🔒 Demo Mode Active</div>
-                <div>Select any role to explore the platform</div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
-      </div>
-    );
-  }
-  
   if (activeTab === 'schools') {
     // Only admins can access district-wide Schools Dashboard
     if (user?.schoolRole !== 'admin') {
