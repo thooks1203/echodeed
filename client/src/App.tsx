@@ -32,7 +32,12 @@ import { KindnessSparksContext } from "@/contexts/KindnessSparksContext";
 
 function Router() {
   const [location, setLocation] = useLocation();
-  const showFloatingButton = location !== '/rewards' && location !== '/' && location !== '/demo-login' && location !== '/admin' && location !== '/admin-dashboard' && location !== '/teacher' && location !== '/teacher-dashboard';
+  // Hide floating rewards button for admin, teacher, landing, demo, and rewards pages
+  const showFloatingButton = !location.includes('/admin') && 
+                              !location.includes('/teacher') && 
+                              location !== '/rewards' && 
+                              location !== '/' && 
+                              location !== '/demo-login';
 
   return (
     <>
