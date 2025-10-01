@@ -637,31 +637,31 @@ export default function ParentDashboard() {
 
         {/* Main Dashboard */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
-          <TabsList className="flex w-full flex-wrap justify-center gap-1 h-auto p-1">
-            <TabsTrigger value="overview" className="flex-1 min-w-fit px-3 py-2">
+          <TabsList className="flex w-full flex-wrap justify-center gap-1 h-auto p-1 bg-transparent">
+            <TabsTrigger value="overview" className="flex-1 min-w-fit px-3 py-2 bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg">
               Overview
             </TabsTrigger>
-            <TabsTrigger value="activity" className="flex-1 min-w-fit px-3 py-2">
+            <TabsTrigger value="activity" className="flex-1 min-w-fit px-3 py-2 bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg">
               Activity
             </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex-1 min-w-fit px-3 py-2">
+            <TabsTrigger value="notifications" className="flex-1 min-w-fit px-3 py-2 bg-pink-600 text-white hover:bg-pink-700 data-[state=active]:bg-pink-700 data-[state=active]:shadow-lg">
               Alerts
             </TabsTrigger>
-            <TabsTrigger value="rewards" className="flex-1 min-w-fit px-3 py-2">
+            <TabsTrigger value="rewards" className="flex-1 min-w-fit px-3 py-2 bg-amber-600 text-white hover:bg-amber-700 data-[state=active]:bg-amber-700 data-[state=active]:shadow-lg">
               Rewards
             </TabsTrigger>
-            <TabsTrigger value="service-hours" className="flex-1 min-w-fit px-3 py-2">
+            <TabsTrigger value="service-hours" className="flex-1 min-w-fit px-3 py-2 bg-teal-600 text-white hover:bg-teal-700 data-[state=active]:bg-teal-700 data-[state=active]:shadow-lg">
               <Shield className="h-3 w-3 mr-1" />
               Service
             </TabsTrigger>
-            <TabsTrigger value="fundraising" className="flex-1 min-w-fit px-3 py-2">
+            <TabsTrigger value="fundraising" className="flex-1 min-w-fit px-3 py-2 bg-green-600 text-white hover:bg-green-700 data-[state=active]:bg-green-700 data-[state=active]:shadow-lg">
               <Target className="h-3 w-3 mr-1" />
               Fundraising
             </TabsTrigger>
-            <TabsTrigger value="insights" className="flex-1 min-w-fit px-3 py-2">
+            <TabsTrigger value="insights" className="flex-1 min-w-fit px-3 py-2 bg-indigo-600 text-white hover:bg-indigo-700 data-[state=active]:bg-indigo-700 data-[state=active]:shadow-lg">
               Insights
             </TabsTrigger>
-            <TabsTrigger value="sponsors" className="flex-1 min-w-fit px-3 py-2">
+            <TabsTrigger value="sponsors" className="flex-1 min-w-fit px-3 py-2 bg-orange-600 text-white hover:bg-orange-700 data-[state=active]:bg-orange-700 data-[state=active]:shadow-lg">
               <Building2 className="h-3 w-3 mr-1" />
               Sponsors
             </TabsTrigger>

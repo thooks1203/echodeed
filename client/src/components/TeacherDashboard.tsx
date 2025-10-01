@@ -543,28 +543,28 @@ export function TeacherDashboard() {
         </div>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="overview" className="flex items-center gap-1 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
+          <TabsList className="grid w-full grid-cols-6 gap-1 bg-transparent">
+            <TabsTrigger value="overview" className="flex items-center gap-1 bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg">
               <BarChart3 className="w-4 h-4" />
               Overview
             </TabsTrigger>
-            <TabsTrigger value="students" className="flex items-center gap-1 data-[state=active]:bg-purple-600 data-[state=active]:text-white">
+            <TabsTrigger value="students" className="flex items-center gap-1 bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg">
               <Users className="w-4 h-4" />
               Students
             </TabsTrigger>
-            <TabsTrigger value="student-feed" className="flex items-center gap-1 data-[state=active]:bg-pink-600 data-[state=active]:text-white">
+            <TabsTrigger value="student-feed" className="flex items-center gap-1 bg-pink-600 text-white hover:bg-pink-700 data-[state=active]:bg-pink-700 data-[state=active]:shadow-lg">
               <Heart className="w-4 h-4" />
               Student Feed
             </TabsTrigger>
-            <TabsTrigger value="lessons" className="flex items-center gap-1 data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
+            <TabsTrigger value="lessons" className="flex items-center gap-1 bg-emerald-600 text-white hover:bg-emerald-700 data-[state=active]:bg-emerald-700 data-[state=active]:shadow-lg">
               <BookOpen className="w-4 h-4" />
               Lesson Plans
             </TabsTrigger>
-            <TabsTrigger value="service-hours" className="flex items-center gap-1 data-[state=active]:bg-teal-600 data-[state=active]:text-white">
+            <TabsTrigger value="service-hours" className="flex items-center gap-1 bg-teal-600 text-white hover:bg-teal-700 data-[state=active]:bg-teal-700 data-[state=active]:shadow-lg">
               <CheckCircle className="w-4 h-4" />
               Service Hours
             </TabsTrigger>
-            <TabsTrigger value="rewards" className="flex items-center gap-1 data-[state=active]:bg-amber-600 data-[state=active]:text-white" data-testid="tab-rewards">
+            <TabsTrigger value="rewards" className="flex items-center gap-1 bg-amber-600 text-white hover:bg-amber-700 data-[state=active]:bg-amber-700 data-[state=active]:shadow-lg" data-testid="tab-rewards">
               <Award className="w-4 h-4" />
               Rewards
             </TabsTrigger>
