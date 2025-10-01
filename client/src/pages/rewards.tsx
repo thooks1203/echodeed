@@ -234,9 +234,9 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
 
         <Tabs defaultValue="browse" className="space-y-8">
           <TabsList className="grid w-full grid-cols-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-            <TabsTrigger value="browse" data-testid="tab-browse-rewards">Browse Rewards</TabsTrigger>
-            <TabsTrigger value="partners" data-testid="tab-partners">Partners</TabsTrigger>
-            <TabsTrigger value="my-rewards" data-testid="tab-my-rewards">My Rewards</TabsTrigger>
+            <TabsTrigger value="browse" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white" data-testid="tab-browse-rewards">Browse Rewards</TabsTrigger>
+            <TabsTrigger value="partners" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white" data-testid="tab-partners">Partners</TabsTrigger>
+            <TabsTrigger value="my-rewards" className="data-[state=active]:bg-green-600 data-[state=active]:text-white" data-testid="tab-my-rewards">My Rewards</TabsTrigger>
           </TabsList>
 
           {/* Browse Rewards Tab */}
@@ -261,9 +261,8 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
                 {/* Test Proximity Notifications */}
                 <Button
                   onClick={() => testRewardProximity.testWithMockData()}
-                  variant="outline"
                   size="sm"
-                  className="bg-blue-50 hover:bg-blue-100 border-blue-200 text-blue-700 hidden md:flex"
+                  className="bg-blue-600 hover:bg-blue-700 text-white hidden md:flex"
                   data-testid="test-proximity-notifications"
                 >
                   <Bell className="w-4 h-4 mr-1" />
