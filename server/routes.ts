@@ -302,6 +302,116 @@ export async function registerRoutes(app: Express): Promise<Server> {
     });
   }
 
+  // EMERGENCY: Manual production database seed endpoint
+  app.post('/api/emergency/seed-emma', async (req, res) => {
+    try {
+      const { db } = await import('./db');
+      const { users, userTokens, communityServiceLogs, studentServiceSummaries } = await import('@shared/schema');
+      const { eq } = await import('drizzle-orm');
+      
+      const studentUserId = 'student-001';
+      const schoolId = 'bc016cad-fa89-44fb-aab0-76f82c574f78';
+      
+      // Clear existing data
+      await db.delete(communityServiceLogs).where(eq(communityServiceLogs.userId, studentUserId));
+      await db.delete(studentServiceSummaries).where(eq(studentServiceSummaries.userId, studentUserId));
+      await db.delete(userTokens).where(eq(userTokens.userId, studentUserId));
+      
+      // Ensure user exists
+      const existingUser = await db.select().from(users).where(eq(users.id, studentUserId));
+      if (existingUser.length === 0) {
+        await db.insert(users).values({
+          id: studentUserId,
+          firstName: 'Emma',
+          lastName: 'Johnson',
+          email: 'emma.johnson@bca.edu'
+        });
+      }
+      
+      // Create service logs
+      await db.insert(communityServiceLogs).values([
+        {
+          id: crypto.randomUUID(),
+          userId: studentUserId,
+          schoolId: schoolId,
+          serviceName: 'Food Bank Volunteer',
+          serviceDescription: 'Helped sort and package food donations for local families',
+          organizationName: 'Burlington Community Food Bank',
+          contactPerson: 'Ms. Johnson',
+          contactEmail: 'volunteer@burlingtonfoodbank.org',
+          contactPhone: '(336) 123-4567',
+          hoursLogged: 4.5,
+          serviceDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+          location: 'Burlington, NC',
+          category: 'Community Support',
+          studentReflection: 'It felt great knowing I helped families have meals.',
+          verificationStatus: 'approved',
+          verifiedBy: 'teacher-001',
+          verifiedAt: new Date(),
+          tokensEarned: 22,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        },
+        {
+          id: crypto.randomUUID(),
+          userId: studentUserId,
+          schoolId: schoolId,
+          serviceName: 'Park Cleanup',
+          serviceDescription: 'Picked up litter and helped maintain trails',
+          organizationName: 'Burlington Parks & Recreation',
+          contactPerson: 'Mr. Williams',
+          contactEmail: 'parks@burlington.nc.gov',
+          contactPhone: '(336) 222-5555',
+          hoursLogged: 3.0,
+          serviceDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+          location: 'Burlington, NC',
+          category: 'Environmental',
+          studentReflection: 'Working outside was refreshing.',
+          verificationStatus: 'approved',
+          verifiedBy: 'teacher-001',
+          verifiedAt: new Date(),
+          tokensEarned: 15,
+          createdAt: new Date(),
+          updatedAt: new Date()
+        }
+      ]);
+      
+      // Create summary
+      await db.insert(studentServiceSummaries).values({
+        id: crypto.randomUUID(),
+        userId: studentUserId,
+        schoolId: schoolId,
+        totalHours: 7.5,
+        totalVerified: 7.5,
+        totalPending: 0,
+        totalRejected: 0,
+        goalHours: 30,
+        lastServiceDate: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+      
+      // Create tokens
+      await db.insert(userTokens).values({
+        id: crypto.randomUUID(),
+        userId: studentUserId,
+        echoBalance: 1103,
+        totalEarned: 1380,
+        totalSpent: 277,
+        streakDays: 4,
+        longestStreak: 4,
+        lastActiveDate: new Date(),
+        createdAt: new Date(),
+        updatedAt: new Date()
+      });
+      
+      res.json({ success: true, message: 'Emma data seeded successfully!', hours: 7.5, tokens: 1103 });
+    } catch (error: any) {
+      console.error('Seed failed:', error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
   // Auth routes - Get current user info
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {

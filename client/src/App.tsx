@@ -22,6 +22,7 @@ import ParentConsent from "@/pages/ParentConsent";
 import SchoolConsentDashboard from "@/pages/SchoolConsentDashboard";
 import MerchantVerifyPage from "@/pages/MerchantVerifyPage";
 import DemoLogin from "@/pages/DemoLogin";
+import EmergencySeed from "@/pages/emergency-seed";
 import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 import { RewardNotificationManager } from "@/components/RewardNotificationManager";
 import { SchoolRegistration } from "@/components/SchoolRegistration";
@@ -47,6 +48,7 @@ function Router() {
   return (
     <>
       <Switch>
+        <Route path="/emergency-seed" component={EmergencySeed} />
         <Route path="/demo-login" component={DemoLogin} />
         <Route path="/teacher-dashboard"><TeacherDashboard /></Route>
         <Route path="/class-settings" component={ClassSettings} />
