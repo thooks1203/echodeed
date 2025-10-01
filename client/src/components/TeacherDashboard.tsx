@@ -544,27 +544,27 @@ export function TeacherDashboard() {
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
           <TabsList className="grid w-full grid-cols-6">
-            <TabsTrigger value="overview" className="flex items-center gap-1">
+            <TabsTrigger value="overview" className="flex items-center gap-1 data-[state=active]:bg-blue-600 data-[state=active]:text-white">
               <BarChart3 className="w-4 h-4" />
               Overview
             </TabsTrigger>
-            <TabsTrigger value="students" className="flex items-center gap-1">
+            <TabsTrigger value="students" className="flex items-center gap-1 data-[state=active]:bg-purple-600 data-[state=active]:text-white">
               <Users className="w-4 h-4" />
               Students
             </TabsTrigger>
-            <TabsTrigger value="student-feed" className="flex items-center gap-1">
+            <TabsTrigger value="student-feed" className="flex items-center gap-1 data-[state=active]:bg-pink-600 data-[state=active]:text-white">
               <Heart className="w-4 h-4" />
               Student Feed
             </TabsTrigger>
-            <TabsTrigger value="lessons" className="flex items-center gap-1">
+            <TabsTrigger value="lessons" className="flex items-center gap-1 data-[state=active]:bg-emerald-600 data-[state=active]:text-white">
               <BookOpen className="w-4 h-4" />
               Lesson Plans
             </TabsTrigger>
-            <TabsTrigger value="service-hours" className="flex items-center gap-1">
+            <TabsTrigger value="service-hours" className="flex items-center gap-1 data-[state=active]:bg-teal-600 data-[state=active]:text-white">
               <CheckCircle className="w-4 h-4" />
               Service Hours
             </TabsTrigger>
-            <TabsTrigger value="rewards" className="flex items-center gap-1" data-testid="tab-rewards">
+            <TabsTrigger value="rewards" className="flex items-center gap-1 data-[state=active]:bg-amber-600 data-[state=active]:text-white" data-testid="tab-rewards">
               <Award className="w-4 h-4" />
               Rewards
             </TabsTrigger>

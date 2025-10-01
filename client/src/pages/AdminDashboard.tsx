@@ -1201,20 +1201,20 @@ export default function AdminDashboard() {
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
         <TabsList className="grid w-full grid-cols-8">
-          <TabsTrigger value="overview">Overview</TabsTrigger>
-          <TabsTrigger value="schools">Schools</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-          <TabsTrigger value="fundraising" data-testid="tab-fundraising">
+          <TabsTrigger value="overview" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">Overview</TabsTrigger>
+          <TabsTrigger value="schools" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">Schools</TabsTrigger>
+          <TabsTrigger value="analytics" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white">Analytics</TabsTrigger>
+          <TabsTrigger value="fundraising" className="data-[state=active]:bg-green-600 data-[state=active]:text-white" data-testid="tab-fundraising">
             <Target className="w-4 h-4 mr-1" />
             Fundraising
           </TabsTrigger>
-          <TabsTrigger value="reports">
+          <TabsTrigger value="reports" className="data-[state=active]:bg-cyan-600 data-[state=active]:text-white">
             <FileSpreadsheet className="w-4 h-4 mr-1" />
             Reports
           </TabsTrigger>
-          <TabsTrigger value="compliance">Compliance</TabsTrigger>
-          <TabsTrigger value="safety">Safety Monitor</TabsTrigger>
-          <TabsTrigger value="integrations">Integrations</TabsTrigger>
+          <TabsTrigger value="compliance" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">Compliance</TabsTrigger>
+          <TabsTrigger value="safety" className="data-[state=active]:bg-orange-600 data-[state=active]:text-white">Safety Monitor</TabsTrigger>
+          <TabsTrigger value="integrations" className="data-[state=active]:bg-violet-600 data-[state=active]:text-white">Integrations</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
