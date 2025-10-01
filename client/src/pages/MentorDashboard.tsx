@@ -205,24 +205,39 @@ export default function MentorDashboard() {
         </div>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-5 bg-white/80 backdrop-blur-sm">
-            <TabsTrigger value="overview" className="flex items-center gap-2">
+          <TabsList className="grid w-full grid-cols-5 bg-transparent gap-2 p-0">
+            <TabsTrigger 
+              value="overview" 
+              className="flex items-center gap-2 bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg transition-all"
+            >
               <Target className="h-4 w-4" />
               Overview
             </TabsTrigger>
-            <TabsTrigger value="mentorships" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="mentorships" 
+              className="flex items-center gap-2 bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg transition-all"
+            >
               <Users className="h-4 w-4" />
               My Mentees
             </TabsTrigger>
-            <TabsTrigger value="activities" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="activities" 
+              className="flex items-center gap-2 bg-green-600 text-white hover:bg-green-700 data-[state=active]:bg-green-700 data-[state=active]:shadow-lg transition-all"
+            >
               <Calendar className="h-4 w-4" />
               Activities
             </TabsTrigger>
-            <TabsTrigger value="badges" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="badges" 
+              className="flex items-center gap-2 bg-amber-600 text-white hover:bg-amber-700 data-[state=active]:bg-amber-700 data-[state=active]:shadow-lg transition-all"
+            >
               <Trophy className="h-4 w-4" />
               Badges
             </TabsTrigger>
-            <TabsTrigger value="training" className="flex items-center gap-2">
+            <TabsTrigger 
+              value="training" 
+              className="flex items-center gap-2 bg-teal-600 text-white hover:bg-teal-700 data-[state=active]:bg-teal-700 data-[state=active]:shadow-lg transition-all"
+            >
               <BookOpen className="h-4 w-4" />
               Training
             </TabsTrigger>
