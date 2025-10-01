@@ -28,12 +28,17 @@ import { SchoolRegistration } from "@/components/SchoolRegistration";
 import { SurpriseGiveawayManager } from "@/components/SurpriseGiveawayManager";
 import { useKindnessSparks } from "@/components/KindnessSparks";
 import { KindnessSparksContext } from "@/contexts/KindnessSparksContext";
+import { useAuth } from "@/hooks/useAuth";
 // import TVDisplayMode from "@/pages/TVDisplayMode";
 
 function Router() {
   const [location, setLocation] = useLocation();
-  // Hide floating rewards button for admin, teacher, landing, demo, and rewards pages
-  const showFloatingButton = !location.includes('/admin') && 
+  const { isTeacher, isAdmin } = useAuth();
+  
+  // Hide floating rewards button for admin/teacher roles and certain pages
+  const showFloatingButton = !isTeacher && 
+                              !isAdmin && 
+                              !location.includes('/admin') && 
                               !location.includes('/teacher') && 
                               location !== '/rewards' && 
                               location !== '/' && 
