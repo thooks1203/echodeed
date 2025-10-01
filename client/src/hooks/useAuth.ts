@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { SchoolRole } from "@shared/schema";
+
+type SchoolRole = 'student' | 'teacher' | 'admin' | 'parent' | 'counselor';
 
 interface AuthUser {
   id: string;
@@ -23,15 +24,15 @@ export function useAuth() {
     // Allow demo mode in both development and production for the educational platform
     // This is safe because it's for demonstration purposes only
     
-    const storedRole = localStorage.getItem('echodeed_demo_role') as SchoolRole;
+    const storedRole = localStorage.getItem('echodeed_demo_role');
     if (!storedRole) return null;
     
-    const demoUsers = {
+    const demoUsers: Record<string, AuthUser> = {
       student: {
         id: 'student-001',
         name: 'Emma Johnson',
         email: 'emma.johnson@student.edu',
-        schoolRole: 'student' as SchoolRole,
+        schoolRole: 'student',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
         grade: '9th'
       },
@@ -39,21 +40,21 @@ export function useAuth() {
         id: 'teacher-001', 
         name: 'Ms. Sarah Wilson',
         email: 'sarah.wilson@school.edu',
-        schoolRole: 'teacher' as SchoolRole,
+        schoolRole: 'teacher',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
       },
       admin: {
         id: 'admin-001',
         name: 'Mr. Murr',
         email: 'murr@bca.edu', 
-        schoolRole: 'admin' as SchoolRole,
+        schoolRole: 'admin',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
       },
       parent: {
         id: 'parent-001',
         name: 'Mrs. Sarah Johnson',
         email: 'sarah.johnson@parent.edu',
-        schoolRole: 'parent' as SchoolRole,
+        schoolRole: 'parent',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
       }
     };
