@@ -1313,6 +1313,36 @@ export default function AdminDashboard() {
               ))}
             </CardContent>
           </Card>
+
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
+              <CardDescription>
+                Common administrative tasks for district management
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <Button className="h-20 flex flex-col gap-2 bg-blue-600 hover:bg-blue-700 text-white">
+                  <FileSpreadsheet className="w-6 h-6" />
+                  <span className="text-sm">District Report</span>
+                </Button>
+                <Button className="h-20 flex flex-col gap-2 bg-purple-600 hover:bg-purple-700 text-white">
+                  <Bell className="w-6 h-6" />
+                  <span className="text-sm">Send Update</span>
+                </Button>
+                <Button className="h-20 flex flex-col gap-2 bg-green-600 hover:bg-green-700 text-white">
+                  <Download className="w-6 h-6" />
+                  <span className="text-sm">Export Data</span>
+                </Button>
+                <Button className="h-20 flex flex-col gap-2 bg-orange-600 hover:bg-orange-700 text-white">
+                  <Settings className="w-6 h-6" />
+                  <span className="text-sm">District Settings</span>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Schools Tab */}
