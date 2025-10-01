@@ -233,10 +233,10 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
         </div>
 
         <Tabs defaultValue="browse" className="space-y-8">
-          <TabsList className="grid w-full grid-cols-3 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm">
-            <TabsTrigger value="browse" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white" data-testid="tab-browse-rewards">Browse Rewards</TabsTrigger>
-            <TabsTrigger value="partners" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white" data-testid="tab-partners">Partners</TabsTrigger>
-            <TabsTrigger value="my-rewards" className="data-[state=active]:bg-green-600 data-[state=active]:text-white" data-testid="tab-my-rewards">My Rewards</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-3 gap-2 bg-transparent">
+            <TabsTrigger value="browse" className="bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg" data-testid="tab-browse-rewards">Browse Rewards</TabsTrigger>
+            <TabsTrigger value="partners" className="bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg" data-testid="tab-partners">Partners</TabsTrigger>
+            <TabsTrigger value="my-rewards" className="bg-green-600 text-white hover:bg-green-700 data-[state=active]:bg-green-700 data-[state=active]:shadow-lg" data-testid="tab-my-rewards">My Rewards</TabsTrigger>
           </TabsList>
 
           {/* Browse Rewards Tab */}

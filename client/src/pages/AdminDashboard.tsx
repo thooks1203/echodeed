@@ -1200,21 +1200,21 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-8">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-blue-600 data-[state=active]:text-white">Overview</TabsTrigger>
-          <TabsTrigger value="schools" className="data-[state=active]:bg-purple-600 data-[state=active]:text-white">Schools</TabsTrigger>
-          <TabsTrigger value="analytics" className="data-[state=active]:bg-indigo-600 data-[state=active]:text-white">Analytics</TabsTrigger>
-          <TabsTrigger value="fundraising" className="data-[state=active]:bg-green-600 data-[state=active]:text-white" data-testid="tab-fundraising">
+        <TabsList className="grid w-full grid-cols-8 gap-1 bg-transparent">
+          <TabsTrigger value="overview" className="bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg">Overview</TabsTrigger>
+          <TabsTrigger value="schools" className="bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg">Schools</TabsTrigger>
+          <TabsTrigger value="analytics" className="bg-indigo-600 text-white hover:bg-indigo-700 data-[state=active]:bg-indigo-700 data-[state=active]:shadow-lg">Analytics</TabsTrigger>
+          <TabsTrigger value="fundraising" className="bg-green-600 text-white hover:bg-green-700 data-[state=active]:bg-green-700 data-[state=active]:shadow-lg" data-testid="tab-fundraising">
             <Target className="w-4 h-4 mr-1" />
             Fundraising
           </TabsTrigger>
-          <TabsTrigger value="reports" className="data-[state=active]:bg-cyan-600 data-[state=active]:text-white">
+          <TabsTrigger value="reports" className="bg-cyan-600 text-white hover:bg-cyan-700 data-[state=active]:bg-cyan-700 data-[state=active]:shadow-lg">
             <FileSpreadsheet className="w-4 h-4 mr-1" />
             Reports
           </TabsTrigger>
-          <TabsTrigger value="compliance" className="data-[state=active]:bg-emerald-600 data-[state=active]:text-white">Compliance</TabsTrigger>
-          <TabsTrigger value="safety" className="data-[state=active]:bg-orange-600 data-[state=active]:text-white">Safety Monitor</TabsTrigger>
-          <TabsTrigger value="integrations" className="data-[state=active]:bg-violet-600 data-[state=active]:text-white">Integrations</TabsTrigger>
+          <TabsTrigger value="compliance" className="bg-emerald-600 text-white hover:bg-emerald-700 data-[state=active]:bg-emerald-700 data-[state=active]:shadow-lg">Compliance</TabsTrigger>
+          <TabsTrigger value="safety" className="bg-orange-600 text-white hover:bg-orange-700 data-[state=active]:bg-orange-700 data-[state=active]:shadow-lg">Safety Monitor</TabsTrigger>
+          <TabsTrigger value="integrations" className="bg-violet-600 text-white hover:bg-violet-700 data-[state=active]:bg-violet-700 data-[state=active]:shadow-lg">Integrations</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -1324,20 +1324,20 @@ export default function AdminDashboard() {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <Button className="h-20 flex flex-col gap-2 bg-blue-600 hover:bg-blue-700 text-white">
-                  <FileSpreadsheet className="w-6 h-6" />
+                <Button className="h-14 flex flex-col gap-1 bg-blue-600 hover:bg-blue-700 text-white">
+                  <FileSpreadsheet className="w-5 h-5" />
                   <span className="text-sm">District Report</span>
                 </Button>
-                <Button className="h-20 flex flex-col gap-2 bg-purple-600 hover:bg-purple-700 text-white">
-                  <Bell className="w-6 h-6" />
+                <Button className="h-14 flex flex-col gap-1 bg-purple-600 hover:bg-purple-700 text-white">
+                  <Bell className="w-5 h-5" />
                   <span className="text-sm">Send Update</span>
                 </Button>
-                <Button className="h-20 flex flex-col gap-2 bg-green-600 hover:bg-green-700 text-white">
-                  <Download className="w-6 h-6" />
+                <Button className="h-14 flex flex-col gap-1 bg-green-600 hover:bg-green-700 text-white">
+                  <Download className="w-5 h-5" />
                   <span className="text-sm">Export Data</span>
                 </Button>
-                <Button className="h-20 flex flex-col gap-2 bg-orange-600 hover:bg-orange-700 text-white">
-                  <Settings className="w-6 h-6" />
+                <Button className="h-14 flex flex-col gap-1 bg-orange-600 hover:bg-orange-700 text-white">
+                  <Settings className="w-5 h-5" />
                   <span className="text-sm">District Settings</span>
                 </Button>
               </div>
