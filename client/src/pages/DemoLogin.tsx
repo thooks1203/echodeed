@@ -66,7 +66,7 @@ export default function DemoLogin() {
           
           <div className="pt-4 border-t">
             <p className="text-xs text-center text-muted-foreground">
-              Ready for Monday, September 22nd demo with Burlington Christian Academy
+              Ready for Tuesday, October 1st, 2025 demo with Burlington Christian Academy
             </p>
           </div>
         </CardContent>
