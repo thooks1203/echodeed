@@ -55,14 +55,26 @@ export default function EmergencySeed() {
           </Button>
 
           {result && (
-            <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
-              <h3 className="font-semibold text-green-800 dark:text-green-200 mb-2">✅ Success!</h3>
-              <p className="text-green-700 dark:text-green-300">{result.message}</p>
-              <div className="mt-2 text-sm text-green-600 dark:text-green-400">
-                <p>Service Hours: {result.hours}</p>
-                <p>Echo Tokens: {result.tokens}</p>
+            <>
+              <div className="p-4 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-lg">
+                <h3 className="font-semibold text-green-800 dark:text-green-200 mb-2">✅ Success!</h3>
+                <p className="text-green-700 dark:text-green-300">{result.message}</p>
+                <div className="mt-2 text-sm text-green-600 dark:text-green-400">
+                  <p>Service Hours: {result.hours}</p>
+                  <p>Echo Tokens: {result.tokens}</p>
+                </div>
               </div>
-            </div>
+              
+              <Button 
+                onClick={() => window.location.href = '/demo-login'}
+                className="w-full"
+                size="lg"
+                variant="default"
+                data-testid="button-go-to-app"
+              >
+                🚀 Go to App & Login as Emma
+              </Button>
+            </>
           )}
 
           {error && (
