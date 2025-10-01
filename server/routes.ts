@@ -1667,18 +1667,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const userRole = req.user.claims.role || req.user.claims.schoolRole;
         
         // Demo users get different realistic balances to show engagement variety
+        let demoStreakDays = 0;
+        let demoLongestStreak = 0;
+        
         if (userRole === 'student' || userId.startsWith('student-')) {
           demoBalance = 67;  // Student has earned tokens from service hours
           demoTotalEarned = 344; // They've earned tokens and may have redeemed some rewards
+          demoStreakDays = 4;  // Emma Johnson has a 4-day streak!
+          demoLongestStreak = 4; // Best streak is also 4 days
         } else if (userRole === 'teacher' || userId === 'teacher-001') {
           demoBalance = 45;  // Ms. Wilson has moderate balance
           demoTotalEarned = 45; // Hasn't redeemed rewards yet
+          demoStreakDays = 2;  // Teacher has a 2-day streak
+          demoLongestStreak = 3; // Best streak was 3 days
         } else if (userRole === 'admin' || userId === 'admin-001') {
           demoBalance = 23;  // Admin has fewer tokens (different activity pattern)
           demoTotalEarned = 38; // Has redeemed some rewards (15 tokens spent)
+          demoStreakDays = 1;  // Admin has a 1-day streak
+          demoLongestStreak = 2; // Best streak was 2 days
         } else if (userRole === 'parent' || userId === 'parent-001') {
           demoBalance = 83;  // Parent has high balance from dual reward system
           demoTotalEarned = 128; // Parent has earned most tokens and redeemed some (45 tokens spent)
+          demoStreakDays = 3;  // Parent has a 3-day streak
+          demoLongestStreak = 5; // Best streak was 5 days
         } else {
           demoBalance = 0;   // Regular users start at 0
           demoTotalEarned = 0;
@@ -1687,7 +1698,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         userTokens = await storage.createUserTokens({ 
           userId, 
           echoBalance: demoBalance, 
-          totalEarned: demoTotalEarned 
+          totalEarned: demoTotalEarned,
+          streakDays: demoStreakDays,
+          longestStreak: demoLongestStreak
         });
       }
       

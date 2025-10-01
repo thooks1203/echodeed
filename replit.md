@@ -62,6 +62,19 @@ Without this, Emma Johnson's demo data (7.5 service hours + 4-day streak) will n
 3. `server/routes.ts` lines 92-102 - Teacher auth bypasses only work in development
 
 ## Recent Fixes and Updates (October 1, 2025)
+### Student Dashboard Streak Data Fix
+**Issue Fixed**: Student Overview tab showing zeros for Current Streak and Best Streak instead of Emma Johnson's 4-day streak
+- **Problem**: Demo token data missing `streakDays` and `longestStreak` fields, causing zeros to display
+- **Solution**: 
+  - Added `insertUserTokensSchema` and `InsertUserTokens` type to `shared/schema.ts`
+  - Updated `/api/tokens` endpoint to include streak data in demo tokens:
+    - Students: 4-day current streak, 4-day best streak (Emma Johnson)
+    - Teachers: 2-day current, 3-day best
+    - Parents: 3-day current, 5-day best
+    - Admins: 1-day current, 2-day best
+- **Impact**: Student Dashboard now displays meaningful engagement streak data
+- **Files Modified**: `server/routes.ts` (lines 1673-1707), `shared/schema.ts` (added insert schema)
+
 ### Authentication Flow Improvement
 **Issue Fixed**: Old generic sign-in UI showing Global Kindness Counter when accessing `/app` unauthenticated
 - **Problem**: Users saw outdated sign-in screen with "Please Sign In" dialog over Global Kindness Counter

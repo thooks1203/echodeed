@@ -1155,6 +1155,12 @@ export const insertSponsorAnalyticsSchema = createInsertSchema(sponsorAnalytics)
   createdAt: true,
 });
 
+export const insertUserTokensSchema = createInsertSchema(userTokens).omit({
+  id: true,
+  createdAt: true,
+  lastActive: true,
+});
+
 // Type exports
 export type User = typeof users.$inferSelect;
 export type InsertUser = z.infer<typeof insertUserSchema>;
@@ -1219,6 +1225,8 @@ export type SponsorAnalytics = typeof sponsorAnalytics.$inferSelect;
 export type InsertSponsorAnalytics = z.infer<typeof insertSponsorAnalyticsSchema>;
 
 export type UserTokens = typeof userTokens.$inferSelect;
+export type InsertUserTokens = z.infer<typeof insertUserTokensSchema>;
+
 export type SurpriseGiveawayCampaign = typeof surpriseGiveawayCampaigns.$inferSelect;
 export type SurpriseGiveawayWinner = typeof surpriseGiveawayWinners.$inferSelect;
 
