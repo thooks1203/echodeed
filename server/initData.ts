@@ -3,7 +3,16 @@ import { log } from './vite';
 
 export async function initializeSampleData() {
   try {
-    log('Initializing sample data...');
+    const env = process.env.NODE_ENV || 'development';
+    const demoMode = process.env.DEMO_MODE || 'false';
+    const dbUrl = process.env.DATABASE_URL ? process.env.DATABASE_URL.substring(0, 50) + '...' : 'NOT SET';
+    
+    log('='.repeat(80));
+    log('🚀 INITIALIZING DEMO DATA');
+    log(`📍 Environment: ${env}`);
+    log(`🎭 DEMO_MODE: ${demoMode}`);
+    log(`🗄️  Database URL: ${dbUrl}`);
+    log('='.repeat(80));
     
     // Test database connection first
     try {
@@ -521,6 +530,44 @@ export async function initializeSampleData() {
 
       log('✅ Force created fresh community service hours for Emma Johnson');
       log('📊 Emma Johnson now has 7.5 total verified service hours (4.5 + 3.0)');
+      
+      // VERIFICATION: Check what was actually saved to database
+      try {
+        const { db } = await import('./db');
+        const { userTokens, communityServiceLogs, studentServiceSummaries } = await import('@shared/schema');
+        const { eq } = await import('drizzle-orm');
+        
+        const emmaTokens = await db.select().from(userTokens).where(eq(userTokens.userId, studentUserId));
+        const emmaServiceLogs = await db.select().from(communityServiceLogs).where(eq(communityServiceLogs.userId, studentUserId));
+        const emmaSummary = await db.select().from(studentServiceSummaries).where(eq(studentServiceSummaries.userId, studentUserId));
+        
+        log('🔍 DATABASE VERIFICATION FOR EMMA JOHNSON (student-001):');
+        if (emmaTokens.length > 0) {
+          const tokens = emmaTokens[0];
+          log(`   💰 Tokens: ${tokens.echoBalance} balance, ${tokens.totalEarned} earned, streak: ${tokens.streakDays}/${tokens.longestStreak}`);
+        } else {
+          log('   ⚠️  NO TOKEN RECORD FOUND!');
+        }
+        
+        if (emmaServiceLogs.length > 0) {
+          log(`   📝 Service Logs: ${emmaServiceLogs.length} records`);
+          emmaServiceLogs.forEach(log => {
+            console.log(`      - ${log.serviceName}: ${log.hoursLogged} hours, ${log.tokensEarned} tokens (${log.verificationStatus})`);
+          });
+        } else {
+          log('   ⚠️  NO SERVICE LOGS FOUND!');
+        }
+        
+        if (emmaSummary.length > 0) {
+          const summary = emmaSummary[0];
+          log(`   📊 Summary: ${summary.totalHours} hours verified, ${summary.totalPending} pending`);
+        } else {
+          log('   ⚠️  NO SUMMARY FOUND!');
+        }
+        log('='.repeat(80));
+      } catch (verifyError: any) {
+        log('⚠️ Could not verify Emma\'s data:', verifyError.message);
+      }
     } catch (error: any) {
       log('⚠️ Could not initialize community service hours:', error.message || error);
     }
