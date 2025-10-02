@@ -290,7 +290,7 @@ function ServiceHoursSection() {
 }
 
 export default function ParentDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'notifications' | 'rewards' | 'service-hours' | 'fundraising' | 'insights' | 'sponsors'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'rewards' | 'service-hours' | 'fundraising' | 'insights'>('overview');
   const [selectedStudent, setSelectedStudent] = useState<string>('');
   const [, navigate] = useLocation();
   const [activeBottomTab, setActiveBottomTab] = useState('parent-dashboard');
@@ -645,15 +645,12 @@ export default function ParentDashboard() {
             <TabsTrigger value="activity" className="flex-1 min-w-fit px-3 py-2 bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg">
               Activity
             </TabsTrigger>
-            <TabsTrigger value="notifications" className="flex-1 min-w-fit px-3 py-2 bg-pink-600 text-white hover:bg-pink-700 data-[state=active]:bg-pink-700 data-[state=active]:shadow-lg">
-              Alerts
-            </TabsTrigger>
-            <TabsTrigger value="rewards" className="flex-1 min-w-fit px-3 py-2 bg-amber-600 text-white hover:bg-amber-700 data-[state=active]:bg-amber-700 data-[state=active]:shadow-lg">
-              Rewards
-            </TabsTrigger>
             <TabsTrigger value="service-hours" className="flex-1 min-w-fit px-3 py-2 bg-teal-600 text-white hover:bg-teal-700 data-[state=active]:bg-teal-700 data-[state=active]:shadow-lg">
               <Shield className="h-3 w-3 mr-1" />
               Service
+            </TabsTrigger>
+            <TabsTrigger value="rewards" className="flex-1 min-w-fit px-3 py-2 bg-amber-600 text-white hover:bg-amber-700 data-[state=active]:bg-amber-700 data-[state=active]:shadow-lg">
+              Rewards
             </TabsTrigger>
             {featureFlags.fundraising && (
               <TabsTrigger value="fundraising" className="flex-1 min-w-fit px-3 py-2 bg-green-600 text-white hover:bg-green-700 data-[state=active]:bg-green-700 data-[state=active]:shadow-lg">
@@ -666,10 +663,6 @@ export default function ParentDashboard() {
                 Insights
               </TabsTrigger>
             )}
-            <TabsTrigger value="sponsors" className="flex-1 min-w-fit px-3 py-2 bg-orange-600 text-white hover:bg-orange-700 data-[state=active]:bg-orange-700 data-[state=active]:shadow-lg">
-              <Building2 className="h-3 w-3 mr-1" />
-              Sponsors
-            </TabsTrigger>
           </TabsList>
 
           {/* Overview Tab */}
@@ -885,76 +878,6 @@ export default function ParentDashboard() {
             </div>
           </TabsContent>
 
-          {/* Notifications Tab */}
-          <TabsContent value="notifications" className="space-y-6">
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                📱 All Notifications
-              </h3>
-              <Button className="bg-teal-600 hover:bg-teal-700 text-white" size="sm" data-testid="button-mark-all-read">
-                <CheckCircle className="h-4 w-4 mr-1" />
-                Mark All Read
-              </Button>
-            </div>
-
-            <div className="space-y-4">
-              {mockNotifications.map((notification) => (
-                <Card key={notification.id} className={!notification.isRead ? 'border-blue-200 bg-blue-50 dark:bg-blue-900/10' : ''}>
-                  <CardContent className="p-4">
-                    <div className="flex items-start gap-4">
-                      {getNotificationIcon(notification.type)}
-                      <div className="flex-1">
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className="font-medium text-gray-900 dark:text-white">
-                            {notification.title}
-                          </h4>
-                          <Badge variant={getPriorityColor(notification.priority)}>
-                            {notification.priority}
-                          </Badge>
-                          {!notification.isRead && (
-                            <Badge variant="destructive" className="text-xs">UNREAD</Badge>
-                          )}
-                        </div>
-                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">
-                          {notification.message}
-                        </p>
-                        {notification.relatedData?.postContent && (
-                          <div className="p-3 bg-gray-50 dark:bg-gray-800 rounded-md mb-2">
-                            <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">Your child wrote:</p>
-                            <p className="text-sm">"{notification.relatedData.postContent}"</p>
-                          </div>
-                        )}
-                        {notification.relatedData?.rewardAmount && (
-                          <div className="flex items-center gap-1 mb-2">
-                            <Gift className="h-4 w-4 text-green-500" />
-                            <span className="text-sm text-green-600 font-medium">
-                              Reward earned: ${notification.relatedData.rewardAmount}
-                            </span>
-                          </div>
-                        )}
-                        <div className="flex items-center justify-between">
-                          <p className="text-xs text-gray-500">
-                            {new Date(notification.createdAt).toLocaleString()}
-                          </p>
-                          {!notification.isRead && (
-                            <Button
-                              onClick={() => handleMarkAsRead(notification.id)}
-                              className="bg-cyan-600 hover:bg-cyan-700 text-white"
-                              size="sm"
-                              data-testid={`button-mark-read-${notification.id}`}
-                            >
-                              Mark as Read
-                            </Button>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-          </TabsContent>
-
           {/* Dual Rewards Tab */}
           <TabsContent value="rewards">
             <Card>
@@ -1148,11 +1071,6 @@ export default function ParentDashboard() {
             </Card>
           </TabsContent>
           )}
-
-          {/* Sponsors Tab */}
-          <TabsContent value="sponsors" className="space-y-6">
-            <SponsorsPage />
-          </TabsContent>
         </Tabs>
       </div>
       
