@@ -322,7 +322,7 @@ export default function ParentDashboard() {
   const linkedStudents: LinkedStudent[] = [
     {
       userId: 'student-001',
-      name: 'Emma Johnson',
+      name: 'Child 1',
       grade: '9th',
       school: 'Burlington Christian Academy',
       isActive: true,
@@ -333,7 +333,7 @@ export default function ParentDashboard() {
     },
     {
       userId: 'student-002', 
-      name: 'Alex Johnson',
+      name: 'Child 2',
       grade: '9th',
       school: 'Burlington Christian Academy',
       isActive: true,
@@ -349,24 +349,24 @@ export default function ParentDashboard() {
     {
       id: 'notif-001',
       type: 'kindness_post',
-      title: '🌟 Emma shared a kindness act!',
-      message: 'Emma just posted about helping a classmate with their homework. You both earned rewards!',
-      studentName: 'Emma',
+      title: '🌟 Your child shared a kindness act!',
+      message: 'Your child just posted about helping a classmate with their homework. You both earned rewards!',
+      studentName: 'Child',
       studentUserId: 'student-001',
       createdAt: new Date(Date.now() - 1800000).toISOString(), // 30 min ago
       isRead: false,
       priority: 'medium',
       relatedData: {
-        postContent: 'I helped my friend Sarah with her math homework during lunch',
+        postContent: 'I helped a classmate with their math homework during lunch',
         rewardAmount: 5
       }
     },
     {
       id: 'notif-002',
       type: 'milestone',
-      title: '🏆 Alex reached a milestone!',
-      message: 'Alex completed 5 kindness acts this week and earned the "Helper Hero" badge!',
-      studentName: 'Alex',
+      title: '🏆 Your child reached a milestone!',
+      message: 'Your child completed 5 kindness acts this week and earned the "Helper Hero" badge!',
+      studentName: 'Child',
       studentUserId: 'student-002',
       createdAt: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
       isRead: true,
@@ -397,8 +397,8 @@ export default function ParentDashboard() {
     {
       id: 'activity-001',
       studentUserId: 'student-001',
-      studentName: 'Emma',
-      content: 'I helped my friend Sarah with her math homework during lunch',
+      studentName: 'Child 1',
+      content: 'I helped a classmate with their math homework during lunch',
       category: 'helping',
       location: 'Burlington Elementary',
       createdAt: new Date(Date.now() - 1800000).toISOString(),
@@ -410,7 +410,7 @@ export default function ParentDashboard() {
     {
       id: 'activity-002',
       studentUserId: 'student-002',
-      studentName: 'Alex',
+      studentName: 'Child 2',
       content: 'I shared my snack with a friend who forgot theirs',
       category: 'sharing',
       location: 'Burlington Elementary',
@@ -423,7 +423,7 @@ export default function ParentDashboard() {
     {
       id: 'activity-003',
       studentUserId: 'student-001',
-      studentName: 'Emma',
+      studentName: 'Child 1',
       content: 'I included a new student in our group during recess',
       category: 'including',
       location: 'Burlington Elementary',
