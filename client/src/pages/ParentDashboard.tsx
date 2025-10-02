@@ -313,8 +313,8 @@ export default function ParentDashboard() {
   // Mock parent data - in production, get from auth context
   const parentInfo = {
     id: 'parent-001',
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@email.com',
+    name: 'Keisha Jones',
+    email: 'keisha.jones@email.com',
     children: ['student-001', 'student-002']
   };
 
@@ -322,7 +322,7 @@ export default function ParentDashboard() {
   const linkedStudents: LinkedStudent[] = [
     {
       userId: 'student-001',
-      name: 'Child 1',
+      name: 'Mary Jones',
       grade: '9th',
       school: 'Dudley High School',
       isActive: true,
@@ -333,7 +333,7 @@ export default function ParentDashboard() {
     },
     {
       userId: 'student-002', 
-      name: 'Child 2',
+      name: 'Marcus Jones',
       grade: '9th',
       school: 'Dudley High School',
       isActive: true,
