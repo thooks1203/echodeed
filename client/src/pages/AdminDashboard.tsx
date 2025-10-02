@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
+import { featureFlags } from '@shared/featureFlags';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -1200,21 +1201,14 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-8 gap-1 bg-transparent">
+        <TabsList className="grid w-full grid-cols-4 gap-1 bg-transparent">
           <TabsTrigger value="overview" className="bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg">Overview</TabsTrigger>
           <TabsTrigger value="schools" className="bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg">Schools</TabsTrigger>
-          <TabsTrigger value="analytics" className="bg-indigo-600 text-white hover:bg-indigo-700 data-[state=active]:bg-indigo-700 data-[state=active]:shadow-lg">Analytics</TabsTrigger>
-          <TabsTrigger value="fundraising" className="bg-green-600 text-white hover:bg-green-700 data-[state=active]:bg-green-700 data-[state=active]:shadow-lg" data-testid="tab-fundraising">
-            <Target className="w-4 h-4 mr-1" />
-            Fundraising
-          </TabsTrigger>
           <TabsTrigger value="reports" className="bg-cyan-600 text-white hover:bg-cyan-700 data-[state=active]:bg-cyan-700 data-[state=active]:shadow-lg">
             <FileSpreadsheet className="w-4 h-4 mr-1" />
             Reports
           </TabsTrigger>
           <TabsTrigger value="compliance" className="bg-emerald-600 text-white hover:bg-emerald-700 data-[state=active]:bg-emerald-700 data-[state=active]:shadow-lg">Compliance</TabsTrigger>
-          <TabsTrigger value="safety" className="bg-orange-600 text-white hover:bg-orange-700 data-[state=active]:bg-orange-700 data-[state=active]:shadow-lg">Safety Monitor</TabsTrigger>
-          <TabsTrigger value="integrations" className="bg-violet-600 text-white hover:bg-violet-700 data-[state=active]:bg-violet-700 data-[state=active]:shadow-lg">Integrations</TabsTrigger>
         </TabsList>
 
         {/* Overview Tab */}
@@ -1237,30 +1231,30 @@ export default function AdminDashboard() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Kindness Acts</CardTitle>
-                <Award className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Service Hours Logged</CardTitle>
+                <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold" data-testid="total-kindness-acts">
-                  {mockDistrictMetrics.totalKindnessActs.toLocaleString()}
+                <div className="text-2xl font-bold text-teal-600" data-testid="total-service-hours">
+                  156
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  District total this year
+                  Total hours verified this year
                 </p>
               </CardContent>
             </Card>
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">SEL Score</CardTitle>
-                <TrendingUp className="h-4 w-4 text-muted-foreground" />
+                <CardTitle className="text-sm font-medium">Tokens Redeemed</CardTitle>
+                <Zap className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold" data-testid="avg-sel-score">
-                  {mockDistrictMetrics.avgSelScore}/10
+                <div className="text-2xl font-bold text-amber-600" data-testid="total-tokens-redeemed">
+                  2,847
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  District average
+                  At 17 local business partners
                 </p>
               </CardContent>
             </Card>
@@ -1284,9 +1278,9 @@ export default function AdminDashboard() {
 
           <Card>
             <CardHeader>
-              <CardTitle>Top Performing Schools</CardTitle>
+              <CardTitle>School Performance</CardTitle>
               <CardDescription>
-                Schools with highest SEL engagement and kindness activity
+                Schools ranked by student engagement and service hours
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -1304,10 +1298,10 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-lg font-bold text-purple-600">
-                      {school.avgSelScore}/10
+                    <div className="text-lg font-bold text-teal-600">
+                      {school.kindnessActsThisMonth}
                     </div>
-                    <p className="text-xs text-gray-500">SEL Score</p>
+                    <p className="text-xs text-gray-500">Acts This Month</p>
                   </div>
                 </div>
               ))}
@@ -1404,78 +1398,6 @@ export default function AdminDashboard() {
               </Card>
             ))}
           </div>
-        </TabsContent>
-
-        {/* Analytics Tab */}
-        <TabsContent value="analytics" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <BarChart3 className="w-5 h-5" />
-                District Analytics Dashboard
-              </CardTitle>
-              <CardDescription>
-                Comprehensive insights into SEL performance and engagement metrics
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div className="space-y-3">
-                  <h4 className="font-semibold">Monthly Trends</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Kindness Acts Growth</span>
-                      <span className="text-green-600">+23%</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Parent Engagement</span>
-                      <span className="text-blue-600">+15%</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Teacher Usage</span>
-                      <span className="text-purple-600">+18%</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="space-y-3">
-                  <h4 className="font-semibold">SEL Performance</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>Self-Awareness</span>
-                      <Badge variant="secondary">8.1/10</Badge>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Social Awareness</span>
-                      <Badge variant="secondary">8.4/10</Badge>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>Responsible Decision Making</span>
-                      <Badge variant="secondary">7.9/10</Badge>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-3">
-                  <h4 className="font-semibold">Benchmarking</h4>
-                  <div className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>vs State Average</span>
-                      <span className="text-green-600">+12%</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>vs Similar Districts</span>
-                      <span className="text-green-600">+8%</span>
-                    </div>
-                    <div className="flex justify-between text-sm">
-                      <span>National Percentile</span>
-                      <Badge variant="default">78th</Badge>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
         </TabsContent>
 
         {/* Reports & Exports Tab */}
@@ -1774,73 +1696,6 @@ export default function AdminDashboard() {
                   <div className="bg-muted/50 p-3 rounded-lg">
                     <div className="font-medium">Audit Reports</div>
                     <div className="text-muted-foreground">Compliance documentation</div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        {/* Fundraising Tab */}
-        <TabsContent value="fundraising" className="space-y-6" data-testid="tab-content-fundraising">
-          <FundraisingContent />
-        </TabsContent>
-
-        {/* Safety Monitoring Tab */}
-        <TabsContent value="safety" className="space-y-6">
-          <SafetyMonitoringContent />
-        </TabsContent>
-
-        {/* Integrations Tab */}
-        <TabsContent value="integrations" className="space-y-6">
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Settings className="w-5 h-5" />
-                Platform Integrations
-              </CardTitle>
-              <CardDescription>
-                Connect EchoDeed with your existing school systems
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-4">
-                  <h4 className="font-semibold">Google Workspace</h4>
-                  <div className="p-4 border rounded-lg space-y-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-blue-100 rounded flex items-center justify-center">
-                          📚
-                        </div>
-                        <span>Google Classroom</span>
-                      </div>
-                      <Badge variant="outline">Connect</Badge>
-                    </div>
-                    <p className="text-sm text-gray-600">
-                      Sync student rosters and assignments automatically
-                    </p>
-                    <Button size="sm" className="w-full" data-testid="connect-google-classroom">
-                      Connect Google Classroom
-                    </Button>
-                  </div>
-                </div>
-
-                <div className="space-y-4">
-                  <h4 className="font-semibold">Student Information Systems</h4>
-                  <div className="space-y-3">
-                    <div className="p-3 border rounded-lg flex items-center justify-between">
-                      <span>PowerSchool</span>
-                      <Badge variant="outline">Available</Badge>
-                    </div>
-                    <div className="p-3 border rounded-lg flex items-center justify-between">
-                      <span>Infinite Campus</span>
-                      <Badge variant="outline">Available</Badge>
-                    </div>
-                    <div className="p-3 border rounded-lg flex items-center justify-between">
-                      <span>Skyward</span>
-                      <Badge variant="outline">Available</Badge>
-                    </div>
                   </div>
                 </div>
               </div>
