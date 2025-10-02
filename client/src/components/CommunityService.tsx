@@ -246,7 +246,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
             />
           )}
           <div>
-            <h1 className="text-2xl font-bold">Community Service Hours</h1>
+            <h1 className="text-2xl font-bold">Service Hours</h1>
             <p className="text-muted-foreground">Track your service toward the 30+ hour yearly requirement</p>
           </div>
         </div>
@@ -329,7 +329,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
             <CardHeader>
               <CardTitle>Progress Toward Graduation Requirement</CardTitle>
               <CardDescription>
-                You need {goalHours} community service hours to graduate. Keep up the great work!
+                You need {goalHours} service hours to graduate. Keep up the great work!
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -366,9 +366,9 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
         <TabsContent value="log-hours" className="space-y-6">
           <Card>
             <CardHeader>
-              <CardTitle>Log Community Service Hours</CardTitle>
+              <CardTitle>Log Service Hours</CardTitle>
               <CardDescription>
-                Submit your community service for verification. Include detailed information and reflection for faster approval.
+                Submit your service hours for verification. Include detailed information and reflection for faster approval.
               </CardDescription>
             </CardHeader>
             <CardContent>

@@ -163,7 +163,7 @@ function ServiceHoursSection() {
               <Shield className="h-4 w-4" />
               <AlertTitle>No Service Hours Yet</AlertTitle>
               <AlertDescription>
-                Your child hasn't logged any community service hours yet. Encourage them to get started!
+                Your child hasn't logged any service hours yet. Encourage them to get started!
               </AlertDescription>
             </Alert>
           )}
@@ -237,7 +237,7 @@ function ServiceHoursSection() {
               <Clock className="h-4 w-4" />
               <AlertTitle>No Service Hours Yet</AlertTitle>
               <AlertDescription>
-                Your child hasn't logged any community service hours. Once they do, you'll see their activity here and receive email notifications.
+                Your child hasn't logged any service hours. Once they do, you'll see their activity here and receive email notifications.
               </AlertDescription>
             </Alert>
           )}

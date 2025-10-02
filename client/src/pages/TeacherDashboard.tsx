@@ -933,9 +933,9 @@ function ReportsSection() {
                 variant="outline" 
                 className="w-full justify-start"
                 data-testid="button-service-hours"
-                onClick={() => toast({ title: "Service Hours Report", description: "Generating community service report..." })}
+                onClick={() => toast({ title: "Service Hours Report", description: "Generating service hours report..." })}
               >
-                🏥 Community Service Hours
+                🏥 Service Hours
               </Button>
             </div>
           </CardContent>

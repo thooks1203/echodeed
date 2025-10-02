@@ -640,7 +640,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
             </div>
           </div>
 
-          {/* Community Service Hours Summary */}
+          {/* Service Hours Summary */}
           {serviceHoursSummary && serviceHoursSummary.totalHours > 0 && (
             <div style={{
               background: 'linear-gradient(135deg, #8B5CF6, #EC4899)',
@@ -651,7 +651,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
             }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
                 <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0 }}>
-                  🏥 Community Service Hours
+                  🏥 Service Hours
                 </h3>
                 <button
                   onClick={() => onNavigateToTab ? onNavigateToTab('community-service') : window.location.href = '/app?tab=community-service'}
