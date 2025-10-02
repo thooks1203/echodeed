@@ -3757,7 +3757,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         const surpriseGiveaway = {
           id: 'surprise-' + Date.now(),
           title: 'Free Medium Drink',
-          partnerName: 'Chick-fil-A Burlington',
+          partnerName: 'Chick-fil-A Greensboro',
           description: 'Enjoy this complimentary beverage as a thank you for spreading kindness!',
           value: '$3.49',
           expiresIn: '24 hours',
