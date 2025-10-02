@@ -338,7 +338,7 @@ export function SupportCircle({ onBack }: SupportCircleProps) {
                   <Search className="w-5 h-5 absolute left-3 top-3 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="Search for your school (e.g., Burlington Christian Academy)"
+                    placeholder="Search for your school (e.g., Dudley High School)"
                     className="w-full pl-10 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                     value={searchQuery}
                     onChange={(e) => {

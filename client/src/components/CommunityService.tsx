@@ -151,7 +151,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
       return apiRequest('/api/community-service/log', 'POST', {
         ...data,
         userId,
-        schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Burlington Christian Academy
+        schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Dudley High School
         serviceDate: new Date(data.serviceDate)
       });
     },
@@ -229,7 +229,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
 
   const hoursVerified = summary ? parseFloat(summary.verifiedHours || '0') : 0;
   const hoursPending = summary ? parseFloat(summary.pendingHours || '0') : 0;
-  const goalHours = 30; // BCA's 30-hour yearly requirement
+  const goalHours = 30; // Dudley's 30-hour yearly requirement
   const progressPercentage = (hoursVerified / goalHours) * 100;
   const tokensEarned = summary ? summary.totalTokensEarned || 0 : 0;
 
@@ -494,7 +494,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
                         <FormItem>
                           <FormLabel>Location</FormLabel>
                           <FormControl>
-                            <Input placeholder="e.g., Burlington, NC" {...field} data-testid="input-location" />
+                            <Input placeholder="e.g., Greensboro, NC" {...field} data-testid="input-location" />
                           </FormControl>
                           <FormMessage />
                         </FormItem>

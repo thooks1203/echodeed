@@ -17,7 +17,7 @@ export default function DemoLogin() {
           </div>
           <CardTitle className="text-2xl font-bold">EchoDeed™</CardTitle>
           <CardDescription className="text-base">
-            Burlington Christian Academy Demo
+            Dudley High School - Greensboro, NC
           </CardDescription>
         </CardHeader>
         
@@ -51,7 +51,7 @@ export default function DemoLogin() {
               data-testid="button-demo-admin"
             >
               <Shield className="w-5 h-5 mr-2" />
-              Try as Administrator (Mr. Murr)
+              Try as Principal (Dr. Quinton Alston)
             </Button>
             
             <Button
@@ -66,7 +66,7 @@ export default function DemoLogin() {
           
           <div className="pt-4 border-t">
             <p className="text-xs text-center text-muted-foreground">
-              Ready for Tuesday, October 1st, 2025 demo with Burlington Christian Academy
+              Dudley High School, Greensboro • Grades 9-12 • 1,200 Students
             </p>
           </div>
         </CardContent>

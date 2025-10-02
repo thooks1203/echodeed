@@ -119,9 +119,9 @@ export default function FamilyDashboard({
     retry: false,
   });
 
-  // Fetch active fundraisers for Burlington Christian Academy
+  // Fetch active fundraisers for Dudley High School
   const { data: fundraisers, isLoading: fundraisersLoading } = useQuery({
-    queryKey: ['/api/fundraisers/active', 'Burlington Christian Academy'],
+    queryKey: ['/api/fundraisers/active', 'Dudley High School'],
     retry: false,
   });
 

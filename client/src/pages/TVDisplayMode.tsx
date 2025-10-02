@@ -48,7 +48,7 @@ export default function TVDisplayMode() {
     showHearts: true,
     showLocation: true,
     showCategory: true,
-    schoolName: 'Burlington Christian Academy',
+    schoolName: 'Dudley High School',
     theme: 'blue',
     autoPlay: true
   });

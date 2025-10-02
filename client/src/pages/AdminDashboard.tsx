@@ -746,10 +746,10 @@ export default function AdminDashboard() {
   // Mock admin data (in production, get from auth context)
   const currentAdmin: SchoolAdmin = {
     id: 'admin-001',
-    name: 'Mr. Murr',
+    name: 'Dr. Quinton Alston',
     role: 'principal',
     districtId: 'district-001',
-    email: 'murr@bca.edu'
+    email: 'quinton.alston@gcsnc.com'
   };
 
   // Real API calls for customer validation
@@ -766,38 +766,27 @@ export default function AdminDashboard() {
   // Mock data for demonstration
   const mockDistrictMetrics: DistrictMetrics = {
     districtId: 'district-001',
-    districtName: 'Burlington Christian Academy',
-    totalSchools: 2,
-    totalStudents: 665,
-    totalTeachers: 56,
-    totalKindnessActs: 15670,
+    districtName: 'Greensboro Public Schools',
+    totalSchools: 1,
+    totalStudents: 1200,
+    totalTeachers: 85,
+    totalKindnessActs: 18450,
     avgSelScore: 8.9,
-    topPerformingSchools: ['BCA High School', 'BCA Middle School'],
+    topPerformingSchools: ['Dudley High School'],
     complianceStatus: 'compliant'
   };
 
   const mockSchoolMetrics: SchoolMetrics[] = [
     {
-      schoolId: 'bca-high-school',
-      schoolName: 'BCA High School',
-      totalStudents: 380,
-      totalTeachers: 32,
-      kindnessActsThisWeek: 156,
-      kindnessActsThisMonth: 612,
+      schoolId: 'dudley-high-school',
+      schoolName: 'Dudley High School',
+      totalStudents: 1200,
+      totalTeachers: 85,
+      kindnessActsThisWeek: 287,
+      kindnessActsThisMonth: 1068,
       avgSelScore: 8.9,
-      parentEngagementRate: 85,
-      teacherAdoptionRate: 95
-    },
-    {
-      schoolId: 'bca-middle-school',
-      schoolName: 'BCA Middle School',
-      totalStudents: 285,
-      totalTeachers: 24,
-      kindnessActsThisWeek: 134,
-      kindnessActsThisMonth: 456,
-      avgSelScore: 8.7,
-      parentEngagementRate: 78,
-      teacherAdoptionRate: 88
+      parentEngagementRate: 82,
+      teacherAdoptionRate: 91
     }
   ];
 
@@ -827,10 +816,10 @@ export default function AdminDashboard() {
     return parts[0][0] + '*** ' + parts[parts.length - 1][0] + '***';
   };
 
-  // BCA Data filtering (for demo mode)
-  const filterBCAData = (data: any) => {
+  // Dudley Data filtering (for demo mode)
+  const filterDudleyData = (data: any) => {
     if (!bcaDemoMode) return data;
-    // In demo mode, ensure we only show BCA-specific data
+    // In demo mode, ensure we only show Dudley-specific data
     return data;
   };
 

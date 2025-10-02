@@ -324,7 +324,7 @@ export default function ParentDashboard() {
       userId: 'student-001',
       name: 'Child 1',
       grade: '9th',
-      school: 'Burlington Christian Academy',
+      school: 'Dudley High School',
       isActive: true,
       lastActivity: new Date().toISOString(),
       weeklyKindnessCount: 8,
@@ -335,7 +335,7 @@ export default function ParentDashboard() {
       userId: 'student-002', 
       name: 'Child 2',
       grade: '9th',
-      school: 'Burlington Christian Academy',
+      school: 'Dudley High School',
       isActive: true,
       lastActivity: new Date(Date.now() - 7200000).toISOString(),
       weeklyKindnessCount: 6,
@@ -400,7 +400,7 @@ export default function ParentDashboard() {
       studentName: 'Child 1',
       content: 'I helped a classmate with their math homework during lunch',
       category: 'helping',
-      location: 'Burlington Elementary',
+      location: 'Dudley High School',
       createdAt: new Date(Date.now() - 1800000).toISOString(),
       heartsCount: 12,
       echoesCount: 3,
@@ -413,7 +413,7 @@ export default function ParentDashboard() {
       studentName: 'Child 2',
       content: 'I shared my snack with a friend who forgot theirs',
       category: 'sharing',
-      location: 'Burlington Elementary',
+      location: 'Dudley High School',
       createdAt: new Date(Date.now() - 7200000).toISOString(),
       heartsCount: 8,
       echoesCount: 2,
@@ -426,7 +426,7 @@ export default function ParentDashboard() {
       studentName: 'Child 1',
       content: 'I included a new student in our group during recess',
       category: 'including',
-      location: 'Burlington Elementary',
+      location: 'Dudley High School',
       createdAt: new Date(Date.now() - 10800000).toISOString(),
       heartsCount: 15,
       echoesCount: 4,
@@ -895,7 +895,7 @@ export default function ParentDashboard() {
                   <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
                     <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">👶 Children's Rewards</h4>
                     <p className="text-2xl font-bold text-blue-600">${currentStats.totalRewardsEarned}</p>
-                    <p className="text-sm text-blue-700 dark:text-blue-300">Burlington area kid-friendly rewards</p>
+                    <p className="text-sm text-blue-700 dark:text-blue-300">Greensboro area high school rewards</p>
                   </div>
                   <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
                     <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">👨‍👩‍👧‍👦 Parent Rewards</h4>
@@ -930,7 +930,7 @@ export default function ParentDashboard() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Target className="h-5 w-5 text-purple-600" />
-                  🎯 Burlington Christian Academy Campaigns
+                  🎯 Dudley High School Campaigns
                 </CardTitle>
                 <CardDescription>
                   Support your school's fundraising goals and earn double tokens for donations
@@ -1030,7 +1030,7 @@ export default function ParentDashboard() {
                     <div className="text-center">
                       <h4 className="font-semibold text-purple-900 dark:text-purple-100 mb-2">🏫 Why Support School Fundraising?</h4>
                       <p className="text-sm text-purple-700 dark:text-purple-200 mb-4">
-                        Your donations directly improve the learning environment for Emma and all students at Burlington Christian Academy.
+                        Your donations directly improve the learning environment for Emma and all students at Dudley High School.
                         Plus, you earn double tokens that can be redeemed for family rewards!
                       </p>
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">

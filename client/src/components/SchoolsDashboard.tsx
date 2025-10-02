@@ -42,25 +42,16 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
     queryKey: ['/api/schools/student-points'],
   });
 
-  // Sample data for demonstration - BCA Middle & High Schools
+  // Sample data for demonstration - Dudley High School
   const sampleSchools: School[] = [
     {
-      id: 'bca-high-school',
-      name: 'BCA High School',
+      id: 'dudley-high-school',
+      name: 'Dudley High School',
       type: 'high',
-      studentCount: 380,
-      teacherCount: 32,
-      totalKindnessActs: 2156,
+      studentCount: 1200,
+      teacherCount: 85,
+      totalKindnessActs: 3842,
       avgKindnessScore: 8.9
-    },
-    {
-      id: 'bca-middle-school', 
-      name: 'BCA Middle School',
-      type: 'middle',
-      studentCount: 285,
-      teacherCount: 24,
-      totalKindnessActs: 1674,
-      avgKindnessScore: 8.7
     }
   ];
 

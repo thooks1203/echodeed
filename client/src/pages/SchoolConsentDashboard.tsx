@@ -149,7 +149,7 @@ export default function SchoolConsentDashboard() {
   }, []);
   
   // 🔒 SECURITY FIX: Get schoolId from authenticated user context  
-  const schoolId = user?.schoolId || getBCASchoolId(); // Fallback to Burlington Christian Academy from demo config
+  const schoolId = user?.schoolId || getBCASchoolId(); // Fallback to Dudley High School from demo config
   
   // Redirect to login if not authenticated
   if (!authLoading && !isAuthenticated) {
@@ -962,7 +962,7 @@ export default function SchoolConsentDashboard() {
                 {renewalsLoading ? <Skeleton className="h-8 w-16" /> : metrics?.totalRenewals || 0}
               </div>
               <p className="text-xs text-muted-foreground">
-                Burlington Christian Academy
+                Dudley High School
               </p>
             </CardContent>
           </Card>
@@ -1042,7 +1042,7 @@ export default function SchoolConsentDashboard() {
               Consent Renewals
             </CardTitle>
             <CardDescription>
-              Annual consent renewals for Burlington Christian Academy (grades 6-12)
+              Annual consent renewals for Dudley High School (grades 6-12)
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -1136,7 +1136,7 @@ export default function SchoolConsentDashboard() {
         {/* 🏫 BCA POLICY INFO */}
         <Alert>
           <AlertCircle className="h-4 w-4" />
-          <AlertTitle>Burlington Christian Academy Policy</AlertTitle>
+          <AlertTitle>Dudley High School Policy</AlertTitle>
           <AlertDescription>
             All student technology consents must be renewed annually for grades 6-12. 
             School year validity: August 1 - July 31. Renewal notifications begin 75 days before expiry.
@@ -1185,7 +1185,7 @@ export default function SchoolConsentDashboard() {
           <div className="flex items-center justify-center space-x-2">
             <FileText className="h-4 w-4 text-blue-600 dark:text-blue-400" />
             <span className="text-sm font-medium text-blue-800 dark:text-blue-200">
-              Demo Mode: Synthetic data for Burlington Christian Academy (360 students, no PII)
+              Demo Mode: Synthetic data for Dudley High School (360 students, no PII)
             </span>
           </div>
         </div>

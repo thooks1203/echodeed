@@ -1256,7 +1256,7 @@ export function TeacherDashboard() {
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="font-medium">Food Bank Volunteer</p>
-                          <p className="text-sm text-gray-600">Burlington Community Food Bank</p>
+                          <p className="text-sm text-gray-600">Greensboro Community Food Bank</p>
                         </div>
                         <Badge className="bg-green-600 text-white">4.5 hrs</Badge>
                       </div>
@@ -1265,7 +1265,7 @@ export function TeacherDashboard() {
                       <div className="flex justify-between items-start">
                         <div>
                           <p className="font-medium">Park Cleanup</p>
-                          <p className="text-sm text-gray-600">Burlington Parks & Recreation</p>
+                          <p className="text-sm text-gray-600">Greensboro Parks & Recreation</p>
                         </div>
                         <Badge className="bg-green-600 text-white">3.0 hrs</Badge>
                       </div>
