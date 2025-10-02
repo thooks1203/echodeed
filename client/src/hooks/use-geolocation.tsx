@@ -3,10 +3,10 @@ import { LocationData } from '@/lib/types';
 
 export function useGeolocation() {
   const [location, setLocation] = useState<LocationData | null>({
-    city: 'Burlington',
+    city: 'Greensboro',
     state: 'North Carolina', 
     country: 'United States',
-    fullLocation: 'Burlington, North Carolina'
+    fullLocation: 'Greensboro, North Carolina'
   });
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -25,10 +25,10 @@ export function useGeolocation() {
         // Use a reverse geocoding service (for demo, we'll use a mock response)
         // In production, you would use a real service like Google Maps API
         const mockLocation: LocationData = {
-          city: 'Burlington',
+          city: 'Greensboro',
           state: 'North Carolina', 
           country: 'United States',
-          fullLocation: 'Burlington, North Carolina'
+          fullLocation: 'Greensboro, North Carolina'
         };
         
         setLocation(mockLocation);
