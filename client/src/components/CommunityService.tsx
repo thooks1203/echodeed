@@ -327,9 +327,9 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
 
           <Card>
             <CardHeader>
-              <CardTitle>Progress Toward Graduation Requirement</CardTitle>
+              <CardTitle>Progress Toward School Year Requirement</CardTitle>
               <CardDescription>
-                You need {goalHours} service hours to graduate. Keep up the great work!
+                You need {goalHours} service hours for the school year. Keep up the great work!
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
