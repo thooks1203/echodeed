@@ -1262,3 +1262,110 @@ export type ParentalConsentRecord = typeof parentalConsentRecords.$inferSelect;
 export type InsertParentalConsentRecord = typeof parentalConsentRecords.$inferInsert;
 export type ParentalConsentRequest = typeof parentalConsentRequests.$inferSelect;
 export type InsertParentalConsentRequest = typeof parentalConsentRequests.$inferInsert;
+
+// ============================================================================
+// AI BEHAVIORAL MITIGATION & DOCUMENTATION SYSTEM (Strategic Pivot)
+// ============================================================================
+
+// Content Moderation Queue - Human-reviewed flagged content (NO automatic alerts)
+export const contentModerationQueue = pgTable("content_moderation_queue", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  postId: varchar("post_id"), // Reference to kindness_posts or support_posts
+  postType: varchar("post_type", { length: 20 }).notNull(), // 'kindness' | 'support'
+  content: text("content").notNull(),
+  schoolId: varchar("school_id").notNull(),
+  userId: varchar("user_id"), // Optional - may be anonymous
+  
+  // AI Classification (NOT crisis intervention - just categorization)
+  moderationCategory: varchar("moderation_category", { length: 50 }).notNull(), // 'profanity', 'negative_sentiment', 'concerning_pattern', 'policy_violation'
+  severityLevel: varchar("severity_level", { length: 20 }).notNull(), // 'low', 'medium', 'high' (NO 'critical' or 'crisis')
+  detectedPatterns: jsonb("detected_patterns"), // Anonymized behavioral patterns
+  aiConfidence: integer("ai_confidence"), // 0-100
+  
+  // Human Review Workflow
+  reviewStatus: varchar("review_status", { length: 20 }).default("pending").notNull(), // pending, in_review, approved, blocked, escalated
+  reviewedBy: varchar("reviewed_by"), // Teacher/admin who reviewed
+  reviewedAt: timestamp("reviewed_at"),
+  reviewNotes: text("review_notes"),
+  actionTaken: varchar("action_taken", { length: 50 }), // 'approved', 'blocked', 'edited', 'parent_notified', 'counselor_referred'
+  
+  flaggedAt: timestamp("flagged_at").defaultNow().notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Behavioral Trend Analytics - Aggregate school-wide patterns (NO individual targeting)
+export const behavioralTrendAnalytics = pgTable("behavioral_trend_analytics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolId: varchar("school_id").notNull(),
+  
+  // Time Period
+  periodType: varchar("period_type", { length: 20 }).notNull(), // 'daily', 'weekly', 'monthly'
+  periodStart: timestamp("period_start").notNull(),
+  periodEnd: timestamp("period_end").notNull(),
+  
+  // Aggregate Metrics (NO individual student data)
+  totalPosts: integer("total_posts").default(0).notNull(),
+  flaggedContentCount: integer("flagged_content_count").default(0).notNull(),
+  
+  // Sentiment Aggregates
+  avgPositivityScore: real("avg_positivity_score"), // 0-100 average across all posts
+  negativeContentPercentage: real("negative_content_percentage"), // % of posts with negative sentiment
+  sentimentTrend: varchar("sentiment_trend", { length: 20 }), // 'improving', 'declining', 'stable'
+  
+  // Pattern Detection (Aggregate only)
+  topConcernCategories: jsonb("top_concern_categories"), // ['profanity', 'bullying_language', etc.] - aggregated
+  emergingPatterns: jsonb("emerging_patterns"), // Detected behavioral patterns at school level
+  
+  // Comparison to Previous Period
+  postCountChange: real("post_count_change"), // % change from previous period
+  sentimentScoreChange: real("sentiment_score_change"), // Change in sentiment
+  flaggedContentChange: real("flagged_content_change"), // Change in flagged content %
+  
+  generatedAt: timestamp("generated_at").defaultNow().notNull(),
+});
+
+// Climate Metrics - School-wide behavioral health monitoring (Aggregate only, NO predictions)
+export const climateMetrics = pgTable("climate_metrics", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolId: varchar("school_id").notNull(),
+  
+  // Time Context
+  metricDate: timestamp("metric_date").notNull(),
+  gradeLevel: varchar("grade_level", { length: 5 }), // Optional grade-level breakdown (still aggregate)
+  
+  // Overall Climate Indicators (School-wide)
+  overallClimateScore: integer("overall_climate_score"), // 0-100 aggregate wellness
+  participationRate: real("participation_rate"), // % of students posting
+  positiveInteractionRate: real("positive_interaction_rate"), // % of posts with hearts/echoes
+  
+  // Behavioral Safety Indicators (Aggregate patterns, NO crisis detection)
+  contentSafetyScore: integer("content_safety_score"), // 0-100 (higher = safer content)
+  policyViolationRate: real("policy_violation_rate"), // % of posts requiring moderation
+  concerningPatternCount: integer("concerning_pattern_count"), // Count of behavioral patterns (NOT individual crises)
+  
+  // Engagement Patterns
+  avgDailyPosts: real("avg_daily_posts"),
+  peakActivityHours: jsonb("peak_activity_hours"), // [14, 15, 16] - hours with most activity
+  
+  // Trend Indicators (Comparative analysis)
+  weekOverWeekChange: real("week_over_week_change"), // % change in overall climate
+  monthOverMonthChange: real("month_over_month_change"),
+  
+  // Recommended Actions (System-level, NOT individual interventions)
+  recommendedFocus: jsonb("recommended_focus"), // ['increase_positive_content', 'review_policy_clarity', etc.]
+  
+  calculatedAt: timestamp("calculated_at").defaultNow().notNull(),
+});
+
+// Insert Schemas
+export const insertContentModerationQueueSchema = createInsertSchema(contentModerationQueue).omit({ id: true, flaggedAt: true, createdAt: true });
+export const insertBehavioralTrendAnalyticsSchema = createInsertSchema(behavioralTrendAnalytics).omit({ id: true, generatedAt: true });
+export const insertClimateMetricsSchema = createInsertSchema(climateMetrics).omit({ id: true, calculatedAt: true });
+
+// Type Exports
+export type ContentModerationQueue = typeof contentModerationQueue.$inferSelect;
+export type InsertContentModerationQueue = z.infer<typeof insertContentModerationQueueSchema>;
+export type BehavioralTrendAnalytics = typeof behavioralTrendAnalytics.$inferSelect;
+export type InsertBehavioralTrendAnalytics = z.infer<typeof insertBehavioralTrendAnalyticsSchema>;
+export type ClimateMetrics = typeof climateMetrics.$inferSelect;
+export type InsertClimateMetrics = z.infer<typeof insertClimateMetricsSchema>;
