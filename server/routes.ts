@@ -97,7 +97,7 @@ const requireTeacherRole = async (req: any, res: any, next: any) => {
         req.teacherContext = {
           userId: sessionId,
           schoolRole: demoRole,
-          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78' // Burlington Christian Academy
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78' // Dudley High School
         };
         return next();
       }
@@ -178,7 +178,7 @@ const requireSchoolAccess = async (req: any, res: any, next: any) => {
         console.log('✅ DEVELOPMENT BYPASS: Granting school access with role:', demoRole);
         req.userSchools = [{
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // BURLINGTON CHRISTIAN ACADEMY
-          schoolName: 'Burlington Christian Academy',
+          schoolName: 'Dudley High School',
           role: demoRole
         }];
         req.primarySchoolId = 'bc016cad-fa89-44fb-aab0-76f82c574f78';
@@ -222,7 +222,7 @@ const requireSchoolAccess = async (req: any, res: any, next: any) => {
 const requireSpecificSchoolAccess = (schoolIdParam: string = 'schoolId') => {
   return async (req: any, res: any, next: any) => {
     try {
-      // Development bypass - allow access to Burlington Christian Academy
+      // Development bypass - allow access to Dudley High School
       if (process.env.NODE_ENV === 'development') {
         const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
         const requestedSchoolId = req.params[schoolIdParam];
@@ -8916,7 +8916,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Build report data
       const reportData = {
         reportTitle: `Weekly Kindness Impact Report`,
-        schoolName: schoolId === 'bca-demo' ? 'Burlington Christian Academy' : 'Your School',
+        schoolName: schoolId === 'bca-demo' ? 'Dudley High School' : 'Your School',
         weekPeriod: `${weekStart.toLocaleDateString()} - ${weekEnd.toLocaleDateString()}`,
         summary: {
           totalKindnessActs: totalPosts,

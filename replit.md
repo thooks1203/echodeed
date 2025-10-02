@@ -1,7 +1,7 @@
 # EchoDeed™ - Anonymous Kindness Platform
 
 ## Overview
-EchoDeed™ is a mobile-first web application designed to foster and track anonymous acts of kindness through a community-driven feed. It allows users to anonymously share kind acts, browse a global feed with filtering options, and view a real-time global kindness counter. The platform prioritizes anonymity by operating without user profiles or personal information. Its primary focus is the K-8 education market to build empathy, with plans for future expansion into corporate wellness. Key capabilities include anonymous posting, a global kindness feed, real-time filtering and counting, robust content moderation, and AI integration for predictive wellness and content intelligence. The project emphasizes AI liability protection, privacy, user adoption, and regulatory compliance.
+EchoDeed™ is a mobile-first web application designed to foster and track anonymous acts of kindness through a community-driven feed. It allows users to anonymously share kind acts, browse a global feed with filtering options, and view a real-time global kindness counter. The platform prioritizes anonymity by operating without user profiles or personal information. Currently deployed at **Dudley High School in Greensboro, NC** (grades 9-12), the platform focuses on building character and empathy, with plans for future expansion into additional schools and corporate wellness. Key capabilities include anonymous posting, a global kindness feed, real-time filtering and counting, robust content moderation, service hour tracking with photo verification, and local Greensboro business reward partnerships. The project emphasizes student privacy protection, workload reduction for teachers through automation, and regulatory compliance.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -84,4 +84,41 @@ The frontend is a React 18, TypeScript, and Vite single-page application. It uti
 - **Database Technologies**: Drizzle ORM, Drizzle-Zod, @neondatabase/serverless (PostgreSQL)
 - **Object Storage**: @google-cloud/storage, @uppy/core, @uppy/react, @uppy/aws-s3 (for verification photo uploads)
 - **Real-time/Routing**: ws, wouter
-- **Reward/Payment Integrations**: Amazon, Starbucks, Target, GrubHub (for reward fulfillment)
+- **Reward/Payment Integrations**: Local Greensboro businesses (A Special Blend Coffee, Tate Street Coffee House, Chez Genèse, Chick-fil-A, Greensboro Science Center, YMCA Greensboro, Barnes & Noble UNCG, Fig & Olive Cafe, Common Grounds Coffee, Recovery Café Greensboro, SHIELD Mentor Program, Greensboro Grasshoppers, Greensboro Public Library) plus national partners (Scholastic Books, Target Education, LEGO Education, Amazon Family)
+
+## Demo School Configuration
+**Primary School**: Dudley High School
+- **Location**: 1200 Lincoln Street, Greensboro, NC 27401
+- **Phone**: (336) 370-8240
+- **Grade Range**: 9-12
+- **Student Count**: 1,200 students
+- **Principal**: Dr. Quinton Alston
+- **School Type**: Public High School
+- **Accreditation**: Southern Association of Colleges and Schools (SACS)
+- **Established**: 1929
+
+## Local Greensboro Reward Partners
+The platform features 17 local Greensboro-area businesses supporting student kindness:
+
+**Coffee Shops & Cafes:**
+- A Special Blend Coffee (nonprofit employing adults with disabilities)
+- Tate Street Coffee House (organic fair-trade near UNCG)
+- Common Grounds Coffee (student-friendly with wifi)
+- Fig & Olive Cafe (healthy meals for students)
+
+**Restaurants:**
+- Chez Genèse (French-inspired, employing adults with intellectual disabilities)
+- Chick-fil-A Greensboro (near Dudley High School)
+- Recovery Café Greensboro (community-based support cafe)
+
+**Educational & Recreation:**
+- Greensboro Science Center (aquarium, zoo, museum)
+- Greensboro Public Library (study spaces, reading programs)
+- Barnes & Noble UNCG (books and school supplies)
+- YMCA of Greensboro (youth development programs)
+- SHIELD Mentor Program (youth mentoring and robotics)
+
+**Sports & Entertainment:**
+- Greensboro Grasshoppers (minor league baseball)
+
+These partnerships support the B2B sponsor monetization model while providing meaningful rewards for students demonstrating kindness and service.

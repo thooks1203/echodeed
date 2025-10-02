@@ -13,179 +13,177 @@ export async function initializeSampleRewardData() {
 
     console.log('Initializing sample reward partner data...');
 
-    // BURLINGTON, NC KID-FRIENDLY REWARD PARTNERS - Local & National Sponsors
+    // GREENSBORO, NC HIGH SCHOOL REWARD PARTNERS - Local & National Sponsors
     const partners = [
-      // LOCAL BURLINGTON, NC PARTNERS
+      // LOCAL GREENSBORO, NC PARTNERS
       {
-        partnerName: 'Burlington City Park Carousel',
-        partnerLogo: 'https://images.unsplash.com/photo-1567721913486-6585f069b332?w=400',
-        partnerType: 'local_entertainment',
-        websiteUrl: 'https://www.burlingtonnc.gov/parks',
-        description: 'Historic carousel rides and family fun in downtown Burlington, NC.',
+        partnerName: 'A Special Blend Coffee',
+        partnerLogo: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.aspecialblend.org',
+        description: 'Mission-driven nonprofit coffee shop employing adults with disabilities - Community in a Cup.',
         isActive: 1,
         isFeatured: 1,
-        minRedemptionAmount: 100, // 100 $ECHO = 2 free carousel rides
-        maxRedemptionAmount: 500, // 500 $ECHO = 10 free rides
-        contactEmail: 'parks@burlingtonnc.gov',
-        location: 'Burlington, NC'
+        minRedemptionAmount: 150, // 150 $ECHO = coffee + pastry
+        maxRedemptionAmount: 600, // 600 $ECHO = weekly coffee card
+        contactEmail: 'info@aspecialblend.org',
+        location: 'Greensboro, NC'
       },
       {
-        partnerName: 'Putt-Putt Fun Center Burlington',
-        partnerLogo: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
-        partnerType: 'local_entertainment',
-        websiteUrl: 'https://www.puttputt.com',
-        description: 'Mini golf and family entertainment for kids and families in Burlington.',
+        partnerName: 'Tate Street Coffee House',
+        partnerLogo: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://tatestreetcoffeehouse.com',
+        description: 'Organic fair-trade coffee near UNCG - student-friendly study spot.',
         isActive: 1,
         isFeatured: 1,
-        minRedemptionAmount: 200, // 200 $ECHO = 1 mini golf game
-        maxRedemptionAmount: 1000, // 1000 $ECHO = family 4-pack
-        contactEmail: 'info@puttputt.com',
-        location: 'Burlington, NC'
+        minRedemptionAmount: 120, // 120 $ECHO = coffee + snack
+        maxRedemptionAmount: 500, // 500 $ECHO = study session card
+        contactEmail: 'info@tatestreetcoffee.com',
+        location: 'Greensboro, NC'
       },
       {
-        partnerName: 'Burlington Sock Puppets Baseball',
+        partnerName: 'Greensboro Grasshoppers',
         partnerLogo: 'https://images.unsplash.com/photo-1566577134770-3d85bb3a9cc4?w=400',
         partnerType: 'local_sports',
-        websiteUrl: 'https://www.burlingtonsockpuppets.com',
-        description: 'Minor league baseball fun for families and kids in Burlington.',
+        websiteUrl: 'https://www.gsohoppers.com',
+        description: 'Minor league baseball fun for students and families in Greensboro.',
         isActive: 1,
         isFeatured: 1,
         minRedemptionAmount: 300, // 300 $ECHO = 1 game ticket
         maxRedemptionAmount: 1500, // 1500 $ECHO = family 4-pack tickets
-        contactEmail: 'info@sockpuppets.com',
-        location: 'Burlington, NC'
+        contactEmail: 'info@gsohoppers.com',
+        location: 'Greensboro, NC'
       },
       {
-        partnerName: 'Sir Pizza Burlington',
-        partnerLogo: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400',
+        partnerName: 'Chez Genèse',
+        partnerLogo: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400',
         partnerType: 'local_dining',
-        websiteUrl: 'https://www.sirpizza.com',
-        description: 'Local pizza chain with family-friendly atmosphere and kids menu.',
-        isActive: 1,
-        isFeatured: 0,
-        minRedemptionAmount: 250, // 250 $ECHO = $5 kids meal
-        maxRedemptionAmount: 1000, // 1000 $ECHO = family pizza party
-        contactEmail: 'catering@sirpizza.com',
-        location: 'Burlington, NC'
-      },
-      {
-        partnerName: 'Alamance County Public Libraries',
-        partnerLogo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
-        partnerType: 'educational',
-        websiteUrl: 'https://www.alamancelibraries.org',
-        description: 'Reading programs, storytimes, and educational activities for kids.',
+        websiteUrl: 'https://www.chezgenese.com',
+        description: 'French-inspired restaurant employing adults with intellectual disabilities - community & connection.',
         isActive: 1,
         isFeatured: 1,
-        minRedemptionAmount: 150, // 150 $ECHO = special reading program
-        maxRedemptionAmount: 600, // 600 $ECHO = summer reading prize pack
-        contactEmail: 'info@alamancelibraries.org',
-        location: 'Burlington, NC'
+        minRedemptionAmount: 400, // 400 $ECHO = meal credit
+        maxRedemptionAmount: 1200, // 1200 $ECHO = family dinner
+        contactEmail: 'info@chezgenese.com',
+        location: 'Greensboro, NC'
       },
       {
-        partnerName: 'Chick-fil-A Burlington',
+        partnerName: 'Greensboro Science Center',
+        partnerLogo: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400',
+        partnerType: 'educational',
+        websiteUrl: 'https://www.greensboroscience.org',
+        description: 'Award-winning aquarium, zoo, and museum with hands-on exhibits.',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 350, // 350 $ECHO = student admission
+        maxRedemptionAmount: 1500, // 1500 $ECHO = family pass
+        contactEmail: 'info@greensboroscience.org',
+        location: 'Greensboro, NC'
+      },
+      {
+        partnerName: 'Chick-fil-A Greensboro',
         partnerLogo: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400',
         partnerType: 'local_dining',
         websiteUrl: 'https://www.chick-fil-a.com',
-        description: 'Family restaurant with kids meals and playground - Garden Rd & University Dr.',
+        description: 'Family restaurant with meals and refreshments near Dudley High School.',
         isActive: 1,
         isFeatured: 1,
-        minRedemptionAmount: 200, // 200 $ECHO = kids meal
+        minRedemptionAmount: 200, // 200 $ECHO = meal
         maxRedemptionAmount: 800, // 800 $ECHO = family meal
-        contactEmail: 'manager@cfaburlington.com',
-        location: 'Burlington, NC'
+        contactEmail: 'manager@cfagreensboro.com',
+        location: 'Greensboro, NC'
       },
-      // GRAHAM, NC PARTNERS - County Seat & Education Hub
       {
-        partnerName: 'Children\'s Museum of Alamance County',
-        partnerLogo: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400',
+        partnerName: 'Fig & Olive Cafe',
+        partnerLogo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.figandolivecafe.com',
+        description: 'Healthy cafe with fresh meals and snacks perfect for students.',
+        isActive: 1,
+        isFeatured: 0,
+        minRedemptionAmount: 180, // 180 $ECHO = cafe meal
+        maxRedemptionAmount: 700, // 700 $ECHO = weekly lunch card
+        contactEmail: 'info@figandolivecafe.com',
+        location: 'Greensboro, NC'
+      },
+      {
+        partnerName: 'YMCA of Greensboro',
+        partnerLogo: 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=400',
+        partnerType: 'recreation',
+        websiteUrl: 'https://www.ymcagreensboro.org',
+        description: 'Youth development programs, fitness, and leadership opportunities.',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 250, // 250 $ECHO = day pass
+        maxRedemptionAmount: 1000, // 1000 $ECHO = program enrollment
+        contactEmail: 'info@ymcagreensboro.org',
+        location: 'Greensboro, NC'
+      },
+      {
+        partnerName: 'Barnes & Noble UNCG',
+        partnerLogo: 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400',
         partnerType: 'educational',
-        websiteUrl: 'http://www.childrensmuseumofalamance.org',
-        description: 'Award-winning interactive museum with hands-on exhibits for kids in Graham.',
+        websiteUrl: 'https://www.bncollege.com/uncg',
+        description: 'Books, school supplies, and study materials near campus.',
         isActive: 1,
         isFeatured: 1,
-        minRedemptionAmount: 120, // 120 $ECHO = museum admission ($5)
-        maxRedemptionAmount: 500, // 500 $ECHO = family pass
-        contactEmail: 'info@childrensmuseumofalamance.org',
-        location: 'Graham, NC'
+        minRedemptionAmount: 300, // 300 $ECHO = book/supply credit
+        maxRedemptionAmount: 1200, // 1200 $ECHO = semester supplies
+        contactEmail: 'uncg@bncollege.com',
+        location: 'Greensboro, NC'
       },
       {
-        partnerName: 'Graham Theater',
-        partnerLogo: 'https://images.unsplash.com/photo-1489185078292-8e1c85e20335?w=400',
-        partnerType: 'entertainment',
-        websiteUrl: 'https://grahamtheater.com',
-        description: 'Family-owned theater with $4 tickets and free popcorn refills for kids.',
-        isActive: 1,
-        isFeatured: 1,
-        minRedemptionAmount: 100, // 100 $ECHO = movie ticket
-        maxRedemptionAmount: 400, // 400 $ECHO = family movie night
-        contactEmail: 'info@grahamtheater.com',
-        location: 'Graham, NC'
-      },
-      {
-        partnerName: 'The Verdict on the Square',
-        partnerLogo: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400',
+        partnerName: 'Common Grounds Coffee',
+        partnerLogo: 'https://images.unsplash.com/photo-1442512595331-e89e73853f31?w=400',
         partnerType: 'local_dining',
-        websiteUrl: 'https://theverdictonthesquare.com',
-        description: 'Downtown Graham restaurant with family atmosphere and patio seating.',
+        websiteUrl: 'https://www.commongroundscoffee.com',
+        description: 'Student-friendly coffee shop with indoor/outdoor seating and wifi.',
         isActive: 1,
         isFeatured: 0,
-        minRedemptionAmount: 300, // 300 $ECHO = family meal credit
-        maxRedemptionAmount: 1200, // 1200 $ECHO = full family dinner
-        contactEmail: 'info@theverdictonthesquare.com',
-        location: 'Graham, NC'
+        minRedemptionAmount: 100, // 100 $ECHO = coffee + snack
+        maxRedemptionAmount: 400, // 400 $ECHO = weekly coffee card
+        contactEmail: 'info@commongroundscoffee.com',
+        location: 'Greensboro, NC'
       },
       {
-        partnerName: 'Whit\'s Frozen Custard Graham',
-        partnerLogo: 'https://images.unsplash.com/photo-1551024601-bec78aea704b?w=400',
-        partnerType: 'local_dining',
-        websiteUrl: 'https://www.whitscustard.com',
-        description: 'Premium frozen custard treats perfect for family rewards in Graham.',
-        isActive: 1,
-        isFeatured: 1,
-        minRedemptionAmount: 150, // 150 $ECHO = custard treat
-        maxRedemptionAmount: 600, // 600 $ECHO = family dessert night
-        contactEmail: 'graham@whitscustard.com',
-        location: 'Graham, NC'
-      },
-      // MEBANE, NC PARTNERS - Shopping & Entertainment Hub
-      {
-        partnerName: 'Blue Ribbon Diner Mebane',
-        partnerLogo: 'https://images.unsplash.com/photo-1551218808-94e220e084d2?w=400',
-        partnerType: 'local_dining',
-        websiteUrl: 'https://blueribbondiner.com',
-        description: 'Retro diner with jukebox and comfort food that kids love in Mebane.',
-        isActive: 1,
-        isFeatured: 1,
-        minRedemptionAmount: 200, // 200 $ECHO = kids meal
-        maxRedemptionAmount: 800, // 800 $ECHO = family diner experience
-        contactEmail: 'info@blueribbondiner.com',
-        location: 'Mebane, NC'
-      },
-      {
-        partnerName: 'Buffaloe Lanes Mebane',
-        partnerLogo: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400',
-        partnerType: 'entertainment',
-        websiteUrl: 'https://www.buffaloe.com',
-        description: 'Bowling alley with arcade games perfect for family entertainment.',
-        isActive: 1,
-        isFeatured: 1,
-        minRedemptionAmount: 250, // 250 $ECHO = bowling game
-        maxRedemptionAmount: 1000, // 1000 $ECHO = family bowling party
-        contactEmail: 'mebane@buffaloe.com',
-        location: 'Mebane, NC'
-      },
-      {
-        partnerName: 'Muffin\'s Ice Cream Shoppe',
-        partnerLogo: 'https://images.unsplash.com/photo-1576506295286-5cda18df43e7?w=400',
-        partnerType: 'local_dining',
-        websiteUrl: 'https://muffinsicecream.com',
-        description: 'Local ice cream shop favorite for families in Mebane.',
+        partnerName: 'Recovery Café Greensboro',
+        partnerLogo: 'https://images.unsplash.com/photo-1447933601403-0c6688de566e?w=400',
+        partnerType: 'community',
+        websiteUrl: 'https://www.recoverycafegso.org',
+        description: 'Community-based support cafe offering meals and connection.',
         isActive: 1,
         isFeatured: 0,
-        minRedemptionAmount: 120, // 120 $ECHO = ice cream treat
-        maxRedemptionAmount: 500, // 500 $ECHO = family ice cream outing
-        contactEmail: 'info@muffinsicecream.com',
-        location: 'Mebane, NC'
+        minRedemptionAmount: 150, // 150 $ECHO = community meal
+        maxRedemptionAmount: 500, // 500 $ECHO = meal pass
+        contactEmail: 'info@recoverycafegso.org',
+        location: 'Greensboro, NC'
+      },
+      {
+        partnerName: 'SHIELD Mentor Program',
+        partnerLogo: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400',
+        partnerType: 'youth_programs',
+        websiteUrl: 'https://www.shieldmentor.org',
+        description: 'Youth mentoring, leadership development, and robotics programs.',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 400, // 400 $ECHO = program registration
+        maxRedemptionAmount: 1500, // 1500 $ECHO = semester enrollment
+        contactEmail: 'info@shieldmentor.org',
+        location: 'Greensboro, NC'
+      },
+      {
+        partnerName: 'Greensboro Public Library',
+        partnerLogo: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400',
+        partnerType: 'educational',
+        websiteUrl: 'https://www.greensborolibrary.org',
+        description: 'Reading programs, study spaces, and educational resources for students.',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 120, // 120 $ECHO = library card benefits
+        maxRedemptionAmount: 500, // 500 $ECHO = reading program bundle
+        contactEmail: 'info@greensborolibrary.org',
+        location: 'Greensboro, NC'
       },
       // NATIONAL KID-FRIENDLY PARTNERS
       {
@@ -251,128 +249,128 @@ export async function initializeSampleRewardData() {
 
     console.log('Creating sample reward offers...');
 
-    // KID-FRIENDLY DUAL REWARD OFFERS - Burlington, NC Focus
+    // HIGH SCHOOL REWARD OFFERS - Greensboro, NC Focus
     const offers = [
-      // Burlington City Park Carousel Offers
+      // A Special Blend Coffee Offers
       {
-        partnerId: createdPartners[0].id, // Burlington Carousel
-        offerType: 'experience',
-        title: '2 Free Carousel Rides',
-        description: 'Enjoy 2 free rides on Burlington\'s historic carousel for showing kindness!',
-        offerValue: '2 Rides',
-        echoCost: 100,
+        partnerId: createdPartners[0].id, // A Special Blend
+        offerType: 'food',
+        title: 'Coffee & Pastry Combo',
+        description: 'Free coffee and pastry at A Special Blend - supporting community employment!',
+        offerValue: 'Coffee + Pastry',
+        echoCost: 150,
         maxRedemptions: 200,
-        currentRedemptions: 15,
-        isActive: 1,
-        isFeatured: 1,
-        requiresVerification: 0,
-        expiresAt: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000), // 6 months
-        termsAndConditions: 'Valid during park operating hours. Must be accompanied by adult.',
-        imageUrl: 'https://via.placeholder.com/300/FF6B9D/FFFFFF?text=Carousel+Rides'
-      },
-
-      // Putt-Putt Fun Center Offers
-      {
-        partnerId: createdPartners[1].id, // Putt-Putt
-        offerType: 'experience',
-        title: 'Mini Golf Game Pass',
-        description: 'One free round of mini golf for being kind to others!',
-        offerValue: '1 Game',
-        echoCost: 200,
-        maxRedemptions: 150,
-        currentRedemptions: 28,
+        currentRedemptions: 45,
         isActive: 1,
         isFeatured: 1,
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Valid weekdays after 3pm and weekends. Must be used within 90 days.',
-        imageUrl: 'https://via.placeholder.com/300/00BCD4/FFFFFF?text=Mini+Golf'
+        termsAndConditions: 'Valid during business hours. One per student per week.',
+        imageUrl: 'https://via.placeholder.com/300/8D6E63/FFFFFF?text=Coffee+Time'
       },
 
-      // Burlington Sock Puppets Baseball Offers
+      // Tate Street Coffee House Offers
       {
-        partnerId: createdPartners[2].id, // Sock Puppets
+        partnerId: createdPartners[1].id, // Tate Street Coffee
+        offerType: 'food',
+        title: 'Study Session Bundle',
+        description: 'Fair-trade coffee and snack for productive study sessions near UNCG!',
+        offerValue: 'Coffee + Snack',
+        echoCost: 120,
+        maxRedemptions: 150,
+        currentRedemptions: 38,
+        isActive: 1,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid weekdays 7am-9pm. WiFi available for studying.',
+        imageUrl: 'https://via.placeholder.com/300/6D4C41/FFFFFF?text=Study+Fuel'
+      },
+
+      // Greensboro Grasshoppers Baseball Offers
+      {
+        partnerId: createdPartners[2].id, // Grasshoppers
         offerType: 'ticket',
-        title: 'Family Game Ticket',
-        description: 'One ticket to a Burlington Sock Puppets baseball game for the whole family!',
+        title: 'Baseball Game Ticket',
+        description: 'Ticket to a Greensboro Grasshoppers game for showing kindness!',
         offerValue: '1 Ticket',
         echoCost: 300,
         maxRedemptions: 100,
-        currentRedemptions: 12,
-        isActive: 1,
-        isFeatured: 1,
-        requiresVerification: 1, // Requires kindness verification
-        expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Valid for home games only. Subject to availability.',
-        imageUrl: 'https://via.placeholder.com/300/FF9800/FFFFFF?text=Baseball+Game'
-      },
-
-      // Sir Pizza Burlington Offers
-      {
-        partnerId: createdPartners[3].id, // Sir Pizza
-        offerType: 'meal',
-        title: 'Kids Meal Deal',
-        description: 'Free kids meal with drink and activity book at Sir Pizza Burlington!',
-        offerValue: 'Kids Meal',
-        echoCost: 250,
-        maxRedemptions: 80,
         currentRedemptions: 22,
         isActive: 1,
-        isFeatured: 0,
-        requiresVerification: 0,
-        expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Kids 12 and under. Must be accompanied by adult.',
-        imageUrl: 'https://via.placeholder.com/300/FF5722/FFFFFF?text=Kids+Meal'
-      },
-
-      // Alamance Libraries Offers
-      {
-        partnerId: createdPartners[4].id, // Libraries
-        offerType: 'educational',
-        title: 'Special Reading Program',
-        description: 'VIP access to special reading programs and storytimes at Alamance County Libraries!',
-        offerValue: 'Program Access',
-        echoCost: 150,
-        maxRedemptions: 120,
-        currentRedemptions: 35,
-        isActive: 1,
         isFeatured: 1,
-        requiresVerification: 0,
-        expiresAt: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Library card required. Subject to program availability.',
-        imageUrl: 'https://via.placeholder.com/300/9C27B0/FFFFFF?text=Reading+Program'
+        requiresVerification: 1,
+        expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid for home games only. Subject to availability.',
+        imageUrl: 'https://via.placeholder.com/300/2E7D32/FFFFFF?text=Baseball+Game'
       },
 
-      // Chick-fil-A Burlington Offers
+      // Chez Genèse Offers
       {
-        partnerId: createdPartners[5].id, // Chick-fil-A
+        partnerId: createdPartners[3].id, // Chez Genèse
         offerType: 'meal',
-        title: 'Kids Meal + Playground Time',
-        description: 'Kids meal with playground access at Chick-fil-A Burlington!',
-        offerValue: 'Kids Meal',
-        echoCost: 200,
-        maxRedemptions: 100,
+        title: 'Restaurant Credit',
+        description: '$15 meal credit at Chez Genèse - community-focused dining!',
+        offerValue: '$15 Credit',
+        echoCost: 400,
+        maxRedemptions: 80,
         currentRedemptions: 18,
         isActive: 1,
         isFeatured: 1,
         requiresVerification: 0,
-        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Valid at Burlington locations only. Kids 12 and under.',
-        imageUrl: 'https://via.placeholder.com/300/E91E63/FFFFFF?text=CFA+Kids+Meal'
+        expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid for dine-in or takeout. Cannot be combined with other offers.',
+        imageUrl: 'https://via.placeholder.com/300/D84315/FFFFFF?text=Restaurant'
       },
 
-      // GRAHAM, NC OFFERS
+      // Greensboro Science Center Offers
       {
-        partnerId: createdPartners[6].id, // Children's Museum
+        partnerId: createdPartners[4].id, // Science Center
         offerType: 'educational',
-        title: 'Museum Discovery Pass',
-        description: 'Admission to Children\'s Museum of Alamance County with hands-on exhibits!',
-        offerValue: 'Museum Pass',
-        echoCost: 120,
-        maxRedemptions: 100,
-        currentRedemptions: 15,
+        title: 'Science Center Pass',
+        description: 'Admission to aquarium, zoo, and museum at Greensboro Science Center!',
+        offerValue: 'Admission',
+        echoCost: 350,
+        maxRedemptions: 120,
+        currentRedemptions: 28,
         isActive: 1,
         isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid for student admission. Check website for hours.',
+        imageUrl: 'https://via.placeholder.com/300/0288D1/FFFFFF?text=Science+Center'
+      },
+
+      // Chick-fil-A Greensboro Offers
+      {
+        partnerId: createdPartners[5].id, // Chick-fil-A
+        offerType: 'meal',
+        title: 'Meal Voucher',
+        description: 'Free meal at Chick-fil-A Greensboro near Dudley High School!',
+        offerValue: 'Meal',
+        echoCost: 200,
+        maxRedemptions: 100,
+        currentRedemptions: 31,
+        isActive: 1,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid at Greensboro locations only. Student ID may be required.',
+        imageUrl: 'https://via.placeholder.com/300/E53935/FFFFFF?text=CFA+Meal'
+      },
+
+      // Fig & Olive Cafe Offers
+      {
+        partnerId: createdPartners[6].id, // Fig & Olive
+        offerType: 'meal',
+        title: 'Healthy Cafe Meal',
+        description: 'Fresh, healthy meal at Fig & Olive Cafe perfect for students!',
+        offerValue: 'Meal',
+        echoCost: 180,
+        maxRedemptions: 90,
+        currentRedemptions: 15,
+        isActive: 1,
+        isFeatured: 0,
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid Tuesday-Saturday 10am-5pm. Kids 12 and under.',

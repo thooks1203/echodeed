@@ -2467,7 +2467,7 @@ export class DatabaseStorage implements IStorage {
         .from(corporateAccounts)
         .where(eq(corporateAccounts.domain, 'wise.com'));
 
-      // Check for Burlington Christian Academy
+      // Check for Dudley High School
       const existingBCA = await db.select()
         .from(corporateAccounts)
         .where(eq(corporateAccounts.domain, 'bcaroyals.com'));
@@ -2525,10 +2525,10 @@ export class DatabaseStorage implements IStorage {
         wiseAccount = existingWise[0];
       }
 
-      // Create Burlington Christian Academy if it doesn't exist
+      // Create Dudley High School if it doesn't exist
       if (existingBCA.length === 0) {
         [bcaAccount] = await db.insert(corporateAccounts).values({
-          companyName: 'Burlington Christian Academy',
+          companyName: 'Dudley High School',
           domain: 'bcaroyals.com',
           industry: 'education',
           companySize: 'small',
@@ -6046,7 +6046,7 @@ export class DatabaseStorage implements IStorage {
     try {
       console.log('🎓 Initializing BCA demo consent data...');
       
-      // Check if demo data already exists for Burlington Christian Academy
+      // Check if demo data already exists for Dudley High School
       const existingConsents = await this.listConsentsBySchool(DEMO_CONFIG.SCHOOL_ID, { page: 1, pageSize: 1 });
       if (existingConsents && existingConsents.consents && existingConsents.consents.length > 0) {
         console.log('📋 BCA demo consent data already exists, skipping initialization');
