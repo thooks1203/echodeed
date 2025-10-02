@@ -737,6 +737,8 @@ export interface IStorage {
   
   // Service log photo upload
   updateServiceLogPhoto(serviceLogId: string, photoUrl: string): Promise<void>;
+  getAllCommunityServiceLogs(): Promise<any[]>;
+  getServiceLogByPhotoUrl(photoUrl: string): Promise<any | null>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -5594,6 +5596,19 @@ export class DatabaseStorage implements IStorage {
       .update(communityServiceLogs)
       .set({ verificationPhotoUrl: photoUrl })
       .where(eq(communityServiceLogs.id, serviceLogId));
+  }
+
+  async getAllCommunityServiceLogs(): Promise<any[]> {
+    return await db.select().from(communityServiceLogs);
+  }
+
+  async getServiceLogByPhotoUrl(photoUrl: string): Promise<any | null> {
+    const [log] = await db
+      .select()
+      .from(communityServiceLogs)
+      .where(eq(communityServiceLogs.verificationPhotoUrl, photoUrl))
+      .limit(1);
+    return log || null;
   }
 
   async createTeacherClaimCode(claimCodeData: InsertTeacherClaimCode): Promise<TeacherClaimCode> {

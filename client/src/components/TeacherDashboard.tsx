@@ -913,6 +913,25 @@ export function TeacherDashboard() {
                               <strong>Student Reflection:</strong> "{serviceLog.studentReflection}"
                             </p>
                           )}
+                          {serviceLog.verificationPhotoUrl && (
+                            <div className="mb-4">
+                              <p className="text-sm font-semibold mb-2 flex items-center gap-2">
+                                <CheckCircle className="w-4 h-4 text-green-600" />
+                                Verification Photo:
+                              </p>
+                              <div className="border rounded-lg overflow-hidden bg-white">
+                                <img 
+                                  src={serviceLog.verificationPhotoUrl} 
+                                  alt="Verification evidence" 
+                                  className="w-full max-w-md mx-auto"
+                                  data-testid={`img-verification-${serviceLog.id}`}
+                                />
+                              </div>
+                              <p className="text-xs text-gray-500 mt-1">
+                                Photo provided by student for faster verification
+                              </p>
+                            </div>
+                          )}
                           <div className="flex gap-2">
                             <Button 
                               size="sm" 

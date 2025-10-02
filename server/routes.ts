@@ -293,17 +293,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ==================== OBJECT STORAGE ROUTES ====================
   // Endpoint for serving private objects (verification photos)
-  app.get("/objects/:objectPath(*)", isAuthenticated, async (req, res) => {
+  app.get("/objects/:objectPath(*)", isAuthenticated, async (req: any, res) => {
     const userId = req.user?.claims?.sub;
     const objectStorageService = new ObjectStorageService();
     try {
       const objectFile = await objectStorageService.getObjectEntityFile(req.path);
-      const canAccess = await objectStorageService.canAccessObjectEntity({
+      let canAccess = await objectStorageService.canAccessObjectEntity({
         objectFile,
         userId: userId,
         requestedPermission: ObjectPermission.READ,
       });
+      
+      // 🔐 Manually check if user is a teacher/admin to enable school-scoped access
+      // (Can't use requireTeacherRole middleware because students also need access to their own photos)
       if (!canAccess) {
+        const user = await storage.getUser(userId);
+        if (user && (user.schoolRole === 'teacher' || user.schoolRole === 'admin') && user.schoolId) {
+          const photoPath = req.path;
+          const teacherSchoolId = user.schoolId;
+          
+          // Use targeted lookup instead of full table scan
+          const serviceLog = await storage.getServiceLogByPhotoUrl(photoPath);
+          
+          if (serviceLog) {
+            // 🔒 CRITICAL: Verify the service log belongs to the teacher's school
+            if (serviceLog.schoolId === teacherSchoolId) {
+              canAccess = true;
+              console.log(`✓ Teacher/Admin ${userId} authorized to view photo for service log ${serviceLog.id} in school ${teacherSchoolId}`);
+            } else {
+              console.warn(`🔒 SECURITY: Teacher/Admin ${userId} from school ${teacherSchoolId} attempted to access photo from school ${serviceLog.schoolId}`);
+              return res.sendStatus(403);
+            }
+          }
+        }
+      }
+      
+      if (!canAccess) {
+        console.warn(`🔒 Access denied to ${req.path} for user ${userId}`);
         return res.sendStatus(401);
       }
       objectStorageService.downloadObject(objectFile, res);
