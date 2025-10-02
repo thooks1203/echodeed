@@ -5344,7 +5344,7 @@ export class DatabaseStorage implements IStorage {
     return result.filter(r => r.user && r.stats) as Array<{ user: User; stats: MentorStats; }>;
   }
 
-  // Curriculum operations
+  // Curriculum operations (HIDDEN FOR MVP - feature flag VITE_ENABLE_CURRICULUM)
   async getCurriculumLessons(filters?: {
     gradeLevel?: string;
     subject?: string;
@@ -5352,81 +5352,39 @@ export class DatabaseStorage implements IStorage {
     difficulty?: string;
     limit?: number;
   }): Promise<CurriculumLesson[]> {
-    const conditions = [eq(curriculumLessons.isActive, true)];
-    if (filters?.gradeLevel) {
-      conditions.push(eq(curriculumLessons.gradeLevel, filters.gradeLevel));
-    }
-    if (filters?.subject) {
-      conditions.push(eq(curriculumLessons.subject, filters.subject));
-    }
-    if (filters?.kindnessTheme) {
-      conditions.push(eq(curriculumLessons.kindnessTheme, filters.kindnessTheme));
-    }
-    if (filters?.difficulty) {
-      conditions.push(eq(curriculumLessons.difficulty, filters.difficulty));
-    }
-
-    const query = db.select()
-      .from(curriculumLessons)
-      .where(and(...conditions))
-      .orderBy(curriculumLessons.gradeLevel, curriculumLessons.title);
-
-    if (filters?.limit) {
-      return await query.limit(filters.limit);
-    }
-
-    return await query;
+    // Return empty array - curriculum tables don't exist yet (MVP simplification)
+    return [];
   }
 
   async getCurriculumLessonById(id: string): Promise<CurriculumLesson | undefined> {
-    const [lesson] = await db
-      .select()
-      .from(curriculumLessons)
-      .where(eq(curriculumLessons.id, id));
-    return lesson;
+    // Return undefined - curriculum tables don't exist yet (MVP simplification)
+    return undefined;
   }
 
   async createCurriculumLesson(lesson: InsertCurriculumLesson): Promise<CurriculumLesson> {
-    const [created] = await db
-      .insert(curriculumLessons)
-      .values(lesson)
-      .returning();
-    return created;
+    // Throw error - curriculum feature not available in MVP
+    throw new Error('Curriculum feature not available - hidden for MVP');
   }
 
   async updateCurriculumLesson(id: string, updates: Partial<InsertCurriculumLesson>): Promise<CurriculumLesson> {
-    const [updated] = await db
-      .update(curriculumLessons)
-      .set({ ...updates, updatedAt: new Date() })
-      .where(eq(curriculumLessons.id, id))
-      .returning();
-    return updated;
+    // Throw error - curriculum feature not available in MVP
+    throw new Error('Curriculum feature not available - hidden for MVP');
   }
 
   // Teacher progress tracking
   async getCurriculumProgress(teacherId: string): Promise<CurriculumProgress[]> {
-    return await db
-      .select()
-      .from(curriculumProgress)
-      .where(eq(curriculumProgress.teacherId, teacherId))
-      .orderBy(desc(curriculumProgress.implementedAt));
+    // Return empty array - curriculum tables don't exist yet (MVP simplification)
+    return [];
   }
 
   async createCurriculumProgress(progress: InsertCurriculumProgress): Promise<CurriculumProgress> {
-    const [created] = await db
-      .insert(curriculumProgress)
-      .values(progress)
-      .returning();
-    return created;
+    // Throw error - curriculum feature not available in MVP
+    throw new Error('Curriculum feature not available - hidden for MVP');
   }
 
   async updateCurriculumProgress(id: string, updates: Partial<InsertCurriculumProgress>): Promise<CurriculumProgress> {
-    const [updated] = await db
-      .update(curriculumProgress)
-      .set({ ...updates })
-      .where(eq(curriculumProgress.id, id))
-      .returning();
-    return updated;
+    // Throw error - curriculum feature not available in MVP
+    throw new Error('Curriculum feature not available - hidden for MVP');
   }
 
   // Student responses
@@ -5435,38 +5393,18 @@ export class DatabaseStorage implements IStorage {
     lessonId?: string;
     progressId?: string;
   }): Promise<StudentCurriculumResponse[]> {
-    const conditions = [];
-    if (filters?.studentId) {
-      conditions.push(eq(studentCurriculumResponses.studentId, filters.studentId));
-    }
-    if (filters?.lessonId) {
-      conditions.push(eq(studentCurriculumResponses.lessonId, filters.lessonId));
-    }
-    if (filters?.progressId) {
-      conditions.push(eq(studentCurriculumResponses.progressId, filters.progressId));
-    }
-
-    return await db.select()
-      .from(studentCurriculumResponses)
-      .where(conditions.length > 0 ? and(...conditions) : undefined)
-      .orderBy(desc(studentCurriculumResponses.createdAt));
+    // Return empty array - curriculum tables don't exist yet (MVP simplification)
+    return [];
   }
 
   async createStudentCurriculumResponse(response: InsertStudentCurriculumResponse): Promise<StudentCurriculumResponse> {
-    const [created] = await db
-      .insert(studentCurriculumResponses)
-      .values(response)
-      .returning();
-    return created;
+    // Throw error - curriculum feature not available in MVP
+    throw new Error('Curriculum feature not available - hidden for MVP');
   }
 
   async updateStudentCurriculumResponse(id: string, updates: Partial<InsertStudentCurriculumResponse>): Promise<StudentCurriculumResponse> {
-    const [updated] = await db
-      .update(studentCurriculumResponses)
-      .set({ ...updates })
-      .where(eq(studentCurriculumResponses.id, id))
-      .returning();
-    return updated;
+    // Throw error - curriculum feature not available in MVP
+    throw new Error('Curriculum feature not available - hidden for MVP');
   }
 
   // Curriculum resources
@@ -5475,29 +5413,13 @@ export class DatabaseStorage implements IStorage {
     resourceType?: string;
     gradeLevel?: string;
   }): Promise<CurriculumResource[]> {
-    const conditions = [];
-    if (filters?.lessonId) {
-      conditions.push(eq(curriculumResources.lessonId, filters.lessonId));
-    }
-    if (filters?.resourceType) {
-      conditions.push(eq(curriculumResources.resourceType, filters.resourceType));
-    }
-    if (filters?.gradeLevel) {
-      conditions.push(eq(curriculumResources.gradeLevel, filters.gradeLevel));
-    }
-
-    return await db.select()
-      .from(curriculumResources)
-      .where(conditions.length > 0 ? and(...conditions) : undefined)
-      .orderBy(curriculumResources.title);
+    // Return empty array - curriculum tables don't exist yet (MVP simplification)
+    return [];
   }
 
   async createCurriculumResource(resource: InsertCurriculumResource): Promise<CurriculumResource> {
-    const [created] = await db
-      .insert(curriculumResources)
-      .values(resource)
-      .returning();
-    return created;
+    // Throw error - curriculum feature not available in MVP
+    throw new Error('Curriculum feature not available - hidden for MVP');
   }
 
   // ===== EMERGENCY CONTACT ENCRYPTION KEY MANAGEMENT - LIFE-CRITICAL =====
