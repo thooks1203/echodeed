@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
+import { featureFlags } from '@shared/featureFlags';
 
 interface StudentStats {
   totalKindnessPoints: number;
@@ -528,7 +529,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
       {/* Tab Navigation */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: '1fr 1fr 1fr',
+        gridTemplateColumns: featureFlags.schoolYearChallenges ? '1fr 1fr 1fr' : '1fr 1fr',
         background: '#f3f4f6',
         borderRadius: '12px',
         padding: '4px',
@@ -537,7 +538,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
       }}>
         {[
           { id: 'overview', label: '📊 Overview' },
-          { id: 'challenges', label: '🎯 Challenges' },
+          ...(featureFlags.schoolYearChallenges ? [{ id: 'challenges', label: '🎯 Challenges' }] : []),
           { id: 'progress', label: '📈 Progress' }
         ].map((tab) => (
           <button

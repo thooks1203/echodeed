@@ -10,6 +10,7 @@ import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Filter, Searc
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { featureFlags } from '@shared/featureFlags';
 
 interface CurriculumLesson {
   id: string;
@@ -163,19 +164,23 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
         </header>
 
         <Tabs defaultValue={initialTab.toLowerCase()} className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-6">
-            <TabsTrigger value="lessons" data-testid="tab-lessons">
-              <BookOpen className="h-4 w-4 mr-2" />
-              Lesson Library
-            </TabsTrigger>
-            <TabsTrigger value="progress" data-testid="tab-progress">
-              <Target className="h-4 w-4 mr-2" />
-              My Progress
-            </TabsTrigger>
-            <TabsTrigger value="resources" data-testid="tab-resources">
-              <Star className="h-4 w-4 mr-2" />
-              Resources
-            </TabsTrigger>
+          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-5' : 'grid-cols-2'} mb-6`}>
+            {featureFlags.curriculum && (
+              <>
+                <TabsTrigger value="lessons" data-testid="tab-lessons">
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  Lesson Library
+                </TabsTrigger>
+                <TabsTrigger value="progress" data-testid="tab-progress">
+                  <Target className="h-4 w-4 mr-2" />
+                  My Progress
+                </TabsTrigger>
+                <TabsTrigger value="resources" data-testid="tab-resources">
+                  <Star className="h-4 w-4 mr-2" />
+                  Resources
+                </TabsTrigger>
+              </>
+            )}
             <TabsTrigger value="reports" data-testid="tab-reports">
               <Users className="h-4 w-4 mr-2" />
               Reports
@@ -186,7 +191,9 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="lessons" className="space-y-6">
+          {featureFlags.curriculum && (
+            <>
+            <TabsContent value="lessons" className="space-y-6">
             {/* Filters */}
             <Card>
               <CardHeader>
@@ -464,6 +471,18 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
               </CardContent>
             </Card>
           </TabsContent>
+            </>
+          )}
+
+          {/* Reports Tab */}
+          <TabsContent value="reports" className="space-y-6">
+            <ReportsSection />
+          </TabsContent>
+
+          {/* Teacher Rewards Tab */}
+          <TabsContent value="rewards" className="space-y-6">
+            <TeacherRewardsSection />
+          </TabsContent>
         </Tabs>
 
         {/* Lesson Detail Modal */}
@@ -544,17 +563,6 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
             </Card>
           </div>
         )}
-
-          {/* Reports Tab */}
-          <TabsContent value="reports" className="space-y-6">
-            <ReportsSection />
-          </TabsContent>
-
-          {/* Teacher Rewards Tab */}
-          <TabsContent value="rewards" className="space-y-6">
-            <TeacherRewardsSection />
-          </TabsContent>
-        </Tabs>
 
         {selectedLesson && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -736,41 +744,43 @@ function TeacherRewardsSection() {
           </CardContent>
         </Card>
 
-        {/* Wellness Champion */}
-        <Card className="relative overflow-hidden">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-full ${progress.wellnessChampion?.eligible ? 'bg-green-100' : 'bg-purple-100'}`}>
-                <Heart className={`h-6 w-6 ${progress.wellnessChampion?.eligible ? 'text-green-600' : 'text-purple-600'}`} />
+        {/* Wellness Champion - Hidden unless AI wellness features enabled */}
+        {featureFlags.aiWellness && (
+          <Card className="relative overflow-hidden">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className={`p-3 rounded-full ${progress.wellnessChampion?.eligible ? 'bg-green-100' : 'bg-purple-100'}`}>
+                  <Heart className={`h-6 w-6 ${progress.wellnessChampion?.eligible ? 'text-green-600' : 'text-purple-600'}`} />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">Wellness Champion</CardTitle>
+                  <CardDescription>{progress.wellnessChampion?.description}</CardDescription>
+                </div>
               </div>
-              <div>
-                <CardTitle className="text-lg">Wellness Champion</CardTitle>
-                <CardDescription>{progress.wellnessChampion?.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Weekly Progress</span>
+                  <span className="font-semibold">{progress.wellnessChampion?.weeklyProgress || 0}/{progress.wellnessChampion?.weeklyThreshold || 3}</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div 
+                    className={`h-3 rounded-full ${progress.wellnessChampion?.eligible ? 'bg-green-500' : 'bg-purple-500'}`}
+                    style={{ width: `${Math.min(((progress.wellnessChampion?.weeklyProgress || 0) / (progress.wellnessChampion?.weeklyThreshold || 3)) * 100, 100)}%` }}
+                  ></div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Coffee className="h-4 w-4 text-amber-600" />
+                  <span className="text-sm font-medium">{progress.wellnessChampion?.reward}</span>
+                </div>
+                {progress.wellnessChampion?.eligible && (
+                  <Badge className="bg-green-100 text-green-800">Reward Earned! 🎉</Badge>
+                )}
               </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Weekly Progress</span>
-                <span className="font-semibold">{progress.wellnessChampion?.weeklyProgress || 0}/{progress.wellnessChampion?.weeklyThreshold || 3}</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-3">
-                <div 
-                  className={`h-3 rounded-full ${progress.wellnessChampion?.eligible ? 'bg-green-500' : 'bg-purple-500'}`}
-                  style={{ width: `${Math.min(((progress.wellnessChampion?.weeklyProgress || 0) / (progress.wellnessChampion?.weeklyThreshold || 3)) * 100, 100)}%` }}
-                ></div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Coffee className="h-4 w-4 text-amber-600" />
-                <span className="text-sm font-medium">{progress.wellnessChampion?.reward}</span>
-              </div>
-              {progress.wellnessChampion?.eligible && (
-                <Badge className="bg-green-100 text-green-800">Reward Earned! 🎉</Badge>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Community Builder */}
         <Card className="relative overflow-hidden">
