@@ -10741,6 +10741,299 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ============================================================================
+  // AI BEHAVIORAL MITIGATION - Moderation Queue API
+  // ============================================================================
+  
+  // GET /api/moderation/queue - List flagged content for review (teacher/admin only)
+  app.get('/api/moderation/queue', requireTeacherRole, async (req: any, res) => {
+    try {
+      const schoolId = req.teacherContext?.schoolId || req.user?.schoolId;
+      const { status, severity, limit } = req.query;
+      
+      if (!schoolId) {
+        return res.status(400).json({ error: 'School ID required' });
+      }
+
+      const queue = await storage.getContentModerationQueue(schoolId, {
+        reviewStatus: status as string | undefined,
+        severityLevel: severity as string | undefined,
+        limit: limit ? parseInt(limit as string) : 50
+      });
+
+      res.json({
+        success: true,
+        queue,
+        total: queue.length
+      });
+    } catch (error) {
+      console.error('Error fetching moderation queue:', error);
+      res.status(500).json({ error: 'Failed to fetch moderation queue' });
+    }
+  });
+
+  // PATCH /api/moderation/queue/:id - Update review decision (approve/block/escalate)
+  app.patch('/api/moderation/queue/:id', requireTeacherRole, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { actionTaken, reviewNotes } = req.body;
+      const reviewerId = req.teacherContext?.userId || req.user?.claims?.sub;
+
+      if (!actionTaken || !['approved', 'blocked', 'edited', 'parent_notified', 'counselor_referred', 'escalated'].includes(actionTaken)) {
+        return res.status(400).json({ error: 'Valid actionTaken required (approved, blocked, edited, parent_notified, counselor_referred, escalated)' });
+      }
+
+      const updated = await storage.updateContentModerationQueueEntry(id, {
+        reviewStatus: actionTaken === 'escalated' ? 'escalated' : actionTaken === 'approved' ? 'approved' : 'blocked',
+        actionTaken,
+        reviewNotes: reviewNotes || null,
+        reviewedBy: reviewerId,
+        reviewedAt: new Date()
+      });
+
+      if (!updated) {
+        return res.status(404).json({ error: 'Moderation queue item not found' });
+      }
+
+      res.json({
+        success: true,
+        message: `Content ${actionTaken} successfully`,
+        item: updated
+      });
+    } catch (error) {
+      console.error('Error updating moderation queue:', error);
+      res.status(500).json({ error: 'Failed to update moderation queue' });
+    }
+  });
+
+  // GET /api/moderation/queue/:id - Get specific flagged item details
+  app.get('/api/moderation/queue/:id', requireTeacherRole, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const schoolId = req.teacherContext?.schoolId || req.user?.schoolId;
+
+      const queue = await storage.getContentModerationQueue(schoolId, {});
+      const item = queue.find(q => q.id === id);
+
+      if (!item) {
+        return res.status(404).json({ error: 'Moderation queue item not found' });
+      }
+
+      res.json({
+        success: true,
+        item
+      });
+    } catch (error) {
+      console.error('Error fetching moderation queue item:', error);
+      res.status(500).json({ error: 'Failed to fetch moderation queue item' });
+    }
+  });
+
+  // GET /api/moderation/stats - Get filtering statistics (admin dashboard)
+  app.get('/api/moderation/stats', requireTeacherRole, async (req: any, res) => {
+    try {
+      const schoolId = req.teacherContext?.schoolId || req.user?.schoolId;
+      const { days = 7 } = req.query;
+
+      if (!schoolId) {
+        return res.status(400).json({ error: 'School ID required' });
+      }
+
+      const dateRange = {
+        start: new Date(Date.now() - (parseInt(days as string) * 24 * 60 * 60 * 1000)),
+        end: new Date()
+      };
+
+      // Import compliance filter service
+      const { complianceFilter } = await import('./services/complianceFilter');
+      const stats = await complianceFilter.getFilteringStats(schoolId, dateRange);
+
+      res.json({
+        success: true,
+        stats,
+        dateRange: {
+          start: dateRange.start.toISOString(),
+          end: dateRange.end.toISOString(),
+          days: parseInt(days as string)
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching moderation stats:', error);
+      res.status(500).json({ error: 'Failed to fetch moderation stats' });
+    }
+  });
+
+  // ============================================================================
+  // AI BEHAVIORAL MITIGATION - Aggregate Climate Analytics API
+  // ============================================================================
+  
+  // GET /api/climate/metrics - Get school-wide climate metrics (NO individual data)
+  app.get('/api/climate/metrics', requireTeacherRole, async (req: any, res) => {
+    try {
+      const schoolId = req.teacherContext?.schoolId || req.user?.schoolId;
+      const { days = 7 } = req.query;
+
+      if (!schoolId) {
+        return res.status(400).json({ error: 'School ID required' });
+      }
+
+      const dateRange = {
+        start: new Date(Date.now() - (parseInt(days as string) * 24 * 60 * 60 * 1000)),
+        end: new Date()
+      };
+
+      // Import aggregate climate monitor service
+      const { aggregateClimateMonitor } = await import('./services/aggregateClimateMonitor');
+      const metrics = await aggregateClimateMonitor.calculateSchoolClimateMetrics(schoolId, dateRange);
+
+      res.json({
+        success: true,
+        metrics,
+        dateRange: {
+          start: dateRange.start.toISOString(),
+          end: dateRange.end.toISOString(),
+          days: parseInt(days as string)
+        }
+      });
+    } catch (error) {
+      console.error('Error fetching climate metrics:', error);
+      res.status(500).json({ error: 'Failed to fetch climate metrics' });
+    }
+  });
+
+  // GET /api/climate/trends - Get behavioral trend analytics (aggregate only)
+  app.get('/api/climate/trends', requireTeacherRole, async (req: any, res) => {
+    try {
+      const schoolId = req.teacherContext?.schoolId || req.user?.schoolId;
+      const { periodType = 'weekly' } = req.query;
+
+      if (!schoolId) {
+        return res.status(400).json({ error: 'School ID required' });
+      }
+
+      if (!['daily', 'weekly', 'monthly'].includes(periodType as string)) {
+        return res.status(400).json({ error: 'Invalid periodType (must be daily, weekly, or monthly)' });
+      }
+
+      // Import aggregate climate monitor service
+      const { aggregateClimateMonitor } = await import('./services/aggregateClimateMonitor');
+      const trends = await aggregateClimateMonitor.analyzeBehavioralTrends(
+        schoolId,
+        periodType as 'daily' | 'weekly' | 'monthly'
+      );
+
+      res.json({
+        success: true,
+        trends
+      });
+    } catch (error) {
+      console.error('Error fetching behavioral trends:', error);
+      res.status(500).json({ error: 'Failed to fetch behavioral trends' });
+    }
+  });
+
+  // GET /api/climate/alerts - Get system-level climate alerts (NOT individual crises)
+  app.get('/api/climate/alerts', requireTeacherRole, async (req: any, res) => {
+    try {
+      const schoolId = req.teacherContext?.schoolId || req.user?.schoolId;
+      const { days = 7 } = req.query;
+
+      if (!schoolId) {
+        return res.status(400).json({ error: 'School ID required' });
+      }
+
+      const dateRange = {
+        start: new Date(Date.now() - (parseInt(days as string) * 24 * 60 * 60 * 1000)),
+        end: new Date()
+      };
+
+      // Import aggregate climate monitor service
+      const { aggregateClimateMonitor } = await import('./services/aggregateClimateMonitor');
+      const metrics = await aggregateClimateMonitor.calculateSchoolClimateMetrics(schoolId, dateRange);
+      const alerts = await aggregateClimateMonitor.generateClimateAlerts(schoolId, metrics);
+
+      res.json({
+        success: true,
+        alerts,
+        alertCount: alerts.length
+      });
+    } catch (error) {
+      console.error('Error fetching climate alerts:', error);
+      res.status(500).json({ error: 'Failed to fetch climate alerts' });
+    }
+  });
+
+  // POST /api/climate/generate-report - Generate and store climate metrics
+  app.post('/api/climate/generate-report', requireTeacherRole, async (req: any, res) => {
+    try {
+      const schoolId = req.teacherContext?.schoolId || req.user?.schoolId;
+      const { periodType = 'weekly' } = req.body;
+
+      if (!schoolId) {
+        return res.status(400).json({ error: 'School ID required' });
+      }
+
+      // Import services
+      const { aggregateClimateMonitor } = await import('./services/aggregateClimateMonitor');
+      
+      // Generate and store metrics
+      const dateRange = {
+        start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        end: new Date()
+      };
+      
+      const metrics = await aggregateClimateMonitor.calculateSchoolClimateMetrics(schoolId, dateRange);
+      const trends = await aggregateClimateMonitor.analyzeBehavioralTrends(schoolId, periodType as any);
+
+      // Store in database
+      const [savedMetrics, savedTrends] = await Promise.all([
+        storage.createClimateMetrics({
+          schoolId,
+          metricDate: new Date(),
+          overallClimateScore: metrics.overallClimateScore,
+          participationRate: metrics.participationRate,
+          positiveInteractionRate: metrics.positiveInteractionRate,
+          contentSafetyScore: metrics.contentSafetyScore,
+          policyViolationRate: metrics.policyViolationRate,
+          concerningPatternCount: metrics.concerningPatternCount,
+          avgDailyPosts: metrics.avgDailyPosts,
+          peakActivityHours: metrics.peakActivityHours,
+          weekOverWeekChange: metrics.weekOverWeekChange,
+          monthOverMonthChange: metrics.monthOverMonthChange,
+          recommendedFocus: metrics.recommendedFocus
+        }),
+        storage.createBehavioralTrendAnalytics({
+          schoolId,
+          periodType: trends.periodType,
+          periodStart: trends.periodStart,
+          periodEnd: trends.periodEnd,
+          totalPosts: trends.totalPosts,
+          flaggedContentCount: trends.flaggedContentCount,
+          avgPositivityScore: trends.avgPositivityScore,
+          negativeContentPercentage: trends.negativeContentPercentage,
+          sentimentTrend: trends.sentimentTrend,
+          topConcernCategories: trends.topConcernCategories,
+          emergingPatterns: trends.emergingPatterns,
+          postCountChange: trends.postCountChange,
+          sentimentScoreChange: trends.sentimentScoreChange,
+          flaggedContentChange: trends.flaggedContentChange
+        })
+      ]);
+
+      res.json({
+        success: true,
+        message: 'Climate report generated and stored successfully',
+        report: {
+          metrics: savedMetrics,
+          trends: savedTrends
+        }
+      });
+    } catch (error) {
+      console.error('Error generating climate report:', error);
+      res.status(500).json({ error: 'Failed to generate climate report' });
+    }
+  });
+
   return httpServer;
 }
 
@@ -10995,56 +11288,6 @@ async function generateDataGovernanceReport(corporateAccountId: string) {
     return getDefaultGovernanceReport();
   }
 }
-
-// Helper functions for sentiment analysis
-function analyzeSlackSentiment(text: string) {
-  // Simplified sentiment analysis for demo
-  const positiveWords = ['great', 'awesome', 'thanks', 'appreciate', 'excellent', 'wonderful'];
-  const stressWords = ['deadline', 'urgent', 'pressure', 'stressed', 'overwhelmed', 'busy'];
-  
-  const lowerText = text.toLowerCase();
-  const positiveCount = positiveWords.filter(word => lowerText.includes(word)).length;
-  const stressCount = stressWords.filter(word => lowerText.includes(word)).length;
-  
-  const score = Math.max(0, Math.min(100, 50 + (positiveCount * 10) - (stressCount * 15)));
-  
-  return {
-    score,
-    corporateAccountId: 'demo-company', // In production, derive from Slack workspace
-    stressMarkers: stressCount > 0 ? stressWords.filter(w => lowerText.includes(w)) : [],
-    positiveMarkers: positiveCount > 0 ? positiveWords.filter(w => lowerText.includes(w)) : [],
-  };
-}
-
-function analyzeSlackTiming(timestamp: string): any {
-  const hour = new Date(parseInt(timestamp) * 1000).getHours();
-  const isAfterHours = hour < 8 || hour > 18;
-  
-  return {
-    isAfterHours,
-    stressIndicator: isAfterHours ? 'Working outside normal hours' : null,
-  };
-}
-
-function analyzeTeamsSentiment(text: string) {
-  // Similar to Slack analysis
-  return analyzeSlackSentiment(text);
-}
-
-// Default fallback functions
-function getDefaultBenchmarks() {
-  return {
-    wellness: { companyScore: 50, industryAverage: 50, yourPercentile: 50 },
-    kindnessActivity: { companyPostsPerEmployee: 0.5, industryAverage: 0.5, yourPercentile: 50 },
-    engagement: { companyEngagement: 50, industryAverage: 50, yourPercentile: 50 },
-    competitiveInsights: ['Insufficient data for benchmarking'],
-    recommendedActions: ['Increase platform usage for better insights'],
-    marketPosition: 'Insufficient Data',
-    dataQuality: 'Low',
-    lastUpdated: new Date().toISOString(),
-  };
-}
-
 function getDefaultAuditTrail() {
   return {
     reportPeriod: { startDate: new Date().toISOString(), endDate: new Date().toISOString() },

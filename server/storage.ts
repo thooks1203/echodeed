@@ -54,6 +54,9 @@ import {
   parentalConsentRecords,
   parentalConsentRequests,
   studentServiceSummaries,
+  contentModerationQueue,
+  behavioralTrendAnalytics,
+  climateMetrics,
   type User,
   type UpsertUser,
   type KindnessPost,
@@ -190,6 +193,13 @@ import {
   // Enhanced consent tracking types
   type ConsentAuditEvent,
   type InsertConsentAuditEvent,
+  // AI Behavioral Mitigation types
+  type ContentModerationQueue,
+  type InsertContentModerationQueue,
+  type BehavioralTrendAnalytics,
+  type InsertBehavioralTrendAnalytics,
+  type ClimateMetrics,
+  type InsertClimateMetrics,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte, lte, isNotNull, isNull, inArray, gt, getTableColumns } from "drizzle-orm";
@@ -739,6 +749,24 @@ export interface IStorage {
   updateServiceLogPhoto(serviceLogId: string, photoUrl: string): Promise<void>;
   getAllCommunityServiceLogs(): Promise<any[]>;
   getServiceLogByPhotoUrl(photoUrl: string): Promise<any | null>;
+  
+  // AI Behavioral Mitigation - Content Moderation Queue
+  createContentModerationQueueEntry(entry: Omit<InsertContentModerationQueue, 'reviewStatus'>): Promise<ContentModerationQueue>;
+  getContentModerationQueueByDateRange(schoolId: string, startDate: Date, endDate: Date): Promise<ContentModerationQueue[]>;
+  getContentModerationQueue(schoolId: string, filters?: {
+    reviewStatus?: string;
+    severityLevel?: string;
+    limit?: number;
+  }): Promise<ContentModerationQueue[]>;
+  updateContentModerationQueueEntry(id: string, updates: Partial<ContentModerationQueue>): Promise<ContentModerationQueue | undefined>;
+  
+  // AI Behavioral Mitigation - Trend Analytics
+  createBehavioralTrendAnalytics(analytics: InsertBehavioralTrendAnalytics): Promise<BehavioralTrendAnalytics>;
+  getBehavioralTrendAnalytics(schoolId: string, periodType?: string): Promise<BehavioralTrendAnalytics[]>;
+  
+  // AI Behavioral Mitigation - Climate Metrics
+  createClimateMetrics(metrics: InsertClimateMetrics): Promise<ClimateMetrics>;
+  getClimateMetrics(schoolId: string, dateRange?: { start: Date; end: Date }): Promise<ClimateMetrics[]>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -3227,34 +3255,43 @@ export class DatabaseStorage implements IStorage {
       );
     }
 
-    const results = await db
-      .select({
-        id: parentalConsentRequests.id,
-        studentAccountId: parentalConsentRequests.studentAccountId,
-        schoolId: parentalConsentRequests.schoolId,
-        parentEmail: parentalConsentRequests.parentEmail,
-        parentName: parentalConsentRequests.parentName,
-        verificationCode: parentalConsentRequests.verificationCode,
-        consentStatus: parentalConsentRequests.consentStatus,
-        requestedAt: parentalConsentRequests.requestedAt,
-        clickedAt: parentalConsentRequests.clickedAt,
-        consentedAt: parentalConsentRequests.consentedAt,
-        expiredAt: parentalConsentRequests.expiredAt,
-        reminderCount: parentalConsentRequests.reminderCount,
-        lastReminderAt: parentalConsentRequests.lastReminderAt,
-        ipAddress: parentalConsentRequests.ipAddress,
-        userAgent: parentalConsentRequests.userAgent,
-        studentFirstName: studentAccounts.firstName,
-        studentGrade: studentAccounts.grade,
-        daysSinceRequest: sql<number>`EXTRACT(DAY FROM NOW() - ${parentalConsentRequests.requestedAt})::integer`
-      })
-      .from(parentalConsentRequests)
-      .innerJoin(studentAccounts, eq(parentalConsentRequests.studentAccountId, studentAccounts.id))
-      .where(and(...conditions))
-      .orderBy(desc(parentalConsentRequests.requestedAt))
-      .limit(filters?.limit || 50);
+    try {
+      const results = await db
+        .select({
+          id: parentalConsentRequests.id,
+          studentAccountId: parentalConsentRequests.studentAccountId,
+          schoolId: parentalConsentRequests.schoolId,
+          parentEmail: parentalConsentRequests.parentEmail,
+          parentName: parentalConsentRequests.parentName,
+          verificationCode: parentalConsentRequests.verificationCode,
+          consentStatus: parentalConsentRequests.consentStatus,
+          requestedAt: parentalConsentRequests.requestedAt,
+          clickedAt: parentalConsentRequests.clickedAt,
+          consentedAt: parentalConsentRequests.consentedAt,
+          expiredAt: parentalConsentRequests.expiredAt,
+          reminderCount: parentalConsentRequests.reminderCount,
+          lastReminderAt: parentalConsentRequests.lastReminderAt,
+          ipAddress: parentalConsentRequests.ipAddress,
+          userAgent: parentalConsentRequests.userAgent,
+          studentFirstName: studentAccounts.firstName,
+          studentGrade: studentAccounts.grade,
+          daysSinceRequest: sql<number>`EXTRACT(DAY FROM NOW() - ${parentalConsentRequests.requestedAt})::integer`
+        })
+        .from(parentalConsentRequests)
+        .leftJoin(studentAccounts, eq(parentalConsentRequests.studentAccountId, studentAccounts.id))
+        .where(and(...conditions))
+        .orderBy(desc(parentalConsentRequests.requestedAt))
+        .limit(filters?.limit || 50);
 
-    return results;
+      return results.map(r => ({
+        ...r,
+        studentFirstName: r.studentFirstName || 'Unknown',
+        studentGrade: r.studentGrade || 'N/A'
+      }));
+    } catch (error) {
+      console.error('Error in listPendingConsentBySchool:', error);
+      return [];
+    }
   }
 
   // 🛡️ ENHANCED COPPA CONSENT OPERATIONS - PRODUCTION COMPLIANCE
@@ -3935,7 +3972,20 @@ export class DatabaseStorage implements IStorage {
     parentEmail: string;
     daysUntilExpiry: number;
   }>> {
-    let query = db
+    // Build conditions array
+    const conditions = [
+      eq(parentalConsentRecords.schoolId, schoolId),
+      eq(parentalConsentRecords.consentStatus, 'approved'),
+      gte(parentalConsentRecords.validUntil, start),
+      lte(parentalConsentRecords.validUntil, end)
+    ];
+
+    // Add grade filter if specified (Burlington: 6, 7, 8)
+    if (grades && grades.length > 0) {
+      conditions.push(inArray(users.grade, grades));
+    }
+
+    const query = db
       .select({
         ...getTableColumns(parentalConsentRecords),
         studentFirstName: studentAccounts.firstName,
@@ -3948,27 +3998,7 @@ export class DatabaseStorage implements IStorage {
       .from(parentalConsentRecords)
       .innerJoin(studentAccounts, eq(parentalConsentRecords.studentAccountId, studentAccounts.id))
       .innerJoin(users, eq(studentAccounts.userId, users.id))
-      .where(
-        and(
-          eq(parentalConsentRecords.schoolId, schoolId),
-          eq(parentalConsentRecords.consentStatus, 'approved'),
-          gte(parentalConsentRecords.validUntil, start),
-          lte(parentalConsentRecords.validUntil, end)
-        )
-      );
-
-    // Filter by grades if specified (Burlington: 6, 7, 8)
-    if (grades && grades.length > 0) {
-      query = query.where(
-        and(
-          eq(parentalConsentRecords.schoolId, schoolId),
-          eq(parentalConsentRecords.consentStatus, 'approved'),
-          gte(parentalConsentRecords.validUntil, start),
-          lte(parentalConsentRecords.validUntil, end),
-          inArray(users.grade, grades)
-        )
-      );
-    }
+      .where(and(...conditions));
 
     return await query.orderBy(parentalConsentRecords.validUntil);
   }
@@ -6142,6 +6172,108 @@ export class DatabaseStorage implements IStorage {
         message: `Demo data initialization failed: ${error.message}`
       };
     }
+  }
+
+  // ============================================================================
+  // AI BEHAVIORAL MITIGATION - Content Moderation Queue
+  // ============================================================================
+  
+  async createContentModerationQueueEntry(entry: Omit<InsertContentModerationQueue, 'reviewStatus'>): Promise<ContentModerationQueue> {
+    const [created] = await db.insert(contentModerationQueue).values({
+      ...entry,
+      reviewStatus: 'pending'
+    }).returning();
+    return created;
+  }
+
+  async getContentModerationQueueByDateRange(schoolId: string, startDate: Date, endDate: Date): Promise<ContentModerationQueue[]> {
+    return await db
+      .select()
+      .from(contentModerationQueue)
+      .where(
+        and(
+          eq(contentModerationQueue.schoolId, schoolId),
+          gte(contentModerationQueue.flaggedAt, startDate),
+          lte(contentModerationQueue.flaggedAt, endDate)
+        )
+      )
+      .orderBy(desc(contentModerationQueue.flaggedAt));
+  }
+
+  async getContentModerationQueue(schoolId: string, filters?: {
+    reviewStatus?: string;
+    severityLevel?: string;
+    limit?: number;
+  }): Promise<ContentModerationQueue[]> {
+    let query = db.select().from(contentModerationQueue).where(eq(contentModerationQueue.schoolId, schoolId));
+    
+    if (filters?.reviewStatus) {
+      query = query.where(eq(contentModerationQueue.reviewStatus, filters.reviewStatus)) as any;
+    }
+    
+    if (filters?.severityLevel) {
+      query = query.where(eq(contentModerationQueue.severityLevel, filters.severityLevel)) as any;
+    }
+    
+    query = query.orderBy(desc(contentModerationQueue.flaggedAt)) as any;
+    
+    if (filters?.limit) {
+      query = query.limit(filters.limit) as any;
+    }
+    
+    return await query;
+  }
+
+  async updateContentModerationQueueEntry(id: string, updates: Partial<ContentModerationQueue>): Promise<ContentModerationQueue | undefined> {
+    const [updated] = await db
+      .update(contentModerationQueue)
+      .set(updates)
+      .where(eq(contentModerationQueue.id, id))
+      .returning();
+    return updated;
+  }
+
+  // ============================================================================
+  // AI BEHAVIORAL MITIGATION - Trend Analytics
+  // ============================================================================
+  
+  async createBehavioralTrendAnalytics(analytics: InsertBehavioralTrendAnalytics): Promise<BehavioralTrendAnalytics> {
+    const [created] = await db.insert(behavioralTrendAnalytics).values(analytics).returning();
+    return created;
+  }
+
+  async getBehavioralTrendAnalytics(schoolId: string, periodType?: string): Promise<BehavioralTrendAnalytics[]> {
+    let query = db.select().from(behavioralTrendAnalytics).where(eq(behavioralTrendAnalytics.schoolId, schoolId));
+    
+    if (periodType) {
+      query = query.where(eq(behavioralTrendAnalytics.periodType, periodType)) as any;
+    }
+    
+    return await query.orderBy(desc(behavioralTrendAnalytics.periodStart));
+  }
+
+  // ============================================================================
+  // AI BEHAVIORAL MITIGATION - Climate Metrics
+  // ============================================================================
+  
+  async createClimateMetrics(metrics: InsertClimateMetrics): Promise<ClimateMetrics> {
+    const [created] = await db.insert(climateMetrics).values(metrics).returning();
+    return created;
+  }
+
+  async getClimateMetrics(schoolId: string, dateRange?: { start: Date; end: Date }): Promise<ClimateMetrics[]> {
+    let query = db.select().from(climateMetrics).where(eq(climateMetrics.schoolId, schoolId));
+    
+    if (dateRange) {
+      query = query.where(
+        and(
+          gte(climateMetrics.metricDate, dateRange.start),
+          lte(climateMetrics.metricDate, dateRange.end)
+        )
+      ) as any;
+    }
+    
+    return await query.orderBy(desc(climateMetrics.metricDate));
   }
 }
 
