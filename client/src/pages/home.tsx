@@ -291,21 +291,21 @@ export default function Home() {
     
     return (
       <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
-        <TeacherDashboard />
+        <TeacherDashboard initialTab="overview" />
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
   }
   
   if (activeTab === 'reports') {
-    // Only teachers can access reports - redirect to teacher dashboard with Reports tab
+    // Only teachers can access reports - show service hours verification tab
     if (user?.schoolRole !== 'teacher') {
       return null; // useEffect will redirect to feed
     }
     
     return (
       <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
-        <TeacherDashboard />
+        <TeacherDashboard initialTab="service-hours" />
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
