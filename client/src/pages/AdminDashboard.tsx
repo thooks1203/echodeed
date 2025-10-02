@@ -13,6 +13,7 @@ import { useAuth, switchDemoRole, getDemoRoles } from '@/hooks/useAuth';
 import { Progress } from '@/components/ui/progress';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
+import { KindnessFeed } from '@/components/KindnessFeed';
 import { 
   Users, 
   TrendingUp, 
@@ -1190,9 +1191,13 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 gap-1 bg-transparent">
+        <TabsList className="grid w-full grid-cols-5 gap-1 bg-transparent">
           <TabsTrigger value="overview" className="bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg">Overview</TabsTrigger>
           <TabsTrigger value="schools" className="bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg">Schools</TabsTrigger>
+          <TabsTrigger value="feed" className="bg-pink-600 text-white hover:bg-pink-700 data-[state=active]:bg-pink-700 data-[state=active]:shadow-lg">
+            <Heart className="w-4 h-4 mr-1" />
+            Student Feed
+          </TabsTrigger>
           <TabsTrigger value="reports" className="bg-cyan-600 text-white hover:bg-cyan-700 data-[state=active]:bg-cyan-700 data-[state=active]:shadow-lg">
             <FileSpreadsheet className="w-4 h-4 mr-1" />
             Reports
@@ -1387,6 +1392,103 @@ export default function AdminDashboard() {
               </Card>
             ))}
           </div>
+        </TabsContent>
+
+        {/* Student Feed Tab - Admin Monitoring */}
+        <TabsContent value="feed" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <div className="flex justify-between items-center">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Heart className="w-5 h-5 text-pink-600" />
+                    Anonymous Kindness Feed - Monitoring Dashboard
+                  </CardTitle>
+                  <CardDescription className="mt-2">
+                    Monitor student kindness posts for content moderation and safety. All posts are anonymous to protect student privacy.
+                  </CardDescription>
+                </div>
+                <Badge variant="secondary" className="text-sm">
+                  <Shield className="w-3 h-3 mr-1" />
+                  Privacy Protected
+                </Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <Alert className="mb-6 bg-blue-50 border-blue-200">
+                <Shield className="h-4 w-4 text-blue-600" />
+                <AlertTitle className="text-blue-900">Admin Monitoring Guidelines</AlertTitle>
+                <AlertDescription className="text-blue-800">
+                  This feed displays anonymous kindness posts for oversight purposes only. Use moderation tools to flag inappropriate content. Student identities remain protected per FERPA/COPPA compliance.
+                </AlertDescription>
+              </Alert>
+
+              {/* Feed Stats Summary */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+                <div className="bg-gradient-to-br from-pink-50 to-purple-50 p-4 rounded-lg border border-pink-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Total Posts Today</p>
+                      <p className="text-2xl font-bold text-pink-600">24</p>
+                    </div>
+                    <Heart className="w-8 h-8 text-pink-400" />
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-green-50 to-teal-50 p-4 rounded-lg border border-green-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Active Students</p>
+                      <p className="text-2xl font-bold text-green-600">187</p>
+                    </div>
+                    <Users className="w-8 h-8 text-green-400" />
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-4 rounded-lg border border-blue-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Engagement Rate</p>
+                      <p className="text-2xl font-bold text-blue-600">94%</p>
+                    </div>
+                    <TrendingUp className="w-8 h-8 text-blue-400" />
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-4 rounded-lg border border-amber-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Flagged Posts</p>
+                      <p className="text-2xl font-bold text-amber-600">0</p>
+                    </div>
+                    <AlertTriangle className="w-8 h-8 text-amber-400" />
+                  </div>
+                </div>
+              </div>
+
+              {/* Kindness Feed Component */}
+              <div className="bg-gray-50 dark:bg-gray-800 rounded-lg p-6">
+                <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                  <MessageSquare className="w-5 h-5" />
+                  Live Anonymous Kindness Posts
+                </h3>
+                <KindnessFeed />
+              </div>
+
+              {/* Admin Actions */}
+              <div className="mt-6 flex gap-3 flex-wrap">
+                <Button variant="outline" className="flex items-center gap-2">
+                  <Eye className="w-4 h-4" />
+                  View All Posts
+                </Button>
+                <Button variant="outline" className="flex items-center gap-2">
+                  <BarChart3 className="w-4 h-4" />
+                  Analytics
+                </Button>
+                <Button variant="outline" className="flex items-center gap-2 text-amber-600 border-amber-600">
+                  <AlertTriangle className="w-4 h-4" />
+                  Review Flagged (0)
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         {/* Reports & Exports Tab */}
