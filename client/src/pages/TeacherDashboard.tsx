@@ -75,6 +75,14 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
+  // Tab state that syncs with initialTab prop
+  const [activeTab, setActiveTab] = useState(initialTab.toLowerCase());
+  
+  // Sync activeTab when initialTab prop changes
+  useEffect(() => {
+    setActiveTab(initialTab.toLowerCase());
+  }, [initialTab]);
+  
   // Filter states
   const [gradeFilter, setGradeFilter] = useState('');
   const [subjectFilter, setSubjectFilter] = useState('');
@@ -233,7 +241,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
           </p>
         </header>
 
-        <Tabs defaultValue={initialTab.toLowerCase()} className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-6' : 'grid-cols-3'} mb-6`}>
             {featureFlags.curriculum && (
               <>

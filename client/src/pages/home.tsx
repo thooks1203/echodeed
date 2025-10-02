@@ -284,28 +284,28 @@ export default function Home() {
   }
   
   if (activeTab === 'teacher-dashboard') {
-    // Only teachers can access teacher dashboard
+    // Only teachers can access teacher dashboard - show moderation queue
     if (user?.schoolRole !== 'teacher') {
       return null; // useEffect will redirect to feed
     }
     
     return (
       <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
-        <TeacherDashboard initialTab="overview" />
+        <TeacherDashboard initialTab="moderation" />
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
   }
   
   if (activeTab === 'reports') {
-    // Only teachers can access reports - show service hours verification tab
+    // Only teachers can access reports - show aggregate reports tab
     if (user?.schoolRole !== 'teacher') {
       return null; // useEffect will redirect to feed
     }
     
     return (
       <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
-        <TeacherDashboard initialTab="service-hours" />
+        <TeacherDashboard initialTab="reports" />
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
