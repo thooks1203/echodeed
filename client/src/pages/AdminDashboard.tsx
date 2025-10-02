@@ -743,6 +743,23 @@ export default function AdminDashboard() {
     setPrivacyMode(newMode);
     localStorage.setItem('echodeed_privacy_mode', newMode.toString());
   };
+
+  // Fetch posts data for the Student Feed tab
+  const { data: posts = [], isLoading: postsLoading } = useQuery({
+    queryKey: ['/api/posts'],
+    queryFn: async () => {
+      const response = await fetch('/api/posts', {
+        headers: {
+          'X-Session-ID': localStorage.getItem('echodeed_session') || 'demo-session',
+          'X-Demo-Role': localStorage.getItem('echodeed_demo_role') || 'admin'
+        },
+        credentials: 'include'
+      });
+      return response.json();
+    },
+    staleTime: 5000,
+    refetchOnWindowFocus: false
+  });
   
   // Mock admin data (in production, get from auth context)
   const currentAdmin: SchoolAdmin = {
@@ -1469,7 +1486,7 @@ export default function AdminDashboard() {
                   <MessageSquare className="w-5 h-5" />
                   Live Anonymous Kindness Posts
                 </h3>
-                <KindnessFeed />
+                <KindnessFeed posts={posts || []} isLoading={postsLoading} />
               </div>
 
               {/* Admin Actions */}
