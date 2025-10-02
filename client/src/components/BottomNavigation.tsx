@@ -1,5 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
 import { canAccessSchoolsDashboard } from "@/lib/roleUtils";
+import { featureFlags } from "@shared/featureFlags";
 
 interface BottomNavigationProps {
   activeTab: string;
@@ -14,7 +15,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'feed', label: 'Feed', icon: '🏠' },
   ];
 
-  const studentTabs = [
+  const allStudentTabs = [
     { id: 'mentor-dashboard', label: 'Mentor', icon: '🌟' },
     { id: 'student-dashboard', label: 'Dashboard', icon: '👨‍🎓' },
     { id: 'summer', label: 'Summer', icon: '🏖️' },
@@ -22,6 +23,14 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
   ];
+
+  // Filter out summer tab if challenges are disabled
+  const studentTabs = allStudentTabs.filter(tab => {
+    if (tab.id === 'summer') {
+      return featureFlags.summerChallenges;
+    }
+    return true;
+  });
 
   // FIXED: Teacher tabs now include Feed + Reports moved from top + Support & Rewards
   const teacherTabs = [
