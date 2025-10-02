@@ -6,7 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Filter, Search, Award, Gift, Coffee, Trophy } from 'lucide-react';
+import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Filter, Search, Award, Gift, Coffee, Trophy, Shield, AlertTriangle, FileText, Download } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -47,6 +47,25 @@ interface CurriculumProgress {
   followUpPlanned: boolean;
 }
 
+interface ModerationQueueItem {
+  id: string;
+  schoolId: string;
+  contentType: string;
+  contentId: string;
+  originalContent: string;
+  moderationCategory: string;
+  flaggedReason: string;
+  severityLevel: string;
+  sentimentScore: number;
+  patternTags: string[];
+  reviewStatus: string;
+  actionTaken: string | null;
+  reviewedBy: string | null;
+  reviewedAt: string | null;
+  reviewNotes: string | null;
+  flaggedAt: string;
+}
+
 interface TeacherDashboardProps {
   teacherId?: string;
   initialTab?: string;
@@ -85,6 +104,40 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
       const response = await fetch(`/api/curriculum/progress/${teacherId}`);
       if (!response.ok) throw new Error('Failed to fetch progress');
       return response.json();
+    },
+  });
+
+  // Fetch moderation queue
+  const { data: moderationQueue = [], isLoading: moderationLoading } = useQuery({
+    queryKey: ['/api/moderation/queue'],
+    queryFn: async () => {
+      const response = await fetch('/api/moderation/queue');
+      if (!response.ok) throw new Error('Failed to fetch moderation queue');
+      return response.json();
+    },
+  });
+
+  // Resolve moderation item (approve/reject)
+  const resolveModerationMutation = useMutation({
+    mutationFn: async ({ id, action, notes }: { id: string; action: 'approve' | 'reject'; notes?: string }) => {
+      return await apiRequest('PATCH', `/api/moderation/resolve/${id}`, {
+        action,
+        reviewNotes: notes,
+      });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/moderation/queue'] });
+      toast({
+        title: "Content Reviewed",
+        description: "Your moderation decision has been recorded.",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to resolve moderation item",
+        variant: "destructive",
+      });
     },
   });
 
@@ -148,6 +201,23 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
     }
   };
 
+  const getSeverityColor = (severity: string) => {
+    switch (severity.toLowerCase()) {
+      case 'low': return 'bg-blue-100 text-blue-800';
+      case 'medium': return 'bg-yellow-100 text-yellow-800';
+      case 'high': return 'bg-red-100 text-red-800';
+      default: return 'bg-gray-100 text-gray-800';
+    }
+  };
+
+  const getSeverityIcon = (severity: string) => {
+    switch (severity.toLowerCase()) {
+      case 'high': return <AlertTriangle className="h-4 w-4" />;
+      case 'medium': return <Shield className="h-4 w-4" />;
+      default: return <FileText className="h-4 w-4" />;
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-4">
       <div className="max-w-7xl mx-auto">
@@ -164,7 +234,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
         </header>
 
         <Tabs defaultValue={initialTab.toLowerCase()} className="w-full">
-          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-5' : 'grid-cols-2'} mb-6`}>
+          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-6' : 'grid-cols-3'} mb-6`}>
             {featureFlags.curriculum && (
               <>
                 <TabsTrigger value="lessons" data-testid="tab-lessons">
@@ -181,6 +251,10 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
                 </TabsTrigger>
               </>
             )}
+            <TabsTrigger value="moderation" data-testid="tab-moderation">
+              <Shield className="h-4 w-4 mr-2" />
+              Review Queue
+            </TabsTrigger>
             <TabsTrigger value="reports" data-testid="tab-reports">
               <Users className="h-4 w-4 mr-2" />
               Reports
@@ -475,6 +549,140 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
           )}
 
           {/* Reports Tab */}
+          {/* Moderation Queue Tab */}
+          <TabsContent value="moderation" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <CardTitle className="flex items-center gap-2">
+                      <Shield className="h-5 w-5" />
+                      Content Review Queue
+                    </CardTitle>
+                    <CardDescription>
+                      Review flagged content from behavioral mitigation system - human approval required
+                    </CardDescription>
+                  </div>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => window.open('/api/export/moderation-queue', '_blank')}
+                    data-testid="button-export-queue"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Export to CSV
+                  </Button>
+                </div>
+              </CardHeader>
+              <CardContent>
+                {moderationLoading ? (
+                  <div className="text-center py-8">
+                    <div className="animate-spin w-8 h-8 border-4 border-purple-600 border-t-transparent rounded-full mx-auto" />
+                    <p className="mt-2 text-gray-600">Loading review queue...</p>
+                  </div>
+                ) : moderationQueue.length === 0 ? (
+                  <div className="text-center py-12 bg-green-50 rounded-lg border-2 border-green-200">
+                    <CheckCircle className="h-12 w-12 text-green-600 mx-auto mb-3" />
+                    <h3 className="text-lg font-semibold text-green-900 mb-2">All Clear!</h3>
+                    <p className="text-green-700">No content requires review at this time.</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {moderationQueue.map((item: ModerationQueueItem) => (
+                      <Card key={item.id} className="border-l-4" style={{
+                        borderLeftColor: item.severityLevel === 'high' ? '#ef4444' : item.severityLevel === 'medium' ? '#f59e0b' : '#3b82f6'
+                      }}>
+                        <CardContent className="pt-6">
+                          <div className="flex items-start justify-between gap-4">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-2">
+                                {getSeverityIcon(item.severityLevel)}
+                                <Badge className={getSeverityColor(item.severityLevel)}>
+                                  {item.severityLevel.toUpperCase()}
+                                </Badge>
+                                <Badge variant="outline">{item.moderationCategory}</Badge>
+                                <span className="text-xs text-gray-500">
+                                  {new Date(item.flaggedAt).toLocaleDateString()} at {new Date(item.flaggedAt).toLocaleTimeString()}
+                                </span>
+                              </div>
+                              
+                              <div className="bg-gray-50 p-4 rounded-lg mb-3">
+                                <p className="text-sm font-medium text-gray-700 mb-1">Flagged Content:</p>
+                                <p className="text-gray-900">{item.originalContent}</p>
+                              </div>
+                              
+                              <div className="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                  <span className="font-medium text-gray-700">Reason:</span>
+                                  <p className="text-gray-600">{item.flaggedReason}</p>
+                                </div>
+                                <div>
+                                  <span className="font-medium text-gray-700">Pattern Tags:</span>
+                                  <div className="flex flex-wrap gap-1 mt-1">
+                                    {item.patternTags.map((tag, idx) => (
+                                      <Badge key={idx} variant="secondary" className="text-xs">
+                                        {tag}
+                                      </Badge>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                            
+                            <div className="flex flex-col gap-2">
+                              <Button
+                                size="sm"
+                                variant="default"
+                                className="bg-green-600 hover:bg-green-700"
+                                onClick={() => resolveModerationMutation.mutate({ id: item.id, action: 'approve', notes: 'Content approved after review' })}
+                                disabled={resolveModerationMutation.isPending}
+                                data-testid={`button-approve-${item.id}`}
+                              >
+                                <CheckCircle className="h-4 w-4 mr-1" />
+                                Approve
+                              </Button>
+                              <Button
+                                size="sm"
+                                variant="destructive"
+                                onClick={() => resolveModerationMutation.mutate({ id: item.id, action: 'reject', notes: 'Content rejected - policy violation' })}
+                                disabled={resolveModerationMutation.isPending}
+                                data-testid={`button-reject-${item.id}`}
+                              >
+                                <AlertTriangle className="h-4 w-4 mr-1" />
+                                Reject
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* System Info Card */}
+            <Card className="bg-blue-50 border-blue-200">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-blue-900">
+                  <FileText className="h-5 w-5" />
+                  About the Review Queue
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-blue-800 space-y-2">
+                <p className="text-sm">
+                  <strong>No Automatic Interventions:</strong> This system provides documentation and decision-support only. All flagged content requires your human review and approval.
+                </p>
+                <p className="text-sm">
+                  <strong>Severity Levels:</strong> Low (informational), Medium (needs attention), High (requires immediate review)
+                </p>
+                <p className="text-sm">
+                  <strong>Export Data:</strong> Click "Export to CSV" above to download review queue data for Google Sheets integration.
+                </p>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
           <TabsContent value="reports" className="space-y-6">
             <ReportsSection />
           </TabsContent>
