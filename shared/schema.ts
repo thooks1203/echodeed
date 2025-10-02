@@ -332,7 +332,7 @@ export const communityServiceLogs = pgTable("community_service_logs", {
   category: varchar("category", { length: 50 }).notNull(), // environmental, community, education, etc.
   serviceDescription: text("service_description").notNull(),
   studentReflection: text("student_reflection"), // Student reflection on the experience
-  photoEvidence: text("photo_evidence"), // Optional photo evidence
+  verificationPhotoUrl: text("verification_photo_url"), // Uploaded verification letter photo
   verificationStatus: varchar("verification_status", { length: 20 }).default("pending").notNull(), // pending, verified, rejected
   verifiedBy: varchar("verified_by"), // Teacher/parent who verified
   verifiedAt: timestamp("verified_at"),

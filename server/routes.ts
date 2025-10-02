@@ -73,6 +73,8 @@ import { marketValidationEngine } from "./services/marketValidation";
 import { goToMarketEngine } from "./services/goToMarketEngine";
 import { executionEngine } from "./services/executionEngine";
 import { setupAuth, isAuthenticated } from "./replitAuth";
+import { ObjectStorageService, ObjectNotFoundError } from "./objectStorage";
+import { ObjectPermission } from "./objectAcl";
 import { fulfillmentService } from "./fulfillment";
 import { SurpriseGiveawayService } from './surpriseGiveaways';
 import { rateLimiter } from "./services/rateLimiter";
@@ -288,6 +290,75 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // CRITICAL FIX: Wire storage to app.locals for counselor middleware
   app.locals.storage = storage;
+
+  // ==================== OBJECT STORAGE ROUTES ====================
+  // Endpoint for serving private objects (verification photos)
+  app.get("/objects/:objectPath(*)", isAuthenticated, async (req, res) => {
+    const userId = req.user?.claims?.sub;
+    const objectStorageService = new ObjectStorageService();
+    try {
+      const objectFile = await objectStorageService.getObjectEntityFile(req.path);
+      const canAccess = await objectStorageService.canAccessObjectEntity({
+        objectFile,
+        userId: userId,
+        requestedPermission: ObjectPermission.READ,
+      });
+      if (!canAccess) {
+        return res.sendStatus(401);
+      }
+      objectStorageService.downloadObject(objectFile, res);
+    } catch (error) {
+      console.error("Error checking object access:", error);
+      if (error instanceof ObjectNotFoundError) {
+        return res.sendStatus(404);
+      }
+      return res.sendStatus(500);
+    }
+  });
+
+  // Endpoint for getting upload URL for verification photos
+  app.post("/api/objects/upload", isAuthenticated, async (req, res) => {
+    const objectStorageService = new ObjectStorageService();
+    try {
+      const uploadURL = await objectStorageService.getObjectEntityUploadURL();
+      res.json({ uploadURL });
+    } catch (error) {
+      console.error("Error getting upload URL:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+
+  // Endpoint for updating service log with verification photo
+  app.put("/api/service-logs/:id/photo", isAuthenticated, async (req, res) => {
+    if (!req.body.verificationPhotoUrl) {
+      return res.status(400).json({ error: "verificationPhotoUrl is required" });
+    }
+
+    const userId = req.user?.claims?.sub;
+    const serviceLogId = req.params.id;
+
+    try {
+      const objectStorageService = new ObjectStorageService();
+      const objectPath = await objectStorageService.trySetObjectEntityAclPolicy(
+        req.body.verificationPhotoUrl,
+        {
+          owner: userId,
+          visibility: "private", // Only student and teachers can see
+        },
+      );
+
+      // Update the service log with the photo URL
+      await storage.updateServiceLogPhoto(serviceLogId, objectPath);
+
+      res.status(200).json({
+        objectPath: objectPath,
+      });
+    } catch (error) {
+      console.error("Error setting verification photo:", error);
+      res.status(500).json({ error: "Internal server error" });
+    }
+  });
+  // ==================== END OBJECT STORAGE ROUTES ====================
 
   // Dev-only content filter testing endpoint (for development testing only)
   if (process.env.NODE_ENV === 'development') {
