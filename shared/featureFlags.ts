@@ -52,6 +52,9 @@ export const featureFlags = {
   /** Curriculum lessons (5 lessons) - HIDDEN to reduce complexity */
   curriculum: getEnvFlag('VITE_ENABLE_CURRICULUM', false),
   
+  /** School fundraising campaigns - HIDDEN to simplify parent dashboard */
+  fundraising: getEnvFlag('VITE_ENABLE_FUNDRAISING', false),
+  
   /** Crisis counselor system - HIDDEN to reduce complexity */
   crisisCounselor: getEnvFlag('VITE_ENABLE_AI_FEATURES', false),
   

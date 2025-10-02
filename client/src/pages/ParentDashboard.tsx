@@ -37,6 +37,7 @@ import { useLocation } from 'wouter';
 import PushNotificationSetup from '@/components/PushNotificationSetup';
 import { SponsorsPage } from '@/components/SponsorsPage';
 import { BottomNavigation } from '@/components/BottomNavigation';
+import { featureFlags } from '@shared/featureFlags';
 
 interface ParentNotification {
   id: string;
@@ -654,13 +655,17 @@ export default function ParentDashboard() {
               <Shield className="h-3 w-3 mr-1" />
               Service
             </TabsTrigger>
-            <TabsTrigger value="fundraising" className="flex-1 min-w-fit px-3 py-2 bg-green-600 text-white hover:bg-green-700 data-[state=active]:bg-green-700 data-[state=active]:shadow-lg">
-              <Target className="h-3 w-3 mr-1" />
-              Fundraising
-            </TabsTrigger>
-            <TabsTrigger value="insights" className="flex-1 min-w-fit px-3 py-2 bg-indigo-600 text-white hover:bg-indigo-700 data-[state=active]:bg-indigo-700 data-[state=active]:shadow-lg">
-              Insights
-            </TabsTrigger>
+            {featureFlags.fundraising && (
+              <TabsTrigger value="fundraising" className="flex-1 min-w-fit px-3 py-2 bg-green-600 text-white hover:bg-green-700 data-[state=active]:bg-green-700 data-[state=active]:shadow-lg">
+                <Target className="h-3 w-3 mr-1" />
+                Fundraising
+              </TabsTrigger>
+            )}
+            {featureFlags.aiWellness && (
+              <TabsTrigger value="insights" className="flex-1 min-w-fit px-3 py-2 bg-indigo-600 text-white hover:bg-indigo-700 data-[state=active]:bg-indigo-700 data-[state=active]:shadow-lg">
+                Insights
+              </TabsTrigger>
+            )}
             <TabsTrigger value="sponsors" className="flex-1 min-w-fit px-3 py-2 bg-orange-600 text-white hover:bg-orange-700 data-[state=active]:bg-orange-700 data-[state=active]:shadow-lg">
               <Building2 className="h-3 w-3 mr-1" />
               Sponsors
@@ -996,7 +1001,8 @@ export default function ParentDashboard() {
           </TabsContent>
 
           {/* School Fundraising Tab */}
-          <TabsContent value="fundraising">
+          {featureFlags.fundraising && (
+            <TabsContent value="fundraising">
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1124,9 +1130,11 @@ export default function ParentDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
+          )}
 
           {/* Insights Tab */}
-          <TabsContent value="insights">
+          {featureFlags.aiWellness && (
+            <TabsContent value="insights">
             <Card>
               <CardContent className="p-8 text-center">
                 <Award className="h-12 w-12 mx-auto mb-4 text-blue-600" />
@@ -1139,6 +1147,7 @@ export default function ParentDashboard() {
               </CardContent>
             </Card>
           </TabsContent>
+          )}
 
           {/* Sponsors Tab */}
           <TabsContent value="sponsors" className="space-y-6">
