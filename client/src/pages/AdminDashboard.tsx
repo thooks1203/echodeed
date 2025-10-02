@@ -231,7 +231,7 @@ function FundraisingContent() {
                         className="bg-blue-600 hover:bg-blue-700"
                         onClick={() => {
                           // Show external payment link or manual donation form
-                          alert('For Mr. Murr demo:\n\nParents contribute via:\n• School payment portal link\n• GoFundMe/external platform\n• Check/cash tracked manually\n\nNo Stripe needed - admin updates totals from external systems');
+                          alert('For Dudley High School demo:\n\nParents contribute via:\n• School payment portal link\n• GoFundMe/external platform\n• Check/cash tracked manually\n\nNo Stripe needed - admin updates totals from external systems');
                         }}
                         data-testid={`button-contribute-${campaign.id}`}
                       >

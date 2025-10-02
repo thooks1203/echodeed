@@ -30,30 +30,30 @@ export function useAuth() {
     const demoUsers: Record<string, AuthUser> = {
       student: {
         id: 'student-001',
-        name: 'Emma Johnson',
-        email: 'emma.johnson@student.edu',
+        name: 'Mary Jones',
+        email: 'mary.jones@student.dudleyhs.org',
         schoolRole: 'student',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
         grade: '9th'
       },
       teacher: {
         id: 'teacher-001', 
-        name: 'Ms. Sarah Wilson',
-        email: 'sarah.wilson@school.edu',
+        name: 'Ms. Woods',
+        email: 'woods@dudleyhs.org',
         schoolRole: 'teacher',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
       },
       admin: {
         id: 'admin-001',
-        name: 'Mr. Murr',
-        email: 'murr@bca.edu', 
+        name: 'Dr. Quinton Alston',
+        email: 'q.alston@dudleyhs.org', 
         schoolRole: 'admin',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
       },
       parent: {
         id: 'parent-001',
-        name: 'Mrs. Sarah Johnson',
-        email: 'sarah.johnson@parent.edu',
+        name: 'Keisha Jones',
+        email: 'keisha.jones@parent.dudleyhs.org',
         schoolRole: 'parent',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
       }
@@ -95,9 +95,9 @@ export function switchDemoRole(role: SchoolRole) {
 // Get available demo roles for testing
 export function getDemoRoles() {
   return [
-    { role: 'student' as const, label: 'Student (Emma Johnson)', description: 'Limited access - can only see own data' },
-    { role: 'teacher' as const, label: 'Teacher (Ms. Wilson)', description: 'Can access classroom tools and some school data' },
-    { role: 'admin' as const, label: 'Admin (Mr. Murr)', description: 'Full access to school management dashboard' },
-    { role: 'parent' as const, label: 'Parent (Mrs. Smith)', description: 'Track children\'s kindness journey and approve activities' }
+    { role: 'student' as const, label: 'Student (Mary Jones)', description: 'Limited access - can only see own data' },
+    { role: 'teacher' as const, label: 'Teacher (Ms. Woods)', description: 'Can access classroom tools and some school data' },
+    { role: 'admin' as const, label: 'Admin (Dr. Quinton Alston)', description: 'Full access to school management dashboard' },
+    { role: 'parent' as const, label: 'Parent (Keisha Jones)', description: 'Track children\'s kindness journey and approve activities' }
   ] as const;
 }
