@@ -16,7 +16,9 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Clock, MapPin, Users, Award, CheckCircle, Clock as Clock2, XCircle } from 'lucide-react';
+import { ArrowLeft, Clock, MapPin, Users, Award, CheckCircle, Clock as Clock2, XCircle, Upload } from 'lucide-react';
+import { ObjectUploader } from '@/components/ObjectUploader';
+import type { UploadResult } from '@uppy/core';
 
 // Community Service interfaces
 interface ServiceLog {
@@ -34,7 +36,7 @@ interface ServiceLog {
   location?: string;
   category: string;
   studentReflection: string;
-  photoEvidence?: string;
+  verificationPhotoUrl?: string;
   verificationStatus: 'pending' | 'approved' | 'rejected';
   verifiedBy?: string;
   verifiedAt?: string;
@@ -79,7 +81,7 @@ const serviceLogSchema = z.object({
   location: z.string().optional(),
   category: z.string().min(1, 'Please select a category'),
   studentReflection: z.string().min(20, 'Reflection must be at least 20 characters'),
-  photoEvidence: z.string().optional()
+  verificationPhotoUrl: z.string().optional()
 });
 
 type ServiceLogForm = z.infer<typeof serviceLogSchema>;
@@ -121,7 +123,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
       location: '',
       category: '',
       studentReflection: '',
-      photoEvidence: ''
+      verificationPhotoUrl: ''
     }
   });
 
@@ -567,16 +569,52 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
 
                   <FormField
                     control={form.control}
-                    name="photoEvidence"
+                    name="verificationPhotoUrl"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Photo Evidence (Optional)</FormLabel>
-                        <FormControl>
-                          <Input type="url" placeholder="URL to photo of your service work" {...field} data-testid="input-photo-url" />
-                        </FormControl>
+                        <FormLabel>Verification Photo (Optional)</FormLabel>
                         <FormDescription>
-                          A photo can help speed up verification (group photos, certificates, etc.)
+                          Upload a photo of your verification letter from the organization to speed up approval
                         </FormDescription>
+                        {field.value && (
+                          <div className="flex items-center gap-2 text-sm text-green-600 mb-2">
+                            <CheckCircle className="h-4 w-4" />
+                            Photo uploaded successfully
+                          </div>
+                        )}
+                        <FormControl>
+                          <ObjectUploader
+                            maxNumberOfFiles={1}
+                            maxFileSize={10485760}
+                            onGetUploadParameters={async () => {
+                              const response = await apiRequest('POST', '/api/objects/upload');
+                              const data = await response.json();
+                              return {
+                                method: 'PUT' as const,
+                                url: data.uploadURL,
+                              };
+                            }}
+                            onComplete={(result) => {
+                              if (result.successful && result.successful.length > 0) {
+                                const uploadURL = result.successful[0].uploadURL;
+                                if (uploadURL) {
+                                  // Store the upload URL in the form
+                                  field.onChange(uploadURL);
+                                  toast({
+                                    title: "Photo uploaded",
+                                    description: "Verification photo uploaded successfully. Submit the form to complete.",
+                                  });
+                                }
+                              }
+                            }}
+                            buttonClassName="w-full"
+                          >
+                            <div className="flex items-center justify-center gap-2">
+                              <Upload className="h-4 w-4" />
+                              <span>{field.value ? 'Change Photo' : 'Upload Verification Photo'}</span>
+                            </div>
+                          </ObjectUploader>
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}

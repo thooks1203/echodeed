@@ -9566,8 +9566,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Log community service hours
   app.post('/api/community-service/log', isAuthenticated, async (req: any, res) => {
     try {
+      const userId = req.user?.claims?.sub;
+      const serviceData = { ...req.body };
+      
+      // Handle verification photo upload if present
+      if (serviceData.verificationPhotoUrl) {
+        try {
+          const objectStorageService = new ObjectStorageService();
+          // Normalize the photo URL and set ACL policy
+          const normalizedPath = await objectStorageService.trySetObjectEntityAclPolicy(
+            serviceData.verificationPhotoUrl,
+            {
+              owner: userId,
+              visibility: "private", // Only student and teachers can see
+            }
+          );
+          serviceData.verificationPhotoUrl = normalizedPath;
+        } catch (error) {
+          console.error('Failed to process verification photo:', error);
+          // Continue without photo if processing fails
+          serviceData.verificationPhotoUrl = undefined;
+        }
+      }
+      
       const { communityServiceEngine } = await import('./services/communityServiceEngine');
-      const serviceLog = await communityServiceEngine.logServiceHours(req.body);
+      const serviceLog = await communityServiceEngine.logServiceHours(serviceData);
       res.json(serviceLog);
     } catch (error) {
       console.error('Failed to log service hours:', error);
