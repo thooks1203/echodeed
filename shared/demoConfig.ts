@@ -1,27 +1,27 @@
 /**
- * 🎓 BURLINGTON CHRISTIAN ACADEMY (BCA) DEMO CONFIGURATION
+ * 🎓 DUDLEY HIGH SCHOOL DEMO CONFIGURATION
  * 
- * Centralized configuration for George Robinson demo - September 18, 2025
- * Professional business demo settings with consistent BCA branding
+ * Centralized configuration for EchoDeed demo
+ * Professional business demo settings with consistent Dudley HS branding
  * 
  * 🛡️ DEMO MODE: All emails logged locally, no real sends
- * 📊 STATISTICS: 360 students, 88% approval rate, realistic distribution
+ * 📊 STATISTICS: 1200 students (grades 9-12), 88% approval rate, realistic distribution
  */
 
 // 🏫 PRIMARY SCHOOL CONFIGURATION
 export const BCA_SCHOOL_CONFIG = {
   id: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
-  name: 'Burlington Christian Academy',
-  shortName: 'BCA',
-  address: '2829 Maple Ave, Burlington, NC 27215',
-  phone: '(336) 227-0265',
-  website: 'https://burlingtonchristianacademy.org',
-  principalName: 'Dr. Sarah Henderson',
-  gradeRange: '6-8',
-  studentCount: 360,
-  establishedYear: 1985,
-  denomination: 'Non-denominational Christian',
-  accreditation: 'Association of Christian Schools International (ACSI)'
+  name: 'Dudley High School',
+  shortName: 'Dudley',
+  address: '1200 Lincoln St, Greensboro, NC 27401',
+  phone: '(336) 370-8240',
+  website: 'https://www.gcsnc.com/dudley',
+  principalName: 'Dr. Quinton Alston',
+  gradeRange: '9-12',
+  studentCount: 1200,
+  establishedYear: 1929,
+  denomination: 'Public High School',
+  accreditation: 'Southern Association of Colleges and Schools (SACS)'
 };
 
 // 🎨 BCA BRANDING & DESIGN
@@ -116,95 +116,95 @@ export const DEMO_MODE = {
   }
 };
 
-// 🎁 BCA SPONSOR PARTNERS (Local Burlington, NC businesses)
+// 🎁 GREENSBORO SPONSOR PARTNERS (Local Greensboro, NC businesses)
 export const BCA_SPONSORS = [
   {
-    id: 'burlington-carousel',
-    name: 'Burlington City Park Carousel',
-    category: 'recreation',
+    id: 'a-special-blend',
+    name: 'A Special Blend Coffee',
+    category: 'dining',
     tier: 'gold',
-    logo: '/images/sponsors/burlington-carousel.png',
-    rewardTitle: 'Free Carousel Rides',
-    rewardDescription: '4 free rides at Burlington\'s historic carousel',
-    targetAudience: 'families',
+    logo: '/images/sponsors/special-blend.png',
+    rewardTitle: 'Coffee & Pastry',
+    rewardDescription: 'Free coffee + pastry at mission-driven coffee shop',
+    targetAudience: 'students',
     monthlyBudget: 2000,
     active: true
   },
   {
-    id: 'putt-putt-fun',
-    name: 'Putt-Putt Fun Center Burlington',
-    category: 'entertainment',
+    id: 'tate-street-coffee',
+    name: 'Tate Street Coffee House',
+    category: 'dining',
     tier: 'gold',
-    logo: '/images/sponsors/putt-putt.png',
-    rewardTitle: 'Mini Golf & Games',
-    rewardDescription: 'Free mini golf round + $5 arcade credits',
-    targetAudience: 'families',
+    logo: '/images/sponsors/tate-street.png',
+    rewardTitle: 'Coffee & Study Snacks',
+    rewardDescription: 'Organic fair-trade coffee + snack near UNCG',
+    targetAudience: 'students',
     monthlyBudget: 1800,
     active: true
   },
   {
-    id: 'sock-puppets',
-    name: 'Burlington Sock Puppets Baseball',
-    category: 'sports',
+    id: 'chez-genese',
+    name: 'Chez Genèse',
+    category: 'dining',
     tier: 'silver',
-    logo: '/images/sponsors/sock-puppets.png',
-    rewardTitle: 'Game Tickets',
-    rewardDescription: 'Family 4-pack tickets to Sock Puppets game',
+    logo: '/images/sponsors/chez-genese.png',
+    rewardTitle: 'Family Meal Voucher',
+    rewardDescription: '$15 credit at French-inspired community restaurant',
     targetAudience: 'families',
     monthlyBudget: 1500,
     active: true
   },
   {
-    id: 'sir-pizza',
-    name: 'Sir Pizza Burlington',
+    id: 'greensboro-science-center',
+    name: 'Greensboro Science Center',
+    category: 'education',
+    tier: 'platinum',
+    logo: '/images/sponsors/science-center.png',
+    rewardTitle: 'Museum & Zoo Pass',
+    rewardDescription: 'Family admission to aquarium, zoo & museum',
+    targetAudience: 'families',
+    monthlyBudget: 2800,
+    active: true
+  },
+  {
+    id: 'fig-and-olive-cafe',
+    name: 'Fig & Olive Cafe',
     category: 'dining',
     tier: 'bronze',
-    logo: '/images/sponsors/sir-pizza.png',
-    rewardTitle: 'Family Pizza Night',
-    rewardDescription: 'Large pizza + drinks for family of 4',
-    targetAudience: 'families',
+    logo: '/images/sponsors/fig-olive.png',
+    rewardTitle: 'Cafe Rewards',
+    rewardDescription: '$10 credit for healthy meals and snacks',
+    targetAudience: 'students',
     monthlyBudget: 1200,
     active: true
   },
   {
-    id: 'alamance-libraries',
-    name: 'Alamance County Libraries',
-    category: 'education',
-    tier: 'community',
-    logo: '/images/sponsors/alamance-library.png',
-    rewardTitle: 'Book Store Credits',
-    rewardDescription: '$10 credit at library book sales',
-    targetAudience: 'students',
-    monthlyBudget: 800,
-    active: true
-  },
-  {
-    id: 'chick-fil-a-burlington',
-    name: 'Chick-fil-A Burlington',
-    category: 'dining',
-    tier: 'silver',
-    logo: '/images/sponsors/chick-fil-a.png',
-    rewardTitle: 'Kids Meal & Treat',
-    rewardDescription: 'Free kids meal + ice cream for student',
+    id: 'ymca-greensboro',
+    name: 'YMCA of Greensboro',
+    category: 'recreation',
+    tier: 'gold',
+    logo: '/images/sponsors/ymca.png',
+    rewardTitle: 'Youth Program Pass',
+    rewardDescription: 'Free day pass + youth program trial',
     targetAudience: 'students',
     monthlyBudget: 1600,
     active: true
   },
   {
-    id: 'scholastic-books',
-    name: 'Scholastic Books',
-    category: 'education',
-    tier: 'platinum',
-    logo: '/images/sponsors/scholastic.png',
-    rewardTitle: 'Book Credits',
-    rewardDescription: '$15 credit for student + $10 parent credit',
+    id: 'greensboro-grasshoppers',
+    name: 'Greensboro Grasshoppers',
+    category: 'sports',
+    tier: 'silver',
+    logo: '/images/sponsors/grasshoppers.png',
+    rewardTitle: 'Baseball Game Tickets',
+    rewardDescription: 'Family 4-pack tickets to Grasshoppers game',
     targetAudience: 'families',
-    monthlyBudget: 3000,
+    monthlyBudget: 1400,
     active: true
   },
   {
     id: 'target-education',
-    name: 'Target Education',
+    name: 'Target Greensboro',
     category: 'retail',
     tier: 'platinum',
     logo: '/images/sponsors/target.png',
@@ -213,28 +213,52 @@ export const BCA_SPONSORS = [
     targetAudience: 'families',
     monthlyBudget: 2500,
     active: true
+  },
+  {
+    id: 'barnes-noble-uncg',
+    name: 'Barnes & Noble UNCG',
+    category: 'education',
+    tier: 'gold',
+    logo: '/images/sponsors/barnes-noble.png',
+    rewardTitle: 'Book Store Credit',
+    rewardDescription: '$15 credit for books and school supplies',
+    targetAudience: 'students',
+    monthlyBudget: 1800,
+    active: true
+  },
+  {
+    id: 'common-grounds-coffee',
+    name: 'Common Grounds Coffee',
+    category: 'dining',
+    tier: 'bronze',
+    logo: '/images/sponsors/common-grounds.png',
+    rewardTitle: 'Study Session Reward',
+    rewardDescription: 'Coffee + snack at student-friendly cafe',
+    targetAudience: 'students',
+    monthlyBudget: 1000,
+    active: true
   }
 ];
 
 // 📋 DEMO POLICY & COMPLIANCE TITLES
 export const BCA_POLICIES = {
   parentalConsent: {
-    title: 'Burlington Christian Academy Parental Consent Policy',
-    version: 'BCA-2025.3',
+    title: 'Dudley High School Parental Consent Policy',
+    version: 'DUDLEY-2025.3',
     effectiveDate: '2025-08-01',
     renewalDate: '2026-07-31'
   },
   privacy: {
-    title: 'BCA Student Privacy Protection Framework',
-    version: 'BCA-PRIVACY-2025.1',
+    title: 'Dudley HS Student Privacy Protection Framework',
+    version: 'DUDLEY-PRIVACY-2025.1',
     coppaCompliant: true,
     ferpaAligned: true
   },
   safety: {
-    title: 'Christian Values-Based Student Safety Protocol',
-    version: 'BCA-SAFETY-2025.2',
+    title: 'Student Safety & Wellness Protocol',
+    version: 'DUDLEY-SAFETY-2025.2',
     mandatoryReporting: true,
-    pastoralCareIntegration: true
+    pastoralCareIntegration: false
   }
 };
 
@@ -254,25 +278,25 @@ export const BCA_RENEWAL_CONFIG = {
   ]
 };
 
-// 📧 EMAIL BRANDING FOR BCA
+// 📧 EMAIL BRANDING FOR DUDLEY
 export const BCA_EMAIL_CONFIG = {
-  fromName: 'Burlington Christian Academy - EchoDeed',
-  fromEmail: 'noreply@echodeed.burlingtonchristianacademy.org',
-  replyTo: 'admin@burlingtonchristianacademy.org',
+  fromName: 'Dudley High School - EchoDeed',
+  fromEmail: 'noreply@echodeed.dudleyhs.org',
+  replyTo: 'admin@gcsnc.com',
   
   templates: {
     consentRequest: {
-      subject: '🔐 BCA Parental Consent Required - {studentName}\'s EchoDeed Account',
+      subject: '🔐 Dudley HS Parental Consent Required - {studentName}\'s EchoDeed Account',
       headerColor: BCA_BRANDING.colors.primary,
       logoUrl: BCA_BRANDING.logo.primary
     },
     consentApproval: {
-      subject: '✅ BCA Consent Approved - {studentName} Account Activated',
+      subject: '✅ Dudley HS Consent Approved - {studentName} Account Activated',
       headerColor: BCA_BRANDING.colors.success,
       logoUrl: BCA_BRANDING.logo.primary
     },
     renewalReminder: {
-      subject: '🔄 BCA Annual Consent Renewal - Action Required',
+      subject: '🔄 Dudley HS Annual Consent Renewal - Action Required',
       headerColor: BCA_BRANDING.colors.warning,
       logoUrl: BCA_BRANDING.logo.primary
     }
@@ -300,24 +324,24 @@ export const DEMO_USERS = {
   student: {
     id: 'student-001',
     name: 'Emma Johnson',
-    email: 'emma.johnson@bca.edu',
+    email: 'emma.johnson@dudley.gcsnc.com',
     role: 'student',
     schoolRole: 'student',
-    schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // BCA
+    schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Dudley HS
     grade: '9',
     title: '9th Grade Student'
   },
   admin: {
-    name: 'Sarah Henderson',
+    name: 'Dr. Quinton Alston',
     role: 'admin',
-    email: 'admin@burlingtonchristianacademy.org',
+    email: 'admin@dudley.gcsnc.com',
     title: 'Principal'
   },
   teacher: {
     name: 'Michael Johnson',
     role: 'teacher',
-    email: 'mjohnson@burlingtonchristianacademy.org',
-    title: '7th Grade Teacher'
+    email: 'mjohnson@dudley.gcsnc.com',
+    title: '10th Grade Teacher'
   },
   parent: {
     name: 'Jennifer Smith',
