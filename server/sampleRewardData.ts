@@ -95,16 +95,107 @@ export async function initializeSampleRewardData() {
         location: 'Greensboro, NC'
       },
       {
-        partnerName: 'Fig & Olive Cafe',
-        partnerLogo: 'https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=400',
+        partnerName: 'Cook Out',
+        partnerLogo: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400',
         partnerType: 'local_dining',
-        websiteUrl: 'https://www.figandolivecafe.com',
-        description: 'Healthy cafe with fresh meals and snacks perfect for students.',
+        websiteUrl: 'https://cookout.com',
+        description: 'NC fast food institution - student favorite for burgers, shakes, and fries!',
         isActive: 1,
-        isFeatured: 0,
-        minRedemptionAmount: 180, // 180 $ECHO = cafe meal
-        maxRedemptionAmount: 700, // 700 $ECHO = weekly lunch card
-        contactEmail: 'info@figandolivecafe.com',
+        isFeatured: 1,
+        minRedemptionAmount: 150, // 150 $ECHO = combo meal
+        maxRedemptionAmount: 600, // 600 $ECHO = group meal
+        contactEmail: 'greensboro@cookout.com',
+        location: 'Greensboro, NC (Multiple Locations)'
+      },
+      {
+        partnerName: "Dames Chicken & Waffles",
+        partnerLogo: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.dameschickenwaffles.com',
+        description: 'Downtown Greensboro favorite - famous chicken & waffles "shmears" near Dudley HS!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 250, // 250 $ECHO = meal
+        maxRedemptionAmount: 1000, // 1000 $ECHO = family meal
+        contactEmail: 'info@dameschickenwaffles.com',
+        location: '301 Martin Luther King Jr Dr, Greensboro'
+      },
+      {
+        partnerName: "Dave's Hot Chicken",
+        partnerLogo: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.daveshotchicken.com',
+        description: 'Trending Nashville-style hot chicken spot - super popular with students!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 200, // 200 $ECHO = combo
+        maxRedemptionAmount: 800, // 800 $ECHO = group meal
+        contactEmail: 'greensboro@daveshotchicken.com',
+        location: 'W. Market Street, Greensboro'
+      },
+      {
+        partnerName: 'Boxcar Bar + Arcade',
+        partnerLogo: 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=400',
+        partnerType: 'entertainment',
+        websiteUrl: 'https://www.boxcarbar.com',
+        description: 'Downtown pizza & retro arcade games - perfect hangout spot near Dudley!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 300, // 300 $ECHO = pizza + games
+        maxRedemptionAmount: 1200, // 1200 $ECHO = group party
+        contactEmail: 'greensboro@boxcarbar.com',
+        location: 'Downtown Greensboro'
+      },
+      {
+        partnerName: 'Yum Yum Better Ice Cream',
+        partnerLogo: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.yumyumbettericecream.com',
+        description: 'Greensboro tradition since 1906 - ice cream & hot dogs near UNCG!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 120, // 120 $ECHO = ice cream treat
+        maxRedemptionAmount: 500, // 500 $ECHO = group treat
+        contactEmail: 'info@yumyumbetter.com',
+        location: '1219 Spring Garden St, Greensboro'
+      },
+      {
+        partnerName: 'Red Cinemas',
+        partnerLogo: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400',
+        partnerType: 'entertainment',
+        websiteUrl: 'https://www.redcinemas.com',
+        description: 'Upscale downtown theater - indie films, craft snacks, reserved seating.',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 350, // 350 $ECHO = movie ticket
+        maxRedemptionAmount: 1400, // 1400 $ECHO = group tickets
+        contactEmail: 'info@redcinemas.com',
+        location: 'Downtown Greensboro'
+      },
+      {
+        partnerName: 'Triad Lanes',
+        partnerLogo: 'https://images.unsplash.com/photo-1594717527389-b0e4219556ba?w=400',
+        partnerType: 'entertainment',
+        websiteUrl: 'https://triadlanes.com',
+        description: 'Bowling fun for students - lanes, arcade, and food!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 250, // 250 $ECHO = bowling game
+        maxRedemptionAmount: 1000, // 1000 $ECHO = party package
+        contactEmail: 'info@triadlanes.com',
+        location: 'Greensboro, NC 27407'
+      },
+      {
+        partnerName: 'Urban Air Trampoline Park',
+        partnerLogo: 'https://images.unsplash.com/photo-1610041321420-a148f17fe5d1?w=400',
+        partnerType: 'entertainment',
+        websiteUrl: 'https://www.urbanairtrampolinepark.com',
+        description: 'Indoor trampoline park - climbing walls, arcade, and active fun!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 400, // 400 $ECHO = admission
+        maxRedemptionAmount: 1600, // 1600 $ECHO = group package
+        contactEmail: 'greensboro@urbanair.com',
         location: 'Greensboro, NC'
       },
       {
