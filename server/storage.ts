@@ -734,6 +734,9 @@ export interface IStorage {
   updateClaimCodeUsage(claimCodeId: string): Promise<TeacherClaimCode | undefined>;
   deactivateClaimCode(claimCodeId: string): Promise<TeacherClaimCode | undefined>;
   generateUniqueClaimCode(): Promise<string>;
+  
+  // Service log photo upload
+  updateServiceLogPhoto(serviceLogId: string, photoUrl: string): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -5583,6 +5586,14 @@ export class DatabaseStorage implements IStorage {
     // Fallback: add timestamp if all attempts failed
     const timestamp = Date.now().toString().slice(-4);
     return `SEC-${timestamp}`;
+  }
+
+  // Service log photo upload implementation
+  async updateServiceLogPhoto(serviceLogId: string, photoUrl: string): Promise<void> {
+    await db
+      .update(communityServiceLogs)
+      .set({ verificationPhotoUrl: photoUrl })
+      .where(eq(communityServiceLogs.id, serviceLogId));
   }
 
   async createTeacherClaimCode(claimCodeData: InsertTeacherClaimCode): Promise<TeacherClaimCode> {
