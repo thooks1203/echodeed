@@ -84,7 +84,7 @@ The frontend is a React 18, TypeScript, and Vite single-page application. It uti
 - **Database Technologies**: Drizzle ORM, Drizzle-Zod, @neondatabase/serverless (PostgreSQL)
 - **Object Storage**: @google-cloud/storage, @uppy/core, @uppy/react, @uppy/aws-s3 (for verification photo uploads)
 - **Real-time/Routing**: ws, wouter
-- **Reward/Payment Integrations**: Local Greensboro businesses (A Special Blend Coffee, Tate Street Coffee House, Chez Genèse, Chick-fil-A, Greensboro Science Center, YMCA Greensboro, Barnes & Noble UNCG, Fig & Olive Cafe, Common Grounds Coffee, Recovery Café Greensboro, SHIELD Mentor Program, Greensboro Grasshoppers, Greensboro Public Library) plus national partners (Scholastic Books, Target Education, LEGO Education, Amazon Family)
+- **Reward/Payment Integrations**: 21 Local Greensboro businesses (A Special Blend Coffee, Tate Street Coffee House, Chez Genèse, Chick-fil-A, Cook Out, Dames Chicken & Waffles, Dave's Hot Chicken, Boxcar Bar + Arcade, Yum Yum Better Ice Cream, Red Cinemas, Triad Lanes, Urban Air Trampoline Park, Greensboro Science Center, YMCA Greensboro, Barnes & Noble UNCG, Common Grounds Coffee, Greensboro Grasshoppers, Greensboro Public Library) plus national partners (Scholastic Books, Target Education, LEGO Education, Amazon Family)
 
 ## Demo School Configuration
 **Primary School**: Dudley High School
@@ -98,27 +98,32 @@ The frontend is a React 18, TypeScript, and Vite single-page application. It uti
 - **Established**: 1929
 
 ## Local Greensboro Reward Partners
-The platform features 17 local Greensboro-area businesses supporting student kindness:
+The platform features 21 local Greensboro-area businesses supporting student kindness:
 
 **Coffee Shops & Cafes:**
 - A Special Blend Coffee (nonprofit employing adults with disabilities)
 - Tate Street Coffee House (organic fair-trade near UNCG)
 - Common Grounds Coffee (student-friendly with wifi)
-- Fig & Olive Cafe (healthy meals for students)
 
-**Restaurants:**
+**Restaurants & Food:**
 - Chez Genèse (French-inspired, employing adults with intellectual disabilities)
 - Chick-fil-A Greensboro (near Dudley High School)
-- Recovery Café Greensboro (community-based support cafe)
+- Cook Out (NC fast food institution - student favorite!)
+- Dames Chicken & Waffles (famous "shmears" at 301 MLK Jr Dr)
+- Dave's Hot Chicken (trending Nashville-style hot chicken)
+- Yum Yum Better Ice Cream (Greensboro tradition since 1906)
+
+**Entertainment & Activities:**
+- Boxcar Bar + Arcade (downtown pizza & retro arcade games)
+- Red Cinemas (upscale downtown theater with indie films)
+- Triad Lanes (bowling, arcade, and food)
+- Urban Air Trampoline Park (indoor trampoline, climbing walls, arcade)
+- Greensboro Grasshoppers (minor league baseball)
 
 **Educational & Recreation:**
 - Greensboro Science Center (aquarium, zoo, museum)
 - Greensboro Public Library (study spaces, reading programs)
 - Barnes & Noble UNCG (books and school supplies)
 - YMCA of Greensboro (youth development programs)
-- SHIELD Mentor Program (youth mentoring and robotics)
 
-**Sports & Entertainment:**
-- Greensboro Grasshoppers (minor league baseball)
-
-These partnerships support the B2B sponsor monetization model while providing meaningful rewards for students demonstrating kindness and service.
+These hyper-local partnerships (all within 10-15 miles of Dudley High School) provide relatable rewards that students actually use, supporting the B2B sponsor monetization model while demonstrating community investment in character education.

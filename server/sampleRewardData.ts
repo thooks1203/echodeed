@@ -450,125 +450,148 @@ export async function initializeSampleRewardData() {
         imageUrl: 'https://via.placeholder.com/300/E53935/FFFFFF?text=CFA+Meal'
       },
 
-      // Fig & Olive Cafe Offers
+      // Cook Out Offers - NC FAVORITE!
       {
-        partnerId: createdPartners[6].id, // Fig & Olive
+        partnerId: createdPartners[6].id, // Cook Out
         offerType: 'meal',
-        title: 'Healthy Cafe Meal',
-        description: 'Fresh, healthy meal at Fig & Olive Cafe perfect for students!',
-        offerValue: 'Meal',
-        echoCost: 180,
-        maxRedemptions: 90,
-        currentRedemptions: 15,
+        title: 'Cook Out Combo Meal',
+        description: 'NC fast food legend - burger, sides & legendary milkshake!',
+        offerValue: 'Combo Meal',
+        echoCost: 150,
+        maxRedemptions: 200,
+        currentRedemptions: 67,
         isActive: 1,
-        isFeatured: 0,
+        isFeatured: 1,
         requiresVerification: 0,
-        expiresAt: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Valid Tuesday-Saturday 10am-5pm. Kids 12 and under.',
-        imageUrl: 'https://via.placeholder.com/300/9C27B0/FFFFFF?text=Museum+Pass'
+        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid at all Greensboro locations. Student favorite!',
+        imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400'
       },
 
+      // Dames Chicken & Waffles - DOWNTOWN FAVORITE
       {
-        partnerId: createdPartners[7].id, // Graham Theater
-        offerType: 'entertainment',
-        title: 'Family Movie Experience',
-        description: 'Movie ticket with free popcorn refills at family-owned Graham Theater!',
-        offerValue: 'Movie + Popcorn',
-        echoCost: 100,
-        maxRedemptions: 80,
-        currentRedemptions: 22,
+        partnerId: createdPartners[7].id, // Dames Chicken & Waffles
+        offerType: 'meal',
+        title: 'Chicken & Waffles Meal',
+        description: 'Famous "shmears" at downtown Greensboro favorite near Dudley HS!',
+        offerValue: 'Signature Meal',
+        echoCost: 250,
+        maxRedemptions: 100,
+        currentRedemptions: 34,
         isActive: 1,
         isFeatured: 1,
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'G-rated films recommended for kids. Free popcorn refills included.',
-        imageUrl: 'https://via.placeholder.com/300/FF6B9D/FFFFFF?text=Movie+Night'
+        termsAndConditions: 'Valid at 301 MLK Jr Dr location. Dine-in or takeout.',
+        imageUrl: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400'
       },
 
+      // Dave's Hot Chicken - TRENDING SPOT
       {
-        partnerId: createdPartners[8].id, // The Verdict on the Square
+        partnerId: createdPartners[8].id, // Dave's Hot Chicken
         offerType: 'meal',
-        title: 'Family Meal Credit',
-        description: 'Dining credit at downtown Graham\'s popular family restaurant!',
-        offerValue: '$10 Credit',
-        echoCost: 300,
-        maxRedemptions: 50,
-        currentRedemptions: 8,
+        title: 'Hot Chicken Combo',
+        description: 'Nashville-style hot chicken - super popular with students!',
+        offerValue: 'Chicken Combo',
+        echoCost: 200,
+        maxRedemptions: 150,
+        currentRedemptions: 52,
         isActive: 1,
-        isFeatured: 0,
+        isFeatured: 1,
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Valid for food and non-alcoholic beverages. Patio seating available.',
-        imageUrl: 'https://via.placeholder.com/300/FF5722/FFFFFF?text=Family+Meal'
+        termsAndConditions: 'Valid at W. Market St location. Choose your heat level!',
+        imageUrl: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400'
       },
 
+      // Boxcar Bar + Arcade - DOWNTOWN HANGOUT
       {
-        partnerId: createdPartners[9].id, // Whit's Frozen Custard
+        partnerId: createdPartners[9].id, // Boxcar Bar + Arcade
+        offerType: 'entertainment',
+        title: 'Pizza & Arcade Games',
+        description: 'Downtown pizza & retro arcade - perfect Dudley student hangout!',
+        offerValue: 'Pizza + Game Tokens',
+        echoCost: 300,
+        maxRedemptions: 80,
+        currentRedemptions: 28,
+        isActive: 1,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid at downtown Greensboro location. All ages welcome!',
+        imageUrl: 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=400'
+      },
+
+      // Yum Yum Better Ice Cream - GREENSBORO TRADITION SINCE 1906
+      {
+        partnerId: createdPartners[10].id, // Yum Yum
         offerType: 'treat',
-        title: 'Premium Custard Treat',
-        description: 'Delicious frozen custard treat at Whit\'s in Graham!',
-        offerValue: 'Custard Treat',
-        echoCost: 150,
-        maxRedemptions: 120,
-        currentRedemptions: 35,
+        title: 'Ice Cream Treat',
+        description: 'Greensboro tradition since 1906 - ice cream near UNCG!',
+        offerValue: 'Ice Cream',
+        echoCost: 120,
+        maxRedemptions: 180,
+        currentRedemptions: 74,
         isActive: 1,
         isFeatured: 1,
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Choice of flavors and toppings. Perfect for celebrating kindness!',
-        imageUrl: 'https://via.placeholder.com/300/00BCD4/FFFFFF?text=Custard+Treat'
+        imageUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400'
       },
 
-      // MEBANE, NC OFFERS
+      // Red Cinemas - UPSCALE DOWNTOWN THEATER
       {
-        partnerId: createdPartners[10].id, // Blue Ribbon Diner
-        offerType: 'meal',
-        title: 'Retro Diner Kids Meal',
-        description: 'Classic kids meal with jukebox entertainment at Blue Ribbon Diner!',
-        offerValue: 'Kids Meal',
-        echoCost: 200,
-        maxRedemptions: 75,
-        currentRedemptions: 18,
-        isActive: 1,
-        isFeatured: 1,
-        requiresVerification: 0,
-        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Includes drink and choice of sides. Jukebox entertainment included.',
-        imageUrl: 'https://via.placeholder.com/300/E91E63/FFFFFF?text=Retro+Meal'
-      },
-
-      {
-        partnerId: createdPartners[11].id, // Buffaloe Lanes
+        partnerId: createdPartners[11].id, // Red Cinemas
         offerType: 'entertainment',
-        title: 'Family Bowling Fun',
-        description: 'Bowling game with arcade access at Buffaloe Lanes Mebane!',
-        offerValue: 'Bowling Game',
-        echoCost: 250,
-        maxRedemptions: 60,
-        currentRedemptions: 12,
+        title: 'Movie Ticket + Snacks',
+        description: 'Upscale downtown theater - indie films, craft snacks, reserved seating!',
+        offerValue: 'Ticket + Snack',
+        echoCost: 350,
+        maxRedemptions: 90,
+        currentRedemptions: 41,
         isActive: 1,
         isFeatured: 1,
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Includes shoe rental and access to arcade games.',
-        imageUrl: 'https://via.placeholder.com/300/FF9800/FFFFFF?text=Bowling+Fun'
+        termsAndConditions: 'Valid at downtown Greensboro location. Reserved seating included!',
+        imageUrl: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400'
       },
 
+      // Triad Lanes - BOWLING & ARCADE
       {
-        partnerId: createdPartners[12].id, // Muffin's Ice Cream
-        offerType: 'treat',
-        title: 'Local Ice Cream Favorite',
-        description: 'Ice cream treat at Mebane\'s beloved Muffin\'s Ice Cream Shoppe!',
-        offerValue: 'Ice Cream',
-        echoCost: 120,
+        partnerId: createdPartners[12].id, // Triad Lanes
+        offerType: 'entertainment',
+        title: 'Bowling & Arcade Package',
+        description: 'Bowling, arcade games, and food - complete student hangout!',
+        offerValue: 'Bowling + Arcade',
+        echoCost: 250,
         maxRedemptions: 100,
-        currentRedemptions: 28,
+        currentRedemptions: 37,
         isActive: 1,
-        isFeatured: 0,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Includes shoe rental, lane time, and arcade tokens.',
+        imageUrl: 'https://images.unsplash.com/photo-1594717527389-b0e4219556ba?w=400'
+      },
+
+      // Urban Air Trampoline Park - ACTIVE FUN
+      {
+        partnerId: createdPartners[13].id, // Urban Air
+        offerType: 'entertainment',
+        title: 'Trampoline Park Pass',
+        description: 'Indoor trampoline park - climbing walls, arcade, active fun!',
+        offerValue: 'Park Admission',
+        echoCost: 400,
+        maxRedemptions: 70,
+        currentRedemptions: 22,
+        isActive: 1,
+        isFeatured: 1,
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Choice of flavors and toppings. Local family favorite since 1985.',
-        imageUrl: 'https://via.placeholder.com/300/4CAF50/FFFFFF?text=Ice+Cream'
+        termsAndConditions: 'Valid at Greensboro location. Waiver required for first visit.',
+        imageUrl: 'https://images.unsplash.com/photo-1610041321420-a148f17fe5d1?w=400'
       },
 
       // DUAL REWARD OFFERS - National Partners
