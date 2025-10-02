@@ -228,6 +228,7 @@ export interface IStorage {
     schoolId?: string; // For school-specific posts
   }): Promise<KindnessPost[]>;
   createPost(post: InsertKindnessPost): Promise<KindnessPost>;
+  deletePost(postId: string): Promise<boolean>;
   addHeartToPost(postId: string, sessionId: string): Promise<KindnessPost>;
   addEchoToPost(postId: string, sessionId: string): Promise<KindnessPost>;
   updatePostAnalytics(id: string, analytics: {
@@ -869,6 +870,13 @@ export class DatabaseStorage implements IStorage {
       .values(post)
       .returning();
     return newPost;
+  }
+
+  async deletePost(postId: string): Promise<boolean> {
+    const result = await db
+      .delete(kindnessPosts)
+      .where(eq(kindnessPosts.id, postId));
+    return result.rowCount !== null && result.rowCount > 0;
   }
 
   async addHeartToPost(postId: string, sessionId: string): Promise<KindnessPost> {

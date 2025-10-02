@@ -1860,6 +1860,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // DELETE offensive/inappropriate posts from live feed (Teacher/Admin only)
+  app.delete('/api/posts/:postId', requireTeacherRole, async (req: any, res) => {
+    try {
+      const { postId } = req.params;
+      const teacherId = req.user?.claims?.sub || 'unknown';
+      const teacherName = `${req.user?.claims?.firstName || 'Teacher'} ${req.user?.claims?.lastName || ''}`.trim();
+      
+      console.log(`🗑️ Teacher ${teacherName} (${teacherId}) is deleting post ${postId}`);
+      
+      // Delete the post from database
+      const deleted = await storage.deletePost(postId);
+      
+      if (!deleted) {
+        return res.status(404).json({ message: 'Post not found' });
+      }
+      
+      // Broadcast deletion to all connected WebSocket clients so feed updates in real-time
+      broadcast({
+        type: 'POST_DELETED',
+        postId: postId,
+        deletedBy: teacherName,
+        deletedAt: new Date()
+      });
+      
+      console.log(`✅ Post ${postId} successfully deleted by ${teacherName}`);
+      
+      res.json({ 
+        success: true, 
+        message: 'Post deleted successfully',
+        postId: postId
+      });
+    } catch (error: any) {
+      console.error('Error deleting post:', error);
+      res.status(500).json({ message: 'Failed to delete post: ' + error.message });
+    }
+  });
+
   // Get user tokens - Protected route with COPPA compliance 
   app.get('/api/tokens', isAuthenticated, enforceCOPPA, async (req: any, res) => {
     try {
