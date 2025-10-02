@@ -594,9 +594,9 @@ export async function initializeSampleRewardData() {
         imageUrl: 'https://images.unsplash.com/photo-1610041321420-a148f17fe5d1?w=400'
       },
 
-      // DUAL REWARD OFFERS - National Partners
+      // DUAL REWARD OFFERS - National Partners (NOT FEATURED for high school)
       {
-        partnerId: createdPartners[13].id, // Scholastic Books
+        partnerId: createdPartners[20].id, // Scholastic Books (correct index)
         offerType: 'dual_reward',
         title: 'Book Bundle + Parent Amazon Credit',
         description: 'Kid gets $10 Scholastic book bundle, parent gets $10 Amazon gift card!',
@@ -605,7 +605,7 @@ export async function initializeSampleRewardData() {
         maxRedemptions: 50,
         currentRedemptions: 8,
         isActive: 1,
-        isFeatured: 1,
+        isFeatured: 0, // Not featured - better for elementary/middle school
         requiresVerification: 1,
         isDualReward: 1,
         kidReward: '$10 Scholastic Book Bundle',
@@ -616,7 +616,7 @@ export async function initializeSampleRewardData() {
       },
 
       {
-        partnerId: createdPartners[14].id, // Target Education
+        partnerId: createdPartners[21].id, // Target Education (correct index)
         offerType: 'dual_reward',
         title: 'School Supplies + Parent Target Credit',
         description: 'Kid gets school supply bundle, parent gets $15 Target gift card!',
@@ -625,7 +625,7 @@ export async function initializeSampleRewardData() {
         maxRedemptions: 40,
         currentRedemptions: 5,
         isActive: 1,
-        isFeatured: 1,
+        isFeatured: 0, // Not featured - better for back-to-school season
         requiresVerification: 1,
         isDualReward: 1,
         kidReward: 'Premium School Supply Bundle',
@@ -636,7 +636,7 @@ export async function initializeSampleRewardData() {
       },
 
       {
-        partnerId: createdPartners[15].id, // LEGO Education
+        partnerId: createdPartners[22].id, // LEGO Education (correct index)
         offerType: 'dual_reward',
         title: 'LEGO Set + Parent Amazon Credit',
         description: 'Kid gets educational LEGO set, parent gets $20 Amazon gift card!',
@@ -645,7 +645,7 @@ export async function initializeSampleRewardData() {
         maxRedemptions: 30,
         currentRedemptions: 3,
         isActive: 1,
-        isFeatured: 1,
+        isFeatured: 0, // Not featured - better for younger students
         requiresVerification: 1,
         isDualReward: 1,
         kidReward: 'Age-Appropriate LEGO Education Set',
@@ -656,7 +656,7 @@ export async function initializeSampleRewardData() {
       },
 
       {
-        partnerId: createdPartners[16].id, // Amazon Family
+        partnerId: createdPartners[23].id, // Amazon Family (correct index)
         offerType: 'dual_reward',
         title: 'Educational Book + Parent Credit',
         description: 'Kid gets educational book, parent gets $8 Amazon credit!',
@@ -665,7 +665,7 @@ export async function initializeSampleRewardData() {
         maxRedemptions: 60,
         currentRedemptions: 12,
         isActive: 1,
-        isFeatured: 0,
+        isFeatured: 0, // Not featured
         requiresVerification: 0,
         isDualReward: 1,
         kidReward: 'Age-Appropriate Educational Book',
