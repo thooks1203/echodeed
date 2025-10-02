@@ -58,11 +58,11 @@ export class FamilyChallengeEngine {
     for (const template of challengeTemplates) {
       // Check if challenge already exists
       const existingChallenge = await db.select()
-        .from(yearRoundFamilyChallenges)
+        .from(familyChallenges)
         .where(and(
-          eq(yearRoundFamilyChallenges.week, week),
-          eq(yearRoundFamilyChallenges.ageGroup, ageGroup),
-          eq(yearRoundFamilyChallenges.title, template.title)
+          eq(familyChallenges.weekNumber, week),
+          eq(familyChallenges.ageGroup, ageGroup),
+          eq(familyChallenges.title, template.title)
         ));
 
       if (existingChallenge.length === 0) {
@@ -70,36 +70,21 @@ export class FamilyChallengeEngine {
         const endDate = new Date(startDate);
         endDate.setDate(endDate.getDate() + 7);
 
-        const [challenge] = await db.insert(yearRoundFamilyChallenges)
+        await db.insert(familyChallenges)
           .values({
-            week,
+            weekNumber: week,
             title: template.title,
             description: template.description,
-            theme: theme.theme.toLowerCase().replace(/\s+/g, '_'),
+            category: theme.theme.toLowerCase().replace(/\s+/g, '_'),
             difficulty: template.difficulty,
-            kidPoints: template.kidPoints,
-            parentPoints: template.parentPoints,
+            studentTokens: template.kidPoints,
+            parentTokens: template.parentPoints,
+            familyBonusTokens: 5,
             ageGroup,
             startDate,
             endDate,
-            isActive: true
-          })
-          .returning();
-
-        // Add specific activities for this challenge
-        for (const activity of template.activities) {
-          await db.insert(familyActivities).values({
-            challengeId: challenge.id,
-            title: activity.title,
-            description: activity.description,
-            kidInstructions: activity.kidInstructions,
-            parentInstructions: activity.parentInstructions,
-            timeEstimate: activity.timeEstimate,
-            materialsNeeded: activity.materials,
-            locationSuggestion: activity.location,
-            discussionPrompts: activity.discussionPrompts
+            isActive: 1
           });
-        }
       }
     }
   }
@@ -379,16 +364,16 @@ export class FamilyChallengeEngine {
   }
 
   // Get current week's challenges for a specific age group
-  async getCurrentWeekChallenges(ageGroup: '6-8' | 'family'): Promise<YearRoundFamilyChallenge[]> {
+  async getCurrentWeekChallenges(ageGroup: '6-8' | 'family'): Promise<FamilyChallenge[]> {
     const currentWeek = this.getCurrentWeek();
     
     try {
       const challenges = await db.select()
-        .from(yearRoundFamilyChallenges)
+        .from(familyChallenges)
         .where(and(
-          eq(yearRoundFamilyChallenges.week, currentWeek),
-          eq(yearRoundFamilyChallenges.ageGroup, ageGroup),
-          eq(yearRoundFamilyChallenges.isActive, true)
+          eq(familyChallenges.weekNumber, currentWeek),
+          eq(familyChallenges.ageGroup, ageGroup),
+          eq(familyChallenges.isActive, 1)
         ));
 
       // If database has challenges, return them
@@ -407,27 +392,20 @@ export class FamilyChallengeEngine {
     
     return templates.map((template, index) => ({
       id: `demo-${ageGroup}-${currentWeek}-${index}`,
-      week: currentWeek,
+      weekNumber: currentWeek,
       title: template.title,
       description: template.description,
-      theme: theme.theme.toLowerCase().replace(/\s+/g, '_'),
+      category: theme.theme.toLowerCase().replace(/\s+/g, '_'),
       difficulty: template.difficulty,
-      kidPoints: template.kidPoints,
-      parentPoints: template.parentPoints,
+      studentTokens: template.kidPoints,
+      parentTokens: template.parentPoints,
+      familyBonusTokens: 5,
       ageGroup,
       startDate: new Date(),
       endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      isActive: 1,
+      createdAt: new Date()
     }));
-  }
-
-  // Get activities for a specific challenge
-  async getChallengeActivities(challengeId: string): Promise<FamilyActivity[]> {
-    return await db.select()
-      .from(familyActivities)
-      .where(eq(familyActivities.challengeId, challengeId));
   }
 }
 
