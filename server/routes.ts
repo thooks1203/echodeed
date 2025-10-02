@@ -1363,11 +1363,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
           estimatedImpact: 'High Priority'
         };
 
-        try {
-          await slackNotifications.sendWellnessAlert(mockPrediction);
-        } catch (error) {
-          console.error('Failed to send Slack sentiment alert:', error);
-        }
+        // DISABLED: No automatic Slack alerts - behavioral mitigation uses human review only
+        // try {
+        //   await slackNotifications.sendWellnessAlert(mockPrediction);
+        // } catch (error) {
+        //   console.error('Failed to send Slack sentiment alert:', error);
+        // }
       }
 
       res.json({
@@ -1962,101 +1963,66 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: contentValidation.reason });
       }
       
-      // CRISIS DETECTION: Analyze content for safety concerns
-      const crisisAnalysis = crisisDetectionService.analyzeCrisisRisk(postData.content);
+      // ============================================================================
+      // BEHAVIORAL MITIGATION (NO AUTOMATIC CRISIS INTERVENTION)
+      // ============================================================================
+      // New approach: Use behavioral pattern analyzer for documentation only
+      // NO automatic NCMEC reporting, NO Slack alerts, NO crisis blocking
+      // Content flows to human review queue for teacher decision-making
       
-      // 🚨 CRITICAL SECURITY: Handle Crisis/High_Risk posts with mandatory reporting
-      if (crisisAnalysis.safetyLevel === 'Crisis' || crisisAnalysis.safetyLevel === 'High_Risk') {
-        console.log(`🚨 CRITICAL: ${crisisAnalysis.safetyLevel} post detected - triggering mandatory reporting`);
+      // Import behavioral pattern analyzer
+      const { behavioralPatternAnalyzer } = await import('./services/behavioralPatternAnalyzer');
+      
+      // Analyze content for patterns (documentation only, NO automatic actions)
+      const patternAnalysis = await behavioralPatternAnalyzer.analyzeContentPattern(
+        postData.content,
+        'support_post'
+      );
+      
+      // If content has concerning patterns, queue for human review (NO blocking)
+      if (patternAnalysis.requiresReview) {
+        console.log(`📋 Content queued for teacher review - severity: ${patternAnalysis.severityLevel}`);
         
-        // MANDATORY REPORTING: Automatically trigger NCMEC reporting for qualifying cases
+        // Queue content for teacher review (human decision required)
         try {
-          const reportingEvaluation = mandatoryReportingService.requiresNCMECReporting({
-            safetyLevel: crisisAnalysis.safetyLevel,
-            crisisScore: crisisAnalysis.crisisScore,
-            detectedKeywords: crisisAnalysis.detectedKeywords,
-            content: postData.content
+          await storage.createContentModerationQueueEntry({
+            schoolId: postData.schoolId || 'unknown',
+            contentType: 'support_post',
+            contentId: 'pending', // Will be updated after post creation
+            originalContent: postData.content,
+            moderationCategory: patternAnalysis.category,
+            flaggedReason: patternAnalysis.flaggedReason,
+            severityLevel: patternAnalysis.severityLevel,
+            sentimentScore: patternAnalysis.sentimentScore,
+            patternTags: patternAnalysis.patternTags,
+            reviewStatus: 'pending',
+            flaggedAt: new Date()
           });
           
-          if (reportingEvaluation.required) {
-            // Create NCMEC report with system as reporter (escalate to counselor)
-            const ncmecReport = await mandatoryReportingService.createNCMECReport({
-              postId: 'pending', // Will be updated after post creation
-              reporterId: 'system_crisis_detection',
-              reporterRole: 'automated_system',
-              schoolId: postData.schoolId || 'unknown',
-              crisisData: {
-                safetyLevel: crisisAnalysis.safetyLevel,
-                crisisScore: crisisAnalysis.crisisScore,
-                detectedKeywords: crisisAnalysis.detectedKeywords,
-                content: postData.content
-              },
-              legalJustification: reportingEvaluation.justification,
-              mandatoryReporterLicense: 'AUTOMATED_CRISIS_DETECTION_SYSTEM'
-            });
-            
-            console.log(`📋 NCMEC Report Created: ${ncmecReport.id} - ${reportingEvaluation.reportType} (${reportingEvaluation.urgencyLevel})`);
-          }
-        } catch (reportingError) {
-          console.error('🚨 CRITICAL: Mandatory reporting failed:', reportingError);
-          // Continue with crisis intervention even if reporting fails
+          console.log(`✓ Content added to teacher review queue for human decision`);
+        } catch (error) {
+          console.error('Failed to queue content for review:', error);
         }
-        
-        // Crisis/High_Risk posts should not be posted directly - redirect to intervention
-        return res.status(423).json({
-          error: 'CRISIS_INTERVENTION_REQUIRED',
-          message: 'Your message indicates you may need immediate support. Please contact a counselor or use the crisis resources provided.',
-          safetyLevel: crisisAnalysis.safetyLevel,
-          crisisScore: crisisAnalysis.crisisScore,
-          requiresIntervention: crisisAnalysis.requiresIntervention,
-          emergencyResources: crisisAnalysis.emergencyResources,
-          recommendedAction: crisisAnalysis.recommendedAction
-        });
       }
       
-      // Enhance post data with crisis analysis results
+      // Create support post (content is NOT blocked, only documented)
       const enhancedPostData = {
         ...postData,
-        safetyLevel: crisisAnalysis.safetyLevel,
-        crisisScore: crisisAnalysis.crisisScore,
-        urgencyLevel: crisisAnalysis.urgencyLevel,
-        isCrisis: crisisAnalysis.isCrisis ? 1 : 0,
-        crisisKeywords: crisisAnalysis.detectedKeywords,
-        isVisibleToPublic: crisisAnalysis.shouldHideFromPublic ? 0 : 1,
+        safetyLevel: patternAnalysis.severityLevel === 'high' ? 'Needs_Review' : 'Safe',
+        crisisScore: 0, // No longer using crisis scoring
+        urgencyLevel: 'standard',
+        isCrisis: 0, // System does not determine crisis - teacher does
+        crisisKeywords: patternAnalysis.patternTags,
+        isVisibleToPublic: 1, // Content visible unless teacher decides otherwise
         safetyAnalyzedAt: new Date(),
-        flaggedAt: crisisAnalysis.isCrisis ? new Date() : null,
+        flaggedAt: patternAnalysis.requiresReview ? new Date() : null,
       };
       
-      // Create support post with enhanced crisis detection
       const post = await storage.createSupportPost(enhancedPostData);
       
-      // CRISIS INTERVENTION: Handle different safety levels
-      if (crisisAnalysis.requiresIntervention) {
-        console.log(`🚨 ${crisisAnalysis.safetyLevel.toUpperCase()} DETECTED in support post ${post.id}:`, {
-          schoolId: post.schoolId,
-          safetyLevel: crisisAnalysis.safetyLevel,
-          crisisScore: crisisAnalysis.crisisScore,
-          urgency: crisisAnalysis.urgencyLevel,
-          keywords: crisisAnalysis.detectedKeywords,
-          recommendedAction: crisisAnalysis.recommendedAction
-        });
-        
-        // Send immediate notification to school counselors for Crisis/High Risk posts
-        try {
-          await slackNotifications.sendCrisisAlert({
-            postId: post.id,
-            schoolId: post.schoolId || 'Unknown School',
-            safetyLevel: crisisAnalysis.safetyLevel,
-            crisisScore: crisisAnalysis.crisisScore,
-            urgencyLevel: crisisAnalysis.urgencyLevel,
-            detectedKeywords: crisisAnalysis.detectedKeywords,
-            recommendedAction: crisisAnalysis.recommendedAction,
-            emergencyResources: crisisAnalysis.emergencyResources
-          });
-        } catch (error) {
-          console.error('Failed to send crisis notification:', error);
-        }
-      }
+      // NO AUTOMATIC CRISIS INTERVENTION - Teacher reviews and decides
+      // System only provides documentation and aggregate analytics
+      console.log(`✓ Support post created: ${post.id} - Review status: ${patternAnalysis.requiresReview ? 'Queued for teacher' : 'No review needed'}`)
       
       // Return post with crisis intervention resources if needed
       const response = {
@@ -11031,6 +10997,273 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error generating climate report:', error);
       res.status(500).json({ error: 'Failed to generate climate report' });
+    }
+  });
+
+  // ============================================================================
+  // DATA EXPORT - CSV Generation for Google Sheets
+  // ============================================================================
+  
+  // GET /api/export/moderation-queue - Export moderation queue to CSV
+  app.get('/api/export/moderation-queue', requireTeacherRole, async (req: any, res) => {
+    try {
+      const schoolId = req.teacherContext?.schoolId || req.user?.schoolId;
+      const { status, severity, days = 30 } = req.query;
+
+      if (!schoolId) {
+        return res.status(400).json({ error: 'School ID required' });
+      }
+
+      const queue = await storage.getContentModerationQueue(schoolId, {
+        reviewStatus: status as string | undefined,
+        severityLevel: severity as string | undefined
+      });
+
+      // Generate CSV headers
+      const headers = [
+        'ID',
+        'Content Type',
+        'Original Content',
+        'Flagged Reason',
+        'Severity Level',
+        'Category',
+        'Sentiment Score',
+        'Pattern Tags',
+        'Flagged At',
+        'Review Status',
+        'Action Taken',
+        'Reviewed By',
+        'Reviewed At',
+        'Review Notes'
+      ];
+
+      // Generate CSV rows
+      const rows = queue.map(item => [
+        item.id,
+        item.contentType,
+        `"${(item.originalContent || '').replace(/"/g, '""')}"`, // Escape quotes
+        `"${(item.flaggedReason || '').replace(/"/g, '""')}"`,
+        item.severityLevel,
+        item.moderationCategory,
+        item.sentimentScore?.toFixed(2) || 'N/A',
+        (item.patternTags || []).join('; '),
+        new Date(item.flaggedAt).toISOString(),
+        item.reviewStatus,
+        item.actionTaken || 'Pending',
+        item.reviewedBy || 'N/A',
+        item.reviewedAt ? new Date(item.reviewedAt).toISOString() : 'N/A',
+        `"${(item.reviewNotes || '').replace(/"/g, '""')}"`
+      ]);
+
+      // Combine headers and rows
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.join(','))
+      ].join('\n');
+
+      // Set headers for CSV download
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="moderation-queue-${new Date().toISOString().split('T')[0]}.csv"`);
+      res.send(csvContent);
+    } catch (error) {
+      console.error('Error exporting moderation queue:', error);
+      res.status(500).json({ error: 'Failed to export moderation queue' });
+    }
+  });
+
+  // GET /api/export/climate-metrics - Export climate metrics to CSV
+  app.get('/api/export/climate-metrics', requireTeacherRole, async (req: any, res) => {
+    try {
+      const schoolId = req.teacherContext?.schoolId || req.user?.schoolId;
+      const { days = 30 } = req.query;
+
+      if (!schoolId) {
+        return res.status(400).json({ error: 'School ID required' });
+      }
+
+      // Get climate metrics from database
+      const metrics = await storage.getClimateMetrics(schoolId, {
+        limit: parseInt(days as string)
+      });
+
+      // Generate CSV headers
+      const headers = [
+        'Date',
+        'Overall Climate Score',
+        'Participation Rate (%)',
+        'Positive Interaction Rate (%)',
+        'Content Safety Score',
+        'Policy Violation Rate (%)',
+        'Concerning Pattern Count',
+        'Avg Daily Posts',
+        'Peak Activity Hours',
+        'Week over Week Change (%)',
+        'Month over Month Change (%)',
+        'Recommended Focus'
+      ];
+
+      // Generate CSV rows
+      const rows = metrics.map(metric => [
+        new Date(metric.metricDate).toISOString().split('T')[0],
+        metric.overallClimateScore.toFixed(1),
+        (metric.participationRate * 100).toFixed(1),
+        (metric.positiveInteractionRate * 100).toFixed(1),
+        metric.contentSafetyScore.toFixed(1),
+        (metric.policyViolationRate * 100).toFixed(2),
+        metric.concerningPatternCount,
+        metric.avgDailyPosts.toFixed(1),
+        (metric.peakActivityHours || []).join('; '),
+        (metric.weekOverWeekChange * 100).toFixed(1),
+        (metric.monthOverMonthChange * 100).toFixed(1),
+        `"${(metric.recommendedFocus || '').replace(/"/g, '""')}"`
+      ]);
+
+      // Combine headers and rows
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.join(','))
+      ].join('\n');
+
+      // Set headers for CSV download
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="climate-metrics-${new Date().toISOString().split('T')[0]}.csv"`);
+      res.send(csvContent);
+    } catch (error) {
+      console.error('Error exporting climate metrics:', error);
+      res.status(500).json({ error: 'Failed to export climate metrics' });
+    }
+  });
+
+  // GET /api/export/behavioral-trends - Export behavioral trend analytics to CSV
+  app.get('/api/export/behavioral-trends', requireTeacherRole, async (req: any, res) => {
+    try {
+      const schoolId = req.teacherContext?.schoolId || req.user?.schoolId;
+      const { periodType = 'weekly', limit = 12 } = req.query;
+
+      if (!schoolId) {
+        return res.status(400).json({ error: 'School ID required' });
+      }
+
+      // Get behavioral trends from database
+      const trends = await storage.getBehavioralTrendAnalytics(schoolId, {
+        periodType: periodType as 'daily' | 'weekly' | 'monthly',
+        limit: parseInt(limit as string)
+      });
+
+      // Generate CSV headers
+      const headers = [
+        'Period Type',
+        'Period Start',
+        'Period End',
+        'Total Posts',
+        'Flagged Content Count',
+        'Avg Positivity Score',
+        'Negative Content (%)',
+        'Sentiment Trend',
+        'Top Concern Categories',
+        'Emerging Patterns',
+        'Post Count Change (%)',
+        'Sentiment Score Change (%)',
+        'Flagged Content Change (%)'
+      ];
+
+      // Generate CSV rows
+      const rows = trends.map(trend => [
+        trend.periodType,
+        new Date(trend.periodStart).toISOString().split('T')[0],
+        new Date(trend.periodEnd).toISOString().split('T')[0],
+        trend.totalPosts,
+        trend.flaggedContentCount,
+        trend.avgPositivityScore.toFixed(2),
+        (trend.negativeContentPercentage * 100).toFixed(1),
+        trend.sentimentTrend,
+        (trend.topConcernCategories || []).join('; '),
+        (trend.emergingPatterns || []).join('; '),
+        (trend.postCountChange * 100).toFixed(1),
+        (trend.sentimentScoreChange * 100).toFixed(1),
+        (trend.flaggedContentChange * 100).toFixed(1)
+      ]);
+
+      // Combine headers and rows
+      const csvContent = [
+        headers.join(','),
+        ...rows.map(row => row.join(','))
+      ].join('\n');
+
+      // Set headers for CSV download
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="behavioral-trends-${new Date().toISOString().split('T')[0]}.csv"`);
+      res.send(csvContent);
+    } catch (error) {
+      console.error('Error exporting behavioral trends:', error);
+      res.status(500).json({ error: 'Failed to export behavioral trends' });
+    }
+  });
+
+  // GET /api/export/comprehensive-report - Export all behavioral data in one CSV
+  app.get('/api/export/comprehensive-report', requireTeacherRole, async (req: any, res) => {
+    try {
+      const schoolId = req.teacherContext?.schoolId || req.user?.schoolId;
+
+      if (!schoolId) {
+        return res.status(400).json({ error: 'School ID required' });
+      }
+
+      // Get all data
+      const [queue, climateMetrics, trends] = await Promise.all([
+        storage.getContentModerationQueue(schoolId, { limit: 100 }),
+        storage.getClimateMetrics(schoolId, { limit: 30 }),
+        storage.getBehavioralTrendAnalytics(schoolId, { periodType: 'weekly', limit: 12 })
+      ]);
+
+      // Generate comprehensive CSV with multiple sections
+      const sections = [
+        '=== MODERATION QUEUE ===',
+        'ID,Content Type,Flagged Reason,Severity,Category,Status,Action Taken,Flagged At',
+        ...queue.slice(0, 50).map(item => [
+          item.id,
+          item.contentType,
+          `"${(item.flaggedReason || '').replace(/"/g, '""')}"`,
+          item.severityLevel,
+          item.moderationCategory,
+          item.reviewStatus,
+          item.actionTaken || 'Pending',
+          new Date(item.flaggedAt).toISOString()
+        ].join(',')),
+        '',
+        '=== CLIMATE METRICS (Last 30 Days) ===',
+        'Date,Climate Score,Participation %,Safety Score,Violation Rate %,Pattern Count',
+        ...climateMetrics.map(m => [
+          new Date(m.metricDate).toISOString().split('T')[0],
+          m.overallClimateScore.toFixed(1),
+          (m.participationRate * 100).toFixed(1),
+          m.contentSafetyScore.toFixed(1),
+          (m.policyViolationRate * 100).toFixed(2),
+          m.concerningPatternCount
+        ].join(',')),
+        '',
+        '=== BEHAVIORAL TRENDS ===',
+        'Period,Start Date,End Date,Total Posts,Flagged Count,Positivity Score,Sentiment Trend',
+        ...trends.map(t => [
+          t.periodType,
+          new Date(t.periodStart).toISOString().split('T')[0],
+          new Date(t.periodEnd).toISOString().split('T')[0],
+          t.totalPosts,
+          t.flaggedContentCount,
+          t.avgPositivityScore.toFixed(2),
+          t.sentimentTrend
+        ].join(','))
+      ];
+
+      const csvContent = sections.join('\n');
+
+      // Set headers for CSV download
+      res.setHeader('Content-Type', 'text/csv');
+      res.setHeader('Content-Disposition', `attachment; filename="comprehensive-behavioral-report-${new Date().toISOString().split('T')[0]}.csv"`);
+      res.send(csvContent);
+    } catch (error) {
+      console.error('Error exporting comprehensive report:', error);
+      res.status(500).json({ error: 'Failed to export comprehensive report' });
     }
   });
 
