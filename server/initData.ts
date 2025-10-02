@@ -461,11 +461,11 @@ export async function initializeSampleData() {
           serviceDescription: 'Helped sort and package food donations for local families',
           organizationName: 'Greensboro Urban Ministry Food Bank',
           contactPerson: 'Ms. Johnson',
-          contactEmail: 'volunteer@burlingtonfoodbank.org',
-          contactPhone: '(336) 123-4567',
+          contactEmail: 'volunteer@greensboroum.org',
+          contactPhone: '(336) 273-5959',
           hoursLogged: 4.5,
           serviceDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
-          location: 'Burlington, NC',
+          location: 'Greensboro, NC',
           category: 'Community Support',
           studentReflection: 'It felt great knowing I helped families have meals. I learned about food insecurity in our community.',
           photoEvidence: undefined
@@ -478,11 +478,11 @@ export async function initializeSampleData() {
           serviceDescription: 'Picked up litter and helped maintain trails at City Park',
           organizationName: 'Greensboro Parks and Recreation',
           contactPerson: 'Mr. Williams',
-          contactEmail: 'parks@burlington.nc.gov',
-          contactPhone: '(336) 222-5555',
+          contactEmail: 'parks@greensboro-nc.gov',
+          contactPhone: '(336) 373-2574',
           hoursLogged: 3.0,
           serviceDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // 2 weeks ago
-          location: 'Burlington City Park, NC',
+          location: 'Greensboro, NC',
           category: 'Environmental',
           studentReflection: 'Working outside was refreshing and I could see the immediate impact of our work making the park beautiful.',
           photoEvidence: undefined
