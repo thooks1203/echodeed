@@ -318,7 +318,7 @@ function RewardsTabContent() {
 export function TeacherDashboard() {
   const [selectedTab, setSelectedTab] = useState<string>('overview');
   const [filterNeedsEncouragement, setFilterNeedsEncouragement] = useState<boolean>(false);
-  const [showWellnessModal, setShowWellnessModal] = useState(true); // Auto-open on load
+  const [showWellnessModal, setShowWellnessModal] = useState(featureFlags.aiWellness); // Only auto-open if AI wellness enabled
   const [selectedStudent, setSelectedStudent] = useState<StudentParticipation | null>(null);
   const [, navigate] = useLocation();
   const { toast } = useToast();
@@ -1334,17 +1334,19 @@ export function TeacherDashboard() {
       </Dialog>
 
       {/* Auto-opening Teacher Wellness Overview Modal */}
-      <Dialog open={showWellnessModal} onOpenChange={setShowWellnessModal}>
-        <DialogContent className="max-w-lg border-0 shadow-2xl max-h-[90vh] overflow-y-auto">
-          <TeacherWellnessOverview
-            onClose={() => setShowWellnessModal(false)}
-            onStartCheck={() => {
-              setShowWellnessModal(false);
-              navigate('/wellness-checkin?from=teacher-dashboard');
-            }}
-          />
-        </DialogContent>
-      </Dialog>
+      {featureFlags.aiWellness && (
+        <Dialog open={showWellnessModal} onOpenChange={setShowWellnessModal}>
+          <DialogContent className="max-w-lg border-0 shadow-2xl max-h-[90vh] overflow-y-auto">
+            <TeacherWellnessOverview
+              onClose={() => setShowWellnessModal(false)}
+              onStartCheck={() => {
+                setShowWellnessModal(false);
+                navigate('/wellness-checkin?from=teacher-dashboard');
+              }}
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 }
