@@ -24,30 +24,49 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
   ];
 
-  // Filter out summer tab if challenges are disabled
+  // Filter out summer and support tabs based on feature flags
   const studentTabs = allStudentTabs.filter(tab => {
     if (tab.id === 'summer') {
       return featureFlags.summerChallenges;
     }
+    if (tab.id === 'support') {
+      return featureFlags.supportCircle;
+    }
     return true;
   });
 
-  // FIXED: Teacher tabs now include Feed + Reports moved from top + Support & Rewards
-  const teacherTabs = [
+  // FIXED: Teacher tabs now include Feed + Reports moved from top + Rewards
+  const allTeacherTabs = [
     { id: 'feed', label: 'Feed', icon: '🏠' },
     { id: 'teacher-dashboard', label: 'Dashboard', icon: '👩‍🏫' },
     { id: 'reports', label: 'Reports', icon: '📊' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
   ];
+  
+  // Filter out support tab if disabled
+  const teacherTabs = allTeacherTabs.filter(tab => {
+    if (tab.id === 'support') {
+      return featureFlags.supportCircle;
+    }
+    return true;
+  });
 
   // Parent tabs for family engagement
-  const parentTabs = [
+  const allParentTabs = [
     { id: 'parent-dashboard', label: 'Parent', icon: '👨‍👩‍👧‍👦' },
     { id: 'family-dashboard', label: 'Family', icon: '🎯' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
   ];
+  
+  // Filter out support tab if disabled
+  const parentTabs = allParentTabs.filter(tab => {
+    if (tab.id === 'support') {
+      return featureFlags.supportCircle;
+    }
+    return true;
+  });
 
   // If not authenticated, only show sign-in tab
   if (!user) {

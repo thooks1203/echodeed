@@ -69,6 +69,9 @@ export const featureFlags = {
   
   /** Advanced parent dashboard tabs - HIDDEN to simplify */
   advancedParentDashboard: getEnvFlag('VITE_ENABLE_CHALLENGES', false),
+  
+  /** Support Circle mental health feature - HIDDEN until licensed responder network integrated */
+  supportCircle: getEnvFlag('VITE_ENABLE_SUPPORT_CIRCLE', false),
 };
 
 /**
