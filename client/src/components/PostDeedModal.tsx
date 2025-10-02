@@ -229,6 +229,47 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
     },
   });
 
+  // Name validation to protect anonymity
+  const checkForNames = (text: string): { hasName: boolean; name?: string } => {
+    // Common first names to protect student anonymity
+    const commonNames = [
+      'aaron', 'abby', 'adam', 'alex', 'alice', 'amanda', 'amy', 'andrew', 'anna', 'anthony',
+      'ashley', 'austin', 'benjamin', 'brandon', 'brian', 'brittany', 'brooke', 'caleb', 'cameron',
+      'carlos', 'charlotte', 'chloe', 'chris', 'christian', 'christopher', 'claire', 'daniel',
+      'david', 'derek', 'dylan', 'elizabeth', 'emily', 'emma', 'eric', 'ethan', 'evan', 'grace',
+      'hannah', 'hunter', 'isabella', 'jack', 'jacob', 'james', 'jason', 'jennifer', 'jessica',
+      'john', 'jonathan', 'jordan', 'joseph', 'joshua', 'justin', 'kayla', 'kevin', 'lauren',
+      'lily', 'logan', 'lucas', 'madison', 'maria', 'mark', 'matthew', 'megan', 'michael',
+      'michelle', 'nicholas', 'nicole', 'noah', 'olivia', 'paige', 'rachel', 'rebecca', 'ryan',
+      'samantha', 'sarah', 'sophia', 'stephanie', 'taylor', 'thomas', 'tyler', 'victoria', 'william',
+      'zachary', 'zoe'
+    ];
+    
+    const sentences = text.split(/[.!?]+/);
+    
+    for (const sentence of sentences) {
+      const words = sentence.trim().split(/\s+/);
+      
+      // Skip first word of each sentence (normal capitalization)
+      for (let i = 1; i < words.length; i++) {
+        const word = words[i].replace(/[^\w]/g, ''); // Remove punctuation
+        
+        // Check if word is capitalized and could be a name
+        if (word.length > 1 && 
+            word[0] === word[0].toUpperCase() && 
+            word.slice(1) === word.slice(1).toLowerCase()) {
+          
+          // Check if it's a known name
+          if (commonNames.includes(word.toLowerCase())) {
+            return { hasName: true, name: word };
+          }
+        }
+      }
+    }
+    
+    return { hasName: false };
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -236,6 +277,17 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
       toast({
         title: 'Content required',
         description: 'Please describe your act of kindness.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Check for names to protect anonymity
+    const nameCheck = checkForNames(content);
+    if (nameCheck.hasName) {
+      toast({
+        title: 'Please protect privacy',
+        description: `To maintain anonymity, please don't use specific names. Try "I helped a friend" or "I helped a classmate" instead.`,
         variant: 'destructive',
       });
       return;
