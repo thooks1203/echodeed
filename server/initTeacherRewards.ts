@@ -85,7 +85,7 @@ export async function initializeTeacherRewardSystem() {
       console.log(`ℹ️ Teacher reward criteria already exist (${existingCriteria.length} records)`);
     }
     
-    // Create Burlington sponsor partnerships for teacher rewards
+    // Create Greensboro sponsor partnerships for teacher rewards
     const existingSponsors = await db.select().from(sponsors);
     
     if (existingSponsors.length === 0) {
@@ -93,31 +93,31 @@ export async function initializeTeacherRewardSystem() {
       
       await db.insert(sponsors).values([
         {
-          companyName: 'Starbucks Burlington',
+          companyName: 'Starbucks Greensboro',
           contactName: 'Store Manager',
-          contactEmail: 'burlington@starbucks.com',
+          contactEmail: 'greensboro@starbucks.com',
           category: 'coffee',
-          location: 'Burlington, NC',
+          location: 'Greensboro, NC',
           monthlyBudget: 50000, // $500 monthly budget
           sponsorshipTier: 'local',
           isActive: 1
         },
         {
-          companyName: 'Chick-fil-A Burlington',
+          companyName: 'Chick-fil-A Greensboro',
           contactName: 'Franchise Owner',
-          contactEmail: 'owner@cfaburlington.com',
+          contactEmail: 'owner@cfagreensboro.com',
           category: 'local_restaurant',
-          location: 'Burlington, NC',
+          location: 'Greensboro, NC',
           monthlyBudget: 75000, // $750 monthly budget
           sponsorshipTier: 'local',
           isActive: 1
         },
         {
-          companyName: 'Target Burlington',
+          companyName: 'Target Greensboro',
           contactName: 'Community Relations',
           contactEmail: 'community@target.com',
           category: 'retail',
-          location: 'Burlington, NC',
+          location: 'Greensboro, NC',
           monthlyBudget: 100000, // $1000 monthly budget
           sponsorshipTier: 'regional',
           isActive: 1

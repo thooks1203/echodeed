@@ -10596,7 +10596,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           location: s.location,
           sponsorshipTier: s.sponsorshipTier
         })),
-        sponsorMessage: 'Local Burlington businesses supporting our dedicated educators!',
+        sponsorMessage: 'Local Greensboro businesses supporting our dedicated educators!',
         totalSponsors: sponsors.length,
         totalMonthlyBudget: sponsors.reduce((sum, s) => sum + (s.monthlyBudget || 0), 0)
       });
