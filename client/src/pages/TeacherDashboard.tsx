@@ -119,7 +119,12 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
   const { data: moderationQueue = [], isLoading: moderationLoading } = useQuery({
     queryKey: ['/api/moderation/queue'],
     queryFn: async () => {
-      const response = await fetch('/api/moderation/queue');
+      const response = await fetch('/api/moderation/queue', {
+        headers: {
+          'x-session-id': 'demo-session',
+          'x-demo-role': 'teacher'
+        }
+      });
       if (!response.ok) throw new Error('Failed to fetch moderation queue');
       return response.json();
     },
