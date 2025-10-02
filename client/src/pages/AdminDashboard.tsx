@@ -1033,11 +1033,11 @@ export default function AdminDashboard() {
     `;
   };
 
-  const generateBCAReport = (data: any): string => {
+  const generateDudleyReport = (data: any): string => {
     return generatePrintableReport({
       ...data,
-      reportTitle: 'Burlington Christian Academy - Kindness Impact Report',
-      schoolName: 'Burlington Christian Academy'
+      reportTitle: 'Dudley High School - Kindness Impact Report',
+      schoolName: 'Dudley High School'
     });
   };
 
@@ -1050,7 +1050,7 @@ export default function AdminDashboard() {
             {bcaDemoMode && (
               <div className="flex items-center gap-2">
                 <School2 className="w-4 h-4" />
-                <span>BCA Demo Mode Active - Burlington Christian Academy Data</span>
+                <span>Dudley Demo Mode - Dudley High School, Greensboro, NC</span>
               </div>
             )}
             {privacyMode && (
@@ -1073,12 +1073,12 @@ export default function AdminDashboard() {
               {bcaDemoMode && (
                 <Badge variant="outline" className="ml-2 text-blue-600 border-blue-600">
                   <Monitor className="w-3 h-3 mr-1" />
-                  BCA Demo
+                  Dudley Demo
                 </Badge>
               )}
             </h1>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              {maskName(currentAdmin.name)} • head of school • Burlington Christian Academy
+              {maskName(currentAdmin.name)} • Principal • Dudley High School, Greensboro
             </p>
           </div>
         </div>
@@ -1133,7 +1133,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-2">
                     <School2 className="w-4 h-4" />
-                    <span className="text-sm font-medium">BCA Demo Mode</span>
+                    <span className="text-sm font-medium">Dudley Demo Mode</span>
                   </div>
                   <Badge variant={bcaDemoMode ? "default" : "secondary"} className="text-xs">
                     {bcaDemoMode ? "ON" : "OFF"}
@@ -1417,9 +1417,7 @@ export default function AdminDashboard() {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">All Schools</SelectItem>
-                            <SelectItem value="bca-demo">Burlington Christian Academy</SelectItem>
-                            <SelectItem value="burlington-elementary">Burlington Elementary</SelectItem>
-                            <SelectItem value="burlington-middle">Burlington Middle School</SelectItem>
+                            <SelectItem value="dudley-demo">Dudley High School</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -1477,14 +1475,12 @@ export default function AdminDashboard() {
                     <div className="space-y-3">
                       <div className="space-y-2">
                         <Label htmlFor="report-school">School</Label>
-                        <Select defaultValue="bca-demo">
+                        <Select defaultValue="dudley-demo">
                           <SelectTrigger id="report-school" data-testid="select-report-school">
                             <SelectValue placeholder="Select School" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="bca-demo">Burlington Christian Academy</SelectItem>
-                            <SelectItem value="burlington-elementary">Burlington Elementary</SelectItem>
-                            <SelectItem value="burlington-middle">Burlington Middle School</SelectItem>
+                            <SelectItem value="dudley-demo">Dudley High School</SelectItem>
                             <SelectItem value="all">District Summary</SelectItem>
                           </SelectContent>
                         </Select>
