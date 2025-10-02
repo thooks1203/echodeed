@@ -33,7 +33,7 @@ export default function DemoLogin() {
               data-testid="button-demo-student"
             >
               <GraduationCap className="w-5 h-5 mr-2" />
-              Try as Student (Emma Johnson)
+              Try as Student (Mary Jones)
             </Button>
             
             <Button
@@ -42,7 +42,7 @@ export default function DemoLogin() {
               data-testid="button-demo-teacher"
             >
               <Users className="w-5 h-5 mr-2" />
-              Try as Teacher (Ms. Sarah Wilson)
+              Try as Teacher (Ms. Woods)
             </Button>
             
             <Button
@@ -60,7 +60,7 @@ export default function DemoLogin() {
               data-testid="button-demo-parent"
             >
               <Heart className="w-5 h-5 mr-2" />
-              Try as Parent (Mrs. Sarah Johnson)
+              Try as Parent (Keisha Jones)
             </Button>
           </div>
           
