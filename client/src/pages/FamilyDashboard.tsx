@@ -95,7 +95,7 @@ export default function FamilyDashboard({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'6-8' | 'family'>('family');
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'family'>('family');
   const [selectedChallenge, setSelectedChallenge] = useState<FamilyChallenge | null>(null);
   const [selectedFundraiser, setSelectedFundraiser] = useState<SchoolFundraiser | null>(null);
   const [donationAmount, setDonationAmount] = useState<string>('25');
@@ -311,18 +311,14 @@ export default function FamilyDashboard({
           </CardHeader>
           <CardContent>
             <div className="flex gap-4 flex-wrap">
-              {(['6-8', '9-12', 'family'] as const).map((age) => (
-                <Button
-                  key={age}
-                  variant={selectedAgeGroup === age ? "default" : "outline"}
-                  onClick={() => setSelectedAgeGroup(age)}
-                  className="flex items-center gap-2"
-                  data-testid={`button-age-${age}`}
-                >
-                  <Users className="h-4 w-4" />
-                  {age === 'family' ? 'All Ages' : `Grades ${age.toUpperCase()}`}
-                </Button>
-              ))}
+              <Button
+                variant="default"
+                className="flex items-center gap-2"
+                data-testid="button-age-family"
+              >
+                <Users className="h-4 h-4" />
+                All Ages (Grades 9-12 & Families)
+              </Button>
             </div>
           </CardContent>
         </Card>

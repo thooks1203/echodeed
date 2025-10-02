@@ -929,10 +929,10 @@ export default function AdminDashboard() {
           const response = await fetch(`/api/admin/export/report?${params}`);
           const reportData = await response.json();
           
-          // Create printable BCA report
+          // Create printable Dudley report
           const printWindow = window.open('', '_blank', 'width=800,height=600');
           if (printWindow) {
-            printWindow.document.write(generateBCAReport(reportData));
+            printWindow.document.write(generateDudleyReport(reportData));
             printWindow.document.close();
             printWindow.focus();
             printWindow.print();
