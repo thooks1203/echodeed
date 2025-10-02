@@ -5,6 +5,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useLocation } from 'wouter';
 import { useAuth } from '@/hooks/useAuth';
 import { BottomNavigation } from '@/components/BottomNavigation';
+import { featureFlags } from '@shared/featureFlags';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
@@ -453,20 +454,22 @@ export function TeacherDashboard() {
               </Button>
 
               {/* Teacher Wellness Alert Button - PROMINENT */}
-              <Button
-                size="lg"
-                onClick={() => navigate('/wellness-checkin?from=teacher-dashboard')}
-                className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-200 border-4 border-orange-300 hover:border-orange-200 px-6 py-4 text-lg"
-                style={{
-                  animation: 'flash 1s infinite alternate, bounce 2s infinite',
-                  fontSize: '18px',
-                  minWidth: '220px'
-                }}
-                data-testid="teacher-wellness-alert"
-              >
-                <HeartPulse className="w-6 h-6" />
-                Wellness Check Needed
-              </Button>
+              {featureFlags.aiWellness && (
+                <Button
+                  size="lg"
+                  onClick={() => navigate('/wellness-checkin?from=teacher-dashboard')}
+                  className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-200 border-4 border-orange-300 hover:border-orange-200 px-6 py-4 text-lg"
+                  style={{
+                    animation: 'flash 1s infinite alternate, bounce 2s infinite',
+                    fontSize: '18px',
+                    minWidth: '220px'
+                  }}
+                  data-testid="teacher-wellness-alert"
+                >
+                  <HeartPulse className="w-6 h-6" />
+                  Wellness Check Needed
+                </Button>
+              )}
             </div>
             
             <div className="flex items-center gap-3 flex-1 justify-end">
@@ -543,7 +546,7 @@ export function TeacherDashboard() {
         </div>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className="grid w-full grid-cols-6 gap-1 bg-transparent">
+          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-6' : 'grid-cols-5'} gap-1 bg-transparent`}>
             <TabsTrigger value="overview" className="flex items-center gap-1 bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg">
               <BarChart3 className="w-4 h-4" />
               Overview
@@ -556,10 +559,12 @@ export function TeacherDashboard() {
               <Heart className="w-4 h-4" />
               Student Feed
             </TabsTrigger>
-            <TabsTrigger value="lessons" className="flex items-center gap-1 bg-emerald-600 text-white hover:bg-emerald-700 data-[state=active]:bg-emerald-700 data-[state=active]:shadow-lg">
-              <BookOpen className="w-4 h-4" />
-              Lesson Plans
-            </TabsTrigger>
+            {featureFlags.curriculum && (
+              <TabsTrigger value="lessons" className="flex items-center gap-1 bg-emerald-600 text-white hover:bg-emerald-700 data-[state=active]:bg-emerald-700 data-[state=active]:shadow-lg">
+                <BookOpen className="w-4 h-4" />
+                Lesson Plans
+              </TabsTrigger>
+            )}
             <TabsTrigger value="service-hours" className="flex items-center gap-1 bg-teal-600 text-white hover:bg-teal-700 data-[state=active]:bg-teal-700 data-[state=active]:shadow-lg">
               <CheckCircle className="w-4 h-4" />
               Service Hours
@@ -779,7 +784,8 @@ export function TeacherDashboard() {
           </TabsContent>
 
           {/* Lesson Plans Tab */}
-          <TabsContent value="lessons" className="space-y-6">
+          {featureFlags.curriculum && (
+            <TabsContent value="lessons" className="space-y-6">
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold">Character Education Lesson Plans</h2>
               <Button>
@@ -845,6 +851,7 @@ export function TeacherDashboard() {
               ))}
             </div>
           </TabsContent>
+          )}
 
           {/* Service Hours Verification Tab */}
           <TabsContent value="service-hours" className="space-y-6" data-testid="tab-content-service-hours">
