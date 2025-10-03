@@ -641,6 +641,56 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
             </div>
           </div>
 
+          {/* Service Hours Reminder Card - shows if there are pending hours */}
+          {serviceHoursSummary && serviceHoursSummary.pendingHours > 0 && (
+            <div style={{
+              background: 'linear-gradient(135deg, #F59E0B, #EF4444)',
+              borderRadius: '12px',
+              padding: '16px',
+              boxShadow: '0 4px 12px rgba(245, 158, 11, 0.3)',
+              color: 'white',
+              marginBottom: '16px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <div style={{ fontSize: '24px', flexShrink: 0 }}>⏳</div>
+                <div style={{ flex: 1 }}>
+                  <h3 style={{ fontSize: '15px', fontWeight: '700', marginBottom: '6px', margin: 0 }}>
+                    Verification Pending
+                  </h3>
+                  <p style={{ fontSize: '13px', opacity: 0.95, marginBottom: '12px', margin: '6px 0 12px 0' }}>
+                    You have <strong>{serviceHoursSummary.pendingHours} hours</strong> waiting for teacher verification. Upload your verification letter to speed up approval!
+                  </p>
+                  <button
+                    onClick={() => onNavigateToTab ? onNavigateToTab('community-service') : window.location.href = '/app?tab=community-service'}
+                    style={{
+                      background: 'white',
+                      color: '#F59E0B',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '8px 16px',
+                      fontSize: '13px',
+                      fontWeight: '700',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                      e.currentTarget.style.boxShadow = '0 4px 8px rgba(0,0,0,0.15)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'scale(1)';
+                      e.currentTarget.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+                    }}
+                    data-testid="button-upload-verification"
+                  >
+                    📸 Upload Verification →
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
           {/* Service Hours Summary */}
           {serviceHoursSummary && serviceHoursSummary.totalHours > 0 && (
             <div style={{
