@@ -6,11 +6,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Filter, Search, Award, Gift, Coffee, Trophy, Shield, AlertTriangle, FileText, Download } from 'lucide-react';
+import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Filter, Search, Award, Gift, Coffee, Trophy, Shield, AlertTriangle, FileText, Download, MessageCircle } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { featureFlags } from '@shared/featureFlags';
+import { KindnessFeed } from '@/components/KindnessFeed';
 
 interface CurriculumLesson {
   id: string;
@@ -71,7 +72,7 @@ interface TeacherDashboardProps {
   initialTab?: string;
 }
 
-export default function TeacherDashboard({ teacherId = "teacher-demo", initialTab = "lessons" }: TeacherDashboardProps) {
+export default function TeacherDashboard({ teacherId = "teacher-demo", initialTab = "feed" }: TeacherDashboardProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   
@@ -233,6 +234,27 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
     }
   };
 
+  // Feed content component
+  const FeedContent = () => {
+    const { data: posts, isLoading } = useQuery({
+      queryKey: ['/api/posts'],
+      staleTime: 60000, // 1 minute
+    });
+
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading kindness posts...</p>
+          </div>
+        </div>
+      );
+    }
+
+    return <KindnessFeed posts={posts || []} isLoading={isLoading} />;
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-4">
       <div className="max-w-7xl mx-auto">
@@ -249,7 +271,11 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
         </header>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-7' : 'grid-cols-4'} mb-6`}>
+          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-8' : 'grid-cols-5'} mb-6`}>
+            <TabsTrigger value="feed" data-testid="tab-feed">
+              <MessageCircle className="h-4 w-4 mr-2" />
+              Kindness Feed
+            </TabsTrigger>
             <TabsTrigger value="service-hours" data-testid="tab-service-hours">
               <Clock className="h-4 w-4 mr-2" />
               Service Hours
@@ -283,6 +309,24 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
               Teacher Rewards
             </TabsTrigger>
           </TabsList>
+
+          {/* Kindness Feed Tab - Teachers can see student posts */}
+          <TabsContent value="feed" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageCircle className="h-5 w-5" />
+                  Anonymous Kindness Feed
+                </CardTitle>
+                <CardDescription>
+                  View all kindness posts from Dudley High School students
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <FeedContent />
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {/* Service Hours Verification Tab - ALWAYS VISIBLE (Core Feature) */}
           <TabsContent value="service-hours" className="space-y-6">
