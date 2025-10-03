@@ -324,14 +324,23 @@ export default function FamilyDashboard({
         </Card>
 
         <Tabs defaultValue="challenges" className="space-y-3 sm:space-y-6">
-          <TabsList className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 snap-x snap-mandatory sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-0">
-            <TabsTrigger value="challenges" className="shrink-0 snap-start whitespace-nowrap text-xs px-3 py-2 rounded-full sm:text-sm sm:py-2 sm:px-4 sm:rounded-md">
+          <TabsList className="flex gap-2 overflow-x-auto no-scrollbar -mx-4 px-4 snap-x snap-mandatory sm:mx-0 sm:px-0 sm:grid sm:grid-cols-3 sm:gap-0 bg-white/80 backdrop-blur-sm p-2 h-auto">
+            <TabsTrigger 
+              value="challenges" 
+              className="shrink-0 snap-start whitespace-nowrap text-xs px-3 py-2 rounded-full sm:text-sm sm:py-2 sm:px-4 sm:rounded-md data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold"
+            >
               Current
             </TabsTrigger>
-            <TabsTrigger value="progress" className="shrink-0 snap-start whitespace-nowrap text-xs px-3 py-2 rounded-full sm:text-sm sm:py-2 sm:px-4 sm:rounded-md">
+            <TabsTrigger 
+              value="progress" 
+              className="shrink-0 snap-start whitespace-nowrap text-xs px-3 py-2 rounded-full sm:text-sm sm:py-2 sm:px-4 sm:rounded-md data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold"
+            >
               Progress
             </TabsTrigger>
-            <TabsTrigger value="rewards" className="shrink-0 snap-start whitespace-nowrap text-xs px-3 py-2 rounded-full sm:text-sm sm:py-2 sm:px-4 sm:rounded-md">
+            <TabsTrigger 
+              value="rewards" 
+              className="shrink-0 snap-start whitespace-nowrap text-xs px-3 py-2 rounded-full sm:text-sm sm:py-2 sm:px-4 sm:rounded-md data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg font-semibold"
+            >
               Rewards
             </TabsTrigger>
           </TabsList>

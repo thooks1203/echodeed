@@ -336,7 +336,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
                   <Button 
                     onClick={() => approveMutation.mutate(log.id)}
                     disabled={approveMutation.isPending}
-                    className="ml-4"
+                    className="ml-4 bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                     data-testid={`button-approve-${log.id}`}
                   >
                     <CheckCircle className="h-4 w-4 mr-2" />
@@ -356,9 +356,8 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
       <div className="max-w-7xl mx-auto">
         <div className="mb-4">
           <Button
-            variant="ghost"
             onClick={() => navigate('/')}
-            className="gap-2"
+            className="gap-2 bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
             data-testid="button-back-home"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -379,40 +378,72 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
         </header>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-8' : 'grid-cols-5'} mb-6`}>
-            <TabsTrigger value="feed" data-testid="tab-feed">
+          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-8' : 'grid-cols-5'} mb-6 bg-white/80 backdrop-blur-sm p-1 h-auto`}>
+            <TabsTrigger 
+              value="feed" 
+              data-testid="tab-feed"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+            >
               <MessageCircle className="h-4 w-4 mr-2" />
               Kindness Feed
             </TabsTrigger>
-            <TabsTrigger value="service-hours" data-testid="tab-service-hours">
+            <TabsTrigger 
+              value="service-hours" 
+              data-testid="tab-service-hours"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+            >
               <Clock className="h-4 w-4 mr-2" />
               Service Hours
             </TabsTrigger>
             {featureFlags.curriculum && (
               <>
-                <TabsTrigger value="lessons" data-testid="tab-lessons">
+                <TabsTrigger 
+                  value="lessons" 
+                  data-testid="tab-lessons"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+                >
                   <BookOpen className="h-4 w-4 mr-2" />
                   Lesson Library
                 </TabsTrigger>
-                <TabsTrigger value="progress" data-testid="tab-progress">
+                <TabsTrigger 
+                  value="progress" 
+                  data-testid="tab-progress"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+                >
                   <Target className="h-4 w-4 mr-2" />
                   My Progress
                 </TabsTrigger>
-                <TabsTrigger value="resources" data-testid="tab-resources">
+                <TabsTrigger 
+                  value="resources" 
+                  data-testid="tab-resources"
+                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+                >
                   <Star className="h-4 w-4 mr-2" />
                   Resources
                 </TabsTrigger>
               </>
             )}
-            <TabsTrigger value="moderation" data-testid="tab-moderation">
+            <TabsTrigger 
+              value="moderation" 
+              data-testid="tab-moderation"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+            >
               <Shield className="h-4 w-4 mr-2" />
               Review Queue
             </TabsTrigger>
-            <TabsTrigger value="reports" data-testid="tab-reports">
+            <TabsTrigger 
+              value="reports" 
+              data-testid="tab-reports"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+            >
               <Users className="h-4 w-4 mr-2" />
               Reports
             </TabsTrigger>
-            <TabsTrigger value="rewards" data-testid="tab-rewards">
+            <TabsTrigger 
+              value="rewards" 
+              data-testid="tab-rewards"
+              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-yellow-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+            >
               <Award className="h-4 w-4 mr-2" />
               Teacher Rewards
             </TabsTrigger>
