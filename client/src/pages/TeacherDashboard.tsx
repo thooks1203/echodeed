@@ -886,13 +886,13 @@ function TeacherRewardsSection() {
   const { toast } = useToast();
   
   // Fetch teacher reward progress
-  const { data: rewardProgress, isLoading: progressLoading } = useQuery({
+  const { data: rewardProgress, isLoading: progressLoading } = useQuery<any>({
     queryKey: ['/api/teacher/rewards/progress'],
     staleTime: 300000 // 5 minutes
   });
   
   // Fetch available rewards
-  const { data: availableRewards, isLoading: rewardsLoading } = useQuery({
+  const { data: availableRewards, isLoading: rewardsLoading } = useQuery<any>({
     queryKey: ['/api/teacher/rewards/available'],
     staleTime: 300000 // 5 minutes
   });
