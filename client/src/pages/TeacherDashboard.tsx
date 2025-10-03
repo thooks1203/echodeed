@@ -239,17 +239,21 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
         <header className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
             <div className="bg-gradient-to-r from-purple-600 to-pink-600 p-3 rounded-full">
-              <BookOpen className="h-8 w-8 text-white" />
+              <Heart className="h-8 w-8 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-gray-900">Teacher Curriculum Hub</h1>
+            <h1 className="text-4xl font-bold text-gray-900">Teacher Dashboard</h1>
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            K-8 kindness lesson plans designed to build empathy, character, and community in your classroom
+            Dudley High School (Grades 9-12) - Empowering kindness and character through community service
           </p>
         </header>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-6' : 'grid-cols-3'} mb-6`}>
+          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-7' : 'grid-cols-4'} mb-6`}>
+            <TabsTrigger value="service-hours" data-testid="tab-service-hours">
+              <Clock className="h-4 w-4 mr-2" />
+              Service Hours
+            </TabsTrigger>
             {featureFlags.curriculum && (
               <>
                 <TabsTrigger value="lessons" data-testid="tab-lessons">
@@ -279,6 +283,32 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
               Teacher Rewards
             </TabsTrigger>
           </TabsList>
+
+          {/* Service Hours Verification Tab - ALWAYS VISIBLE (Core Feature) */}
+          <TabsContent value="service-hours" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Clock className="h-5 w-5" />
+                  Pending Service Hours Verification
+                </CardTitle>
+                <CardDescription>
+                  Review and approve student community service submissions with photo proof
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-gray-600">
+                  Service hours verification interface will load here. This feature allows one-click approval
+                  of student submissions with photo verification letters.
+                </p>
+                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-800">
+                    <strong>Time Savings:</strong> Reduces verification from 15 minutes to 30 seconds per student
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           {featureFlags.curriculum && (
             <>
