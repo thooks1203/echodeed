@@ -303,35 +303,48 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
 
     return (
       <div className="space-y-4">
-        {pending.map((log: any) => (
-          <Card key={log.id} className="border-l-4 border-l-blue-500">
-            <CardContent className="pt-6">
-              <div className="flex items-start justify-between">
-                <div className="flex-1">
-                  <div className="flex items-center gap-2 mb-2">
-                    <Badge className="bg-blue-100 text-blue-800">{log.category}</Badge>
-                    <span className="text-sm text-gray-600">{log.hours} hours</span>
+        {pending.map((item: any) => {
+          const log = item.serviceLog || item;
+          const student = item.student;
+          return (
+            <Card key={log.id} className="border-l-4 border-l-blue-500">
+              <CardContent className="pt-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Badge className="bg-blue-100 text-blue-800">{log.category}</Badge>
+                      <span className="text-sm text-gray-600">{log.hoursLogged} hours</span>
+                      {student && (
+                        <span className="text-xs text-gray-500">
+                          by {student.firstName} {student.lastName} ({student.grade || 'N/A'})
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="font-semibold text-lg mb-1">{log.serviceName}</h3>
+                    <p className="text-sm text-gray-600 mb-2">{log.organizationName}</p>
+                    <p className="text-sm text-gray-700 mb-2">{log.serviceDescription}</p>
+                    <p className="text-sm text-gray-700 italic bg-purple-50 p-2 rounded">
+                      💭 Student Reflection: "{log.studentReflection}"
+                    </p>
+                    <div className="mt-3 text-xs text-gray-500">
+                      Service Date: {new Date(log.serviceDate).toLocaleDateString()} • 
+                      Submitted: {new Date(log.createdAt).toLocaleDateString()}
+                    </div>
                   </div>
-                  <h3 className="font-semibold text-lg mb-1">{log.serviceName}</h3>
-                  <p className="text-sm text-gray-600 mb-2">{log.organizationName}</p>
-                  <p className="text-sm text-gray-700 italic">"{log.reflection}"</p>
-                  <div className="mt-3 text-xs text-gray-500">
-                    Submitted: {new Date(log.serviceDate).toLocaleDateString()}
-                  </div>
+                  <Button 
+                    onClick={() => approveMutation.mutate(log.id)}
+                    disabled={approveMutation.isPending}
+                    className="ml-4"
+                    data-testid={`button-approve-${log.id}`}
+                  >
+                    <CheckCircle className="h-4 w-4 mr-2" />
+                    {approveMutation.isPending ? 'Approving...' : 'Approve'}
+                  </Button>
                 </div>
-                <Button 
-                  onClick={() => approveMutation.mutate(log.id)}
-                  disabled={approveMutation.isPending}
-                  className="ml-4"
-                  data-testid={`button-approve-${log.id}`}
-                >
-                  <CheckCircle className="h-4 w-4 mr-2" />
-                  {approveMutation.isPending ? 'Approving...' : 'Approve'}
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
+              </CardContent>
+            </Card>
+          );
+        })}
       </div>
     );
   };
