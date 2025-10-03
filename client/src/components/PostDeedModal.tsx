@@ -324,6 +324,28 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
         
         <div className="p-4">
           <form onSubmit={handleSubmit}>
+            {content.length === 0 && (() => {
+              const categorySuggestions = kindnessSuggestions[category as keyof typeof kindnessSuggestions] || [];
+              const quickPrompts = Array.isArray(categorySuggestions) ? categorySuggestions.slice(0, 3) : [];
+              return quickPrompts.length > 0 ? (
+              <div className="mb-3">
+                <p className="text-xs font-medium text-muted-foreground mb-2">Quick Ideas:</p>
+                <div className="flex flex-wrap gap-2">
+                  {quickPrompts.map((suggestion: string, idx: number) => (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setContent(suggestion)}
+                      className="text-xs px-3 py-1.5 bg-gradient-to-r from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 border border-purple-200/50 dark:border-purple-500/30 rounded-full text-foreground font-medium transition-all hover:scale-105"
+                      data-testid={`prompt-chip-${idx}`}
+                    >
+                      {suggestion.length > 40 ? suggestion.slice(0, 40) + '...' : suggestion}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              ) : null;
+            })()}
             <textarea 
               value={content}
               onChange={(e) => {
