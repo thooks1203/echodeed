@@ -378,11 +378,11 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
         </header>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-8' : 'grid-cols-5'} mb-6 bg-white/80 backdrop-blur-sm p-1 h-auto`}>
+          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-8' : 'grid-cols-5'} mb-6 bg-transparent p-1 h-auto gap-2`}>
             <TabsTrigger 
               value="feed" 
               data-testid="tab-feed"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+              className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-3 font-semibold transition-all duration-200"
             >
               <MessageCircle className="h-4 w-4 mr-2" />
               Kindness Feed
@@ -390,7 +390,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
             <TabsTrigger 
               value="service-hours" 
               data-testid="tab-service-hours"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-green-500 data-[state=active]:to-emerald-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+              className="bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-3 font-semibold transition-all duration-200"
             >
               <Clock className="h-4 w-4 mr-2" />
               Service Hours
@@ -400,7 +400,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
                 <TabsTrigger 
                   value="lessons" 
                   data-testid="tab-lessons"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-3 font-semibold transition-all duration-200"
                 >
                   <BookOpen className="h-4 w-4 mr-2" />
                   Lesson Library
@@ -408,7 +408,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
                 <TabsTrigger 
                   value="progress" 
                   data-testid="tab-progress"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-orange-500 data-[state=active]:to-red-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+                  className="bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-3 font-semibold transition-all duration-200"
                 >
                   <Target className="h-4 w-4 mr-2" />
                   My Progress
@@ -416,7 +416,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
                 <TabsTrigger 
                   value="resources" 
                   data-testid="tab-resources"
-                  className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-yellow-500 data-[state=active]:to-orange-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+                  className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-3 font-semibold transition-all duration-200"
                 >
                   <Star className="h-4 w-4 mr-2" />
                   Resources
@@ -426,7 +426,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
             <TabsTrigger 
               value="moderation" 
               data-testid="tab-moderation"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-indigo-500 data-[state=active]:to-purple-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+              className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-3 font-semibold transition-all duration-200"
             >
               <Shield className="h-4 w-4 mr-2" />
               Review Queue
@@ -434,7 +434,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
             <TabsTrigger 
               value="reports" 
               data-testid="tab-reports"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-500 data-[state=active]:to-cyan-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+              className="bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-3 font-semibold transition-all duration-200"
             >
               <Users className="h-4 w-4 mr-2" />
               Reports
@@ -442,7 +442,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
             <TabsTrigger 
               value="rewards" 
               data-testid="tab-rewards"
-              className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-amber-500 data-[state=active]:to-yellow-500 data-[state=active]:text-white data-[state=active]:shadow-lg py-3 font-semibold"
+              className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-3 font-semibold transition-all duration-200"
             >
               <Award className="h-4 w-4 mr-2" />
               Teacher Rewards
