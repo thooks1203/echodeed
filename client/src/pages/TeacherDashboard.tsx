@@ -116,7 +116,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
   });
 
   // Fetch moderation queue
-  const { data: moderationQueue = [], isLoading: moderationLoading } = useQuery({
+  const { data: moderationData, isLoading: moderationLoading } = useQuery<any>({
     queryKey: ['/api/moderation/queue'],
     queryFn: async () => {
       const response = await fetch('/api/moderation/queue', {
@@ -129,6 +129,8 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
       return response.json();
     },
   });
+  
+  const moderationQueue = moderationData?.queue || [];
 
   // Resolve moderation item (approve/reject)
   const resolveModerationMutation = useMutation({
