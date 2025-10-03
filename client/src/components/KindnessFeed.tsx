@@ -47,6 +47,12 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
 
   const handleHeart = (postId: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    
+    // Haptic feedback on supported devices
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50);
+    }
+    
     setClickedPosts(prev => new Set(prev).add(postId));
     heartMutation.mutate(postId);
     setTimeout(() => {
@@ -55,11 +61,17 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
         newSet.delete(postId);
         return newSet;
       });
-    }, 1000);
+    }, 600);
   };
 
   const handleEcho = (postId: string, e: React.MouseEvent) => {
     e.stopPropagation();
+    
+    // Haptic feedback on supported devices
+    if ('vibrate' in navigator) {
+      navigator.vibrate(50);
+    }
+    
     setClickedPosts(prev => new Set(prev).add(postId));
     echoMutation.mutate(postId);
     setTimeout(() => {
@@ -68,7 +80,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
         newSet.delete(postId);
         return newSet;
       });
-    }, 1000);
+    }, 600);
   };
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -261,32 +273,32 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
                     <div className="flex items-center gap-6">
                       <button
                         onClick={(e) => handleHeart(post.id, e)}
-                        className={`flex items-center gap-1.5 transition-all duration-200 hover:scale-110 active:scale-95 ${
-                          clickedPosts.has(post.id) ? 'animate-pulse' : ''
-                        } ${(post.heartsCount || 0) > 0 ? 'text-red-500' : 'text-gray-400 hover:text-red-500'}`}
+                        className={`flex items-center gap-1.5 transition-all duration-200 hover:scale-110 active:scale-95 ${(post.heartsCount || 0) > 0 ? 'text-red-500' : 'text-gray-400 hover:text-red-500'}`}
                         title="❤️ Show love and appreciation for this act of kindness"
                         data-testid={`button-heart-${post.id}`}
                       >
                         <Heart 
                           size={20} 
                           fill={(post.heartsCount || 0) > 0 ? "currentColor" : "none"}
-                          className="transition-all duration-200 hover:drop-shadow-sm"
+                          className={`transition-all duration-200 hover:drop-shadow-sm ${
+                            clickedPosts.has(post.id) ? 'animate-sparkle' : ''
+                          }`}
                         />
                         <span className="text-sm font-medium">{post.heartsCount || 0}</span>
                       </button>
                       
                       <button
                         onClick={(e) => handleEcho(post.id, e)}
-                        className={`flex items-center gap-1.5 transition-all duration-200 hover:scale-110 active:scale-95 ${
-                          clickedPosts.has(post.id) ? 'animate-pulse' : ''
-                        } ${(post.echoesCount || 0) > 0 ? 'text-blue-500' : 'text-gray-400 hover:text-blue-500'}`}
+                        className={`flex items-center gap-1.5 transition-all duration-200 hover:scale-110 active:scale-95 ${(post.echoesCount || 0) > 0 ? 'text-blue-500' : 'text-gray-400 hover:text-blue-500'}`}
                         title="⚡ Echo = 'I want to try this kindness too!' Your goal is to do this same act yourself!"
                         data-testid={`button-echo-${post.id}`}
                       >
                         <Zap 
                           size={20}
                           fill={(post.echoesCount || 0) > 0 ? "currentColor" : "none"}
-                          className="transition-all duration-200 hover:drop-shadow-sm"
+                          className={`transition-all duration-200 hover:drop-shadow-sm ${
+                            clickedPosts.has(post.id) ? 'animate-sparkle' : ''
+                          }`}
                         />
                         <span className="text-sm font-medium">{post.echoesCount || 0}</span>
                       </button>
