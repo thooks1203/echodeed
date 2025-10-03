@@ -255,6 +255,87 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
     return <KindnessFeed posts={posts || []} isLoading={isLoading} />;
   };
 
+  // Service Hours content component
+  const ServiceHoursContent = () => {
+    const { data: pendingHours, isLoading } = useQuery<any>({
+      queryKey: ['/api/service-hours/pending'],
+      staleTime: 30000, // 30 seconds
+    });
+
+    const approveMutation = useMutation({
+      mutationFn: async (logId: string) => {
+        return await apiRequest('PATCH', `/api/community-service/verify/${logId}`, {
+          approved: true,
+          verifiedBy: 'teacher-001',
+        });
+      },
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['/api/service-hours/pending'] });
+        toast({
+          title: "Service Hours Approved",
+          description: "Student will receive tokens for their community service.",
+        });
+      },
+    });
+
+    if (isLoading) {
+      return (
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading pending service hours...</p>
+          </div>
+        </div>
+      );
+    }
+
+    const pending = pendingHours || [];
+
+    if (pending.length === 0) {
+      return (
+        <div className="text-center py-12">
+          <Clock className="h-16 w-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-semibold text-gray-700 mb-2">All Caught Up!</h3>
+          <p className="text-gray-600">No pending service hours to verify at this time.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="space-y-4">
+        {pending.map((log: any) => (
+          <Card key={log.id} className="border-l-4 border-l-blue-500">
+            <CardContent className="pt-6">
+              <div className="flex items-start justify-between">
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-2">
+                    <Badge className="bg-blue-100 text-blue-800">{log.category}</Badge>
+                    <span className="text-sm text-gray-600">{log.hours} hours</span>
+                  </div>
+                  <h3 className="font-semibold text-lg mb-1">{log.serviceName}</h3>
+                  <p className="text-sm text-gray-600 mb-2">{log.organizationName}</p>
+                  <p className="text-sm text-gray-700 italic">"{log.reflection}"</p>
+                  <div className="mt-3 text-xs text-gray-500">
+                    Submitted: {new Date(log.serviceDate).toLocaleDateString()}
+                  </div>
+                </div>
+                <Button 
+                  onClick={() => approveMutation.mutate(log.id)}
+                  disabled={approveMutation.isPending}
+                  className="ml-4"
+                  data-testid={`button-approve-${log.id}`}
+                >
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  {approveMutation.isPending ? 'Approving...' : 'Approve'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-4">
       <div className="max-w-7xl mx-auto">
@@ -341,15 +422,14 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-gray-600">
-                  Service hours verification interface will load here. This feature allows one-click approval
-                  of student submissions with photo verification letters.
+                <ServiceHoursContent />
+              </CardContent>
+            </Card>
+            <Card className="bg-blue-50 border-blue-200">
+              <CardContent className="pt-6">
+                <p className="text-sm text-blue-800">
+                  <strong>💡 Time Savings:</strong> Reduces verification from 15 minutes to 30 seconds per student with one-click approval
                 </p>
-                <div className="mt-4 p-4 bg-blue-50 border border-blue-200 rounded-lg">
-                  <p className="text-sm text-blue-800">
-                    <strong>Time Savings:</strong> Reduces verification from 15 minutes to 30 seconds per student
-                  </p>
-                </div>
               </CardContent>
             </Card>
           </TabsContent>
