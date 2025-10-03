@@ -258,7 +258,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
   // Service Hours content component
   const ServiceHoursContent = () => {
     const { data: pendingHours, isLoading } = useQuery<any>({
-      queryKey: ['/api/service-hours/pending'],
+      queryKey: ['/api/community-service/pending-verifications'],
       staleTime: 30000, // 30 seconds
     });
 
@@ -270,7 +270,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
         });
       },
       onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['/api/service-hours/pending'] });
+        queryClient.invalidateQueries({ queryKey: ['/api/community-service/pending-verifications'] });
         toast({
           title: "Service Hours Approved",
           description: "Student will receive tokens for their community service.",
