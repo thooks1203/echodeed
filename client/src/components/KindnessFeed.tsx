@@ -145,8 +145,28 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
     );
   }
 
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const todaysPosts = posts.filter(post => {
+    const postDate = new Date(post.createdAt);
+    postDate.setHours(0, 0, 0, 0);
+    return postDate.getTime() === today.getTime();
+  });
+  const todaysCount = todaysPosts.length;
+
   return (
     <main className="pb-20 bg-background">
+      {todaysCount > 0 && (
+        <div className="mx-4 mt-3 mb-2 bg-gradient-to-r from-purple-500/10 via-pink-500/10 to-purple-500/10 border border-purple-200/50 dark:border-purple-500/30 rounded-lg px-4 py-2.5 animate-fadeIn">
+          <div className="flex items-center justify-center gap-2">
+            <Heart className="h-4 w-4 text-purple-600 dark:text-purple-400 animate-pulse" />
+            <p className="text-sm font-semibold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
+              {todaysCount} {todaysCount === 1 ? 'act' : 'acts'} of kindness shared at Dudley today
+            </p>
+            <Heart className="h-4 w-4 text-pink-600 dark:text-pink-400 animate-pulse" style={{ animationDelay: '0.5s' }} />
+          </div>
+        </div>
+      )}
       {posts.length === 0 ? (
         <div className="text-center py-12 px-4">
           <div className="w-72 h-72 mx-auto mb-4" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Cdefs%3E%3CradialGradient id='heart-grad-feed' cx='50%25' cy='50%25'%3E%3Cstop offset='0%25' style='stop-color:%23ff6633'/%3E%3Cstop offset='25%25' style='stop-color:%23ff33ff'/%3E%3Cstop offset='75%25' style='stop-color:%23a855f7'/%3E%3Cstop offset='100%25' style='stop-color:%233b82f6'/%3E%3C/radialGradient%3E%3C/defs%3E%3Cpath d='M100,30 C85,10 60,10 60,40 C60,70 100,100 100,100 S140,70 140,40 C140,10 115,10 100,30 Z' fill='url(%23heart-grad-feed)'/%3E%3C/svg%3E")`, backgroundSize: 'contain', backgroundPosition: 'center', backgroundRepeat: 'no-repeat' }}></div>
