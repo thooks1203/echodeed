@@ -38,6 +38,7 @@ import PushNotificationSetup from '@/components/PushNotificationSetup';
 import { SponsorsPage } from '@/components/SponsorsPage';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { featureFlags } from '@shared/featureFlags';
+import { useDemoSchool } from '@/contexts/DemoSchoolContext';
 
 interface ParentNotification {
   id: string;
@@ -294,6 +295,7 @@ export default function ParentDashboard() {
   const [selectedStudent, setSelectedStudent] = useState<string>('');
   const [, navigate] = useLocation();
   const [activeBottomTab, setActiveBottomTab] = useState('parent-dashboard');
+  const { schoolConfig } = useDemoSchool();
 
   const handleBottomTabChange = (tab: string) => {
     setActiveBottomTab(tab);
@@ -313,18 +315,18 @@ export default function ParentDashboard() {
   // Mock parent data - in production, get from auth context
   const parentInfo = {
     id: 'parent-001',
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@email.com',
-    children: ['student-001']
+    name: schoolConfig.users.parent.name,
+    email: schoolConfig.users.parent.email,
+    children: [schoolConfig.users.student.id]
   };
 
   // Mock linked students
   const linkedStudents: LinkedStudent[] = [
     {
-      userId: 'student-001',
-      name: 'Emma Johnson',
-      grade: '10th',
-      school: 'Eastern Guilford High School',
+      userId: schoolConfig.users.student.id,
+      name: schoolConfig.users.student.name,
+      grade: schoolConfig.users.student.grade + 'th',
+      school: schoolConfig.school.name,
       isActive: true,
       lastActivity: new Date().toISOString(),
       weeklyKindnessCount: 8,
@@ -385,11 +387,11 @@ export default function ParentDashboard() {
   const mockActivities: StudentActivity[] = [
     {
       id: 'activity-001',
-      studentUserId: 'student-001',
-      studentName: 'Child 1',
+      studentUserId: schoolConfig.users.student.id,
+      studentName: schoolConfig.users.student.name,
       content: 'I helped a classmate with their math homework during lunch',
       category: 'helping',
-      location: 'Dudley High School',
+      location: schoolConfig.school.name,
       createdAt: new Date(Date.now() - 1800000).toISOString(),
       heartsCount: 12,
       echoesCount: 3,
@@ -398,11 +400,11 @@ export default function ParentDashboard() {
     },
     {
       id: 'activity-002',
-      studentUserId: 'student-002',
-      studentName: 'Child 2',
+      studentUserId: schoolConfig.users.student.id,
+      studentName: schoolConfig.users.student.name,
       content: 'I shared my snack with a friend who forgot theirs',
       category: 'sharing',
-      location: 'Dudley High School',
+      location: schoolConfig.school.name,
       createdAt: new Date(Date.now() - 7200000).toISOString(),
       heartsCount: 8,
       echoesCount: 2,
@@ -411,11 +413,11 @@ export default function ParentDashboard() {
     },
     {
       id: 'activity-003',
-      studentUserId: 'student-001',
-      studentName: 'Child 1',
+      studentUserId: schoolConfig.users.student.id,
+      studentName: schoolConfig.users.student.name,
       content: 'I included a new student in our group during recess',
       category: 'including',
-      location: 'Dudley High School',
+      location: schoolConfig.school.name,
       createdAt: new Date(Date.now() - 10800000).toISOString(),
       heartsCount: 15,
       echoesCount: 4,
