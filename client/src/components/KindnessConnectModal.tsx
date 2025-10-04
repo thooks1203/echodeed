@@ -151,13 +151,6 @@ export function KindnessConnectModal({ isOpen, onClose }: KindnessConnectModalPr
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent 
         className="max-w-2xl max-h-[90vh] p-0"
-        onKeyDown={(e) => {
-          // Prevent arrow keys from affecting the background feed
-          if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-            e.preventDefault(); // Stop default scrolling behavior
-            e.stopPropagation(); // Stop event from bubbling to parent
-          }
-        }}
       >
         <DialogHeader className="p-6 pb-4">
           <DialogTitle className="flex items-center gap-3 text-2xl">
