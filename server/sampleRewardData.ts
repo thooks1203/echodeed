@@ -15,32 +15,32 @@ export async function initializeSampleRewardData() {
 
     // GREENSBORO, NC HIGH SCHOOL REWARD PARTNERS - Local & National Sponsors
     const partners = [
-      // LOCAL GREENSBORO, NC PARTNERS
+      // LOCAL WHITSETT/BURLINGTON RD PARTNERS (Near Eastern Guilford HS)
       {
-        partnerName: 'A Special Blend Coffee',
-        partnerLogo: 'https://images.unsplash.com/photo-1511920170033-f8396924c348?w=400',
+        partnerName: 'Chick-fil-A Burlington Rd',
+        partnerLogo: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400',
         partnerType: 'local_dining',
-        websiteUrl: 'https://www.aspecialblend.org',
-        description: 'Mission-driven nonprofit coffee shop employing adults with disabilities - Community in a Cup.',
+        websiteUrl: 'https://www.chick-fil-a.com',
+        description: 'Family restaurant on Burlington Rd - closest to Eastern Guilford High School!',
         isActive: 1,
         isFeatured: 1,
-        minRedemptionAmount: 150, // 150 $ECHO = coffee + pastry
-        maxRedemptionAmount: 600, // 600 $ECHO = weekly coffee card
-        contactEmail: 'info@aspecialblend.org',
-        location: 'Greensboro, NC'
+        minRedemptionAmount: 200, // 200 $ECHO = meal
+        maxRedemptionAmount: 800, // 800 $ECHO = family meal
+        contactEmail: 'burlingtonrd@cfa.com',
+        location: 'Burlington Rd, Whitsett'
       },
       {
-        partnerName: 'Tate Street Coffee House',
-        partnerLogo: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=400',
+        partnerName: 'McDonald\'s Burlington Rd',
+        partnerLogo: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400',
         partnerType: 'local_dining',
-        websiteUrl: 'https://tatestreetcoffeehouse.com',
-        description: 'Organic fair-trade coffee near UNCG - student-friendly study spot.',
+        websiteUrl: 'https://www.mcdonalds.com',
+        description: 'Classic burgers and fries on Burlington Rd - walking distance from school!',
         isActive: 1,
         isFeatured: 1,
-        minRedemptionAmount: 120, // 120 $ECHO = coffee + snack
-        maxRedemptionAmount: 500, // 500 $ECHO = study session card
-        contactEmail: 'info@tatestreetcoffee.com',
-        location: 'Greensboro, NC'
+        minRedemptionAmount: 150, // 150 $ECHO = meal
+        maxRedemptionAmount: 600, // 600 $ECHO = group meal
+        contactEmail: 'whitsett@mcdonalds.com',
+        location: 'Burlington Rd, Whitsett'
       },
       {
         partnerName: 'Greensboro Grasshoppers',
@@ -56,17 +56,43 @@ export async function initializeSampleRewardData() {
         location: 'Greensboro, NC'
       },
       {
-        partnerName: 'Chez Genèse',
-        partnerLogo: 'https://images.unsplash.com/photo-1414235077428-338989a2e8c0?w=400',
+        partnerName: 'Wendy\'s Burlington Rd',
+        partnerLogo: 'https://images.unsplash.com/photo-1585238341710-4a44f797bf81?w=400',
         partnerType: 'local_dining',
-        websiteUrl: 'https://www.chezgenese.com',
-        description: 'French-inspired restaurant employing adults with intellectual disabilities - community & connection.',
+        websiteUrl: 'https://www.wendys.com',
+        description: 'Fresh burgers and Frostys on Burlington Rd - student favorite!',
         isActive: 1,
         isFeatured: 1,
-        minRedemptionAmount: 400, // 400 $ECHO = meal credit
-        maxRedemptionAmount: 1200, // 1200 $ECHO = family dinner
-        contactEmail: 'info@chezgenese.com',
-        location: 'Greensboro, NC'
+        minRedemptionAmount: 150, // 150 $ECHO = combo meal
+        maxRedemptionAmount: 600, // 600 $ECHO = group meal
+        contactEmail: 'whitsett@wendys.com',
+        location: 'Burlington Rd, Whitsett'
+      },
+      {
+        partnerName: 'Taco Bell Burlington Rd',
+        partnerLogo: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.tacobell.com',
+        description: 'Tacos and Baja Blast on Burlington Rd - quick and tasty!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 150, // 150 $ECHO = meal
+        maxRedemptionAmount: 600, // 600 $ECHO = group meal
+        contactEmail: 'whitsett@tacobell.com',
+        location: 'Burlington Rd, Whitsett'
+      },
+      {
+        partnerName: 'Subway Burlington Rd',
+        partnerLogo: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.subway.com',
+        description: 'Fresh subs on Burlington Rd - healthy option near school!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 150, // 150 $ECHO = footlong sub
+        maxRedemptionAmount: 600, // 600 $ECHO = group subs
+        contactEmail: 'whitsett@subway.com',
+        location: 'Burlington Rd, Whitsett'
       },
       {
         partnerName: 'Greensboro Science Center',
@@ -82,17 +108,17 @@ export async function initializeSampleRewardData() {
         location: 'Greensboro, NC'
       },
       {
-        partnerName: 'Chick-fil-A Greensboro',
-        partnerLogo: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400',
+        partnerName: 'Pizza Hut Burlington Rd',
+        partnerLogo: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400',
         partnerType: 'local_dining',
-        websiteUrl: 'https://www.chick-fil-a.com',
-        description: 'Family restaurant with meals and refreshments near Dudley High School.',
+        websiteUrl: 'https://www.pizzahut.com',
+        description: 'Pizza and breadsticks on Burlington Rd - perfect for group celebrations!',
         isActive: 1,
         isFeatured: 1,
-        minRedemptionAmount: 200, // 200 $ECHO = meal
-        maxRedemptionAmount: 800, // 800 $ECHO = family meal
-        contactEmail: 'manager@cfagreensboro.com',
-        location: 'Greensboro, NC'
+        minRedemptionAmount: 250, // 250 $ECHO = personal pizza
+        maxRedemptionAmount: 1000, // 1000 $ECHO = large pizza party
+        contactEmail: 'whitsett@pizzahut.com',
+        location: 'Burlington Rd, Whitsett'
       },
       {
         partnerName: 'Cook Out',

@@ -105,38 +105,33 @@ The frontend is a React 18, TypeScript, and Vite single-page application. It uti
 ## Local Reward Partners (Eastern Guilford Area)
 The platform features local businesses within 15 miles of Eastern Guilford High School in Gibsonville/Burlington/Greensboro area:
 
-**Gibsonville (0-2 miles from school):**
-- Local Mexican, BBQ, and Chinese restaurants on Main Street
-
-**Four Seasons Town Centre Mall (10 miles):**
-- Round1 Bowling & Amusement (only NC location - bowling, arcade, karaoke, billiards)
-- Starbucks
-- Food Court (14+ dining options)
-- Shopping: Bath & Body Works, American Eagle, Journeys, Build-a-Bear
-
-**Burlington Area (3-6 miles):**
-- Burlington Sock Puppets (minor league baseball - affordable family fun)
-- Smitty's Homemade Ice Cream (downtown Burlington)
-- Putt Putt Golf & Games (mini-golf, family entertainment)
-- Painted Grape (paint & craft studio - creativity rewards)
+**Burlington Rd, Whitsett (0-2 miles from school - Walking/Biking Distance):**
+- Chick-fil-A Burlington Rd (closest restaurant to Eastern Guilford HS)
+- McDonald's Burlington Rd
+- Wendy's Burlington Rd
+- Taco Bell Burlington Rd
+- Subway Burlington Rd
+- Pizza Hut Burlington Rd
 - Cook Out (NC institution - student favorite!)
 
 **Greensboro Area (10-15 miles):**
-- Chick-fil-A (accessible locations)
-- Dave's Hot Chicken (trending Nashville-style)
-- Barnes & Noble
+- Greensboro Science Center (educational trips)
+- Dave's Hot Chicken (trending Nashville-style hot chicken)
+- Dames Chicken & Waffles (downtown Greensboro favorite)
+- Boxcar Bar + Arcade (pizza & retro games)
+- Yum Yum Better Ice Cream (Greensboro tradition since 1906)
+- Red Cinemas (upscale downtown theater)
+- Triad Lanes (bowling & arcade)
 - Urban Air Trampoline Park
+- YMCA of Greensboro
+- Barnes & Noble UNCG
+- Greensboro Grasshoppers (minor league baseball)
+- Greensboro Public Library
 
-**Educational & Experiences:**
-- May Memorial Library (Burlington - free programs)
-- Cedarock Park (hiking, disc golf, farm animals)
-- Carolina Tiger Rescue (educational tours)
-- Blueberry Thrill Farm (Gibsonville - seasonal U-pick)
-
-**National Partners:**
+**National Partners (Dual Rewards - Kid + Parent):**
 - Scholastic Books
 - Target Education
 - LEGO Education
 - Amazon Family
 
-These hyper-local partnerships (all within 10-15 miles of Eastern Guilford High School) provide age-appropriate, relatable rewards that high school students (grades 9-12) can actually access in Gibsonville, Burlington, and the Four Seasons mall area, supporting the B2B sponsor monetization model while demonstrating community investment in character education.
+These hyper-local partnerships emphasize **Burlington Rd in Whitsett** (walking/biking distance from Eastern Guilford High School) to provide immediate, accessible rewards that students can actually use without transportation barriers, supporting the B2B sponsor monetization model while demonstrating community investment in character education.
