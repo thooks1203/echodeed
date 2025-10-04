@@ -313,34 +313,23 @@ export default function ParentDashboard() {
   // Mock parent data - in production, get from auth context
   const parentInfo = {
     id: 'parent-001',
-    name: 'Keisha Jones',
-    email: 'keisha.jones@email.com',
-    children: ['student-001', 'student-002']
+    name: 'Sarah Johnson',
+    email: 'sarah.johnson@email.com',
+    children: ['student-001']
   };
 
   // Mock linked students
   const linkedStudents: LinkedStudent[] = [
     {
       userId: 'student-001',
-      name: 'Mary Jones',
-      grade: '9th',
-      school: 'Dudley High School',
+      name: 'Emma Johnson',
+      grade: '10th',
+      school: 'Eastern Guilford High School',
       isActive: true,
       lastActivity: new Date().toISOString(),
       weeklyKindnessCount: 8,
       totalKindnessCount: 47,
       currentStreak: 5
-    },
-    {
-      userId: 'student-002', 
-      name: 'Marcus Jones',
-      grade: '9th',
-      school: 'Dudley High School',
-      isActive: true,
-      lastActivity: new Date(Date.now() - 7200000).toISOString(),
-      weeklyKindnessCount: 6,
-      totalKindnessCount: 23,
-      currentStreak: 3
     }
   ];
 
@@ -537,13 +526,13 @@ export default function ParentDashboard() {
                 </h1>
               </div>
               <p className="text-gray-600 dark:text-gray-300">
-                Welcome back, {parentInfo.name}! Track your children's kindness journey in real-time.
+                Welcome back, {parentInfo.name}! Track your {linkedStudents.length === 1 ? "child's" : "children's"} kindness journey in real-time.
               </p>
             </div>
             <div className="flex items-center gap-3">
               <Badge variant="secondary" className="px-3 py-1">
                 <Users className="w-4 h-4 mr-1" />
-                {linkedStudents.length} Children
+                {linkedStudents.length} {linkedStudents.length === 1 ? 'Child' : 'Children'}
               </Badge>
               <Badge variant="destructive" className="px-3 py-1">
                 <Bell className="w-4 h-4 mr-1" />
