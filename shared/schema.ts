@@ -241,6 +241,7 @@ export const schools = pgTable("schools", {
   zipCode: varchar("zip_code", { length: 10 }),
   phoneNumber: varchar("phone_number", { length: 20 }),
   emailDomain: varchar("email_domain", { length: 100 }), // For auto-assigning users to schools
+  enrollmentCode: varchar("enrollment_code", { length: 50 }).unique(), // Unique code students use to verify their school
   studentCount: integer("student_count").default(0),
   teacherCount: integer("teacher_count").default(0),
   kindnessPostsCount: integer("kindness_posts_count").default(0),
