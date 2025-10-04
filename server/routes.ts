@@ -9828,6 +9828,239 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // =======================================
+  // 🤝 KINDNESS CONNECT - Service Hour Opportunities
+  // Real local volunteer opportunities for students to earn service hours
+  // =======================================
+
+  // Get all service opportunities (with optional filters)
+  app.get('/api/service-opportunities', isAuthenticated, async (req: any, res) => {
+    try {
+      const { category, status, featured } = req.query;
+      const { db } = await import('./db');
+      const { serviceOpportunities } = await import('@shared/schema');
+      const { and, eq } = await import('drizzle-orm');
+      
+      const conditions = [];
+      if (category) conditions.push(eq(serviceOpportunities.category, category));
+      if (status) conditions.push(eq(serviceOpportunities.status, status));
+      if (featured) conditions.push(eq(serviceOpportunities.featured, parseInt(featured)));
+      
+      const opportunities = await db.select()
+        .from(serviceOpportunities)
+        .where(conditions.length > 0 ? and(...conditions) : undefined)
+        .orderBy(serviceOpportunities.featured, serviceOpportunities.organizationName);
+      
+      res.json(opportunities);
+    } catch (error) {
+      console.error('Failed to get service opportunities:', error);
+      res.status(500).json({ error: 'Failed to get service opportunities' });
+    }
+  });
+
+  // Get single service opportunity by ID
+  app.get('/api/service-opportunities/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { db } = await import('./db');
+      const { serviceOpportunities } = await import('@shared/schema');
+      const { eq } = await import('drizzle-orm');
+      
+      const opportunity = await db.select()
+        .from(serviceOpportunities)
+        .where(eq(serviceOpportunities.id, id))
+        .limit(1);
+      
+      if (opportunity.length === 0) {
+        return res.status(404).json({ error: 'Opportunity not found' });
+      }
+      
+      res.json(opportunity[0]);
+    } catch (error) {
+      console.error('Failed to get service opportunity:', error);
+      res.status(500).json({ error: 'Failed to get service opportunity' });
+    }
+  });
+
+  // Create new service opportunity (teacher/admin only)
+  app.post('/api/service-opportunities', requireTeacherRole, async (req: any, res) => {
+    try {
+      const { db } = await import('./db');
+      const { serviceOpportunities, insertServiceOpportunitySchema } = await import('@shared/schema');
+      
+      const opportunityData = insertServiceOpportunitySchema.parse({
+        ...req.body,
+        createdBy: req.teacherContext?.userId || 'unknown'
+      });
+      
+      const newOpportunity = await db.insert(serviceOpportunities)
+        .values(opportunityData)
+        .returning();
+      
+      console.log('✅ New service opportunity created:', newOpportunity[0].organizationName);
+      res.json(newOpportunity[0]);
+    } catch (error) {
+      console.error('Failed to create service opportunity:', error);
+      res.status(400).json({ error: 'Failed to create service opportunity' });
+    }
+  });
+
+  // Update service opportunity (teacher/admin only)
+  app.patch('/api/service-opportunities/:id', requireTeacherRole, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { db } = await import('./db');
+      const { serviceOpportunities } = await import('@shared/schema');
+      const { eq } = await import('drizzle-orm');
+      
+      const updated = await db.update(serviceOpportunities)
+        .set({
+          ...req.body,
+          updatedBy: req.teacherContext?.userId || 'unknown',
+          updatedAt: new Date()
+        })
+        .where(eq(serviceOpportunities.id, id))
+        .returning();
+      
+      if (updated.length === 0) {
+        return res.status(404).json({ error: 'Opportunity not found' });
+      }
+      
+      res.json(updated[0]);
+    } catch (error) {
+      console.error('Failed to update service opportunity:', error);
+      res.status(400).json({ error: 'Failed to update service opportunity' });
+    }
+  });
+
+  // Delete service opportunity (teacher/admin only)
+  app.delete('/api/service-opportunities/:id', requireTeacherRole, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const { db } = await import('./db');
+      const { serviceOpportunities } = await import('@shared/schema');
+      const { eq } = await import('drizzle-orm');
+      
+      const deleted = await db.delete(serviceOpportunities)
+        .where(eq(serviceOpportunities.id, id))
+        .returning();
+      
+      if (deleted.length === 0) {
+        return res.status(404).json({ error: 'Opportunity not found' });
+      }
+      
+      res.json({ success: true, message: 'Opportunity deleted' });
+    } catch (error) {
+      console.error('Failed to delete service opportunity:', error);
+      res.status(500).json({ error: 'Failed to delete service opportunity' });
+    }
+  });
+
+  // Student signs up for an opportunity
+  app.post('/api/service-opportunities/:id/signup', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id: opportunityId } = req.params;
+      const userId = req.user.claims.sub;
+      
+      const { db } = await import('./db');
+      const { serviceOpportunitySignups, serviceOpportunities, insertServiceOpportunitySignupSchema } = await import('@shared/schema');
+      const { eq } = await import('drizzle-orm');
+      
+      // Check if opportunity exists and is active
+      const opportunity = await db.select()
+        .from(serviceOpportunities)
+        .where(eq(serviceOpportunities.id, opportunityId))
+        .limit(1);
+      
+      if (opportunity.length === 0) {
+        return res.status(404).json({ error: 'Opportunity not found' });
+      }
+      
+      if (opportunity[0].status !== 'active') {
+        return res.status(400).json({ error: 'This opportunity is not currently active' });
+      }
+      
+      const signupData = insertServiceOpportunitySignupSchema.parse({
+        opportunityId,
+        studentUserId: userId,
+        signupNotes: req.body.signupNotes || null
+      });
+      
+      const signup = await db.insert(serviceOpportunitySignups)
+        .values(signupData)
+        .returning();
+      
+      // Increment signup count
+      await db.update(serviceOpportunities)
+        .set({ 
+          totalSignups: opportunity[0].totalSignups + 1,
+          updatedAt: new Date()
+        })
+        .where(eq(serviceOpportunities.id, opportunityId));
+      
+      console.log(`✅ Student ${userId} signed up for ${opportunity[0].organizationName}`);
+      res.json(signup[0]);
+    } catch (error) {
+      console.error('Failed to create signup:', error);
+      res.status(400).json({ error: 'Failed to sign up for opportunity' });
+    }
+  });
+
+  // Get student's signups
+  app.get('/api/service-opportunities/my-signups', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { db } = await import('./db');
+      const { serviceOpportunitySignups, serviceOpportunities } = await import('@shared/schema');
+      const { eq } = await import('drizzle-orm');
+      
+      const signups = await db.select({
+        signup: serviceOpportunitySignups,
+        opportunity: serviceOpportunities
+      })
+        .from(serviceOpportunitySignups)
+        .leftJoin(serviceOpportunities, eq(serviceOpportunitySignups.opportunityId, serviceOpportunities.id))
+        .where(eq(serviceOpportunitySignups.studentUserId, userId));
+      
+      res.json(signups);
+    } catch (error) {
+      console.error('Failed to get student signups:', error);
+      res.status(500).json({ error: 'Failed to get your signups' });
+    }
+  });
+
+  // Update signup status
+  app.patch('/api/service-opportunities/signups/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user.claims.sub;
+      
+      const { db } = await import('./db');
+      const { serviceOpportunitySignups } = await import('@shared/schema');
+      const { eq, and } = await import('drizzle-orm');
+      
+      const updated = await db.update(serviceOpportunitySignups)
+        .set({
+          ...req.body,
+          updatedAt: new Date()
+        })
+        .where(and(
+          eq(serviceOpportunitySignups.id, id),
+          eq(serviceOpportunitySignups.studentUserId, userId)
+        ))
+        .returning();
+      
+      if (updated.length === 0) {
+        return res.status(404).json({ error: 'Signup not found or unauthorized' });
+      }
+      
+      res.json(updated[0]);
+    } catch (error) {
+      console.error('Failed to update signup:', error);
+      res.status(400).json({ error: 'Failed to update signup' });
+    }
+  });
+
   // ===============================
   // 🎯 SCHOOL FUNDRAISER ENDPOINTS - DOUBLE TOKEN REWARDS! 
   // ===============================
