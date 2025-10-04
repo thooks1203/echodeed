@@ -455,7 +455,7 @@ export function LandingPage() {
             data-testid="button-demo-student"
           >
             <span style={{ fontSize: '22px' }}>🎓</span>
-            Try as Student (Emma Johnson)
+            Try as Student ({schoolConfig.users.student.name})
           </button>
 
           <button 
@@ -494,7 +494,7 @@ export function LandingPage() {
             data-testid="button-demo-teacher"
           >
             <span style={{ fontSize: '22px' }}>👩‍🏫</span>
-            Try as Teacher (Ms. Kim Jones)
+            Try as Teacher ({schoolConfig.users.teacher.name})
           </button>
 
           <button 
@@ -533,7 +533,7 @@ export function LandingPage() {
             data-testid="button-demo-admin"
           >
             <span style={{ fontSize: '22px' }}>🛡️</span>
-            Try as Principal (Dr. Darrell Harris)
+            Try as Principal ({schoolConfig.users.admin.name})
           </button>
 
           <button 
@@ -572,7 +572,7 @@ export function LandingPage() {
             data-testid="button-demo-parent"
           >
             <span style={{ fontSize: '22px' }}>❤️</span>
-            Try as Parent (Emma's Parent)
+            Try as Parent ({schoolConfig.users.parent.name})
           </button>
         </div>
       </div>
