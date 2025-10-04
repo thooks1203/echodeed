@@ -19,11 +19,13 @@ const DemoSchoolContext = createContext<DemoSchoolContextType | undefined>(undef
 const STORAGE_KEY = 'echodeed_selected_school';
 
 export function DemoSchoolProvider({ children }: { children: ReactNode }) {
-  // Initialize from localStorage or use default
+  // Initialize from localStorage or use default (with browser check)
   const [currentSchoolKey, setCurrentSchoolKey] = useState<SchoolKey>(() => {
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored && (stored === 'dudley' || stored === 'eastern-guilford')) {
-      return stored as SchoolKey;
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      if (stored && (stored === 'dudley' || stored === 'eastern-guilford')) {
+        return stored as SchoolKey;
+      }
     }
     return DEFAULT_SCHOOL_KEY;
   });
@@ -36,18 +38,24 @@ export function DemoSchoolProvider({ children }: { children: ReactNode }) {
   const setSchool = (schoolKey: SchoolKey) => {
     setCurrentSchoolKey(schoolKey);
     setSchoolConfig(getSchoolConfig(schoolKey));
-    localStorage.setItem(STORAGE_KEY, schoolKey);
     
-    // Also update the schoolId in session storage for API calls
-    const config = getSchoolConfig(schoolKey);
-    localStorage.setItem('echodeed_school_id', config.school.id);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, schoolKey);
+      
+      // Also update the schoolId in session storage for API calls
+      const config = getSchoolConfig(schoolKey);
+      localStorage.setItem('echodeed_school_id', config.school.id);
+    }
   };
 
   // Sync school config when key changes
   useEffect(() => {
     const config = getSchoolConfig(currentSchoolKey);
     setSchoolConfig(config);
-    localStorage.setItem('echodeed_school_id', config.school.id);
+    
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('echodeed_school_id', config.school.id);
+    }
   }, [currentSchoolKey]);
 
   const value: DemoSchoolContextType = {
