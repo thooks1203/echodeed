@@ -1,10 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useLocation } from 'wouter';
 import { ElectricHeart } from './ElectricHeart';
+import { useDemoSchool } from '@/contexts/DemoSchoolContext';
+import { DEMO_SCHOOLS } from '@shared/demoConfig';
 
 export function LandingPage() {
   const [, navigate] = useLocation();
   const [showFullContent, setShowFullContent] = useState(false);
+  const { currentSchoolKey, schoolConfig, setSchool, availableSchools } = useDemoSchool();
 
   // Check URL parameters to determine if we should show full content
   useEffect(() => {
@@ -282,6 +285,63 @@ export function LandingPage() {
             margin: 0
           }}>
             🎓 Demo Mode - One-click login for testing
+          </p>
+        </div>
+
+        {/* School Selector Dropdown */}
+        <div style={{
+          marginBottom: '24px',
+          padding: '16px',
+          background: 'linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%)',
+          borderRadius: '12px',
+          border: '2px solid #d1d5db'
+        }}>
+          <label htmlFor="school-selector" style={{
+            display: 'block',
+            fontSize: '13px',
+            fontWeight: '600',
+            color: '#374151',
+            marginBottom: '8px',
+            textAlign: 'left'
+          }}>
+            🏫 Select Demo School:
+          </label>
+          <select
+            id="school-selector"
+            value={currentSchoolKey}
+            onChange={(e) => setSchool(e.target.value as any)}
+            style={{
+              width: '100%',
+              padding: '12px 16px',
+              fontSize: '15px',
+              fontWeight: '500',
+              color: '#1f2937',
+              background: 'white',
+              border: '2px solid #9ca3af',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              outline: 'none',
+              transition: 'all 0.2s ease'
+            }}
+            data-testid="select-demo-school"
+          >
+            {availableSchools.map(schoolKey => {
+              const config = DEMO_SCHOOLS[schoolKey];
+              return (
+                <option key={schoolKey} value={schoolKey}>
+                  {config.school.name} - {config.school.city}, NC (Grades {config.school.gradeRange})
+                </option>
+              );
+            })}
+          </select>
+          <p style={{
+            margin: '8px 0 0 0',
+            fontSize: '12px',
+            color: '#6b7280',
+            textAlign: 'left',
+            fontStyle: 'italic'
+          }}>
+            👨‍🎓 Currently viewing: <strong>{schoolConfig.school.name}</strong> ({schoolConfig.school.principalName})
           </p>
         </div>
         

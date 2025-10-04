@@ -29,6 +29,7 @@ import { SchoolRegistration } from "@/components/SchoolRegistration";
 import { SurpriseGiveawayManager } from "@/components/SurpriseGiveawayManager";
 import { useKindnessSparks } from "@/components/KindnessSparks";
 import { KindnessSparksContext } from "@/contexts/KindnessSparksContext";
+import { DemoSchoolProvider } from "@/contexts/DemoSchoolContext";
 import { useAuth } from "@/hooks/useAuth";
 // import TVDisplayMode from "@/pages/TVDisplayMode";
 
@@ -99,17 +100,19 @@ function App() {
   
   return (
     <QueryClientProvider client={queryClient}>
-      <KindnessSparksContext.Provider value={{ triggerSparks }}>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-          {/* Always-mounted kindness sparks via portal */}
-          <KindnessSparksComponent />
-          <PWAInstall />
-          <RewardNotificationManager />
-          <SurpriseGiveawayManager />
-        </TooltipProvider>
-      </KindnessSparksContext.Provider>
+      <DemoSchoolProvider>
+        <KindnessSparksContext.Provider value={{ triggerSparks }}>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+            {/* Always-mounted kindness sparks via portal */}
+            <KindnessSparksComponent />
+            <PWAInstall />
+            <RewardNotificationManager />
+            <SurpriseGiveawayManager />
+          </TooltipProvider>
+        </KindnessSparksContext.Provider>
+      </DemoSchoolProvider>
     </QueryClientProvider>
   );
 }
