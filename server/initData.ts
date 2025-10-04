@@ -434,8 +434,113 @@ export async function initializeSampleData() {
     log(`✓ Added ${samplePosts.length} sample posts`);
     log(`✓ Counter will reflect actual post count`);
 
-    // NOTE: No pre-seeded student data - students will create their own accounts via Replit Auth
-    log('✓ Demo uses real Dudley High School students (no mock data)');
+    // 🎓 Initialize Emma Johnson's Demo Data (Eastern Guilford High School)
+    log('📚 Initializing Emma Johnson demo student data...');
+    
+    try {
+      const { db } = await import('./db');
+      const { users, userTokens, communityServiceLogs } = await import('@shared/schema');
+      const { eq } = await import('drizzle-orm');
+      
+      // Upsert Emma Johnson user
+      await storage.upsertUser({
+        id: 'student-001',
+        email: 'emma.johnson@easterngs.gcsnc.com',
+        firstName: 'Emma',
+        lastName: 'Johnson'
+      });
+      log('✅ Emma Johnson user created');
+      
+      // Create/update Emma's token record with realistic data
+      const existingTokens = await db.select().from(userTokens).where(eq(userTokens.userId, 'student-001'));
+      
+      if (existingTokens.length === 0) {
+        await db.insert(userTokens).values({
+          userId: 'student-001',
+          echoBalance: 1103,
+          totalEarned: 1380,
+          streakDays: 4,
+          longestStreak: 4,
+          lastPostDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // Yesterday
+          createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30 days ago
+        });
+        log('✅ Emma Johnson tokens initialized: 1103 balance, 1380 earned, 4-day streak');
+      } else {
+        await db.update(userTokens)
+          .set({
+            echoBalance: 1103,
+            totalEarned: 1380,
+            streakDays: 4,
+            longestStreak: 4,
+            lastPostDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000) // Yesterday
+          })
+          .where(eq(userTokens.userId, 'student-001'));
+        log('✅ Emma Johnson tokens updated: 1103 balance, 1380 earned, 4-day streak');
+      }
+      
+      // Create Emma's service hour logs (totaling 7.5 hours)
+      const existingServiceLogs = await db.select().from(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
+      
+      if (existingServiceLogs.length === 0) {
+        // Service log 1: Food bank volunteering
+        await db.insert(communityServiceLogs).values({
+          userId: 'student-001',
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+          serviceName: 'Burlington Food Bank Volunteer',
+          hoursLogged: '4.00',
+          serviceDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+          organizationName: 'Burlington Food Bank',
+          category: 'Community Service',
+          serviceDescription: 'Sorted and packed food boxes for families in need.',
+          studentReflection: 'Helped sort and pack food boxes for families in need. Learned about food insecurity in our community.',
+          verificationStatus: 'approved',
+          verifiedBy: 'teacher-001',
+          verifiedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
+          verificationNotes: 'Excellent work! Emma showed great dedication.',
+          parentNotified: true,
+          tokensEarned: 200,
+          submittedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+          createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
+        });
+        
+        // Service log 2: Senior center assistance
+        await db.insert(communityServiceLogs).values({
+          userId: 'student-001',
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+          serviceName: 'Alamance Senior Center Tech Help',
+          hoursLogged: '3.50',
+          serviceDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+          organizationName: 'Alamance County Senior Center',
+          category: 'Community Service',
+          serviceDescription: 'Taught seniors how to video call their families.',
+          studentReflection: 'Taught seniors how to video call their families. So rewarding to see their faces light up!',
+          verificationStatus: 'approved',
+          verifiedBy: 'teacher-001',
+          verifiedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+          verificationNotes: 'Great initiative! Emma is making a real difference.',
+          parentNotified: true,
+          tokensEarned: 175,
+          submittedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+          createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+        });
+        
+        log('✅ Emma Johnson service hours created: 7.5 total hours (2 approved logs)');
+      } else {
+        log(`ℹ️  Emma Johnson already has ${existingServiceLogs.length} service log(s), skipping creation`);
+      }
+      
+      // Verify data was created correctly
+      const verifyTokens = await db.select().from(userTokens).where(eq(userTokens.userId, 'student-001'));
+      const verifyServiceLogs = await db.select().from(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
+      
+      log('🔍 DATABASE VERIFICATION FOR EMMA JOHNSON:');
+      log(`   💰 Tokens: ${verifyTokens[0]?.echoBalance} balance, ${verifyTokens[0]?.totalEarned} earned, streak: ${verifyTokens[0]?.streakDays}/${verifyTokens[0]?.longestStreak}`);
+      const totalHours = verifyServiceLogs.reduce((sum, log) => sum + parseFloat(String(log.hoursLogged || 0)), 0);
+      log(`   📝 Service Logs: ${verifyServiceLogs.length} records (${totalHours.toFixed(1)} hours total)`);
+      
+    } catch (error: any) {
+      log(`⚠️  Error initializing Emma Johnson data: ${error.message}`);
+    }
 
     // Initialize Burlington Christian Academy fundraising campaigns
     try {

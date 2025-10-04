@@ -30,30 +30,30 @@ export function useAuth() {
     const demoUsers: Record<string, AuthUser> = {
       student: {
         id: 'student-001',
-        name: 'Sofia Rodriguez',
-        email: 'sofia.rodriguez@student.easternguilford.org',
+        name: 'Emma Johnson',
+        email: 'emma.johnson@easterngs.gcsnc.com',
         schoolRole: 'student',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
-        grade: '7th'
+        grade: '10th'
       },
       teacher: {
         id: 'teacher-001', 
         name: 'Ms. Kim Jones',
-        email: 'k.jones@easternguilford.org',
+        email: 'kjones@easterngs.gcsnc.com',
         schoolRole: 'teacher',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
       },
       admin: {
         id: 'admin-001',
         name: 'Dr. Darrell Harris',
-        email: 'dr.harris@easternguilford.org', 
+        email: 'dharris@easterngs.gcsnc.com', 
         schoolRole: 'admin',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
       },
       parent: {
         id: 'parent-001',
-        name: 'Maria Rodriguez',
-        email: 'maria.rodriguez@parent.easternguilford.org',
+        name: 'Sarah Johnson',
+        email: 'sarah.johnson@email.com',
         schoolRole: 'parent',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
       }
