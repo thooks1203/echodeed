@@ -93,33 +93,33 @@ export async function initializeTeacherRewardSystem() {
       
       await db.insert(sponsors).values([
         {
-          companyName: 'Starbucks Greensboro',
+          companyName: 'Subway Burlington Rd',
           contactName: 'Store Manager',
-          contactEmail: 'greensboro@starbucks.com',
+          contactEmail: 'whitsett@subway.com',
           category: 'coffee',
-          location: 'Greensboro, NC',
+          location: 'Burlington Rd, Whitsett, NC',
           monthlyBudget: 50000, // $500 monthly budget
           sponsorshipTier: 'local',
           isActive: 1
         },
         {
-          companyName: 'Chick-fil-A Greensboro',
+          companyName: 'Chick-fil-A Burlington Rd',
           contactName: 'Franchise Owner',
-          contactEmail: 'owner@cfagreensboro.com',
+          contactEmail: 'burlingtonrd@cfa.com',
           category: 'local_restaurant',
-          location: 'Greensboro, NC',
+          location: 'Burlington Rd, Whitsett, NC',
           monthlyBudget: 75000, // $750 monthly budget
           sponsorshipTier: 'local',
           isActive: 1
         },
         {
-          companyName: 'Target Greensboro',
-          contactName: 'Community Relations',
-          contactEmail: 'community@target.com',
+          companyName: 'McDonald\'s Burlington Rd',
+          contactName: 'Store Manager',
+          contactEmail: 'burlingtonrd@mcdonalds.com',
           category: 'retail',
-          location: 'Greensboro, NC',
+          location: 'Burlington Rd, Whitsett, NC',
           monthlyBudget: 100000, // $1000 monthly budget
-          sponsorshipTier: 'regional',
+          sponsorshipTier: 'local',
           isActive: 1
         }
       ]);

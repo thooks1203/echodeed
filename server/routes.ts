@@ -10884,21 +10884,63 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({
         criteria: groupedCriteria,
         allCriteria: criteria,
-        availableRewards: sponsors.map(s => ({
-          id: s.id,
-          partnerName: s.companyName,
-          description: `${s.category} partner - Supporting Eastern Guilford teachers`,
-          category: s.category,
-          monthlyBudget: s.monthlyBudget,
-          location: s.location || 'Burlington, NC',
-          sponsorshipTier: s.sponsorshipTier,
-          rewardTypes: [
-            {
-              name: `${s.companyName} Reward`,
-              value: `Teacher appreciation rewards`
-            }
-          ]
-        })),
+        availableRewards: sponsors.map(s => {
+          // Define specific rewards based on partner type
+          let rewardTypes = [];
+          
+          if (s.category === 'coffee') {
+            rewardTypes = [
+              {
+                name: 'Free 6" Sub + Drink',
+                value: 'Teacher lunch on us - any 6" sub with drink'
+              },
+              {
+                name: '$10 Gift Card',
+                value: 'Monthly surprise for top service hour approvers'
+              }
+            ];
+          } else if (s.category === 'local_restaurant') {
+            rewardTypes = [
+              {
+                name: 'Free Chick-fil-A Meal',
+                value: 'Entree, side, and drink combo'
+              },
+              {
+                name: '$25 Dining Card',
+                value: 'Quarterly wellness champion reward'
+              }
+            ];
+          } else if (s.category === 'retail') {
+            rewardTypes = [
+              {
+                name: 'Free Extra Value Meal',
+                value: 'Teacher appreciation lunch combo'
+              },
+              {
+                name: '$15 Gift Card',
+                value: 'Monthly community builder rewards'
+              }
+            ];
+          } else {
+            rewardTypes = [
+              {
+                name: 'Teacher Appreciation Reward',
+                value: 'Supporting Eastern Guilford educators'
+              }
+            ];
+          }
+          
+          return {
+            id: s.id,
+            partnerName: s.companyName,
+            description: `${s.category === 'coffee' ? 'Quick service' : s.category === 'local_restaurant' ? 'Restaurant' : 'Fast food'} partner - Supporting Eastern Guilford teachers`,
+            category: s.category,
+            monthlyBudget: s.monthlyBudget,
+            location: s.location || 'Burlington Rd, Whitsett, NC',
+            sponsorshipTier: s.sponsorshipTier,
+            rewardTypes
+          };
+        }),
         sponsorMessage: 'Local Burlington businesses supporting our dedicated educators!',
         totalSponsors: sponsors.length,
         totalMonthlyBudget: sponsors.reduce((sum, s) => sum + (s.monthlyBudget || 0), 0)
