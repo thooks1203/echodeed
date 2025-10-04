@@ -173,7 +173,7 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
           <div className="flex items-center justify-center gap-2">
             <Heart className="h-4 w-4 text-purple-600 dark:text-purple-400 animate-pulse" />
             <p className="text-sm font-semibold bg-gradient-to-r from-purple-600 to-pink-600 dark:from-purple-400 dark:to-pink-400 bg-clip-text text-transparent">
-              {todaysCount} {todaysCount === 1 ? 'act' : 'acts'} of kindness shared at Dudley today
+              {todaysCount} {todaysCount === 1 ? 'act' : 'acts'} of kindness shared at Eastern Guilford today
             </p>
             <Heart className="h-4 w-4 text-pink-600 dark:text-pink-400 animate-pulse" style={{ animationDelay: '0.5s' }} />
           </div>

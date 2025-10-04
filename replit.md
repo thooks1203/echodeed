@@ -1,7 +1,7 @@
 # EchoDeed™ - Anonymous Kindness Platform
 
 ## Overview
-EchoDeed™ is a mobile-first web application designed to foster and track anonymous acts of kindness through a community-driven feed. It allows users to anonymously share kind acts, browse a global feed with filtering options, and view a real-time global kindness counter. The platform prioritizes anonymity by operating without user profiles or personal information. Currently deployed at **Dudley High School in Greensboro, NC** (grades 9-12), the platform focuses on building character and empathy, with plans for future expansion into additional schools and corporate wellness. Key capabilities include anonymous posting, a global kindness feed, real-time filtering and counting, robust content moderation, service hour tracking with photo verification, and local Greensboro business reward partnerships. The project emphasizes student privacy protection, workload reduction for teachers through automation, and regulatory compliance.
+EchoDeed™ is a mobile-first web application designed to foster and track anonymous acts of kindness through a community-driven feed. It allows users to anonymously share kind acts, browse a global feed with filtering options, and view a real-time global kindness counter. The platform prioritizes anonymity by operating without user profiles or personal information. Currently being demoed at **Eastern Guilford High School in Gibsonville, NC** (grades 9-12), led by Principal of the Year Dr. Marcus Harris, the platform focuses on building character and empathy in diverse school communities, with plans for future expansion into additional schools and corporate wellness. Key capabilities include anonymous posting, a global kindness feed, real-time filtering and counting, robust content moderation, service hour tracking with photo verification, and local Greensboro business reward partnerships. The project emphasizes student privacy protection, workload reduction for teachers through automation, and regulatory compliance.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -89,15 +89,16 @@ The frontend is a React 18, TypeScript, and Vite single-page application. It uti
 - **Reward/Payment Integrations**: 21 Local Greensboro businesses (A Special Blend Coffee, Tate Street Coffee House, Chez Genèse, Chick-fil-A, Cook Out, Dames Chicken & Waffles, Dave's Hot Chicken, Boxcar Bar + Arcade, Yum Yum Better Ice Cream, Red Cinemas, Triad Lanes, Urban Air Trampoline Park, Greensboro Science Center, YMCA Greensboro, Barnes & Noble UNCG, Common Grounds Coffee, Greensboro Grasshoppers, Greensboro Public Library) plus national partners (Scholastic Books, Target Education, LEGO Education, Amazon Family)
 
 ## Demo School Configuration
-**Primary School**: Dudley High School
-- **Location**: 1200 Lincoln Street, Greensboro, NC 27401
-- **Phone**: (336) 370-8240
+**Primary School**: Eastern Guilford High School
+- **Location**: 3609 Terrace Drive, Gibsonville, NC 27249
+- **Phone**: (336) 449-4521
 - **Grade Range**: 9-12
-- **Student Count**: 1,200 students
-- **Principal**: Dr. Quinton Alston
+- **Student Count**: 1,100 students
+- **Principal**: Dr. Marcus Harris (Guilford County Principal of the Year)
 - **School Type**: Public High School
 - **Accreditation**: Southern Association of Colleges and Schools (SACS)
-- **Established**: 1929
+- **Established**: 1965
+- **Demographics**: Diverse student population serving Gibsonville and surrounding communities outside city limits
 
 ## Local Greensboro Reward Partners
 The platform features 21 local Greensboro-area businesses supporting student kindness:
@@ -109,7 +110,7 @@ The platform features 21 local Greensboro-area businesses supporting student kin
 
 **Restaurants & Food:**
 - Chez Genèse (French-inspired, employing adults with intellectual disabilities)
-- Chick-fil-A Greensboro (near Dudley High School)
+- Chick-fil-A Greensboro (accessible to Eastern Guilford students)
 - Cook Out (NC fast food institution - student favorite!)
 - Dames Chicken & Waffles (famous "shmears" at 301 MLK Jr Dr)
 - Dave's Hot Chicken (trending Nashville-style hot chicken)
@@ -128,4 +129,4 @@ The platform features 21 local Greensboro-area businesses supporting student kin
 - Barnes & Noble UNCG (books and school supplies)
 - YMCA of Greensboro (youth development programs)
 
-These hyper-local partnerships (all within 10-15 miles of Dudley High School) provide relatable rewards that students actually use, supporting the B2B sponsor monetization model while demonstrating community investment in character education.
+These hyper-local partnerships (all within 10-15 miles of Eastern Guilford High School) provide relatable rewards that students actually use, supporting the B2B sponsor monetization model while demonstrating community investment in character education.
