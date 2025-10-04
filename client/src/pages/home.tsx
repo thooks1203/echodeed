@@ -479,8 +479,8 @@ export default function Home() {
       
       {/* Kindness Sparks Animation - Now mounted globally at App root */}
       
-      {/* Kindness Connect Floating Action Button - Only for Students */}
-      {isStudent && (
+      {/* Kindness Connect Floating Action Button - Visible to all authenticated users */}
+      {isAuthenticated && (
         <>
           <button
             onClick={() => setIsKindnessConnectOpen(true)}
