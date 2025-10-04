@@ -53,8 +53,25 @@ export function KindnessConnectModal({ isOpen, onClose }: KindnessConnectModalPr
   // Prevent background scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
-      // Disable body scroll
+      // Save current scroll position
+      const scrollY = window.scrollY;
+      
+      // Lock scroll on body and html
       document.body.style.overflow = 'hidden';
+      document.body.style.position = 'fixed';
+      document.body.style.top = `-${scrollY}px`;
+      document.body.style.width = '100%';
+      document.documentElement.style.overflow = 'hidden';
+      
+      // Prevent scroll events
+      const preventScroll = (e: WheelEvent | TouchEvent) => {
+        if (!(e.target as HTMLElement).closest('[data-radix-scroll-area-viewport]')) {
+          e.preventDefault();
+        }
+      };
+      
+      document.addEventListener('wheel', preventScroll, { passive: false });
+      document.addEventListener('touchmove', preventScroll, { passive: false });
       
       // Focus the scroll area so arrow keys work within it
       setTimeout(() => {
@@ -62,7 +79,17 @@ export function KindnessConnectModal({ isOpen, onClose }: KindnessConnectModalPr
       }, 100);
       
       return () => {
-        document.body.style.overflow = 'unset';
+        // Restore scroll
+        document.body.style.overflow = '';
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        document.documentElement.style.overflow = '';
+        window.scrollTo(0, scrollY);
+        
+        // Remove event listeners
+        document.removeEventListener('wheel', preventScroll);
+        document.removeEventListener('touchmove', preventScroll);
       };
     }
   }, [isOpen]);
