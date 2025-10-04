@@ -179,8 +179,8 @@ export const BCA_SPONSORS = [
     active: true
   },
   {
-    id: 'ymca-greensboro',
-    name: 'YMCA of Greensboro',
+    id: 'ymca-burlington',
+    name: 'Burlington YMCA',
     category: 'recreation',
     tier: 'gold',
     logo: '/images/sponsors/ymca.png',
@@ -191,20 +191,20 @@ export const BCA_SPONSORS = [
     active: true
   },
   {
-    id: 'greensboro-grasshoppers',
-    name: 'Greensboro Grasshoppers',
+    id: 'burlington-sock-puppets',
+    name: 'Burlington Sock Puppets',
     category: 'sports',
     tier: 'silver',
     logo: '/images/sponsors/grasshoppers.png',
     rewardTitle: 'Baseball Game Tickets',
-    rewardDescription: 'Family 4-pack tickets to Grasshoppers game',
+    rewardDescription: 'Family 4-pack tickets to Sock Puppets game',
     targetAudience: 'families',
     monthlyBudget: 1400,
     active: true
   },
   {
     id: 'target-education',
-    name: 'Target Greensboro',
+    name: 'Target Burlington',
     category: 'retail',
     tier: 'platinum',
     logo: '/images/sponsors/target.png',
