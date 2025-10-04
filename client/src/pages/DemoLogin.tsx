@@ -17,7 +17,7 @@ export default function DemoLogin() {
           </div>
           <CardTitle className="text-2xl font-bold">EchoDeed™</CardTitle>
           <CardDescription className="text-base">
-            Dudley High School - Greensboro, NC
+            Eastern Guilford Middle School - Gibsonville, NC
           </CardDescription>
         </CardHeader>
         
@@ -33,7 +33,7 @@ export default function DemoLogin() {
               data-testid="button-demo-student"
             >
               <GraduationCap className="w-5 h-5 mr-2" />
-              Try as Student (Mary Jones)
+              Try as Student (Sofia Rodriguez)
             </Button>
             
             <Button
@@ -42,7 +42,7 @@ export default function DemoLogin() {
               data-testid="button-demo-teacher"
             >
               <Users className="w-5 h-5 mr-2" />
-              Try as Teacher (Ms. Woods)
+              Try as Teacher (Ms. Kim Jones)
             </Button>
             
             <Button
@@ -51,7 +51,7 @@ export default function DemoLogin() {
               data-testid="button-demo-admin"
             >
               <Shield className="w-5 h-5 mr-2" />
-              Try as Principal (Dr. Quinton Alston)
+              Try as Principal (Dr. Darrell Harris)
             </Button>
             
             <Button
@@ -60,13 +60,13 @@ export default function DemoLogin() {
               data-testid="button-demo-parent"
             >
               <Heart className="w-5 h-5 mr-2" />
-              Try as Parent (Keisha Jones)
+              Try as Parent (Sofia's Parent)
             </Button>
           </div>
           
           <div className="pt-4 border-t">
             <p className="text-xs text-center text-muted-foreground">
-              Dudley High School, Greensboro • Grades 9-12 • 1,200 Students
+              Eastern Guilford Middle School, Gibsonville • Grades 6-8 • 1,100 Students
             </p>
           </div>
         </CardContent>

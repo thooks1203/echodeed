@@ -323,31 +323,31 @@ export const DEMO_ALERTS = {
 export const DEMO_USERS = {
   student: {
     id: 'student-001',
-    name: 'Emma Johnson',
-    email: 'emma.johnson@dudley.gcsnc.com',
+    name: 'Sofia Rodriguez',
+    email: 'sofia.rodriguez@easterngs.gcsnc.com',
     role: 'student',
     schoolRole: 'student',
-    schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Dudley HS
-    grade: '9',
-    title: '9th Grade Student'
+    schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+    grade: '7',
+    title: '7th Grade Student'
   },
   admin: {
-    name: 'Dr. Quinton Alston',
+    name: 'Dr. Darrell Harris',
     role: 'admin',
-    email: 'admin@dudley.gcsnc.com',
+    email: 'admin@easterngs.gcsnc.com',
     title: 'Principal'
   },
   teacher: {
-    name: 'Michael Johnson',
+    name: 'Ms. Kim Jones',
     role: 'teacher',
-    email: 'mjohnson@dudley.gcsnc.com',
-    title: '10th Grade Teacher'
+    email: 'kjones@easterngs.gcsnc.com',
+    title: '7th Grade Teacher'
   },
   parent: {
-    name: 'Jennifer Smith',
+    name: 'Sofia\'s Parent',
     role: 'parent',
     email: 'parent@example.edu',
-    students: ['Emma S.', 'Liam S.']
+    students: ['Sofia R.']
   }
 };
 
