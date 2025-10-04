@@ -19,8 +19,8 @@ const studentSignupSchema = z.object({
   lastName: z.string().min(1, "Last name is required").max(50, "Name too long"),
   grade: z.string().min(1, "Please select your grade"),
   birthYear: z.coerce.number()
-    .min(2005, "Please enter a valid birth year") 
-    .max(2020, "Please enter a valid birth year"),
+    .min(2006, "Please enter a valid birth year (ages 14-18)") 
+    .max(2011, "Please enter a valid birth year (ages 14-18)"),
   schoolId: z.string().min(1, "Please select your school"),
   enrollmentCode: z.string().min(1, "School enrollment code is required").max(50, "Code too long"),
   parentEmail: z.string().email("Please enter a valid parent email"),
@@ -30,13 +30,10 @@ const studentSignupSchema = z.object({
 type StudentSignupForm = z.infer<typeof studentSignupSchema>;
 
 const gradeOptions = [
-  { value: "6", label: "6th Grade" },
-  { value: "7", label: "7th Grade" },
-  { value: "8", label: "8th Grade" },
-  { value: "9", label: "9th Grade" },
-  { value: "10", label: "10th Grade" },
-  { value: "11", label: "11th Grade" },
-  { value: "12", label: "12th Grade" }
+  { value: "9", label: "9th Grade (Freshman)" },
+  { value: "10", label: "10th Grade (Sophomore)" },
+  { value: "11", label: "11th Grade (Junior)" },
+  { value: "12", label: "12th Grade (Senior)" }
 ];
 
 export default function StudentSignup() {
@@ -56,7 +53,7 @@ export default function StudentSignup() {
       firstName: "",
       lastName: "",
       grade: "",
-      birthYear: new Date().getFullYear() - 10, // Default to ~10 years old
+      birthYear: new Date().getFullYear() - 16, // Default to ~16 years old (sophomore)
       schoolId: "",
       enrollmentCode: "",
       parentEmail: "",

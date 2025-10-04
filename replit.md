@@ -1,7 +1,7 @@
 # EchoDeed™ - Anonymous Kindness Platform
 
 ## Overview
-EchoDeed™ is a mobile-first web application designed to foster and track anonymous acts of kindness through a community-driven feed. It allows users to anonymously share kind acts, browse a global feed with filtering options, and view a real-time global kindness counter. The platform prioritizes anonymity by operating without user profiles or personal information. Currently being demoed at **Eastern Guilford Middle School in Gibsonville, NC** (grades 6-8), led by Principal of the Year Dr. Darrell Harris, the platform focuses on building character and empathy in diverse school communities, with plans for future expansion into additional schools and corporate wellness. Key capabilities include anonymous posting, a global kindness feed, real-time filtering and counting, robust content moderation, service hour tracking with photo verification, and local Greensboro business reward partnerships. The project emphasizes student privacy protection, workload reduction for teachers through automation, and regulatory compliance.
+EchoDeed™ is a mobile-first web application designed to foster and track anonymous acts of kindness through a community-driven feed. It allows users to anonymously share kind acts, browse a global feed with filtering options, and view a real-time global kindness counter. The platform prioritizes anonymity by operating without user profiles or personal information. Currently being demoed at **Eastern Guilford High School in Gibsonville, NC** (grades 9-12), led by Principal of the Year Dr. Darrell Harris, the platform focuses on building character and empathy in diverse school communities, with plans for future expansion into additional schools and corporate wellness. Key capabilities include anonymous posting, a global kindness feed, real-time filtering and counting, robust content moderation, service hour tracking with photo verification, and local Greensboro business reward partnerships. The project emphasizes student privacy protection, workload reduction for teachers through automation, and regulatory compliance.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -52,7 +52,7 @@ The frontend is a React 18, TypeScript, and Vite single-page application. It uti
 - **Content Moderation**: Filters profanity and negative keywords, enforces length validation (10-280 characters), and automatically flags posts.
 - **Kindness Sparks Celebration**: Visual animated celebration upon posting deeds for engagement.
 - **COPPA Compliance System**: Digital consent, automated workflows, and annual renewal for K-8.
-- **Summer Challenges**: Engine supports age-appropriate challenges for middle school (grades 6-8).
+- **Summer Challenges**: Engine supports age-appropriate challenges for high school (grades 9-12).
 - **Student Dashboard Streaks**: Data fixes ensure accurate display of current and best streaks.
 - **Authentication**: Improved flow redirects unauthenticated users to a clean `/demo-login` page. Development uses mock authentication, while production requires real Replit OAuth.
 - **Photo Verification System**: Complete implementation using Replit's App Storage with presigned URLs, ACL policies, and secure photo uploads via Uppy. Students can upload photos of verification letters when submitting service hours, and teachers see visual proof instantly for one-click approval - reducing verification time from 15 minutes to 30 seconds per student. Security features include school-level ACL enforcement (teachers can only view photos from their school), targeted database lookups for efficiency, and comprehensive audit logging.
@@ -66,7 +66,7 @@ The frontend is a React 18, TypeScript, and Vite single-page application. It uti
 - **Real-time Counter**: Tracks total global acts.
 - **AI Behavioral Mitigation System**: Positions AI as a "Behavioral Mitigation and Documentation Tool" (NOT crisis intervention) to eliminate legal liability. System provides: (1) Compliance filtering for inappropriate content (profanity, bullying), (2) Aggregate school-wide climate monitoring (sentiment trends, behavioral patterns), (3) Human review queue for teacher decision-making on flagged content, (4) CSV export for Google Sheets integration. **CRITICAL: NO automatic crisis interventions** - no NCMEC reporting, no Slack alerts, no counselor notifications. All flagged content flows to teacher moderation queue requiring human approval. System provides documentation and decision-support analytics only.
 - **Dual Reward System**: Implemented for both kids and parents.
-- **Middle School Curriculum**: 5 comprehensive character education lessons for grades 6-8.
+- **High School Curriculum**: 5 comprehensive character education lessons for grades 9-12.
 - **B2B Sponsor Monetization Platform**: Infrastructure for sponsor analytics, tiered sponsorships, and targeted campaigns.
 - **Anonymous Workplace Wellness**: AI-powered predictive analytics for burnout risk and sentiment analysis.
 - **Sustainable Reward Frequency Framework**: Optimized student surprise giveaways (weekly for high activity scores) and a structured teacher reward system with sponsor-covered and platform-funded frequencies.
@@ -89,19 +89,19 @@ The frontend is a React 18, TypeScript, and Vite single-page application. It uti
 - **Reward/Payment Integrations**: 21 Local Greensboro businesses (A Special Blend Coffee, Tate Street Coffee House, Chez Genèse, Chick-fil-A, Cook Out, Dames Chicken & Waffles, Dave's Hot Chicken, Boxcar Bar + Arcade, Yum Yum Better Ice Cream, Red Cinemas, Triad Lanes, Urban Air Trampoline Park, Greensboro Science Center, YMCA Greensboro, Barnes & Noble UNCG, Common Grounds Coffee, Greensboro Grasshoppers, Greensboro Public Library) plus national partners (Scholastic Books, Target Education, LEGO Education, Amazon Family)
 
 ## Demo School Configuration
-**Primary School**: Eastern Guilford Middle School
+**Primary School**: Eastern Guilford High School
 - **Location**: 3609 Terrace Drive, Gibsonville, NC 27249
 - **Phone**: (336) 449-4521
-- **Grade Range**: 6-8
-- **Student Count**: 1,100 students
+- **Grade Range**: 9-12
+- **Student Count**: 1,200 students
 - **Principal**: Dr. Darrell Harris (Guilford County Principal of the Year)
-- **School Type**: Public Middle School
+- **School Type**: Public High School
 - **Accreditation**: Southern Association of Colleges and Schools (SACS)
 - **Established**: 1965
 - **Demographics**: Diverse student population serving Gibsonville and surrounding communities outside city limits
 
 ## Local Reward Partners (Eastern Guilford Area)
-The platform features local businesses within 15 miles of Eastern Guilford Middle School in Gibsonville/Burlington/Greensboro area:
+The platform features local businesses within 15 miles of Eastern Guilford High School in Gibsonville/Burlington/Greensboro area:
 
 **Gibsonville (0-2 miles from school):**
 - Local Mexican, BBQ, and Chinese restaurants on Main Street
@@ -137,4 +137,4 @@ The platform features local businesses within 15 miles of Eastern Guilford Middl
 - LEGO Education
 - Amazon Family
 
-These hyper-local partnerships (all within 10-15 miles of Eastern Guilford Middle School) provide age-appropriate, relatable rewards that middle school students (grades 6-8) can actually access in Gibsonville, Burlington, and the Four Seasons mall area, supporting the B2B sponsor monetization model while demonstrating community investment in character education.
+These hyper-local partnerships (all within 10-15 miles of Eastern Guilford High School) provide age-appropriate, relatable rewards that high school students (grades 9-12) can actually access in Gibsonville, Burlington, and the Four Seasons mall area, supporting the B2B sponsor monetization model while demonstrating community investment in character education.

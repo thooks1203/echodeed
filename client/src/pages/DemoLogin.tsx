@@ -17,7 +17,7 @@ export default function DemoLogin() {
           </div>
           <CardTitle className="text-2xl font-bold">EchoDeed™</CardTitle>
           <CardDescription className="text-base">
-            Eastern Guilford Middle School - Gibsonville, NC
+            Eastern Guilford High School - Gibsonville, NC
           </CardDescription>
         </CardHeader>
         
@@ -33,7 +33,7 @@ export default function DemoLogin() {
               data-testid="button-demo-student"
             >
               <GraduationCap className="w-5 h-5 mr-2" />
-              Try as Student (Sofia Rodriguez)
+              Try as Student (Emma Johnson)
             </Button>
             
             <Button
@@ -60,13 +60,13 @@ export default function DemoLogin() {
               data-testid="button-demo-parent"
             >
               <Heart className="w-5 h-5 mr-2" />
-              Try as Parent (Sofia's Parent)
+              Try as Parent (Emma's Parent)
             </Button>
           </div>
           
           <div className="pt-4 border-t">
             <p className="text-xs text-center text-muted-foreground">
-              Eastern Guilford Middle School, Gibsonville • Grades 6-8 • 1,100 Students
+              Eastern Guilford High School, Gibsonville • Grades 9-12 • 1,200 Students
             </p>
           </div>
         </CardContent>

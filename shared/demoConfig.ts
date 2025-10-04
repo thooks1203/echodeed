@@ -323,13 +323,13 @@ export const DEMO_ALERTS = {
 export const DEMO_USERS = {
   student: {
     id: 'student-001',
-    name: 'Sofia Rodriguez',
-    email: 'sofia.rodriguez@easterngs.gcsnc.com',
+    name: 'Emma Johnson',
+    email: 'emma.johnson@easterngs.gcsnc.com',
     role: 'student',
     schoolRole: 'student',
     schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
-    grade: '7',
-    title: '7th Grade Student'
+    grade: '10',
+    title: '10th Grade Student'
   },
   admin: {
     name: 'Dr. Darrell Harris',
@@ -341,13 +341,13 @@ export const DEMO_USERS = {
     name: 'Ms. Kim Jones',
     role: 'teacher',
     email: 'kjones@easterngs.gcsnc.com',
-    title: '7th Grade Teacher'
+    title: '10th Grade English Teacher'
   },
   parent: {
-    name: 'Sofia\'s Parent',
+    name: 'Emma\'s Parent',
     role: 'parent',
     email: 'parent@example.edu',
-    students: ['Sofia R.']
+    students: ['Emma J.']
   }
 };
 

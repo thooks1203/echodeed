@@ -30,12 +30,12 @@ export async function initializeSampleData() {
       const { corporateAccounts } = await import('@shared/schema');
       const { eq, isNull } = await import('drizzle-orm');
       
-      // Update Eastern Guilford Middle School
+      // Update Eastern Guilford High School
       await db.update(corporateAccounts)
-        .set({ enrollmentCode: 'EGMS-2025' })
-        .where(eq(corporateAccounts.companyName, 'Eastern Guilford Middle School'));
+        .set({ enrollmentCode: 'EGHS-2025' })
+        .where(eq(corporateAccounts.companyName, 'Eastern Guilford High School'));
       
-      log('✓ Updated Eastern Guilford Middle School with code: EGMS-2025');
+      log('✓ Updated Eastern Guilford High School with code: EGHS-2025');
       
       // Update other demo schools with codes if they exist
       const schoolCodes = [
@@ -108,7 +108,7 @@ export async function initializeSampleData() {
       // Continue to add kid-friendly posts rather than trying to delete
     }
 
-    // Sample kindness posts - culturally diverse for Eastern Guilford Middle School (grades 6-8)
+    // Sample kindness posts - culturally diverse for Eastern Guilford High School (grades 9-12)
     const samplePosts = [
       // Random Acts
       {
