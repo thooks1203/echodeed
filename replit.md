@@ -100,33 +100,42 @@ The frontend is a React 18, TypeScript, and Vite single-page application. It uti
 - **Established**: 1965
 - **Demographics**: Diverse student population serving Gibsonville and surrounding communities outside city limits
 
-## Local Greensboro Reward Partners
-The platform features 21 local Greensboro-area businesses supporting student kindness:
+## Local Reward Partners (Eastern Guilford Area)
+The platform features local businesses within 15 miles of Eastern Guilford High School in Gibsonville/Burlington/Greensboro area:
 
-**Coffee Shops & Cafes:**
-- A Special Blend Coffee (nonprofit employing adults with disabilities)
-- Tate Street Coffee House (organic fair-trade near UNCG)
-- Common Grounds Coffee (student-friendly with wifi)
+**Gibsonville (0-2 miles from school):**
+- Saint Jacques @ The Burke Manor Inn (fine French dining, special occasions)
+- Local Mexican, BBQ, and Chinese restaurants on Main Street
 
-**Restaurants & Food:**
-- Chez Genèse (French-inspired, employing adults with intellectual disabilities)
-- Chick-fil-A Greensboro (accessible to Eastern Guilford students)
-- Cook Out (NC fast food institution - student favorite!)
-- Dames Chicken & Waffles (famous "shmears" at 301 MLK Jr Dr)
-- Dave's Hot Chicken (trending Nashville-style hot chicken)
-- Yum Yum Better Ice Cream (Greensboro tradition since 1906)
+**Four Seasons Town Centre Mall (10 miles):**
+- Round1 Bowling & Amusement (only NC location - bowling, arcade, karaoke, billiards)
+- Starbucks
+- Food Court (14+ dining options)
+- Shopping: Bath & Body Works, Victoria's Secret, American Eagle, Journeys, Build-a-Bear
 
-**Entertainment & Activities:**
-- Boxcar Bar + Arcade (downtown pizza & retro arcade games)
-- Red Cinemas (upscale downtown theater with indie films)
-- Triad Lanes (bowling, arcade, and food)
-- Urban Air Trampoline Park (indoor trampoline, climbing walls, arcade)
-- Greensboro Grasshoppers (minor league baseball)
+**Burlington Area (3-6 miles):**
+- Burlington Sock Puppets (minor league baseball - affordable family fun)
+- Smitty's Homemade Ice Cream (downtown Burlington)
+- Putt Putt Golf & Games (mini-golf, family entertainment)
+- Painted Grape (paint & craft studio - creativity rewards)
+- Cook Out (NC institution - student favorite!)
 
-**Educational & Recreation:**
-- Greensboro Science Center (aquarium, zoo, museum)
-- Greensboro Public Library (study spaces, reading programs)
-- Barnes & Noble UNCG (books and school supplies)
-- YMCA of Greensboro (youth development programs)
+**Greensboro Area (10-15 miles):**
+- Chick-fil-A (accessible locations)
+- Dave's Hot Chicken (trending Nashville-style)
+- Barnes & Noble
+- Urban Air Trampoline Park
 
-These hyper-local partnerships (all within 10-15 miles of Eastern Guilford High School) provide relatable rewards that students actually use, supporting the B2B sponsor monetization model while demonstrating community investment in character education.
+**Educational & Experiences:**
+- May Memorial Library (Burlington - free programs)
+- Cedarock Park (hiking, disc golf, farm animals)
+- Carolina Tiger Rescue (educational tours)
+- Blueberry Thrill Farm (Gibsonville - seasonal U-pick)
+
+**National Partners:**
+- Scholastic Books
+- Target Education
+- LEGO Education
+- Amazon Family
+
+These hyper-local partnerships (all within 10-15 miles of Eastern Guilford High School) provide relatable rewards that students can actually access in Gibsonville, Burlington, and the Four Seasons mall area, supporting the B2B sponsor monetization model while demonstrating community investment in character education.
