@@ -27,6 +27,7 @@ import { CommunityService } from '@/components/CommunityService';
 import { useKindnessSparksContext } from '@/contexts/KindnessSparksContext';
 import ParentDashboard from '@/pages/ParentDashboard';
 import FamilyDashboard from '@/pages/FamilyDashboard';
+import { KindnessConnectModal } from '@/components/KindnessConnectModal';
 
 interface RewardOffer {
   id: string;
@@ -51,6 +52,7 @@ export default function Home() {
   const [counterPulse, setCounterPulse] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
   const [tokenEarning, setTokenEarning] = useState<TokenEarning | null>(null);
+  const [isKindnessConnectOpen, setIsKindnessConnectOpen] = useState(false);
   const { toast } = useToast();
   
   const { location } = useGeolocation();
@@ -476,6 +478,60 @@ export default function Home() {
       )}
       
       {/* Kindness Sparks Animation - Now mounted globally at App root */}
+      
+      {/* Kindness Connect Floating Action Button - Only for Students */}
+      {isStudent && (
+        <>
+          <button
+            onClick={() => setIsKindnessConnectOpen(true)}
+            data-testid="button-kindness-connect-fab"
+            style={{
+              position: 'fixed',
+              bottom: '90px',
+              right: '20px',
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #ec4899 0%, #ef4444 100%)',
+              border: '3px solid white',
+              boxShadow: '0 8px 25px rgba(239, 68, 68, 0.4), 0 0 0 0 rgba(239, 68, 68, 0.7)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              zIndex: 99,
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+              animation: 'pulse-kindness 2s infinite'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.1)';
+              e.currentTarget.style.boxShadow = '0 12px 35px rgba(239, 68, 68, 0.5)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+              e.currentTarget.style.boxShadow = '0 8px 25px rgba(239, 68, 68, 0.4)';
+            }}
+          >
+            <span style={{ fontSize: '32px' }}>💝</span>
+          </button>
+          
+          <style>{`
+            @keyframes pulse-kindness {
+              0%, 100% {
+                box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4), 0 0 0 0 rgba(239, 68, 68, 0.7);
+              }
+              50% {
+                box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4), 0 0 0 10px rgba(239, 68, 68, 0);
+              }
+            }
+          `}</style>
+          
+          <KindnessConnectModal 
+            isOpen={isKindnessConnectOpen}
+            onClose={() => setIsKindnessConnectOpen(false)}
+          />
+        </>
+      )}
     </div>
   );
 }
