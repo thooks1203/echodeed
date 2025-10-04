@@ -434,24 +434,24 @@ export async function initializeSampleData() {
     log(`✓ Added ${samplePosts.length} sample posts`);
     log(`✓ Counter will reflect actual post count`);
 
-    // 🎓 Initialize Emma Johnson's Demo Data (Eastern Guilford High School)
-    log('📚 Initializing Emma Johnson demo student data...');
+    // 🎓 Initialize Sofia Rodriguez's Demo Data (Eastern Guilford High School)
+    log('📚 Initializing Sofia Rodriguez demo student data...');
     
     try {
       const { db } = await import('./db');
       const { users, userTokens, communityServiceLogs } = await import('@shared/schema');
       const { eq } = await import('drizzle-orm');
       
-      // Upsert Emma Johnson user
+      // Upsert Sofia Rodriguez user
       await storage.upsertUser({
         id: 'student-001',
-        email: 'emma.johnson@easterngs.gcsnc.com',
-        firstName: 'Emma',
-        lastName: 'Johnson'
+        email: 'sofia.rodriguez@easterngs.gcsnc.com',
+        firstName: 'Sofia',
+        lastName: 'Rodriguez'
       });
-      log('✅ Emma Johnson user created');
+      log('✅ Sofia Rodriguez user created');
       
-      // Create/update Emma's token record with realistic data
+      // Create/update Sofia's token record with realistic data
       const existingTokens = await db.select().from(userTokens).where(eq(userTokens.userId, 'student-001'));
       
       if (existingTokens.length === 0) {
@@ -464,7 +464,7 @@ export async function initializeSampleData() {
           lastPostDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // Yesterday
           createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) // 30 days ago
         });
-        log('✅ Emma Johnson tokens initialized: 1103 balance, 1380 earned, 4-day streak');
+        log('✅ Sofia Rodriguez tokens initialized: 1103 balance, 1380 earned, 4-day streak');
       } else {
         await db.update(userTokens)
           .set({
@@ -475,10 +475,10 @@ export async function initializeSampleData() {
             lastPostDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000) // Yesterday
           })
           .where(eq(userTokens.userId, 'student-001'));
-        log('✅ Emma Johnson tokens updated: 1103 balance, 1380 earned, 4-day streak');
+        log('✅ Sofia Rodriguez tokens updated: 1103 balance, 1380 earned, 4-day streak');
       }
       
-      // Create Emma's service hour logs (totaling 7.5 hours)
+      // Create Sofia's service hour logs (totaling 7.5 hours)
       const existingServiceLogs = await db.select().from(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
       
       if (existingServiceLogs.length === 0) {
@@ -496,7 +496,7 @@ export async function initializeSampleData() {
           verificationStatus: 'approved',
           verifiedBy: 'teacher-001',
           verifiedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
-          verificationNotes: 'Excellent work! Emma showed great dedication.',
+          verificationNotes: 'Excellent work! Sofia showed great dedication.',
           parentNotified: true,
           tokensEarned: 200,
           submittedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
@@ -517,29 +517,29 @@ export async function initializeSampleData() {
           verificationStatus: 'approved',
           verifiedBy: 'teacher-001',
           verifiedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-          verificationNotes: 'Great initiative! Emma is making a real difference.',
+          verificationNotes: 'Great initiative! Sofia is making a real difference.',
           parentNotified: true,
           tokensEarned: 175,
           submittedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
           createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
         });
         
-        log('✅ Emma Johnson service hours created: 7.5 total hours (2 approved logs)');
+        log('✅ Sofia Rodriguez service hours created: 7.5 total hours (2 approved logs)');
       } else {
-        log(`ℹ️  Emma Johnson already has ${existingServiceLogs.length} service log(s), skipping creation`);
+        log(`ℹ️  Sofia Rodriguez already has ${existingServiceLogs.length} service log(s), skipping creation`);
       }
       
       // Verify data was created correctly
       const verifyTokens = await db.select().from(userTokens).where(eq(userTokens.userId, 'student-001'));
       const verifyServiceLogs = await db.select().from(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
       
-      log('🔍 DATABASE VERIFICATION FOR EMMA JOHNSON:');
+      log('🔍 DATABASE VERIFICATION FOR SOFIA RODRIGUEZ:');
       log(`   💰 Tokens: ${verifyTokens[0]?.echoBalance} balance, ${verifyTokens[0]?.totalEarned} earned, streak: ${verifyTokens[0]?.streakDays}/${verifyTokens[0]?.longestStreak}`);
       const totalHours = verifyServiceLogs.reduce((sum, log) => sum + parseFloat(String(log.hoursLogged || 0)), 0);
       log(`   📝 Service Logs: ${verifyServiceLogs.length} records (${totalHours.toFixed(1)} hours total)`);
       
     } catch (error: any) {
-      log(`⚠️  Error initializing Emma Johnson data: ${error.message}`);
+      log(`⚠️  Error initializing Sofia Rodriguez data: ${error.message}`);
     }
 
     // Initialize Burlington Christian Academy fundraising campaigns

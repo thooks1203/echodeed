@@ -724,10 +724,10 @@ export async function initializeSampleRewardData() {
     const forceCreateRedemptions = true;
     
     if (forceCreateRedemptions) {
-      // Add redemptions for current demo user (Emma Johnson) for Monday demo
+      // Add redemptions for current demo user (Sofia Rodriguez) for Monday demo
       const demoRedemptions = [
         {
-          userId: 'student-001', // Emma Johnson (current demo user)
+          userId: 'student-001', // Sofia Rodriguez (current demo user)
           offerId: createdOffers[5].id, // Chick-fil-A Kids Meal + Playground Time
           partnerId: createdPartners[5].id, // Chick-fil-A Burlington
           echoSpent: 200,
@@ -737,7 +737,7 @@ export async function initializeSampleRewardData() {
           expiresAt: new Date('2025-10-22T23:59:59Z')
         },
         {
-          userId: 'student-001', // Emma Johnson
+          userId: 'student-001', // Sofia Rodriguez
           offerId: createdOffers[1].id, // Putt-Putt Mini Golf Game Pass
           partnerId: createdPartners[1].id, // Putt-Putt Fun Center Burlington
           echoSpent: 250,
@@ -747,7 +747,7 @@ export async function initializeSampleRewardData() {
           expiresAt: new Date('2025-11-21T23:59:59Z')
         },
         {
-          userId: 'student-001', // Emma Johnson
+          userId: 'student-001', // Sofia Rodriguez
           offerId: createdOffers[12].id, // Muffin's Ice Cream Shoppe
           partnerId: createdPartners[12].id, // Muffin's Ice Cream Shoppe
           echoSpent: 120,
@@ -760,8 +760,8 @@ export async function initializeSampleRewardData() {
       ];
 
       await db.insert(rewardRedemptions).values(demoRedemptions);
-      console.log('✅ Demo redemptions created for Emma Johnson - shows working reward system!');
-      console.log(`✓ Emma has 3 redemptions: 1 active (CFA), 1 pending (Golf), 1 used (Ice Cream)`);
+      console.log('✅ Demo redemptions created for Sofia Rodriguez - shows working reward system!');
+      console.log(`✓ Sofia has 3 redemptions: 1 active (CFA), 1 pending (Golf), 1 used (Ice Cream)`);
     } else {
       console.log('📋 Demo redemptions already exist, skipping initialization');
     }

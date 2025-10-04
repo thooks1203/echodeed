@@ -30,8 +30,8 @@ export function useAuth() {
     const demoUsers: Record<string, AuthUser> = {
       student: {
         id: 'student-001',
-        name: 'Emma Johnson',
-        email: 'emma.johnson@easterngs.gcsnc.com',
+        name: 'Sofia Rodriguez',
+        email: 'sofia.rodriguez@easterngs.gcsnc.com',
         schoolRole: 'student',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
         grade: '10th'
@@ -52,8 +52,8 @@ export function useAuth() {
       },
       parent: {
         id: 'parent-001',
-        name: 'Sarah Johnson',
-        email: 'sarah.johnson@email.com',
+        name: 'Maria Rodriguez',
+        email: 'maria.rodriguez@email.com',
         schoolRole: 'parent',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
       }

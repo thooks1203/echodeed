@@ -419,9 +419,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (existingUser.length === 0) {
         await db.insert(users).values({
           id: studentUserId,
-          firstName: 'Emma',
-          lastName: 'Johnson',
-          email: 'emma.johnson@bca.edu'
+          firstName: 'Sofia',
+          lastName: 'Rodriguez',
+          email: 'sofia.rodriguez@easterngs.gcsnc.com'
         });
       }
       
@@ -502,7 +502,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         updatedAt: new Date()
       });
       
-      res.json({ success: true, message: 'Emma data seeded successfully!', hours: 7.5, tokens: 1103 });
+      res.json({ success: true, message: 'Sofia data seeded successfully!', hours: 7.5, tokens: 1103 });
     } catch (error: any) {
       console.error('Seed failed:', error);
       res.status(500).json({ success: false, error: error.message });
@@ -1916,9 +1916,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         let demoLongestStreak = 0;
         
         if (userRole === 'student' || userId.startsWith('student-')) {
-          demoBalance = 1103;  // Emma Johnson's balance from service hours (200+175) + kindness posts
+          demoBalance = 1103;  // Sofia Rodriguez's balance from service hours (200+175) + kindness posts
           demoTotalEarned = 1380; // Total earned tokens before any redemptions
-          demoStreakDays = 4;  // Emma Johnson has a 4-day streak!
+          demoStreakDays = 4;  // Sofia Rodriguez has a 4-day streak!
           demoLongestStreak = 4; // Best streak is also 4 days
         } else if (userRole === 'teacher' || userId === 'teacher-001') {
           demoBalance = 45;  // Ms. Wilson has moderate balance

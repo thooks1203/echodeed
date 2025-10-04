@@ -308,8 +308,8 @@ export const EASTERN_GUILFORD_CONFIG: DemoSchoolConfig = {
   users: {
     student: {
       id: 'student-001',
-      name: 'Emma Johnson',
-      email: 'emma.johnson@easterngs.gcsnc.com',
+      name: 'Sofia Rodriguez',
+      email: 'sofia.rodriguez@easterngs.gcsnc.com',
       role: 'student',
       schoolRole: 'student',
       schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
@@ -329,10 +329,10 @@ export const EASTERN_GUILFORD_CONFIG: DemoSchoolConfig = {
       title: '10th Grade English Teacher'
     },
     parent: {
-      name: 'Sarah Johnson',
+      name: 'Maria Rodriguez',
       role: 'parent',
-      email: 'sarah.johnson@email.com',
-      students: ['Emma Johnson']
+      email: 'maria.rodriguez@email.com',
+      students: ['Sofia Rodriguez']
     }
   },
   sponsors: [
