@@ -23,6 +23,45 @@ export async function initializeSampleData() {
       throw new Error(`Database connection failed during startup: ${dbError.message}`);
     }
     
+    // Update schools with enrollment codes for secure student registration
+    try {
+      log('🔐 Updating schools with enrollment codes...');
+      const { db } = await import('./db');
+      const { corporateAccounts } = await import('@shared/schema');
+      const { eq, isNull } = await import('drizzle-orm');
+      
+      // Update Eastern Guilford Middle School
+      await db.update(corporateAccounts)
+        .set({ enrollmentCode: 'EGMS-2025' })
+        .where(eq(corporateAccounts.companyName, 'Eastern Guilford Middle School'));
+      
+      log('✓ Updated Eastern Guilford Middle School with code: EGMS-2025');
+      
+      // Update other demo schools with codes if they exist
+      const schoolCodes = [
+        { name: 'Demo Elementary School', code: 'DEMO-ELEM-2025' },
+        { name: 'Burlington Christian Academy', code: 'BCA-2025' },
+        { name: 'Turrentine Middle School', code: 'TMS-2025' },
+        { name: 'Wise Inc', code: 'WISE-2025' },
+        { name: 'Winners Institute for Successful Empowerment', code: 'WISE-INST-2025' }
+      ];
+      
+      for (const school of schoolCodes) {
+        try {
+          await db.update(corporateAccounts)
+            .set({ enrollmentCode: school.code })
+            .where(eq(corporateAccounts.companyName, school.name));
+          log(`✓ Updated ${school.name} with code: ${school.code}`);
+        } catch (error) {
+          // School might not exist yet
+        }
+      }
+      
+      log('✅ School enrollment codes initialized');
+    } catch (error: any) {
+      log(`⚠️ Could not update school enrollment codes: ${error.message}`);
+    }
+    
     // Check if we already have posts (to avoid duplicate initialization)
     const existingPosts = await storage.getPosts();
     const existingCounter = await storage.getCounter();
