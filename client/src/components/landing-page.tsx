@@ -512,7 +512,7 @@ export function LandingPage() {
             data-testid="button-demo-parent"
           >
             <span style={{ fontSize: '22px' }}>❤️</span>
-            <span style={{ textAlign: 'center' }}>Try as Parent<br />(Emma's Parent)</span>
+            Try as Parent (Emma's Parent)
           </button>
         </div>
       </div>
