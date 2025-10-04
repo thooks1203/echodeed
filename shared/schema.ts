@@ -330,9 +330,11 @@ export const communityServiceLogs = pgTable("community_service_logs", {
   contactPhone: text("contact_phone"),
   hoursLogged: decimal("hours_logged", { precision: 4, scale: 2 }).notNull(), // Allow decimal hours
   serviceDate: timestamp("service_date").notNull(),
+  startTime: timestamp("start_time"), // x2vol compatibility: clock-in time
+  endTime: timestamp("end_time"), // x2vol compatibility: clock-out time
   category: varchar("category", { length: 50 }).notNull(), // environmental, community, education, etc.
   serviceDescription: text("service_description").notNull(),
-  studentReflection: text("student_reflection"), // Student reflection on the experience
+  studentReflection: text("student_reflection"), // Student reflection on the experience (x2vol required)
   verificationPhotoUrl: text("verification_photo_url"), // Uploaded verification letter photo
   verificationStatus: varchar("verification_status", { length: 20 }).default("pending").notNull(), // pending, verified, rejected
   verifiedBy: varchar("verified_by"), // Teacher/parent who verified
@@ -370,6 +372,8 @@ export const studentServiceSummaries = pgTable("student_service_summaries", {
   rejectedHours: decimal("rejected_hours", { precision: 10, scale: 2 }).default("0"),
   totalTokensEarned: integer("total_tokens_earned").default(0),
   totalServiceSessions: integer("total_service_sessions").default(0),
+  annualGoalHours: integer("annual_goal_hours").default(30), // x2vol: typically 30 hours/year for high school
+  currentSchoolYear: varchar("current_school_year", { length: 10 }), // e.g., "2024-2025"
   currentStreak: integer("current_streak").default(0),
   longestStreak: integer("longest_streak").default(0),
   lastServiceDate: timestamp("last_service_date"),
