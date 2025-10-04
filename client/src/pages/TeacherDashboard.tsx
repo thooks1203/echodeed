@@ -373,7 +373,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
             <h1 className="text-4xl font-bold text-gray-900">Teacher Dashboard</h1>
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Dudley High School (Grades 9-12) - Empowering kindness and character through community service
+            Eastern Guilford High School (Grades 9-12) - Empowering kindness and character through community service
           </p>
         </header>
 
@@ -458,7 +458,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
                   Anonymous Kindness Feed
                 </CardTitle>
                 <CardDescription>
-                  View all kindness posts from Dudley High School students
+                  View all kindness posts from Eastern Guilford High School students
                 </CardDescription>
               </CardHeader>
               <CardContent>
