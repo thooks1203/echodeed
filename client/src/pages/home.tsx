@@ -284,14 +284,14 @@ export default function Home() {
   }
   
   if (activeTab === 'teacher-dashboard') {
-    // Only teachers can access teacher dashboard - show moderation queue
+    // Only teachers can access teacher dashboard - show feed/overview
     if (user?.schoolRole !== 'teacher') {
       return null; // useEffect will redirect to feed
     }
     
     return (
       <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
-        <TeacherDashboard initialTab="moderation" />
+        <TeacherDashboard initialTab="feed" />
         <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
