@@ -69,7 +69,7 @@ export async function initializeSampleData() {
       // Continue to add kid-friendly posts rather than trying to delete
     }
 
-    // Sample kindness posts - culturally diverse for Eastern Guilford High School
+    // Sample kindness posts - culturally diverse for Eastern Guilford Middle School (grades 6-8)
     const samplePosts = [
       // Random Acts
       {
@@ -165,7 +165,7 @@ export async function initializeSampleData() {
       },
       // Encouragement  
       {
-        content: "Supported my friend before their college interview. They got accepted! Hard work pays off! 🎓",
+        content: "Supported my friend before their big math test. They aced it! Hard work pays off! 🎓",
         category: "Encouragement",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -284,7 +284,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Led a voter registration drive for seniors turning 18. Every voice counts! 🗳️",
+        content: "Led a school recycling project to help our community go green. Every action counts! ♻️",
         category: "Community Action",
         location: "Greensboro, North Carolina",
         city: "Greensboro",

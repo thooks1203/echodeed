@@ -34,7 +34,7 @@ export function useAuth() {
         email: 'sofia.rodriguez@student.easternguilford.org',
         schoolRole: 'student',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
-        grade: '10th'
+        grade: '7th'
       },
       teacher: {
         id: 'teacher-001', 
