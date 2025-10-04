@@ -22,6 +22,7 @@ const studentSignupSchema = z.object({
     .min(2005, "Please enter a valid birth year") 
     .max(2020, "Please enter a valid birth year"),
   schoolId: z.string().min(1, "Please select your school"),
+  enrollmentCode: z.string().min(1, "School enrollment code is required").max(50, "Code too long"),
   parentEmail: z.string().email("Please enter a valid parent email"),
   parentName: z.string().min(1, "Parent name is required").max(100, "Name too long")
 });
@@ -57,6 +58,7 @@ export default function StudentSignup() {
       grade: "",
       birthYear: new Date().getFullYear() - 10, // Default to ~10 years old
       schoolId: "",
+      enrollmentCode: "",
       parentEmail: "",
       parentName: ""
     }
@@ -339,6 +341,29 @@ export default function StudentSignup() {
                           ))}
                         </SelectContent>
                       </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="enrollmentCode"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>School Enrollment Code *</FormLabel>
+                      <FormControl>
+                        <Input 
+                          placeholder="Enter code from your teacher" 
+                          {...field}
+                          onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                          data-testid="input-enrollment-code"
+                          className="uppercase"
+                        />
+                      </FormControl>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Your teacher or principal will give you this code
+                      </p>
                       <FormMessage />
                     </FormItem>
                   )}
