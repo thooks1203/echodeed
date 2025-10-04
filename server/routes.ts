@@ -1916,8 +1916,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         let demoLongestStreak = 0;
         
         if (userRole === 'student' || userId.startsWith('student-')) {
-          demoBalance = 67;  // Student has earned tokens from service hours
-          demoTotalEarned = 344; // They've earned tokens and may have redeemed some rewards
+          demoBalance = 1103;  // Emma Johnson's balance from service hours (200+175) + kindness posts
+          demoTotalEarned = 1380; // Total earned tokens before any redemptions
           demoStreakDays = 4;  // Emma Johnson has a 4-day streak!
           demoLongestStreak = 4; // Best streak is also 4 days
         } else if (userRole === 'teacher' || userId === 'teacher-001') {
