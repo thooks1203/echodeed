@@ -1,7 +1,7 @@
 # EchoDeed™ - Anonymous Kindness Platform
 
 ## Overview
-EchoDeed™ is a mobile-first web application designed to foster and track anonymous acts of kindness through a community-driven feed. It allows users to anonymously share kind acts, browse a global feed with filtering options, and view a real-time global kindness counter. The platform prioritizes anonymity by operating without user profiles or personal information. Currently being demoed at **Eastern Guilford Middle School in Gibsonville, NC** (grades 6-8), led by Principal of the Year Dr. Marcus Harris, the platform focuses on building character and empathy in diverse school communities, with plans for future expansion into additional schools and corporate wellness. Key capabilities include anonymous posting, a global kindness feed, real-time filtering and counting, robust content moderation, service hour tracking with photo verification, and local Greensboro business reward partnerships. The project emphasizes student privacy protection, workload reduction for teachers through automation, and regulatory compliance.
+EchoDeed™ is a mobile-first web application designed to foster and track anonymous acts of kindness through a community-driven feed. It allows users to anonymously share kind acts, browse a global feed with filtering options, and view a real-time global kindness counter. The platform prioritizes anonymity by operating without user profiles or personal information. Currently being demoed at **Eastern Guilford Middle School in Gibsonville, NC** (grades 6-8), led by Principal of the Year Dr. Darrell Harris, the platform focuses on building character and empathy in diverse school communities, with plans for future expansion into additional schools and corporate wellness. Key capabilities include anonymous posting, a global kindness feed, real-time filtering and counting, robust content moderation, service hour tracking with photo verification, and local Greensboro business reward partnerships. The project emphasizes student privacy protection, workload reduction for teachers through automation, and regulatory compliance.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -94,7 +94,7 @@ The frontend is a React 18, TypeScript, and Vite single-page application. It uti
 - **Phone**: (336) 449-4521
 - **Grade Range**: 6-8
 - **Student Count**: 1,100 students
-- **Principal**: Dr. Marcus Harris (Guilford County Principal of the Year)
+- **Principal**: Dr. Darrell Harris (Guilford County Principal of the Year)
 - **School Type**: Public Middle School
 - **Accreditation**: Southern Association of Colleges and Schools (SACS)
 - **Established**: 1965

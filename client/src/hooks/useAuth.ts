@@ -38,14 +38,14 @@ export function useAuth() {
       },
       teacher: {
         id: 'teacher-001', 
-        name: 'Ms. Kim Chen',
-        email: 'k.chen@easternguilford.org',
+        name: 'Ms. Kim Jones',
+        email: 'k.jones@easternguilford.org',
         schoolRole: 'teacher',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
       },
       admin: {
         id: 'admin-001',
-        name: 'Dr. Marcus Harris',
+        name: 'Dr. Darrell Harris',
         email: 'dr.harris@easternguilford.org', 
         schoolRole: 'admin',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
@@ -96,8 +96,8 @@ export function switchDemoRole(role: SchoolRole) {
 export function getDemoRoles() {
   return [
     { role: 'student' as const, label: 'Student (Sofia Rodriguez)', description: 'Limited access - can only see own data' },
-    { role: 'teacher' as const, label: 'Teacher (Ms. Kim Chen)', description: 'Can access classroom tools and some school data' },
-    { role: 'admin' as const, label: 'Admin (Dr. Marcus Harris)', description: 'Full access to school management dashboard' },
+    { role: 'teacher' as const, label: 'Teacher (Ms. Kim Jones)', description: 'Can access classroom tools and some school data' },
+    { role: 'admin' as const, label: 'Admin (Dr. Darrell Harris)', description: 'Full access to school management dashboard' },
     { role: 'parent' as const, label: 'Parent (Maria Rodriguez)', description: 'Track children\'s kindness journey and approve activities' }
   ] as const;
 }
