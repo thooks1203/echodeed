@@ -673,6 +673,271 @@ export async function initializeSampleData() {
     }
     */
 
+    // Initialize Kindness Connect Service Opportunities (Dr. Harris - Eastern Guilford HS)
+    try {
+      log('🤝 Initializing Kindness Connect service opportunities...');
+      const { db } = await import('./db');
+      const { serviceOpportunities } = await import('@shared/schema');
+      const { count } = await import('drizzle-orm');
+      
+      // Check if opportunities already exist
+      const existingOpportunities = await db.select({ count: count() }).from(serviceOpportunities);
+      const oppCount = existingOpportunities[0]?.count || 0;
+      
+      if (oppCount === 0) {
+        const guilfordOpportunities = [
+          {
+            organizationName: 'Second Harvest Food Bank of Northwest NC',
+            location: 'Greensboro (Phillips Ave)',
+            address: '3655 Reed St, Greensboro, NC 27404',
+            geoLat: 36.0726,
+            geoLong: -79.8097,
+            title: 'Food Drive Volunteer',
+            description: 'Help fight hunger in Guilford County by assisting with food sorting, packing, and distribution.',
+            category: 'hunger_relief',
+            serviceType: 'Food sorting, packing, and organizing',
+            studentRole: 'Students can assist with food drives, sorting donated items, and packing supply boxes for distribution to local families in need.',
+            minAge: 14,
+            hoursOffered: 3,
+            isRecurring: 1,
+            schedule: 'Saturdays 9am-12pm',
+            contactEmail: 'volunteer@secondharvestnwnc.org',
+            contactPhone: '(336) 887-3517',
+            verificationMethod: 'photo',
+            schoolId: null, // County-wide opportunity
+            radiusMiles: 15,
+            status: 'active',
+            featured: 1,
+            createdBy: 'system-init'
+          },
+          {
+            organizationName: 'The Servant Center',
+            location: 'Greensboro',
+            address: '2407 W Market St, Greensboro, NC 27403',
+            geoLat: 36.0699,
+            geoLong: -79.8352,
+            title: 'Meal Prep & Food Drive Assistant',
+            description: 'Support families in crisis by helping with meal preparation and food/supply organization.',
+            category: 'food_housing_assistance',
+            serviceType: 'Meal prep, food drives, supply organization',
+            studentRole: 'Students can help with meal preparation, organize food drives, sort donations, and maintain supply closets for families experiencing homelessness.',
+            minAge: 13,
+            hoursOffered: 2.5,
+            isRecurring: 1,
+            schedule: 'Flexible weekday afternoons',
+            contactEmail: 'volunteer@servantcenter.org',
+            verificationMethod: 'photo',
+            schoolId: null,
+            radiusMiles: 15,
+            status: 'active',
+            featured: 1,
+            createdBy: 'system-init'
+          },
+          {
+            organizationName: 'Greensboro Urban Ministry',
+            location: 'Greensboro',
+            address: '305 West Gate City Blvd, Greensboro, NC 27401',
+            geoLat: 36.0663,
+            geoLong: -79.7918,
+            title: 'Food Pantry & Clothing Sort Volunteer',
+            description: 'Combat homelessness and hunger by assisting in the food pantry and clothing distribution.',
+            category: 'homelessness_hunger',
+            serviceType: 'Food pantry assistance, clothing sorting',
+            studentRole: 'Great for organizing food drives, sorting donated clothing, and helping distribute supplies through the food pantry to individuals experiencing homelessness.',
+            minAge: 14,
+            hoursOffered: 3,
+            isRecurring: 1,
+            schedule: 'Tuesday/Thursday afternoons 3-6pm',
+            contactEmail: 'volunteer@greensborourbanministry.org',
+            verificationMethod: 'photo',
+            schoolId: null,
+            radiusMiles: 15,
+            status: 'active',
+            featured: 0,
+            createdBy: 'system-init'
+          },
+          {
+            organizationName: 'The Salvation Army (Greensboro Area)',
+            location: 'Greensboro',
+            address: '638 N Elm St, Greensboro, NC 27401',
+            geoLat: 36.0773,
+            geoLong: -79.7924,
+            title: 'Thrift Store & Donation Sorting',
+            description: 'Assist with social services by sorting donations and stocking shelves at our thrift store.',
+            category: 'social_services',
+            serviceType: 'Donation sorting, shelf stocking, seasonal programs',
+            studentRole: 'Students can help sort donated items, stock thrift store shelves, and assist with seasonal community programs like back-to-school drives.',
+            minAge: 13,
+            hoursOffered: 2,
+            isRecurring: 1,
+            schedule: 'Saturdays 10am-2pm',
+            contactEmail: 'greensboro@uss.salvationarmy.org',
+            verificationMethod: 'photo',
+            schoolId: null,
+            radiusMiles: 15,
+            status: 'active',
+            featured: 0,
+            createdBy: 'system-init'
+          },
+          {
+            organizationName: 'Guilford County Animal Shelter',
+            location: 'Greensboro',
+            address: '3117 Hilltop Rd, Greensboro, NC 27405',
+            geoLat: 36.0315,
+            geoLong: -79.8461,
+            title: 'Animal Care & Adoption Event Assistant',
+            description: 'Help care for shelter animals and assist with adoption events.',
+            category: 'animal_welfare',
+            serviceType: 'Animal care, cleaning, socialization, adoption events',
+            studentRole: 'Students can help clean animal areas, socialize cats and dogs, walk dogs, and assist with weekend adoption events to find forever homes.',
+            minAge: 14,
+            hoursOffered: 2,
+            isRecurring: 1,
+            schedule: 'Weekends 9am-12pm',
+            contactEmail: 'volunteer@guilfordpets.com',
+            contactPhone: '(336) 641-3401',
+            verificationMethod: 'photo',
+            schoolId: null,
+            radiusMiles: 15,
+            status: 'active',
+            featured: 0,
+            createdBy: 'system-init'
+          },
+          {
+            organizationName: 'Habitat for Humanity of Greater Greensboro',
+            location: 'Greensboro',
+            address: '2510 Summit Ave, Greensboro, NC 27405',
+            geoLat: 36.0598,
+            geoLong: -79.8181,
+            title: 'Construction Site Support (16+)',
+            description: 'Build affordable housing and serve families in need through construction work.',
+            category: 'affordable_housing',
+            serviceType: 'Construction support, office work, fundraising',
+            studentRole: 'Students 16+ can help with construction site tasks. Younger students can assist with office organization or fundraising events.',
+            minAge: 16,
+            hoursOffered: 4,
+            isRecurring: 1,
+            schedule: 'Saturdays 8am-3pm',
+            contactEmail: 'volunteer@habitatgreensboro.org',
+            contactPhone: '(336) 275-7679',
+            verificationMethod: 'photo',
+            schoolId: null,
+            radiusMiles: 15,
+            status: 'active',
+            featured: 0,
+            createdBy: 'system-init'
+          },
+          {
+            organizationName: 'Greensboro Beautiful / Parks & Recreation',
+            location: 'Greensboro',
+            address: 'Various Greensboro parks',
+            geoLat: 36.0726,
+            geoLong: -79.7920,
+            title: 'Park Cleanup & Trail Maintenance',
+            description: 'Protect the environment through park cleanups, trail maintenance, and planting projects.',
+            category: 'environment_parks',
+            serviceType: 'Park cleanup, trail maintenance, planting',
+            studentRole: 'Perfect for one-time school event days or recurring volunteer shifts. Students help with litter cleanup, trail maintenance, and community planting projects.',
+            minAge: 12,
+            hoursOffered: 2.5,
+            isRecurring: 1,
+            schedule: 'First Saturday of month 9am-12pm',
+            contactEmail: 'volunteer@greensborobeautiful.org',
+            verificationMethod: 'photo',
+            schoolId: null,
+            radiusMiles: 15,
+            status: 'active',
+            featured: 0,
+            createdBy: 'system-init'
+          },
+          {
+            organizationName: 'Backpack Beginnings',
+            location: 'Greensboro',
+            address: '3801 N Church St, Greensboro, NC 27405',
+            geoLat: 36.1096,
+            geoLong: -79.7848,
+            title: 'Food Bag Packing for Kids',
+            description: 'Fight child hunger by packing weekend food bags for elementary students in need.',
+            category: 'child_hunger',
+            serviceType: 'Food packing and organizing supplies',
+            studentRole: 'Students pack bags with nutritious food and supplies for children facing food insecurity, ensuring no child goes hungry on weekends.',
+            minAge: 12,
+            hoursOffered: 1.5,
+            isRecurring: 1,
+            schedule: 'Thursdays 4-6pm',
+            contactEmail: 'volunteer@backpackbeginnings.org',
+            contactPhone: '(336) 389-0201',
+            verificationMethod: 'photo',
+            schoolId: null,
+            radiusMiles: 15,
+            status: 'active',
+            featured: 1,
+            createdBy: 'system-init'
+          },
+          {
+            organizationName: 'Senior Living Facilities (Guilford County)',
+            location: 'Greensboro Area',
+            address: 'Various senior centers in Guilford County',
+            geoLat: 36.0726,
+            geoLong: -79.7920,
+            title: 'Elderly Engagement Activities',
+            description: 'Bring joy to seniors through activities, reading, and companionship.',
+            category: 'elderly_engagement',
+            serviceType: 'Activities, reading, socialization',
+            studentRole: 'Students assist with planned activities like bingo or crafts, read to residents, or simply spend quality time socializing and brightening someone\'s day.',
+            minAge: 13,
+            hoursOffered: 2,
+            isRecurring: 1,
+            schedule: 'Flexible afternoons/weekends',
+            contactEmail: 'activities@guilfordseniors.org',
+            verificationMethod: 'photo',
+            schoolId: null,
+            radiusMiles: 15,
+            status: 'active',
+            featured: 0,
+            createdBy: 'system-init'
+          },
+          {
+            organizationName: 'Reading Connections',
+            location: 'Greensboro',
+            address: '601 S Elm St, Greensboro, NC 27406',
+            geoLat: 36.0644,
+            geoLong: -79.7892,
+            title: 'Literacy Tutoring & Materials Organization',
+            description: 'Support adult learners and promote literacy in Guilford County.',
+            category: 'literacy_support',
+            serviceType: 'Materials organization, tutoring support',
+            studentRole: 'Students can organize educational materials or, with training, assist with tutoring adult learners. High-value community service opportunity.',
+            minAge: 15,
+            hoursOffered: 2,
+            isRecurring: 1,
+            schedule: 'Weekday evenings 5-7pm',
+            contactEmail: 'volunteer@readingconnections.org',
+            contactPhone: '(336) 230-2223',
+            verificationMethod: 'photo',
+            schoolId: null,
+            radiusMiles: 15,
+            status: 'active',
+            featured: 0,
+            createdBy: 'system-init'
+          }
+        ];
+
+        // Insert all opportunities
+        for (const opp of guilfordOpportunities) {
+          await db.insert(serviceOpportunities).values(opp);
+        }
+
+        log(`✅ Initialized ${guilfordOpportunities.length} Kindness Connect service opportunities`);
+        log('🏫 All opportunities within 15 miles of Eastern Guilford HS');
+        log('📍 Categories: Hunger Relief, Animal Welfare, Environment, Literacy, Housing, Child Services');
+      } else {
+        log(`ℹ️  ${oppCount} service opportunities already exist, skipping creation`);
+      }
+    } catch (error: any) {
+      log(`⚠️ Could not initialize service opportunities: ${error.message}`);
+    }
+
     log(`✓ Successfully initialized ${samplePosts.length} sample posts and updated global counter`);
   } catch (error: any) {
     log(`✗ Error initializing sample data: ${error.message}`);

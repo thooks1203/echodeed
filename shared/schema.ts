@@ -1359,10 +1359,93 @@ export const climateMetrics = pgTable("climate_metrics", {
   calculatedAt: timestamp("calculated_at").defaultNow().notNull(),
 });
 
+// =======================================
+// KINDNESS CONNECT - Service Hour Opportunities
+// =======================================
+
+// Service Opportunities - Real local volunteer opportunities for students
+export const serviceOpportunities = pgTable("service_opportunities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  // Organization Info
+  organizationName: varchar("organization_name", { length: 200 }).notNull(),
+  location: varchar("location", { length: 200 }).notNull(), // City/Area
+  address: text("address"), // Full street address
+  geoLat: real("geo_lat"), // For distance calculations
+  geoLong: real("geo_long"),
+  
+  // Opportunity Details
+  title: varchar("title", { length: 200 }).notNull(), // e.g., "Food Drive Volunteer"
+  description: text("description").notNull(), // What students will do
+  category: varchar("category", { length: 50 }).notNull(), // hunger_relief, animal_welfare, environment, literacy, etc.
+  serviceType: varchar("service_type", { length: 100 }).notNull(), // e.g., "Food sorting and packing"
+  studentRole: text("student_role").notNull(), // What the student does (e.g., "Sort donations, stock shelves")
+  
+  // Requirements & Logistics
+  minAge: integer("min_age"), // Minimum age requirement (e.g., 16 for Habitat)
+  maxParticipants: integer("max_participants"), // Capacity limit (optional)
+  hoursOffered: real("hours_offered"), // Typical hours earned per session
+  isRecurring: integer("is_recurring").default(0).notNull(), // 1 = recurring, 0 = one-time
+  schedule: text("schedule"), // e.g., "Saturdays 9am-12pm" or "Flexible"
+  deadline: timestamp("deadline"), // Sign-up deadline (optional)
+  startDate: timestamp("start_date"),
+  endDate: timestamp("end_date"),
+  
+  // Contact & Verification
+  contactName: varchar("contact_name", { length: 100 }),
+  contactEmail: varchar("contact_email", { length: 100 }),
+  contactPhone: varchar("contact_phone", { length: 20 }),
+  verificationMethod: varchar("verification_method", { length: 50 }).default("photo").notNull(), // photo, supervisor_signature, both
+  
+  // School & Access
+  schoolId: varchar("school_id"), // Specific school or null for county-wide
+  radiusMiles: real("radius_miles").default(15), // Max distance from school
+  
+  // Status
+  status: varchar("status", { length: 20 }).default("active").notNull(), // active, paused, completed, cancelled
+  featured: integer("featured").default(0).notNull(), // 1 = show at top of list
+  
+  // Tracking
+  totalSignups: integer("total_signups").default(0).notNull(),
+  totalCompleted: integer("total_completed").default(0).notNull(),
+  totalHoursGenerated: real("total_hours_generated").default(0).notNull(),
+  
+  // Metadata
+  createdBy: varchar("created_by").notNull(), // Teacher/admin user ID
+  updatedBy: varchar("updated_by"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Service Opportunity Signups - Track student interest and participation
+export const serviceOpportunitySignups = pgTable("service_opportunity_signups", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  
+  opportunityId: varchar("opportunity_id").notNull().references(() => serviceOpportunities.id),
+  studentUserId: varchar("student_user_id").notNull().references(() => users.id),
+  
+  // Signup Status
+  status: varchar("status", { length: 20 }).default("interested").notNull(), // interested, confirmed, completed, cancelled
+  signupNotes: text("signup_notes"), // Student can add notes/questions
+  
+  // Completion Tracking
+  hoursCompleted: real("hours_completed"), // Actual hours completed
+  completionDate: timestamp("completion_date"),
+  serviceLogId: varchar("service_log_id").references(() => communityServiceLogs.id), // Link to verified hours
+  
+  // Admin Notes
+  adminNotes: text("admin_notes"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Insert Schemas
 export const insertContentModerationQueueSchema = createInsertSchema(contentModerationQueue).omit({ id: true, flaggedAt: true, createdAt: true });
 export const insertBehavioralTrendAnalyticsSchema = createInsertSchema(behavioralTrendAnalytics).omit({ id: true, generatedAt: true });
 export const insertClimateMetricsSchema = createInsertSchema(climateMetrics).omit({ id: true, calculatedAt: true });
+export const insertServiceOpportunitySchema = createInsertSchema(serviceOpportunities).omit({ id: true, createdAt: true, updatedAt: true, totalSignups: true, totalCompleted: true, totalHoursGenerated: true });
+export const insertServiceOpportunitySignupSchema = createInsertSchema(serviceOpportunitySignups).omit({ id: true, createdAt: true, updatedAt: true });
 
 // Type Exports
 export type ContentModerationQueue = typeof contentModerationQueue.$inferSelect;
@@ -1371,3 +1454,7 @@ export type BehavioralTrendAnalytics = typeof behavioralTrendAnalytics.$inferSel
 export type InsertBehavioralTrendAnalytics = z.infer<typeof insertBehavioralTrendAnalyticsSchema>;
 export type ClimateMetrics = typeof climateMetrics.$inferSelect;
 export type InsertClimateMetrics = z.infer<typeof insertClimateMetricsSchema>;
+export type ServiceOpportunity = typeof serviceOpportunities.$inferSelect;
+export type InsertServiceOpportunity = z.infer<typeof insertServiceOpportunitySchema>;
+export type ServiceOpportunitySignup = typeof serviceOpportunitySignups.$inferSelect;
+export type InsertServiceOpportunitySignup = z.infer<typeof insertServiceOpportunitySignupSchema>;
