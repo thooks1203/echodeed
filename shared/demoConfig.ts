@@ -565,6 +565,9 @@ export const BCA_POLICIES = EASTERN_GUILFORD_CONFIG.policies;
 export const DEMO_USERS = EASTERN_GUILFORD_CONFIG.users;
 export const DEMO_USER_STUDENT = EASTERN_GUILFORD_CONFIG.users.student;
 
+// Helper function for backward compatibility
+export const getBCASchoolId = () => EASTERN_GUILFORD_CONFIG.school.id;
+
 // Email configuration (backward compatibility)
 export const BCA_EMAIL_CONFIG = {
   fromName: `${EASTERN_GUILFORD_CONFIG.school.name} - EchoDeed`,
