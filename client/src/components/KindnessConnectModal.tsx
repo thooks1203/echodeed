@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { apiRequest } from '@/lib/queryClient';
@@ -48,6 +48,24 @@ export function KindnessConnectModal({ isOpen, onClose }: KindnessConnectModalPr
   const queryClient = useQueryClient();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [selectedOpportunity, setSelectedOpportunity] = useState<ServiceOpportunity | null>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
+
+  // Prevent background scrolling when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      // Disable body scroll
+      document.body.style.overflow = 'hidden';
+      
+      // Focus the scroll area so arrow keys work within it
+      setTimeout(() => {
+        scrollAreaRef.current?.focus();
+      }, 100);
+      
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
+    }
+  }, [isOpen]);
 
   // Fetch all service opportunities
   const { data: opportunities, isLoading } = useQuery<ServiceOpportunity[]>({
@@ -185,7 +203,11 @@ export function KindnessConnectModal({ isOpen, onClose }: KindnessConnectModalPr
         </div>
 
         {/* Opportunities List */}
-        <ScrollArea className="h-[400px] px-6">
+        <ScrollArea 
+          className="h-[400px] px-6"
+          ref={scrollAreaRef}
+          tabIndex={0}
+        >
           {isLoading ? (
             <div className="flex justify-center items-center py-12">
               <div className="text-muted-foreground">Loading opportunities...</div>
