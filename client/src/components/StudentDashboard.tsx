@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { BackButton } from '@/components/BackButton';
+import { KindnessConnectModal } from '@/components/KindnessConnectModal';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
@@ -13,6 +14,7 @@ import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { featureFlags } from '@shared/featureFlags';
+import { Heart } from 'lucide-react';
 
 interface StudentStats {
   totalKindnessPoints: number;
@@ -327,6 +329,7 @@ function WeeklyChallengesView() {
 export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: StudentDashboardProps) {
   const { user } = useAuth();
   const [activeTab, setActiveTab] = useState<'overview' | 'challenges' | 'progress'>('overview');
+  const [isKindnessConnectOpen, setIsKindnessConnectOpen] = useState(false);
 
   // Fetch student's personal data from tokens endpoint
   const { data: userTokens } = useQuery({
@@ -847,6 +850,45 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           You only see your own data - no access to other students' information
         </div>
       </div>
+      
+      {/* Kindness Connect Floating Action Button */}
+      <button
+        onClick={() => setIsKindnessConnectOpen(true)}
+        data-testid="button-kindness-connect"
+        style={{
+          position: 'fixed',
+          bottom: '90px',
+          right: '20px',
+          width: '60px',
+          height: '60px',
+          borderRadius: '50%',
+          background: 'linear-gradient(135deg, #EC4899, #EF4444)',
+          border: 'none',
+          boxShadow: '0 4px 16px rgba(239, 68, 68, 0.4)',
+          cursor: 'pointer',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          transition: 'all 0.3s ease',
+          zIndex: 1000
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.transform = 'scale(1.1)';
+          e.currentTarget.style.boxShadow = '0 6px 20px rgba(239, 68, 68, 0.5)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.transform = 'scale(1)';
+          e.currentTarget.style.boxShadow = '0 4px 16px rgba(239, 68, 68, 0.4)';
+        }}
+      >
+        <Heart className="w-7 h-7 text-white" fill="white" />
+      </button>
+
+      {/* Kindness Connect Modal */}
+      <KindnessConnectModal 
+        isOpen={isKindnessConnectOpen}
+        onClose={() => setIsKindnessConnectOpen(false)}
+      />
       
       {/* Bottom Navigation for easy access back to Feed */}
       <BottomNavigation 
