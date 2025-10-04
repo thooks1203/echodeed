@@ -69,11 +69,11 @@ export async function initializeSampleData() {
       // Continue to add kid-friendly posts rather than trying to delete
     }
 
-    // Sample kindness posts - culturally relevant for Dudley High School (grades 9-12, urban Greensboro)
+    // Sample kindness posts - culturally diverse for Eastern Guilford High School
     const samplePosts = [
       // Random Acts
       {
-        content: "Helped my grandma carry groceries from the corner store on MLK Drive. She always looks out for me! 🛒",
+        content: "Helped my abuela carry groceries from the mercado. She taught me that familia comes first! 🛒",
         category: "Random Acts",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -82,7 +82,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Gave my old Jordans to my cousin starting high school. Gotta help fam look fresh on day one! 👟",
+        content: "Shared my mom's homemade dumplings with the lunch table. Food brings everyone together! 🥟",
         category: "Random Acts",
         location: "Greensboro, North Carolina",
         city: "Greensboro", 
@@ -91,7 +91,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Brought extra lunch for my homie who didn't have meal money. Nobody goes hungry on my watch! 🍕",
+        content: "Brought extra lunch for a classmate who forgot theirs. We look out for each other here! 🍕",
         category: "Random Acts",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -100,7 +100,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Cleaned up the basketball court at Windsor Rec Center after playing. It's our community space! 🏀",
+        content: "Cleaned up the soccer field after practice. This is our home away from home! ⚽",
         category: "Random Acts",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -109,7 +109,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Left encouraging notes in lockers during finals week. We all need that extra push sometimes! 📝",
+        content: "Left encouraging notes in different languages in lockers during finals. Everyone deserves support! 📝",
         category: "Random Acts",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -119,7 +119,7 @@ export async function initializeSampleData() {
       },
       // Helping Others
       {
-        content: "Tutored underclassmen in algebra after school. Math hit different when someone explains it right! 📚",
+        content: "Tutored a classmate in algebra using both English and Spanish. Bilingual help hits different! 📚",
         category: "Helping Others",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -128,7 +128,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Showed the new kid how to navigate the hallways and introduced them to my crew. Nobody should feel alone! 🤝",
+        content: "Showed the new exchange student around campus and introduced them to friends. We're all from somewhere! 🤝",
         category: "Helping Others",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -137,7 +137,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Helped my neighbor Ms. Johnson fix her porch railing. Elders built this community, we gotta look out for them! 🔨",
+        content: "Helped translate for a parent at the school office who needed Spanish interpretation. Building bridges! 🌉",
         category: "Helping Others",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -146,7 +146,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Stayed late to help Coach set up for the pep rally. School spirit hits different when we all contribute! 🎉",
+        content: "Stayed late to help set up for the multicultural night. Celebrating all our backgrounds together! 🎉",
         category: "Helping Others",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -155,7 +155,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Walked my little sister home from middle school when mom had to work late. Family first always! 👧",
+        content: "Walked my younger sibling home and helped with homework. Family is everything in our culture! 👧",
         category: "Helping Others",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -165,7 +165,7 @@ export async function initializeSampleData() {
       },
       // Encouragement  
       {
-        content: "Hyped up my friend before their college interview. They got accepted! Black excellence is real! 🎓",
+        content: "Supported my friend before their college interview. They got accepted! Hard work pays off! 🎓",
         category: "Encouragement",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -174,7 +174,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Complimented someone's natural hair in the bathroom. Self-love and representation matter! 👑",
+        content: "Complimented a classmate's cultural outfit on heritage day. Celebrating diversity is beautiful! 👘",
         category: "Encouragement",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -183,7 +183,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Made a playlist for my friend going through it. Music heals when words fail! 🎵",
+        content: "Made a playlist mixing different cultures' music for study sessions. Unity through sound! 🎵",
         category: "Encouragement",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -192,7 +192,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Posted positive affirmations in the group chat when everyone was stressing about SATs. We got this! 💪",
+        content: "Posted positive affirmations in the group chat in both English and Spanish. ¡Sí se puede! 💪",
         category: "Encouragement",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -201,7 +201,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Cheered loud at my homie's step show performance. Supporting Black art and culture! ✨",
+        content: "Cheered loudly at the cultural arts showcase. Every tradition and performance matters! ✨",
         category: "Encouragement",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -211,7 +211,7 @@ export async function initializeSampleData() {
       },
       // Charity
       {
-        content: "Donated clothes to the Urban Ministry clothes closet. Somebody needs this more than me! 👕",
+        content: "Donated gently used clothes to families in need. Giving back feels amazing! 👕",
         category: "Charity",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -220,7 +220,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Volunteered at the East Greensboro food bank. Fighting food insecurity in our community! 🍲",
+        content: "Volunteered at the local food pantry helping families from all backgrounds. Everyone deserves food! 🍲",
         category: "Charity",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -229,7 +229,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Organized a coat drive at church for families in need this winter. Community keeps us warm! 🧥",
+        content: "Organized a coat drive for families in need this winter. Together we're stronger! 🧥",
         category: "Charity",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -238,7 +238,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Read to kids at the library for Black History Month. Representation in stories matters! 📖",
+        content: "Read bilingual books to kids at the library during cultural heritage month. Everyone's story matters! 📖",
         category: "Charity",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -247,7 +247,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Raised money at the barbershop for a classmate's family dealing with medical bills. We take care of our own! 💈",
+        content: "Organized a fundraiser at school for a classmate's family dealing with medical bills. Community support! 💝",
         category: "Charity",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -257,7 +257,7 @@ export async function initializeSampleData() {
       },
       // Community Action
       {
-        content: "Organized a Juneteenth cleanup at Smith Recreation Center with the crew. Our history, our space! 🌟",
+        content: "Organized a community cleanup day at the rec center. Taking care of our shared spaces! 🌟",
         category: "Community Action",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -266,7 +266,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Started a community garden in the vacant lot on East Market Street. Fresh food for the neighborhood! 🌱",
+        content: "Started a community garden with neighbors from different backgrounds. Growing together! 🌱",
         category: "Community Action",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -275,7 +275,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Painted a mural honoring local Black leaders at the community center. Art tells our story! 🎨",
+        content: "Painted a mural celebrating diversity and unity at the community center. Art brings us together! 🎨",
         category: "Community Action",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -284,7 +284,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Led a voter registration drive for seniors turning 18. Our voices matter in this city! 🗳️",
+        content: "Led a voter registration drive for seniors turning 18. Every voice counts! 🗳️",
         category: "Community Action",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -293,7 +293,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Organized a school supply drive for kids in East Greensboro. Education is our way up! 📚",
+        content: "Organized a school supply drive for students who need support. Education is for everyone! 📚",
         category: "Community Action",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -303,7 +303,7 @@ export async function initializeSampleData() {
       },
       // Spreading Positivity
       {
-        content: "Started a spoken word club where we share our truth and lift each other up. Our voices matter! 🎤",
+        content: "Started a poetry and spoken word club where everyone shares their stories. All voices welcome! 🎤",
         category: "Spreading Positivity",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -312,7 +312,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Created an IG page celebrating Dudley students' achievements. We don't get enough credit for what we do! 📱",
+        content: "Created a social media page celebrating Eastern Guilford students' achievements. Shining a light on everyone! 📱",
         category: "Spreading Positivity",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
@@ -321,7 +321,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Organized a cypher session in the courtyard. Hip hop culture brings us together! 🎧",
+        content: "Organized a multicultural music jam session in the courtyard. Different rhythms, one heartbeat! 🎧",
         category: "Spreading Positivity",
         location: "Greensboro, North Carolina",
         city: "Greensboro",
