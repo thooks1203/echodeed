@@ -482,38 +482,55 @@ export default function Home() {
       {/* Kindness Connect Floating Action Button - Visible to all authenticated users */}
       {isAuthenticated && (
         <>
-          <button
+          <div
             onClick={() => setIsKindnessConnectOpen(true)}
             data-testid="button-kindness-connect-fab"
             style={{
               position: 'fixed',
-              bottom: '90px',
-              right: '20px',
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              background: 'linear-gradient(135deg, #ec4899 0%, #ef4444 100%)',
-              border: '3px solid white',
-              boxShadow: '0 8px 25px rgba(239, 68, 68, 0.4), 0 0 0 0 rgba(239, 68, 68, 0.7)',
+              bottom: '155px',
+              right: '16px',
               cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               zIndex: 99,
-              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-              animation: 'pulse-kindness 2s infinite'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'scale(1.1)';
-              e.currentTarget.style.boxShadow = '0 12px 35px rgba(239, 68, 68, 0.5)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.boxShadow = '0 8px 25px rgba(239, 68, 68, 0.4)';
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '6px'
             }}
           >
-            <span style={{ fontSize: '32px' }}>💝</span>
-          </button>
+            <button
+              style={{
+                width: '64px',
+                height: '64px',
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #ec4899 0%, #ef4444 100%)',
+                border: '3px solid white',
+                boxShadow: '0 8px 25px rgba(239, 68, 68, 0.4), 0 0 0 0 rgba(239, 68, 68, 0.7)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                animation: 'pulse-kindness 2s infinite'
+              }}
+            >
+              <span style={{ fontSize: '32px' }}>💝</span>
+            </button>
+            <div
+              style={{
+                background: 'linear-gradient(135deg, #ec4899 0%, #ef4444 100%)',
+                color: 'white',
+                padding: '6px 12px',
+                borderRadius: '12px',
+                fontSize: '12px',
+                fontWeight: '700',
+                boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)',
+                whiteSpace: 'nowrap',
+                border: '2px solid white'
+              }}
+            >
+              Kindness Connect
+            </div>
+          </div>
           
           <style>{`
             @keyframes pulse-kindness {
