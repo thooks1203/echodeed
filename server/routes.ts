@@ -10651,15 +10651,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({
         criteria: groupedCriteria,
         allCriteria: criteria,
-        sponsors: sponsors.map(s => ({
+        availableRewards: sponsors.map(s => ({
           id: s.id,
-          companyName: s.companyName,
+          partnerName: s.companyName,
+          description: `${s.category} partner - Supporting Eastern Guilford teachers`,
           category: s.category,
           monthlyBudget: s.monthlyBudget,
-          location: s.location,
-          sponsorshipTier: s.sponsorshipTier
+          location: s.location || 'Burlington, NC',
+          sponsorshipTier: s.sponsorshipTier,
+          rewardTypes: [
+            {
+              name: `${s.companyName} Reward`,
+              value: `Teacher appreciation rewards`
+            }
+          ]
         })),
-        sponsorMessage: 'Local Greensboro businesses supporting our dedicated educators!',
+        sponsorMessage: 'Local Burlington businesses supporting our dedicated educators!',
         totalSponsors: sponsors.length,
         totalMonthlyBudget: sponsors.reduce((sum, s) => sum + (s.monthlyBudget || 0), 0)
       });
