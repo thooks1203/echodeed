@@ -5795,7 +5795,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Step 1: Student creates account with age verification
   app.post('/api/students/register', async (req, res) => {
     try {
-      const { firstName, grade, birthYear, schoolId, parentEmail, parentName } = req.body;
+      const { firstName, grade, birthYear, schoolId, parentEmail, parentName, enrollmentCode } = req.body;
       
       // COPPA Age Verification - Calculate current age
       const currentYear = new Date().getFullYear();
@@ -5808,15 +5808,41 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
       }
       
-      // Get school name for email
+      // Verify school enrollment code
       let schoolName = 'Your School';
       try {
         const school = await storage.getCorporateAccount(schoolId);
+        if (!school) {
+          return res.status(404).json({ 
+            error: 'School not found',
+            code: 'SCHOOL_NOT_FOUND'
+          });
+        }
+        
+        // Validate enrollment code
+        if (!enrollmentCode || enrollmentCode.trim() === '') {
+          return res.status(400).json({ 
+            error: 'School enrollment code is required',
+            code: 'ENROLLMENT_CODE_REQUIRED'
+          });
+        }
+        
+        if (school.enrollmentCode && school.enrollmentCode !== enrollmentCode.trim().toUpperCase()) {
+          return res.status(403).json({ 
+            error: 'Invalid enrollment code for this school. Please check with your teacher or principal.',
+            code: 'INVALID_ENROLLMENT_CODE'
+          });
+        }
+        
         if (school?.companyName) {
           schoolName = school.companyName;
         }
       } catch (error) {
-        console.log('Could not fetch school name, using fallback');
+        console.error('School validation failed:', error);
+        return res.status(500).json({ 
+          error: 'Unable to verify school enrollment code. Please try again.',
+          code: 'SCHOOL_VALIDATION_ERROR'
+        });
       }
 
       // Create user account first (inactive)
