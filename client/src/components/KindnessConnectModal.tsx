@@ -154,7 +154,8 @@ export function KindnessConnectModal({ isOpen, onClose }: KindnessConnectModalPr
         onKeyDown={(e) => {
           // Prevent arrow keys from affecting the background feed
           if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
-            e.stopPropagation();
+            e.preventDefault(); // Stop default scrolling behavior
+            e.stopPropagation(); // Stop event from bubbling to parent
           }
         }}
       >
