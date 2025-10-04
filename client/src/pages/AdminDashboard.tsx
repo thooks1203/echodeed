@@ -231,7 +231,7 @@ function FundraisingContent() {
                         className="bg-blue-600 hover:bg-blue-700"
                         onClick={() => {
                           // Show external payment link or manual donation form
-                          alert('For Dudley High School demo:\n\nParents contribute via:\n• School payment portal link\n• GoFundMe/external platform\n• Check/cash tracked manually\n\nNo Stripe needed - admin updates totals from external systems');
+                          alert('For Eastern Guilford High School demo:\n\nParents contribute via:\n• School payment portal link\n• GoFundMe/external platform\n• Check/cash tracked manually\n\nNo Stripe needed - admin updates totals from external systems');
                         }}
                         data-testid={`button-contribute-${campaign.id}`}
                       >
@@ -764,10 +764,10 @@ export default function AdminDashboard() {
   // Mock admin data (in production, get from auth context)
   const currentAdmin: SchoolAdmin = {
     id: 'admin-001',
-    name: 'Dr. Quinton Alston',
+    name: 'Dr. Darrell Harris',
     role: 'principal',
     districtId: 'district-001',
-    email: 'quinton.alston@gcsnc.com'
+    email: 'dharris@easterngs.gcsnc.com'
   };
 
   // Real API calls for customer validation
@@ -784,20 +784,20 @@ export default function AdminDashboard() {
   // Mock data for demonstration
   const mockDistrictMetrics: DistrictMetrics = {
     districtId: 'district-001',
-    districtName: 'Greensboro Public Schools',
+    districtName: 'Guilford County Schools',
     totalSchools: 1,
     totalStudents: 1200,
     totalTeachers: 85,
     totalKindnessActs: 18450,
     avgSelScore: 8.9,
-    topPerformingSchools: ['Dudley High School'],
+    topPerformingSchools: ['Eastern Guilford High School'],
     complianceStatus: 'compliant'
   };
 
   const mockSchoolMetrics: SchoolMetrics[] = [
     {
-      schoolId: 'dudley-high-school',
-      schoolName: 'Dudley High School',
+      schoolId: 'eastern-guilford-hs',
+      schoolName: 'Eastern Guilford High School',
       totalStudents: 1200,
       totalTeachers: 85,
       kindnessActsThisWeek: 287,
@@ -1054,8 +1054,8 @@ export default function AdminDashboard() {
   const generateDudleyReport = (data: any): string => {
     return generatePrintableReport({
       ...data,
-      reportTitle: 'Dudley High School - Kindness Impact Report',
-      schoolName: 'Dudley High School'
+      reportTitle: 'Eastern Guilford High School - Kindness Impact Report',
+      schoolName: 'Eastern Guilford High School'
     });
   };
 
@@ -1068,7 +1068,7 @@ export default function AdminDashboard() {
             {bcaDemoMode && (
               <div className="flex items-center gap-2">
                 <School2 className="w-4 h-4" />
-                <span>Dudley Demo Mode - Dudley High School, Greensboro, NC</span>
+                <span>Eastern Guilford Demo - Eastern Guilford High School, Gibsonville, NC</span>
               </div>
             )}
             {privacyMode && (
@@ -1096,7 +1096,7 @@ export default function AdminDashboard() {
               )}
             </h1>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              {maskName(currentAdmin.name)} • Principal • Dudley High School, Greensboro
+              {maskName(currentAdmin.name)} • Principal • Eastern Guilford High School, Gibsonville
             </p>
           </div>
         </div>
@@ -1536,7 +1536,7 @@ export default function AdminDashboard() {
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="all">All Schools</SelectItem>
-                            <SelectItem value="dudley-demo">Dudley High School</SelectItem>
+                            <SelectItem value="eastern-guilford-hs">Eastern Guilford High School</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
@@ -1599,7 +1599,7 @@ export default function AdminDashboard() {
                             <SelectValue placeholder="Select School" />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="dudley-demo">Dudley High School</SelectItem>
+                            <SelectItem value="eastern-guilford-hs">Eastern Guilford High School</SelectItem>
                             <SelectItem value="all">District Summary</SelectItem>
                           </SelectContent>
                         </Select>
