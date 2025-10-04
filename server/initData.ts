@@ -378,7 +378,7 @@ export async function initializeSampleData() {
         isAnonymous: 1
       },
       {
-        content: "Made a gratitude video with friends about growing up in Greensboro. This city raised us! 💚",
+        content: "Made a gratitude video with friends about growing up in Gibsonville. This town raised us! 💚",
         category: "Spreading Positivity",
         location: "Gibsonville, North Carolina",
         city: "Gibsonville",
