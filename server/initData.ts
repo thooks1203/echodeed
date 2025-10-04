@@ -114,8 +114,8 @@ export async function initializeSampleData() {
       {
         content: "Helped my abuela carry groceries from the mercado. She taught me that familia comes first! 🛒",
         category: "Random Acts",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -123,8 +123,8 @@ export async function initializeSampleData() {
       {
         content: "Shared my mom's homemade dumplings with the lunch table. Food brings everyone together! 🥟",
         category: "Random Acts",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro", 
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville", 
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -132,8 +132,8 @@ export async function initializeSampleData() {
       {
         content: "Brought extra lunch for a classmate who forgot theirs. We look out for each other here! 🍕",
         category: "Random Acts",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -141,8 +141,8 @@ export async function initializeSampleData() {
       {
         content: "Cleaned up the soccer field after practice. This is our home away from home! ⚽",
         category: "Random Acts",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -150,8 +150,8 @@ export async function initializeSampleData() {
       {
         content: "Left encouraging notes in different languages in lockers during finals. Everyone deserves support! 📝",
         category: "Random Acts",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -160,8 +160,8 @@ export async function initializeSampleData() {
       {
         content: "Tutored a classmate in algebra using both English and Spanish. Bilingual help hits different! 📚",
         category: "Helping Others",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina", 
         country: "United States",
         isAnonymous: 1
@@ -169,8 +169,8 @@ export async function initializeSampleData() {
       {
         content: "Showed the new exchange student around campus and introduced them to friends. We're all from somewhere! 🤝",
         category: "Helping Others",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -178,8 +178,8 @@ export async function initializeSampleData() {
       {
         content: "Helped translate for a parent at the school office who needed Spanish interpretation. Building bridges! 🌉",
         category: "Helping Others",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -187,8 +187,8 @@ export async function initializeSampleData() {
       {
         content: "Stayed late to help set up for the multicultural night. Celebrating all our backgrounds together! 🎉",
         category: "Helping Others",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -196,8 +196,8 @@ export async function initializeSampleData() {
       {
         content: "Walked my younger sibling home and helped with homework. Family is everything in our culture! 👧",
         category: "Helping Others",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -206,8 +206,8 @@ export async function initializeSampleData() {
       {
         content: "Supported my friend before their big math test. They aced it! Hard work pays off! 🎓",
         category: "Encouragement",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States", 
         isAnonymous: 1
@@ -215,8 +215,8 @@ export async function initializeSampleData() {
       {
         content: "Complimented a classmate's cultural outfit on heritage day. Celebrating diversity is beautiful! 👘",
         category: "Encouragement",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -224,8 +224,8 @@ export async function initializeSampleData() {
       {
         content: "Made a playlist mixing different cultures' music for study sessions. Unity through sound! 🎵",
         category: "Encouragement",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -233,8 +233,8 @@ export async function initializeSampleData() {
       {
         content: "Posted positive affirmations in the group chat in both English and Spanish. ¡Sí se puede! 💪",
         category: "Encouragement",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -242,8 +242,8 @@ export async function initializeSampleData() {
       {
         content: "Cheered loudly at the cultural arts showcase. Every tradition and performance matters! ✨",
         category: "Encouragement",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -252,8 +252,8 @@ export async function initializeSampleData() {
       {
         content: "Donated gently used clothes to families in need. Giving back feels amazing! 👕",
         category: "Charity",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -261,8 +261,8 @@ export async function initializeSampleData() {
       {
         content: "Volunteered at the local food pantry helping families from all backgrounds. Everyone deserves food! 🍲",
         category: "Charity",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -270,8 +270,8 @@ export async function initializeSampleData() {
       {
         content: "Organized a coat drive for families in need this winter. Together we're stronger! 🧥",
         category: "Charity",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -279,8 +279,8 @@ export async function initializeSampleData() {
       {
         content: "Read bilingual books to kids at the library during cultural heritage month. Everyone's story matters! 📖",
         category: "Charity",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -288,8 +288,8 @@ export async function initializeSampleData() {
       {
         content: "Organized a fundraiser at school for a classmate's family dealing with medical bills. Community support! 💝",
         category: "Charity",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -298,8 +298,8 @@ export async function initializeSampleData() {
       {
         content: "Organized a community cleanup day at the rec center. Taking care of our shared spaces! 🌟",
         category: "Community Action",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -307,8 +307,8 @@ export async function initializeSampleData() {
       {
         content: "Started a community garden with neighbors from different backgrounds. Growing together! 🌱",
         category: "Community Action",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -316,8 +316,8 @@ export async function initializeSampleData() {
       {
         content: "Painted a mural celebrating diversity and unity at the community center. Art brings us together! 🎨",
         category: "Community Action",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -325,8 +325,8 @@ export async function initializeSampleData() {
       {
         content: "Led a school recycling project to help our community go green. Every action counts! ♻️",
         category: "Community Action",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -334,8 +334,8 @@ export async function initializeSampleData() {
       {
         content: "Organized a school supply drive for students who need support. Education is for everyone! 📚",
         category: "Community Action",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -344,8 +344,8 @@ export async function initializeSampleData() {
       {
         content: "Started a poetry and spoken word club where everyone shares their stories. All voices welcome! 🎤",
         category: "Spreading Positivity",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -353,8 +353,8 @@ export async function initializeSampleData() {
       {
         content: "Created a social media page celebrating Eastern Guilford students' achievements. Shining a light on everyone! 📱",
         category: "Spreading Positivity",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -362,8 +362,8 @@ export async function initializeSampleData() {
       {
         content: "Organized a multicultural music jam session in the courtyard. Different rhythms, one heartbeat! 🎧",
         category: "Spreading Positivity",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -371,8 +371,8 @@ export async function initializeSampleData() {
       {
         content: "Shouted out my teachers on social media for Teacher Appreciation Week. They believe in us when others don't! 🙏",
         category: "Spreading Positivity",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
@@ -380,8 +380,8 @@ export async function initializeSampleData() {
       {
         content: "Made a gratitude video with friends about growing up in Greensboro. This city raised us! 💚",
         category: "Spreading Positivity",
-        location: "Greensboro, North Carolina",
-        city: "Greensboro",
+        location: "Gibsonville, North Carolina",
+        city: "Gibsonville",
         state: "North Carolina",
         country: "United States",
         isAnonymous: 1
