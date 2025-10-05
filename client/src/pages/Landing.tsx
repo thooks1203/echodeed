@@ -15,11 +15,11 @@ export default function Landing() {
         <div className="max-w-4xl mx-auto text-center">
           {/* EchoDeed Brand Logo */}
           <div className="mb-8">
-            <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="flex items-center justify-center gap-3 mb-6">
               <img 
                 src="/electric-heart-logo.png" 
                 alt="EchoDeed Logo" 
-                className="w-24 h-24 drop-shadow-2xl"
+                className="w-40 h-40 md:w-48 md:h-48 drop-shadow-2xl"
               />
             </div>
             <h1 className="text-6xl md:text-7xl font-black mb-3 tracking-tight bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent">
