@@ -482,44 +482,44 @@ export async function initializeSampleData() {
       const existingServiceLogs = await db.select().from(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
       
       if (existingServiceLogs.length === 0) {
-        // Service log 1: Food bank volunteering
+        // Service log 1: Food Pantry Volunteer (matching parent dashboard display)
         await db.insert(communityServiceLogs).values({
           userId: 'student-001',
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
-          serviceName: 'Burlington Food Bank Volunteer',
-          hoursLogged: '4.00',
-          serviceDate: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
-          organizationName: 'Burlington Food Bank',
-          category: 'Community Service',
-          serviceDescription: 'Sorted and packed food boxes for families in need.',
-          studentReflection: 'Helped sort and pack food boxes for families in need. Learned about food insecurity in our community.',
-          verificationStatus: 'approved',
+          serviceName: 'Food Pantry Volunteer',
+          hoursLogged: '4.50',
+          serviceDate: new Date('2025-09-25'),
+          organizationName: 'Burlington Community Outreach Food Pantry',
+          category: 'Community Support',
+          serviceDescription: 'Helped sort and package food donations for local families',
+          studentReflection: 'It felt great knowing I helped families have meals. I learned about food insecurity in our community.',
+          verificationStatus: 'verified',
           verifiedBy: 'teacher-001',
           verifiedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
           verificationNotes: 'Excellent work! Sofia showed great dedication.',
           parentNotified: true,
-          tokensEarned: 200,
+          tokensEarned: 225,
           submittedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
           createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
         });
         
-        // Service log 2: Senior center assistance
+        // Service log 2: Park & Trail Cleanup (matching parent dashboard display)
         await db.insert(communityServiceLogs).values({
           userId: 'student-001',
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
-          serviceName: 'Alamance Senior Center Tech Help',
-          hoursLogged: '3.50',
-          serviceDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-          organizationName: 'Alamance County Senior Center',
-          category: 'Community Service',
-          serviceDescription: 'Taught seniors how to video call their families.',
-          studentReflection: 'Taught seniors how to video call their families. So rewarding to see their faces light up!',
-          verificationStatus: 'approved',
+          serviceName: 'Park & Trail Cleanup',
+          hoursLogged: '3.00',
+          serviceDate: new Date('2025-09-18'),
+          organizationName: 'Gibsonville Parks Department',
+          category: 'Environmental',
+          serviceDescription: 'Picked up litter and helped maintain trails at City Park',
+          studentReflection: 'Working outside was refreshing and I could see the immediate impact of our work making the park beautiful.',
+          verificationStatus: 'verified',
           verifiedBy: 'teacher-001',
           verifiedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
           verificationNotes: 'Great initiative! Sofia is making a real difference.',
           parentNotified: true,
-          tokensEarned: 175,
+          tokensEarned: 150,
           submittedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
           createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
         });
