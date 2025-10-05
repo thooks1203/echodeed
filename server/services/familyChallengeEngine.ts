@@ -340,6 +340,107 @@ export class FamilyChallengeEngine {
             ]
           }
         ]
+      },
+      'Food & Fellowship': {
+        'family': [
+          {
+            title: "Family Meal Together",
+            description: "Cook and share a special meal as a family",
+            difficulty: "easy",
+            kidPoints: 12,
+            parentPoints: 8,
+            activities: [
+              {
+                title: "Family Cooking Night",
+                description: "Plan, cook, and share a meal together as a family",
+                kidInstructions: "Help choose the menu, prepare ingredients, set the table, and enjoy a meal together without phones or TV. Share what made you happy this week.",
+                parentInstructions: "Create a calm, enjoyable cooking experience. Assign age-appropriate tasks and use this as quality time to connect without distractions.",
+                timeEstimate: 90,
+                materials: "Recipe ingredients, cooking utensils, table settings",
+                location: "home",
+                discussionPrompts: "What's your favorite meal to share as a family? How does eating together make us closer? What family traditions can we start?"
+              }
+            ]
+          },
+          {
+            title: "Neighborhood Picnic",
+            description: "Organize a picnic and invite neighbors to join",
+            difficulty: "medium",
+            kidPoints: 18,
+            parentPoints: 12,
+            activities: [
+              {
+                title: "Community Picnic Planner",
+                description: "Plan and host a neighborhood picnic to build community connections",
+                kidInstructions: "Help create invitations for neighbors, plan the food and activities, and greet guests. Think of fun games everyone can play together.",
+                parentInstructions: "Guide your child in planning and hosting. Help them understand hospitality and community building through shared meals.",
+                timeEstimate: 120,
+                materials: "Picnic blankets, food contributions, invitations, outdoor games",
+                location: "community",
+                discussionPrompts: "How did it feel to bring neighbors together? What did you learn about people in our community? How can we keep these connections going?"
+              }
+            ]
+          },
+          {
+            title: "Community Food Drive & Meal Prep",
+            description: "Organize a food drive and prepare meals for families in need",
+            difficulty: "hard",
+            kidPoints: 25,
+            parentPoints: 15,
+            activities: [
+              {
+                title: "Food Security Leadership Project",
+                description: "Lead a food drive and coordinate meal preparation for local families facing food insecurity",
+                kidInstructions: "Research local food banks and community needs. Create flyers to promote your food drive at school and in the neighborhood. Collect non-perishable items and coordinate with your family to prepare 10 ready-to-eat meals for a local shelter. Document the impact and share your results with participants.",
+                parentInstructions: "Support your child in understanding food insecurity issues and logistics of organizing a community project. Help them develop leadership, planning, and communication skills. Assist with food safety practices and transportation to donation centers.",
+                timeEstimate: 180,
+                materials: "Donation boxes, promotional flyers, food items, meal prep containers, labels, hand sanitizer, gloves for food handling",
+                location: "community",
+                discussionPrompts: "What did you learn about food insecurity in our community? What challenges did you face organizing this project? How did leading this effort change your perspective on helping others? What impact did your food drive have?"
+              }
+            ]
+          }
+        ],
+        '6-8': [
+          {
+            title: "Family Meal Traditions",
+            description: "Create meaningful family meal experiences and traditions",
+            difficulty: "easy",
+            kidPoints: 15,
+            parentPoints: 10,
+            activities: [
+              {
+                title: "Weekly Family Dinner Ritual",
+                description: "Establish a special weekly family dinner tradition",
+                kidInstructions: "Help plan and prepare a weekly family dinner. Choose a conversation starter question for everyone to answer at the table. No devices allowed during the meal!",
+                parentInstructions: "Create a consistent, device-free meal time that becomes a family tradition. Help your child understand the importance of quality family time.",
+                timeEstimate: 60,
+                materials: "Recipe ingredients, conversation starter cards, table decorations",
+                location: "home",
+                discussionPrompts: "Why are family meals important? What makes our family dinners special? What's your favorite family memory around the dinner table?"
+              }
+            ]
+          },
+          {
+            title: "Community Food Service Initiative",
+            description: "Organize and lead a food-focused community service project",
+            difficulty: "hard",
+            kidPoints: 30,
+            parentPoints: 18,
+            activities: [
+              {
+                title: "Food Access Leadership Campaign",
+                description: "Create a sustained initiative to address food insecurity in your community",
+                kidInstructions: "Choose a food-related service project: organize weekly food drives, start a community garden to donate produce, cook meals for homeless shelters, or create 'weekend backpack' programs for classmates. Plan for at least 4 weeks of sustained service. Recruit friends and track your impact with data (meals served, pounds donated, families helped).",
+                parentInstructions: "Guide your middle schooler in sustained community leadership. Help them develop project management skills, understand food insecurity issues, coordinate with local organizations, and maintain commitment over multiple weeks. Support their data collection and reflection on impact.",
+                timeEstimate: 240,
+                materials: "Project-specific supplies (varies), donation collection materials, volunteer sign-up sheets, impact tracking spreadsheet, presentation materials to share results",
+                location: "community",
+                discussionPrompts: "What systemic issues did you discover about food access? How did you overcome challenges in organizing volunteers? What leadership skills did you develop? How can you sustain this project long-term? What was the most meaningful impact you made?"
+              }
+            ]
+          }
+        ]
       }
     };
 
