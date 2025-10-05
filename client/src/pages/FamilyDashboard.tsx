@@ -25,6 +25,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
 import { RoleSwitcherDemo } from '@/components/RoleSwicherDemo';
+import { BackButton } from '@/components/BackButton';
 
 interface FamilyChallenge {
   id: string;
