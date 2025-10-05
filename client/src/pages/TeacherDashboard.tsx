@@ -13,6 +13,7 @@ import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { featureFlags } from '@shared/featureFlags';
 import { KindnessFeed } from '@/components/KindnessFeed';
+import { KindnessConnectModal } from '@/components/KindnessConnectModal';
 
 interface CurriculumLesson {
   id: string;
@@ -92,6 +93,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
   const [themeFilter, setThemeFilter] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedLesson, setSelectedLesson] = useState<CurriculumLesson | null>(null);
+  const [isKindnessConnectOpen, setIsKindnessConnectOpen] = useState(false);
 
   // Fetch curriculum lessons with filters
   const { data: lessons = [], isLoading: lessonsLoading } = useQuery({
@@ -1091,6 +1093,73 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
           </div>
         )}
       </div>
+      
+      {/* Kindness Connect FAB */}
+      <div
+        onClick={() => setIsKindnessConnectOpen(true)}
+        data-testid="button-kindness-connect-fab"
+        style={{
+          position: 'fixed',
+          bottom: '24px',
+          right: '24px',
+          cursor: 'pointer',
+          zIndex: 99,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '6px'
+        }}
+      >
+        <button
+          style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #ec4899 0%, #ef4444 100%)',
+            border: '3px solid white',
+            boxShadow: '0 8px 25px rgba(239, 68, 68, 0.4), 0 0 0 0 rgba(239, 68, 68, 0.7)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+            animation: 'pulse-kindness 2s infinite'
+          }}
+        >
+          <span style={{ fontSize: '32px' }}>💝</span>
+        </button>
+        <div
+          style={{
+            background: 'linear-gradient(135deg, #ec4899 0%, #ef4444 100%)',
+            color: 'white',
+            padding: '6px 12px',
+            borderRadius: '12px',
+            fontSize: '12px',
+            fontWeight: '700',
+            boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)',
+            whiteSpace: 'nowrap',
+            border: '2px solid white'
+          }}
+        >
+          Kindness Connect
+        </div>
+      </div>
+      
+      <style>{`
+        @keyframes pulse-kindness {
+          0%, 100% {
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4), 0 0 0 0 rgba(239, 68, 68, 0.7);
+          }
+          50% {
+            box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4), 0 0 0 10px rgba(239, 68, 68, 0);
+          }
+        }
+      `}</style>
+      
+      <KindnessConnectModal 
+        isOpen={isKindnessConnectOpen}
+        onClose={() => setIsKindnessConnectOpen(false)}
+      />
     </div>
   );
 }
