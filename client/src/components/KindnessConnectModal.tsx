@@ -50,6 +50,41 @@ export function KindnessConnectModal({ isOpen, onClose }: KindnessConnectModalPr
   const [selectedOpportunity, setSelectedOpportunity] = useState<ServiceOpportunity | null>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
+  // Handle keyboard navigation for scrolling
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    const viewport = scrollAreaRef.current?.querySelector('[data-radix-scroll-area-viewport]') as HTMLElement;
+    if (!viewport) return;
+
+    const scrollAmount = 50; // pixels to scroll per key press
+    
+    switch(e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        viewport.scrollTop += scrollAmount;
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        viewport.scrollTop -= scrollAmount;
+        break;
+      case 'PageDown':
+        e.preventDefault();
+        viewport.scrollTop += viewport.clientHeight;
+        break;
+      case 'PageUp':
+        e.preventDefault();
+        viewport.scrollTop -= viewport.clientHeight;
+        break;
+      case 'Home':
+        e.preventDefault();
+        viewport.scrollTop = 0;
+        break;
+      case 'End':
+        e.preventDefault();
+        viewport.scrollTop = viewport.scrollHeight;
+        break;
+    }
+  };
+
   // Prevent background scrolling when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -109,9 +144,7 @@ export function KindnessConnectModal({ isOpen, onClose }: KindnessConnectModalPr
   // Sign up mutation
   const signupMutation = useMutation({
     mutationFn: async (opportunityId: string) => {
-      const response = await apiRequest('POST', '/api/service-opportunities/signup', {
-        opportunityId,
-      });
+      const response = await apiRequest('POST', `/api/service-opportunities/${opportunityId}/signup`, {});
       return response.json();
     },
     onSuccess: () => {
@@ -135,7 +168,9 @@ export function KindnessConnectModal({ isOpen, onClose }: KindnessConnectModalPr
   // Cancel signup mutation
   const cancelMutation = useMutation({
     mutationFn: async (signupId: string) => {
-      const response = await apiRequest('DELETE', `/api/service-opportunities/signup/${signupId}`);
+      const response = await apiRequest('PATCH', `/api/service-opportunities/signups/${signupId}`, {
+        status: 'cancelled'
+      });
       return response.json();
     },
     onSuccess: () => {
@@ -234,6 +269,7 @@ export function KindnessConnectModal({ isOpen, onClose }: KindnessConnectModalPr
           className="h-[400px] px-6"
           ref={scrollAreaRef}
           tabIndex={0}
+          onKeyDown={handleKeyDown}
         >
           {isLoading ? (
             <div className="flex justify-center items-center py-12">
