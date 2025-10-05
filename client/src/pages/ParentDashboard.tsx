@@ -5,7 +5,7 @@
  */
 
 import { useState, useEffect } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -31,7 +31,8 @@ import {
   ArrowLeft,
   Building2,
   Zap,
-  BookOpen
+  BookOpen,
+  Sparkles
 } from 'lucide-react';
 import { useLocation } from 'wouter';
 import PushNotificationSetup from '@/components/PushNotificationSetup';
@@ -39,6 +40,8 @@ import { SponsorsPage } from '@/components/SponsorsPage';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { featureFlags } from '@shared/featureFlags';
 import { useDemoSchool } from '@/contexts/DemoSchoolContext';
+import { useToast } from '@/hooks/use-toast';
+import { apiRequest, queryClient } from '@/lib/queryClient';
 
 interface ParentNotification {
   id: string;
@@ -95,9 +98,181 @@ interface LinkedStudent {
   currentStreak: number;
 }
 
+interface RewardOffer {
+  id: string;
+  partnerId: string;
+  offerType: string;
+  title: string;
+  description: string;
+  offerValue: string;
+  echoCost: number;
+  isDualReward?: number;
+  kidReward?: string;
+  parentReward?: string;
+  isFeatured?: number;
+  isActive?: number;
+  imageUrl?: string;
+  termsAndConditions?: string;
+}
+
+interface RewardPartner {
+  id: string;
+  partnerName: string;
+  partnerLogo?: string;
+  location?: string;
+  description?: string;
+}
+
+// Rewards Section Component - Parent reward offers
+function RewardsSection({ currentStats }: { currentStats: ParentStats }) {
+  const { toast } = useToast();
+  
+  // Fetch reward offers
+  const { data: offers = [], isLoading: offersLoading } = useQuery<RewardOffer[]>({
+    queryKey: ['/api', 'rewards', 'offers', 'all', 'all'],
+  });
+
+  // Fetch reward partners
+  const { data: partners = [] } = useQuery<RewardPartner[]>({
+    queryKey: ['/api', 'rewards', 'partners'],
+  });
+
+  // Filter for dual reward offers
+  const dualRewardOffers = offers.filter(offer => offer.isDualReward === 1 && offer.isActive === 1);
+
+  if (offersLoading) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Gift className="h-5 w-5 text-green-600" />
+            💰 Revolutionary Dual Reward System
+          </CardTitle>
+          <CardDescription>Loading reward offers...</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+            <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Gift className="h-5 w-5 text-green-600" />
+            💰 Revolutionary Dual Reward System
+          </CardTitle>
+          <CardDescription>
+            When your children earn rewards, you earn rewards too! Our unique family engagement multiplier.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+              <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">👶 Children's Rewards</h4>
+              <p className="text-2xl font-bold text-blue-600">${currentStats.totalRewardsEarned}</p>
+              <p className="text-sm text-blue-700 dark:text-blue-300">Greensboro area high school rewards</p>
+            </div>
+            <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
+              <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">👨‍👩‍👧‍👦 Parent Rewards</h4>
+              <p className="text-2xl font-bold text-green-600">${currentStats.parentRewardsEarned}</p>
+              <p className="text-sm text-green-700 dark:text-green-300">Family shopping & experiences</p>
+            </div>
+          </div>
+          
+          <Alert className="border-green-200 bg-green-50 dark:bg-green-900/10">
+            <Gift className="h-4 w-4 text-green-600" />
+            <AlertTitle className="text-green-900 dark:text-green-100">
+              🎉 How Dual Rewards Work
+            </AlertTitle>
+            <AlertDescription className="text-green-700 dark:text-green-200">
+              Every time your child earns rewards for kindness acts, you automatically earn parent rewards too! 
+              This creates powerful family engagement and makes kindness a shared family value.
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+      </Card>
+
+      {/* Dual Reward Offers */}
+      {dualRewardOffers.length > 0 && (
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white flex items-center gap-2">
+            <Sparkles className="h-5 w-5 text-purple-500" />
+            Available Dual Rewards
+          </h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {dualRewardOffers.map((offer) => {
+              const partner = partners.find((p) => p.id === offer.partnerId);
+              return (
+                <Card key={offer.id} className="overflow-hidden border-2 border-purple-200 hover:shadow-lg transition-shadow">
+                  <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-2"></div>
+                  <CardHeader className="pb-3">
+                    <div className="flex items-start justify-between gap-2">
+                      <div className="flex-1">
+                        <CardTitle className="text-base">{offer.title}</CardTitle>
+                        {partner && (
+                          <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                            {partner.partnerName}
+                          </p>
+                        )}
+                      </div>
+                      <Badge className="bg-purple-100 text-purple-700 border-purple-300">
+                        {offer.echoCost} $ECHO
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <p className="text-sm text-gray-700 dark:text-gray-300">
+                      {offer.description}
+                    </p>
+                    
+                    {offer.kidReward && offer.parentReward && (
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div className="p-2 bg-blue-50 dark:bg-blue-900/20 rounded">
+                          <p className="font-semibold text-blue-900 dark:text-blue-100 mb-1">👶 Child Gets:</p>
+                          <p className="text-blue-700 dark:text-blue-300">{offer.kidReward}</p>
+                        </div>
+                        <div className="p-2 bg-green-50 dark:bg-green-900/20 rounded">
+                          <p className="font-semibold text-green-900 dark:text-green-100 mb-1">👨‍👩‍👧‍👦 Parent Gets:</p>
+                          <p className="text-green-700 dark:text-green-300">{offer.parentReward}</p>
+                        </div>
+                      </div>
+                    )}
+
+                    <Button 
+                      className="w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700"
+                      size="sm"
+                      data-testid={`button-view-offer-${offer.id}`}
+                      onClick={() => {
+                        toast({
+                          title: "Reward Details",
+                          description: `Your child can redeem this offer from their Student Dashboard for ${offer.echoCost} $ECHO tokens!`,
+                        });
+                      }}
+                    >
+                      <Gift className="h-4 w-4 mr-2" />
+                      View Offer Details
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 // Service Hours Section Component - Parent view of child's community service
 function ServiceHoursSection() {
-  // Demo parent viewing child's service hours (Emma Johnson is the primary demo child)
+  // Demo parent viewing child's service hours (Sofia Rodriguez is the primary demo child)
   const { data: serviceData, isLoading: serviceLoading } = useQuery({
     queryKey: ['/api/community-service/parent', 'demo-parent', 'child', 'student-001'],
     enabled: true
@@ -871,42 +1046,7 @@ export default function ParentDashboard() {
 
           {/* Dual Rewards Tab */}
           <TabsContent value="rewards">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Gift className="h-5 w-5 text-green-600" />
-                  💰 Revolutionary Dual Reward System
-                </CardTitle>
-                <CardDescription>
-                  When your children earn rewards, you earn rewards too! Our unique family engagement multiplier.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="p-4 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
-                    <h4 className="font-semibold text-blue-900 dark:text-blue-100 mb-2">👶 Children's Rewards</h4>
-                    <p className="text-2xl font-bold text-blue-600">${currentStats.totalRewardsEarned}</p>
-                    <p className="text-sm text-blue-700 dark:text-blue-300">Greensboro area high school rewards</p>
-                  </div>
-                  <div className="p-4 bg-green-50 dark:bg-green-900/20 rounded-lg">
-                    <h4 className="font-semibold text-green-900 dark:text-green-100 mb-2">👨‍👩‍👧‍👦 Parent Rewards</h4>
-                    <p className="text-2xl font-bold text-green-600">${currentStats.parentRewardsEarned}</p>
-                    <p className="text-sm text-green-700 dark:text-green-300">Family shopping & experiences</p>
-                  </div>
-                </div>
-                
-                <Alert className="border-green-200 bg-green-50 dark:bg-green-900/10">
-                  <Gift className="h-4 w-4 text-green-600" />
-                  <AlertTitle className="text-green-900 dark:text-green-100">
-                    🎉 How Dual Rewards Work
-                  </AlertTitle>
-                  <AlertDescription className="text-green-700 dark:text-green-200">
-                    Every time your child earns rewards for kindness acts, you automatically earn parent rewards too! 
-                    This creates powerful family engagement and makes kindness a shared family value.
-                  </AlertDescription>
-                </Alert>
-              </CardContent>
-            </Card>
+            <RewardsSection currentStats={currentStats} />
           </TabsContent>
 
           {/* Service Hours Tab - NEW FEATURE! */}
