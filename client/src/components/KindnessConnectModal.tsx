@@ -308,29 +308,38 @@ export function KindnessConnectModal({ isOpen, onClose }: KindnessConnectModalPr
 
                     {/* Actions */}
                     <div className="flex gap-2 mt-3">
-                      {signedUp ? (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => signupId && cancelMutation.mutate(signupId)}
-                          disabled={cancelMutation.isPending}
-                          data-testid={`button-cancel-${opportunity.id}`}
-                          className="flex-1"
-                        >
-                          <X className="w-4 h-4 mr-1" />
-                          Cancel Signup
-                        </Button>
+                      {/* Only students can sign up - others can view only */}
+                      {user?.schoolRole === 'student' ? (
+                        <>
+                          {signedUp ? (
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              onClick={() => signupId && cancelMutation.mutate(signupId)}
+                              disabled={cancelMutation.isPending}
+                              data-testid={`button-cancel-${opportunity.id}`}
+                              className="flex-1"
+                            >
+                              <X className="w-4 h-4 mr-1" />
+                              Cancel Signup
+                            </Button>
+                          ) : (
+                            <Button
+                              size="sm"
+                              onClick={() => signupMutation.mutate(opportunity.id)}
+                              disabled={signupMutation.isPending || opportunity.spotsAvailable === 0}
+                              data-testid={`button-signup-${opportunity.id}`}
+                              className="flex-1"
+                            >
+                              <Heart className="w-4 h-4 mr-1" />
+                              {opportunity.spotsAvailable === 0 ? 'Full' : 'Sign Up'}
+                            </Button>
+                          )}
+                        </>
                       ) : (
-                        <Button
-                          size="sm"
-                          onClick={() => signupMutation.mutate(opportunity.id)}
-                          disabled={signupMutation.isPending || opportunity.spotsAvailable === 0}
-                          data-testid={`button-signup-${opportunity.id}`}
-                          className="flex-1"
-                        >
-                          <Heart className="w-4 h-4 mr-1" />
-                          {opportunity.spotsAvailable === 0 ? 'Full' : 'Sign Up'}
-                        </Button>
+                        <div className="flex-1 bg-muted/50 rounded-md px-3 py-2 text-xs text-muted-foreground text-center">
+                          👁️ View Only - Students can sign up
+                        </div>
                       )}
                       {opportunity.website && (
                         <Button
