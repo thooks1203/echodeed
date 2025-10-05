@@ -10933,7 +10933,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           return {
             id: s.id,
             partnerName: s.companyName,
-            description: `${s.category === 'coffee' ? 'Quick service' : s.category === 'local_restaurant' ? 'Restaurant' : 'Fast food'} partner - Supporting Eastern Guilford teachers`,
+            description: `${s.companyName} - Supporting Eastern Guilford teachers`,
             category: s.category,
             monthlyBudget: s.monthlyBudget,
             location: s.location || 'Burlington Rd, Whitsett, NC',
