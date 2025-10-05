@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { featureFlags } from '@shared/featureFlags';
 import { KindnessFeed } from '@/components/KindnessFeed';
 import { KindnessConnectModal } from '@/components/KindnessConnectModal';
+import { BackButton } from '@/components/BackButton';
 
 interface CurriculumLesson {
   id: string;

@@ -15,6 +15,7 @@ import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
 import { KindnessFeed } from '@/components/KindnessFeed';
 import { KindnessConnectModal } from '@/components/KindnessConnectModal';
+import { BackButton } from '@/components/BackButton';
 import { 
   Users, 
   TrendingUp, 

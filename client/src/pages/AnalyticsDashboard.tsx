@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
+import { BackButton } from '@/components/BackButton';
 
 interface AnalyticsProps {
   schoolId?: string;

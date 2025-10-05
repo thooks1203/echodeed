@@ -13,6 +13,7 @@ import { apiRequest } from "@/lib/queryClient";
 import { ArrowLeft, Shield, Heart, Users, CheckCircle, AlertCircle } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useSchoolRole } from "@/lib/roleUtils";
+import { BackButton } from "@/components/BackButton";
 
 const studentSignupSchema = z.object({
   firstName: z.string().min(1, "First name is required").max(50, "Name too long"),
