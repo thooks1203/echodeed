@@ -9,7 +9,7 @@ export default function Landing() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-blue-500 to-indigo-600 dark:from-purple-900 dark:via-blue-900 dark:to-indigo-900">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900">
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-4xl mx-auto text-center">
@@ -51,16 +51,19 @@ export default function Landing() {
 
           {/* CTA Section - Three Audience Paths */}
           <div className="mb-8">
-            <h2 className="text-2xl font-semibold text-white mb-6">
-              Discover EchoDeed:
+            <h2 className="text-2xl font-semibold text-white mb-2">
+              Sign Up & Get Started:
             </h2>
+            <p className="text-white/80 text-sm">
+              Choose your role to create your free account
+            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-12">
             {/* Students CTA */}
             <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
               <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <GraduationCap className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-gray-900">For Students</h3>
@@ -69,10 +72,10 @@ export default function Landing() {
                 </p>
                 <Button
                   onClick={() => handleRoleSelect('student')}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white"
+                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
                   data-testid="button-explore-student"
                 >
-                  Explore Now
+                  Sign Up as Student
                 </Button>
               </CardContent>
             </Card>
@@ -80,7 +83,7 @@ export default function Landing() {
             {/* Parents CTA */}
             <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
               <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Heart className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-gray-900">For Parents</h3>
@@ -89,10 +92,10 @@ export default function Landing() {
                 </p>
                 <Button
                   onClick={() => handleRoleSelect('parent')}
-                  className="w-full bg-pink-500 hover:bg-pink-600 text-white"
+                  className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
                   data-testid="button-explore-parent"
                 >
-                  See How It Works
+                  Sign Up as Parent
                 </Button>
               </CardContent>
             </Card>
@@ -100,7 +103,7 @@ export default function Landing() {
             {/* School Leaders CTA */}
             <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
               <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-gray-900">For School Leaders</h3>
@@ -109,10 +112,10 @@ export default function Landing() {
                 </p>
                 <Button
                   onClick={() => handleRoleSelect('admin')}
-                  className="w-full bg-purple-500 hover:bg-purple-600 text-white"
+                  className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
                   data-testid="button-explore-admin"
                 >
-                  Get the Data
+                  Sign Up as Admin
                 </Button>
               </CardContent>
             </Card>
@@ -127,7 +130,7 @@ export default function Landing() {
               data-testid="button-explore-teacher"
             >
               <Users className="w-4 h-4 mr-2" />
-              Teacher View
+              Sign Up as Teacher
             </Button>
           </div>
 
@@ -137,7 +140,7 @@ export default function Landing() {
               Currently piloting at Eastern Guilford High School, Gibsonville, NC
             </p>
             <p className="text-xs text-white/60 mt-2">
-              Grades 9-12 • 1,200 Students • Led by 2024 Principal of the Year Dr. Darrell Harris
+              Grades 9-12 • 1,200 Students • Led by Principal Dr. Darrell Harris
             </p>
           </div>
         </div>
