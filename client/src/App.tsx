@@ -10,7 +10,7 @@ import RewardsPage from "@/pages/rewards";
 import TeacherDashboard from "@/pages/TeacherDashboard";
 import ClassSettings from "@/pages/ClassSettings";
 import SupportPage from "@/pages/support";
-import { LandingPage } from "@/components/landing-page";
+import Landing from "@/pages/Landing";
 import PWAInstall from "@/components/PWAInstall";
 import WellnessCheckInPage from "@/pages/wellness-checkin";
 import FamilyChallenges from "@/pages/FamilyChallenges";
@@ -81,7 +81,7 @@ function Router() {
         {/* <Route path="/tv-display" component={TVDisplayMode} />
         <Route path="/assembly-mode" component={TVDisplayMode} /> */}
         <Route path="/app" component={Home} />
-        <Route path="/" component={LandingPage} />
+        <Route path="/" component={Landing} />
       </Switch>
       
       {/* Floating Rewards Button - Always Visible for Better Engagement */}
