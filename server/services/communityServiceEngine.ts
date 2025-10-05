@@ -304,10 +304,25 @@ export class CommunityServiceEngine {
           })
           .returning();
         
-        return newSummary;
+        // Transform field names to match frontend expectations
+        return {
+          ...newSummary,
+          totalHoursCompleted: newSummary.totalHours,
+          totalHoursVerified: newSummary.verifiedHours,
+          totalHoursPending: newSummary.pendingHours,
+          totalHoursRejected: newSummary.rejectedHours
+        };
       }
 
-      return summary[0];
+      // Transform field names to match frontend expectations
+      const s = summary[0];
+      return {
+        ...s,
+        totalHoursCompleted: s.totalHours,
+        totalHoursVerified: s.verifiedHours,
+        totalHoursPending: s.pendingHours,
+        totalHoursRejected: s.rejectedHours
+      };
     } catch (error) {
       console.error('❌ Error getting student summary:', error);
       throw error;
