@@ -368,45 +368,45 @@ export async function initializeSampleRewardData() {
 
     // HIGH SCHOOL REWARD OFFERS - Greensboro, NC Focus
     const offers = [
-      // A Special Blend Coffee Offers
+      // Chick-fil-A Burlington Rd - CLOSEST TO SCHOOL
       {
-        partnerId: createdPartners[0].id, // A Special Blend
-        offerType: 'food',
-        title: 'Coffee & Pastry Combo',
-        description: 'Free coffee and pastry at A Special Blend - supporting community employment!',
-        offerValue: 'Coffee + Pastry',
-        echoCost: 150,
-        maxRedemptions: 200,
-        currentRedemptions: 45,
+        partnerId: createdPartners[0].id, // Chick-fil-A Burlington Rd (index 0)
+        offerType: 'meal',
+        title: 'Meal Voucher',
+        description: 'Free meal at Chick-fil-A Burlington Rd - closest to Eastern Guilford HS!',
+        offerValue: 'Meal',
+        echoCost: 200,
+        maxRedemptions: 100,
+        currentRedemptions: 31,
         isActive: 1,
         isFeatured: 1,
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Valid during business hours. One per student per week.',
-        imageUrl: 'https://via.placeholder.com/300/8D6E63/FFFFFF?text=Coffee+Time'
+        termsAndConditions: 'Valid at Burlington Rd location. Walking distance from school!',
+        imageUrl: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400'
       },
 
-      // Tate Street Coffee House Offers
+      // McDonald's Burlington Rd
       {
-        partnerId: createdPartners[1].id, // Tate Street Coffee
-        offerType: 'food',
-        title: 'Study Session Bundle',
-        description: 'Fair-trade coffee and snack for productive study sessions near UNCG!',
-        offerValue: 'Coffee + Snack',
-        echoCost: 120,
+        partnerId: createdPartners[1].id, // McDonald's Burlington Rd (index 1)
+        offerType: 'meal',
+        title: 'Value Meal',
+        description: 'Classic burgers and fries on Burlington Rd - walking distance from school!',
+        offerValue: 'Combo Meal',
+        echoCost: 150,
         maxRedemptions: 150,
         currentRedemptions: 38,
         isActive: 1,
         isFeatured: 1,
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Valid weekdays 7am-9pm. WiFi available for studying.',
-        imageUrl: 'https://via.placeholder.com/300/6D4C41/FFFFFF?text=Study+Fuel'
+        termsAndConditions: 'Valid at Whitsett location. Student-friendly hours.',
+        imageUrl: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400'
       },
 
       // Greensboro Grasshoppers Baseball Offers
       {
-        partnerId: createdPartners[2].id, // Grasshoppers
+        partnerId: createdPartners[2].id, // Grasshoppers (index 2)
         offerType: 'ticket',
         title: 'Baseball Game Ticket',
         description: 'Ticket to a Greensboro Grasshoppers game for showing kindness!',
@@ -419,30 +419,66 @@ export async function initializeSampleRewardData() {
         requiresVerification: 1,
         expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid for home games only. Subject to availability.',
-        imageUrl: 'https://via.placeholder.com/300/2E7D32/FFFFFF?text=Baseball+Game'
+        imageUrl: 'https://images.unsplash.com/photo-1566577134770-3d85bb3a9cc4?w=400'
       },
 
-      // Chez Genèse Offers
+      // Wendy's Burlington Rd
       {
-        partnerId: createdPartners[3].id, // Chez Genèse
+        partnerId: createdPartners[3].id, // Wendy's Burlington Rd (index 3)
         offerType: 'meal',
-        title: 'Restaurant Credit',
-        description: '$15 meal credit at Chez Genèse - community-focused dining!',
-        offerValue: '$15 Credit',
-        echoCost: 400,
+        title: 'Combo + Frosty',
+        description: 'Fresh burgers and Frostys on Burlington Rd - student favorite!',
+        offerValue: 'Meal + Frosty',
+        echoCost: 150,
         maxRedemptions: 80,
         currentRedemptions: 18,
         isActive: 1,
         isFeatured: 1,
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Valid for dine-in or takeout. Cannot be combined with other offers.',
-        imageUrl: 'https://via.placeholder.com/300/D84315/FFFFFF?text=Restaurant'
+        termsAndConditions: 'Valid at Whitsett location. Student ID recommended.',
+        imageUrl: 'https://images.unsplash.com/photo-1585238341710-4a44f797bf81?w=400'
       },
 
-      // Greensboro Science Center Offers
+      // Taco Bell Burlington Rd
       {
-        partnerId: createdPartners[4].id, // Science Center
+        partnerId: createdPartners[4].id, // Taco Bell Burlington Rd (index 4)
+        offerType: 'meal',
+        title: 'Taco Combo',
+        description: 'Tacos and Baja Blast on Burlington Rd - quick and tasty!',
+        offerValue: 'Combo',
+        echoCost: 150,
+        maxRedemptions: 120,
+        currentRedemptions: 28,
+        isActive: 1,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid at Whitsett location. Craveable rewards!',
+        imageUrl: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400'
+      },
+
+      // Subway Burlington Rd
+      {
+        partnerId: createdPartners[5].id, // Subway Burlington Rd (index 5)
+        offerType: 'meal',
+        title: 'Footlong Sub',
+        description: 'Fresh subs on Burlington Rd - healthy option near school!',
+        offerValue: 'Footlong',
+        echoCost: 150,
+        maxRedemptions: 100,
+        currentRedemptions: 31,
+        isActive: 1,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid at Whitsett location. Customize your sub!',
+        imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400'
+      },
+
+      // Greensboro Science Center
+      {
+        partnerId: createdPartners[6].id, // Science Center (index 6)
         offerType: 'educational',
         title: 'Science Center Pass',
         description: 'Admission to aquarium, zoo, and museum at Greensboro Science Center!',
@@ -455,30 +491,30 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid for student admission. Check website for hours.',
-        imageUrl: 'https://via.placeholder.com/300/0288D1/FFFFFF?text=Science+Center'
+        imageUrl: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400'
       },
 
-      // Chick-fil-A Greensboro Offers
+      // Pizza Hut Burlington Rd
       {
-        partnerId: createdPartners[5].id, // Chick-fil-A
+        partnerId: createdPartners[7].id, // Pizza Hut Burlington Rd (index 7)
         offerType: 'meal',
-        title: 'Meal Voucher',
-        description: 'Free meal at Chick-fil-A Greensboro near Dudley High School!',
-        offerValue: 'Meal',
-        echoCost: 200,
+        title: 'Personal Pizza',
+        description: 'Pizza and breadsticks on Burlington Rd - perfect for group celebrations!',
+        offerValue: 'Personal Pizza',
+        echoCost: 250,
         maxRedemptions: 100,
-        currentRedemptions: 31,
+        currentRedemptions: 34,
         isActive: 1,
         isFeatured: 1,
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
-        termsAndConditions: 'Valid at Greensboro locations only. Student ID may be required.',
-        imageUrl: 'https://via.placeholder.com/300/E53935/FFFFFF?text=CFA+Meal'
+        termsAndConditions: 'Valid at Whitsett location. Dine-in or carryout.',
+        imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400'
       },
 
-      // Cook Out Offers - NC FAVORITE!
+      // Cook Out - NC FAVORITE!
       {
-        partnerId: createdPartners[6].id, // Cook Out
+        partnerId: createdPartners[8].id, // Cook Out (index 8)
         offerType: 'meal',
         title: 'Cook Out Combo Meal',
         description: 'NC fast food legend - burger, sides & legendary milkshake!',
@@ -496,7 +532,7 @@ export async function initializeSampleRewardData() {
 
       // Dames Chicken & Waffles - DOWNTOWN FAVORITE
       {
-        partnerId: createdPartners[7].id, // Dames Chicken & Waffles
+        partnerId: createdPartners[9].id, // Dames Chicken & Waffles (index 9)
         offerType: 'meal',
         title: 'Chicken & Waffles Meal',
         description: 'Famous "shmears" at downtown Greensboro favorite near Dudley HS!',
@@ -514,7 +550,7 @@ export async function initializeSampleRewardData() {
 
       // Dave's Hot Chicken - TRENDING SPOT
       {
-        partnerId: createdPartners[8].id, // Dave's Hot Chicken
+        partnerId: createdPartners[10].id, // Dave's Hot Chicken (index 10)
         offerType: 'meal',
         title: 'Hot Chicken Combo',
         description: 'Nashville-style hot chicken - super popular with students!',
@@ -532,7 +568,7 @@ export async function initializeSampleRewardData() {
 
       // Boxcar Bar + Arcade - DOWNTOWN HANGOUT
       {
-        partnerId: createdPartners[9].id, // Boxcar Bar + Arcade
+        partnerId: createdPartners[11].id, // Boxcar Bar + Arcade (index 11)
         offerType: 'entertainment',
         title: 'Pizza & Arcade Games',
         description: 'Downtown pizza & retro arcade - perfect Dudley student hangout!',
@@ -550,7 +586,7 @@ export async function initializeSampleRewardData() {
 
       // Yum Yum Better Ice Cream - GREENSBORO TRADITION SINCE 1906
       {
-        partnerId: createdPartners[10].id, // Yum Yum
+        partnerId: createdPartners[12].id, // Yum Yum (index 12)
         offerType: 'treat',
         title: 'Ice Cream Treat',
         description: 'Greensboro tradition since 1906 - ice cream near UNCG!',
@@ -568,7 +604,7 @@ export async function initializeSampleRewardData() {
 
       // Red Cinemas - UPSCALE DOWNTOWN THEATER
       {
-        partnerId: createdPartners[11].id, // Red Cinemas
+        partnerId: createdPartners[13].id, // Red Cinemas (index 13)
         offerType: 'entertainment',
         title: 'Movie Ticket + Snacks',
         description: 'Upscale downtown theater - indie films, craft snacks, reserved seating!',
@@ -586,7 +622,7 @@ export async function initializeSampleRewardData() {
 
       // Triad Lanes - BOWLING & ARCADE
       {
-        partnerId: createdPartners[12].id, // Triad Lanes
+        partnerId: createdPartners[14].id, // Triad Lanes (index 14)
         offerType: 'entertainment',
         title: 'Bowling & Arcade Package',
         description: 'Bowling, arcade games, and food - complete student hangout!',
@@ -604,7 +640,7 @@ export async function initializeSampleRewardData() {
 
       // Urban Air Trampoline Park - ACTIVE FUN
       {
-        partnerId: createdPartners[13].id, // Urban Air
+        partnerId: createdPartners[15].id, // Urban Air (index 15)
         offerType: 'entertainment',
         title: 'Trampoline Park Pass',
         description: 'Indoor trampoline park - climbing walls, arcade, active fun!',
@@ -622,7 +658,7 @@ export async function initializeSampleRewardData() {
 
       // DUAL REWARD OFFERS - National Partners (NOT FEATURED for high school)
       {
-        partnerId: createdPartners[20].id, // Scholastic Books (correct index)
+        partnerId: createdPartners[22].id, // Scholastic Books (index 22)
         offerType: 'dual_reward',
         title: 'Book Bundle + Parent Amazon Credit',
         description: 'Kid gets $10 Scholastic book bundle, parent gets $10 Amazon gift card!',
@@ -642,7 +678,7 @@ export async function initializeSampleRewardData() {
       },
 
       {
-        partnerId: createdPartners[21].id, // Target Education (correct index)
+        partnerId: createdPartners[23].id, // Target Education (index 23)
         offerType: 'dual_reward',
         title: 'School Supplies + Parent Target Credit',
         description: 'Kid gets school supply bundle, parent gets $15 Target gift card!',
@@ -662,7 +698,7 @@ export async function initializeSampleRewardData() {
       },
 
       {
-        partnerId: createdPartners[22].id, // LEGO Education (correct index)
+        partnerId: createdPartners[24].id, // LEGO Education (index 24)
         offerType: 'dual_reward',
         title: 'LEGO Set + Parent Amazon Credit',
         description: 'Kid gets educational LEGO set, parent gets $20 Amazon gift card!',
@@ -682,7 +718,7 @@ export async function initializeSampleRewardData() {
       },
 
       {
-        partnerId: createdPartners[23].id, // Amazon Family (correct index)
+        partnerId: createdPartners[25].id, // Amazon Family (index 25)
         offerType: 'dual_reward',
         title: 'Educational Book + Parent Credit',
         description: 'Kid gets educational book, parent gets $8 Amazon credit!',
