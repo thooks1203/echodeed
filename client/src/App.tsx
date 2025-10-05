@@ -11,6 +11,7 @@ import TeacherDashboard from "@/pages/TeacherDashboard";
 import ClassSettings from "@/pages/ClassSettings";
 import SupportPage from "@/pages/support";
 import Landing from "@/pages/Landing";
+import ExploreRolePage from "@/pages/ExploreRolePage";
 import PWAInstall from "@/components/PWAInstall";
 import WellnessCheckInPage from "@/pages/wellness-checkin";
 import FamilyChallenges from "@/pages/FamilyChallenges";
@@ -80,6 +81,7 @@ function Router() {
         <Route path="/r/:code" component={MerchantVerifyPage} />
         {/* <Route path="/tv-display" component={TVDisplayMode} />
         <Route path="/assembly-mode" component={TVDisplayMode} /> */}
+        <Route path="/explore/:role" component={ExploreRolePage} />
         <Route path="/app" component={Home} />
         <Route path="/" component={Landing} />
       </Switch>

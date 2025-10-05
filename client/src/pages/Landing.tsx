@@ -1,11 +1,12 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Heart, CheckCircle, Users, GraduationCap, Shield } from 'lucide-react';
+import { Link } from 'wouter';
 import { switchDemoRole } from '@/hooks/useAuth';
 
 export default function Landing() {
-  const handleRoleSelect = (role: 'student' | 'teacher' | 'admin' | 'parent') => {
-    switchDemoRole(role);
+  const handleTeacherAccess = () => {
+    switchDemoRole('teacher');
   };
 
   return (
@@ -69,10 +70,10 @@ export default function Landing() {
           {/* CTA Section - Three Audience Paths */}
           <div className="mb-8">
             <h2 className="text-2xl font-semibold text-white mb-2">
-              Sign Up & Get Started:
+              Explore EchoDeed:
             </h2>
             <p className="text-white/80 text-sm">
-              Choose your role to create your free account
+              See what EchoDeed can do for you
             </p>
           </div>
 
@@ -87,13 +88,14 @@ export default function Landing() {
                 <p className="text-sm text-gray-600 mb-4">
                   Turn kindness into tokens, earn rewards, track service hours
                 </p>
-                <Button
-                  onClick={() => handleRoleSelect('student')}
-                  className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
-                  data-testid="button-explore-student"
-                >
-                  Sign Up as Student
-                </Button>
+                <Link href="/explore/students">
+                  <Button
+                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
+                    data-testid="button-explore-student"
+                  >
+                    Explore for Students
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
 
@@ -107,13 +109,14 @@ export default function Landing() {
                 <p className="text-sm text-gray-600 mb-4">
                   Track your child's growth, earn dual rewards together
                 </p>
-                <Button
-                  onClick={() => handleRoleSelect('parent')}
-                  className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
-                  data-testid="button-explore-parent"
-                >
-                  Sign Up as Parent
-                </Button>
+                <Link href="/explore/parents">
+                  <Button
+                    className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
+                    data-testid="button-explore-parent"
+                  >
+                    Explore for Parents
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
 
@@ -127,13 +130,14 @@ export default function Landing() {
                 <p className="text-sm text-gray-600 mb-4">
                   Get the data, see measurable character outcomes
                 </p>
-                <Button
-                  onClick={() => handleRoleSelect('admin')}
-                  className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
-                  data-testid="button-explore-admin"
-                >
-                  Sign Up as Admin
-                </Button>
+                <Link href="/explore/school-leaders">
+                  <Button
+                    className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
+                    data-testid="button-explore-admin"
+                  >
+                    Explore for School Leaders
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
           </div>
@@ -141,13 +145,13 @@ export default function Landing() {
           {/* Teacher Quick Access */}
           <div className="mt-8">
             <Button
-              onClick={() => handleRoleSelect('teacher')}
+              onClick={handleTeacherAccess}
               variant="outline"
               className="bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white backdrop-blur-sm"
-              data-testid="button-explore-teacher"
+              data-testid="button-teacher-access"
             >
-              <Users className="w-4 h-4 mr-2" />
-              Sign Up as Teacher
+              <Users className="w-4 w-4 mr-2" />
+              Quick Access for Teachers
             </Button>
           </div>
 
