@@ -16,14 +16,16 @@ export default function Landing() {
           {/* EchoDeed Brand Logo */}
           <div className="mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="w-20 h-20 bg-gradient-to-br from-white to-pink-100 rounded-full flex items-center justify-center shadow-2xl">
-                <Heart className="w-10 h-10 text-pink-500" fill="currentColor" />
-              </div>
+              <img 
+                src="/electric-heart-logo.png" 
+                alt="EchoDeed Logo" 
+                className="w-24 h-24 drop-shadow-2xl"
+              />
             </div>
-            <h1 className="text-6xl md:text-7xl font-black text-white mb-3 tracking-tight">
+            <h1 className="text-6xl md:text-7xl font-black mb-3 tracking-tight bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent">
               EchoDeed™
             </h1>
-            <p className="text-xl text-white/90 font-medium">
+            <p className="text-xl text-white font-medium">
               Anonymous Kindness Platform
             </p>
           </div>
@@ -50,16 +52,16 @@ export default function Landing() {
 
           {/* Proof Points */}
           <div className="grid md:grid-cols-2 gap-4 mb-12 max-w-2xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
-              <div className="flex items-center gap-2 text-white">
-                <CheckCircle className="h-5 w-5 text-green-300" />
-                <span className="font-semibold">95% reduction in service-hour paperwork</span>
+            <div className="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl p-5 border-2 border-emerald-300 shadow-xl">
+              <div className="flex items-center gap-3 text-white">
+                <CheckCircle className="h-6 w-6 text-white drop-shadow-md" />
+                <span className="font-bold text-lg">95% reduction in service-hour paperwork</span>
               </div>
             </div>
-            <div className="bg-white/10 backdrop-blur-md rounded-lg p-4 border border-white/20">
-              <div className="flex items-center gap-2 text-white">
-                <CheckCircle className="h-5 w-5 text-green-300" />
-                <span className="font-semibold">Built-in COPPA compliance & AI safety</span>
+            <div className="bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl p-5 border-2 border-cyan-300 shadow-xl">
+              <div className="flex items-center gap-3 text-white">
+                <CheckCircle className="h-6 w-6 text-white drop-shadow-md" />
+                <span className="font-bold text-lg">Built-in COPPA compliance & AI safety</span>
               </div>
             </div>
           </div>
