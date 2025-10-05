@@ -13,6 +13,21 @@ export default function Landing() {
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-4xl mx-auto text-center">
+          {/* EchoDeed Brand Logo */}
+          <div className="mb-8">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <div className="w-20 h-20 bg-gradient-to-br from-white to-pink-100 rounded-full flex items-center justify-center shadow-2xl">
+                <Heart className="w-10 h-10 text-pink-500" fill="currentColor" />
+              </div>
+            </div>
+            <h1 className="text-6xl md:text-7xl font-black text-white mb-3 tracking-tight">
+              EchoDeed™
+            </h1>
+            <p className="text-xl text-white/90 font-medium">
+              Anonymous Kindness Platform
+            </p>
+          </div>
+
           {/* Pre-Headline */}
           <div className="mb-6">
             <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-semibold tracking-wide uppercase border border-white/30">
