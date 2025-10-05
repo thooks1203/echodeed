@@ -147,6 +147,25 @@ export class FamilyChallengeEngine {
       'Neighborhood Helpers': {
         'family': [
           {
+            title: "Family Meal Together",
+            description: "Cook and share a special meal as a family",
+            difficulty: "easy",
+            kidPoints: 15,
+            parentPoints: 10,
+            activities: [
+              {
+                title: "Family Cooking & Bonding",
+                description: "Prepare a special meal together and enjoy quality family time",
+                kidInstructions: "Help plan the menu, prepare ingredients, set the table, and share what you're grateful for during the meal.",
+                parentInstructions: "Involve your child in age-appropriate cooking tasks. Use this time to strengthen family bonds through collaboration and conversation.",
+                timeEstimate: 90,
+                materials: "Recipe ingredients, cooking utensils, table decorations",
+                location: "home",
+                discussionPrompts: "What's your favorite family tradition? How does cooking together make you feel?"
+              }
+            ]
+          },
+          {
             title: "Neighbor Connection Project",
             description: "Do something kind for your neighbors",
             difficulty: "medium",
@@ -162,6 +181,25 @@ export class FamilyChallengeEngine {
                 materials: "Small bags, homemade treats or store-bought snacks, handmade cards",
                 location: "community",
                 discussionPrompts: "How do you think our neighbors felt receiving these? What other ways can we help our community?"
+              }
+            ]
+          },
+          {
+            title: "Neighborhood Picnic",
+            description: "Organize a picnic and invite neighbors to join",
+            difficulty: "hard",
+            kidPoints: 25,
+            parentPoints: 18,
+            activities: [
+              {
+                title: "Community Picnic Planning",
+                description: "Plan and host a neighborhood gathering to strengthen community bonds",
+                kidInstructions: "Help plan games, activities, and refreshments. Make invitations for neighbors and greet everyone who comes.",
+                parentInstructions: "Guide your child in planning logistics, budgeting, and coordinating with neighbors. This teaches leadership and community building.",
+                timeEstimate: 180,
+                materials: "Invitations, picnic supplies, games, refreshments, blankets",
+                location: "park or backyard",
+                discussionPrompts: "How did bringing neighbors together make you feel? What challenges did you face organizing this event?"
               }
             ]
           }
