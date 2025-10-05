@@ -592,10 +592,10 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
         data-testid="button-kindness-connect-fab"
         style={{
           position: 'fixed',
-          bottom: '155px',
-          right: '16px',
+          bottom: '24px',
+          right: '24px',
           cursor: 'pointer',
-          zIndex: 99,
+          zIndex: 9999,
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
