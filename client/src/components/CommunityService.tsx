@@ -280,6 +280,23 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
 
         {/* Overview Tab */}
         <TabsContent value="overview" className="space-y-6">
+          {/* Download Standardized Verification Form - Prominent on Overview */}
+          <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-300 rounded-lg shadow-sm">
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                📄
+              </div>
+              <div className="flex-1">
+                <h4 className="font-bold text-gray-900 mb-1 text-lg">Get Your Official Verification Form</h4>
+                <p className="text-sm text-gray-700 mb-3">
+                  Download our standardized EchoDeed verification form to bring to any service organization. 
+                  Pre-filled with your info and includes all fields teachers need for instant approval!
+                </p>
+                <ServiceVerificationFormDownload />
+              </div>
+            </div>
+          </div>
+          
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card data-testid="card-hours-verified">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
