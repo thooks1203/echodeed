@@ -90,7 +90,7 @@ export function switchDemoRole(role: SchoolRole) {
   
   // Navigate to appropriate dashboard
   const dashboardPaths: Record<SchoolRole, string> = {
-    student: '/student-dashboard',
+    student: '/app', // Students go to main feed with kindness posts
     teacher: '/teacher-dashboard',
     admin: '/admin-dashboard',
     parent: '/parent-dashboard',
