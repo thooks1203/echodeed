@@ -81,7 +81,7 @@ const roleConfigs: Record<string, RoleConfig> = {
     title: 'EchoDeed for Parents',
     subtitle: 'See Your Child Grow Through Kindness',
     heroTitle: 'Stay Connected to Your Child\'s Character Development',
-    heroDescription: 'Get real-time notifications when your child posts kind acts. Earn dual rewards together - they get student rewards, you get family rewards. Watch their growth with verified service hours and measurable character outcomes.',
+    heroDescription: 'Character development happens daily, not just during organized service events. Get real-time notifications when your child posts kind acts. Earn dual rewards together - they get student rewards, you get family rewards. Watch their growth with verified service hours and measurable character outcomes.',
     benefits: [
       {
         icon: Heart,
@@ -116,35 +116,35 @@ const roleConfigs: Record<string, RoleConfig> = {
   'school-leaders': {
     role: 'admin',
     title: 'EchoDeed for School Leaders',
-    subtitle: 'Measurable SEL Outcomes & Regulatory Compliance',
+    subtitle: 'Everything x2vol Does, Plus Character Education & Parent Engagement',
     heroTitle: 'Character Education That Actually Works',
-    heroDescription: 'Get the data school boards demand. Automated COPPA compliance, AI safety monitoring, and 95% reduction in service-hour paperwork. Turn abstract character education into measurable daily action.',
+    heroDescription: 'Character development happens daily, not just during organized service events. Parent engagement = better student outcomes + reduced behavioral issues. Get the data school boards demand. Automated COPPA compliance, AI safety monitoring, and 95% reduction in service-hour paperwork.',
     benefits: [
       {
         icon: BarChart3,
-        title: 'Measurable SEL Outcomes',
-        description: 'Real-time dashboards show participation rates, kindness trends, and student engagement data for board reports.'
+        title: 'Daily Character Development (Not Just Service Hours)',
+        description: 'Track both anonymous kindness acts AND verified service hours. Character happens daily, not just during organized events.'
+      },
+      {
+        icon: Users,
+        title: 'Parent Engagement Engine',
+        description: 'Parents see real-time kindness acts, earn family rewards together. Higher parent engagement = better student outcomes + reduced behavioral issues.'
       },
       {
         icon: Shield,
-        title: 'Built-In Compliance',
-        description: 'COPPA automation, AI safety monitoring, content moderation. Legal liability protection baked in.'
+        title: 'Built-In Compliance & AI Safety',
+        description: 'COPPA automation, AI behavioral climate monitoring, content moderation. Legal liability protection baked in.'
       },
       {
         icon: Clock,
         title: '95% Paperwork Reduction',
         description: 'Teachers verify service hours in 30 seconds with photo uploads. x2vol CSV export for district reporting.'
-      },
-      {
-        icon: Users,
-        title: 'Sponsor Monetization',
-        description: 'Local businesses fund rewards. Platform generates revenue while supporting student character development.'
       }
     ],
     proofPoints: [
-      { stat: '$0', label: 'cost to school' },
+      { stat: 'x2vol+', label: 'service hours PLUS character' },
       { stat: '15min → 30sec', label: 'verification time' },
-      { stat: '100%', label: 'audit-ready data' }
+      { stat: '100%', label: 'parent engagement' }
     ],
     ctaText: 'Sign Up as School Leader',
     gradient: 'from-amber-500 to-orange-600',
