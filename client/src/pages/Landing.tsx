@@ -155,7 +155,7 @@ export default function Landing() {
                 </p>
                 <Link href="/explore/school-leaders">
                   <Button
-                    className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
+                    className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white whitespace-nowrap px-3"
                     data-testid="button-explore-admin"
                   >
                     For School Leaders
