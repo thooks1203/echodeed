@@ -1354,40 +1354,81 @@ function TeacherRewardsSection() {
         </CardContent>
       </Card>
 
-      {/* Available Partner Rewards */}
+      {/* Your Earned Rewards */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Gift className="h-5 w-5" />
-            Available Partner Rewards
+            <Gift className="h-5 w-5 text-purple-600" />
+            Your Earned Rewards
           </CardTitle>
           <CardDescription>
-            Local Burlington businesses supporting our educators
+            Rewards you've earned and can redeem for building classroom culture
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {rewards.map((partner: any) => (
-              <Card key={partner.id} className="border-2 hover:border-purple-300 transition-colors">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg">{partner.partnerName}</CardTitle>
-                  <CardDescription>{partner.description}</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-2">
-                    {partner.rewardTypes?.map((rewardType: any, index: number) => (
-                      <div key={index} className="flex items-center gap-2 p-2 bg-gray-50 rounded">
-                        <Coffee className="h-4 w-4 text-amber-600" />
-                        <div>
-                          <p className="font-medium text-sm">{rewardType.name}</p>
-                          <p className="text-xs text-gray-600">{rewardType.value}</p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {/* Coffee Carafe - Earned */}
+            <Card className="border-2 border-green-300 bg-green-50">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-3xl">☕</span>
+                  <Badge className="bg-green-600">Ready to Claim</Badge>
+                </div>
+                <CardTitle className="text-lg mt-2">Coffee Carafe</CardTitle>
+                <CardDescription className="text-green-800">Monthly classroom engagement goal achieved!</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full bg-green-600 hover:bg-green-700" size="sm">
+                  Claim Reward
+                </Button>
+                <p className="text-xs text-green-700 mt-2">
+                  Sponsored by A Special Blend Coffee
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Spa Day - In Progress */}
+            <Card className="border-2 border-amber-300 bg-amber-50">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-3xl">💆</span>
+                  <Badge className="bg-amber-600">85% Complete</Badge>
+                </div>
+                <CardTitle className="text-lg mt-2">Spa Day</CardTitle>
+                <CardDescription className="text-amber-800">Verify 3 more service hours to unlock</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="w-full bg-amber-200 rounded-full h-2 mb-2">
+                  <div className="bg-amber-600 h-2 rounded-full" style={{ width: '85%' }}></div>
+                </div>
+                <p className="text-xs text-amber-700">
+                  17/20 hours verified this quarter
+                </p>
+                <p className="text-xs text-amber-600 mt-1">
+                  Sponsored by Green Valley Spa
+                </p>
+              </CardContent>
+            </Card>
+
+            {/* Restaurant Card - Available */}
+            <Card className="border-2 border-blue-300 bg-blue-50">
+              <CardHeader className="pb-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-3xl">🍽️</span>
+                  <Badge className="bg-blue-600">Available</Badge>
+                </div>
+                <CardTitle className="text-lg mt-2">$50 Restaurant Card</CardTitle>
+                <CardDescription className="text-blue-800">Earned for exceptional student engagement</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button className="w-full bg-blue-600 hover:bg-blue-700" size="sm">
+                  Claim Reward
+                </Button>
+                <p className="text-xs text-blue-700 mt-2">
+                  Valid at Dames Chicken & Waffles
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </CardContent>
       </Card>
