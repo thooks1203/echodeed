@@ -129,9 +129,11 @@ export async function setupAuth(app: Express) {
 }
 
 export const isAuthenticated: RequestHandler = async (req, res, next) => {
-  // Demo mode: Allow access with session ID header in development  
+  // Demo mode: Allow access with session ID header in development OR when DEMO_MODE is enabled
   const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
-  if (process.env.NODE_ENV === 'development' && sessionId) {
+  const isDemoModeEnabled = process.env.NODE_ENV === 'development' || process.env.DEMO_MODE === 'true';
+  
+  if (isDemoModeEnabled && sessionId) {
     
     // Get demo role from query params, headers, or User-Agent to determine role
     const demoRole = req.query.demo_role || req.headers['x-demo-role'] || 
@@ -148,7 +150,7 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
       };
     } else {
-      // Default to Emma Johnson for student or any other role
+      // Default to Sofia Rodriguez for student or any other role
       demoUser = DEMO_USER_STUDENT;
     }
     
