@@ -88,8 +88,16 @@ export function switchDemoRole(role: SchoolRole) {
     localStorage.setItem('echodeed_session', 'demo-session');
   }
   
-  // Reload to apply new role
-  window.location.reload();
+  // Navigate to appropriate dashboard
+  const dashboardPaths: Record<SchoolRole, string> = {
+    student: '/student-dashboard',
+    teacher: '/teacher-dashboard',
+    admin: '/admin-dashboard',
+    parent: '/parent-dashboard',
+    counselor: '/teacher-dashboard' // Counselors use teacher dashboard
+  };
+  
+  window.location.href = dashboardPaths[role] || '/';
 }
 
 // Get available demo roles for testing

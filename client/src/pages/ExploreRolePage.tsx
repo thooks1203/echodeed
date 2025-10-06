@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { Link, useRoute } from 'wouter';
 import { switchDemoRole } from '@/hooks/useAuth';
+import DemoRoleSwitcher from '@/components/DemoRoleSwitcher';
 
 interface RoleConfig {
   role: 'student' | 'parent' | 'admin';
@@ -183,6 +184,11 @@ export default function ExploreRolePage() {
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-5xl mx-auto">
+          {/* Demo Role Switcher */}
+          <div className="mb-6">
+            <DemoRoleSwitcher />
+          </div>
+
           {/* Back Button */}
           <div className="mb-8">
             <Link href="/">
