@@ -8,16 +8,16 @@ interface SparkProps {
 }
 
 const Spark = ({ delay, angle, duration }: SparkProps) => {
-  const distance = 60 + Math.random() * 40; // 60-100px travel distance
+  const distance = 120 + Math.random() * 80; // 120-200px travel distance (DOUBLED!)
   const x = Math.cos(angle) * distance;
   const y = Math.sin(angle) * distance;
   
   return (
     <motion.div
-      className="absolute top-1/2 left-1/2 w-2 h-2 rounded-full"
+      className="absolute top-1/2 left-1/2 w-4 h-4 rounded-full"
       style={{
         background: 'linear-gradient(135deg, #fbbf24, #fb923c, #f472b6)',
-        boxShadow: '0 0 8px rgba(251, 191, 36, 0.8)',
+        boxShadow: '0 0 16px rgba(251, 191, 36, 0.9)',
       }}
       initial={{ 
         x: 0, 
@@ -28,7 +28,7 @@ const Spark = ({ delay, angle, duration }: SparkProps) => {
       animate={{
         x: x,
         y: y,
-        scale: [0, 1.5, 0],
+        scale: [0, 2.5, 0],
         opacity: [0, 1, 0],
       }}
       transition={{
