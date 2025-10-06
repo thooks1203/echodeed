@@ -105,9 +105,9 @@ const roleConfigs: Record<string, RoleConfig> = {
       }
     ],
     proofPoints: [
-      { stat: '95%', label: 'paperwork reduction' },
+      { stat: '100%', label: 'anonymous & safe' },
       { stat: '2x', label: 'family rewards together' },
-      { stat: '100%', label: 'COPPA compliant' }
+      { stat: 'Real-time', label: 'see their kindness acts' }
     ],
     ctaText: 'Sign Up as Parent',
     gradient: 'from-rose-500 to-pink-600',
