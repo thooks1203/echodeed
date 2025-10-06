@@ -43,6 +43,7 @@ function Router() {
                               !isAdmin && 
                               !location.includes('/admin') && 
                               !location.includes('/teacher') && 
+                              !location.includes('/explore') && 
                               location !== '/rewards' && 
                               location !== '/' && 
                               location !== '/demo-login';
