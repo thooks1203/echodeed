@@ -117,35 +117,35 @@ const roleConfigs: Record<string, RoleConfig> = {
   teachers: {
     role: 'teacher',
     title: 'EchoDeed for Teachers',
-    subtitle: 'Reduce Workload, Focus on Teaching',
-    heroTitle: 'Service Hour Verification in 30 Seconds',
-    heroDescription: 'No more paper forms, email threads, or tracking spreadsheets. Students upload verification photos, you approve with one click. Spend less time on paperwork, more time building relationships with students.',
+    subtitle: 'Students Actually WANT to Submit Service Hours',
+    heroTitle: 'Photo Verification = Instant Trust',
+    heroDescription: 'Students are motivated to submit hours because they earn rewards. You verify in 30 seconds with visual proof - no more "did they really do it?" questions. Parents see hours instantly, eliminating follow-up emails. Spend less time chasing paperwork, more time building culture.',
     benefits: [
       {
         icon: Clock,
-        title: '30-Second Verification',
-        description: 'Students upload verification photos with service details. Review visual proof and approve instantly - no more 15-minute email chains.'
+        title: 'Visual Proof You Can Trust',
+        description: 'Students upload verification photos showing real evidence. One glance tells you everything - no more doubting if hours are legitimate or chasing down confirmation.'
       },
       {
-        icon: BarChart3,
-        title: 'Automatic x2vol Export',
-        description: 'Export verified hours to x2vol-compatible CSV format. No duplicate data entry, no manual tracking, no lost paperwork.'
+        icon: Zap,
+        title: 'Kids Are Motivated to Submit',
+        description: 'Students earn Echo Tokens for verified hours, redeemable at 20+ local businesses. They WANT to submit because there\'s an instant reward - no more nagging.'
       },
       {
         icon: Users,
-        title: 'Classroom Management Dashboard',
-        description: 'See which students need encouragement, track class participation, and identify character growth patterns at a glance.'
+        title: 'Parents See Everything Instantly',
+        description: 'Real-time parent visibility means zero "where are my hours?" emails. Parents watch progress automatically - you never have to send status updates again.'
       },
       {
         icon: Award,
-        title: 'Teacher Rewards Program',
-        description: 'Earn Coffee Carafes, Spa Days, and Restaurant Cards for fostering classroom community. Get recognized for the culture you build.'
+        title: 'You Get Rewarded Too',
+        description: 'Earn Coffee Carafes, Spa Days, and Restaurant Cards for fostering classroom community. Recognition for the culture you build, not just the hours you verify.'
       }
     ],
     proofPoints: [
-      { stat: '30 sec', label: 'service hour verification' },
-      { stat: '95%', label: 'reduction in paperwork' },
-      { stat: '100%', label: 'anonymous & safe' }
+      { stat: '30 sec', label: 'verification with photo proof' },
+      { stat: '95%', label: 'fewer parent emails' },
+      { stat: '100%', label: 'student participation' }
     ],
     ctaText: 'Access Teacher Dashboard',
     gradient: 'from-blue-500 to-indigo-600',
