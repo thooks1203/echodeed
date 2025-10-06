@@ -205,11 +205,11 @@ export default function ExploreRolePage() {
 
           {/* EchoDeed Logo */}
           <div className="text-center mb-12">
-            <div className="flex items-center justify-center gap-3 mb-4">
+            <div className="flex items-center justify-center mb-2">
               <img 
                 src="/electric-heart-logo.png" 
                 alt="EchoDeed Logo" 
-                className="w-32 h-32 md:w-40 md:h-40 drop-shadow-2xl"
+                className="w-48 h-48 md:w-56 md:h-56 drop-shadow-2xl"
               />
             </div>
             <h1 className="text-4xl md:text-5xl font-black mb-2 bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent">

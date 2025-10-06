@@ -21,10 +21,10 @@ export function WelcomeModal({ isOpen, onClose }: WelcomeModalProps) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '16px',
+            gap: '8px',
             marginBottom: '20px'
           }}>
-            <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{width: '120px', height: '120px'}} />
+            <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{width: '180px', height: '180px'}} />
             <h1 style={{ fontSize: '32px', fontWeight: '700', margin: '0', color: '#1f2937' }}>Welcome to EchoDeed™</h1>
           </div>
           <p style={{ fontSize: '18px', color: '#6b7280', marginBottom: '24px', lineHeight: '1.6' }}>

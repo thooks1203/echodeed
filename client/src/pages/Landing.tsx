@@ -17,12 +17,12 @@ export default function Landing() {
         <div className="max-w-4xl mx-auto text-center">
           {/* EchoDeed Brand Logo */}
           <div className="mb-8">
-            <div className="flex items-center justify-center gap-3 mb-2">
+            <div className="flex items-center justify-center mb-2">
               <LogoSparkEffect>
                 <img 
                   src="/electric-heart-logo.png" 
                   alt="EchoDeed Logo" 
-                  className="w-32 h-32 md:w-40 md:h-40 drop-shadow-2xl"
+                  className="w-48 h-48 md:w-56 md:h-56 drop-shadow-2xl"
                 />
               </LogoSparkEffect>
             </div>
