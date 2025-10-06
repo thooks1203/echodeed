@@ -134,7 +134,7 @@ const roleConfigs: Record<string, RoleConfig> = {
       {
         icon: Shield,
         title: 'Anonymous by Design (Reduces Cyberbullying)',
-        description: 'No profiles, no names, no performative kindness. COPPA-compliant K-8 direct engagement gives you a legal moat x2vol doesn\'t have.'
+        description: 'No profiles, no names, no performative kindness. Privacy-first 9-12 engagement gives you a legal moat x2vol doesn\'t have.'
       },
       {
         icon: Clock,
