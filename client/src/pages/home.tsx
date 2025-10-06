@@ -98,6 +98,7 @@ export default function Home() {
   const { data: posts = [], isLoading: postsLoading, error, status } = useQuery<KindnessPost[]>({
     queryKey: ['/api/posts', filters],
     queryFn: async ({ queryKey }) => {
+      console.log('🔍 FETCHING POSTS - activeTab:', activeTab, 'filters:', filters);
       const params = new URLSearchParams();
       if (filters.city) params.append('city', filters.city);
       if (filters.category) params.append('category', filters.category);
@@ -105,6 +106,7 @@ export default function Home() {
       
       // Use queryKey but append query params
       const url = params.toString() ? `${queryKey[0]}?${params}` : queryKey[0] as string;
+      console.log('🌐 POSTS URL:', url);
       const response = await fetch(url, {
         headers: { 
           'X-Session-ID': localStorage.getItem('echodeed_session') || 'demo-session',
@@ -113,9 +115,10 @@ export default function Home() {
         credentials: 'include'
       });
       const data = await response.json();
+      console.log('✅ POSTS RECEIVED:', data?.length || 0, 'posts');
       return data;
     },
-    enabled: true, // Force query to always run
+    enabled: activeTab === 'feed', // Only fetch when on feed tab
     staleTime: 0, // Always refetch
     refetchOnMount: true
   });
