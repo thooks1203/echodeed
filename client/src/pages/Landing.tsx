@@ -3,6 +3,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Heart, CheckCircle, Users, GraduationCap, Shield } from 'lucide-react';
 import { Link } from 'wouter';
 import { switchDemoRole } from '@/hooks/useAuth';
+import LogoSparkEffect from '@/components/LogoSparkEffect';
 
 export default function Landing() {
   const handleTeacherAccess = () => {
@@ -17,11 +18,13 @@ export default function Landing() {
           {/* EchoDeed Brand Logo */}
           <div className="mb-8">
             <div className="flex items-center justify-center gap-3 mb-2">
-              <img 
-                src="/electric-heart-logo.png" 
-                alt="EchoDeed Logo" 
-                className="w-40 h-40 md:w-48 md:h-48 drop-shadow-2xl"
-              />
+              <LogoSparkEffect>
+                <img 
+                  src="/electric-heart-logo.png" 
+                  alt="EchoDeed Logo" 
+                  className="w-40 h-40 md:w-48 md:h-48 drop-shadow-2xl"
+                />
+              </LogoSparkEffect>
             </div>
             <h1 className="text-6xl md:text-7xl font-black mb-3 tracking-tight bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent">
               EchoDeed™
