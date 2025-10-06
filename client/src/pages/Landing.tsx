@@ -80,7 +80,7 @@ export default function Landing() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-4 max-w-4xl mx-auto mb-12">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto mb-12">
             {/* Students CTA */}
             <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
               <CardContent className="p-6 text-center">
@@ -123,6 +123,26 @@ export default function Landing() {
               </CardContent>
             </Card>
 
+            {/* Teachers CTA */}
+            <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">For Teachers</h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  Verify service hours, manage classroom, reduce workload
+                </p>
+                <Button
+                  onClick={handleTeacherAccess}
+                  className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
+                  data-testid="button-explore-teacher"
+                >
+                  Explore for Teachers
+                </Button>
+              </CardContent>
+            </Card>
+
             {/* School Leaders CTA */}
             <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
               <CardContent className="p-6 text-center">
@@ -143,19 +163,6 @@ export default function Landing() {
                 </Link>
               </CardContent>
             </Card>
-          </div>
-
-          {/* Teacher Quick Access */}
-          <div className="mt-8">
-            <Button
-              onClick={handleTeacherAccess}
-              variant="outline"
-              className="bg-white/10 border-white/30 text-white hover:bg-white/20 hover:text-white backdrop-blur-sm"
-              data-testid="button-teacher-access"
-            >
-              <Users className="w-4 w-4 mr-2" />
-              Quick Access for Teachers
-            </Button>
           </div>
 
           {/* Footer Info */}
