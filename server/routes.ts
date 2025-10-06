@@ -438,6 +438,62 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 🔧 PRODUCTION REWARD PARTNERS INITIALIZATION  
+  // Initialize Burlington Rd reward partners for production demo
+  app.post("/api/admin/init-reward-partners", async (req, res) => {
+    try {
+      console.log('🎁 Initializing Burlington Rd reward partners for production...');
+      
+      const burlingtonPartners = [
+        { partnerName: 'Chick-fil-A Burlington Rd', partnerType: 'meal', description: 'Closest restaurant to Eastern Guilford HS - student favorite!' },
+        { partnerName: 'McDonald\'s Burlington Rd', partnerType: 'meal', description: 'Walking distance from school - quick rewards' },
+        { partnerName: 'Wendy\'s Burlington Rd', partnerType: 'meal', description: 'Popular student hangout spot' },
+        { partnerName: 'Taco Bell Burlington Rd', partnerType: 'meal', description: 'Late night study fuel' },
+        { partnerName: 'Subway Burlington Rd', partnerType: 'meal', description: 'Healthy fast food option' },
+        { partnerName: 'Pizza Hut Burlington Rd', partnerType: 'meal', description: 'Perfect for group celebrations' },
+        { partnerName: 'Cook Out', partnerType: 'meal', description: 'NC institution - student favorite!' },
+        { partnerName: 'Dave\'s Hot Chicken', partnerType: 'meal', description: 'Trending Nashville-style hot chicken' },
+        { partnerName: 'Dames Chicken & Waffles', partnerType: 'meal', description: 'Downtown Greensboro favorite' },
+        { partnerName: 'Boxcar Bar + Arcade', partnerType: 'entertainment', description: 'Pizza & retro games' },
+        { partnerName: 'Yum Yum Better Ice Cream', partnerType: 'treat', description: 'Greensboro tradition since 1906' },
+        { partnerName: 'Red Cinemas', partnerType: 'entertainment', description: 'Upscale downtown theater' },
+        { partnerName: 'Triad Lanes', partnerType: 'entertainment', description: 'Bowling & arcade' },
+        { partnerName: 'Urban Air Trampoline Park', partnerType: 'entertainment', description: 'Active fun for students' },
+        { partnerName: 'Greensboro Science Center', partnerType: 'educational', description: 'Educational trips' },
+        { partnerName: 'YMCA of Greensboro', partnerType: 'wellness', description: 'Fitness and wellness' },
+        { partnerName: 'Barnes & Noble UNCG', partnerType: 'educational', description: 'Books and study materials' },
+        { partnerName: 'Greensboro Grasshoppers', partnerType: 'entertainment', description: 'Minor league baseball' },
+        { partnerName: 'Greensboro Public Library', partnerType: 'educational', description: 'Free community resources' },
+        { partnerName: 'Scholastic Books', partnerType: 'dual_reward', description: 'Kid book + Parent Amazon credit' },
+        { partnerName: 'Target Education', partnerType: 'dual_reward', description: 'School supplies + Parent Target credit' },
+        { partnerName: 'LEGO Education', partnerType: 'dual_reward', description: 'LEGO set + Parent Amazon credit' },
+        { partnerName: 'Amazon Family', partnerType: 'dual_reward', description: 'Educational book + Parent credit' }
+      ];
+
+      let createdCount = 0;
+      for (const partner of burlingtonPartners) {
+        await storage.createRewardPartner({
+          ...partner,
+          isActive: 1,
+          isFeatured: 1
+        });
+        createdCount++;
+        console.log(`✓ Created partner: ${partner.partnerName}`);
+      }
+
+      console.log(`✅ Successfully initialized ${createdCount} Burlington Rd reward partners`);
+      
+      res.json({
+        success: true,
+        message: `Successfully initialized ${createdCount} reward partners`,
+        partners: createdCount
+      });
+    } catch (error: any) {
+      console.error('❌ Reward partner initialization failed:', error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
   // ==================== OBJECT STORAGE ROUTES ====================
   // Endpoint for serving private objects (verification photos)
   app.get("/objects/:objectPath(*)", isAuthenticated, async (req: any, res) => {
