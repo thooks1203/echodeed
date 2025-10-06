@@ -520,81 +520,45 @@ app.use((req, res, next) => {
     const server = await registerRoutes(app);
     log('✓ Routes registered successfully');
     
-    // Initialize sample data if needed - with proper error handling
-    log('Initializing sample data...');
-    try {
-      await initializeSampleData();
+    // Skip all sample data initialization in production - use API endpoint instead
+    // This ensures fast startup for Autoscale deployments
+    if (process.env.NODE_ENV !== 'production') {
+      // Initialize sample data if needed - with proper error handling
+      log('Initializing sample data...');
       try {
-        await initializeSampleRewardData();
-        log('✓ Reward partners initialized');
-      } catch (error) {
-        log('⚠️ Reward partners initialization failed:', error);
-      }  
-      await storage.initializeEducationSubscriptionPlans();
-      // await initializeMentorBadges(); // TODO: Fix mentor badges schema mismatch
-      // await initializeMentorTraining(); // TODO: Fix mentor training schema issues
-      
-      // Initialize curriculum lessons
-      // TODO: Fix curriculum lessons schema mismatch
-      // const { initializeCurriculumLessons } = await import('./curriculumLessonData');
-      // await initializeCurriculumLessons(storage);
-      
-      // 🛡️ PRODUCTION SAFETY: Initialize BCA demo consent data only in demo/dev mode
-      const isProduction = process.env.NODE_ENV === 'production';
-      const isDemoModeEnabled = process.env.DEMO_MODE === 'true';
-      
-      if (!isProduction || isDemoModeEnabled) {
-        log('Initializing BCA demo consent data...');
-        const demoResult = await storage.initializeBCADemoData();
-        if (demoResult.success) {
-          log(`✓ BCA demo data: ${demoResult.message}`);
-        } else {
-          log(`⚠ BCA demo data initialization: ${demoResult.message}`);
+        await initializeSampleData();
+        try {
+          await initializeSampleRewardData();
+          log('✓ Reward partners initialized');
+        } catch (error) {
+          log('⚠️ Reward partners initialization failed:', error);
+        }  
+        await storage.initializeEducationSubscriptionPlans();
+        
+        log('✓ Sample data initialization completed');
+
+        // Initialize Summer Challenge Program
+        log('Initializing Summer Challenge Program...');
+        const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
+        await summerChallengeEngine.initializeSummerProgram();
+        log('✓ Summer Challenge Program initialized');
+
+        // Initialize Teacher Reward System
+        try {
+          log('Initializing Teacher Reward System...');
+          const { initializeTeacherRewardSystem } = await import('./initTeacherRewards');
+          await initializeTeacherRewardSystem();
+          log('✓ Teacher Reward System initialized');
+        } catch (error) {
+          log('⚠️ Teacher Reward System initialization failed:', error.message);
         }
-      } else {
-        log('🚫 Skipping BCA demo data initialization in production mode (set DEMO_MODE=true to enable)');
-      }
-      
-      log('✓ Sample data initialization completed');
-
-      // Initialize Summer Challenge Program
-      log('Initializing Summer Challenge Program...');
-      const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
-      await summerChallengeEngine.initializeSummerProgram();
-      log('✓ Summer Challenge Program initialized');
-
-      // Initialize Teacher Reward System
-      // TODO: Re-enable after fixing database schema conflicts
-      try {
-        log('Initializing Teacher Reward System...');
-        const { initializeTeacherRewardSystem } = await import('./initTeacherRewards');
-        await initializeTeacherRewardSystem();
-        log('✓ Teacher Reward System initialized');
       } catch (error) {
-        log('⚠️ Teacher Reward System initialization temporarily disabled due to schema mismatch:', error.message);
-      }
-
-      // Initialize Family Challenge Program
-      // TODO: Fix Family Challenge Program schema issues
-      // log('Initializing Family Challenge Program...');
-      // const { familyChallengeEngine } = await import('./services/familyChallengeEngine');
-      // await familyChallengeEngine.initializeFamilyProgram();
-      // log('✓ Family Challenge Program initialized');
-
-      // Initialize School Year Challenge Program (Grades 6-12)
-      // TODO: Fix School Year Challenge Program schema issues
-      // log('Initializing School Year Challenge Program...');
-      // const { schoolYearChallengeEngine } = await import('./services/schoolYearChallengeEngine');
-      // await schoolYearChallengeEngine.initializeSchoolYearProgram();
-      // log('✓ School Year Challenge Program initialized');
-    } catch (error) {
-      log(`✗ Sample data initialization failed: ${error}`);
-      // In production, sample data failure shouldn't crash the app
-      if (process.env.NODE_ENV === 'production') {
-        log('⚠ Continuing startup despite sample data failure in production mode');
-      } else {
+        log(`✗ Sample data initialization failed: ${error}`);
         throw error; // In development, we want to know about this
       }
+    } else {
+      log('⚠️  Skipping sample data initialization in production (use POST /api/admin/init-demo-data endpoint)');
+      log('💡 This ensures fast Autoscale startup - initialize via API when needed');
     }
 
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -635,15 +599,22 @@ app.use((req, res, next) => {
       log(`✓ Server is accessible at http://0.0.0.0:${port}`);
       log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
       
-      // 🔄 Initialize automated reminder scheduler for parental consent
-      log('🔄 Initializing automated consent reminder scheduler...');
-      startAutomatedConsentReminderScheduler();
-      log('✓ Automated consent reminder scheduler started');
-      
-      // 🔄 Initialize automated renewal scheduler for Burlington policy
-      log('🔄 Initializing automated consent renewal scheduler...');
-      startAutomatedConsentRenewalScheduler();
-      log('✓ Automated consent renewal scheduler started');
+      // Skip background schedulers in production Autoscale to avoid startup timeout
+      // These should run in a separate background worker or Reserved VM
+      if (process.env.NODE_ENV !== 'production') {
+        // 🔄 Initialize automated reminder scheduler for parental consent
+        log('🔄 Initializing automated consent reminder scheduler...');
+        startAutomatedConsentReminderScheduler();
+        log('✓ Automated consent reminder scheduler started');
+        
+        // 🔄 Initialize automated renewal scheduler for Burlington policy
+        log('🔄 Initializing automated consent renewal scheduler...');
+        startAutomatedConsentRenewalScheduler();
+        log('✓ Automated consent renewal scheduler started');
+      } else {
+        log('⚠️  Skipping background schedulers in production (Autoscale requires fast startup)');
+        log('💡 Background tasks should run in a separate Reserved VM deployment');
+      }
     });
 
     // Handle server errors
