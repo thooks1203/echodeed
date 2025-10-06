@@ -22,7 +22,7 @@ export default function Landing() {
                 <img 
                   src="/electric-heart-logo.png" 
                   alt="EchoDeed Logo" 
-                  className="w-40 h-40 md:w-48 md:h-48 drop-shadow-2xl"
+                  className="w-32 h-32 md:w-40 md:h-40 drop-shadow-2xl"
                 />
               </LogoSparkEffect>
             </div>

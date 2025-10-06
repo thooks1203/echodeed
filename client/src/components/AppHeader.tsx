@@ -36,7 +36,7 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton, tokens }: 
         {/* Logo and Title Section */}
         <div className="flex items-center justify-center mb-4">
           <div className="flex items-center space-x-4">
-            <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" style={{width: '120px', height: '120px'}} className="animate-logoFloat" />
+            <img src="/electric-heart-logo.png" alt="EchoDeed Electric Heart" className="w-32 h-32 md:w-40 md:h-40 animate-logoFloat" />
             <div className="text-center">
               <h1 className="text-3xl font-bold text-foreground" data-testid="text-app-title">EchoDeed™</h1>
               <p className="text-sm text-muted-foreground font-medium mt-1" data-testid="text-tagline">Character Education, Reimagined</p>
