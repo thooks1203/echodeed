@@ -1284,7 +1284,7 @@ export default function AdminDashboard() {
                   {mockDistrictMetrics.complianceStatus}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  COPPA & FERPA status
+                  FERPA compliance status
                 </p>
               </CardContent>
             </Card>
@@ -1439,7 +1439,7 @@ export default function AdminDashboard() {
                 <Shield className="h-4 w-4 text-blue-600" />
                 <AlertTitle className="text-blue-900">Admin Monitoring Guidelines</AlertTitle>
                 <AlertDescription className="text-blue-800">
-                  This feed displays anonymous kindness posts for oversight purposes only. Use moderation tools to flag inappropriate content. Student identities remain protected per FERPA/COPPA compliance.
+                  This feed displays anonymous kindness posts for oversight purposes only. Use moderation tools to flag inappropriate content. Student identities remain protected per FERPA compliance.
                 </AlertDescription>
               </Alert>
 
@@ -1713,7 +1713,7 @@ export default function AdminDashboard() {
                 Compliance Dashboard
               </CardTitle>
               <CardDescription>
-                COPPA, FERPA, and state compliance monitoring
+                FERPA and state compliance monitoring
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -1721,13 +1721,6 @@ export default function AdminDashboard() {
                 <div className="space-y-4">
                   <h4 className="font-semibold">Federal Compliance</h4>
                   <div className="space-y-3">
-                    <div className="flex items-center justify-between p-3 border rounded-lg">
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-green-600" />
-                        <span>COPPA Compliance</span>
-                      </div>
-                      <Badge variant="default">Compliant</Badge>
-                    </div>
                     <div className="flex items-center justify-between p-3 border rounded-lg">
                       <div className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-green-600" />
@@ -1773,39 +1766,6 @@ export default function AdminDashboard() {
                 </div>
               </div>
 
-              {/* Quick Access Section */}
-              <div className="pt-6 border-t">
-                <div className="flex items-center justify-between mb-4">
-                  <div>
-                    <h4 className="font-semibold">Detailed Consent Management</h4>
-                    <p className="text-sm text-muted-foreground">
-                      Access Burlington, NC consent tracking and renewal system
-                    </p>
-                  </div>
-                  <Button
-                    onClick={() => window.location.href = '/admin/consents'}
-                    className="flex items-center gap-2"
-                    data-testid="button-consent-management"
-                  >
-                    <Shield className="w-4 h-4" />
-                    View Consent Dashboard
-                  </Button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-                  <div className="bg-muted/50 p-3 rounded-lg">
-                    <div className="font-medium">Student Tracking</div>
-                    <div className="text-muted-foreground">Individual consent status</div>
-                  </div>
-                  <div className="bg-muted/50 p-3 rounded-lg">
-                    <div className="font-medium">Annual Renewals</div>
-                    <div className="text-muted-foreground">Automated processing</div>
-                  </div>
-                  <div className="bg-muted/50 p-3 rounded-lg">
-                    <div className="font-medium">Audit Reports</div>
-                    <div className="text-muted-foreground">Compliance documentation</div>
-                  </div>
-                </div>
-              </div>
             </CardContent>
           </Card>
         </TabsContent>
