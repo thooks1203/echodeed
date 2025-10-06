@@ -20,7 +20,7 @@ import { switchDemoRole } from '@/hooks/useAuth';
 import DemoRoleSwitcher from '@/components/DemoRoleSwitcher';
 
 interface RoleConfig {
-  role: 'student' | 'parent' | 'admin';
+  role: 'student' | 'parent' | 'admin' | 'teacher';
   title: string;
   subtitle: string;
   heroTitle: string;
@@ -113,6 +113,43 @@ const roleConfigs: Record<string, RoleConfig> = {
     ctaText: 'Sign Up as Parent',
     gradient: 'from-rose-500 to-pink-600',
     iconGradient: 'from-rose-400 to-pink-500'
+  },
+  teachers: {
+    role: 'teacher',
+    title: 'EchoDeed for Teachers',
+    subtitle: 'Reduce Workload, Focus on Teaching',
+    heroTitle: 'Service Hour Verification in 30 Seconds',
+    heroDescription: 'No more paper forms, email threads, or tracking spreadsheets. Students upload verification photos, you approve with one click. Spend less time on paperwork, more time building relationships with students.',
+    benefits: [
+      {
+        icon: Clock,
+        title: '30-Second Verification',
+        description: 'Students upload verification photos with service details. Review visual proof and approve instantly - no more 15-minute email chains.'
+      },
+      {
+        icon: BarChart3,
+        title: 'Automatic x2vol Export',
+        description: 'Export verified hours to x2vol-compatible CSV format. No duplicate data entry, no manual tracking, no lost paperwork.'
+      },
+      {
+        icon: Users,
+        title: 'Classroom Management Dashboard',
+        description: 'See which students need encouragement, track class participation, and identify character growth patterns at a glance.'
+      },
+      {
+        icon: Award,
+        title: 'Teacher Rewards Program',
+        description: 'Earn Coffee Carafes, Spa Days, and Restaurant Cards for fostering classroom community. Get recognized for the culture you build.'
+      }
+    ],
+    proofPoints: [
+      { stat: '30 sec', label: 'service hour verification' },
+      { stat: '95%', label: 'reduction in paperwork' },
+      { stat: '100%', label: 'anonymous & safe' }
+    ],
+    ctaText: 'Access Teacher Dashboard',
+    gradient: 'from-blue-500 to-indigo-600',
+    iconGradient: 'from-blue-400 to-indigo-500'
   },
   'school-leaders': {
     role: 'admin',

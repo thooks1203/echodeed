@@ -2,13 +2,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Heart, CheckCircle, Users, GraduationCap, Shield } from 'lucide-react';
 import { Link } from 'wouter';
-import { switchDemoRole } from '@/hooks/useAuth';
 import LogoSparkEffect from '@/components/LogoSparkEffect';
 
 export default function Landing() {
-  const handleTeacherAccess = () => {
-    switchDemoRole('teacher');
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900">
@@ -133,13 +129,14 @@ export default function Landing() {
                 <p className="text-sm text-gray-600 mb-4">
                   Verify service hours, manage classroom, reduce workload
                 </p>
-                <Button
-                  onClick={handleTeacherAccess}
-                  className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
-                  data-testid="button-explore-teacher"
-                >
-                  Explore for Teachers
-                </Button>
+                <Link href="/explore/teachers">
+                  <Button
+                    className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
+                    data-testid="button-explore-teacher"
+                  >
+                    Explore for Teachers
+                  </Button>
+                </Link>
               </CardContent>
             </Card>
 
