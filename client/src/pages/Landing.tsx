@@ -16,7 +16,7 @@ export default function Landing() {
         <div className="max-w-4xl mx-auto text-center">
           {/* EchoDeed Brand Logo */}
           <div className="mb-8">
-            <div className="flex items-center justify-center gap-3 mb-6">
+            <div className="flex items-center justify-center gap-3 mb-2">
               <img 
                 src="/electric-heart-logo.png" 
                 alt="EchoDeed Logo" 
