@@ -44,7 +44,7 @@ const roleConfigs: Record<string, RoleConfig> = {
     title: 'EchoDeed for Students',
     subtitle: 'Turn Your Kindness Into Real Rewards',
     heroTitle: 'Make Kindness Count',
-    heroDescription: 'Every kind act you do earns you tokens you can spend on real rewards from local businesses. Track your service hours automatically, compete with friends, and build character while having fun.',
+    heroDescription: 'Every kind act you do earns you tokens you can spend on real rewards from local businesses. Track your service hours automatically, inspire others around the world anonymously, and build character while having fun.',
     benefits: [
       {
         icon: Zap,
@@ -63,8 +63,8 @@ const roleConfigs: Record<string, RoleConfig> = {
       },
       {
         icon: Target,
-        title: 'Compete & Win',
-        description: 'Climb the leaderboard, maintain streaks, unlock surprise giveaways for top performers.'
+        title: 'Inspire the World',
+        description: 'Your anonymous posts inspire classmates, students across the country, and people worldwide to spread kindness.'
       }
     ],
     proofPoints: [
