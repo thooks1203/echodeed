@@ -294,18 +294,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // 🔧 PRODUCTION DEMO DATA INITIALIZATION ENDPOINT
   // This endpoint manually initializes Sofia Rodriguez's demo data for production
   app.post("/api/admin/init-demo-data", async (req, res) => {
+    console.log('🔧 Admin init-demo-data endpoint called');
+    
     try {
       const { db } = await import('./db');
-      const { users, userTokens, communityServiceLogs } = await import('@shared/schema');
+      const { users, userTokens, communityServiceLogs, schools } = await import('@shared/schema');
       const { eq } = await import('drizzle-orm');
+      
+      console.log('📊 Checking if Eastern Guilford HS exists...');
+      
+      // Ensure Eastern Guilford High School exists
+      const existingSchools = await db.select().from(schools).where(eq(schools.id, 'bc016cad-fa89-44fb-aab0-76f82c574f78'));
+      
+      if (existingSchools.length === 0) {
+        console.log('🏫 Creating Eastern Guilford High School...');
+        await db.insert(schools).values({
+          id: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+          name: 'Eastern Guilford High School',
+          address: '3609 Terrace Drive',
+          city: 'Gibsonville',
+          state: 'NC',
+          zipCode: '27249',
+          phone: '(336) 449-4521',
+          gradeRange: '9-12',
+          studentCount: 1200,
+          accreditation: 'SACS',
+          establishedYear: 1965,
+          isActive: true,
+          enrollmentCode: 'EGHS-2025',
+          createdAt: new Date()
+        });
+        console.log('✅ School created');
+      } else {
+        console.log('✅ School already exists');
+      }
+      
+      console.log('👤 Creating/updating Sofia Rodriguez user...');
       
       // Create Sofia Rodriguez user
       await storage.upsertUser({
         id: 'student-001',
         email: 'sofia.rodriguez@easterngs.gcsnc.com',
         firstName: 'Sofia',
-        lastName: 'Rodriguez'
+        lastName: 'Rodriguez',
+        schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+        schoolRole: 'student'
       });
+      
+      console.log('💰 Creating/updating Sofia token record...');
       
       // Create/update Sofia's token record
       const existingTokens = await db.select().from(userTokens).where(eq(userTokens.userId, 'student-001'));
@@ -320,6 +356,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           lastPostDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
           createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
         });
+        console.log('✅ Token record created');
       } else {
         await db.update(userTokens)
           .set({
@@ -330,7 +367,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
             lastPostDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)
           })
           .where(eq(userTokens.userId, 'student-001'));
+        console.log('✅ Token record updated');
       }
+      
+      console.log('📝 Creating Sofia service logs...');
       
       // Create Sofia's service hour logs
       const existingServiceLogs = await db.select().from(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
@@ -376,7 +416,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
             createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
           }
         ]);
+        console.log('✅ Service logs created');
+      } else {
+        console.log('ℹ️  Service logs already exist');
       }
+      
+      console.log('✅ Demo data initialization complete!');
       
       res.json({ 
         success: true, 
@@ -388,8 +433,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       });
     } catch (error: any) {
-      console.error('Demo data initialization failed:', error);
-      res.status(500).json({ success: false, error: error.message });
+      console.error('❌ Demo data initialization failed:', error);
+      res.status(500).json({ success: false, error: error.message, stack: error.stack });
     }
   });
 
