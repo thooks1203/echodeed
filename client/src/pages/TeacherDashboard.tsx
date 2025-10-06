@@ -15,6 +15,7 @@ import { featureFlags } from '@shared/featureFlags';
 import { KindnessFeed } from '@/components/KindnessFeed';
 import { KindnessConnectModal } from '@/components/KindnessConnectModal';
 import { BackButton } from '@/components/BackButton';
+import { ServiceVerificationFormDownload } from '@/components/ServiceVerificationForm';
 
 interface CurriculumLesson {
   id: string;
@@ -472,6 +473,28 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
 
           {/* Service Hours Verification Tab - ALWAYS VISIBLE (Core Feature) */}
           <TabsContent value="service-hours" className="space-y-6">
+            {/* Verification Form Download for Teachers */}
+            <Card className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-300">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Download className="h-5 w-5 text-orange-600" />
+                  Print Verification Forms for Students
+                </CardTitle>
+                <CardDescription>
+                  Students without printer access? Download and print the official verification form for them right here.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <p className="text-sm text-gray-700">
+                    <strong>When to use:</strong> Student needs a form but doesn't have access to a printer at home. 
+                    You can print it for them and they'll bring it to their service organization.
+                  </p>
+                  <ServiceVerificationFormDownload />
+                </div>
+              </CardContent>
+            </Card>
+
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
