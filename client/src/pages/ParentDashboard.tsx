@@ -732,8 +732,8 @@ export default function ParentDashboard() {
               Posts are completely anonymous with no identifying information.
             </p>
             <p>
-              <strong>Safety Protocols:</strong> If posts indicate immediate danger (self-harm, abuse, or crisis situations), 
-              school counselors and appropriate authorities will be notified to ensure student safety, following all legal requirements.
+              <strong>Safety Protocols:</strong> Our AI system flags concerning content and routes it to school staff for review. 
+              Teachers and administrators review flagged posts and make decisions about appropriate interventions to ensure student safety.
             </p>
           </AlertDescription>
         </Alert>
