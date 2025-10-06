@@ -838,7 +838,7 @@ export default function Home() {
                 <span className="text-3xl animate-bounce" style={{ animationDelay: '0.1s' }}>✨</span>
               </div>
               <span className="text-sm font-semibold text-purple-600/80 tracking-wide">
-                Click here to post your act of kindness
+                Click here to post your act of kindness!
               </span>
             </div>
           </button>
