@@ -291,6 +291,108 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // CRITICAL FIX: Wire storage to app.locals for counselor middleware
   app.locals.storage = storage;
 
+  // 🔧 PRODUCTION DEMO DATA INITIALIZATION ENDPOINT
+  // This endpoint manually initializes Sofia Rodriguez's demo data for production
+  app.post("/api/admin/init-demo-data", async (req, res) => {
+    try {
+      const { db } = await import('./db');
+      const { users, userTokens, communityServiceLogs } = await import('@shared/schema');
+      const { eq } = await import('drizzle-orm');
+      
+      // Create Sofia Rodriguez user
+      await storage.upsertUser({
+        id: 'student-001',
+        email: 'sofia.rodriguez@easterngs.gcsnc.com',
+        firstName: 'Sofia',
+        lastName: 'Rodriguez'
+      });
+      
+      // Create/update Sofia's token record
+      const existingTokens = await db.select().from(userTokens).where(eq(userTokens.userId, 'student-001'));
+      
+      if (existingTokens.length === 0) {
+        await db.insert(userTokens).values({
+          userId: 'student-001',
+          echoBalance: 1103,
+          totalEarned: 1380,
+          streakDays: 4,
+          longestStreak: 4,
+          lastPostDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
+          createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
+        });
+      } else {
+        await db.update(userTokens)
+          .set({
+            echoBalance: 1103,
+            totalEarned: 1380,
+            streakDays: 4,
+            longestStreak: 4,
+            lastPostDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000)
+          })
+          .where(eq(userTokens.userId, 'student-001'));
+      }
+      
+      // Create Sofia's service hour logs
+      const existingServiceLogs = await db.select().from(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
+      
+      if (existingServiceLogs.length === 0) {
+        await db.insert(communityServiceLogs).values([
+          {
+            userId: 'student-001',
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            serviceName: 'Food Pantry Volunteer',
+            hoursLogged: '4.50',
+            serviceDate: new Date('2025-09-25'),
+            organizationName: 'Burlington Community Outreach Food Pantry',
+            category: 'Community Support',
+            serviceDescription: 'Helped sort and package food donations for local families',
+            studentReflection: 'It felt great knowing I helped families have meals.',
+            verificationStatus: 'verified',
+            verifiedBy: 'teacher-001',
+            verifiedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
+            verificationNotes: 'Excellent work! Sofia showed great dedication.',
+            parentNotified: true,
+            tokensEarned: 225,
+            submittedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+            createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
+          },
+          {
+            userId: 'student-001',
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            serviceName: 'Park & Trail Cleanup',
+            hoursLogged: '3.00',
+            serviceDate: new Date('2025-09-18'),
+            organizationName: 'Gibsonville Parks Department',
+            category: 'Environmental',
+            serviceDescription: 'Picked up litter and helped maintain trails at City Park',
+            studentReflection: 'Working outside was refreshing.',
+            verificationStatus: 'verified',
+            verifiedBy: 'teacher-001',
+            verifiedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+            verificationNotes: 'Great initiative!',
+            parentNotified: true,
+            tokensEarned: 150,
+            submittedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+          }
+        ]);
+      }
+      
+      res.json({ 
+        success: true, 
+        message: 'Sofia Rodriguez demo data initialized successfully',
+        data: {
+          tokens: { balance: 1103, earned: 1380, streak: 4 },
+          serviceHours: 7.5,
+          serviceLogsCount: 2
+        }
+      });
+    } catch (error: any) {
+      console.error('Demo data initialization failed:', error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
   // ==================== OBJECT STORAGE ROUTES ====================
   // Endpoint for serving private objects (verification photos)
   app.get("/objects/:objectPath(*)", isAuthenticated, async (req: any, res) => {
