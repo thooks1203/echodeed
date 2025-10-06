@@ -829,11 +829,18 @@ export default function Home() {
               boxShadow: '0 20px 40px rgba(168, 85, 247, 0.4), 0 8px 16px rgba(236, 72, 153, 0.3), inset 0 2px 4px rgba(255, 255, 255, 0.8)'
             }}
           >
-            <span className="text-3xl animate-bounce">🌟</span>
-            <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent font-black tracking-wide">
-              SHARE YOUR KINDNESS
-            </span>
-            <span className="text-3xl animate-bounce" style={{ animationDelay: '0.1s' }}>✨</span>
+            <div className="flex flex-col items-center gap-1">
+              <div className="flex items-center gap-4">
+                <span className="text-3xl animate-bounce">🌟</span>
+                <span className="bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent font-black tracking-wide">
+                  SHARE YOUR KINDNESS
+                </span>
+                <span className="text-3xl animate-bounce" style={{ animationDelay: '0.1s' }}>✨</span>
+              </div>
+              <span className="text-sm font-semibold text-purple-600/80 tracking-wide">
+                Click here to post your act of kindness
+              </span>
+            </div>
           </button>
         </div>
         
