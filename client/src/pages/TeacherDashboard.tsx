@@ -241,7 +241,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
 
   // Feed content component
   const FeedContent = () => {
-    const { data: posts, isLoading } = useQuery({
+    const { data: posts = [], isLoading } = useQuery<any[]>({
       queryKey: ['/api/posts'],
       staleTime: 60000, // 1 minute
     });
@@ -257,7 +257,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
       );
     }
 
-    return <KindnessFeed posts={posts || []} isLoading={isLoading} />;
+    return <KindnessFeed posts={posts} isLoading={isLoading} />;
   };
 
   // Service Hours content component

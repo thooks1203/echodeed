@@ -12,6 +12,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// ⚠️ COPPA CONSENT CODE - NOT NEEDED FOR HIGH SCHOOL (GRADES 9-12)
+// Eastern Guilford is grades 9-12, so FERPA compliance only (no COPPA)
+// Commenting out to eliminate TypeScript errors and unused code
+
+/*
 // 🔄 AUTOMATED CONSENT REMINDER SCHEDULER - Burlington Policy Implementation
 async function processConsentReminders() {
   try {
@@ -160,7 +165,9 @@ async function processConsentReminders() {
     log('⚠ Scheduler will continue running despite this error');
   }
 }
+*/
 
+/*
 // 🔄 ANNUAL CONSENT RENEWAL SCHEDULER - Burlington Policy Implementation  
 async function processConsentRenewals() {
   try {
@@ -416,7 +423,9 @@ async function processConsentRenewals() {
     log('⚠ Renewal scheduler will continue running despite this error');
   }
 }
+*/
 
+/*
 function startAutomatedConsentReminderScheduler() {
   // Run immediately on startup (with a small delay to ensure everything is initialized)
   setTimeout(async () => {
@@ -469,6 +478,7 @@ function startAutomatedConsentRenewalScheduler() {
   
   log('✓ Consent renewal scheduler configured to run daily');
 }
+*/
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -531,7 +541,7 @@ app.use((req, res, next) => {
           await initializeSampleRewardData();
           log('✓ Reward partners initialized');
         } catch (error) {
-          log('⚠️ Reward partners initialization failed:', error);
+          log('⚠️ Reward partners initialization failed:', error instanceof Error ? error.message : String(error));
         }  
         await storage.initializeEducationSubscriptionPlans();
         
@@ -550,7 +560,7 @@ app.use((req, res, next) => {
           await initializeTeacherRewardSystem();
           log('✓ Teacher Reward System initialized');
         } catch (error) {
-          log('⚠️ Teacher Reward System initialization failed:', error.message);
+          log('⚠️ Teacher Reward System initialization failed:', error instanceof Error ? error.message : String(error));
         }
       } catch (error) {
         log(`✗ Sample data initialization failed: ${error}`);
@@ -599,22 +609,9 @@ app.use((req, res, next) => {
       log(`✓ Server is accessible at http://0.0.0.0:${port}`);
       log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
       
-      // Skip background schedulers in production Autoscale to avoid startup timeout
-      // These should run in a separate background worker or Reserved VM
-      if (process.env.NODE_ENV !== 'production') {
-        // 🔄 Initialize automated reminder scheduler for parental consent
-        log('🔄 Initializing automated consent reminder scheduler...');
-        startAutomatedConsentReminderScheduler();
-        log('✓ Automated consent reminder scheduler started');
-        
-        // 🔄 Initialize automated renewal scheduler for Burlington policy
-        log('🔄 Initializing automated consent renewal scheduler...');
-        startAutomatedConsentRenewalScheduler();
-        log('✓ Automated consent renewal scheduler started');
-      } else {
-        log('⚠️  Skipping background schedulers in production (Autoscale requires fast startup)');
-        log('💡 Background tasks should run in a separate Reserved VM deployment');
-      }
+      // ⚠️ COPPA consent schedulers disabled - not needed for high school (grades 9-12)
+      // Eastern Guilford uses FERPA compliance only
+      log('✓ No background schedulers required for high school FERPA compliance');
     });
 
     // Handle server errors
