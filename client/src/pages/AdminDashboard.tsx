@@ -1094,7 +1094,7 @@ export default function AdminDashboard() {
               {bcaDemoMode && (
                 <Badge variant="outline" className="ml-2 text-blue-600 border-blue-600">
                   <Monitor className="w-3 h-3 mr-1" />
-                  Dudley Demo
+                  EGHS Demo
                 </Badge>
               )}
             </h1>
@@ -1154,7 +1154,7 @@ export default function AdminDashboard() {
                 <div className="flex items-center justify-between w-full">
                   <div className="flex items-center gap-2">
                     <School2 className="w-4 h-4" />
-                    <span className="text-sm font-medium">Dudley Demo Mode</span>
+                    <span className="text-sm font-medium">Eastern Guilford Demo</span>
                   </div>
                   <Badge variant={bcaDemoMode ? "default" : "secondary"} className="text-xs">
                     {bcaDemoMode ? "ON" : "OFF"}
