@@ -35,10 +35,11 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     return true;
   });
 
-  // FIXED: Teacher tabs now include Feed + Reports moved from top + Rewards
+  // FIXED: Teacher tabs now include Feed + Reports moved from top + Rewards + Service (VIEW ONLY)
   const allTeacherTabs = [
     { id: 'feed', label: 'Feed', icon: '🏠' },
     { id: 'teacher-dashboard', label: 'Dashboard', icon: '👩‍🏫' },
+    { id: 'community-service', label: 'Service', icon: '🏥' },
     { id: 'reports', label: 'Reports', icon: '📊' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
@@ -52,10 +53,11 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
     return true;
   });
 
-  // Parent tabs for family engagement
+  // Parent tabs for family engagement (includes Service to VIEW volunteer opportunities)
   const allParentTabs = [
     { id: 'parent-dashboard', label: 'Parent', icon: '👨‍👩‍👧‍👦' },
     { id: 'family-dashboard', label: 'Family', icon: '🎯' },
+    { id: 'community-service', label: 'Service', icon: '🏥' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
   ];
