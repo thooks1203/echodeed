@@ -116,14 +116,14 @@ const roleConfigs: Record<string, RoleConfig> = {
   'school-leaders': {
     role: 'admin',
     title: 'EchoDeed for School Leaders',
-    subtitle: 'Everything x2vol Does, Plus Character Education & Parent Engagement',
-    heroTitle: 'Character Education That Actually Works',
-    heroDescription: 'Character development happens daily, not just during organized service events. Parent engagement = better student outcomes + reduced behavioral issues. Get the data school boards demand. Automated COPPA compliance, AI safety monitoring, and 95% reduction in service-hour paperwork.',
+    subtitle: 'The Culture Engine That Complements x2vol',
+    heroTitle: 'Capture the "Quiet Good" x2vol Doesn\'t Track',
+    heroDescription: 'x2vol tracks formal service hours for graduation requirements. EchoDeed captures daily informal kindness - the spontaneous acts that build school culture. Character development happens daily, not just during organized service events. Parent engagement = better student outcomes + reduced behavioral issues.',
     benefits: [
       {
         icon: BarChart3,
-        title: 'Daily Character Development (Not Just Service Hours)',
-        description: 'Track both anonymous kindness acts AND verified service hours. Character happens daily, not just during organized events.'
+        title: 'Culture Data x2vol Can\'t Capture',
+        description: 'Track anonymous daily kindness acts that build school culture. x2vol handles formal service hours, EchoDeed tracks the "quiet good" that creates belonging.'
       },
       {
         icon: Users,
@@ -132,19 +132,19 @@ const roleConfigs: Record<string, RoleConfig> = {
       },
       {
         icon: Shield,
-        title: 'Built-In Compliance & AI Safety',
-        description: 'COPPA automation, AI behavioral climate monitoring, content moderation. Legal liability protection baked in.'
+        title: 'Anonymous by Design (Reduces Cyberbullying)',
+        description: 'No profiles, no names, no performative kindness. COPPA-compliant K-8 direct engagement gives you a legal moat x2vol doesn\'t have.'
       },
       {
         icon: Clock,
-        title: '95% Paperwork Reduction',
-        description: 'Teachers verify service hours in 30 seconds with photo uploads. x2vol CSV export for district reporting.'
+        title: 'Works With x2vol (Export Ready)',
+        description: 'Verified service hours export to x2vol CSV format. Administrative ledger (x2vol) + culture engine (EchoDeed) = complete picture.'
       }
     ],
     proofPoints: [
-      { stat: 'x2vol+', label: 'service hours PLUS character' },
-      { stat: '15min → 30sec', label: 'verification time' },
-      { stat: '100%', label: 'parent engagement' }
+      { stat: '100%', label: 'anonymous (no cyberbullying)' },
+      { stat: 'Daily', label: 'culture data x2vol misses' },
+      { stat: 'x2vol', label: 'export compatible' }
     ],
     ctaText: 'Sign Up as School Leader',
     gradient: 'from-amber-500 to-orange-600',
