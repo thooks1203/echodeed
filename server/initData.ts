@@ -439,7 +439,7 @@ export async function initializeSampleData() {
     
     try {
       const { db } = await import('./db');
-      const { users, userTokens, communityServiceLogs } = await import('@shared/schema');
+      const { users, userTokens, communityServiceLogs, studentServiceSummaries } = await import('@shared/schema');
       const { eq } = await import('drizzle-orm');
       
       // Upsert Sofia Rodriguez user
@@ -527,6 +527,41 @@ export async function initializeSampleData() {
         log('✅ Sofia Rodriguez service hours created: 7.5 total hours (2 approved logs)');
       } else {
         log(`ℹ️  Sofia Rodriguez already has ${existingServiceLogs.length} service log(s), skipping creation`);
+      }
+      
+      // Create/update service summary with all required fields
+      const existingSummary = await db.select().from(studentServiceSummaries).where(eq(studentServiceSummaries.userId, 'student-001'));
+      
+      if (existingSummary.length === 0) {
+        await db.insert(studentServiceSummaries).values({
+          userId: 'student-001',
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+          totalHours: '7.50',
+          verifiedHours: '7.50',
+          pendingHours: '0',
+          rejectedHours: '0',
+          totalTokensEarned: 375,
+          totalServiceSessions: 2,
+          currentStreak: 0,
+          longestStreak: 0,
+          lastServiceDate: new Date('2025-09-25'),
+          annualGoalHours: 30,
+          currentSchoolYear: '2025-2026'
+        });
+        log('✅ Sofia Rodriguez service summary initialized');
+      } else {
+        await db.update(studentServiceSummaries)
+          .set({
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            totalHours: '7.50',
+            verifiedHours: '7.50',
+            pendingHours: '0',
+            totalServiceSessions: 2,
+            currentSchoolYear: '2025-2026',
+            lastServiceDate: new Date('2025-09-25')
+          })
+          .where(eq(studentServiceSummaries.userId, 'student-001'));
+        log('✅ Sofia Rodriguez service summary updated');
       }
       
       // Verify data was created correctly
