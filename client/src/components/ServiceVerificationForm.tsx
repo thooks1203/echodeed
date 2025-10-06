@@ -394,7 +394,7 @@ export function ServiceVerificationFormDownload() {
       type="button"
       variant="outline"
       onClick={downloadVerificationForm}
-      className="w-full border-2 border-blue-300 bg-blue-50 hover:bg-blue-100 text-blue-900 font-semibold"
+      className="w-full border-2 border-orange-500 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white font-bold shadow-lg hover:shadow-xl transition-all"
       data-testid="button-download-verification-form"
     >
       <Download className="w-4 h-4 mr-2" />
