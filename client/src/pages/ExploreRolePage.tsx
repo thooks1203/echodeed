@@ -49,7 +49,7 @@ const roleConfigs: Record<string, RoleConfig> = {
       {
         icon: Zap,
         title: 'Earn $ECHO Tokens',
-        description: 'Get rewarded for every kind act. Turn kindness into movie tickets, food, and more from Burlington Rd businesses.'
+        description: 'Get rewarded for every kind act. Turn kindness into movie tickets, food, entertainment, and more from local businesses.'
       },
       {
         icon: Clock,
@@ -59,7 +59,7 @@ const roleConfigs: Record<string, RoleConfig> = {
       {
         icon: Gift,
         title: 'Real Rewards, Real Fast',
-        description: 'Redeem at Chick-fil-A, Cook Out, McDonald\'s, Subway - all within walking distance of school.'
+        description: 'Redeem at Chick-fil-A, Cook Out, Greensboro Grasshoppers, Urban Air, and 20+ local Greensboro partners.'
       },
       {
         icon: Target,
