@@ -1397,8 +1397,26 @@ export default function AdminDashboard() {
                     </div>
                   </div>
                 </div>
-                <div className="bg-blue-50 p-3 rounded-lg text-sm text-gray-700">
-                  <strong className="text-blue-900">Platform Impact:</strong> One student's kindness inspired a school-wide movement. This is character education in action, not just data tracking.
+                
+                {/* Platform Impact - BOLD & PROMINENT */}
+                <div className="relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-purple-600 opacity-10"></div>
+                  <div className="relative bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-300 rounded-xl p-6">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center">
+                        <Zap className="w-6 h-6 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-700 to-purple-700 mb-2">
+                          Platform Impact
+                        </h3>
+                        <p className="text-lg font-semibold text-gray-900 leading-relaxed">
+                          One student's kindness inspired a school-wide movement. 
+                          <span className="text-blue-700"> This is character education in action, not just data tracking.</span>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </CardContent>
