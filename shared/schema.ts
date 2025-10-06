@@ -96,6 +96,8 @@ export const kindnessCounter = pgTable("kindness_counter", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+export type KindnessCounter = typeof kindnessCounter.$inferSelect;
+
 // User token tracking - now linked to authenticated users
 export const userTokens = pgTable("user_tokens", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),

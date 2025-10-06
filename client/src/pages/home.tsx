@@ -118,7 +118,7 @@ export default function Home() {
       console.log('✅ POSTS RECEIVED:', data?.length || 0, 'posts');
       return data;
     },
-    enabled: activeTab === 'feed', // Only fetch when on feed tab
+    enabled: true, // Always fetch posts
     staleTime: 0, // Always refetch
     refetchOnMount: true
   });

@@ -36,13 +36,16 @@ import { useAuth } from "@/hooks/useAuth";
 
 function Router() {
   const [location, setLocation] = useLocation();
-  const { isTeacher, isAdmin } = useAuth();
+  const { isTeacher, isAdmin, isParent } = useAuth();
   
-  // Hide floating rewards button for admin/teacher roles and certain pages
+  // Hide floating rewards button for admin/teacher/parent roles and certain pages
+  // Only students should see Echo Tokens since only they earn them
   const showFloatingButton = !isTeacher && 
                               !isAdmin && 
+                              !isParent && 
                               !location.includes('/admin') && 
                               !location.includes('/teacher') && 
+                              !location.includes('/parent') && 
                               !location.includes('/explore') && 
                               location !== '/rewards' && 
                               location !== '/' && 
