@@ -70,7 +70,7 @@ const roleConfigs: Record<string, RoleConfig> = {
     ],
     proofPoints: [
       { stat: '30 sec', label: 'service hour verification' },
-      { stat: '7 stores', label: 'walkable from school' },
+      { stat: '20+ partners', label: 'local reward businesses' },
       { stat: '100%', label: 'anonymous & safe' }
     ],
     ctaText: 'Sign Up as Student',
