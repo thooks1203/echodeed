@@ -18,6 +18,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ArrowLeft, Clock, MapPin, Users, Award, CheckCircle, Clock as Clock2, XCircle, Upload } from 'lucide-react';
 import { ObjectUploader } from '@/components/ObjectUploader';
+import { ServiceVerificationFormDownload } from '@/components/ServiceVerificationForm';
 import type { UploadResult } from '@uppy/core';
 
 // Community Service interfaces
@@ -372,6 +373,23 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
               </CardDescription>
             </CardHeader>
             <CardContent>
+              {/* Download Standardized Verification Form */}
+              <div className="mb-6 p-4 bg-gradient-to-r from-blue-50 to-purple-50 border-2 border-blue-200 rounded-lg">
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="flex-shrink-0 w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                    📄
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-gray-900 mb-1">Need a Verification Form?</h4>
+                    <p className="text-sm text-gray-700 mb-3">
+                      Download our standardized form to bring to your service organization. 
+                      It has all the fields teachers need - making approval faster and easier!
+                    </p>
+                    <ServiceVerificationFormDownload />
+                  </div>
+                </div>
+              </div>
+              
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                   <div className="grid gap-4 md:grid-cols-2">
