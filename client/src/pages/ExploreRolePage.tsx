@@ -235,6 +235,25 @@ export default function ExploreRolePage() {
             </CardContent>
           </Card>
 
+          {/* Administrative ROI Section - Only for School Leaders */}
+          {roleKey === 'school-leaders' && (
+            <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl mb-12">
+              <CardContent className="p-8 md:p-12">
+                <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 text-center">
+                  The Administrative ROI: Why EchoDeed Pays for Itself
+                </h2>
+                <p className="text-lg text-gray-600 mb-6 text-center font-medium">
+                  Beyond culture, the platform is designed as an operational efficiency tool.
+                </p>
+                <div className="bg-gradient-to-r from-amber-50 to-orange-50 rounded-xl p-6 border-l-4 border-amber-500">
+                  <p className="text-base text-gray-700 leading-relaxed">
+                    "It's an essential administrative tool. We mitigate operational risk with advanced data security, provide clear legal audit trails for behavioral insights, and reduce teacher workload by automating recognition and reporting. <strong className="text-amber-700">The platform pays for itself in saved staff time and operational efficiency.</strong>"
+                  </p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Proof Points */}
           <div className="grid grid-cols-3 gap-4 mb-12">
             {config.proofPoints.map((point, index) => (
