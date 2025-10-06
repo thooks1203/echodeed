@@ -54,8 +54,8 @@ const roleConfigs: Record<string, RoleConfig> = {
       },
       {
         icon: Clock,
-        title: 'Auto-Track Service Hours',
-        description: 'No more paper forms! Upload a photo, get instant verification from teachers. x2vol export ready.'
+        title: 'Photo Proof = Instant Approval',
+        description: 'Upload verification photos with your service details. Teachers see visual proof and approve in 30 seconds. Exports to x2vol when verified.'
       },
       {
         icon: Gift,
@@ -96,8 +96,8 @@ const roleConfigs: Record<string, RoleConfig> = {
       },
       {
         icon: Shield,
-        title: 'Verified Service Hours',
-        description: 'Photo verification + teacher approval. Complete audit trail for college applications. x2vol export ready.'
+        title: 'See Hours Instantly Verified',
+        description: 'Watch your child\'s hours get approved in real-time with photo proof. No more asking "did my hours get recorded?" - you see everything as it happens.'
       },
       {
         icon: TrendingUp,
