@@ -57,11 +57,7 @@ function Router() {
         <Route path="/emergency-seed" component={EmergencySeed} />
         <Route path="/demo-login" component={DemoLogin} />
         <Route path="/teacher-dashboard">
-          {(params) => {
-            const searchParams = new URLSearchParams(window.location.search);
-            const tab = searchParams.get('tab') || 'feed';
-            return <TeacherDashboard initialTab={tab} />;
-          }}
+          <TeacherDashboard />
         </Route>
         <Route path="/class-settings" component={ClassSettings} />
         <Route path="/support" component={SupportPage} />
