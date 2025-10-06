@@ -91,7 +91,7 @@ const roleConfigs: Record<string, RoleConfig> = {
       {
         icon: Gift,
         title: 'Dual Rewards System',
-        description: 'Your child earns tokens for high school rewards. You earn family rewards at Target, Amazon, LEGO Education.'
+        description: 'Your child earns tokens for dining, entertainment, and gift cards. You earn family rewards at Target and Amazon.'
       },
       {
         icon: Shield,
