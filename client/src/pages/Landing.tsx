@@ -158,7 +158,7 @@ export default function Landing() {
                     className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
                     data-testid="button-explore-admin"
                   >
-                    Explore for School Leaders
+                    For School Leaders
                   </Button>
                 </Link>
               </CardContent>
