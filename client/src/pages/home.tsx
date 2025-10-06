@@ -778,6 +778,8 @@ export default function Home() {
 
 
   // Default: Show main feed
+  console.log('🎯 RENDERING MAIN FEED - activeTab:', activeTab, 'posts:', posts?.length, 'postsLoading:', postsLoading);
+  
   return (
     <div style={{ 
       maxWidth: '430px', 
