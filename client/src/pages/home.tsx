@@ -1,6 +1,7 @@
 import { useState, useCallback, useEffect } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
+import { Heart, Zap } from 'lucide-react';
 import { AppHeader } from '@/components/AppHeader';
 import { FilterBar } from '@/components/FilterBar';
 import { KindnessFeed } from '@/components/KindnessFeed';
@@ -842,6 +843,21 @@ export default function Home() {
               </span>
             </div>
           </button>
+        </div>
+
+        {/* Visual Icon Legend - Always visible guide */}
+        <div className="px-4 py-3 bg-gradient-to-r from-purple-50 via-pink-50 to-purple-50 border-y border-purple-200/50">
+          <div className="flex items-center justify-center gap-6">
+            <div className="flex items-center gap-2">
+              <Heart className="w-5 h-5 text-red-500 fill-red-500" />
+              <span className="text-sm font-semibold text-gray-700">Love it!</span>
+            </div>
+            <div className="w-px h-6 bg-purple-300"></div>
+            <div className="flex items-center gap-2">
+              <Zap className="w-5 h-5 text-blue-500 fill-blue-500" />
+              <span className="text-sm font-semibold text-gray-700">I'll do this too!</span>
+            </div>
+          </div>
         </div>
         
         <KindnessFeed 
