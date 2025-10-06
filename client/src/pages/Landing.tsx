@@ -65,7 +65,7 @@ export default function Landing() {
             <div className="bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl p-5 border-2 border-cyan-300 shadow-xl">
               <div className="flex items-center gap-3 text-white">
                 <CheckCircle className="h-6 w-6 text-white drop-shadow-md" />
-                <span className="font-bold text-lg">Built-in COPPA compliance & AI safety</span>
+                <span className="font-bold text-lg">Privacy-first design & AI safety</span>
               </div>
             </div>
           </div>
