@@ -356,7 +356,7 @@ export default function ExploreRolePage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-600" />
-                  <span>COPPA Compliant</span>
+                  <span>FERPA Compliant</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-600" />
