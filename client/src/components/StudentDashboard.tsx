@@ -543,27 +543,41 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           ...(featureFlags.schoolYearChallenges ? [{ id: 'challenges', label: '🎯 Challenges' }] : []),
           { id: 'progress', label: '📈 Progress' },
           { id: 'settings', label: '⚙️ Settings' }
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            onClick={() => setActiveTab(tab.id as any)}
-            style={{
-              padding: '12px',
-              borderRadius: '8px',
-              border: 'none',
-              fontSize: '13px',
-              fontWeight: '600',
-              cursor: 'pointer',
-              transition: 'all 0.2s ease',
-              background: activeTab === tab.id ? 'linear-gradient(135deg, #10B981, #06B6D4)' : 'transparent',
-              color: activeTab === tab.id ? 'white' : '#6b7280',
-              boxShadow: activeTab === tab.id ? '0 2px 8px rgba(16, 185, 129, 0.3)' : 'none'
-            }}
-            data-testid={`student-tab-${tab.id}`}
-          >
-            {tab.label}
-          </button>
-        ))}
+        ].map((tab) => {
+          // Permanent vibrant colors for each tab
+          const tabColors = {
+            overview: { bg: 'linear-gradient(135deg, #667eea, #764ba2)', shadow: 'rgba(102, 126, 234, 0.4)' },
+            challenges: { bg: 'linear-gradient(135deg, #f093fb, #f5576c)', shadow: 'rgba(240, 147, 251, 0.4)' },
+            progress: { bg: 'linear-gradient(135deg, #4facfe, #00f2fe)', shadow: 'rgba(79, 172, 254, 0.4)' },
+            settings: { bg: 'linear-gradient(135deg, #43e97b, #38f9d7)', shadow: 'rgba(67, 233, 123, 0.4)' }
+          };
+          
+          const colors = tabColors[tab.id as keyof typeof tabColors] || { bg: 'linear-gradient(135deg, #667eea, #764ba2)', shadow: 'rgba(102, 126, 234, 0.4)' };
+          
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as any)}
+              style={{
+                padding: '12px',
+                borderRadius: '8px',
+                border: activeTab === tab.id ? '2px solid white' : '2px solid transparent',
+                fontSize: '13px',
+                fontWeight: '600',
+                cursor: 'pointer',
+                transition: 'all 0.2s ease',
+                background: colors.bg,
+                color: 'white',
+                opacity: activeTab === tab.id ? 1 : 0.7,
+                boxShadow: activeTab === tab.id ? `0 4px 12px ${colors.shadow}` : 'none',
+                transform: activeTab === tab.id ? 'translateY(-2px)' : 'none'
+              }}
+              data-testid={`student-tab-${tab.id}`}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
       </div>
 
       {/* Tab Content */}
