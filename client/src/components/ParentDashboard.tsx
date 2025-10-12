@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import PushNotificationSetup from '@/components/PushNotificationSetup';
 
 interface UserSummerProgress {
   progress: {
@@ -513,6 +514,11 @@ export function ParentDashboard() {
 
         {activeTab === 'notifications' && (
           <div>
+            {/* Push Notification Setup */}
+            <div style={{ marginBottom: '20px' }}>
+              <PushNotificationSetup userType="parent" />
+            </div>
+
             <div style={{
               background: 'white',
               borderRadius: '12px',
