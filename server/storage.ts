@@ -57,6 +57,7 @@ import {
   contentModerationQueue,
   behavioralTrendAnalytics,
   climateMetrics,
+  studentNotificationPreferences,
   type User,
   type UpsertUser,
   type KindnessPost,
@@ -200,6 +201,8 @@ import {
   type InsertBehavioralTrendAnalytics,
   type ClimateMetrics,
   type InsertClimateMetrics,
+  type StudentNotificationPreferences,
+  type InsertStudentNotificationPreferences,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte, lte, isNotNull, isNull, inArray, gt, getTableColumns } from "drizzle-orm";
@@ -768,6 +771,10 @@ export interface IStorage {
   // AI Behavioral Mitigation - Climate Metrics
   createClimateMetrics(metrics: InsertClimateMetrics): Promise<ClimateMetrics>;
   getClimateMetrics(schoolId: string, dateRange?: { start: Date; end: Date }): Promise<ClimateMetrics[]>;
+  
+  // Student Notification Preferences
+  getNotificationPreferences(userId: string): Promise<StudentNotificationPreferences | undefined>;
+  updateNotificationPreferences(userId: string, updates: Partial<StudentNotificationPreferences>): Promise<StudentNotificationPreferences | undefined>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -6204,6 +6211,33 @@ export class DatabaseStorage implements IStorage {
     }
     
     return await query.orderBy(desc(climateMetrics.metricDate));
+  }
+
+  // ============================================================================
+  // STUDENT NOTIFICATION PREFERENCES
+  // ============================================================================
+  
+  async getNotificationPreferences(userId: string): Promise<StudentNotificationPreferences | undefined> {
+    const [preferences] = await db
+      .select()
+      .from(studentNotificationPreferences)
+      .where(eq(studentNotificationPreferences.userId, userId))
+      .limit(1);
+    
+    return preferences;
+  }
+
+  async updateNotificationPreferences(userId: string, updates: Partial<StudentNotificationPreferences>): Promise<StudentNotificationPreferences | undefined> {
+    const [updated] = await db
+      .update(studentNotificationPreferences)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(eq(studentNotificationPreferences.userId, userId))
+      .returning();
+    
+    return updated;
   }
 }
 

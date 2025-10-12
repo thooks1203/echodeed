@@ -83,6 +83,7 @@ import { emergencyContactEncryption } from "./services/emergencyContactEncryptio
 import { requireCounselorRole, logCounselorAction, validateCrisisPermissions, createSchoolFilter } from "./middleware/counselorAuth";
 import { mandatoryReportingService } from "./services/mandatoryReporting";
 import { enforceCOPPA, requireCOPPACompliance } from "./middleware/coppaEnforcement";
+import { dailyEncouragementService } from "./services/dailyEncouragementNotifications";
 
 // 🔒 TEACHER AUTHORIZATION MIDDLEWARE
 const requireTeacherRole = async (req: any, res: any, next: any) => {
@@ -2154,6 +2155,71 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       res.json(userTokens);
     } catch (error: any) {
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // ===== STUDENT NOTIFICATION PREFERENCES API =====
+  
+  // Get notification preferences for current user
+  app.get('/api/notifications/preferences', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const preferences = await storage.getNotificationPreferences(userId);
+      
+      if (!preferences) {
+        // Initialize with defaults if doesn't exist
+        await dailyEncouragementService.initializePreferences(userId);
+        const newPreferences = await storage.getNotificationPreferences(userId);
+        return res.json(newPreferences);
+      }
+      
+      res.json(preferences);
+    } catch (error: any) {
+      console.error('Error fetching notification preferences:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Update notification preferences
+  app.put('/api/notifications/preferences', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const updates = req.body;
+      
+      const updated = await storage.updateNotificationPreferences(userId, updates);
+      
+      console.log(`✅ Notification preferences updated for user ${userId}:`, {
+        enabled: updates.dailyEncouragementEnabled,
+        frequency: updates.notificationFrequency
+      });
+      
+      res.json(updated);
+    } catch (error: any) {
+      console.error('Error updating notification preferences:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Admin endpoint to trigger manual notification check (for testing)
+  app.post('/api/notifications/send-now', isAuthenticated, async (req: any, res) => {
+    try {
+      // Only admins can trigger manual notifications
+      const userRole = req.user.claims.schoolRole;
+      if (userRole !== 'admin') {
+        return res.status(403).json({ message: 'Unauthorized - Admin only' });
+      }
+      
+      const result = await dailyEncouragementService.processNotifications();
+      
+      res.json({
+        success: true,
+        sent: result.sent,
+        failed: result.failed,
+        message: `Processed notifications: ${result.sent} sent, ${result.failed} failed`
+      });
+    } catch (error: any) {
+      console.error('Error processing notifications:', error);
       res.status(500).json({ message: error.message });
     }
   });

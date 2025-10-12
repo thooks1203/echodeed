@@ -1446,12 +1446,37 @@ export const serviceOpportunitySignups = pgTable("service_opportunity_signups", 
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Student Notification Preferences - Daily encouragement opt-in/opt-out
+export const studentNotificationPreferences = pgTable("student_notification_preferences", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().unique().references(() => users.id),
+  
+  // Daily Encouragement Settings
+  dailyEncouragementEnabled: integer("daily_encouragement_enabled").default(1).notNull(), // 1 = enabled, 0 = disabled
+  notificationFrequency: varchar("notification_frequency", { length: 20 }).default("daily").notNull(), // daily, every_other_day, weekly
+  preferredTime: varchar("preferred_time", { length: 5 }).default("09:00").notNull(), // HH:MM format (24-hour)
+  timezone: varchar("timezone", { length: 50 }).default("America/New_York").notNull(),
+  
+  // Delivery Methods
+  pushNotificationsEnabled: integer("push_notifications_enabled").default(1).notNull(),
+  emailNotificationsEnabled: integer("email_notifications_enabled").default(0).notNull(),
+  
+  // Tracking
+  lastNotificationSent: timestamp("last_notification_sent"),
+  totalNotificationsSent: integer("total_notifications_sent").default(0).notNull(),
+  totalNotificationsOpened: integer("total_notifications_opened").default(0).notNull(),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Insert Schemas
 export const insertContentModerationQueueSchema = createInsertSchema(contentModerationQueue).omit({ id: true, flaggedAt: true, createdAt: true });
 export const insertBehavioralTrendAnalyticsSchema = createInsertSchema(behavioralTrendAnalytics).omit({ id: true, generatedAt: true });
 export const insertClimateMetricsSchema = createInsertSchema(climateMetrics).omit({ id: true, calculatedAt: true });
 export const insertServiceOpportunitySchema = createInsertSchema(serviceOpportunities).omit({ id: true, createdAt: true, updatedAt: true, totalSignups: true, totalCompleted: true, totalHoursGenerated: true });
 export const insertServiceOpportunitySignupSchema = createInsertSchema(serviceOpportunitySignups).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertStudentNotificationPreferencesSchema = createInsertSchema(studentNotificationPreferences).omit({ id: true, createdAt: true, updatedAt: true });
 
 // Type Exports
 export type ContentModerationQueue = typeof contentModerationQueue.$inferSelect;
@@ -1464,3 +1489,5 @@ export type ServiceOpportunity = typeof serviceOpportunities.$inferSelect;
 export type InsertServiceOpportunity = z.infer<typeof insertServiceOpportunitySchema>;
 export type ServiceOpportunitySignup = typeof serviceOpportunitySignups.$inferSelect;
 export type InsertServiceOpportunitySignup = z.infer<typeof insertServiceOpportunitySignupSchema>;
+export type StudentNotificationPreferences = typeof studentNotificationPreferences.$inferSelect;
+export type InsertStudentNotificationPreferences = z.infer<typeof insertStudentNotificationPreferencesSchema>;
