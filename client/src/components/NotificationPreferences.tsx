@@ -118,6 +118,14 @@ export function NotificationPreferences() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
+        {/* Sample Message Preview */}
+        <div className="p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
+          <p className="text-xs font-semibold text-blue-600 mb-2">📱 SAMPLE MESSAGE</p>
+          <p className="font-medium text-gray-900 mb-1">💫 Make Today Count!</p>
+          <p className="text-sm text-gray-700">
+            Do something kind, post it on EchoDeed, and echo others' posts! Your engagement keeps our kindness community thriving.
+          </p>
+        </div>
         {/* Main Toggle */}
         <div className="flex items-center justify-between">
           <div className="space-y-0.5">
