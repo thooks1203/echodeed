@@ -114,7 +114,7 @@ export function NotificationPreferences() {
           Daily Encouragement
         </CardTitle>
         <CardDescription>
-          Get daily messages of encouragement to inspire kindness
+          Daily messages are ON by default to inspire kindness. You can change the frequency or turn them off anytime.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
@@ -200,9 +200,9 @@ export function NotificationPreferences() {
 
         {/* Disabled State Message */}
         {!enabled && (
-          <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
-            <p className="text-sm text-gray-600">
-              Enable daily encouragement to receive positive messages that inspire you to spread kindness. You can turn it off anytime!
+          <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+            <p className="text-sm text-gray-700">
+              💡 <strong>Notifications are currently OFF.</strong> Turn them back on to receive daily inspiration to spread kindness! Messages are set to daily by default, but you can always change the frequency or opt out.
             </p>
           </div>
         )}
