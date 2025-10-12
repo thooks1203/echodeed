@@ -3,6 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { BottomNavigation } from '@/components/BottomNavigation';
 import { BackButton } from '@/components/BackButton';
+import { NotificationPreferences } from '@/components/NotificationPreferences';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
@@ -530,7 +531,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
       {/* Tab Navigation */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: featureFlags.schoolYearChallenges ? '1fr 1fr 1fr' : '1fr 1fr',
+        gridTemplateColumns: featureFlags.schoolYearChallenges ? '1fr 1fr 1fr 1fr' : '1fr 1fr 1fr',
         background: '#f3f4f6',
         borderRadius: '12px',
         padding: '4px',
@@ -540,7 +541,8 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         {[
           { id: 'overview', label: '📊 Overview' },
           ...(featureFlags.schoolYearChallenges ? [{ id: 'challenges', label: '🎯 Challenges' }] : []),
-          { id: 'progress', label: '📈 Progress' }
+          { id: 'progress', label: '📈 Progress' },
+          { id: 'settings', label: '⚙️ Settings' }
         ].map((tab) => (
           <button
             key={tab.id}
@@ -828,6 +830,12 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
               <div style={{ fontSize: '12px', color: '#6b7280' }}>Total Points</div>
             </div>
           </div>
+        </div>
+      )}
+
+      {activeTab === 'settings' && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <NotificationPreferences />
         </div>
       )}
 
