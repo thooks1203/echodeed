@@ -8,67 +8,67 @@ import { db } from '../db';
 import { studentNotificationPreferences, users } from '@shared/schema';
 import { eq, and, sql } from 'drizzle-orm';
 
-// 🌟 Pool of encouraging messages for students
+// 🌟 Pool of encouraging messages with actionable reminders for students
 const ENCOURAGEMENT_MESSAGES = [
   {
-    title: "🌟 You're Making a Difference!",
-    body: "Every act of kindness creates a ripple effect. Your positive actions inspire others to do good too!",
+    title: "🌟 Share Your Kindness!",
+    body: "Did something kind today? Post it on the feed and inspire others! Your story could be the motivation someone needs right now.",
   },
   {
-    title: "💪 Keep Going!",
-    body: "Small acts of kindness can have a big impact. What kind gesture will you share today?",
+    title: "💪 Take Action Today!",
+    body: "Small acts create big impact! Do something kind, then share it on EchoDeed. What positive action will you take today?",
   },
   {
-    title: "✨ You're Awesome!",
-    body: "Your kindness matters! Every positive action you take makes our school community stronger.",
+    title: "✨ Spread the Love!",
+    body: "Check the kindness feed and echo a post that inspires you! Your reactions encourage others to keep being kind.",
   },
   {
-    title: "🎯 Challenge Yourself!",
-    body: "Try something new today - hold a door, share a compliment, or help a classmate. You've got this!",
+    title: "🎯 Your Daily Challenge!",
+    body: "Try this: Hold a door, share a compliment, or help someone. Then post about it so others can join the kindness wave!",
   },
   {
-    title: "🌈 Spread Joy Today!",
-    body: "Your smile and kind words have the power to brighten someone's entire day. Who will you uplift?",
+    title: "🌈 Be Someone's Rainbow!",
+    body: "Your smile can brighten someone's day! Do something kind, share it on the feed, and watch the ripple effect happen.",
   },
   {
-    title: "🚀 You're on Fire!",
-    body: "Keep up the amazing work! Your consistent kindness is building a better school for everyone.",
+    title: "🚀 Keep Your Streak Alive!",
+    body: "Post a kind deed today to keep your streak going! Even small acts of kindness count and inspire our community.",
   },
   {
-    title: "💖 Be the Change!",
-    body: "The world needs more people like you who choose kindness every single day. Thank you for being you!",
+    title: "💖 Make Someone Smile!",
+    body: "Create a moment of joy for someone, then share your story on EchoDeed. Browse the feed and echo posts that warm your heart!",
   },
   {
-    title: "🎨 Get Creative with Kindness!",
-    body: "Kindness comes in many forms - a note, a high-five, helping hands. What's your kindness style today?",
+    title: "🎨 Get Creative Today!",
+    body: "Kindness has endless forms! Try something new - help, compliment, or celebrate someone. Share it and inspire others to join!",
   },
   {
-    title: "🏆 You're a Kindness Champion!",
-    body: "Champions show up every day and give their best. Your kindness streak is inspiring!",
+    title: "🏆 Feed Your Kindness Streak!",
+    body: "Champions post daily! Share what kind act you did today, or echo an inspiring post from the feed to stay active.",
   },
   {
-    title: "🌻 Plant Seeds of Kindness!",
-    body: "Just like flowers grow from seeds, your kind acts today will bloom into something beautiful tomorrow.",
+    title: "🌻 Plant Kindness Seeds!",
+    body: "Your acts today bloom tomorrow! Post your kindness on the feed and watch others get inspired to do the same.",
   },
   {
-    title: "⭐ Shine Bright!",
-    body: "Your positive energy lights up our school! Keep spreading those good vibes.",
+    title: "⭐ Light Up the Feed!",
+    body: "Check out the amazing kindness on the feed! Echo posts you love and add your own kind deed to brighten someone's day.",
   },
   {
-    title: "🤝 Together We're Stronger!",
-    body: "Every kind act you do contributes to our amazing school community. You're part of something special!",
+    title: "🤝 Grow Our Community!",
+    body: "Every post strengthens our school! Share a kind act you did or saw, and echo others to build our culture of kindness.",
   },
   {
-    title: "🎁 Give the Gift of Kindness!",
-    body: "The best gifts don't come wrapped - they come from the heart. Share your kindness today!",
+    title: "🎁 Give & Share Kindness!",
+    body: "Do something kind from the heart, then gift it to our community by posting on the feed. Your story inspires others!",
   },
   {
-    title: "🌟 You Inspire Others!",
-    body: "When you choose kindness, you inspire others to do the same. You're a role model!",
+    title: "🌟 Inspire the Ripple!",
+    body: "Post your kindness to start a chain reaction! Browse the feed, echo posts that move you, and create your own kindness wave.",
   },
   {
-    title: "💫 Magic Happens!",
-    body: "There's something magical about kindness - it always comes back to you. Keep spreading the magic!",
+    title: "💫 Make Today Count!",
+    body: "Do something kind, post it on EchoDeed, and echo others' posts! Your engagement keeps our kindness community thriving.",
   },
 ];
 
