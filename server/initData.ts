@@ -23,6 +23,39 @@ export async function initializeSampleData() {
       throw new Error(`Database connection failed during startup: ${dbError.message}`);
     }
     
+    // 📢 Create notification preferences table if it doesn't exist (supports dev & production)
+    try {
+      log('📢 Setting up student notification system...');
+      const { db } = await import('./db');
+      const { sql } = await import('drizzle-orm');
+      
+      await db.execute(sql`
+        CREATE TABLE IF NOT EXISTS student_notification_preferences (
+          id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
+          user_id VARCHAR NOT NULL UNIQUE REFERENCES users(id),
+          
+          daily_encouragement_enabled INTEGER NOT NULL DEFAULT 1,
+          notification_frequency VARCHAR(20) NOT NULL DEFAULT 'daily',
+          preferred_time VARCHAR(5) NOT NULL DEFAULT '09:00',
+          timezone VARCHAR(50) NOT NULL DEFAULT 'America/New_York',
+          
+          push_notifications_enabled INTEGER NOT NULL DEFAULT 1,
+          email_notifications_enabled INTEGER NOT NULL DEFAULT 0,
+          
+          last_notification_sent TIMESTAMP,
+          total_notifications_sent INTEGER NOT NULL DEFAULT 0,
+          total_notifications_opened INTEGER NOT NULL DEFAULT 0,
+          
+          created_at TIMESTAMP NOT NULL DEFAULT NOW(),
+          updated_at TIMESTAMP NOT NULL DEFAULT NOW()
+        );
+      `);
+      
+      log('✅ Student notification preferences table ready (dev & production)');
+    } catch (error: any) {
+      log(`⚠️ Could not create notification preferences table: ${error.message}`);
+    }
+    
     // Update schools with enrollment codes for secure student registration
     try {
       log('🔐 Updating schools with enrollment codes...');
