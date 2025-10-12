@@ -34,13 +34,15 @@ export class FamilyChallengeEngine {
     // ... (will add more themes as needed)
   ];
 
-  // Get current week of year (1-52)
+  // Get current week of year (1-52), but return 1-12 for the 12-week cycle
   getCurrentWeek(): number {
     const now = new Date();
     const start = new Date(now.getFullYear(), 0, 1);
     const diff = now.getTime() - start.getTime();
     const oneWeek = 1000 * 60 * 60 * 24 * 7;
-    return Math.ceil(diff / oneWeek);
+    const weekOfYear = Math.ceil(diff / oneWeek);
+    // Map to weeks 1-12, cycling through for the 12-week program
+    return ((weekOfYear - 1) % 12) + 1;
   }
 
   // Get theme for specific week

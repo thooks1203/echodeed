@@ -96,7 +96,7 @@ export default function FamilyDashboard({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'family'>('family');
+  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'9-12'>('9-12');
   const [selectedChallenge, setSelectedChallenge] = useState<FamilyChallenge | null>(null);
   const [selectedFundraiser, setSelectedFundraiser] = useState<SchoolFundraiser | null>(null);
   const [donationAmount, setDonationAmount] = useState<string>('25');
@@ -107,9 +107,9 @@ export default function FamilyDashboard({
     retry: false,
   });
 
-  // Fetch family challenges for age group
+  // Fetch summer challenges (same as family challenges for high school)
   const { data: challenges, isLoading: challengesLoading } = useQuery({
-    queryKey: ['/api/family-challenges/challenges', selectedAgeGroup],
+    queryKey: ['/api/summer/challenges', selectedAgeGroup],
     retry: false,
   });
 
