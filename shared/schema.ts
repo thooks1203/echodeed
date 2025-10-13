@@ -1470,6 +1470,25 @@ export const studentNotificationPreferences = pgTable("student_notification_pref
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Student Goals - Personal goal-setting and progress tracking
+export const studentGoals = pgTable("student_goals", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id").notNull(),
+  goalType: varchar("goal_type", { length: 50 }).notNull(), // kindness_acts, service_hours, streak, helping_others, custom
+  title: varchar("title", { length: 200 }).notNull(),
+  description: text("description"),
+  targetValue: integer("target_value").notNull(), // Numeric target
+  currentValue: integer("current_value").default(0).notNull(),
+  unit: varchar("unit", { length: 50 }).notNull(), // acts, hours, days, people
+  startDate: timestamp("start_date").defaultNow().notNull(),
+  targetDate: timestamp("target_date").notNull(),
+  status: varchar("status", { length: 20 }).default("in_progress").notNull(), // in_progress, completed, abandoned
+  completedAt: timestamp("completed_at"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Insert Schemas
 export const insertContentModerationQueueSchema = createInsertSchema(contentModerationQueue).omit({ id: true, flaggedAt: true, createdAt: true });
 export const insertBehavioralTrendAnalyticsSchema = createInsertSchema(behavioralTrendAnalytics).omit({ id: true, generatedAt: true });
@@ -1477,6 +1496,7 @@ export const insertClimateMetricsSchema = createInsertSchema(climateMetrics).omi
 export const insertServiceOpportunitySchema = createInsertSchema(serviceOpportunities).omit({ id: true, createdAt: true, updatedAt: true, totalSignups: true, totalCompleted: true, totalHoursGenerated: true });
 export const insertServiceOpportunitySignupSchema = createInsertSchema(serviceOpportunitySignups).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertStudentNotificationPreferencesSchema = createInsertSchema(studentNotificationPreferences).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertStudentGoalSchema = createInsertSchema(studentGoals).omit({ id: true, createdAt: true, updatedAt: true });
 
 // Type Exports
 export type ContentModerationQueue = typeof contentModerationQueue.$inferSelect;
@@ -1491,3 +1511,5 @@ export type ServiceOpportunitySignup = typeof serviceOpportunitySignups.$inferSe
 export type InsertServiceOpportunitySignup = z.infer<typeof insertServiceOpportunitySignupSchema>;
 export type StudentNotificationPreferences = typeof studentNotificationPreferences.$inferSelect;
 export type InsertStudentNotificationPreferences = z.infer<typeof insertStudentNotificationPreferencesSchema>;
+export type StudentGoal = typeof studentGoals.$inferSelect;
+export type InsertStudentGoal = z.infer<typeof insertStudentGoalSchema>;

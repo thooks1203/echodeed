@@ -775,6 +775,12 @@ export interface IStorage {
   // Student Notification Preferences
   getNotificationPreferences(userId: string): Promise<StudentNotificationPreferences | undefined>;
   updateNotificationPreferences(userId: string, updates: Partial<StudentNotificationPreferences>): Promise<StudentNotificationPreferences | undefined>;
+  
+  // Student Goals - Personal goal-setting and progress tracking
+  getStudentGoals(userId: string): Promise<StudentGoal[]>;
+  createStudentGoal(goalData: InsertStudentGoal): Promise<StudentGoal>;
+  updateStudentGoal(id: string, userId: string, updates: Partial<StudentGoal>): Promise<StudentGoal | undefined>;
+  deleteStudentGoal(id: string, userId: string): Promise<boolean>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -6238,6 +6244,55 @@ export class DatabaseStorage implements IStorage {
       .returning();
     
     return updated;
+  }
+
+  // ============================================================================
+  // STUDENT GOALS - Personal goal-setting and progress tracking
+  // ============================================================================
+  
+  async getStudentGoals(userId: string): Promise<StudentGoal[]> {
+    return await db
+      .select()
+      .from(studentGoals)
+      .where(eq(studentGoals.userId, userId))
+      .orderBy(desc(studentGoals.createdAt));
+  }
+
+  async createStudentGoal(goalData: InsertStudentGoal): Promise<StudentGoal> {
+    const [goal] = await db
+      .insert(studentGoals)
+      .values(goalData)
+      .returning();
+    
+    return goal;
+  }
+
+  async updateStudentGoal(id: string, userId: string, updates: Partial<StudentGoal>): Promise<StudentGoal | undefined> {
+    const [updated] = await db
+      .update(studentGoals)
+      .set({
+        ...updates,
+        updatedAt: new Date(),
+      })
+      .where(and(
+        eq(studentGoals.id, id),
+        eq(studentGoals.userId, userId)
+      ))
+      .returning();
+    
+    return updated;
+  }
+
+  async deleteStudentGoal(id: string, userId: string): Promise<boolean> {
+    const result = await db
+      .delete(studentGoals)
+      .where(and(
+        eq(studentGoals.id, id),
+        eq(studentGoals.userId, userId)
+      ))
+      .returning();
+    
+    return result.length > 0;
   }
 }
 

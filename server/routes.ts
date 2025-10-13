@@ -6476,6 +6476,82 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 🎯 STUDENT GOALS API - Personal goal-setting and progress tracking
+  
+  // Get all goals for a student
+  app.get('/api/student-goals', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const goals = await storage.getStudentGoals(userId);
+      res.json(goals);
+    } catch (error: any) {
+      console.error('Failed to get student goals:', error);
+      res.status(500).json({ error: 'Failed to get goals' });
+    }
+  });
+
+  // Create a new goal
+  app.post('/api/student-goals', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const goalData = {
+        ...req.body,
+        userId,
+        schoolId: req.user?.schoolId || 'default-school'
+      };
+
+      const newGoal = await storage.createStudentGoal(goalData);
+      res.json(newGoal);
+    } catch (error: any) {
+      console.error('Failed to create student goal:', error);
+      res.status(500).json({ error: 'Failed to create goal' });
+    }
+  });
+
+  // Update goal progress
+  app.patch('/api/student-goals/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const { id } = req.params;
+      const updates = req.body;
+
+      const updatedGoal = await storage.updateStudentGoal(id, userId, updates);
+      res.json(updatedGoal);
+    } catch (error: any) {
+      console.error('Failed to update student goal:', error);
+      res.status(500).json({ error: 'Failed to update goal' });
+    }
+  });
+
+  // Delete/abandon a goal
+  app.delete('/api/student-goals/:id', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'Unauthorized' });
+      }
+
+      const { id } = req.params;
+      await storage.deleteStudentGoal(id, userId);
+      res.json({ success: true, message: 'Goal deleted successfully' });
+    } catch (error: any) {
+      console.error('Failed to delete student goal:', error);
+      res.status(500).json({ error: 'Failed to delete goal' });
+    }
+  });
+
   // SEL Standards management
   app.post('/api/school/sel-standards', isAuthenticated, async (req: any, res) => {
     try {
