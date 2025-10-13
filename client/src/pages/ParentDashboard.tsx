@@ -803,11 +803,14 @@ function PrincipalsBlogSection() {
                   const element = document.getElementById('parent-community-section');
                   element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }}
-                variant="outline"
-                className="border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+                className="bg-gradient-to-r from-emerald-500 via-teal-500 to-green-500 hover:from-emerald-600 hover:via-teal-600 hover:to-green-600 text-white font-semibold shadow-lg hover:shadow-xl transition-all border-4 border-transparent animate-pulse hover:animate-none"
+                style={{
+                  animation: 'pulse-border 2s ease-in-out infinite',
+                  boxShadow: '0 0 20px rgba(16, 185, 129, 0.5), 0 0 40px rgba(16, 185, 129, 0.3)'
+                }}
                 data-testid="button-jump-to-community"
               >
-                <Users className="h-4 w-4 mr-2" />
+                <Users className="h-5 w-5 mr-2" />
                 Jump to Parent Community
               </Button>
               {canCreatePost && (

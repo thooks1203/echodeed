@@ -122,6 +122,17 @@
   }
 }
 
+@keyframes pulse-border {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.5), 0 0 40px rgba(16, 185, 129, 0.3), 0 0 0 0 rgba(16, 185, 129, 0.7);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(16, 185, 129, 0.8), 0 0 60px rgba(16, 185, 129, 0.5), 0 0 0 4px rgba(16, 185, 129, 0.4);
+    transform: scale(1.02);
+  }
+}
+
 /* EchoDeed™ Welcome Page Magical Animations */
 
 @keyframes gradientShift {
