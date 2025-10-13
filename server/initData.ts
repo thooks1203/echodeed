@@ -1267,6 +1267,109 @@ Principal, Eastern Guilford High School`,
       log(`⚠️ Could not initialize blog posts: ${error.message}`);
     }
 
+    // Initialize Parent Community posts (parent-to-parent sharing)
+    try {
+      log(`👪 Initializing Parent Community posts...`);
+      const { parentCommunityPosts, users } = await import('@shared/schema');
+      const { eq } = await import('drizzle-orm');
+      
+      // Check if posts already exist
+      const existingCommunityPosts = await db.select().from(parentCommunityPosts).limit(1);
+      
+      if (existingCommunityPosts.length === 0) {
+        // Create sample parent users for community posts
+        const parentUsers = [
+          { id: 'parent-maria-rodriguez', name: 'Maria Rodriguez', email: 'maria.rodriguez@example.com' },
+          { id: 'parent-james-chen', name: 'James Chen', email: 'james.chen@example.com' },
+          { id: 'parent-sarah-williams', name: 'Sarah Williams', email: 'sarah.williams@example.com' },
+          { id: 'parent-david-kim', name: 'David Kim', email: 'david.kim@example.com' }
+        ];
+
+        // Create parent user accounts if they don't exist
+        for (const parent of parentUsers) {
+          const existingUser = await db.select().from(users).where(eq(users.id, parent.id)).limit(1);
+          if (existingUser.length === 0) {
+            await db.insert(users).values({
+              id: parent.id,
+              email: parent.email,
+              firstName: parent.name.split(' ')[0],
+              lastName: parent.name.split(' ')[1],
+              schoolRole: 'parent',
+              schoolId: '1', // Eastern Guilford
+            });
+          }
+        }
+
+        // Sample parent community posts
+        const communityPosts = [
+          {
+            authorId: 'parent-maria-rodriguez',
+            authorName: 'Maria Rodriguez',
+            schoolId: '1',
+            title: 'Morning Routine Tips That Changed Everything',
+            content: `I wanted to share what's been working for our family. We started a "kindness journal" at breakfast where each person shares one kind act they plan to do that day. It's been amazing to see my kids thinking about kindness first thing in the morning!\n\nWe also keep it simple - just 2 minutes while eating breakfast. The kids love it and it's become a natural part of our routine. Anyone else have morning rituals that promote kindness?`,
+            category: 'parenting-tips',
+            likesCount: 12,
+            commentsCount: 8,
+          },
+          {
+            authorId: 'parent-james-chen',
+            authorName: 'James Chen',
+            schoolId: '1',
+            title: 'Thank You Eastern Guilford Teachers! 🙏',
+            content: `I just want to publicly thank the incredible teachers at Eastern Guilford. My son came home yesterday excited to tell me about the kindness act he did at school - helping a classmate understand math homework.\n\nThe teachers here don't just teach academics, they're building character. We're so grateful to be part of this community. Thank you Dr. Harris and all the staff!`,
+            category: 'celebrations',
+            likesCount: 24,
+            commentsCount: 15,
+          },
+          {
+            authorId: 'parent-sarah-williams',
+            authorName: 'Sarah Williams',
+            schoolId: '1',
+            title: 'How Do You Handle Screen Time vs. Real World Kindness?',
+            content: `Looking for advice from other parents. My daughter loves using EchoDeed to track her kindness, but I also want to make sure she's doing acts of kindness beyond the app.\n\nHow do you balance encouraging kids to log their kindness while also teaching them to do good deeds without needing recognition? Would love to hear what's working for your family!`,
+            category: 'questions',
+            likesCount: 18,
+            commentsCount: 22,
+          },
+          {
+            authorId: 'parent-david-kim',
+            authorName: 'David Kim',
+            schoolId: '1',
+            title: 'Local Resources: Free Character Ed Books at Greensboro Library',
+            content: `Heads up parents! The Greensboro Public Library just added a new "Character Education" section with free books about kindness, empathy, and service.\n\nI took my kids there last weekend and they loved it. The librarian said they partnered with local schools including Eastern Guilford to build this collection. Great supplement to what they're learning in school!\n\nAddress: 219 N Church St, Greensboro, NC 27401`,
+            category: 'resources',
+            likesCount: 31,
+            commentsCount: 12,
+          },
+          {
+            authorId: 'parent-maria-rodriguez',
+            authorName: 'Maria Rodriguez',
+            schoolId: '1',
+            title: 'Service Hour Success Story - Worth Sharing!',
+            content: `My daughter Sofia just completed her first 10 hours of community service at the Greensboro Science Center, and I'm so proud! 🎉\n\nWhat made it special: she didn't just do it for the hours. She genuinely loved helping educate younger kids about animals. Now she wants to volunteer there all summer!\n\nThank you EchoDeed for making service hours trackable and rewarding. It gave her that initial motivation, but now she's doing it because she loves it. That's the real win!`,
+            category: 'celebrations',
+            likesCount: 45,
+            commentsCount: 18,
+          },
+        ];
+
+        // Insert posts with proper timestamps (newest first in the feed)
+        for (let i = 0; i < communityPosts.length; i++) {
+          await db.insert(parentCommunityPosts).values({
+            ...communityPosts[i],
+            createdAt: new Date(Date.now() - i * 2 * 24 * 60 * 60 * 1000), // Stagger posts over 10 days
+          });
+        }
+
+        log(`✅ Created ${communityPosts.length} Parent Community posts for demo`);
+      } else {
+        log(`ℹ️  Parent Community posts already exist, skipping creation`);
+      }
+    } catch (error: any) {
+      log(`⚠️ Could not initialize parent community posts: ${error.message}`);
+    }
+
     log(`✓ Successfully initialized ${samplePosts.length} sample posts and updated global counter`);
   } catch (error: any) {
     log(`✗ Error initializing sample data: ${error.message}`);
