@@ -46,6 +46,7 @@ import { useDemoSchool } from '@/contexts/DemoSchoolContext';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { HelpButton, helpContent } from '@/components/HelpButton';
+import type { PrincipalBlogPost } from '@shared/schema';
 
 interface ParentNotification {
   id: string;
@@ -465,6 +466,101 @@ function ServiceHoursSection() {
           </div>
         </CardContent>
       </Card>
+    </div>
+  );
+}
+
+// Principal's Corner Blog Section Component
+function PrincipalsBlogSection() {
+  const { data: blogPosts, isLoading } = useQuery<PrincipalBlogPost[]>({
+    queryKey: ['/api/blog/posts'],
+  });
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-6">
+        {[1, 2, 3].map((i) => (
+          <Card key={i} className="animate-pulse">
+            <CardHeader>
+              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mt-2"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card className="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 border-cyan-200">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BookOpen className="h-6 w-6 text-cyan-600" />
+            Principal's Corner
+          </CardTitle>
+          <CardDescription>
+            Insights and guidance from Dr. Darrell Harris, Principal of the Year
+          </CardDescription>
+        </CardHeader>
+      </Card>
+
+      <div className="grid gap-6">
+        {blogPosts && blogPosts.length > 0 ? (
+          blogPosts.map((post) => (
+            <Card key={post.id} className="hover:shadow-lg transition-shadow" data-testid={`card-blog-post-${post.id}`}>
+              <CardHeader>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <CardTitle className="text-xl mb-2">{post.title}</CardTitle>
+                    <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                      <Badge variant="outline" className="bg-cyan-50 text-cyan-700 border-cyan-200">
+                        {post.category.replace('-', ' ')}
+                      </Badge>
+                      <span className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        {new Date(post.publishedAt).toLocaleDateString('en-US', { 
+                          month: 'short', 
+                          day: 'numeric', 
+                          year: 'numeric' 
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+                {post.excerpt && (
+                  <CardDescription className="text-base mt-3">
+                    {post.excerpt}
+                  </CardDescription>
+                )}
+              </CardHeader>
+              <CardContent>
+                <div className="prose prose-sm dark:prose-invert max-w-none">
+                  <div className="whitespace-pre-wrap text-gray-700 dark:text-gray-300">
+                    {post.content}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <Card>
+            <CardContent className="p-12 text-center">
+              <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600 dark:text-gray-400">
+                No blog posts available yet. Check back soon for insights from Dr. Harris!
+              </p>
+            </CardContent>
+          </Card>
+        )}
+      </div>
     </div>
   );
 }
@@ -913,6 +1009,10 @@ export default function ParentDashboard() {
             <TabsTrigger value="faq" className="flex-1 min-w-fit px-3 py-2 bg-rose-600 text-white hover:bg-rose-700 data-[state=active]:bg-rose-700 data-[state=active]:shadow-lg">
               <HelpCircle className="h-3 w-3 mr-1" />
               FAQ
+            </TabsTrigger>
+            <TabsTrigger value="principals-corner" className="flex-1 min-w-fit px-3 py-2 bg-cyan-600 text-white hover:bg-cyan-700 data-[state=active]:bg-cyan-700 data-[state=active]:shadow-lg">
+              <BookOpen className="h-3 w-3 mr-1" />
+              Principal's Corner
             </TabsTrigger>
             {featureFlags.fundraising && (
               <TabsTrigger value="fundraising" className="flex-1 min-w-fit px-3 py-2 bg-green-600 text-white hover:bg-green-700 data-[state=active]:bg-green-700 data-[state=active]:shadow-lg">
@@ -1454,6 +1554,11 @@ export default function ParentDashboard() {
                 </Accordion>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Principal's Corner Tab */}
+          <TabsContent value="principals-corner">
+            <PrincipalsBlogSection />
           </TabsContent>
 
           {/* School Fundraising Tab */}
