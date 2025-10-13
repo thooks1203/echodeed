@@ -1014,6 +1014,259 @@ export async function initializeSampleData() {
       log(`⚠️ Could not initialize mentor sample data: ${error.message}`);
     }
 
+    // Initialize Principal's Corner blog posts
+    try {
+      log(`📝 Initializing Principal's Corner blog posts...`);
+      const { principalBlogPosts, users } = await import('@shared/schema');
+      const { eq } = await import('drizzle-orm');
+      
+      // Create Dr. Harris admin user if doesn't exist
+      const drHarrisId = 'admin-dr-harris';
+      const existingAdmin = await db.select().from(users).where(eq(users.id, drHarrisId)).limit(1);
+      if (existingAdmin.length === 0) {
+        await db.insert(users).values({
+          id: drHarrisId,
+          email: 'dr.harris@echodeed.com',
+          firstName: 'Dr. Darrell',
+          lastName: 'Harris',
+          schoolRole: 'admin',
+          schoolId: 'eastern-guilford-hs'
+        });
+        log(`✅ Created Dr. Darrell Harris admin user`);
+      }
+      
+      const existingPosts = await db.select().from(principalBlogPosts).limit(1);
+      if (existingPosts.length === 0) {
+        const blogPosts = [
+          {
+            authorId: 'admin-dr-harris',
+            title: 'Welcome to EchoDeed: Building Character Through Kindness',
+            content: `Dear Parents and Families,
+
+I'm thrilled to introduce EchoDeed to our Eastern Guilford community. As Principal of the Year for Guilford County, I've seen firsthand how powerful character education can be in transforming school culture.
+
+EchoDeed isn't just another app - it's a movement to help our students develop empathy, compassion, and leadership skills that will serve them throughout their lives.
+
+**Why Character Education Matters**
+
+In today's fast-paced world, our students face unprecedented challenges. Social media, academic pressure, and constant connectivity can make it difficult for young people to develop meaningful relationships and a strong sense of self.
+
+Character education provides the foundation for:
+- Making ethical decisions
+- Building resilience
+- Developing emotional intelligence
+- Creating positive relationships
+- Contributing to their community
+
+**How You Can Support Your Child**
+
+1. **Talk about their acts of kindness** - Ask them what they posted on EchoDeed today
+2. **Celebrate their service hours** - Acknowledge their commitment to helping others
+3. **Model kindness yourself** - Show them what compassion looks like in action
+4. **Review their progress together** - Use the Parent Dashboard to stay connected
+
+Together, we're building a community where kindness is the norm, not the exception.
+
+With gratitude,
+Dr. Darrell Harris
+Principal, Eastern Guilford High School`,
+            excerpt: 'An introduction to EchoDeed and why character education matters for our students.',
+            category: 'program-updates',
+            publishedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // 2 weeks ago
+          },
+          {
+            authorId: 'admin-dr-harris',
+            title: '5 Daily Conversation Starters to Build Empathy',
+            content: `Dear Families,
+
+One of the most powerful tools we have as parents and educators is conversation. Here are five simple questions you can ask your child daily to build empathy and character:
+
+**1. "What's one kind thing you saw today?"**
+This helps children notice and appreciate kindness in their environment. It trains their brain to look for positive actions.
+
+**2. "How did you help someone today?"**
+Encourages reflection on their own actions and reinforces the habit of helping others.
+
+**3. "Was there a moment when you felt someone needed help? What did you do?"**
+Develops their ability to recognize when others need support and take action.
+
+**4. "What made you feel grateful today?"**
+Gratitude is the foundation of happiness. This simple question can shift their entire perspective.
+
+**5. "If you could make one person's day better tomorrow, who would it be and how?"**
+Helps them plan acts of kindness proactively, making compassion a deliberate choice.
+
+**The Science Behind It**
+
+Research shows that regular conversations about values and character:
+- Strengthen parent-child bonds
+- Improve emotional regulation
+- Increase prosocial behavior
+- Build self-awareness
+
+**Make It a Routine**
+
+Try asking one question during:
+- Dinner time
+- Car rides home
+- Bedtime conversations
+
+Remember, there are no wrong answers. The goal is to create space for reflection and connection.
+
+Keep building those character muscles!
+
+Dr. Darrell Harris`,
+            excerpt: 'Five simple daily questions to build empathy and character in your children.',
+            category: 'parent-resources',
+            publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
+          },
+          {
+            authorId: 'admin-dr-harris',
+            title: 'The Science of Service Learning: Why It Works',
+            content: `Dear EchoDeed Families,
+
+I want to share some exciting research about why service learning is so powerful for adolescent development.
+
+**Brain Development in Teens**
+
+The teenage brain is uniquely wired for:
+- **Purpose-seeking** - They want to make a difference
+- **Peer connection** - Social relationships drive motivation
+- **Identity formation** - They're figuring out who they are
+- **Risk and reward** - They're drawn to meaningful challenges
+
+Service learning taps into all these developmental needs simultaneously.
+
+**The Research Is Clear**
+
+Studies show students engaged in service learning:
+- Improve academic performance by 15-20%
+- Show 40% increase in civic engagement
+- Demonstrate better problem-solving skills
+- Report higher life satisfaction
+- Develop stronger career readiness
+
+**What Makes EchoDeed Different**
+
+Traditional service learning often:
+- Lacks immediate feedback
+- Feels disconnected from daily life
+- Doesn't track long-term impact
+- Misses the social component
+
+EchoDeed solves these challenges by:
+- **Instant recognition** through tokens and rewards
+- **Daily opportunities** for kindness
+- **Progress tracking** you can see together
+- **Community connection** through the feed
+- **Real partnerships** with local organizations
+
+**At Eastern Guilford**
+
+We're already seeing incredible results:
+- 287,000+ acts of kindness shared
+- Students averaging 7.5 service hours per semester
+- 95% of parents report improved family conversations
+- Dramatic decrease in bullying incidents
+
+**Your Role**
+
+You don't need to be an expert in character education. Just:
+- Ask questions
+- Celebrate efforts
+- Share your own acts of kindness
+- Review their dashboard together weekly
+
+The impact you're making is real and measurable.
+
+Proudly serving our community,
+Dr. Darrell Harris`,
+            excerpt: 'Research-backed insights on why service learning transforms student development.',
+            category: 'character-education',
+            publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000), // 3 days ago
+          },
+          {
+            authorId: 'admin-dr-harris',
+            title: 'Kindness in Action: Student Success Stories',
+            content: `Dear Families,
+
+I want to share some incredible stories from our Eastern Guilford students that demonstrate the power of kindness in action.
+
+**Sofia's Story: From Shy to Service Leader**
+
+Sofia Rodriguez started this semester barely speaking in class. Through EchoDeed, she:
+- Completed 7.5 service hours at the Greensboro Science Center
+- Organized a book drive for Books to Prisoners
+- Mentored two 9th graders through peer support
+- Earned over 1,100 Echo Tokens
+
+But the real transformation? Her mother shared: "Sofia used to come home and go straight to her room. Now she can't wait to tell me about the people she helped today."
+
+**The Cafeteria Kindness Campaign**
+
+A group of 11th graders noticed new students eating alone. They started:
+- "Save a Seat" movement - welcoming transfer students
+- Daily compliment cards left at lunch tables
+- Peer mentorship program connecting grades 9-12
+
+Result? Zero reports of lunchtime bullying this semester.
+
+**The Science Center Partnership**
+
+Through Kindness Connect, 47 students have:
+- Completed 156 service hours
+- Taught science to 200+ visiting children
+- Earned real work experience
+- Built resume-worthy skills
+
+Many are now considering STEM careers they never imagined.
+
+**Parent Engagement Success**
+
+The dual reward system is changing family dynamics:
+- Parents earning Target/Amazon credits alongside students
+- Family conversations about service increased 300%
+- Joint volunteer opportunities up 85%
+- Parent-child bonding through shared goals
+
+**What These Stories Teach Us**
+
+1. **Small acts compound** - Every kindness creates ripple effects
+2. **Recognition matters** - Tokens and rewards reinforce positive behavior
+3. **Community connection** - Students thrive when they feel part of something bigger
+4. **Family involvement** - Parent engagement multiplies impact
+
+**Your Child's Story**
+
+Every student has a unique kindness journey. Use the Parent Dashboard to:
+- Track their service hours
+- See their kindness posts
+- Celebrate their milestones
+- Support their goals
+
+You're raising the next generation of compassionate leaders.
+
+With immense pride,
+Dr. Darrell Harris
+Principal, Eastern Guilford High School`,
+            excerpt: 'Real stories from Eastern Guilford students showing how EchoDeed transforms school culture.',
+            category: 'program-updates',
+            publishedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000), // Yesterday
+          }
+        ];
+
+        for (const post of blogPosts) {
+          await db.insert(principalBlogPosts).values(post);
+        }
+        
+        log(`✅ Created ${blogPosts.length} Principal's Corner blog posts from Dr. Harris`);
+      } else {
+        log(`ℹ️  Principal's Corner blog posts already exist, skipping creation`);
+      }
+    } catch (error: any) {
+      log(`⚠️ Could not initialize blog posts: ${error.message}`);
+    }
+
     log(`✓ Successfully initialized ${samplePosts.length} sample posts and updated global counter`);
   } catch (error: any) {
     log(`✗ Error initializing sample data: ${error.message}`);
