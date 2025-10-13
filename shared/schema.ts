@@ -273,6 +273,22 @@ export const principalBlogPosts = pgTable("principal_blog_posts", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Parent Community Posts - Parents sharing thoughts with each other
+export const parentCommunityPosts = pgTable("parent_community_posts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolId: varchar("school_id"), // Optional school reference
+  authorId: varchar("author_id").notNull().references(() => users.id), // Parent who wrote it
+  authorName: varchar("author_name", { length: 100 }).notNull(), // Display name for community
+  title: varchar("title", { length: 200 }).notNull(),
+  content: text("content").notNull(),
+  category: varchar("category", { length: 50 }).notNull(), // parenting-tips, support, celebrations, questions, resources
+  likesCount: integer("likes_count").default(0).notNull(),
+  commentsCount: integer("comments_count").default(0).notNull(),
+  isApproved: integer("is_approved").default(1).notNull(), // Moderation flag
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Reward partners for the token redemption system
 export const rewardPartners = pgTable("reward_partners", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -1565,6 +1581,7 @@ export const insertServiceOpportunitySignupSchema = createInsertSchema(serviceOp
 export const insertStudentNotificationPreferencesSchema = createInsertSchema(studentNotificationPreferences).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertStudentGoalSchema = createInsertSchema(studentGoals).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertPrincipalBlogPostSchema = createInsertSchema(principalBlogPosts).omit({ id: true, createdAt: true, updatedAt: true, viewCount: true });
+export const insertParentCommunityPostSchema = createInsertSchema(parentCommunityPosts).omit({ id: true, createdAt: true, updatedAt: true, likesCount: true, commentsCount: true });
 
 // Type Exports
 export type ContentModerationQueue = typeof contentModerationQueue.$inferSelect;
@@ -1583,3 +1600,5 @@ export type StudentGoal = typeof studentGoals.$inferSelect;
 export type InsertStudentGoal = z.infer<typeof insertStudentGoalSchema>;
 export type PrincipalBlogPost = typeof principalBlogPosts.$inferSelect;
 export type InsertPrincipalBlogPost = z.infer<typeof insertPrincipalBlogPostSchema>;
+export type ParentCommunityPost = typeof parentCommunityPosts.$inferSelect;
+export type InsertParentCommunityPost = z.infer<typeof insertParentCommunityPostSchema>;
