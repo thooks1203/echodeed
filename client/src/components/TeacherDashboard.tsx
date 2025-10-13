@@ -441,16 +441,17 @@ export function TeacherDashboard() {
         {/* Header */}
         <div className="mb-8">
           {/* Top Button Row - Balanced Layout */}
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center gap-3 flex-1">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 mb-6">
+            <div className="flex items-center gap-2 flex-1">
               <Button
                 size="sm"
                 onClick={() => navigate('/?tab=feed')}
-                className="flex items-center gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                className="flex items-center gap-1 sm:gap-2 bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 text-xs sm:text-sm px-2 sm:px-4"
                 data-testid="back-to-platform"
               >
-                <ArrowLeft className="w-4 h-4" />
-                Back to Platform
+                <ArrowLeft className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Back to Platform</span>
+                <span className="sm:hidden">Back</span>
               </Button>
 
               {/* Teacher Wellness Alert Button - PROMINENT */}
@@ -458,31 +459,34 @@ export function TeacherDashboard() {
                 <Button
                   size="lg"
                   onClick={() => navigate('/wellness-checkin?from=teacher-dashboard')}
-                  className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-200 border-4 border-orange-300 hover:border-orange-200 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg"
+                  className="flex items-center gap-1 sm:gap-3 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-200 border-2 sm:border-4 border-orange-300 hover:border-orange-200 px-2 sm:px-6 py-2 sm:py-4 text-xs sm:text-lg"
                   style={{
                     animation: 'flash 1s infinite alternate, bounce 2s infinite'
                   }}
                   data-testid="teacher-wellness-alert"
                 >
-                  <HeartPulse className="w-6 h-6" />
-                  Wellness Check Needed
+                  <HeartPulse className="w-4 h-4 sm:w-6 sm:h-6" />
+                  <span className="hidden sm:inline">Wellness Check Needed</span>
+                  <span className="sm:hidden">Wellness</span>
                 </Button>
               )}
             </div>
             
-            <div className="flex items-center gap-3 flex-1 justify-end">
-              <Button size="sm" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0">
-                <Download className="w-4 h-4 mr-2" />
-                Export Report
+            <div className="flex items-center gap-2 flex-1 justify-end">
+              <Button size="sm" className="bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white border-0 text-xs sm:text-sm px-2 sm:px-4">
+                <Download className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Export Report</span>
+                <span className="sm:hidden">Export</span>
               </Button>
               <Button 
                 size="sm" 
                 onClick={() => navigate('/class-settings')}
-                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white"
+                className="bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white text-xs sm:text-sm px-2 sm:px-4"
                 data-testid="button-class-settings"
               >
-                <Settings className="w-4 h-4 mr-2" />
-                Class Settings
+                <Settings className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+                <span className="hidden sm:inline">Class Settings</span>
+                <span className="sm:hidden">Settings</span>
               </Button>
             </div>
           </div>
@@ -545,31 +549,37 @@ export function TeacherDashboard() {
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
           <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-6' : 'grid-cols-5'} gap-1 bg-transparent`}>
-            <TabsTrigger value="overview" className="flex items-center gap-1 bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg">
-              <BarChart3 className="w-4 h-4" />
-              Overview
+            <TabsTrigger value="overview" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm">
+              <BarChart3 className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Overview</span>
+              <span className="sm:hidden">Info</span>
             </TabsTrigger>
-            <TabsTrigger value="students" className="flex items-center gap-1 bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg">
-              <Users className="w-4 h-4" />
-              Students
+            <TabsTrigger value="students" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm">
+              <Users className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Students</span>
+              <span className="sm:hidden">Kids</span>
             </TabsTrigger>
-            <TabsTrigger value="student-feed" className="flex items-center gap-1 bg-pink-600 text-white hover:bg-pink-700 data-[state=active]:bg-pink-700 data-[state=active]:shadow-lg">
-              <Heart className="w-4 h-4" />
-              Student Feed
+            <TabsTrigger value="student-feed" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-pink-600 text-white hover:bg-pink-700 data-[state=active]:bg-pink-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm">
+              <Heart className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Student Feed</span>
+              <span className="sm:hidden">Feed</span>
             </TabsTrigger>
             {featureFlags.curriculum && (
-              <TabsTrigger value="lessons" className="flex items-center gap-1 bg-emerald-600 text-white hover:bg-emerald-700 data-[state=active]:bg-emerald-700 data-[state=active]:shadow-lg">
-                <BookOpen className="w-4 h-4" />
-                Lesson Plans
+              <TabsTrigger value="lessons" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-emerald-600 text-white hover:bg-emerald-700 data-[state=active]:bg-emerald-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm">
+                <BookOpen className="w-4 h-4 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Lesson Plans</span>
+                <span className="sm:hidden">Plans</span>
               </TabsTrigger>
             )}
-            <TabsTrigger value="service-hours" className="flex items-center gap-1 bg-teal-600 text-white hover:bg-teal-700 data-[state=active]:bg-teal-700 data-[state=active]:shadow-lg">
-              <CheckCircle className="w-4 h-4" />
-              Service Hours
+            <TabsTrigger value="service-hours" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-teal-600 text-white hover:bg-teal-700 data-[state=active]:bg-teal-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm">
+              <CheckCircle className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Service Hours</span>
+              <span className="sm:hidden">Hours</span>
             </TabsTrigger>
-            <TabsTrigger value="rewards" className="flex items-center gap-1 bg-amber-600 text-white hover:bg-amber-700 data-[state=active]:bg-amber-700 data-[state=active]:shadow-lg" data-testid="tab-rewards">
-              <Award className="w-4 h-4" />
-              Rewards
+            <TabsTrigger value="rewards" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-amber-600 text-white hover:bg-amber-700 data-[state=active]:bg-amber-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm" data-testid="tab-rewards">
+              <Award className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Rewards</span>
+              <span className="sm:hidden">Gifts</span>
             </TabsTrigger>
           </TabsList>
 
