@@ -5477,8 +5477,8 @@ export class DatabaseStorage implements IStorage {
       const earned = earnedBadges.find(e => e.badgeId === badge.id);
       return {
         id: badge.id,
-        badgeName: badge.name,
-        badgeIcon: badge.icon,
+        badgeName: badge.badgeName,
+        badgeIcon: badge.badgeIcon,
         description: badge.description,
         category: badge.category,
         tier: badge.tier,
