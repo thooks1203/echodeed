@@ -722,13 +722,13 @@ export default function ParentDashboard() {
         </div>
 
         {/* Safety & Privacy Disclosure for Parents */}
-        <Alert className="mb-6 border-blue-200 bg-blue-50 dark:bg-blue-900/10">
-          <Shield className="h-4 w-4 text-blue-600" />
+        <Alert className="mb-6 border-blue-200 bg-blue-50 dark:bg-blue-900/10 overflow-hidden">
+          <Shield className="h-4 w-4 text-blue-600 flex-shrink-0" />
           <AlertTitle className="text-blue-900 dark:text-blue-100 flex items-center gap-2">
-            <Shield className="w-4 h-4" />
+            <Shield className="w-4 h-4 flex-shrink-0" />
             Safety & Privacy Notice
           </AlertTitle>
-          <AlertDescription className="text-blue-700 dark:text-blue-200">
+          <AlertDescription className="text-blue-700 dark:text-blue-200 text-sm">
             <p className="mb-2">
               <strong>Student Privacy:</strong> Your children can post anonymously to support each other through challenges. 
               Posts are completely anonymous with no identifying information.
