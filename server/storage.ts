@@ -1088,6 +1088,16 @@ export class DatabaseStorage implements IStorage {
       const totalHearts = userPosts.reduce((sum, p) => sum + (p.heartsCount || 0), 0);
       const totalEchoes = userPosts.reduce((sum, p) => sum + (p.echoesCount || 0), 0);
       
+      // Get service hours for service-related achievements
+      const serviceLogs = await db.select().from(communityServiceLogs).where(eq(communityServiceLogs.userId, userId));
+      const totalServiceHours = serviceLogs
+        .filter(log => log.verificationStatus === 'verified')
+        .reduce((sum, log) => sum + parseFloat(log.hoursLogged), 0);
+      
+      // Get current streak for streak achievements
+      const tokens = await this.getUserTokens(userId);
+      const currentStreak = tokens?.currentStreak || 0;
+      
       // Define achievements to check
       const achievementsToCheck = [
         {
@@ -1107,6 +1117,87 @@ export class DatabaseStorage implements IStorage {
           tier: 'silver',
           echoReward: 50,
           condition: () => totalPosts >= 5
+        },
+        {
+          id: 'kindness_25_acts',
+          title: '⭐ Kindness Champion',
+          description: 'Achieved 25 acts of kindness!',
+          category: 'milestones',
+          tier: 'gold',
+          echoReward: 150,
+          condition: () => totalPosts >= 25
+        },
+        {
+          id: 'kindness_50_acts',
+          title: '🏆 Kindness Hero',
+          description: 'Reached an incredible 50 acts of kindness',
+          category: 'milestones',
+          tier: 'platinum',
+          echoReward: 300,
+          condition: () => totalPosts >= 50
+        },
+        {
+          id: 'kindness_100_acts',
+          title: '💎 Kindness Legend',
+          description: 'Legendary achievement: 100 acts of kindness!',
+          category: 'milestones',
+          tier: 'diamond',
+          echoReward: 500,
+          condition: () => totalPosts >= 100
+        },
+        {
+          id: 'service_10_hours',
+          title: '🎓 Service Starter',
+          description: 'Completed 10 hours of community service',
+          category: 'service',
+          tier: 'bronze',
+          echoReward: 100,
+          condition: () => totalServiceHours >= 10
+        },
+        {
+          id: 'service_25_hours',
+          title: '🌟 Service Champion',
+          description: 'Reached 25 hours of verified community service',
+          category: 'service',
+          tier: 'silver',
+          echoReward: 250,
+          condition: () => totalServiceHours >= 25
+        },
+        {
+          id: 'service_50_hours',
+          title: '🏅 Service Hero',
+          description: 'Achieved 50 hours of community service excellence',
+          category: 'service',
+          tier: 'gold',
+          echoReward: 500,
+          condition: () => totalServiceHours >= 50
+        },
+        {
+          id: 'streak_7_days',
+          title: '🔥 Week Warrior',
+          description: 'Maintained a 7-day kindness streak',
+          category: 'streaks',
+          tier: 'silver',
+          echoReward: 75,
+          condition: () => currentStreak >= 7
+        },
+        {
+          id: 'streak_14_days',
+          title: '⚡ Streak Master',
+          description: 'Incredible 14-day streak of daily kindness',
+          category: 'streaks',
+          tier: 'gold',
+          echoReward: 150,
+          condition: () => currentStreak >= 14
+        },
+        {
+          id: 'streak_30_days',
+          title: '🌈 Kindness Unstoppable',
+          description: 'Legendary 30-day streak - unstoppable kindness!',
+          category: 'streaks',
+          tier: 'platinum',
+          echoReward: 400,
+          condition: () => currentStreak >= 30
         },
         {
           id: 'helping_hero',

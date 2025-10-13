@@ -15,6 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { featureFlags } from '@shared/featureFlags';
 import { Heart } from 'lucide-react';
+import { HelpButton, helpContent } from '@/components/HelpButton';
 
 interface StudentStats {
   totalKindnessPoints: number;
@@ -631,9 +632,12 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
             padding: '20px',
             boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
           }}>
-            <h3 style={{ fontSize: '16px', fontWeight: '600', marginBottom: '16px' }}>
-              📅 Monthly Goal Progress
-            </h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0 }}>
+                📅 Monthly Goal Progress
+              </h3>
+              <HelpButton content={helpContent.student.dashboard} />
+            </div>
             <div style={{ marginBottom: '12px' }}>
               <div style={{ fontSize: '20px', fontWeight: '700', color: '#10B981' }}>
                 {stats.weeklyProgress} / {stats.monthlyGoal} points

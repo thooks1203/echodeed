@@ -45,6 +45,7 @@ import { featureFlags } from '@shared/featureFlags';
 import { useDemoSchool } from '@/contexts/DemoSchoolContext';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
+import { HelpButton, helpContent } from '@/components/HelpButton';
 
 interface ParentNotification {
   id: string;
@@ -1212,10 +1213,13 @@ export default function ParentDashboard() {
           <TabsContent value="faq">
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <HelpCircle className="h-5 w-5 text-rose-600" />
-                  Frequently Asked Questions
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <HelpCircle className="h-5 w-5 text-rose-600" />
+                    Frequently Asked Questions
+                  </CardTitle>
+                  <HelpButton content={helpContent.parent.faq} />
+                </div>
                 <CardDescription>
                   Common questions about EchoDeed and how to support your child's character development journey
                 </CardDescription>

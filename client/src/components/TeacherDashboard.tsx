@@ -33,6 +33,7 @@ import {
   HeartPulse,
   X
 } from 'lucide-react';
+import { HelpButton, helpContent } from '@/components/HelpButton';
 
 interface ClassroomStats {
   totalStudents: number;
@@ -498,6 +499,7 @@ export function TeacherDashboard() {
                 <BookOpen className="w-6 h-6 text-white" />
               </div>
               Teacher Dashboard
+              <HelpButton content={helpContent.teacher.dashboard} />
             </h1>
             <p className="text-gray-600 text-lg">
               {user?.firstName && user?.lastName 
