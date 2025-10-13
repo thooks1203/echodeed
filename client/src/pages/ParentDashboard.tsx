@@ -9,7 +9,9 @@ import { useQuery, useMutation } from '@tanstack/react-query';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Progress } from '@/components/ui/progress';
@@ -46,7 +48,8 @@ import { useDemoSchool } from '@/contexts/DemoSchoolContext';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { HelpButton, helpContent } from '@/components/HelpButton';
-import type { PrincipalBlogPost } from '@shared/schema';
+import { useForm } from 'react-hook-form';
+import type { PrincipalBlogPost, ParentCommunityPost } from '@shared/schema';
 
 interface ParentNotification {
   id: string;
@@ -470,6 +473,229 @@ function ServiceHoursSection() {
   );
 }
 
+// Parent Community Section Component
+function ParentCommunitySection() {
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const { toast } = useToast();
+  
+  const { data: communityPosts, isLoading } = useQuery<ParentCommunityPost[]>({
+    queryKey: ['/api/community/posts'],
+  });
+
+  const form = useForm({
+    defaultValues: {
+      title: '',
+      content: '',
+      category: 'parenting-tips',
+    },
+  });
+
+  const createPostMutation = useMutation({
+    mutationFn: async (data: any) => {
+      return await apiRequest('/api/community/posts', 'POST', data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/community/posts'] });
+      toast({
+        title: 'Post shared!',
+        description: 'Your post has been shared with the parent community.',
+      });
+      setShowCreateDialog(false);
+      form.reset();
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: 'Failed to share your post. Please try again.',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const handleSubmit = (data: any) => {
+    createPostMutation.mutate(data);
+  };
+
+  if (isLoading) {
+    return (
+      <div className="grid gap-6">
+        {[1, 2, 3].map((i) => (
+          <Card key={i} className="animate-pulse">
+            <CardHeader>
+              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2 mt-2"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-2">
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded"></div>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-200">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-6 w-6 text-emerald-600" />
+                Parent Community
+              </CardTitle>
+              <CardDescription>
+                Share tips, ask questions, and support each other on this parenting journey
+              </CardDescription>
+            </div>
+            <Button 
+              onClick={() => setShowCreateDialog(true)}
+              className="bg-emerald-600 hover:bg-emerald-700"
+              data-testid="button-create-post"
+            >
+              <MessageSquare className="h-4 w-4 mr-2" />
+              Share Post
+            </Button>
+          </div>
+        </CardHeader>
+      </Card>
+
+      {/* Create Post Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Share with the Parent Community</DialogTitle>
+            <DialogDescription>
+              Share your experiences, tips, or questions with other parents at Eastern Guilford
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <div>
+              <label className="text-sm font-medium">Title</label>
+              <Input
+                {...form.register('title')}
+                placeholder="Give your post a title..."
+                className="mt-1"
+                data-testid="input-post-title"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Category</label>
+              <select
+                {...form.register('category')}
+                className="mt-1 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2"
+                data-testid="select-post-category"
+              >
+                <option value="parenting-tips">Parenting Tips</option>
+                <option value="support">Support & Advice</option>
+                <option value="celebrations">Celebrations</option>
+                <option value="questions">Questions</option>
+                <option value="resources">Resources</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Your Message</label>
+              <textarea
+                {...form.register('content')}
+                placeholder="Share your thoughts..."
+                rows={6}
+                className="mt-1 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2"
+                data-testid="textarea-post-content"
+              />
+            </div>
+
+            <div className="flex gap-3 justify-end">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setShowCreateDialog(false)}
+                data-testid="button-cancel-post"
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                className="bg-emerald-600 hover:bg-emerald-700"
+                disabled={createPostMutation.isPending}
+                data-testid="button-submit-post"
+              >
+                {createPostMutation.isPending ? 'Sharing...' : 'Share Post'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Community Posts */}
+      <div className="grid gap-6">
+        {communityPosts && communityPosts.length > 0 ? (
+          communityPosts.map((post) => (
+            <Card key={post.id} className="hover:shadow-lg transition-shadow" data-testid={`card-community-post-${post.id}`}>
+              <CardHeader>
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex-1">
+                    <CardTitle className="text-xl mb-2">{post.title}</CardTitle>
+                    <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
+                      <span className="font-medium text-emerald-600">{post.authorName}</span>
+                      <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
+                        {post.category.replace('-', ' ')}
+                      </Badge>
+                      <span className="flex items-center gap-1">
+                        <Calendar className="h-3 w-3" />
+                        {new Date(post.createdAt).toLocaleDateString('en-US', { 
+                          month: 'short', 
+                          day: 'numeric' 
+                        })}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="whitespace-pre-wrap text-gray-700 dark:text-gray-300 mb-4">
+                  {post.content}
+                </div>
+                <div className="flex items-center gap-4 text-sm text-gray-500">
+                  <span className="flex items-center gap-1">
+                    <Heart className="h-4 w-4" />
+                    {post.likesCount} likes
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <MessageSquare className="h-4 w-4" />
+                    {post.commentsCount} comments
+                  </span>
+                </div>
+              </CardContent>
+            </Card>
+          ))
+        ) : (
+          <Card>
+            <CardContent className="p-12 text-center">
+              <Users className="h-12 w-12 text-gray-400 mx-auto mb-4" />
+              <p className="text-gray-600 dark:text-gray-400 mb-4">
+                Be the first to share with the parent community!
+              </p>
+              <Button 
+                onClick={() => setShowCreateDialog(true)}
+                className="bg-emerald-600 hover:bg-emerald-700"
+              >
+                <MessageSquare className="h-4 w-4 mr-2" />
+                Share Your First Post
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    </div>
+  );
+}
+
 // Principal's Corner Blog Section Component
 function PrincipalsBlogSection() {
   const { data: blogPosts, isLoading } = useQuery<PrincipalBlogPost[]>({
@@ -566,7 +792,7 @@ function PrincipalsBlogSection() {
 }
 
 export default function ParentDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'rewards' | 'service-hours' | 'faq' | 'fundraising' | 'insights'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'rewards' | 'service-hours' | 'faq' | 'community' | 'principals-corner' | 'fundraising' | 'insights'>('overview');
   const [selectedStudent, setSelectedStudent] = useState<string>('');
   const [, navigate] = useLocation();
   const [activeBottomTab, setActiveBottomTab] = useState('parent-dashboard');
@@ -1009,6 +1235,10 @@ export default function ParentDashboard() {
             <TabsTrigger value="faq" className="flex-1 min-w-fit px-3 py-2 bg-rose-600 text-white hover:bg-rose-700 data-[state=active]:bg-rose-700 data-[state=active]:shadow-lg">
               <HelpCircle className="h-3 w-3 mr-1" />
               FAQ
+            </TabsTrigger>
+            <TabsTrigger value="community" className="flex-1 min-w-fit px-3 py-2 bg-emerald-600 text-white hover:bg-emerald-700 data-[state=active]:bg-emerald-700 data-[state=active]:shadow-lg">
+              <Users className="h-3 w-3 mr-1" />
+              Parent Community
             </TabsTrigger>
             <TabsTrigger value="principals-corner" className="flex-1 min-w-fit px-3 py-2 bg-cyan-600 text-white hover:bg-cyan-700 data-[state=active]:bg-cyan-700 data-[state=active]:shadow-lg">
               <BookOpen className="h-3 w-3 mr-1" />
@@ -1554,6 +1784,11 @@ export default function ParentDashboard() {
                 </Accordion>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Parent Community Tab */}
+          <TabsContent value="community">
+            <ParentCommunitySection />
           </TabsContent>
 
           {/* Principal's Corner Tab */}
