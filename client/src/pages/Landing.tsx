@@ -83,7 +83,7 @@ export default function Landing() {
                 <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <GraduationCap className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900">For Students</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900 whitespace-nowrap">For Students</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Turn kindness into tokens, earn rewards, track service hours
                 </p>
@@ -104,7 +104,7 @@ export default function Landing() {
                 <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Heart className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900">For Parents</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900 whitespace-nowrap">For Parents</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Track your child's growth, earn dual rewards together
                 </p>
@@ -125,7 +125,7 @@ export default function Landing() {
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Users className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900">For Teachers</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900 whitespace-nowrap">For Teachers</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Verify service hours, manage classroom, reduce workload
                 </p>
@@ -146,7 +146,7 @@ export default function Landing() {
                 <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900">For School Leaders</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900 whitespace-nowrap">For School Leaders</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Get the data, see measurable character outcomes
                 </p>
