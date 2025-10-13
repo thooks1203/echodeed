@@ -687,7 +687,7 @@ export default function ParentDashboard() {
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <div className="flex items-center gap-3 mb-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3 mb-2">
                 <Button
                   size="sm"
                   onClick={() => navigate('/?tab=feed')}
@@ -697,10 +697,12 @@ export default function ParentDashboard() {
                   <ArrowLeft className="w-4 h-4" />
                   Back to Platform
                 </Button>
-                <Heart className="h-8 w-8 text-pink-500" />
-                <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Parent Dashboard
-                </h1>
+                <div className="flex items-center gap-2 sm:gap-3">
+                  <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-pink-500" />
+                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap">
+                    Parent Dashboard
+                  </h1>
+                </div>
               </div>
               <p className="text-gray-600 dark:text-gray-300">
                 Welcome back, {parentInfo.name}! Track your {linkedStudents.length === 1 ? "child's" : "children's"} kindness journey in real-time.
