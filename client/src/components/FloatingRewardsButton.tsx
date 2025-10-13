@@ -13,6 +13,7 @@ interface UserTokens {
 
 export function FloatingRewardsButton({ onRewardsClick }: FloatingRewardsButtonProps) {
   const [isPulsing, setIsPulsing] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Fetch user tokens to show balance
   const { data: userTokens } = useQuery<UserTokens>({
@@ -28,6 +29,20 @@ export function FloatingRewardsButton({ onRewardsClick }: FloatingRewardsButtonP
 
     return () => clearInterval(interval);
   }, []);
+
+  // Hide on mobile devices to prevent overlap with dashboard content
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  // Don't render on mobile - students can use Rewards tab in bottom nav
+  if (isMobile) return null;
 
   return (
     <div
