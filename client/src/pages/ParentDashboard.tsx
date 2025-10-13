@@ -538,7 +538,7 @@ function ParentCommunitySection() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" id="parent-community-section">
       <Card className="bg-gradient-to-r from-emerald-50 to-teal-50 dark:from-emerald-900/20 dark:to-teal-900/20 border-emerald-200">
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -562,6 +562,19 @@ function ParentCommunitySection() {
           </div>
         </CardHeader>
       </Card>
+
+      {/* Community Guidelines */}
+      <Alert className="border-amber-200 bg-amber-50 dark:bg-amber-900/10">
+        <Shield className="h-4 w-4 text-amber-600" />
+        <AlertTitle className="text-amber-900 dark:text-amber-100 font-semibold">Community Guidelines</AlertTitle>
+        <AlertDescription className="text-amber-800 dark:text-amber-200">
+          <ul className="list-disc list-inside space-y-1 mt-2">
+            <li><strong>Protect privacy:</strong> Don't share your child's name or identifying information</li>
+            <li><strong>Stay respectful:</strong> All posts are reviewed to maintain a supportive environment</li>
+            <li><strong>Be constructive:</strong> Focus on sharing helpful tips and asking genuine questions</li>
+          </ul>
+        </AlertDescription>
+      </Alert>
 
       {/* Create Post Dialog */}
       <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
@@ -771,7 +784,7 @@ function PrincipalsBlogSection() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6" id="principals-corner">
       <Card className="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 border-cyan-200">
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -784,16 +797,30 @@ function PrincipalsBlogSection() {
                 Insights and guidance from Dr. Darrell Harris, Principal of the Year
               </CardDescription>
             </div>
-            {canCreatePost && (
+            <div className="flex gap-2">
               <Button 
-                onClick={() => setShowCreateDialog(true)}
-                className="bg-cyan-600 hover:bg-cyan-700"
-                data-testid="button-create-blog-post"
+                onClick={() => {
+                  const element = document.getElementById('parent-community-section');
+                  element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+                variant="outline"
+                className="border-emerald-600 text-emerald-600 hover:bg-emerald-50"
+                data-testid="button-jump-to-community"
               >
-                <BookOpen className="h-4 w-4 mr-2" />
-                Post Blog
+                <Users className="h-4 w-4 mr-2" />
+                Jump to Parent Community
               </Button>
-            )}
+              {canCreatePost && (
+                <Button 
+                  onClick={() => setShowCreateDialog(true)}
+                  className="bg-cyan-600 hover:bg-cyan-700"
+                  data-testid="button-create-blog-post"
+                >
+                  <BookOpen className="h-4 w-4 mr-2" />
+                  Post Blog
+                </Button>
+              )}
+            </div>
           </div>
         </CardHeader>
       </Card>
@@ -879,7 +906,7 @@ function PrincipalsBlogSection() {
 
       <div className="grid gap-6">
         {blogPosts && blogPosts.length > 0 ? (
-          blogPosts.map((post) => (
+          blogPosts.slice(0, 3).map((post) => (
             <Card key={post.id} className="hover:shadow-lg transition-shadow" data-testid={`card-blog-post-${post.id}`}>
               <CardHeader>
                 <div className="flex items-start justify-between gap-4">
@@ -924,6 +951,11 @@ function PrincipalsBlogSection() {
               </p>
             </CardContent>
           </Card>
+        )}
+        {blogPosts && blogPosts.length > 3 && (
+          <p className="text-sm text-gray-500 text-center italic">
+            Showing 3 most recent posts. Older posts are archived.
+          </p>
         )}
       </div>
     </div>
