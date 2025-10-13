@@ -256,6 +256,23 @@ export const schools = pgTable("schools", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// Principal's Corner blog posts for parent engagement
+export const principalBlogPosts = pgTable("principal_blog_posts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolId: varchar("school_id").notNull().references(() => schools.id),
+  authorId: varchar("author_id").notNull().references(() => users.id), // Principal/admin who wrote it
+  title: varchar("title", { length: 200 }).notNull(),
+  content: text("content").notNull(),
+  excerpt: text("excerpt"), // Short preview text
+  category: varchar("category", { length: 50 }).notNull(), // character-education, kindness-tips, program-updates, parent-resources
+  imageUrl: text("image_url"),
+  isPublished: integer("is_published").default(1).notNull(),
+  publishedAt: timestamp("published_at").defaultNow().notNull(),
+  viewCount: integer("view_count").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
 // Reward partners for the token redemption system
 export const rewardPartners = pgTable("reward_partners", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -1547,6 +1564,7 @@ export const insertServiceOpportunitySchema = createInsertSchema(serviceOpportun
 export const insertServiceOpportunitySignupSchema = createInsertSchema(serviceOpportunitySignups).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertStudentNotificationPreferencesSchema = createInsertSchema(studentNotificationPreferences).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertStudentGoalSchema = createInsertSchema(studentGoals).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertPrincipalBlogPostSchema = createInsertSchema(principalBlogPosts).omit({ id: true, createdAt: true, updatedAt: true, viewCount: true });
 
 // Type Exports
 export type ContentModerationQueue = typeof contentModerationQueue.$inferSelect;
@@ -1563,3 +1581,5 @@ export type StudentNotificationPreferences = typeof studentNotificationPreferenc
 export type InsertStudentNotificationPreferences = z.infer<typeof insertStudentNotificationPreferencesSchema>;
 export type StudentGoal = typeof studentGoals.$inferSelect;
 export type InsertStudentGoal = z.infer<typeof insertStudentGoalSchema>;
+export type PrincipalBlogPost = typeof principalBlogPosts.$inferSelect;
+export type InsertPrincipalBlogPost = z.infer<typeof insertPrincipalBlogPostSchema>;
