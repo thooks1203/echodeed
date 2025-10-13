@@ -34,7 +34,8 @@ import {
   Zap,
   BookOpen,
   Sparkles,
-  HelpCircle
+  HelpCircle,
+  RefreshCw
 } from 'lucide-react';
 import { useLocation } from 'wouter';
 import PushNotificationSetup from '@/components/PushNotificationSetup';
@@ -473,6 +474,92 @@ export default function ParentDashboard() {
   const [, navigate] = useLocation();
   const [activeBottomTab, setActiveBottomTab] = useState('parent-dashboard');
   const { schoolConfig } = useDemoSchool();
+
+  // Conversation Starters for parent-child engagement
+  const conversationStarters = [
+    {
+      category: "Character Development",
+      icon: "💭",
+      question: "What does being a good person mean to you? How do you try to show that in your daily life?",
+      tip: "Listen without judgment - this builds trust and encourages open sharing."
+    },
+    {
+      category: "Kindness & Empathy",
+      icon: "❤️",
+      question: "Can you tell me about a time this week when you helped someone? How did it make you feel?",
+      tip: "Celebrate specific acts - this reinforces positive behavior patterns."
+    },
+    {
+      category: "Service & Impact",
+      icon: "🤝",
+      question: "If you could solve one problem in our community, what would it be and why?",
+      tip: "This sparks critical thinking about social issues and personal agency."
+    },
+    {
+      category: "Goals & Growth",
+      icon: "🎯",
+      question: "What's one character strength you want to develop this year? How can our family support you?",
+      tip: "Co-create action steps - involvement increases commitment and follow-through."
+    },
+    {
+      category: "Peer Relationships",
+      icon: "👥",
+      question: "Who at school makes a positive difference? What do they do that inspires you?",
+      tip: "Identifying role models helps teens clarify their own values."
+    },
+    {
+      category: "Gratitude & Reflection",
+      icon: "🙏",
+      question: "What are three things you're grateful for today, and why do they matter to you?",
+      tip: "Daily gratitude practice builds resilience and positive mindset."
+    },
+    {
+      category: "Courage & Integrity",
+      icon: "💪",
+      question: "Have you ever stood up for something you believed in, even when it was hard? What happened?",
+      tip: "Share your own stories of standing up for values - modeling is powerful."
+    },
+    {
+      category: "Community Connection",
+      icon: "🌍",
+      question: "How does your service work connect to things you care about personally?",
+      tip: "Linking service to personal passions increases long-term engagement."
+    },
+    {
+      category: "Future Vision",
+      icon: "✨",
+      question: "What kind of person do you want to be known as when you graduate? What steps can you take now?",
+      tip: "Future-focused questions help teens see the big picture of character development."
+    },
+    {
+      category: "Daily Choices",
+      icon: "🔄",
+      question: "When you had a choice today between the easy thing and the right thing, what did you choose?",
+      tip: "Discuss the 'why' behind choices - this builds moral reasoning skills."
+    },
+    {
+      category: "Mentorship & Leadership",
+      icon: "🌟",
+      question: "Is there someone younger who looks up to you? How does that influence your actions?",
+      tip: "Recognition of influence encourages responsible leadership behavior."
+    },
+    {
+      category: "Challenges & Resilience",
+      icon: "🛡️",
+      question: "What's the hardest part about trying to be kind every day? How do you overcome it?",
+      tip: "Normalize struggles - growth happens through challenges, not despite them."
+    }
+  ];
+
+  const [currentStarterIndex, setCurrentStarterIndex] = useState(Math.floor(Math.random() * conversationStarters.length));
+
+  const getNewConversationStarter = () => {
+    let newIndex;
+    do {
+      newIndex = Math.floor(Math.random() * conversationStarters.length);
+    } while (newIndex === currentStarterIndex && conversationStarters.length > 1);
+    setCurrentStarterIndex(newIndex);
+  };
 
   const handleBottomTabChange = (tab: string) => {
     setActiveBottomTab(tab);
@@ -977,6 +1064,65 @@ export default function ParentDashboard() {
                       +${Math.floor((currentStats.weeklyKindnessActs / 20) * 50)} parent bonus earned
                     </span>
                   </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Conversation Starters */}
+            <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 border-indigo-200">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageSquare className="h-5 w-5 text-indigo-600" />
+                    💬 Conversation Starters
+                  </CardTitle>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={getNewConversationStarter}
+                    className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-100"
+                    data-testid="button-new-conversation-starter"
+                  >
+                    <RefreshCw className="h-4 w-4" />
+                  </Button>
+                </div>
+                <CardDescription className="text-indigo-700 dark:text-indigo-300">
+                  Start meaningful conversations about character development with your children
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="bg-white dark:bg-gray-800 rounded-lg p-5 border-2 border-indigo-200 dark:border-indigo-700">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-3xl">{conversationStarters[currentStarterIndex].icon}</span>
+                    <Badge variant="outline" className="bg-indigo-100 text-indigo-700 border-indigo-300">
+                      {conversationStarters[currentStarterIndex].category}
+                    </Badge>
+                  </div>
+                  <p className="text-lg font-medium text-gray-900 dark:text-white mb-4 leading-relaxed">
+                    "{conversationStarters[currentStarterIndex].question}"
+                  </p>
+                  <Alert className="bg-indigo-50 dark:bg-indigo-900/30 border-indigo-200">
+                    <Sparkles className="h-4 w-4 text-indigo-600" />
+                    <AlertTitle className="text-indigo-900 dark:text-indigo-100">Parent Tip</AlertTitle>
+                    <AlertDescription className="text-indigo-700 dark:text-indigo-300">
+                      {conversationStarters[currentStarterIndex].tip}
+                    </AlertDescription>
+                  </Alert>
+                </div>
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-gray-600 dark:text-gray-400">
+                    Question {currentStarterIndex + 1} of {conversationStarters.length}
+                  </span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={getNewConversationStarter}
+                    className="text-indigo-600 border-indigo-300 hover:bg-indigo-50"
+                    data-testid="button-next-conversation-starter"
+                  >
+                    Next Question
+                    <RefreshCw className="h-3 w-3 ml-2" />
+                  </Button>
                 </div>
               </CardContent>
             </Card>
