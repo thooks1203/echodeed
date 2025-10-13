@@ -168,7 +168,7 @@ export function ParentDashboard() {
       <div style={{ padding: '20px' }}>
         <div style={{ 
           display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', 
           gap: '12px',
           marginBottom: '24px'
         }}>

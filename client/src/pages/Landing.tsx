@@ -38,30 +38,30 @@ export default function Landing() {
           </div>
 
           {/* Master Headline */}
-          <h1 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-tight">
+          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight px-2">
             Kindness Solves More Than You Think.
           </h1>
 
           {/* Sub-Headline */}
-          <p className="text-xl md:text-2xl text-white/90 mb-4 leading-relaxed">
+          <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-4 leading-relaxed px-2">
             Transform abstract character education into daily, measurable action.
           </p>
-          <p className="text-lg md:text-xl text-white/80 mb-12 italic">
+          <p className="text-base sm:text-lg md:text-xl text-white/80 mb-12 italic px-2">
             Not just a mission—a proven methodology.
           </p>
 
           {/* Proof Points */}
-          <div className="grid md:grid-cols-2 gap-4 mb-12 max-w-2xl mx-auto">
-            <div className="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl p-5 border-2 border-emerald-300 shadow-xl">
-              <div className="flex items-center gap-3 text-white">
-                <CheckCircle className="h-6 w-6 text-white drop-shadow-md" />
-                <span className="font-bold text-lg">95% reduction in service-hour paperwork</span>
+          <div className="grid sm:grid-cols-2 gap-4 mb-12 max-w-2xl mx-auto px-2">
+            <div className="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl p-4 sm:p-5 border-2 border-emerald-300 shadow-xl">
+              <div className="flex items-center gap-2 sm:gap-3 text-white">
+                <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-white drop-shadow-md flex-shrink-0" />
+                <span className="font-bold text-sm sm:text-base md:text-lg">95% reduction in service-hour paperwork</span>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl p-5 border-2 border-cyan-300 shadow-xl">
-              <div className="flex items-center gap-3 text-white">
-                <CheckCircle className="h-6 w-6 text-white drop-shadow-md" />
-                <span className="font-bold text-lg">Privacy-first design & AI safety</span>
+            <div className="bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl p-4 sm:p-5 border-2 border-cyan-300 shadow-xl">
+              <div className="flex items-center gap-2 sm:gap-3 text-white">
+                <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-white drop-shadow-md flex-shrink-0" />
+                <span className="font-bold text-sm sm:text-base md:text-lg">Privacy-first design & AI safety</span>
               </div>
             </div>
           </div>
@@ -146,7 +146,7 @@ export default function Landing() {
                 <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Shield className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900 whitespace-nowrap">For School Leaders</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">For School Leaders</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   Get the data, see measurable character outcomes
                 </p>

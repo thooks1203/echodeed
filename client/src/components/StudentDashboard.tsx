@@ -584,7 +584,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
       {activeTab === 'overview' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {/* Personal Stats Grid */}
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(100px, 1fr))', gap: '12px' }}>
             <div style={{
               background: 'white',
               borderRadius: '12px',
@@ -745,7 +745,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
                   View All →
                 </button>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', gap: '12px' }}>
                 <div style={{
                   background: 'rgba(255, 255, 255, 0.15)',
                   borderRadius: '8px',
