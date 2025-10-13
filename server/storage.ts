@@ -5494,7 +5494,10 @@ export class DatabaseStorage implements IStorage {
       if (a.earnedAt && b.earnedAt) {
         return b.earnedAt.getTime() - a.earnedAt.getTime();
       }
-      return a.badgeName.localeCompare(b.badgeName);
+      // Safe string comparison with fallback
+      const nameA = a.badgeName || '';
+      const nameB = b.badgeName || '';
+      return nameA.localeCompare(nameB);
     });
     
     return badges;
