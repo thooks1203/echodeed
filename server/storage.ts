@@ -5460,24 +5460,42 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getMentorBadgesByUser(mentorId: string) {
-    const badges = await db
-      .select({
-        id: mentorBadges.id,
-        badgeName: mentorBadges.name,
-        badgeIcon: mentorBadges.icon,
-        description: mentorBadges.description,
-        category: mentorBadges.category,
-        tier: mentorBadges.tier,
-        tokenReward: mentorBadges.tokenReward,
-        earnedAt: mentorBadgeAwards.awardedAt,
-      })
+    // Get all active badges
+    const allBadges = await db
+      .select()
       .from(mentorBadges)
-      .leftJoin(mentorBadgeAwards, and(
-        eq(mentorBadgeAwards.badgeId, mentorBadges.id),
-        eq(mentorBadgeAwards.mentorId, mentorId)
-      ))
-      .where(eq(mentorBadges.isActive, true))
-      .orderBy(desc(mentorBadges.name)); // Order by badge name instead of potentially null awardedAt
+      .where(eq(mentorBadges.isActive, true));
+    
+    // Get user's earned badges
+    const earnedBadges = await db
+      .select()
+      .from(mentorBadgeAwards)
+      .where(eq(mentorBadgeAwards.mentorId, mentorId));
+    
+    // Combine the data
+    const badges = allBadges.map(badge => {
+      const earned = earnedBadges.find(e => e.badgeId === badge.id);
+      return {
+        id: badge.id,
+        badgeName: badge.name,
+        badgeIcon: badge.icon,
+        description: badge.description,
+        category: badge.category,
+        tier: badge.tier,
+        tokenReward: badge.tokenReward,
+        earnedAt: earned ? earned.awardedAt : null,
+      };
+    });
+    
+    // Sort: earned badges first (by date), then unearned badges
+    badges.sort((a, b) => {
+      if (a.earnedAt && !b.earnedAt) return -1;
+      if (!a.earnedAt && b.earnedAt) return 1;
+      if (a.earnedAt && b.earnedAt) {
+        return b.earnedAt.getTime() - a.earnedAt.getTime();
+      }
+      return a.badgeName.localeCompare(b.badgeName);
+    });
     
     return badges;
   }
