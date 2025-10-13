@@ -10986,7 +10986,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get mentor's mentorships
   app.get('/api/mentor/mentorships', isAuthenticated, async (req, res) => {
     try {
-      const userId = req.user?.id || 'mentor-001'; // Demo mentor user
+      const userId = req.user?.claims?.sub || req.user?.id || 'mentor-001';
       const mentorships = await storage.getMentorshipsByMentor(userId);
       res.json(mentorships);
     } catch (error) {
@@ -10998,7 +10998,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get mentor's activities
   app.get('/api/mentor/activities', isAuthenticated, async (req, res) => {
     try {
-      const userId = req.user?.id || 'mentor-001'; // Demo mentor user
+      const userId = req.user?.claims?.sub || req.user?.id || 'mentor-001';
       const activities = await storage.getMentorActivitiesByMentor(userId);
       res.json(activities);
     } catch (error) {
@@ -11010,7 +11010,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get mentor's badges
   app.get('/api/mentor/badges', isAuthenticated, async (req, res) => {
     try {
-      const userId = req.user?.id || 'mentor-001'; // Demo mentor user
+      const userId = req.user?.claims?.sub || req.user?.id || 'mentor-001';
       const badges = await storage.getMentorBadgesByUser(userId);
       res.json(badges);
     } catch (error) {
@@ -11022,7 +11022,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get mentor's stats
   app.get('/api/mentor/stats', isAuthenticated, async (req, res) => {
     try {
-      const userId = req.user?.id || 'mentor-001'; // Demo mentor user
+      const userId = req.user?.claims?.sub || req.user?.id || 'mentor-001';
       const stats = await storage.getMentorStatsByUser(userId);
       res.json(stats);
     } catch (error) {
