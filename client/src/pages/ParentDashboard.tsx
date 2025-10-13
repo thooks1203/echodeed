@@ -931,7 +931,7 @@ function PrincipalsBlogSection() {
 }
 
 export default function ParentDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'rewards' | 'service-hours' | 'faq' | 'community' | 'principals-corner' | 'fundraising' | 'insights'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'rewards' | 'service-hours' | 'faq' | 'community' | 'fundraising' | 'insights'>('overview');
   const [selectedStudent, setSelectedStudent] = useState<string>('');
   const [, navigate] = useLocation();
   const [activeBottomTab, setActiveBottomTab] = useState('parent-dashboard');
@@ -1377,11 +1377,7 @@ export default function ParentDashboard() {
             </TabsTrigger>
             <TabsTrigger value="community" className="flex-1 min-w-fit px-3 py-2 bg-emerald-600 text-white hover:bg-emerald-700 data-[state=active]:bg-emerald-700 data-[state=active]:shadow-lg">
               <Users className="h-3 w-3 mr-1" />
-              Parent Community
-            </TabsTrigger>
-            <TabsTrigger value="principals-corner" className="flex-1 min-w-fit px-3 py-2 bg-cyan-600 text-white hover:bg-cyan-700 data-[state=active]:bg-cyan-700 data-[state=active]:shadow-lg">
-              <BookOpen className="h-3 w-3 mr-1" />
-              Principal's Corner
+              Community
             </TabsTrigger>
             {featureFlags.fundraising && (
               <TabsTrigger value="fundraising" className="flex-1 min-w-fit px-3 py-2 bg-green-600 text-white hover:bg-green-700 data-[state=active]:bg-green-700 data-[state=active]:shadow-lg">
@@ -1925,14 +1921,18 @@ export default function ParentDashboard() {
             </Card>
           </TabsContent>
 
-          {/* Parent Community Tab */}
+          {/* Community Tab - Combined Principal's Corner + Parent Community */}
           <TabsContent value="community">
-            <ParentCommunitySection />
-          </TabsContent>
-
-          {/* Principal's Corner Tab */}
-          <TabsContent value="principals-corner">
-            <PrincipalsBlogSection />
+            <div className="space-y-8">
+              {/* Principal's Corner Section */}
+              <PrincipalsBlogSection />
+              
+              {/* Divider */}
+              <div className="border-t border-gray-200 dark:border-gray-700"></div>
+              
+              {/* Parent-to-Parent Community Section */}
+              <ParentCommunitySection />
+            </div>
           </TabsContent>
 
           {/* School Fundraising Tab */}
