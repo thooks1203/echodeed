@@ -11,6 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Progress } from '@/components/ui/progress';
 import { 
   Heart, 
@@ -32,7 +33,8 @@ import {
   Building2,
   Zap,
   BookOpen,
-  Sparkles
+  Sparkles,
+  HelpCircle
 } from 'lucide-react';
 import { useLocation } from 'wouter';
 import PushNotificationSetup from '@/components/PushNotificationSetup';
@@ -466,7 +468,7 @@ function ServiceHoursSection() {
 }
 
 export default function ParentDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'rewards' | 'service-hours' | 'fundraising' | 'insights'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'activity' | 'rewards' | 'service-hours' | 'faq' | 'fundraising' | 'insights'>('overview');
   const [selectedStudent, setSelectedStudent] = useState<string>('');
   const [, navigate] = useLocation();
   const [activeBottomTab, setActiveBottomTab] = useState('parent-dashboard');
@@ -820,6 +822,10 @@ export default function ParentDashboard() {
             <TabsTrigger value="rewards" className="flex-1 min-w-fit px-3 py-2 bg-amber-600 text-white hover:bg-amber-700 data-[state=active]:bg-amber-700 data-[state=active]:shadow-lg">
               Rewards
             </TabsTrigger>
+            <TabsTrigger value="faq" className="flex-1 min-w-fit px-3 py-2 bg-rose-600 text-white hover:bg-rose-700 data-[state=active]:bg-rose-700 data-[state=active]:shadow-lg">
+              <HelpCircle className="h-3 w-3 mr-1" />
+              FAQ
+            </TabsTrigger>
             {featureFlags.fundraising && (
               <TabsTrigger value="fundraising" className="flex-1 min-w-fit px-3 py-2 bg-green-600 text-white hover:bg-green-700 data-[state=active]:bg-green-700 data-[state=active]:shadow-lg">
                 <Target className="h-3 w-3 mr-1" />
@@ -1054,6 +1060,250 @@ export default function ParentDashboard() {
           {/* Service Hours Tab - NEW FEATURE! */}
           <TabsContent value="service-hours">
             <ServiceHoursSection />
+          </TabsContent>
+
+          {/* FAQ Tab */}
+          <TabsContent value="faq">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <HelpCircle className="h-5 w-5 text-rose-600" />
+                  Frequently Asked Questions
+                </CardTitle>
+                <CardDescription>
+                  Common questions about EchoDeed and how to support your child's character development journey
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="item-1">
+                    <AccordionTrigger>How do I know if my child's service hours are verified?</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-gray-700 dark:text-gray-300">
+                        Service hours appear in the "Service" tab with clear verification status badges:
+                      </p>
+                      <ul className="list-disc list-inside mt-2 space-y-1 text-gray-600 dark:text-gray-400">
+                        <li><strong className="text-green-600">Verified ✓</strong> - Teacher has approved the hours with photo evidence</li>
+                        <li><strong className="text-orange-600">Pending Review</strong> - Awaiting teacher verification</li>
+                        <li><strong className="text-gray-600">Rejected</strong> - Hours need correction or re-submission</li>
+                      </ul>
+                      <p className="mt-2 text-gray-700 dark:text-gray-300">
+                        You'll receive instant push notifications when hours are verified!
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-2">
+                    <AccordionTrigger>What are Echo Tokens and how do children earn them?</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-gray-700 dark:text-gray-300 mb-2">
+                        Echo Tokens are the currency of kindness in EchoDeed. Children earn tokens for:
+                      </p>
+                      <ul className="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
+                        <li>Posting anonymous acts of kindness (10-50 tokens based on impact)</li>
+                        <li>Completing verified community service hours (100 tokens per hour)</li>
+                        <li>Maintaining daily kindness streaks (bonus tokens)</li>
+                        <li>Receiving "hearts" from peers on their posts</li>
+                      </ul>
+                      <p className="mt-2 text-gray-700 dark:text-gray-300">
+                        Tokens can be redeemed for rewards at 20+ local Greensboro partners!
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-3">
+                    <AccordionTrigger>How does the dual reward system work for parents?</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-gray-700 dark:text-gray-300 mb-2">
+                        <strong>Revolutionary concept:</strong> When your children earn rewards, YOU earn rewards too!
+                      </p>
+                      <div className="bg-gradient-to-r from-blue-50 to-green-50 dark:from-blue-900/20 dark:to-green-900/20 p-4 rounded-lg mt-3">
+                        <p className="font-semibold text-gray-900 dark:text-white mb-2">How it works:</p>
+                        <ul className="list-disc list-inside space-y-1 text-gray-700 dark:text-gray-300">
+                          <li>Child redeems a reward → You receive a matching parent reward</li>
+                          <li>Example: Child gets free Cook Out meal → You get Starbucks coffee</li>
+                          <li>Both rewards funded by local business sponsors</li>
+                          <li>Zero cost to families - 100% sponsor-funded</li>
+                        </ul>
+                      </div>
+                      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+                        Check the "Rewards" tab to see available dual reward offers!
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-4">
+                    <AccordionTrigger>Is my child's activity truly anonymous?</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-gray-700 dark:text-gray-300 mb-2">
+                        <strong>Yes - complete anonymity is guaranteed:</strong>
+                      </p>
+                      <ul className="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
+                        <li>Kindness posts never show student names or identifiable information</li>
+                        <li>Only parents and teachers can see which specific child posted what</li>
+                        <li>Other students only see anonymous posts in the community feed</li>
+                        <li>FERPA compliant - no personal data shared without consent</li>
+                      </ul>
+                      <p className="mt-2 text-gray-700 dark:text-gray-300">
+                        You can view YOUR children's posts in the "Activity" tab, but they remain anonymous to other families.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-5">
+                    <AccordionTrigger>How do I set up notifications for my child's achievements?</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-gray-700 dark:text-gray-300 mb-2">
+                        <strong>Instant push notifications keep you connected:</strong>
+                      </p>
+                      <ol className="list-decimal list-inside space-y-2 text-gray-600 dark:text-gray-400">
+                        <li>Scroll to the "Overview" tab notification setup card</li>
+                        <li>Click "Enable Push Notifications" button</li>
+                        <li>Allow browser notifications when prompted</li>
+                        <li>You're all set! You'll receive instant alerts for:
+                          <ul className="list-disc list-inside ml-6 mt-1">
+                            <li>New kindness posts from your children</li>
+                            <li>Service hours verified by teachers</li>
+                            <li>Milestones & achievements unlocked</li>
+                            <li>Rewards earned & available for redemption</li>
+                          </ul>
+                        </li>
+                      </ol>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-6">
+                    <AccordionTrigger>What rewards can my children redeem?</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-gray-700 dark:text-gray-300 mb-2">
+                        <strong>20+ local Greensboro partners offer rewards:</strong>
+                      </p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
+                        <div className="bg-orange-50 dark:bg-orange-900/20 p-3 rounded-lg">
+                          <p className="font-semibold text-orange-900 dark:text-orange-100">🍔 Food & Treats</p>
+                          <p className="text-sm text-orange-700 dark:text-orange-300">Cook Out, Chick-fil-A, Dave's Hot Chicken, Dames Chicken & Waffles, Yum Yum Ice Cream</p>
+                        </div>
+                        <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg">
+                          <p className="font-semibold text-purple-900 dark:text-purple-100">🎮 Entertainment</p>
+                          <p className="text-sm text-purple-700 dark:text-purple-300">Boxcar Bar + Arcade, Red Cinemas, Triad Lanes, Urban Air Trampoline Park</p>
+                        </div>
+                        <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
+                          <p className="font-semibold text-blue-900 dark:text-blue-100">🎓 Education</p>
+                          <p className="text-sm text-blue-700 dark:text-blue-300">Barnes & Noble, Greensboro Public Library, Scholastic Books</p>
+                        </div>
+                        <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
+                          <p className="font-semibold text-green-900 dark:text-green-100">🏃 Activities</p>
+                          <p className="text-sm text-green-700 dark:text-green-300">Greensboro Science Center, YMCA, Greensboro Grasshoppers games</p>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-7">
+                    <AccordionTrigger>How does the streak system work?</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-gray-700 dark:text-gray-300 mb-2">
+                        <strong>Streaks encourage daily kindness habits:</strong>
+                      </p>
+                      <ul className="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
+                        <li><strong>Daily Goal:</strong> Post at least one act of kindness per day</li>
+                        <li><strong>Streak Bonus:</strong> Earn extra tokens for consecutive days (10-100 bonus tokens)</li>
+                        <li><strong>Streak Shield:</strong> One "sick day" allowed per week without losing streak</li>
+                        <li><strong>Family Streak:</strong> When all children maintain streaks, family ranking multiplier activates</li>
+                      </ul>
+                      <p className="mt-2 text-gray-700 dark:text-gray-300">
+                        Visible in the "Overview" tab - help your children stay motivated! 🔥
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-8">
+                    <AccordionTrigger>How do I track multiple children?</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-gray-700 dark:text-gray-300 mb-2">
+                        <strong>Easy multi-child management:</strong>
+                      </p>
+                      <ol className="list-decimal list-inside space-y-1 text-gray-600 dark:text-gray-400">
+                        <li>Look for the student selector cards above the main tabs</li>
+                        <li>Click on any child's card to view their individual stats</li>
+                        <li>Click "Family Overview" to see combined family totals</li>
+                        <li>All tabs (Activity, Service, Rewards) filter based on your selection</li>
+                      </ol>
+                      <p className="mt-2 text-gray-700 dark:text-gray-300">
+                        Each child's data stays separate but contributes to your family ranking!
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-9">
+                    <AccordionTrigger>What happens if my child posts inappropriate content?</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-gray-700 dark:text-gray-300 mb-2">
+                        <strong>Multi-layer safety system protects students:</strong>
+                      </p>
+                      <div className="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg mb-3">
+                        <p className="font-semibold text-blue-900 dark:text-blue-100 mb-2">AI Pre-Screening:</p>
+                        <ul className="list-disc list-inside space-y-1 text-blue-700 dark:text-blue-300 text-sm">
+                          <li>Filters profanity and negative keywords before posting</li>
+                          <li>Flags concerning content for teacher review queue</li>
+                          <li>Blocks posts with bullying or harmful language</li>
+                        </ul>
+                      </div>
+                      <div className="bg-purple-50 dark:bg-purple-900/20 p-4 rounded-lg">
+                        <p className="font-semibold text-purple-900 dark:text-purple-100 mb-2">Teacher Moderation:</p>
+                        <ul className="list-disc list-inside space-y-1 text-purple-700 dark:text-purple-300 text-sm">
+                          <li>All flagged posts reviewed by licensed educators</li>
+                          <li>Teachers contact parents directly about concerns</li>
+                          <li>Content removed if inappropriate</li>
+                          <li>Student receives character education guidance</li>
+                        </ul>
+                      </div>
+                      <p className="mt-2 text-gray-700 dark:text-gray-300">
+                        You'll be notified immediately if any concerning content is flagged from your child.
+                      </p>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem value="item-10">
+                    <AccordionTrigger>How do I contact teachers or administrators?</AccordionTrigger>
+                    <AccordionContent>
+                      <p className="text-gray-700 dark:text-gray-300 mb-3">
+                        <strong>Direct communication channels:</strong>
+                      </p>
+                      <div className="space-y-3">
+                        <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                          <MessageSquare className="h-5 w-5 text-blue-600 mt-0.5" />
+                          <div>
+                            <p className="font-semibold text-gray-900 dark:text-white">Your Child's Teacher</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              Contact via Eastern Guilford High School main office: (336) 449-4521
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                          <Building2 className="h-5 w-5 text-purple-600 mt-0.5" />
+                          <div>
+                            <p className="font-semibold text-gray-900 dark:text-white">Principal Dr. Darrell Harris</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              Character education program lead - Available via school office
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
+                          <Shield className="h-5 w-5 text-green-600 mt-0.5" />
+                          <div>
+                            <p className="font-semibold text-gray-900 dark:text-white">EchoDeed Support</p>
+                            <p className="text-sm text-gray-600 dark:text-gray-400">
+                              Technical issues or platform questions - Contact through school administration
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           {/* School Fundraising Tab */}
