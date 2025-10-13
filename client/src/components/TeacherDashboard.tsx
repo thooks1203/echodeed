@@ -121,7 +121,7 @@ const sampleLessonPlans: LessonPlan[] = [
       'Share and practice kind words'
     ],
     materials: ['Clipboards', 'Kindness cards', 'Chart paper', 'Markers'],
-    standards: ['SEL.1.A', 'Character Ed.2.B', 'Social Studies.3.C']
+    standards: ['CE.1.A', 'Character Ed.2.B', 'Social Studies.3.C']
   },
   {
     id: '2',
@@ -137,7 +137,7 @@ const sampleLessonPlans: LessonPlan[] = [
       'Create empathy cards'
     ],
     materials: ['Picture books', 'Emotion cards', 'Art supplies'],
-    standards: ['SEL.2.A', 'Language Arts.1.B']
+    standards: ['CE.2.A', 'Language Arts.1.B']
   },
   {
     id: '3',

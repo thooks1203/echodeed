@@ -102,7 +102,7 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
           </h2>
         </div>
         <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>
-          Social-Emotional Learning through acts of kindness
+          Character Education through acts of kindness
         </p>
       </div>
 

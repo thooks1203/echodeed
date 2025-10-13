@@ -450,14 +450,14 @@ export default function ParentConsent() {
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <p className="text-gray-700 dark:text-gray-300">
-                      EchoDeed is a COPPA-compliant educational platform that helps K-8 students develop social-emotional learning (SEL) skills 
+                      EchoDeed is a COPPA-compliant educational platform that helps K-8 students develop character education skills 
                       through guided kindness activities and character development exercises.
                     </p>
                     
                     <div className="grid sm:grid-cols-2 gap-3 md:gap-4">
                       {[
                         { icon: '🔒', title: 'Privacy First', desc: 'Full anonymity with no personal data sharing' },
-                        { icon: '📚', title: 'Educational Focus', desc: 'Aligned with SEL and character education standards' },
+                        { icon: '📚', title: 'Educational Focus', desc: 'Aligned with character education standards' },
                         { icon: '👩‍🏫', title: 'Teacher Supervised', desc: 'All content reviewed by licensed educators' },
                         { icon: '✅', title: 'COPPA Compliant', desc: 'Exceeds federal privacy requirements for children' }
                       ].map((feature, index) => (
@@ -536,7 +536,7 @@ export default function ParentConsent() {
                             category: "Educational Activity Data",
                             icon: "📚",
                             items: ["Anonymous kindness posts", "Participation in challenges", "Educational progress metrics"],
-                            purpose: "Social-emotional learning assessment and curriculum improvement",
+                            purpose: "Character education assessment and curriculum improvement",
                             retention: "Academic year + 1 year for progress analysis"
                           },
                           {
@@ -674,7 +674,7 @@ export default function ParentConsent() {
                               </FormControl>
                               <div className="space-y-1 leading-none">
                                 <FormLabel className="text-sm font-medium">
-                                  I consent to my child's participation in educational activities and SEL curriculum
+                                  I consent to my child's participation in educational activities and character education curriculum
                                 </FormLabel>
                                 <FormDescription>
                                   This includes sharing anonymous kindness posts and participating in character development exercises.
@@ -762,7 +762,7 @@ export default function ParentConsent() {
                                   Allow weekly wellness and kindness reports to be generated
                                 </FormLabel>
                                 <FormDescription>
-                                  You'll receive anonymous summaries of your child's positive engagement and social-emotional growth.
+                                  You'll receive anonymous summaries of your child's positive engagement and character development growth.
                                 </FormDescription>
                               </div>
                             </FormItem>

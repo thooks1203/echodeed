@@ -32,7 +32,7 @@ interface CurriculumLesson {
   materials: string[];
   vocabulary: string[];
   kindnessSkills: string[];
-  selStandards: string[];
+  characterStandards: string[];
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -1599,10 +1599,10 @@ function ReportsSection() {
               <Button 
                 variant="outline" 
                 className="w-full justify-start"
-                data-testid="button-sel-assessment"
-                onClick={() => toast({ title: "SEL Assessment", description: "Generating SEL assessment report..." })}
+                data-testid="button-character-assessment"
+                onClick={() => toast({ title: "Character Assessment", description: "Generating character assessment report..." })}
               >
-                🧠 SEL Assessment Report
+                🧠 Character Assessment Report
               </Button>
             </div>
           </CardContent>

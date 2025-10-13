@@ -37,7 +37,7 @@ interface StudentEngagement {
   kindnessPostsCount: number;
   lastActivity: string;
   wellnessScore: number;
-  selProgress: string;
+  characterProgress: string;
   riskLevel: 'low' | 'medium' | 'high';
 }
 
@@ -75,8 +75,8 @@ export default function AnalyticsDashboard({
     retry: false,
   });
 
-  const { data: selStandards, isLoading: selLoading } = useQuery({
-    queryKey: [`/api/school/sel-standards/grade/${selectedGrade !== 'all' ? selectedGrade : '6-8'}`],
+  const { data: characterStandards, isLoading: characterLoading } = useQuery({
+    queryKey: [`/api/school/character-standards/grade/${selectedGrade !== 'all' ? selectedGrade : '6-8'}`],
     retry: false,
   });
 
@@ -97,7 +97,7 @@ export default function AnalyticsDashboard({
       kindnessPostsCount: 12,
       lastActivity: "2 hours ago",
       wellnessScore: 85,
-      selProgress: "proficient",
+      characterProgress: "proficient",
       riskLevel: "low"
     },
     {
@@ -106,7 +106,7 @@ export default function AnalyticsDashboard({
       kindnessPostsCount: 3,
       lastActivity: "5 days ago",
       wellnessScore: 62,
-      selProgress: "developing",
+      characterProgress: "developing",
       riskLevel: "medium"
     },
     {
@@ -115,7 +115,7 @@ export default function AnalyticsDashboard({
       kindnessPostsCount: 1,
       lastActivity: "2 weeks ago",
       wellnessScore: 45,
-      selProgress: "beginning",
+      characterProgress: "beginning",
       riskLevel: "high"
     }
   ];
@@ -343,8 +343,8 @@ export default function AnalyticsDashboard({
                         </div>
                         
                         <div>
-                          <div className="text-sm text-gray-600 mb-1">SEL Progress</div>
-                          <Badge variant="outline">{student.selProgress}</Badge>
+                          <div className="text-sm text-gray-600 mb-1">Character Development Progress</div>
+                          <Badge variant="outline">{student.characterProgress}</Badge>
                         </div>
                       </div>
                     </div>
@@ -541,8 +541,8 @@ export default function AnalyticsDashboard({
                       <Button variant="outline" className="w-full justify-start" data-testid="button-weekly-report">
                         📊 Weekly Engagement Summary
                       </Button>
-                      <Button variant="outline" className="w-full justify-start" data-testid="button-sel-progress">
-                        📈 SEL Progress Report
+                      <Button variant="outline" className="w-full justify-start" data-testid="button-character-progress">
+                        📈 Character Development Progress Report
                       </Button>
                       <Button variant="outline" className="w-full justify-start" data-testid="button-wellness-report">
                         🧠 Student Wellness Report

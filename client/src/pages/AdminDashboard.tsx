@@ -69,7 +69,7 @@ interface SchoolMetrics {
   totalTeachers: number;
   kindnessActsThisWeek: number;
   kindnessActsThisMonth: number;
-  avgSelScore: number;
+  avgCharacterScore: number;
   parentEngagementRate: number;
   teacherAdoptionRate: number;
 }
@@ -81,7 +81,7 @@ interface DistrictMetrics {
   totalStudents: number;
   totalTeachers: number;
   totalKindnessActs: number;
-  avgSelScore: number;
+  avgCharacterScore: number;
   topPerformingSchools: string[];
   complianceStatus: 'compliant' | 'partial' | 'non_compliant';
 }
@@ -792,7 +792,7 @@ export default function AdminDashboard() {
     totalStudents: 1200,
     totalTeachers: 85,
     totalKindnessActs: 18450,
-    avgSelScore: 8.9,
+    avgCharacterScore: 8.9,
     topPerformingSchools: ['Eastern Guilford High School'],
     complianceStatus: 'compliant'
   };
@@ -805,7 +805,7 @@ export default function AdminDashboard() {
       totalTeachers: 85,
       kindnessActsThisWeek: 287,
       kindnessActsThisMonth: 1068,
-      avgSelScore: 8.9,
+      avgCharacterScore: 8.9,
       parentEngagementRate: 82,
       teacherAdoptionRate: 91
     }
@@ -1501,8 +1501,8 @@ export default function AdminDashboard() {
                         {school.totalStudents} students • {school.totalTeachers} teachers
                       </CardDescription>
                     </div>
-                    <Badge variant={school.avgSelScore >= 8 ? "default" : "secondary"}>
-                      SEL: {school.avgSelScore}/10
+                    <Badge variant={school.avgCharacterScore >= 8 ? "default" : "secondary"}>
+                      Character Dev: {school.avgCharacterScore}/10
                     </Badge>
                   </div>
                 </CardHeader>
@@ -1876,7 +1876,7 @@ export default function AdminDashboard() {
                     <div className="flex items-center justify-between p-3 border rounded-lg">
                       <div className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-green-600" />
-                        <span>SEL Standards Alignment</span>
+                        <span>Character Education Standards Alignment</span>
                       </div>
                       <Badge variant="default">Met</Badge>
                     </div>

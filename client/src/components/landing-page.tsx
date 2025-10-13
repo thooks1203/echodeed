@@ -604,7 +604,7 @@ export function LandingPage() {
         
         <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
           {[
-            { icon: '📚', title: 'Curriculum Integration', desc: 'Aligned with SEL standards for 6-12 character education' },
+            { icon: '📚', title: 'Curriculum Integration', desc: 'Aligned with Character Education standards for 6-12 education' },
             { icon: '👩‍🏫', title: 'Teacher Tools', desc: 'Classroom management and student progress tracking' },
             { icon: '🏅', title: 'Student Achievements', desc: 'Badge system and kindness point rewards' },
             { icon: '👨‍👩‍👧‍👦', title: 'Parent Communication', desc: 'Weekly reports and progress updates' },

@@ -209,11 +209,11 @@ export default function TrialSignup() {
         
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">SEL Standards Aligned</CardTitle>
+            <CardTitle className="text-lg">Character Education Standards Aligned</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-sm text-gray-600">
-              Supports Social-Emotional Learning standards with measurable outcomes and progress tracking for administrators.
+              Supports Character Education standards with measurable outcomes and progress tracking for administrators.
             </p>
           </CardContent>
         </Card>

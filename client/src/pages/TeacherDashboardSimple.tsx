@@ -27,7 +27,7 @@ interface CurriculumLesson {
   materials: string[];
   vocabulary: string[];
   kindnessSkills: string[];
-  selStandards: string[];
+  characterStandards: string[];
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
@@ -82,7 +82,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
       materials: ['Community helper research books', 'Research worksheet templates', 'Interview question guides', 'Project planning templates'],
       vocabulary: ['community service - organized activity to help solve community problems', 'civic responsibility - duty to participate in community improvement', 'impact assessment - measuring the effects of your actions', 'stakeholder - person or group affected by community issues'],
       kindnessSkills: ['Community service', 'Appreciation', 'Planning', 'Collaboration'],
-      selStandards: ['Social Awareness', 'Responsible Decision Making', 'Relationship Skills'],
+      characterStandards: ['Social Awareness', 'Responsible Decision Making', 'Relationship Skills'],
       isActive: true,
       createdAt: '2024-12-01',
       updatedAt: '2024-12-01'
@@ -107,7 +107,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
       materials: ['Identity wheel worksheets', 'Privilege reflection questions', 'Bias scenario cards', 'Media analysis examples'],
       vocabulary: ['diversity - the variety of different identities and experiences', 'unconscious bias - automatic preferences we have without realizing it', 'privilege - unearned advantages some people have', 'inclusion - actively welcoming and valuing all people'],
       kindnessSkills: ['Inclusion', 'Cultural awareness', 'Bias recognition', 'Advocacy'],
-      selStandards: ['Self-Awareness', 'Social Awareness', 'Responsible Decision Making'],
+      characterStandards: ['Self-Awareness', 'Social Awareness', 'Responsible Decision Making'],
       isActive: true,
       createdAt: '2024-12-01',
       updatedAt: '2024-12-01'
@@ -132,7 +132,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
       materials: ['Computers/tablets with internet access', 'Digital footprint example materials', 'Cyberbullying scenario cards', 'Video recording equipment'],
       vocabulary: ['digital footprint - the permanent trail of data you leave when using the internet', 'cyberbullying - using technology to hurt, embarrass, or threaten someone repeatedly', 'upstander - someone who speaks up when they see bullying or injustice', 'digital citizenship - responsible and ethical use of technology and online resources'],
       kindnessSkills: ['Digital citizenship', 'Upstander behavior', 'Online communication', 'Content creation'],
-      selStandards: ['Self-Management', 'Social Awareness', 'Responsible Decision Making'],
+      characterStandards: ['Self-Management', 'Social Awareness', 'Responsible Decision Making'],
       isActive: true,
       createdAt: '2024-12-01',
       updatedAt: '2024-12-01'
@@ -157,7 +157,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
       materials: ['Restorative justice educational materials', 'Circle guidelines poster', 'Talking piece (special object)', 'Conflict scenario cards'],
       vocabulary: ['restorative justice - focusing on healing and repairing harm rather than punishment', 'accountability - taking full responsibility for your actions and their consequences', 'amends - concrete actions taken to repair harm you\'ve caused', 'circle keeper - the person who facilitates a restorative circle discussion'],
       kindnessSkills: ['Conflict resolution', 'Accountability', 'Empathy', 'Community building'],
-      selStandards: ['Self-Management', 'Social Awareness', 'Relationship Skills', 'Responsible Decision Making'],
+      characterStandards: ['Self-Management', 'Social Awareness', 'Relationship Skills', 'Responsible Decision Making'],
       isActive: true,
       createdAt: '2024-12-01',
       updatedAt: '2024-12-01'
@@ -182,7 +182,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo" }: Teacher
       materials: ['Video scenario library', 'Emotion analysis worksheets', 'Multi-perspective case studies', 'Conflict mapping templates'],
       vocabulary: ['empathy - understanding and sharing someone else\'s feelings deeply', 'perspective-taking - actively considering how someone else views a situation', 'emotional regulation - managing your emotions in healthy ways', 'social awareness - understanding group dynamics and social cues'],
       kindnessSkills: ['Empathy', 'Perspective-taking', 'Emotional awareness', 'Program design'],
-      selStandards: ['Self-Awareness', 'Social Awareness', 'Relationship Skills'],
+      characterStandards: ['Self-Awareness', 'Social Awareness', 'Relationship Skills'],
       isActive: true,
       createdAt: '2024-12-01',
       updatedAt: '2024-12-01'
