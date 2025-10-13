@@ -1006,6 +1006,14 @@ export async function initializeSampleData() {
       log(`⚠️ Could not initialize service opportunities: ${error.message}`);
     }
 
+    // Initialize mentor sample data (mentorships, activities, badges)
+    try {
+      const { initializeMentorSampleData } = await import('./mentorSampleData');
+      await initializeMentorSampleData();
+    } catch (error: any) {
+      log(`⚠️ Could not initialize mentor sample data: ${error.message}`);
+    }
+
     log(`✓ Successfully initialized ${samplePosts.length} sample posts and updated global counter`);
   } catch (error: any) {
     log(`✗ Error initializing sample data: ${error.message}`);

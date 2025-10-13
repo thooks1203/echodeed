@@ -10841,6 +10841,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // ===== MENTOR DASHBOARD ENDPOINTS =====
+  
+  // Get mentor's mentorships
+  app.get('/api/mentor/mentorships', async (req, res) => {
+    try {
+      const userId = req.user?.id || 'mentor-001'; // Demo mentor user
+      const mentorships = await storage.getMentorshipsByMentor(userId);
+      res.json(mentorships);
+    } catch (error) {
+      console.error('Error getting mentor mentorships:', error);
+      res.status(500).json({ message: 'Failed to get mentorships' });
+    }
+  });
+
+  // Get mentor's activities
+  app.get('/api/mentor/activities', async (req, res) => {
+    try {
+      const userId = req.user?.id || 'mentor-001'; // Demo mentor user
+      const activities = await storage.getMentorActivitiesByMentor(userId);
+      res.json(activities);
+    } catch (error) {
+      console.error('Error getting mentor activities:', error);
+      res.status(500).json({ message: 'Failed to get activities' });
+    }
+  });
+
+  // Get mentor's badges
+  app.get('/api/mentor/badges', async (req, res) => {
+    try {
+      const userId = req.user?.id || 'mentor-001'; // Demo mentor user
+      const badges = await storage.getMentorBadgesByUser(userId);
+      res.json(badges);
+    } catch (error) {
+      console.error('Error getting mentor badges:', error);
+      res.status(500).json({ message: 'Failed to get badges' });
+    }
+  });
+
+  // Get mentor's stats
+  app.get('/api/mentor/stats', async (req, res) => {
+    try {
+      const userId = req.user?.id || 'mentor-001'; // Demo mentor user
+      const stats = await storage.getMentorStatsByUser(userId);
+      res.json(stats);
+    } catch (error) {
+      console.error('Error getting mentor stats:', error);
+      res.status(500).json({ message: 'Failed to get stats' });
+    }
+  });
+
   // Get parent notifications
   app.get('/api/summer/notifications/:parentId', async (req, res) => {
     try {

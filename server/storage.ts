@@ -36,6 +36,9 @@ import {
   mentorScenarioResponses,
   mentorConversations,
   mentorCertifications,
+  mentorships,
+  mentorActivities,
+  mentorStats,
   privacyLogs,
   teacherRewards,
   teacherRewardCriteria,
@@ -5414,6 +5417,89 @@ export class DatabaseStorage implements IStorage {
       .where(and(...conditions));
     
     return result.map(r => r.user).filter(Boolean) as User[];
+  }
+
+  // Mentor Dashboard Operations
+  async getMentorshipsByMentor(mentorId: string) {
+    const mentorshipList = await db
+      .select({
+        id: mentorships.id,
+        menteeId: mentorships.menteeId,
+        menteeName: sql<string>`COALESCE(${users.firstName} || ' ' || ${users.lastName}, 'Unknown Mentee')`,
+        status: mentorships.status,
+        startedAt: mentorships.startedAt,
+        kindnessGoal: mentorships.kindnessGoal,
+        progressNotes: mentorships.progressNotes,
+        nextSessionAt: mentorships.nextSessionAt,
+      })
+      .from(mentorships)
+      .leftJoin(users, eq(mentorships.menteeId, users.id))
+      .where(eq(mentorships.mentorId, mentorId))
+      .orderBy(desc(mentorships.startedAt));
+    
+    return mentorshipList;
+  }
+
+  async getMentorActivitiesByMentor(mentorId: string) {
+    const activities = await db
+      .select({
+        id: mentorActivities.id,
+        activityType: mentorActivities.activityType,
+        description: mentorActivities.description,
+        scheduledAt: mentorActivities.scheduledAt,
+        isCompleted: mentorActivities.isCompleted,
+        mentorReflection: mentorActivities.mentorReflection,
+        menteeReflection: mentorActivities.menteeReflection,
+      })
+      .from(mentorActivities)
+      .leftJoin(mentorships, eq(mentorActivities.mentorshipId, mentorships.id))
+      .where(eq(mentorships.mentorId, mentorId))
+      .orderBy(desc(mentorActivities.scheduledAt));
+    
+    return activities;
+  }
+
+  async getMentorBadgesByUser(mentorId: string) {
+    const badges = await db
+      .select({
+        id: mentorBadges.id,
+        badgeName: mentorBadges.name,
+        badgeIcon: mentorBadges.icon,
+        description: mentorBadges.description,
+        category: mentorBadges.category,
+        tier: mentorBadges.tier,
+        tokenReward: mentorBadges.tokenReward,
+        earnedAt: mentorBadgeAwards.awardedAt,
+      })
+      .from(mentorBadges)
+      .leftJoin(mentorBadgeAwards, and(
+        eq(mentorBadgeAwards.badgeId, mentorBadges.id),
+        eq(mentorBadgeAwards.mentorId, mentorId)
+      ))
+      .where(eq(mentorBadges.isActive, true))
+      .orderBy(desc(mentorBadgeAwards.awardedAt));
+    
+    return badges;
+  }
+
+  async getMentorStatsByUser(mentorId: string) {
+    const [stats] = await db
+      .select()
+      .from(mentorStats)
+      .where(eq(mentorStats.mentorId, mentorId));
+    
+    return stats || {
+      totalMentees: 0,
+      activeMentorships: 0,
+      totalSessions: 0,
+      avgRating: 0,
+      totalKindnessActsGuided: 0,
+      totalTokensEarned: 0,
+      badgesEarned: 0,
+      mentorLevel: 1,
+      nextLevelProgress: 0,
+      impactScore: 0,
+    };
   }
 
   // Mentor analytics and progress

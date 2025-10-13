@@ -617,14 +617,15 @@ export const schoolYearChallengeEngagement = pgTable("school_year_challenge_enga
 // Mentor badge system for peer mentorship
 export const mentorBadges = pgTable("mentor_badges", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  name: varchar("name", { length: 100 }).notNull(),
+  badgeName: varchar("badge_name", { length: 100 }).notNull(),
+  badgeIcon: varchar("badge_icon", { length: 50 }).notNull(), // Emoji or icon
   description: text("description").notNull(),
   category: varchar("category", { length: 50 }).notNull(), // connection, communication, guidance, leadership, etc.
   tier: varchar("tier", { length: 20 }).notNull(), // starter, bronze, silver, gold, special
-  icon: varchar("icon", { length: 50 }).notNull(), // Emoji or icon
   requirements: jsonb("requirements").notNull(), // What's needed to earn this badge
   tokenReward: integer("token_reward").default(25).notNull(),
   isActive: integer("is_active").default(1).notNull(),
+  rarity: varchar("rarity", { length: 20 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -717,6 +718,55 @@ export const mentorCertifications = pgTable("mentor_certifications", {
   expiresAt: timestamp("expires_at"), // Optional expiration
   certifyingAdmin: varchar("certifying_admin").references(() => users.id),
   notes: text("notes"), // Admin notes about certification
+});
+
+// Mentorships - track mentor-mentee relationships
+export const mentorships = pgTable("mentorships", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  mentorId: varchar("mentor_id").notNull().references(() => users.id),
+  menteeId: varchar("mentee_id").notNull().references(() => users.id),
+  status: varchar("status", { length: 20 }).default("active").notNull(), // active, paused, completed, cancelled
+  kindnessGoal: text("kindness_goal"), // Mentee's kindness goal
+  progressNotes: text("progress_notes"), // General progress notes
+  startedAt: timestamp("started_at").defaultNow().notNull(),
+  endedAt: timestamp("ended_at"),
+  nextSessionAt: timestamp("next_session_at"),
+  totalSessions: integer("total_sessions").default(0),
+  menteeSatisfaction: integer("mentee_satisfaction"), // 1-5 rating
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Mentor activities - track sessions and interactions
+export const mentorActivities = pgTable("mentor_activities", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  mentorshipId: varchar("mentorship_id").notNull().references(() => mentorships.id),
+  activityType: varchar("activity_type", { length: 50 }).notNull(), // check-in, planning, reflection, problem-solving
+  description: text("description").notNull(),
+  scheduledAt: timestamp("scheduled_at").notNull(),
+  completedAt: timestamp("completed_at"),
+  isCompleted: boolean("is_completed").default(false).notNull(),
+  mentorReflection: text("mentor_reflection"), // Mentor's notes
+  menteeReflection: text("mentee_reflection"), // Mentee's notes
+  kindnessActDiscussed: text("kindness_act_discussed"), // Kindness ideas discussed
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Mentor stats - aggregated statistics
+export const mentorStats = pgTable("mentor_stats", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  mentorId: varchar("mentor_id").notNull().unique().references(() => users.id),
+  totalMentees: integer("total_mentees").default(0).notNull(),
+  activeMentorships: integer("active_mentorships").default(0).notNull(),
+  totalSessions: integer("total_sessions").default(0).notNull(),
+  avgRating: decimal("avg_rating", { precision: 3, scale: 2 }).default("0.00").notNull(),
+  totalKindnessActsGuided: integer("total_kindness_acts_guided").default(0).notNull(),
+  totalTokensEarned: integer("total_tokens_earned").default(0).notNull(),
+  badgesEarned: integer("badges_earned").default(0).notNull(),
+  mentorLevel: integer("mentor_level").default(1).notNull(),
+  nextLevelProgress: integer("next_level_progress").default(0).notNull(),
+  impactScore: integer("impact_score").default(0).notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 // GDPR and privacy compliance logging
