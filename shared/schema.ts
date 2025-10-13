@@ -259,7 +259,7 @@ export const schools = pgTable("schools", {
 // Principal's Corner blog posts for parent engagement
 export const principalBlogPosts = pgTable("principal_blog_posts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  schoolId: varchar("school_id").notNull().references(() => schools.id),
+  schoolId: varchar("school_id"), // Optional school reference
   authorId: varchar("author_id").notNull().references(() => users.id), // Principal/admin who wrote it
   title: varchar("title", { length: 200 }).notNull(),
   content: text("content").notNull(),

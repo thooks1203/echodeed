@@ -10407,6 +10407,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ===============================
+  // 📝 PRINCIPAL'S CORNER - Blog Posts
+  // Parent engagement content from school principals
+  // ===============================
+  
+  // Get all blog posts (with optional filters)
+  app.get('/api/blog/posts', async (req: any, res) => {
+    try {
+      const { category, schoolId } = req.query;
+      const { db } = await import('./db');
+      const { principalBlogPosts } = await import('@shared/schema');
+      const { and, eq, desc } = await import('drizzle-orm');
+      
+      const conditions = [eq(principalBlogPosts.isPublished, 1)];
+      if (category) conditions.push(eq(principalBlogPosts.category, category));
+      if (schoolId) conditions.push(eq(principalBlogPosts.schoolId, schoolId));
+      
+      const posts = await db.select()
+        .from(principalBlogPosts)
+        .where(conditions.length > 0 ? and(...conditions) : undefined)
+        .orderBy(desc(principalBlogPosts.publishedAt));
+      
+      res.json(posts);
+    } catch (error) {
+      console.error('Failed to get blog posts:', error);
+      res.status(500).json({ error: 'Failed to get blog posts' });
+    }
+  });
+
+  // ===============================
   // 🎯 SCHOOL FUNDRAISER ENDPOINTS - DOUBLE TOKEN REWARDS! 
   // ===============================
 
