@@ -287,7 +287,7 @@ export default function FamilyDashboard({
                   <h2 className="text-2xl font-bold mb-2">
                     Week {(currentWeek as any).week}: {
                       typeof (currentWeek as any).theme === 'object' && (currentWeek as any).theme?.theme
-                        ? `${(currentWeek as any).theme.emoji || '🌟'} ${(currentWeek as any).theme.theme}`
+                        ? `${String((currentWeek as any).theme.emoji || '🌟')} ${String((currentWeek as any).theme.theme)}`
                         : String((currentWeek as any).theme || 'Kindness Week')
                     }
                   </h2>

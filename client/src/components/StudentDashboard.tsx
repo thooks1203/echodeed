@@ -328,7 +328,7 @@ function WeeklyChallengesView() {
 
 export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: StudentDashboardProps) {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'overview' | 'challenges' | 'progress'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'challenges' | 'progress' | 'settings'>('overview');
 
   // Fetch student's personal data from tokens endpoint
   const { data: userTokens } = useQuery({
