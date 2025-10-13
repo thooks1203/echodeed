@@ -58,18 +58,18 @@ export default function FamilyChallenges() {
   const [, setLocation] = useLocation();
 
   // Get current week and theme
-  const { data: currentWeek } = useQuery({
+  const { data: currentWeek } = useQuery<{ week: number; theme: WeeklyFamilyTheme }>({
     queryKey: ['/api/family-challenges/current-week'],
   });
 
   // Get family challenges for selected age group
-  const { data: challenges = [], isLoading: challengesLoading } = useQuery({
+  const { data: challenges = [], isLoading: challengesLoading } = useQuery<FamilyChallenge[]>({
     queryKey: ['/api/family-challenges/challenges', selectedAgeGroup],
     enabled: !!selectedAgeGroup,
   });
 
   // Get activities for selected challenge
-  const { data: activities = [] } = useQuery({
+  const { data: activities = [] } = useQuery<FamilyActivity[]>({
     queryKey: ['/api/family-challenges/activities', selectedChallenge?.id],
     enabled: !!selectedChallenge?.id,
   });
@@ -77,10 +77,7 @@ export default function FamilyChallenges() {
   // Complete family challenge mutation
   const completeChallengeMutation = useMutation({
     mutationFn: async (data: { studentId: string; parentId?: string; challengeId: string; familyReflection: string; photoSubmitted: boolean }) => {
-      return await apiRequest('/api/family-challenges/complete', {
-        method: 'POST',
-        body: JSON.stringify(data),
-      });
+      return await apiRequest('POST', '/api/family-challenges/complete', data);
     },
     onSuccess: () => {
       toast({
@@ -135,8 +132,8 @@ export default function FamilyChallenges() {
         {/* Header */}
         <div className="flex items-center gap-4">
           <BackButton 
-            onClick={() => setLocation('/?show=roles')} 
-            label="Back to Home"
+            onClick={() => setLocation('/parent-feed')} 
+            label="Back to Parent Feed"
             variant="minimal"
           />
           <div className="flex-1">
@@ -225,7 +222,7 @@ export default function FamilyChallenges() {
                 <p>No challenges available for this age group this week.</p>
                 <Button 
                   className="mt-4" 
-                  onClick={() => apiRequest('/api/family-challenges/initialize', { method: 'POST' })}
+                  onClick={() => apiRequest('POST', '/api/family-challenges/initialize')}
                   data-testid="button-initialize-challenges"
                 >
                   Initialize Family Challenges
