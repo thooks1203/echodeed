@@ -256,7 +256,7 @@ export function LandingPage() {
       <div id="roles" style={{
         background: 'white',
         borderRadius: '20px',
-        padding: '32px 24px',
+        padding: '24px 16px',
         marginBottom: '32px',
         boxShadow: '0 10px 40px rgba(0, 0, 0, 0.15)',
         width: '100%',
@@ -430,17 +430,19 @@ export function LandingPage() {
               color: 'white',
               border: 'none',
               borderRadius: '14px',
-              padding: '20px 24px',
-              fontSize: '17px',
+              padding: '16px 12px',
+              fontSize: '15px',
               fontWeight: '600',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '10px',
+              gap: '8px',
               transition: 'all 0.3s ease',
               boxShadow: '0 4px 14px rgba(59, 130, 246, 0.4)',
-              lineHeight: 1.3
+              lineHeight: 1.3,
+              width: '100%',
+              maxWidth: '100%'
             }}
             onMouseOver={(e) => {
               (e.target as HTMLButtonElement).style.backgroundColor = '#2563EB';
@@ -469,17 +471,19 @@ export function LandingPage() {
               color: 'white',
               border: 'none',
               borderRadius: '14px',
-              padding: '20px 24px',
-              fontSize: '17px',
+              padding: '16px 12px',
+              fontSize: '15px',
               fontWeight: '600',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '10px',
+              gap: '8px',
               transition: 'all 0.3s ease',
               boxShadow: '0 4px 14px rgba(16, 185, 129, 0.4)',
-              lineHeight: 1.3
+              lineHeight: 1.3,
+              width: '100%',
+              maxWidth: '100%'
             }}
             onMouseOver={(e) => {
               (e.target as HTMLButtonElement).style.backgroundColor = '#059669';
@@ -508,17 +512,19 @@ export function LandingPage() {
               color: 'white',
               border: 'none',
               borderRadius: '14px',
-              padding: '20px 24px',
-              fontSize: '17px',
+              padding: '16px 12px',
+              fontSize: '15px',
               fontWeight: '600',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '10px',
+              gap: '8px',
               transition: 'all 0.3s ease',
               boxShadow: '0 4px 14px rgba(139, 92, 246, 0.4)',
-              lineHeight: 1.3
+              lineHeight: 1.3,
+              width: '100%',
+              maxWidth: '100%'
             }}
             onMouseOver={(e) => {
               (e.target as HTMLButtonElement).style.backgroundColor = '#7C3AED';

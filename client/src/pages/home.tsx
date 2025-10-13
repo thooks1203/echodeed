@@ -218,10 +218,10 @@ export default function Home() {
             data-testid="button-kindness-connect-fab"
             style={{
               position: 'fixed',
-              bottom: '155px',
+              bottom: '90px',
               right: '16px',
               cursor: 'pointer',
-              zIndex: 99,
+              zIndex: 101,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -669,10 +669,10 @@ export default function Home() {
             data-testid="button-kindness-connect-fab"
             style={{
               position: 'fixed',
-              bottom: '155px',
+              bottom: '90px',
               right: '16px',
               cursor: 'pointer',
-              zIndex: 99,
+              zIndex: 101,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
@@ -918,10 +918,10 @@ export default function Home() {
             data-testid="button-kindness-connect-fab"
             style={{
               position: 'fixed',
-              bottom: '155px',
+              bottom: '90px',
               right: '16px',
               cursor: 'pointer',
-              zIndex: 99,
+              zIndex: 101,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
