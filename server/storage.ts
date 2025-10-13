@@ -5477,7 +5477,7 @@ export class DatabaseStorage implements IStorage {
         eq(mentorBadgeAwards.mentorId, mentorId)
       ))
       .where(eq(mentorBadges.isActive, true))
-      .orderBy(desc(mentorBadgeAwards.awardedAt));
+      .orderBy(desc(mentorBadges.name)); // Order by badge name instead of potentially null awardedAt
     
     return badges;
   }
