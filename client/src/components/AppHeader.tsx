@@ -49,10 +49,9 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton, tokens }: 
           <div className="relative">
             <button 
               onClick={() => setShowUserMenu(!showUserMenu)}
-              className="flex flex-col items-center gap-1 p-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg border-3 border-yellow-300 hover:scale-105"
+              className="flex flex-col items-center gap-1 p-3 sm:p-4 rounded-xl bg-gradient-to-r from-blue-500 to-purple-600 text-white hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg border-3 border-yellow-300 hover:scale-105 w-full max-w-xs"
               data-testid="button-user-menu"
               style={{ 
-                minWidth: '200px',
                 fontSize: '14px',
                 fontWeight: '700'
               }}
@@ -66,7 +65,7 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton, tokens }: 
             </button>
             
             {showUserMenu && (
-              <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 w-80 bg-white rounded-xl shadow-2xl border-3 border-yellow-300 z-[100]">
+              <div className="absolute left-1/2 transform -translate-x-1/2 top-full mt-2 w-72 sm:w-80 bg-white rounded-xl shadow-2xl border-3 border-yellow-300 z-[100]">
                 <div className="p-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-green-50">
                   <div className="text-center">
                     <div className="text-lg font-bold text-gray-800">👋 Hi {user?.name?.split(' ')[0] || 'User'}!</div>

@@ -458,11 +458,9 @@ export function TeacherDashboard() {
                 <Button
                   size="lg"
                   onClick={() => navigate('/wellness-checkin?from=teacher-dashboard')}
-                  className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-200 border-4 border-orange-300 hover:border-orange-200 px-6 py-4 text-lg"
+                  className="flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold shadow-2xl hover:shadow-3xl transform hover:-translate-y-1 transition-all duration-200 border-4 border-orange-300 hover:border-orange-200 px-4 sm:px-6 py-3 sm:py-4 text-base sm:text-lg"
                   style={{
-                    animation: 'flash 1s infinite alternate, bounce 2s infinite',
-                    fontSize: '18px',
-                    minWidth: '220px'
+                    animation: 'flash 1s infinite alternate, bounce 2s infinite'
                   }}
                   data-testid="teacher-wellness-alert"
                 >
