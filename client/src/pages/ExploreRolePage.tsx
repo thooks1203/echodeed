@@ -295,11 +295,11 @@ export default function ExploreRolePage() {
           <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-12">
             {config.proofPoints.map((point, index) => (
               <Card key={index} className="bg-white/95 backdrop-blur-sm border-0 shadow-xl">
-                <CardContent className="p-3 sm:p-6 text-center">
-                  <div className={`text-xl sm:text-3xl md:text-4xl font-black bg-gradient-to-r ${config.gradient} bg-clip-text text-transparent mb-1 sm:mb-2`}>
+                <CardContent className="p-2 sm:p-6 text-center flex flex-col items-center justify-center min-h-[100px] sm:min-h-[120px]">
+                  <div className={`text-lg sm:text-3xl md:text-4xl font-black bg-gradient-to-r ${config.gradient} bg-clip-text text-transparent mb-1 sm:mb-2 whitespace-nowrap`}>
                     {point.stat}
                   </div>
-                  <div className="text-[10px] sm:text-sm text-gray-600 font-medium leading-tight">
+                  <div className="text-[9px] sm:text-sm text-gray-600 font-medium leading-tight break-words hyphens-auto">
                     {point.label}
                   </div>
                 </CardContent>
