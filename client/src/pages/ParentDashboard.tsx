@@ -635,14 +635,14 @@ function ParentCommunitySection() {
       {/* Community Posts */}
       <div className="grid gap-6">
         {communityPosts && communityPosts.length > 0 ? (
-          communityPosts.map((post) => (
+          communityPosts.map((post, index) => (
             <Card key={post.id} className="hover:shadow-lg transition-shadow" data-testid={`card-community-post-${post.id}`}>
               <CardHeader>
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1">
                     <CardTitle className="text-xl mb-2">{post.title}</CardTitle>
                     <div className="flex items-center gap-3 text-sm text-gray-600 dark:text-gray-400">
-                      <span className="font-medium text-emerald-600">{post.authorName}</span>
+                      <span className="font-medium text-emerald-600">Anonymous Parent</span>
                       <Badge variant="outline" className="bg-emerald-50 text-emerald-700 border-emerald-200">
                         {post.category.replace('-', ' ')}
                       </Badge>
