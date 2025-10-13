@@ -10435,6 +10435,46 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Create a new principal blog post
+  app.post('/api/blog/posts', isAuthenticated, async (req: any, res) => {
+    try {
+      const { db } = await import('./db');
+      const { principalBlogPosts, insertPrincipalBlogPostSchema } = await import('@shared/schema');
+      
+      // Get user info from session
+      const userId = req.user?.id;
+      const userRole = req.user?.schoolRole;
+      
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      // Only principals and admins can create blog posts
+      if (userRole !== 'principal' && userRole !== 'admin') {
+        return res.status(403).json({ error: 'Only principals and administrators can create blog posts' });
+      }
+
+      // Validate and create blog post
+      const postData = insertPrincipalBlogPostSchema.parse({
+        ...req.body,
+        authorId: userId,
+        schoolId: req.user?.schoolId || '1', // Default to school 1 if not set
+        isPublished: 1, // Auto-publish for now
+        publishedAt: new Date(),
+      });
+      
+      const [newPost] = await db.insert(principalBlogPosts)
+        .values(postData)
+        .returning();
+      
+      console.log('📝 New principal blog post created:', newPost.title);
+      res.json(newPost);
+    } catch (error) {
+      console.error('Failed to create blog post:', error);
+      res.status(400).json({ error: 'Failed to create blog post' });
+    }
+  });
+
   // ===============================
   // 👪 PARENT COMMUNITY - Parent-to-Parent Posts
   // Parents sharing thoughts and supporting each other

@@ -698,9 +698,55 @@ function ParentCommunitySection() {
 
 // Principal's Corner Blog Section Component
 function PrincipalsBlogSection() {
+  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const { toast } = useToast();
+  
   const { data: blogPosts, isLoading } = useQuery<PrincipalBlogPost[]>({
     queryKey: ['/api/blog/posts'],
   });
+
+  // Get current user info to check if they can create posts
+  const { data: currentUser } = useQuery<any>({
+    queryKey: ['/api/auth/user'],
+  });
+
+  const form = useForm({
+    defaultValues: {
+      title: '',
+      excerpt: '',
+      content: '',
+      category: 'character-education',
+    },
+  });
+
+  const createBlogMutation = useMutation({
+    mutationFn: async (data: any) => {
+      return await apiRequest('/api/blog/posts', 'POST', data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/blog/posts'] });
+      toast({
+        title: 'Blog post published!',
+        description: 'Your message has been shared with parents.',
+      });
+      setShowCreateDialog(false);
+      form.reset();
+    },
+    onError: () => {
+      toast({
+        title: 'Error',
+        description: 'Failed to publish blog post. Please try again.',
+        variant: 'destructive',
+      });
+    },
+  });
+
+  const handleSubmit = (data: any) => {
+    createBlogMutation.mutate(data);
+  };
+
+  // Check if user is principal or admin
+  const canCreatePost = currentUser?.schoolRole === 'principal' || currentUser?.schoolRole === 'admin';
 
   if (isLoading) {
     return (
@@ -728,15 +774,108 @@ function PrincipalsBlogSection() {
     <div className="space-y-6">
       <Card className="bg-gradient-to-r from-cyan-50 to-blue-50 dark:from-cyan-900/20 dark:to-blue-900/20 border-cyan-200">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <BookOpen className="h-6 w-6 text-cyan-600" />
-            Principal's Corner
-          </CardTitle>
-          <CardDescription>
-            Insights and guidance from Dr. Darrell Harris, Principal of the Year
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <BookOpen className="h-6 w-6 text-cyan-600" />
+                Principal's Corner
+              </CardTitle>
+              <CardDescription>
+                Insights and guidance from Dr. Darrell Harris, Principal of the Year
+              </CardDescription>
+            </div>
+            {canCreatePost && (
+              <Button 
+                onClick={() => setShowCreateDialog(true)}
+                className="bg-cyan-600 hover:bg-cyan-700"
+                data-testid="button-create-blog-post"
+              >
+                <BookOpen className="h-4 w-4 mr-2" />
+                Post Blog
+              </Button>
+            )}
+          </div>
         </CardHeader>
       </Card>
+
+      {/* Create Blog Post Dialog */}
+      <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Create Principal's Corner Post</DialogTitle>
+            <DialogDescription>
+              Share guidance and insights with the Eastern Guilford parent community
+            </DialogDescription>
+          </DialogHeader>
+          
+          <form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+            <div>
+              <label className="text-sm font-medium">Title</label>
+              <Input
+                {...form.register('title')}
+                placeholder="Blog post title..."
+                className="mt-1"
+                data-testid="input-blog-title"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Excerpt (optional)</label>
+              <Input
+                {...form.register('excerpt')}
+                placeholder="Brief summary for preview..."
+                className="mt-1"
+                data-testid="input-blog-excerpt"
+              />
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Category</label>
+              <select
+                {...form.register('category')}
+                className="mt-1 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2"
+                data-testid="select-blog-category"
+              >
+                <option value="character-education">Character Education</option>
+                <option value="school-updates">School Updates</option>
+                <option value="parent-guidance">Parent Guidance</option>
+                <option value="community-events">Community Events</option>
+                <option value="kindness-initiatives">Kindness Initiatives</option>
+              </select>
+            </div>
+
+            <div>
+              <label className="text-sm font-medium">Content</label>
+              <textarea
+                {...form.register('content')}
+                placeholder="Share your message with parents..."
+                rows={8}
+                className="mt-1 w-full rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-3 py-2"
+                data-testid="textarea-blog-content"
+              />
+            </div>
+
+            <div className="flex gap-3 justify-end">
+              <Button 
+                type="button" 
+                variant="outline" 
+                onClick={() => setShowCreateDialog(false)}
+                data-testid="button-cancel-blog"
+              >
+                Cancel
+              </Button>
+              <Button 
+                type="submit" 
+                className="bg-cyan-600 hover:bg-cyan-700"
+                disabled={createBlogMutation.isPending}
+                data-testid="button-submit-blog"
+              >
+                {createBlogMutation.isPending ? 'Publishing...' : 'Publish Post'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid gap-6">
         {blogPosts && blogPosts.length > 0 ? (
