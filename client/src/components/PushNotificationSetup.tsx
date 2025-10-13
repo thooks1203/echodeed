@@ -256,7 +256,25 @@ export default function PushNotificationSetup({
       </CardHeader>
       
       <CardContent className="space-y-4">
-        {error && (
+        {permission === 'denied' && (
+          <Alert className="border-amber-200 bg-amber-50">
+            <AlertTriangle className="h-4 w-4 text-amber-600" />
+            <AlertDescription className="text-amber-900">
+              <div className="space-y-2">
+                <p className="font-semibold">Notification permission blocked</p>
+                <p className="text-sm">To enable notifications, please:</p>
+                <ol className="text-sm list-decimal list-inside space-y-1">
+                  <li>Click the 🔒 lock icon in your browser's address bar</li>
+                  <li>Find "Notifications" in the permissions menu</li>
+                  <li>Change it from "Block" to "Allow"</li>
+                  <li>Refresh this page and click "Enable Notifications" again</li>
+                </ol>
+              </div>
+            </AlertDescription>
+          </Alert>
+        )}
+        
+        {error && permission !== 'denied' && (
           <Alert className="border-red-200 bg-red-50">
             <AlertTriangle className="h-4 w-4 text-red-600" />
             <AlertDescription className="text-red-800">
@@ -287,11 +305,11 @@ export default function PushNotificationSetup({
             <Button 
               onClick={subscribeToPush}
               disabled={isLoading}
-              className="flex items-center gap-2"
+              className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700"
               data-testid="button-enable-notifications"
             >
               <Bell className="h-4 w-4" />
-              {isLoading ? 'Enabling...' : 'Enable Notifications'}
+              {isLoading ? 'Enabling...' : permission === 'denied' ? 'Request Permission Again' : 'Enable Notifications'}
             </Button>
           ) : (
             <Button 
@@ -306,7 +324,7 @@ export default function PushNotificationSetup({
             </Button>
           )}
 
-          {permission === 'granted' && (
+          {permission === 'granted' && !isSubscribed && (
             <Badge variant="outline" className="text-green-600">
               Permission Granted
             </Badge>
