@@ -254,12 +254,12 @@ export default function FamilyDashboard({
         {/* Back Button */}
         <div className="mb-6">
           <Button
-            onClick={() => setLocation('/?show=roles')}
+            onClick={() => setLocation('/parent-dashboard')}
             className="flex items-center gap-2 bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
             data-testid="button-back"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Home
+            Back to Parent Dashboard
           </Button>
         </div>
 
