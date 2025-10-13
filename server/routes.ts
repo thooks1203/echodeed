@@ -10436,6 +10436,77 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // ===============================
+  // 👪 PARENT COMMUNITY - Parent-to-Parent Posts
+  // Parents sharing thoughts and supporting each other
+  // ===============================
+  
+  // Get all parent community posts
+  app.get('/api/community/posts', async (req: any, res) => {
+    try {
+      const { category, schoolId } = req.query;
+      const { db } = await import('./db');
+      const { parentCommunityPosts, users } = await import('@shared/schema');
+      const { and, eq, desc } = await import('drizzle-orm');
+      
+      const conditions = [eq(parentCommunityPosts.isApproved, 1)];
+      if (category) conditions.push(eq(parentCommunityPosts.category, category));
+      if (schoolId) conditions.push(eq(parentCommunityPosts.schoolId, schoolId));
+      
+      const posts = await db.select({
+        id: parentCommunityPosts.id,
+        schoolId: parentCommunityPosts.schoolId,
+        authorId: parentCommunityPosts.authorId,
+        authorName: parentCommunityPosts.authorName,
+        title: parentCommunityPosts.title,
+        content: parentCommunityPosts.content,
+        category: parentCommunityPosts.category,
+        likesCount: parentCommunityPosts.likesCount,
+        commentsCount: parentCommunityPosts.commentsCount,
+        createdAt: parentCommunityPosts.createdAt,
+      })
+        .from(parentCommunityPosts)
+        .where(conditions.length > 0 ? and(...conditions) : undefined)
+        .orderBy(desc(parentCommunityPosts.createdAt));
+      
+      res.json(posts);
+    } catch (error) {
+      console.error('Failed to get community posts:', error);
+      res.status(500).json({ error: 'Failed to get community posts' });
+    }
+  });
+
+  // Create a new parent community post
+  app.post('/api/community/posts', async (req: any, res) => {
+    try {
+      const { db } = await import('./db');
+      const { parentCommunityPosts, insertParentCommunityPostSchema } = await import('@shared/schema');
+      
+      // Get user info from session
+      const userId = req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ error: 'Authentication required' });
+      }
+
+      // Validate and create post
+      const postData = insertParentCommunityPostSchema.parse({
+        ...req.body,
+        authorId: userId,
+        authorName: req.body.authorName || `${req.user?.firstName || 'Anonymous'} ${req.user?.lastName || 'Parent'}`,
+      });
+      
+      const [newPost] = await db.insert(parentCommunityPosts)
+        .values(postData)
+        .returning();
+      
+      console.log('📝 New parent community post created:', newPost.title);
+      res.json(newPost);
+    } catch (error) {
+      console.error('Failed to create community post:', error);
+      res.status(400).json({ error: 'Failed to create community post' });
+    }
+  });
+
+  // ===============================
   // 🎯 SCHOOL FUNDRAISER ENDPOINTS - DOUBLE TOKEN REWARDS! 
   // ===============================
 
