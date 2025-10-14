@@ -10948,10 +10948,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ===== MENTOR TRAINING ENDPOINTS =====
   
-  // Get all mentor training modules
+  // Get all mentor training modules with completion status
   app.get('/api/mentor/training', async (req, res) => {
     try {
-      const training = await storage.getAllMentorTraining();
+      const userId = req.user?.claims?.sub || req.user?.id || 'student-001'; // Default to Sofia for demo
+      console.log('🎓 Training API called for user:', userId);
+      
+      const training = await storage.getMentorTrainingWithCompletionStatus(userId);
+      console.log('🎓 Training data retrieved:', training.length, 'modules, first has completed:', training[0]?.completed);
       res.json(training);
     } catch (error) {
       console.error('Error getting mentor training:', error);

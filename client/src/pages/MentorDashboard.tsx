@@ -102,9 +102,15 @@ export default function MentorDashboard() {
     queryKey: ["/api/mentor/stats"]
   });
 
-  const { data: training = [], isLoading: trainingLoading } = useQuery<TrainingModule[]>({
+  const { data: trainingRaw = [], isLoading: trainingLoading } = useQuery<TrainingModule[]>({
     queryKey: ["/api/mentor/training"]
   });
+
+  // Add completed field if missing (backend compatibility)
+  const training = trainingRaw.map(module => ({
+    ...module,
+    completed: module.completed ?? false
+  }));
 
   // Quick stats for overview
   const activeMentorships = mentorships.filter(m => m.status === 'active');

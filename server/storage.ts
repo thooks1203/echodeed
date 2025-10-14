@@ -5314,6 +5314,26 @@ export class DatabaseStorage implements IStorage {
       .orderBy(mentorTraining.createdAt);
   }
 
+  async getMentorTrainingWithCompletionStatus(userId: string): Promise<(MentorTraining & { completed: boolean })[]> {
+    const allTraining = await db
+      .select()
+      .from(mentorTraining)
+      .where(eq(mentorTraining.isActive, true))
+      .orderBy(mentorTraining.createdAt);
+
+    const userCompletions = await db
+      .select()
+      .from(userMentorTraining)
+      .where(eq(userMentorTraining.userId, userId));
+
+    const completionMap = new Map(userCompletions.map(c => [c.trainingId, true]));
+
+    return allTraining.map(training => ({
+      ...training,
+      completed: completionMap.has(training.id) || false
+    }));
+  }
+
   // Mentor Scenario Operations
   async createMentorScenario(scenario: InsertMentorScenario): Promise<MentorScenario> {
     const [createdScenario] = await db
