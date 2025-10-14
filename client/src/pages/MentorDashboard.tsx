@@ -204,7 +204,7 @@ export default function MentorDashboard() {
               </div>
               <div className="flex items-center gap-2">
                 <Star className="h-4 w-4 text-orange-500" />
-                <span>{stats.avgRating.toFixed(1)} Average Rating</span>
+                <span>{(stats.avgRating || 0).toFixed(1)} Average Rating</span>
               </div>
             </div>
           )}
