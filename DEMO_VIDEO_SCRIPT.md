@@ -1,267 +1,268 @@
 # EchoDeed™ Demo Video Script
-**Target Audience:** School Principals, Assistant Principals, Character Education Coordinators  
-**Duration:** 3-4 minutes  
-**Tone:** Professional, solution-focused, empowering
+**Target Length:** 4-5 minutes  
+**Target Audience:** School Principals, Assistant Principals, Character Education Coordinators
 
 ---
 
-## OPENING (0:00 - 0:20)
-**[Screen: Montage of students in hallways, classrooms, looking at phones]**
+## 🎬 INTRO (0:00-0:30)
+[Screen: Homepage showing anonymous kindness feed]
 
-**NARRATOR (V.O.):**  
-*"Every principal faces the same challenge: How do you build authentic kindness and character in students... while managing an already-overwhelmed staff?"*
+**YOU SAY:**  
+"Hi, I'm [Your Name]. Today I want to show you EchoDeed™—the anonymous kindness platform that's solving the biggest problem in character education: teacher burnout from manual verification while actually getting students to care about kindness.
 
-**[Screen: Teacher at desk with stacks of paperwork, clock showing 7 PM]**
-
-*"Service hour verification takes 15 minutes per student. Bullying reports pile up. And tracking positive behavior? Nearly impossible."*
+Unlike traditional programs that add to your staff's workload, EchoDeed™ reduces verification time by 95% while engaging students through anonymity and local rewards. We're live at Eastern Guilford High School with Principal of the Year Dr. Darrell Harris. Let me show you how it works."
 
 ---
 
-## PROBLEM STATEMENT (0:20 - 0:35)
-**[Screen: Split screen showing 3 pain points with icons]**
+## 👨‍🎓 STUDENT PORTAL (0:30-2:15)
 
-**NARRATOR:**  
-*"Traditional character education programs have three fatal flaws:"*
+### Login as Student (0:30-0:45)
+[Click: Login button]  
+[Enter: sofia.rodriguez@student.eghs.edu / demo123]
 
-**[Text appears on screen as narrated:]**
-- ❌ **Manual tracking** - Teachers drowning in paperwork
-- ❌ **No student buy-in** - Kids see it as another requirement  
-- ❌ **Zero visibility** - Principals can't measure impact
+**YOU SAY:**  
+"Let's start by logging in as Sofia Rodriguez, a 10th grader at Eastern Guilford. She's already spreading kindness and earning rewards through the platform."
 
----
+### Student Dashboard Overview (0:45-1:10)
+[Screen: Student dashboard showing tokens, streak, service hours]
 
-## SOLUTION INTRO (0:35 - 0:55)
-**[Screen: EchoDeed logo with tagline "Anonymous Kindness, Real Impact"]**
+**YOU SAY:**  
+"The first thing Sofia sees is her impact dashboard. She has 1,103 Echo Tokens earned from spreading kindness, a 4-day streak, and 7.5 verified service hours. But here's what makes this different—everything is anonymous. No profiles. No followers. Just pure character in action."
 
-**NARRATOR:**  
-*"Meet EchoDeed - the anonymous kindness platform that's transforming character education at Eastern Guilford High School."*
+[Point to Echo Tokens balance]
 
-**[Screen: Dr. Darrell Harris (animated photo/quote graphic)]**
+**YOU SAY:**  
+"Those tokens? Redeemable at 21 real local businesses—Chick-fil-A Burlington Road, Greensboro Science Center, Cook Out. Students earn real rewards for real kindness."
 
-**TEXT ON SCREEN:**  
-*Dr. Darrell Harris  
-Principal, Eastern Guilford High School  
-Guilford County Principal of the Year*
+### Anonymous Posting (1:10-1:35)
+[Click: "Share Kindness" or navigate to Feed tab]  
+[Scroll through anonymous posts]
 
-**NARRATOR:**  
-*"Dr. Harris needed a solution that reduced teacher workload, protected student privacy, and actually engaged teens. Here's what he discovered."*
+**YOU SAY:**  
+"Here's the global kindness feed—287,000 anonymous acts from students across the platform. Sofia can post her own acts without anyone knowing it's her. Watch what happens when she posts."
 
----
+[Click: Post button]  
+[Type: "Helped a classmate understand algebra during lunch"]  
+[Select category: "Academic Support"]  
+[Click: Submit]
 
-## FEATURE 1: STUDENT EXPERIENCE (0:55 - 1:30)
-**[Screen: iPhone showing student feed interface - Sofia's perspective]**
+**YOU SAY:**  
+"She submits anonymously, earns tokens instantly, and gets this celebration..."
 
-**NARRATOR:**  
-*"Students share acts of kindness completely anonymously - no profiles, no likes, just pure character in action."*
+[Screen: Kindness Spark animation with confetti]
 
-**[Screen: Demo of posting a kind deed]**
+**YOU SAY:**  
+"This gamification creates genuine engagement—not compliance."
 
-**ON-SCREEN TEXT:**  
-*"I helped an elderly neighbor carry groceries"  
-Category: Community Service  
-Location: Gibsonville*
+### Redeem Rewards (1:35-2:00)
+[Click: "Rewards" tab or Echo Tokens button]  
+[Screen: Reward marketplace showing local partners]
 
-**[Screen: Confetti animation, "Kindness Spark" celebration]**
+**YOU SAY:**  
+"Now here's where students actually care. Sofia can browse rewards from local businesses—meal vouchers, movie tickets, Science Center passes. No teacher approval needed. She earned it, she redeems it."
 
-**NARRATOR:**  
-*"Every post earns Echo Tokens, redeemable at 21 local businesses - from Chick-fil-A Burlington Road to Greensboro Science Center."*
+[Click on a reward card, show redemption code]
 
-**[Screen: Reward redemption interface showing local partners]**
+### Service Hours Submission (2:00-2:15)
+[Click: "Service Hours" tab]  
+[Screen: Service log with photo upload]
 
-*"No adult approval needed. Students take action, post instantly, and see their impact grow."*
+**YOU SAY:**  
+"For service hour tracking, Sofia uploads a verification photo with her submission—a letter from the organization, a timesheet, visual proof. This is what transforms teacher workload."
 
----
-
-## FEATURE 2: TEACHER DASHBOARD (1:30 - 2:10)
-**[Screen: Teacher dashboard - verification photo system]**
-
-**NARRATOR:**  
-*"Here's where EchoDeed saves your staff 95% of their time."*
-
-**[Screen: Service hour verification with photo upload]**
-
-**NARRATOR:**  
-*"Students upload verification photos with their service hour requests. Teachers see visual proof instantly - reducing verification from 15 minutes to 30 seconds per student."*
-
-**[Screen: One-click approval button, then CSV export]**
-
-**ON-SCREEN TEXT:**  
-*From 15 minutes → 30 seconds per student  
-Export directly to x2vol (Guilford County's required platform)*
-
-**NARRATOR:**  
-*"One-click approval. Automatic x2vol CSV export. No duplicate data entry. Your staff focuses on teaching, not paperwork."*
+[Show: Upload photo interface]
 
 ---
 
-## FEATURE 3: SAFETY & MODERATION (2:10 - 2:35)
-**[Screen: AI Moderation dashboard with flagged content queue]**
+## 👨‍🏫 TEACHER PORTAL (2:15-3:30)
 
-**NARRATOR:**  
-*"Student safety is non-negotiable. EchoDeed's AI filters inappropriate content before it ever goes live."*
+### Switch to Teacher View (2:15-2:30)
+[Logout, then login as teacher]  
+[Enter: teacher-demo@eghs.edu / demo123]
 
-**[Screen: Three-layer safety system graphic]**
+**YOU SAY:**  
+"Now let's switch to a teacher's perspective. I'm logging in as Ms. Johnson, a community service coordinator at Eastern Guilford."
 
-**ON-SCREEN TEXT:**  
-✓ Pre-posting profanity filter  
-✓ Human review queue for teachers  
-✓ FERPA-compliant - no crisis intervention liability*
+### Service Hour Verification (2:30-3:00)
+[Screen: Teacher dashboard showing pending service hours]
 
-**NARRATOR:**  
-*"The AI flags concerning content for human review - it doesn't replace counselors, it empowers teachers to make informed decisions. All content stays in your control."*
+**YOU SAY:**  
+"Here's where EchoDeed saves your staff 95% of their time. Ms. Johnson sees pending service hour requests with verification photos already attached."
 
----
+[Click on a pending request]  
+[Screen: Shows student name, hours requested, organization, and uploaded photo]
 
-## FEATURE 4: PARENT ENGAGEMENT (2:35 - 2:55)
-**[Screen: Parent dashboard - Maria Rodriguez's view]**
+**YOU SAY:**  
+"She can see the verification letter right here—no emails, no phone calls, no tracking down paperwork. This used to take 15 minutes per student. With EchoDeed? 30 seconds."
 
-**NARRATOR:**  
-*"Parents stay connected without invading privacy."*
+[Click: Approve button]
 
-**[Screen: Principal's Corner blog posts from Dr. Harris]**
+**YOU SAY:**  
+"One click. Student gets instant notification. Hours added to their record."
 
-*"Dr. Harris shares weekly reflections through Principal's Corner..."*
+### x2vol Export (3:00-3:15)
+[Screen: Service hours list view]  
+[Point to export button]
 
-**[Screen: Parent community forum with privacy features]**
+**YOU SAY:**  
+"And here's the game-changer for Guilford County schools: one-click CSV export to x2vol, your required district platform. No duplicate data entry. Your compliance requirements are handled automatically."
 
-*"...while parents connect in a monitored community forum. Plus instant push notifications when their child earns service hours or rewards."*
+[Click: Export to CSV button]
 
-**[Screen: Push notification: "Sofia completed 2 service hours!"]**
+### AI Moderation Queue (3:15-3:30)
+[Click: "Moderation" tab]  
+[Screen: Flagged content queue]
 
----
+**YOU SAY:**  
+"For safety, our AI pre-filters profanity and inappropriate content before it goes live. Anything concerning gets queued for human review—Ms. Johnson makes the final call, not the AI. This protects students while keeping you FERPA-compliant with no crisis intervention liability."
 
-## FEATURE 5: PEER MENTORSHIP (2:55 - 3:15)
-**[Screen: Mentor Dashboard - Sofia mentoring younger student]**
-
-**NARRATOR:**  
-*"Your student leaders become character ambassadors through EchoDeed's peer mentorship system."*
-
-**[Screen: Mentor training modules, badge system]**
-
-**ON-SCREEN TEXT:**  
-✓ Training modules for student mentors  
-✓ Track mentee progress  
-✓ Earn leadership badges*
-
-**NARRATOR:**  
-*"High-achieving students guide younger peers, building a culture of kindness that spreads organically - without requiring extra staff."*
+[Show: Flagged post with approve/reject buttons]
 
 ---
 
-## RESULTS & IMPACT (3:15 - 3:35)
-**[Screen: Impact metrics dashboard]**
+## 👪 PARENT PORTAL (3:30-4:00)
 
-**NARRATOR:**  
-*"After 6 weeks at Eastern Guilford High School:"*
+### Switch to Parent View (3:30-3:45)
+[Logout, login as parent]  
+[Enter: maria.rodriguez@parent.com / demo123]
 
-**[Animated metrics appear on screen:]**
-- 📊 **287,435 anonymous kind acts** documented
-- ⏱️ **95% reduction** in teacher verification time  
-- 🎓 **1,200 students** actively engaged
-- 🤝 **21 local business** partnerships activated
-- 💰 **$0 cost** to school or families
+**YOU SAY:**  
+"Parents stay engaged without invading their teen's privacy. I'm logging in as Maria Rodriguez, Sofia's mom."
 
-**NARRATOR:**  
-*"Character education that actually scales."*
+### Parent Dashboard (3:45-4:00)
+[Screen: Parent dashboard showing child's progress]
 
----
+**YOU SAY:**  
+"Maria sees Sofia's verified service hours and earned tokens—but not her anonymous kindness posts. Privacy is protected. She also gets instant push notifications when Sofia completes service hours or earns major achievements."
 
-## CALL TO ACTION (3:35 - 3:50)
-**[Screen: Split screen - left shows Dr. Harris's school, right shows "Your school here?"]**
+[Scroll to Principal's Corner section]
 
-**NARRATOR:**  
-*"EchoDeed is currently piloting at Eastern Guilford High School with plans to expand across Guilford County and beyond."*
-
-**[Screen: Contact information and demo request form]**
-
-**ON-SCREEN TEXT:**  
-**Ready to transform character education at your school?**
-
-📧 Contact: [your email]  
-🌐 Demo: www.echodeed.com  
-📅 Schedule a personalized walkthrough
-
-**NARRATOR:**  
-*"Join Dr. Harris in building a generation that leads with kindness. Request your personalized demo today."*
+**YOU SAY:**  
+"And Dr. Harris uses Principal's Corner to share weekly reflections with all parents—no separate newsletter needed."
 
 ---
 
-## CLOSING (3:50 - 4:00)
-**[Screen: EchoDeed logo with animated ripple effect]**
+## 🎯 MENTOR DASHBOARD (4:00-4:30) - OPTIONAL
+[If you have time, show this. Otherwise skip to closing]
 
-**ON-SCREEN TEXT:**  
-**EchoDeed™**  
-*Anonymous Kindness. Real Impact.*
+[Logout, login as student mentor]  
+[Enter: sofia.rodriguez@student.eghs.edu / demo123]  
+[Navigate to Mentor tab]
 
-**NARRATOR:**  
-*"EchoDeed - where every act of kindness creates ripples that last a lifetime."*
+**YOU SAY:**  
+"High-achieving students can become peer mentors through our mentorship system. They complete training modules, guide younger students, and earn leadership badges—building your character education culture without requiring extra staff."
 
-**[Fade to black]**
-
----
-
-## PRODUCTION NOTES
-
-### Visual Style
-- **Color Palette:** Purple/blue gradients (brand colors), clean white backgrounds
-- **Typography:** Modern, legible sans-serif (matches app UI)
-- **Animation:** Smooth transitions, minimal but purposeful motion
-- **Tone:** Professional but warm, emphasizing human impact
-
-### Screen Recording Segments Needed
-1. Student posting deed + reward redemption (30 sec)
-2. Teacher verification workflow with photo (20 sec)
-3. AI moderation queue review (15 sec)
-4. Parent dashboard browsing (15 sec)
-5. Mentor dashboard overview (15 sec)
-
-### B-Roll Suggestions
-- Eastern Guilford High School exterior (if permission granted)
-- Stock footage: diverse students collaborating, teachers working efficiently
-- Local business logos/storefronts (Chick-fil-A Burlington Rd, etc.)
-- Animated kindness ripple effects
-
-### Music Recommendation
-- Uplifting corporate background track
-- Mid-tempo (not too fast/slow)
-- Builds during impact metrics section
-- Fades during narration for clarity
-
-### Key Messaging Priorities
-1. **Solves real pain:** Reduces teacher workload by 95%
-2. **Student privacy:** Anonymous, FERPA-compliant
-3. **Zero cost:** Free for schools and families
-4. **Local impact:** Real business partnerships
-5. **Proven results:** Live at Eastern Guilford HS with Dr. Harris
+[Show: Mentor training modules, mentee tracking, badges earned]
 
 ---
 
-## ALTERNATIVE 60-SECOND VERSION
+## 🎯 CLOSING & CALL TO ACTION (4:30-5:00)
 
-For social media/email previews:
+[Screen: Back to student feed or impact dashboard showing global counter]
 
-**OPENING (0:00-0:10):**  
-*"Service hour verification takes 15 minutes per student. What if it took 30 seconds?"*
+**YOU SAY:**  
+"Here's why EchoDeed™ works:
 
-**DEMO (0:10-0:40):**  
-Show: Student posts anonymously → Earns tokens → Redeems at local business  
-Show: Teacher sees photo → One-click approval → CSV export  
+**For Students:** Anonymous posting, real local rewards, instant gratification. They actually want to participate.
 
-**IMPACT (0:40-0:55):**  
-*"287,000 kind acts. 1,200 students. 95% less paperwork. Zero cost."*
+**For Teachers:** 95% time savings on verification. One-click x2vol export. AI safety without liability.
 
-**CTA (0:55-1:00):**  
-*"Request your demo at echodeed.com"*
+**For Principals:** 287,000 documented acts of kindness. 1,200 engaged students. Zero cost to your school or families.
 
----
+We're live at Eastern Guilford High School with Dr. Darrell Harris, Guilford County's Principal of the Year. We're ready to expand to your school.
 
-## POST-PRODUCTION CHECKLIST
-- [ ] Add captions/subtitles (80% watch with sound off)
-- [ ] Create 16:9 (YouTube), 1:1 (Instagram), and 9:16 (TikTok) versions
-- [ ] Include clickable timestamps in YouTube description
-- [ ] Export with high-quality thumbnail showing Dr. Harris or impact metrics
-- [ ] Test on mobile devices for readability
+Let's prove that character education doesn't have to overwhelm your staff to transform your students."
+
+[Screen: Contact information or www.echodeed.com]
+
+**YOU SAY:**  
+"I'd love to show you a personalized demo for your school. Let's talk."
 
 ---
 
-*This script is optimized for principals who make decisions based on staff efficiency, student outcomes, and budget constraints. Focus on real results over features.*
+## 📝 RECORDING TIPS
+
+### Before Recording:
+1. ✅ Login with demo credentials (below) to pre-populate realistic data
+2. ✅ Clear browser cache for clean UI
+3. ✅ Close extra browser tabs to avoid distractions
+4. ✅ Test microphone audio quality
+5. ✅ Practice once to get smooth transitions between roles
+6. ✅ Use full-screen browser mode (F11) to hide bookmarks/tabs
+
+### During Recording:
+- Speak **slowly and clearly** (you can speed up in editing if needed)
+- **Pause 1-2 seconds** between sections (makes editing easier)
+- Use **cursor highlighting** in Loom to draw attention to key elements
+- **Smile!** It comes through in your voice and builds connection
+- If you mess up, pause 3 seconds and restart that sentence (easy to cut)
+
+### Recommended Tools:
+- **Loom** (easiest, browser-based, free): [loom.com](https://loom.com)
+- **OBS Studio** (free, professional): [obsproject.com](https://obsproject.com)
+- **Camtasia** (paid, includes editing): [techsmith.com](https://techsmith.com)
+
+### After Recording:
+- ✅ Add **captions/subtitles** (accessibility + 80% watch with sound off)
+- ✅ Add subtle background music (optional, use YouTube Audio Library for free)
+- ✅ Export as **MP4** for maximum compatibility
+- ✅ Upload to **YouTube as unlisted** or **Vimeo** for easy sharing
+- ✅ Create custom thumbnail showing Eastern Guilford HS or Dr. Harris
+
+---
+
+## 🎥 DEMO CREDENTIALS
+
+Use these accounts for recording:
+
+**Student (Sofia Rodriguez):**
+- Email: `sofia.rodriguez@student.eghs.edu`
+- Password: `demo123`
+
+**Teacher (Ms. Johnson):**
+- Email: `teacher-demo@eghs.edu`
+- Password: `demo123`
+
+**Parent (Maria Rodriguez):**
+- Email: `maria.rodriguez@parent.com`
+- Password: `demo123`
+
+**Demo Site:**
+- URL: `https://echo-deed-feed-tvanhook97.replit.app`
+- Production: `www.echodeed.com`
+
+---
+
+## 📤 SHARING CHECKLIST
+
+After creating your video:
+
+- [ ] Test video plays on **mobile devices** (principals watch on phones)
+- [ ] Add to **pitch deck** as embedded video or link
+- [ ] Upload to **LinkedIn** with post targeting school administrators
+- [ ] Send directly to **Dr. Darrell Harris** for testimonial approval
+- [ ] Email to **Guilford County Schools** superintendent
+- [ ] Include link in **grant applications** (visual proof of impact)
+- [ ] Embed on **landing page** (if you build one)
+- [ ] Share in **principal LinkedIn groups** and education forums
+
+---
+
+## 💡 PRO TIPS
+
+### For Maximum Impact:
+1. **Lead with pain:** Start by acknowledging teacher overwhelm (they feel seen)
+2. **Show, don't tell:** Demonstrate the 30-second verification vs. explaining it
+3. **Use real data:** "287,000 acts" sounds more credible than "thousands"
+4. **Name-drop Dr. Harris:** Principals trust other principals
+5. **End with urgency:** "Ready to pilot in your district" creates FOMO
+
+### Common Mistakes to Avoid:
+- ❌ Talking too fast (you know the app, they don't)
+- ❌ Skipping the student view (they need to see why kids care)
+- ❌ Forgetting to mention "zero cost" (huge selling point)
+- ❌ Making it too long (4:30 max or they'll stop watching)
+
+---
+
+**Questions or need help recording? Let me know!**

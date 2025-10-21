@@ -1,0 +1,116 @@
+Acellipath™ Demo Video Script
+Target Length: 4-5 minutes
+Target Audience: Impact Alamance Foundation, Burlington Housing Authority, County Officials
+________________________________________
+🎬 INTRO (0:00-0:30)
+[Screen: Homepage with Acellipath™ logo visible]
+YOU SAY:
+"Hi, I'm [Your Name]. Today I want to show you Acellipath™—a client-first platform that's solving the biggest problem in social services: the 32-64% of referrals that never result in actual service delivery.
+Unlike NCCare360, which focuses on referral infrastructure, Acellipath™ puts clients in the driver's seat with gamification, personal ROI tracking, and family engagement tools. Let me show you how it works."
+________________________________________
+👥 CLIENT PORTAL (0:30-2:00)
+Login as Client (0:30-0:45)
+[Click: Login button]
+[Enter: demo-client credentials]
+YOU SAY:
+"Let's start by logging in as Maria, a single mom who just got referred to our platform. She's been matched with transportation and financial assistance programs."
+Quick Wins Dashboard (0:45-1:10)
+[Screen: Client dashboard showing Quick Wins card]
+YOU SAY:
+"The first thing Maria sees is her Quick Wins—a motivating summary of her progress. She's already saved $87 in transportation costs, earned 3 achievements, and has her next appointment scheduled. This isn't just case management—it's empowerment with measurable outcomes."
+[Scroll to show achievements, progress bar]
+Action Plan (1:10-1:30)
+[Click: "My Action Plan" tab or scroll down]
+YOU SAY:
+"Here's her personalized action plan. Each step is clear and actionable—upload documents, attend intake appointments, access services. No confusion, no waiting for callbacks. Maria controls her own journey."
+[Point to step statuses: completed, in progress, pending]
+Community Care Circles (1:30-2:00)
+[Click: "Care Circle" tab/section]
+YOU SAY:
+"And here's our secret weapon: Community Care Circles. Maria invited her sister and best friend to be accountability partners. They get updates on her milestones, can encourage her, and even see celebration posts. This viral growth mechanism creates measurable family engagement—something NCCare360 doesn't have."
+[Show: Care Circle members, activity feed]
+________________________________________
+🏥 PROVIDER PORTAL (2:00-3:00)
+Switch to Provider View (2:00-2:15)
+[Logout, then login as provider]
+YOU SAY:
+"Now let's switch to a provider's perspective. I'm logging in as Piedmont Triad Regional Council—a transportation provider."
+Referral Inbox (2:15-2:45)
+[Screen: Provider dashboard showing referral inbox]
+YOU SAY:
+"Providers see incoming referrals with compatibility scores. This isn't random—our matching engine analyzed client needs and provider services. Providers can accept, decline, or request more information with one click."
+[Hover over a referral card showing compatibility score]
+[Click: Accept button on one referral]
+YOU SAY:
+"When they accept, the client is immediately notified. No phone tag, no delays."
+Capacity Toggle (2:45-3:00)
+[Point to capacity status toggle at top]
+YOU SAY:
+"And here's a game-changer: real-time capacity management. If a provider gets overwhelmed, they toggle to 'limited capacity' or 'waitlist.' Our matching engine immediately adjusts. No more providers drowning in referrals they can't handle."
+[Click toggle to show options: accepting/limited/waitlist/closed]
+________________________________________
+📊 CASE MANAGER VIEW (3:00-3:45) - OPTIONAL
+[If you have time, show this. Otherwise skip to closing]
+[Logout, login as case manager]
+YOU SAY:
+"Case managers see all their clients in one dashboard—progress tracking, engagement metrics, and referral status. They can spot who needs a nudge and celebrate wins."
+[Show: Client list with progress indicators]
+________________________________________
+🎯 CLOSING & CALL TO ACTION (3:45-4:30)
+[Screen: Back to homepage or admin dashboard showing impact metrics]
+YOU SAY:
+"Here's why Acellipath™ is different:
+NCCare360 has the infrastructure—3,055 organizations, statewide reach.
+Acellipath™ has the client empowerment engine—gamification, SMS control, family engagement, and personal ROI dashboards.
+When NCCare360's funding drops, their resolution rate collapses 58%. Our sustainable revenue model and client-first design keeps working.
+We're ready to pilot in Alamance County. Let's prove that client empowerment doesn't just feel good—it delivers measurable social impact."
+[Screen: Contact information or call to action]
+YOU SAY:
+"I'd love to discuss how Acellipath™ can complement NCCare360's infrastructure with our outcomes intelligence. Let's talk."
+________________________________________
+📝 RECORDING TIPS
+Before Recording:
+1.	Use demo credentials with realistic data
+2.	Clear browser cache for clean UI
+3.	Close extra tabs to avoid distractions
+4.	Test audio quality
+5.	Practice once to get smooth transitions
+During Recording:
+•	Speak slowly and clearly
+•	Pause briefly between sections (easier to edit)
+•	Use cursor highlighting to draw attention
+•	Smile! It comes through in your voice
+Recommended Tools:
+•	Loom (easiest, browser-based, free): loom.com
+•	OBS Studio (free, professional): obsproject.com
+•	Camtasia (paid, includes editing): techsmith.com
+After Recording:
+•	Add captions (accessibility + silent viewing)
+•	Add subtle background music (optional)
+•	Export as MP4 for maximum compatibility
+•	Upload to YouTube/Vimeo as unlisted for sharing
+________________________________________
+🎥 DEMO CREDENTIALS
+Use these accounts for recording:
+Client:
+•	Email: maria.rodriguez@demo.com
+•	Password: demo123
+Provider:
+•	Email: piedmont.transport@demo.com
+•	Password: demo123
+Case Manager:
+•	Email: sarah.manager@demo.com
+•	Password: demo123
+________________________________________
+📤 SHARING CHECKLIST
+After creating your video:
+•	 Test video plays on mobile devices
+•	 Add to pitch deck
+•	 Upload to LinkedIn
+•	 Send to Impact Alamance Foundation
+•	 Send to Burlington Housing Authority
+•	 Embed on landing page (if you build one)
+•	 Include link in grant applications
+________________________________________
+Questions or need help recording? Let me know!
+
