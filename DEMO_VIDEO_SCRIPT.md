@@ -8,9 +8,9 @@
 [Screen: Homepage showing anonymous kindness feed]
 
 **YOU SAY:**  
-"Hi, I'm [Your Name]. Today I want to show you EchoDeed™—the anonymous kindness platform that's solving the biggest problem in character education: teacher burnout from manual verification while actually getting students to care about kindness.
+"Hi, I'm [Your Name]. Today I want to show you EchoDeed™—the anonymous kindness platform that's transforming school culture while actually reducing your staff's administrative burden.
 
-Unlike traditional programs that add to your staff's workload, EchoDeed™ reduces verification time by 95% while engaging students through anonymity and local rewards. We're live at Eastern Guilford High School with Principal of the Year Dr. Darrell Harris. Let me show you how it works."
+Character education shouldn't be another checkbox for overwhelmed teachers. EchoDeed™ makes it effortless—students drive the culture shift themselves through anonymity and real rewards, while teachers get 95% of their verification time back. We're live at Eastern Guilford High School with Principal of the Year Dr. Darrell Harris. Let me show you how it works."
 
 ---
 
@@ -161,17 +161,17 @@ Unlike traditional programs that add to your staff's workload, EchoDeed™ reduc
 [Screen: Back to student feed or impact dashboard showing global counter]
 
 **YOU SAY:**  
-"Here's why EchoDeed™ works:
+"Here's why EchoDeed™ transforms school culture:
 
-**For Students:** Anonymous posting, real local rewards, instant gratification. They actually want to participate.
+**For Students:** They're intrinsically motivated—anonymous posting removes social pressure, real local rewards create genuine engagement. Character development becomes something they want to do, not something they're forced to track.
 
-**For Teachers:** 95% time savings on verification. One-click x2vol export. AI safety without liability.
+**For Teachers:** Less behavioral issues when kindness becomes the norm. Plus 95% time savings on service hour verification and one-click district compliance. Character education finally supports teachers instead of burdening them.
 
-**For Principals:** 287,000 documented acts of kindness. 1,200 engaged students. Zero cost to your school or families.
+**For Principals:** Measurable culture shift—287,000 documented acts of kindness. 1,200 students actively engaged. Reduced behavioral incidents. Zero cost to your budget.
 
 We're live at Eastern Guilford High School with Dr. Darrell Harris, Guilford County's Principal of the Year. We're ready to expand to your school.
 
-Let's prove that character education doesn't have to overwhelm your staff to transform your students."
+Let's prove that character education can actually reduce teacher workload while improving student behavior and school culture."
 
 [Screen: Contact information or www.echodeed.com]
 
