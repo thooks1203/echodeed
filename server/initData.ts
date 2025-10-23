@@ -511,10 +511,16 @@ export async function initializeSampleData() {
         log('✅ Sofia Rodriguez tokens updated: 1103 balance, 1380 earned, 4-day streak');
       }
       
-      // Create Sofia's service hour logs (totaling 7.5 hours)
+      // Create Sofia's service hour logs (totaling 7.5 hours) - FORCE PENDING for teacher demo
       const existingServiceLogs = await db.select().from(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
       
-      if (existingServiceLogs.length === 0) {
+      // FORCE RE-SEED: Always delete and recreate service logs to ensure PENDING status for demo
+      if (existingServiceLogs.length > 0) {
+        await db.delete(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
+        log('🔄 Deleted existing service logs to recreate with PENDING status');
+      }
+      
+      if (true) { // Always create (changed from existingServiceLogs.length === 0)
         // Service log 1: Food Pantry Volunteer (matching parent dashboard display)
         await db.insert(communityServiceLogs).values({
           userId: 'student-001',
@@ -527,6 +533,7 @@ export async function initializeSampleData() {
           serviceDescription: 'Helped sort and package food donations for local families',
           studentReflection: 'It felt great knowing I helped families have meals. I learned about food insecurity in our community.',
           verificationStatus: 'pending',
+          verificationPhotoUrl: 'https://placehold.co/600x800/e3f2fd/1976d2?text=Food+Pantry+Volunteer%0AVerification+Letter%0A%0ABurlington+Community+Outreach%0A%0AThis+certifies+that+Sofia+Rodriguez%0Avolunteered+4.5+hours%0Aon+September+25,+2025',
           verifiedBy: null,
           verifiedAt: null,
           verificationNotes: null,
@@ -548,6 +555,7 @@ export async function initializeSampleData() {
           serviceDescription: 'Picked up litter and helped maintain trails at City Park',
           studentReflection: 'Working outside was refreshing and I could see the immediate impact of our work making the park beautiful.',
           verificationStatus: 'pending',
+          verificationPhotoUrl: 'https://placehold.co/600x800/e8f5e9/388e3c?text=Park+%26+Trail+Cleanup%0AVerification+Letter%0A%0AGibsonville+Parks+Department%0A%0AThis+certifies+that+Sofia+Rodriguez%0Avolunteered+3.0+hours%0Aon+September+18,+2025',
           verifiedBy: null,
           verifiedAt: null,
           verificationNotes: null,
@@ -558,13 +566,12 @@ export async function initializeSampleData() {
         });
         
         log('✅ Sofia Rodriguez service hours created: 7.5 total hours (2 PENDING logs for teacher demo)');
-      } else {
-        log(`ℹ️  Sofia Rodriguez already has ${existingServiceLogs.length} service log(s), skipping creation`);
       }
       
-      // Create/update service summary with all required fields
+      // Create/update service summary with all required fields - FORCE PENDING for demo
       const existingSummary = await db.select().from(studentServiceSummaries).where(eq(studentServiceSummaries.userId, 'student-001'));
       
+      // FORCE RE-SEED: Always update/insert to ensure pending hours are reflected
       if (existingSummary.length === 0) {
         await db.insert(studentServiceSummaries).values({
           userId: 'student-001',
