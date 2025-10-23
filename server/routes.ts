@@ -88,17 +88,18 @@ import { dailyEncouragementService } from "./services/dailyEncouragementNotifica
 // 🔒 TEACHER AUTHORIZATION MIDDLEWARE
 const requireTeacherRole = async (req: any, res: any, next: any) => {
   try {
-    // Development bypass - similar to requireSchoolAccess
-    if (process.env.NODE_ENV === 'development') {
+    // Development bypass OR production DEMO_MODE - similar to requireSchoolAccess
+    // DEMO_MODE enables demo authentication for production demos (www.echodeed.com)
+    if (process.env.NODE_ENV === 'development' || process.env.DEMO_MODE === 'true') {
       const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
       const demoRole = req.headers['x-demo-role'];
       
       if (sessionId && demoRole && ['teacher', 'admin'].includes(demoRole)) {
-        console.log('✅ DEVELOPMENT BYPASS: Granting teacher access with role:', demoRole);
+        console.log('✅ DEMO MODE BYPASS: Granting teacher access with role:', demoRole);
         req.teacherContext = {
           userId: sessionId,
           schoolRole: demoRole,
-          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78' // Dudley High School
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78' // Eastern Guilford High School
         };
         return next();
       }
@@ -161,9 +162,9 @@ const requireTeacherRole = async (req: any, res: any, next: any) => {
 // 🔒 SECURITY: School Access Control Middleware
 const requireSchoolAccess = async (req: any, res: any, next: any) => {
   try {
-    // Development bypass - REQUIRES proper demo role selection
-    // PRODUCTION FIX: Only enable demo mode when explicitly configured
-    if (process.env.NODE_ENV === 'development') {
+    // Development bypass OR production DEMO_MODE - REQUIRES proper demo role selection
+    // DEMO_MODE enables demo authentication for production demos (www.echodeed.com)
+    if (process.env.NODE_ENV === 'development' || process.env.DEMO_MODE === 'true') {
       const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
       const demoRole = req.headers['x-demo-role'];
       
