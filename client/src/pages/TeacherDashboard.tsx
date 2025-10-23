@@ -264,7 +264,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
   // Service Hours content component
   const ServiceHoursContent = () => {
     const { data: pendingHours, isLoading } = useQuery<any>({
-      queryKey: ['/api/community-service/pending-verifications'],
+      queryKey: ['/api/community-service/pending-verifications?schoolId=bc016cad-fa89-44fb-aab0-76f82c574f78&verifierType=teacher'],
       staleTime: 30000, // 30 seconds
     });
 
