@@ -335,22 +335,23 @@ export function TeacherDashboard() {
   }, []);
 
   // Fetch pending service hours for verification
-  const { data: pendingServiceHours = [], isLoading: serviceHoursLoading } = useQuery({
+  const { data: pendingServiceHours = [], isLoading: serviceHoursLoading, error: serviceHoursError } = useQuery({
     queryKey: ['/api/community-service/pending-verifications'],
     queryFn: async () => {
-      try {
-        const response = await apiRequest('GET', '/api/community-service/pending-verifications?schoolId=bc016cad-fa89-44fb-aab0-76f82c574f78&verifierType=teacher');
-        if (!response.ok) {
-          console.log('Service hours API not available, using mock data');
-          return [];
-        }
-        return response.json();
-      } catch (error) {
-        console.log('Service hours API error:', error);
-        return [];
-      }
+      console.log('🔍 Fetching pending service hours...');
+      const response = await apiRequest('GET', '/api/community-service/pending-verifications?schoolId=bc016cad-fa89-44fb-aab0-76f82c574f78&verifierType=teacher');
+      const data = await response.json();
+      console.log('✅ Pending service hours response:', data);
+      return data;
     },
   });
+  
+  // Log any errors
+  useEffect(() => {
+    if (serviceHoursError) {
+      console.error('❌ Service hours error:', serviceHoursError);
+    }
+  }, [serviceHoursError]);
 
   // Fetch recently approved service hours
   const { data: approvedServiceHours = [], isLoading: approvedHoursLoading } = useQuery({
