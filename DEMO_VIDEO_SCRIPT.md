@@ -10,7 +10,7 @@
 **YOU SAY:**  
 "Hi, I'm [Your Name]. Today I want to show you EchoDeed™—the anonymous kindness platform that's transforming school culture while actually reducing your staff's administrative burden.
 
-Character education shouldn't be another checkbox for overwhelmed teachers. EchoDeed™ makes it effortless—students drive the culture shift themselves through anonymity and real rewards, while teachers get 95% of their verification time back. We're live at Eastern Guilford High School with Principal of the Year Dr. Darrell Harris. Let me show you how it works."
+Character education shouldn't be another checkbox for overwhelmed teachers. EchoDeed™ makes it effortless—students drive the culture shift themselves through anonymity and real rewards, while teachers get 95% of their verification time back. Let me show you how it works."
 
 ---
 
@@ -21,7 +21,7 @@ Character education shouldn't be another checkbox for overwhelmed teachers. Echo
 [Enter: sofia.rodriguez@student.eghs.edu / demo123]
 
 **YOU SAY:**  
-"Let's start by logging in as Sofia Rodriguez, a 10th grader at Eastern Guilford. She's already spreading kindness and earning rewards through the platform."
+"Let's start by logging in as Sofia Rodriguez, a 10th grader. She's already spreading kindness and earning rewards through the platform."
 
 ### Student Dashboard Overview (0:45-1:10)
 [Screen: Student dashboard showing tokens, streak, service hours]
@@ -81,7 +81,7 @@ Character education shouldn't be another checkbox for overwhelmed teachers. Echo
 [Enter: teacher-demo@eghs.edu / demo123]
 
 **YOU SAY:**  
-"Now let's switch to a teacher's perspective. I'm logging in as Ms. Johnson, a community service coordinator at Eastern Guilford."
+"Now let's switch to a teacher's perspective. I'm logging in as Ms. Johnson, a community service coordinator."
 
 ### Service Hour Verification (2:30-3:00)
 [Screen: Teacher dashboard showing pending service hours]
@@ -105,7 +105,7 @@ Character education shouldn't be another checkbox for overwhelmed teachers. Echo
 [Point to export button]
 
 **YOU SAY:**  
-"And here's the game-changer for Guilford County schools: one-click CSV export to x2vol, your required district platform. No duplicate data entry. Your compliance requirements are handled automatically."
+"And here's a huge time-saver: one-click CSV export for your district's required tracking platform—whether that's x2vol, MobileServe, or any other system. No duplicate data entry. Your compliance requirements are handled automatically."
 
 [Click: Export to CSV button]
 
@@ -138,7 +138,7 @@ Character education shouldn't be another checkbox for overwhelmed teachers. Echo
 [Scroll to Principal's Corner section]
 
 **YOU SAY:**  
-"And Dr. Harris uses Principal's Corner to share weekly reflections with all parents—no separate newsletter needed."
+"Principals can use Principal's Corner to share weekly reflections with all parents—no separate newsletter needed."
 
 ---
 
@@ -165,13 +165,13 @@ Character education shouldn't be another checkbox for overwhelmed teachers. Echo
 
 **For Students:** They're intrinsically motivated—anonymous posting removes social pressure, real local rewards create genuine engagement. Character development becomes something they want to do, not something they're forced to track.
 
-**For Teachers:** Less behavioral issues when kindness becomes the norm. Plus 95% time savings on service hour verification and one-click district compliance. Character education finally supports teachers instead of burdening them.
+**For Teachers:** Fewer behavioral issues when kindness becomes the norm. Plus 95% time savings on service hour verification and one-click district compliance. Character education finally supports teachers instead of burdening them.
 
-**For Principals:** Measurable culture shift—287,000 documented acts of kindness. 1,200 students actively engaged. Reduced behavioral incidents. Zero cost to your budget.
+**For Principals:** Measurable culture shift you can actually track—documented acts of kindness, active student engagement, reduced behavioral incidents. Zero cost to your budget.
 
-We're live at Eastern Guilford High School with Dr. Darrell Harris, Guilford County's Principal of the Year. We're ready to expand to your school.
+We're ready to partner with forward-thinking schools that want character education to actually work—for students, teachers, and administrators.
 
-Let's prove that character education can actually reduce teacher workload while improving student behavior and school culture."
+Let's prove that character education can reduce teacher workload while improving student behavior and school culture."
 
 [Screen: Contact information or www.echodeed.com]
 
