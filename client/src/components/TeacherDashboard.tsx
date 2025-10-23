@@ -932,22 +932,24 @@ export function TeacherDashboard() {
                             </p>
                           )}
                           {serviceLog.verificationPhotoUrl && (
-                            <div className="mb-4">
-                              <p className="text-sm font-semibold mb-2 flex items-center gap-2">
-                                <CheckCircle className="w-4 h-4 text-green-600" />
-                                Verification Photo:
-                              </p>
-                              <div className="border rounded-lg overflow-hidden bg-white">
+                            <div className="mb-3">
+                              <div className="flex items-center gap-3">
                                 <img 
                                   src={serviceLog.verificationPhotoUrl} 
                                   alt="Verification evidence" 
-                                  className="w-full max-w-md mx-auto"
+                                  className="w-20 h-20 object-cover rounded border border-gray-300"
                                   data-testid={`img-verification-${serviceLog.id}`}
                                 />
+                                <div>
+                                  <p className="text-sm font-semibold flex items-center gap-2">
+                                    <CheckCircle className="w-4 h-4 text-green-600" />
+                                    Verification Photo
+                                  </p>
+                                  <p className="text-xs text-gray-500">
+                                    Photo provided by student
+                                  </p>
+                                </div>
                               </div>
-                              <p className="text-xs text-gray-500 mt-1">
-                                Photo provided by student for faster verification
-                              </p>
                             </div>
                           )}
                           <div className="flex gap-2">
