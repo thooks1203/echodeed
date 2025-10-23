@@ -530,9 +530,9 @@ app.use((req, res, next) => {
     const server = await registerRoutes(app);
     log('✓ Routes registered successfully');
     
-    // Skip all sample data initialization in production - use API endpoint instead
-    // This ensures fast startup for Autoscale deployments
-    if (process.env.NODE_ENV !== 'production') {
+    // Initialize sample data in development OR when DEMO_MODE is enabled in production
+    // DEMO_MODE allows demo data initialization for www.echodeed.com production demos
+    if (process.env.NODE_ENV !== 'production' || process.env.DEMO_MODE === 'true') {
       // Initialize sample data if needed - with proper error handling
       log('Initializing sample data...');
       try {
