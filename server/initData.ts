@@ -526,12 +526,12 @@ export async function initializeSampleData() {
           category: 'Community Support',
           serviceDescription: 'Helped sort and package food donations for local families',
           studentReflection: 'It felt great knowing I helped families have meals. I learned about food insecurity in our community.',
-          verificationStatus: 'verified',
-          verifiedBy: 'teacher-001',
-          verifiedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000),
-          verificationNotes: 'Excellent work! Sofia showed great dedication.',
-          parentNotified: true,
-          tokensEarned: 225,
+          verificationStatus: 'pending',
+          verifiedBy: null,
+          verifiedAt: null,
+          verificationNotes: null,
+          parentNotified: false,
+          tokensEarned: 0,
           submittedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
           createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
         });
@@ -547,17 +547,17 @@ export async function initializeSampleData() {
           category: 'Environmental',
           serviceDescription: 'Picked up litter and helped maintain trails at City Park',
           studentReflection: 'Working outside was refreshing and I could see the immediate impact of our work making the park beautiful.',
-          verificationStatus: 'verified',
-          verifiedBy: 'teacher-001',
-          verifiedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
-          verificationNotes: 'Great initiative! Sofia is making a real difference.',
-          parentNotified: true,
-          tokensEarned: 150,
+          verificationStatus: 'pending',
+          verifiedBy: null,
+          verifiedAt: null,
+          verificationNotes: null,
+          parentNotified: false,
+          tokensEarned: 0,
           submittedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
           createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
         });
         
-        log('✅ Sofia Rodriguez service hours created: 7.5 total hours (2 approved logs)');
+        log('✅ Sofia Rodriguez service hours created: 7.5 total hours (2 PENDING logs for teacher demo)');
       } else {
         log(`ℹ️  Sofia Rodriguez already has ${existingServiceLogs.length} service log(s), skipping creation`);
       }
@@ -569,11 +569,11 @@ export async function initializeSampleData() {
         await db.insert(studentServiceSummaries).values({
           userId: 'student-001',
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
-          totalHours: '7.50',
-          verifiedHours: '7.50',
-          pendingHours: '0',
+          totalHours: '0',
+          verifiedHours: '0',
+          pendingHours: '7.50',
           rejectedHours: '0',
-          totalTokensEarned: 375,
+          totalTokensEarned: 0,
           totalServiceSessions: 2,
           currentStreak: 0,
           longestStreak: 0,
@@ -581,20 +581,20 @@ export async function initializeSampleData() {
           annualGoalHours: 30,
           currentSchoolYear: '2025-2026'
         });
-        log('✅ Sofia Rodriguez service summary initialized');
+        log('✅ Sofia Rodriguez service summary initialized (0 verified, 7.5 pending)');
       } else {
         await db.update(studentServiceSummaries)
           .set({
             schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
-            totalHours: '7.50',
-            verifiedHours: '7.50',
-            pendingHours: '0',
+            totalHours: '0',
+            verifiedHours: '0',
+            pendingHours: '7.50',
             totalServiceSessions: 2,
             currentSchoolYear: '2025-2026',
             lastServiceDate: new Date('2025-09-25')
           })
           .where(eq(studentServiceSummaries.userId, 'student-001'));
-        log('✅ Sofia Rodriguez service summary updated');
+        log('✅ Sofia Rodriguez service summary updated (0 verified, 7.5 pending)');
       }
       
       // Verify data was created correctly
