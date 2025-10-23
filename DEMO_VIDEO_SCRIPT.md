@@ -17,31 +17,43 @@ Character education shouldn't be another checkbox for overwhelmed teachers. Echo
 ## 👨‍🎓 STUDENT PORTAL (0:30-2:15)
 
 ### Login as Student (0:30-0:45)
-[Click: Login button]  
-[Enter: sofia.rodriguez@student.eghs.edu / demo123]
+[Navigate to: https://echo-deed-feed-tvanhook97.replit.app OR www.echodeed.com]  
+[Click: "Try as Student" button]  
+[Automatically logged in as Sofia Rodriguez, lands on Feed tab]
 
 **YOU SAY:**  
-"Let's start by logging in as Sofia Rodriguez, a 10th grader. She's already spreading kindness and earning rewards through the platform."
+"Let's start by logging in as a student. I'll click 'Try as Student' and I'm instantly signed in as Sofia Rodriguez, a 10th grader. She's already spreading kindness and earning rewards through the platform."
 
-### Student Dashboard Overview (0:45-1:10)
+### Global Kindness Feed (0:45-1:10)
+[Screen: Feed tab showing global counter and anonymous posts]
+
+**YOU SAY:**  
+"The first thing Sofia sees is the global kindness feed—287,435 anonymous acts from students across the platform. Notice the counter at the top. Every act gets tracked, but students stay completely anonymous. No profiles. No followers. Just pure character in action."
+
+[Scroll through anonymous posts in the feed]
+
+**YOU SAY:**  
+"These are real posts from real students—helping classmates, supporting teachers, random acts of kindness. But nobody knows who posted what. That's what makes this work—anonymity removes the social pressure and performative behavior."
+
+### Student Dashboard (1:10-1:35)
+[Click: "Dashboard" tab (👨‍🎓 icon in bottom navigation)]  
 [Screen: Student dashboard showing tokens, streak, service hours]
 
 **YOU SAY:**  
-"The first thing Sofia sees is her impact dashboard. She has 1,103 Echo Tokens earned from spreading kindness, a 4-day streak, and 7.5 verified service hours. But here's what makes this different—everything is anonymous. No profiles. No followers. Just pure character in action."
+"Now let's tap the Dashboard tab. Here's where Sofia tracks her impact—1,103 Echo Tokens earned from spreading kindness, a 4-day active streak, and 7.5 verified community service hours."
 
 [Point to Echo Tokens balance]
 
 **YOU SAY:**  
 "Those tokens? Redeemable at 21 real local businesses—Chick-fil-A Burlington Road, Greensboro Science Center, Cook Out. Students earn real rewards for real kindness."
 
-### Anonymous Posting (1:10-1:35)
-[Click: "Share Kindness" or navigate to Feed tab]  
-[Scroll through anonymous posts]
+### Anonymous Posting (1:35-2:00)
+[Click: Back to "Feed" tab (🏠 icon in bottom navigation)]  
+[Click: The floating "+" button or "Post Kindness" button]
 
 **YOU SAY:**  
-"Here's the global kindness feed—287,000 anonymous acts from students across the platform. Sofia can post her own acts without anyone knowing it's her. Watch what happens when she posts."
+"Back to the Feed tab. Sofia can post her own acts without anyone knowing it's her. Watch what happens when she posts."
 
-[Click: Post button]  
 [Type: "Helped a classmate understand algebra during lunch"]  
 [Select category: "Academic Support"]  
 [Click: Submit]
@@ -49,116 +61,122 @@ Character education shouldn't be another checkbox for overwhelmed teachers. Echo
 **YOU SAY:**  
 "She submits anonymously, earns tokens instantly, and gets this celebration..."
 
-[Screen: Kindness Spark animation with confetti]
+[Screen: Kindness Spark animation with confetti and hearts]
 
 **YOU SAY:**  
 "This gamification creates genuine engagement—not compliance."
 
-### Redeem Rewards (1:35-2:00)
-[Click: "Rewards" tab or Echo Tokens button]  
+### Redeem Rewards (2:00-2:20)
+[Click: "Rewards" tab (🔥 icon in bottom navigation)]  
 [Screen: Reward marketplace showing local partners]
 
 **YOU SAY:**  
-"Now here's where students actually care. Sofia can browse rewards from local businesses—meal vouchers, movie tickets, Science Center passes. No teacher approval needed. She earned it, she redeems it."
+"Now here's where students actually care. Let's tap the Rewards tab. Sofia can browse rewards from local businesses—meal vouchers from Cook Out, bowling at Round1, Science Center passes. No teacher approval needed. She earned it, she redeems it."
 
-[Click on a reward card, show redemption code]
+[Scroll through reward cards showing local Burlington/Greensboro businesses]
 
-### Service Hours Submission (2:00-2:15)
-[Click: "Service Hours" tab]  
-[Screen: Service log with photo upload]
+### Service Hours Submission (2:20-2:40)
+[Click: "Service" tab (🏥 icon in bottom navigation)]  
+[Screen: Community service dashboard with submit button]
 
 **YOU SAY:**  
-"For service hour tracking, Sofia uploads a verification photo with her submission—a letter from the organization, a timesheet, visual proof. This is what transforms teacher workload."
+"For service hour tracking, Sofia taps the Service tab. She can submit hours by uploading a verification photo—a letter from the organization, a timesheet, visual proof. This is what transforms teacher workload."
 
-[Show: Upload photo interface]
+[Click: "Submit Service Hours" or similar button]  
+[Show: Upload photo interface with organization details form]
 
 ---
 
-## 👨‍🏫 TEACHER PORTAL (2:15-3:30)
+## 👨‍🏫 TEACHER PORTAL (2:40-3:30)
 
-### Switch to Teacher View (2:15-2:30)
-[Logout, then login as teacher]  
-[Enter: teacher-demo@eghs.edu / demo123]
-
-**YOU SAY:**  
-"Now let's switch to a teacher's perspective. I'm logging in as Ms. Johnson, a community service coordinator."
-
-### Service Hour Verification (2:30-3:00)
-[Screen: Teacher dashboard showing pending service hours]
+### Switch to Teacher View (2:40-2:50)
+[Click: Profile icon or menu in top-right]  
+[Click: "Switch Role" or "Sign Out"]  
+[Click: "Try as Teacher" button on demo login page]  
+[Automatically logged in as Ms. Kim Jones, lands on Feed or Teacher Dashboard]
 
 **YOU SAY:**  
-"Here's where EchoDeed saves your staff 95% of their time. Ms. Johnson sees pending service hour requests with verification photos already attached."
+"Now let's switch to a teacher's perspective. I'll sign out and click 'Try as Teacher'. I'm instantly signed in as Ms. Kim Jones, a 10th grade English teacher and community service coordinator."
 
-[Click on a pending request]  
+### Service Hour Verification (2:50-3:10)
+[Navigate to: Teacher Dashboard or Service Hours tab]  
+[Screen: Teacher dashboard showing pending service hours with photo thumbnails]
+
+**YOU SAY:**  
+"Here's where EchoDeed saves your staff 95% of their time. Ms. Jones sees pending service hour requests with verification photos already attached."
+
+[Click on a pending request to expand details]  
 [Screen: Shows student name, hours requested, organization, and uploaded photo]
 
 **YOU SAY:**  
 "She can see the verification letter right here—no emails, no phone calls, no tracking down paperwork. This used to take 15 minutes per student. With EchoDeed? 30 seconds."
 
-[Click: Approve button]
+[Click: "Approve" button with checkmark]
 
 **YOU SAY:**  
 "One click. Student gets instant notification. Hours added to their record."
 
-### x2vol Export (3:00-3:15)
-[Screen: Service hours list view]  
-[Point to export button]
+### x2vol Export (3:10-3:20)
+[Navigate to: Service tab or Reports tab]  
+[Point to "Export to CSV" or "Download x2vol CSV" button]
 
 **YOU SAY:**  
 "And here's a huge time-saver: one-click CSV export for your district's required tracking platform—whether that's x2vol, MobileServe, or any other system. No duplicate data entry. Your compliance requirements are handled automatically."
 
-[Click: Export to CSV button]
+[Click: Export button, show CSV download]
 
-### AI Moderation Queue (3:15-3:30)
-[Click: "Moderation" tab]  
-[Screen: Flagged content queue]
+### AI Moderation Queue (3:20-3:35) - OPTIONAL
+[Click: "Reports" tab (📊 icon) or navigate to moderation queue]  
+[Screen: Flagged content queue with review interface]
 
 **YOU SAY:**  
-"For safety, our AI pre-filters profanity and inappropriate content before it goes live. Anything concerning gets queued for human review—Ms. Johnson makes the final call, not the AI. This protects students while keeping you FERPA-compliant with no crisis intervention liability."
+"For safety, our AI pre-filters profanity and inappropriate content before it goes live. Anything concerning gets queued for human review—Ms. Jones makes the final call, not the AI. This protects students while keeping you FERPA-compliant with no crisis intervention liability."
 
-[Show: Flagged post with approve/reject buttons]
+[Show: Flagged post with "Approve" and "Reject" buttons]
 
 ---
 
-## 👪 PARENT PORTAL (3:30-4:00)
+## 👪 PARENT PORTAL (3:35-4:00)
 
-### Switch to Parent View (3:30-3:45)
-[Logout, login as parent]  
-[Enter: maria.rodriguez@parent.com / demo123]
+### Switch to Parent View (3:35-3:45)
+[Click: Profile icon or menu]  
+[Click: "Sign Out"]  
+[Click: "Try as Parent" button on demo login page]  
+[Automatically logged in as Maria Rodriguez, lands on Parent Dashboard]
 
 **YOU SAY:**  
-"Parents stay engaged without invading their teen's privacy. I'm logging in as Maria Rodriguez, Sofia's mom."
+"Parents stay engaged without invading their teen's privacy. Let me sign out and click 'Try as Parent'. I'm instantly signed in as Maria Rodriguez, Sofia's mom."
 
 ### Parent Dashboard (3:45-4:00)
-[Screen: Parent dashboard showing child's progress]
+[Screen: Parent dashboard showing child's progress, tokens, service hours]
 
 **YOU SAY:**  
 "Maria sees Sofia's verified service hours and earned tokens—but not her anonymous kindness posts. Privacy is protected. She also gets instant push notifications when Sofia completes service hours or earns major achievements."
 
-[Scroll to Principal's Corner section]
+[Scroll to Principal's Corner section if visible]
 
 **YOU SAY:**  
 "Principals can use Principal's Corner to share weekly reflections with all parents—no separate newsletter needed."
 
 ---
 
-## 🎯 MENTOR DASHBOARD (4:00-4:30) - OPTIONAL
+## 🎯 MENTOR DASHBOARD (4:00-4:20) - OPTIONAL
 [If you have time, show this. Otherwise skip to closing]
 
-[Logout, login as student mentor]  
-[Enter: sofia.rodriguez@student.eghs.edu / demo123]  
-[Navigate to Mentor tab]
+[Sign out from parent view]  
+[Click: "Try as Student" button]  
+[Navigate to "Mentor" tab (🌟 icon in bottom navigation)]
 
 **YOU SAY:**  
-"High-achieving students can become peer mentors through our mentorship system. They complete training modules, guide younger students, and earn leadership badges—building your character education culture without requiring extra staff."
+"High-achieving students can become peer mentors through our mentorship system. Let me switch back to student view and tap the Mentor tab. Sofia can complete training modules, guide younger students, and earn leadership badges—building your character education culture without requiring extra staff."
 
-[Show: Mentor training modules, mentee tracking, badges earned]
+[Show: Mentor training modules, mentee list, activities, badges earned]
 
 ---
 
-## 🎯 CLOSING & CALL TO ACTION (4:30-5:00)
+## 🎯 CLOSING & CALL TO ACTION (4:20-4:50)
 
-[Screen: Back to student feed or impact dashboard showing global counter]
+[Screen: Back to student Feed tab showing global kindness counter]
 
 **YOU SAY:**  
 "Here's why EchoDeed™ transforms school culture:
@@ -211,25 +229,33 @@ Let's prove that character education can reduce teacher workload while improving
 
 ---
 
-## 🎥 DEMO CREDENTIALS
-
-Use these accounts for recording:
-
-**Student (Sofia Rodriguez):**
-- Email: `sofia.rodriguez@student.eghs.edu`
-- Password: `demo123`
-
-**Teacher (Ms. Johnson):**
-- Email: `teacher-demo@eghs.edu`
-- Password: `demo123`
-
-**Parent (Maria Rodriguez):**
-- Email: `maria.rodriguez@parent.com`
-- Password: `demo123`
+## 🎥 DEMO ACCESS
 
 **Demo Site:**
-- URL: `https://echo-deed-feed-tvanhook97.replit.app`
+- Development: `https://echo-deed-feed-tvanhook97.replit.app`
 - Production: `www.echodeed.com`
+
+**Demo Login (Button-Based - No Password Required):**
+
+1. **Student Portal (Sofia Rodriguez, 10th Grade):**
+   - Click: "Try as Student" button
+   - Auto-signed in as Sofia Rodriguez
+   - Lands on: Feed tab with global kindness counter
+
+2. **Teacher Portal (Ms. Kim Jones, 10th Grade English Teacher):**
+   - Click: "Try as Teacher" button
+   - Auto-signed in as Ms. Kim Jones
+   - Lands on: Teacher Dashboard
+
+3. **Parent Portal (Maria Rodriguez, Sofia's Mom):**
+   - Click: "Try as Parent" button
+   - Auto-signed in as Maria Rodriguez
+   - Lands on: Parent Dashboard
+
+**Navigation Tabs:**
+- **Student:** Feed 🏠 | Mentor 🌟 | Dashboard 👨‍🎓 | Service 🏥 | Rewards 🔥
+- **Teacher:** Feed 🏠 | Dashboard 👩‍🏫 | Service 🏥 | Reports 📊 | Rewards 🔥
+- **Parent:** Parent 👨‍👩‍👧‍👦 | Family 🎯 | Service 🏥 | Rewards 🔥
 
 ---
 
