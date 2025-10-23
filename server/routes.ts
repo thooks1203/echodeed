@@ -9202,6 +9202,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 🔍 DIAGNOSTIC: Check what's in the database
+  app.get('/api/admin/check-sofia-data', async (req, res) => {
+    try {
+      const { db } = await import('./db');
+      const { communityServiceLogs, studentServiceSummaries } = await import('@shared/schema');
+      const { eq } = await import('drizzle-orm');
+      
+      const logs = await db.select().from(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
+      const summary = await db.select().from(studentServiceSummaries).where(eq(studentServiceSummaries.userId, 'student-001'));
+      
+      res.json({
+        totalLogs: logs.length,
+        logs: logs.map(l => ({
+          id: l.id,
+          service: l.serviceName,
+          hours: l.hoursLogged,
+          status: l.verificationStatus,
+          schoolId: l.schoolId,
+          date: l.serviceDate
+        })),
+        summary: summary[0] || null,
+        pendingCount: logs.filter(l => l.verificationStatus === 'pending').length,
+        verifiedCount: logs.filter(l => l.verificationStatus === 'verified').length
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message });
+    }
+  });
+
   // 🚨 EMERGENCY: Fix Sofia's pending hours in production
   app.get('/api/admin/fix-sofia-pending-hours', async (req, res) => {
     try {
@@ -9218,7 +9247,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.json({ 
           success: true, 
           message: `Already have ${pendingCount} pending logs. No action needed.`,
-          currentLogs: currentLogs.map(l => ({ service: l.serviceName, hours: l.hoursLogged, status: l.verificationStatus }))
+          currentLogs: currentLogs.map(l => ({ service: l.serviceName, hours: l.hoursLogged, status: l.verificationStatus, schoolId: l.schoolId }))
         });
       }
       
