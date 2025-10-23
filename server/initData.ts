@@ -511,17 +511,18 @@ export async function initializeSampleData() {
         log('✅ Sofia Rodriguez tokens updated: 1103 balance, 1380 earned, 4-day streak');
       }
       
-      // Create Sofia's service hour logs (totaling 7.5 hours) - FORCE PENDING for teacher demo
+      // Create Sofia's service hour logs - FORCE RESEED for consistent demo state
       const existingServiceLogs = await db.select().from(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
       
-      // FORCE RE-SEED: Always delete and recreate service logs to ensure PENDING status for demo
+      // FORCE RE-SEED: Delete all service logs and recreate with 2 verified + 3 pending
       if (existingServiceLogs.length > 0) {
         await db.delete(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
-        log('🔄 Deleted existing service logs to recreate with PENDING status');
+        log('🔄 Deleted existing service logs to recreate with 2 VERIFIED + 3 PENDING');
       }
       
-      if (true) { // Always create (changed from existingServiceLogs.length === 0)
-        // Service log 1: Food Pantry Volunteer (matching parent dashboard display)
+      // Create 2 VERIFIED service logs (7.5 hours already approved)
+      if (true) { // Always create after delete
+        // Verified log 1: Food Pantry Volunteer
         await db.insert(communityServiceLogs).values({
           userId: 'student-001',
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
@@ -532,18 +533,18 @@ export async function initializeSampleData() {
           category: 'Community Support',
           serviceDescription: 'Helped sort and package food donations for local families',
           studentReflection: 'It felt great knowing I helped families have meals. I learned about food insecurity in our community.',
-          verificationStatus: 'pending',
+          verificationStatus: 'verified',
           verificationPhotoUrl: 'https://placehold.co/600x800/e3f2fd/1976d2?text=Food+Pantry+Volunteer%0AVerification+Letter%0A%0ABurlington+Community+Outreach%0A%0AThis+certifies+that+Sofia+Rodriguez%0Avolunteered+4.5+hours%0Aon+September+25,+2025',
-          verifiedBy: null,
-          verifiedAt: null,
-          verificationNotes: null,
-          parentNotified: false,
-          tokensEarned: 0,
-          submittedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
-          createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000)
+          verifiedBy: 'teacher-001',
+          verifiedAt: new Date('2025-09-26'),
+          verificationNotes: 'Excellent work helping the community',
+          parentNotified: true,
+          tokensEarned: 225, // 50 tokens per hour * 4.5 hours
+          submittedAt: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000),
+          createdAt: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000)
         });
         
-        // Service log 2: Park & Trail Cleanup (matching parent dashboard display)
+        // Verified log 2: Park & Trail Cleanup
         await db.insert(communityServiceLogs).values({
           userId: 'student-001',
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
@@ -554,47 +555,117 @@ export async function initializeSampleData() {
           category: 'Environmental',
           serviceDescription: 'Picked up litter and helped maintain trails at City Park',
           studentReflection: 'Working outside was refreshing and I could see the immediate impact of our work making the park beautiful.',
-          verificationStatus: 'pending',
+          verificationStatus: 'verified',
           verificationPhotoUrl: 'https://placehold.co/600x800/e8f5e9/388e3c?text=Park+%26+Trail+Cleanup%0AVerification+Letter%0A%0AGibsonville+Parks+Department%0A%0AThis+certifies+that+Sofia+Rodriguez%0Avolunteered+3.0+hours%0Aon+September+18,+2025',
+          verifiedBy: 'teacher-001',
+          verifiedAt: new Date('2025-09-19'),
+          verificationNotes: 'Great environmental stewardship',
+          parentNotified: true,
+          tokensEarned: 150, // 50 tokens per hour * 3 hours
+          submittedAt: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000),
+          createdAt: new Date(Date.now() - 35 * 24 * 60 * 60 * 1000)
+        });
+        
+        log('✅ Created 2 VERIFIED service logs: 7.5 hours already approved');
+        
+        // Create 3 PENDING service logs (7 hours awaiting approval)
+        
+        // Pending log 1: Library Tutoring
+        await db.insert(communityServiceLogs).values({
+          userId: 'student-001',
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+          serviceName: 'Library Tutoring',
+          hoursLogged: '3.00',
+          serviceDate: new Date('2025-10-15'),
+          organizationName: 'Eastern Guilford High School Library',
+          category: 'Education',
+          serviceDescription: 'Tutored middle school students in math and reading after school',
+          studentReflection: 'I enjoyed helping younger students understand difficult concepts. It reinforced my own learning.',
+          verificationStatus: 'pending',
+          verificationPhotoUrl: 'https://placehold.co/600x800/fff3e0/f57c00?text=Library+Tutoring%0AVerification+Letter%0A%0AEastern+Guilford+HS+Library%0A%0AThis+certifies+that+Sofia+Rodriguez%0Avolunteered+3.0+hours%0Aon+October+15,+2025',
           verifiedBy: null,
           verifiedAt: null,
           verificationNotes: null,
           parentNotified: false,
           tokensEarned: 0,
-          submittedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-          createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000)
+          submittedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+          createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
         });
         
-        log('✅ Sofia Rodriguez service hours created: 7.5 total hours (2 PENDING logs for teacher demo)');
-      }
-      
-      // Create/update service summary with all required fields - FORCE PENDING for demo
-      const existingSummary = await db.select().from(studentServiceSummaries).where(eq(studentServiceSummaries.userId, 'student-001'));
-      
-      // FORCE RE-SEED: Always delete and recreate to ensure pending hours are reflected
-      if (existingSummary.length > 0) {
-        await db.delete(studentServiceSummaries).where(eq(studentServiceSummaries.userId, 'student-001'));
-        log('🔄 Deleted existing service summary to recreate with PENDING status');
-      }
-      
-      // Always insert fresh summary (changed from if/else logic)
-      if (true) { // Always create
-        await db.insert(studentServiceSummaries).values({
+        // Pending log 2: Animal Shelter Care
+        await db.insert(communityServiceLogs).values({
           userId: 'student-001',
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
-          totalHours: '0',
-          verifiedHours: '0',
-          pendingHours: '7.50',
-          rejectedHours: '0',
-          totalTokensEarned: 0,
-          totalServiceSessions: 2,
-          currentStreak: 0,
-          longestStreak: 0,
-          lastServiceDate: new Date('2025-09-25'),
-          annualGoalHours: 30,
-          currentSchoolYear: '2025-2026'
+          serviceName: 'Animal Shelter Care',
+          hoursLogged: '2.50',
+          serviceDate: new Date('2025-10-12'),
+          organizationName: 'Guilford County Animal Shelter',
+          category: 'Animal Welfare',
+          serviceDescription: 'Fed animals, cleaned kennels, and socialized dogs available for adoption',
+          studentReflection: 'Working with rescue animals was heartwarming. I hope my work helps them find forever homes.',
+          verificationStatus: 'pending',
+          verificationPhotoUrl: 'https://placehold.co/600x800/fce4ec/c2185b?text=Animal+Shelter+Care%0AVerification+Letter%0A%0AGuilford+County+Animal+Shelter%0A%0AThis+certifies+that+Sofia+Rodriguez%0Avolunteered+2.5+hours%0Aon+October+12,+2025',
+          verifiedBy: null,
+          verifiedAt: null,
+          verificationNotes: null,
+          parentNotified: false,
+          tokensEarned: 0,
+          submittedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+          createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000)
         });
-        log('✅ Sofia Rodriguez service summary initialized (0 verified, 7.5 pending)');
+        
+        // Pending log 3: Senior Center Visit
+        await db.insert(communityServiceLogs).values({
+          userId: 'student-001',
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+          serviceName: 'Senior Center Visit',
+          hoursLogged: '1.50',
+          serviceDate: new Date('2025-10-10'),
+          organizationName: 'Gibsonville Senior Center',
+          category: 'Community Support',
+          serviceDescription: 'Played board games and read to elderly residents at the senior center',
+          studentReflection: 'The seniors shared wonderful stories about their lives. I learned so much from their experiences.',
+          verificationStatus: 'pending',
+          verificationPhotoUrl: 'https://placehold.co/600x800/e1f5fe/0277bd?text=Senior+Center+Visit%0AVerification+Letter%0A%0AGibsonville+Senior+Center%0A%0AThis+certifies+that+Sofia+Rodriguez%0Avolunteered+1.5+hours%0Aon+October+10,+2025',
+          verifiedBy: null,
+          verifiedAt: null,
+          verificationNotes: null,
+          parentNotified: false,
+          tokensEarned: 0,
+          submittedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+          createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
+        });
+        
+        log('✅ Created 3 PENDING service logs: 7.0 hours awaiting teacher approval');
+      }
+      
+      // Update service summary to reflect BOTH verified and pending hours
+      const existingSummary = await db.select().from(studentServiceSummaries).where(eq(studentServiceSummaries.userId, 'student-001'));
+      
+      const summaryData = {
+        userId: 'student-001',
+        schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+        totalHours: '14.50', // 7.5 verified + 7.0 pending
+        verifiedHours: '7.50',
+        pendingHours: '7.00',
+        rejectedHours: '0',
+        totalTokensEarned: 375, // 50 tokens per verified hour * 7.5 hours
+        totalServiceSessions: 5, // 2 verified + 3 pending
+        currentStreak: 2,
+        longestStreak: 2,
+        lastServiceDate: new Date('2025-10-15'),
+        annualGoalHours: 30,
+        currentSchoolYear: '2025-2026'
+      };
+      
+      if (existingSummary.length === 0) {
+        await db.insert(studentServiceSummaries).values(summaryData);
+        log('✅ Sofia Rodriguez service summary created: 7.5 verified + 7.0 pending = 14.5 total hours');
+      } else {
+        await db.update(studentServiceSummaries)
+          .set(summaryData)
+          .where(eq(studentServiceSummaries.userId, 'student-001'));
+        log('✅ Sofia Rodriguez service summary updated: 7.5 verified + 7.0 pending = 14.5 total hours');
       }
       
       // Verify data was created correctly
