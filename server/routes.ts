@@ -9202,6 +9202,112 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 🚨 EMERGENCY: Fix Sofia's pending hours in production
+  app.get('/api/admin/fix-sofia-pending-hours', async (req, res) => {
+    try {
+      const { db } = await import('./db');
+      const { communityServiceLogs, studentServiceSummaries } = await import('@shared/schema');
+      const { eq } = await import('drizzle-orm');
+      
+      // Check current pending count
+      const currentLogs = await db.select().from(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
+      const pendingCount = currentLogs.filter(log => log.verificationStatus === 'pending').length;
+      
+      // If we already have 3 pending logs, skip
+      if (pendingCount >= 3) {
+        return res.json({ 
+          success: true, 
+          message: `Already have ${pendingCount} pending logs. No action needed.`,
+          currentLogs: currentLogs.map(l => ({ service: l.serviceName, hours: l.hoursLogged, status: l.verificationStatus }))
+        });
+      }
+      
+      // Create the 3 pending logs if they don't exist
+      const pendingLogs = [
+        {
+          userId: 'student-001',
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+          serviceName: 'Library Tutoring',
+          hoursLogged: '3.00',
+          serviceDate: new Date('2025-10-15'),
+          organizationName: 'Eastern Guilford High School Library',
+          category: 'Education',
+          serviceDescription: 'Tutored middle school students in math and reading after school',
+          studentReflection: 'I enjoyed helping younger students understand difficult concepts.',
+          verificationStatus: 'pending',
+          verificationPhotoUrl: 'https://placehold.co/600x800/fff3e0/f57c00?text=Library+Tutoring',
+          verifiedBy: null,
+          verifiedAt: null,
+          verificationNotes: null,
+          parentNotified: false,
+          tokensEarned: 0,
+          submittedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
+          createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000)
+        },
+        {
+          userId: 'student-001',
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+          serviceName: 'Animal Shelter Care',
+          hoursLogged: '2.50',
+          serviceDate: new Date('2025-10-12'),
+          organizationName: 'Guilford County Animal Shelter',
+          category: 'Animal Welfare',
+          serviceDescription: 'Fed animals, cleaned kennels, and socialized dogs',
+          studentReflection: 'Working with rescue animals was heartwarming.',
+          verificationStatus: 'pending',
+          verificationPhotoUrl: 'https://placehold.co/600x800/fce4ec/c2185b?text=Animal+Shelter',
+          verifiedBy: null,
+          verifiedAt: null,
+          verificationNotes: null,
+          parentNotified: false,
+          tokensEarned: 0,
+          submittedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000),
+          createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000)
+        },
+        {
+          userId: 'student-001',
+          schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+          serviceName: 'Senior Center Visit',
+          hoursLogged: '1.50',
+          serviceDate: new Date('2025-10-10'),
+          organizationName: 'Gibsonville Senior Center',
+          category: 'Community Support',
+          serviceDescription: 'Played board games with elderly residents',
+          studentReflection: 'The seniors shared wonderful stories.',
+          verificationStatus: 'pending',
+          verificationPhotoUrl: 'https://placehold.co/600x800/e1f5fe/0277bd?text=Senior+Center',
+          verifiedBy: null,
+          verifiedAt: null,
+          verificationNotes: null,
+          parentNotified: false,
+          tokensEarned: 0,
+          submittedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000),
+          createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000)
+        }
+      ];
+      
+      await db.insert(communityServiceLogs).values(pendingLogs);
+      
+      // Update service summary
+      await db.update(studentServiceSummaries)
+        .set({
+          pendingHours: '7.00',
+          totalHours: '14.50',
+          totalServiceSessions: 5
+        })
+        .where(eq(studentServiceSummaries.userId, 'student-001'));
+      
+      res.json({ 
+        success: true, 
+        message: '✅ Added 3 pending service logs (7.0 hours). Sofia now has 7.5 verified + 7.0 pending = 14.5 total hours.',
+        added: pendingLogs.map(l => ({ service: l.serviceName, hours: l.hoursLogged }))
+      });
+    } catch (error: any) {
+      console.error('Fix pending hours failed:', error);
+      res.status(500).json({ success: false, error: error.message });
+    }
+  });
+
   // SCHOOL TRIAL SIGNUP ROUTE
   // 🔒 Admin Export - CSV Export of Posts Data
   app.get('/api/admin/export/posts', isAuthenticated, async (req: any, res) => {
