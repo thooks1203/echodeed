@@ -23,10 +23,18 @@ export function clearSession(): void {
 
 // Add session ID to fetch headers
 export function addSessionHeaders(headers: HeadersInit = {}): HeadersInit {
+  // PRODUCTION DEMO MODE FIX: Always use demo session when DEMO_MODE is enabled
+  // This ensures production demos (www.echodeed.com) work without real authentication
+  const isDemoMode = import.meta.env.VITE_DEMO_MODE === 'true' || 
+                     window.location.hostname === 'www.echodeed.com' ||
+                     window.location.hostname.includes('echodeed.com');
+  
   const userRole = localStorage.getItem('echodeed_demo_role') || 'student';
+  const sessionId = isDemoMode ? 'demo-session' : getSessionId();
+  
   return {
     ...headers,
-    'X-Session-ID': getSessionId(),
+    'X-Session-ID': sessionId,
     'X-Demo-Role': userRole, // Send user's actual role to server
   };
 }
