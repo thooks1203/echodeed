@@ -7,7 +7,7 @@ import Home from "@/pages/home";
 import AdminDashboard from "@/pages/AdminDashboard";
 import ParentDashboard from "@/pages/ParentDashboard";
 import RewardsPage from "@/pages/rewards";
-import TeacherDashboard from "@/components/TeacherDashboard";
+import { TeacherDashboard } from "@/components/TeacherDashboard";
 import ClassSettings from "@/pages/ClassSettings";
 import SupportPage from "@/pages/support";
 import Landing from "@/pages/Landing";
