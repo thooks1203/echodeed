@@ -571,8 +571,14 @@ export async function initializeSampleData() {
       // Create/update service summary with all required fields - FORCE PENDING for demo
       const existingSummary = await db.select().from(studentServiceSummaries).where(eq(studentServiceSummaries.userId, 'student-001'));
       
-      // FORCE RE-SEED: Always update/insert to ensure pending hours are reflected
-      if (existingSummary.length === 0) {
+      // FORCE RE-SEED: Always delete and recreate to ensure pending hours are reflected
+      if (existingSummary.length > 0) {
+        await db.delete(studentServiceSummaries).where(eq(studentServiceSummaries.userId, 'student-001'));
+        log('🔄 Deleted existing service summary to recreate with PENDING status');
+      }
+      
+      // Always insert fresh summary (changed from if/else logic)
+      if (true) { // Always create
         await db.insert(studentServiceSummaries).values({
           userId: 'student-001',
           schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
@@ -589,19 +595,6 @@ export async function initializeSampleData() {
           currentSchoolYear: '2025-2026'
         });
         log('✅ Sofia Rodriguez service summary initialized (0 verified, 7.5 pending)');
-      } else {
-        await db.update(studentServiceSummaries)
-          .set({
-            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
-            totalHours: '0',
-            verifiedHours: '0',
-            pendingHours: '7.50',
-            totalServiceSessions: 2,
-            currentSchoolYear: '2025-2026',
-            lastServiceDate: new Date('2025-09-25')
-          })
-          .where(eq(studentServiceSummaries.userId, 'student-001'));
-        log('✅ Sofia Rodriguez service summary updated (0 verified, 7.5 pending)');
       }
       
       // Verify data was created correctly
