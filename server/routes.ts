@@ -9230,6 +9230,43 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ error: error.message });
     }
   });
+  
+  // 🔍 TEST: Simulate teacher pending query
+  app.get('/api/admin/test-teacher-query', async (req, res) => {
+    try {
+      const { db } = await import('./db');
+      const { communityServiceLogs, users } = await import('@shared/schema');
+      const { eq, and } = await import('drizzle-orm');
+      
+      const schoolId = 'bc016cad-fa89-44fb-aab0-76f82c574f78';
+      
+      // Test the exact query the teacher dashboard uses
+      const results = await db.select({
+        serviceLog: communityServiceLogs,
+        student: users
+      })
+      .from(communityServiceLogs)
+      .leftJoin(users, eq(users.id, communityServiceLogs.userId))
+      .where(and(
+        eq(communityServiceLogs.verificationStatus, 'pending'),
+        eq(communityServiceLogs.schoolId, schoolId)
+      ));
+      
+      res.json({
+        querySchoolId: schoolId,
+        resultCount: results.length,
+        results: results.map(r => ({
+          service: r.serviceLog.serviceName,
+          hours: r.serviceLog.hoursLogged,
+          status: r.serviceLog.verificationStatus,
+          schoolId: r.serviceLog.schoolId,
+          student: r.student?.firstName + ' ' + r.student?.lastName
+        }))
+      });
+    } catch (error: any) {
+      res.status(500).json({ error: error.message, stack: error.stack });
+    }
+  });
 
   // 🚨 EMERGENCY: Fix Sofia's pending hours in production
   app.get('/api/admin/fix-sofia-pending-hours', async (req, res) => {
