@@ -149,7 +149,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
   // Submit service hours mutation
   const submitServiceMutation = useMutation({
     mutationFn: async (data: ServiceLogForm) => {
-      return apiRequest('/api/community-service/log', 'POST', {
+      return apiRequest('POST', '/api/community-service/log', {
         ...data,
         userId,
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Dudley High School
