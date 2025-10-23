@@ -866,19 +866,6 @@ export function TeacherDashboard() {
 
           {/* Service Hours Verification Tab */}
           <TabsContent value="service-hours" className="space-y-6" data-testid="tab-content-service-hours">
-            {/* DEBUG INFO */}
-            <Card className="bg-yellow-50 border-yellow-300">
-              <CardContent className="pt-4">
-                <div className="text-sm space-y-1">
-                  <p><strong>🔍 Debug Info:</strong></p>
-                  <p>Loading: {serviceHoursLoading ? 'YES' : 'NO'}</p>
-                  <p>Error: {serviceHoursError ? String(serviceHoursError) : 'NONE'}</p>
-                  <p>Pending Hours Count: {pendingServiceHours.length}</p>
-                  <p>Data: {JSON.stringify(pendingServiceHours).substring(0, 100)}...</p>
-                </div>
-              </CardContent>
-            </Card>
-            
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
