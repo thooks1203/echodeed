@@ -346,6 +346,8 @@ export class CommunityServiceEngine {
   // Get pending verifications for teachers/admins
   async getPendingVerifications(schoolId?: string, verifierType?: string) {
     try {
+      console.log('🔍 Getting pending verifications for schoolId:', schoolId);
+      
       let conditions = eq(communityServiceLogs.verificationStatus, 'pending');
 
       if (schoolId) {
@@ -355,16 +357,18 @@ export class CommunityServiceEngine {
         );
       }
 
-      return await db.select({
+      const results = await db.select({
         serviceLog: communityServiceLogs,
-        verification: communityServiceVerifications,
         student: users
       })
       .from(communityServiceLogs)
-      .leftJoin(communityServiceVerifications, eq(communityServiceVerifications.serviceLogId, communityServiceLogs.id))
       .leftJoin(users, eq(users.id, communityServiceLogs.userId))
       .where(conditions)
       .orderBy(desc(communityServiceLogs.createdAt));
+      
+      console.log('✅ Found', results.length, 'pending service logs');
+      
+      return results;
     } catch (error) {
       console.error('❌ Error getting pending verifications:', error);
       throw error;
