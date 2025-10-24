@@ -3675,16 +3675,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get ALL reward offers (for the rewards page)
-  // PERFORMANCE FIX: Limit to 50 offers to prevent browser freeze
+  // DEMO OPTIMIZATION: Limit to 15 unique offers for clean demo recording
   app.get('/api/rewards/offers/all/all', async (req, res) => {
     try {
-      console.log('🎁 Fetching reward offers (limited for performance)...');
+      console.log('🎁 Fetching reward offers (optimized for demo)...');
       const offers = await storage.getRewardOffers({
         isActive: true, // Only show active offers
       });
 
+      // Deduplicate by title to prevent repeating offers
+      const uniqueOffers = offers.reduce((acc, offer) => {
+        const existingOffer = acc.find((o: any) => o.title === offer.title);
+        if (!existingOffer) {
+          acc.push(offer);
+        }
+        return acc;
+      }, [] as any[]);
+
       // Sort: Featured offers first, then by newest
-      const sortedOffers = offers.sort((a, b) => {
+      const sortedOffers = uniqueOffers.sort((a, b) => {
         // Featured offers come first
         if (a.isFeatured && !b.isFeatured) return -1;
         if (!a.isFeatured && b.isFeatured) return 1;
@@ -3692,8 +3701,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return b.id.localeCompare(a.id);
       });
 
-      // LIMIT TO 50 OFFERS to prevent browser freeze from rendering 8,000+ cards
-      const limitedOffers = sortedOffers.slice(0, 50);
+      // LIMIT TO 15 OFFERS for clean demo recording (fast load, no scrolling fatigue)
+      const limitedOffers = sortedOffers.slice(0, 15);
 
       // Enrich offers with partner information including logos
       const partners = await storage.getRewardPartners({});
@@ -3707,7 +3716,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       });
 
-      console.log(`🎁 Returning ${enrichedOffers.length} offers (out of ${offers.length} total) - featured first`);
+      console.log(`🎁 Returning ${enrichedOffers.length} unique offers (out of ${offers.length} total) - optimized for demo`);
       res.json(enrichedOffers);
     } catch (error: any) {
       console.error('Failed to get reward offers:', error);
