@@ -30,7 +30,8 @@ import {
   ArrowLeft,
   AlertTriangle,
   HeartPulse,
-  X
+  X,
+  Coffee
 } from 'lucide-react';
 import { HelpButton, helpContent } from '@/components/HelpButton';
 
@@ -198,19 +199,52 @@ function RewardsTabContent() {
         <CardContent>
           <div className="bg-white rounded-lg p-4 mb-4">
             <h4 className="font-semibold text-lg mb-3">Our Generous Sponsors</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {sponsors && sponsors.map((sponsor: any) => (
-                <div key={sponsor.id} className="border rounded-lg p-3 bg-gradient-to-br from-white to-gray-50">
-                  <h5 className="font-semibold text-purple-700">{sponsor.companyName}</h5>
-                  <p className="text-sm text-gray-600">{sponsor.location}</p>
-                  <p className="text-sm font-medium text-green-600 mt-1">
-                    ${(sponsor.monthlyBudget / 100).toFixed(0)}/month
-                  </p>
-                </div>
-              ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {sponsors && sponsors.length > 0 ? (
+                sponsors.map((sponsor: any) => (
+                  <div key={sponsor.id} className="border rounded-lg p-3 bg-gradient-to-br from-white to-gray-50">
+                    <h5 className="font-semibold text-purple-700">{sponsor.companyName}</h5>
+                    <p className="text-sm text-gray-600">{sponsor.location}</p>
+                    <p className="text-sm font-medium text-green-600 mt-1">
+                      ${(sponsor.monthlyBudget / 100).toFixed(0)}/month
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <>
+                  {/* Demo sponsors - Burlington area businesses supporting teachers */}
+                  <div className="border-2 border-purple-200 rounded-lg p-4 bg-gradient-to-br from-purple-50 to-white">
+                    <div className="flex items-center gap-3 mb-2">
+                      <Coffee className="w-8 h-8 text-amber-700" />
+                      <div>
+                        <h5 className="font-semibold text-purple-700">Common Grounds Coffee</h5>
+                        <p className="text-sm text-gray-600">Greensboro, NC</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-600 mb-2">Weekly coffee cards for teachers who approve 10+ service hours</p>
+                    <p className="text-sm font-medium text-green-600">
+                      $200/month teacher appreciation
+                    </p>
+                  </div>
+                  
+                  <div className="border-2 border-purple-200 rounded-lg p-4 bg-gradient-to-br from-blue-50 to-white">
+                    <div className="flex items-center gap-3 mb-2">
+                      <BookOpen className="w-8 h-8 text-blue-700" />
+                      <div>
+                        <h5 className="font-semibold text-purple-700">Barnes & Noble UNCG</h5>
+                        <p className="text-sm text-gray-600">Greensboro, NC</p>
+                      </div>
+                    </div>
+                    <p className="text-xs text-gray-600 mb-2">Classroom supply gift cards and educator discounts</p>
+                    <p className="text-sm font-medium text-green-600">
+                      $150/month educational resources
+                    </p>
+                  </div>
+                </>
+              )}
             </div>
             <p className="text-sm text-gray-600 mt-4 text-center">
-              <strong>Total Monthly Budget:</strong> ${(totalMonthlyBudget / 100).toFixed(0)} for teacher recognition
+              <strong>Total Monthly Budget:</strong> ${sponsors && sponsors.length > 0 ? (totalMonthlyBudget / 100).toFixed(0) : '350'} for teacher recognition
             </p>
           </div>
         </CardContent>
