@@ -203,7 +203,15 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
         <div className="text-center mb-8 relative">
           <div className="absolute left-0 top-0">
             <BackButton 
-              onClick={() => onBack ? onBack() : window.location.href = '/'}
+              onClick={() => {
+                if (onBack) {
+                  onBack();
+                } else if (canGoBack()) {
+                  goBack();
+                } else {
+                  window.location.href = '/';
+                }
+              }}
               variant="minimal"
               style={{ color: '#6b7280' }}
             />
