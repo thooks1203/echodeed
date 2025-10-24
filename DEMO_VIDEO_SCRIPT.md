@@ -155,7 +155,7 @@ What makes EchoDeed different is that it reduces teacher workload by 95% while i
 [Point to each metric]
 
 **YOU SAY:**  
-"But notice what's missing—Sofia's anonymous kindness posts. Teen privacy is protected. Parents see measurable progress without micromanaging their child's character journey."
+"Parents also see their child's kindness posts—the acts Sofia shared anonymously on the global feed. While Sofia's posts remain anonymous to everyone else, Maria can see what her daughter posted. This sparks positive conversations—'Sofia, I saw you helped a classmate with algebra. I'm so proud of you.' Parents can offer genuine praise for character development, creating meaningful dialogue between teens and parents about values and kindness."
 
 ### Service Hours Tab - Verification Transparency (4:15-4:25)
 [Click: "Service Hours" tab]
@@ -187,7 +187,7 @@ Complete anonymity eliminates performative behavior and social pressure. Student
 95% reduction in administrative time—service hour verification goes from 15 minutes to 30 seconds per student. That's 14 and a half minutes per student returned for actual teaching. Real-time classroom analytics without creating spreadsheets. One-click CSV export for district compliance systems. Measurable data for administrators and school boards.
 
 **For Parents:**  
-Complete transparency into their child's character growth and community involvement. Verified service hour tracking without requiring parent signatures. Privacy protection—can't see anonymous posts. Family engagement through dual rewards that support parents while recognizing student achievement.
+Complete transparency into their child's character growth and community involvement. Parents see their own child's kindness posts—while posts remain anonymous to everyone else, parents can praise their child's character development. This creates positive conversations between teens and parents about values and kindness. Verified service hour tracking without requiring parent signatures. Family engagement through dual rewards that support parents while recognizing student achievement.
 
 **For Administrators:**  
 Measurable school culture metrics with documented evidence. Reduced behavioral incidents when kindness becomes the cultural norm. Community partnerships with local businesses showing positive school impact. Complete FERPA and COPPA compliance with no crisis intervention liability. Zero cost to school budgets."
@@ -293,7 +293,7 @@ Click: **"Try as Parent"** button
 Auto-signed in as Maria Rodriguez
 
 **Tabs to Show:**
-- **👨‍👩‍👧‍👦 Parent Dashboard** - Child's tokens, verified hours, streaks, achievements (NO anonymous posts)
+- **👨‍👩‍👧‍👦 Parent Dashboard** - Child's tokens, verified hours, streaks, achievements, AND their kindness posts (anonymous to everyone else, visible to own parents)
 - **🏥 Service Hours** - Verified and pending service work with full organization details
 - **🎁 Rewards** - Family redemptions, dual kid+parent reward offers
 
@@ -314,7 +314,8 @@ Auto-signed in as Maria Rodriguez
 ⚡ **All 5 tabs demonstrated** = comprehensive platform showcase
 
 ### Parent Experience (3:45-4:30):
-🔒 **Privacy + transparency** = progress updates without micromanaging  
+🔒 **See child's kindness posts** = parents can praise character development and spark positive conversations  
+🔒 **Privacy + transparency** = posts anonymous to everyone else, but visible to own parents  
 🔒 **Verified tracking** = legitimate community service confirmation  
 🔒 **Family engagement** = dual rewards support entire families
 
@@ -341,7 +342,7 @@ Auto-signed in as Maria Rodriguez
 "From 15 minutes to 30 seconds per student—14 and a half minutes back for actual teaching."
 
 **Parent Benefit:**  
-"Transparent progress tracking without micromanaging teen privacy."
+"Parents see their child's kindness posts—sparking positive conversations and allowing them to praise character development. Posts remain anonymous to everyone else."
 
 **Platform Proof:**  
 "287,435 documented acts of kindness. Real students. Real character development. Real community impact."
