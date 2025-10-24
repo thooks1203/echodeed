@@ -63,46 +63,51 @@ What makes EchoDeed different is that it reduces teacher workload by 95% while i
 [Automatically logged in as Ms. Kim Jones, lands on Teacher Dashboard]
 
 **YOU SAY:**  
-"Now the teacher experience. I'll sign out and click 'Try as Teacher'. I'm logged in as Ms. Kim Jones—a 10th grade English teacher and community service coordinator. Here's what teachers see."
+"Now the teacher experience. I'll sign out and click 'Try as Teacher'. I'm logged in as Ms. Kim Jones—a 10th grade English teacher and community service coordinator. Before I show you the dashboard, here's what's critical: teachers only do TWO things in EchoDeed—approve service hours in 30 seconds, and optionally encourage students who aren't engaging. That's it. Everything else runs automatically. This isn't another thing on teachers' plates—it actually removes workload. Let me show you."
 
-### Overview Tab - Classroom Analytics (1:55-2:15)
+### Overview Tab - At-a-Glance Metrics (1:55-2:15)
 [Screen: Teacher Dashboard Overview tab showing comprehensive class metrics]
 
 **YOU SAY:**  
-"The Overview tab provides real-time classroom analytics. Ms. Jones sees 24 total students, 21 active this week, 47 acts of kindness tracked, 78% progress toward character education goals, and 87% overall participation rate. These are measurable metrics teachers can show administrators and use for data-driven character education."
+"The Overview tab provides at-a-glance classroom metrics. Ms. Jones sees 24 total students, 21 active this week, 47 acts of kindness tracked, 78% progress toward character education goals, and 87% overall participation rate. These metrics automatically track themselves—teachers don't enter data or create spreadsheets. Everything happens in the background."
 
 [Point to each metric card]
 
 **YOU SAY:**  
-"Teachers monitor engagement trends, identify students who need encouragement, and measure cultural impact—all without creating a single spreadsheet."
+"Here's what's important: teachers don't need to use these analytics daily. They're here if administrators ask for data or if teachers want to see trends. But the platform works whether teachers look at this tab or not."
 
-### Students Tab - Individual Tracking (2:15-2:35)
+### Students Tab - Identify Who Needs Encouragement (2:15-2:35)
 [Click: "Students" tab (purple button)]  
-[Screen: Student participation list with individual analytics]
+[Screen: Student participation list showing Emma S., Marcus R., Sophia L., James W.]
 
 **YOU SAY:**  
-"The Students tab shows individual student participation. Teachers see each student's kindness acts, last activity, character traits they're developing, and who might need extra support. This data exports to CSV for parent-teacher conferences, report cards, and character recognition programs."
+"The Students tab shows individual student participation—but here's the key: teachers only need to use this when they want to encourage students who are disengaged. Notice the checkbox at the top: 'Show only students needing encouragement.'"
 
-[Scroll through student list showing names, stats, character traits]
+[Point to checkbox, then point to Marcus R. and James W. with warning icons]
 
 **YOU SAY:**  
-"Students get celebrated for character growth, not just academic performance. Teachers have concrete data for positive phone calls home."
+"Marcus has 3 kind acts but hasn't been active in 4 days. James has only 1 kind act and hasn't engaged in a week. Ms. Jones can send them a quick encouragement message—30 seconds total. That's it. She doesn't need to check this tab daily or track anything manually. The platform identifies who needs support automatically."
 
-### Student Feed Tab - Classroom Culture (2:35-2:50)
+### Student Feed Tab - Optional Culture View (2:35-2:50)
 [Click: "Student Feed" tab (pink/heart button)]  
 [Screen: Feed showing anonymous posts from their specific students]
 
 **YOU SAY:**  
-"The Student Feed tab shows anonymous kindness posts from Ms. Jones's students specifically. She can't identify who posted what—privacy is protected—but she can see her classroom culture developing in real-time. Teachers use this during morning meetings to celebrate kindness trends without calling out individual students."
+"The Student Feed tab shows anonymous kindness posts from Ms. Jones's students specifically. This tab is completely optional—teachers can use it during morning meetings if they want to celebrate kindness trends, but they don't have to. The platform works whether teachers ever click this tab or not. Students still post, earn tokens, and build character—all happening automatically."
 
-[Scroll through 3-4 posts]
+[Scroll through 2 posts quickly]
 
-### Service Hours Tab - Verification Workflow (2:50-3:30)
+### Service Hours Tab - THE ONLY REQUIRED TEACHER ACTION (2:50-3:30)
 [Click: "Service Hours" tab (green/teal button)]  
 [Screen: Service Hours Pending Verification section with 4 requests visible]
 
 **YOU SAY:**  
-"The Service Hours tab is where EchoDeed saves teachers massive time. Ms. Jones sees 4 pending service hour requests with verification photos already attached. Let's look at Sofia's submissions."
+"Now here's the most important tab—and here's what makes EchoDeed different from every other character education platform: this Service Hours tab is the ONLY thing teachers actually need to do. Let me say that again: teachers only need to approve service hours. Everything else we just showed—the analytics, the student tracking, the feed—all of that happens automatically whether teachers use it or not."
+
+[Pause for emphasis]
+
+**YOU SAY:**  
+"Ms. Jones sees 4 pending service hour requests with verification photos already attached. This is her only required action. Let's watch how fast it is."
 
 [Point to Sofia Rodriguez's 3 pending logs]
 
@@ -184,7 +189,7 @@ What makes EchoDeed different is that it reduces teacher workload by 95% while i
 Complete anonymity eliminates performative behavior and social pressure. Students engage in authentic character development because they want to, not because they're being watched. Real local rewards from businesses they actually visit create genuine motivation. Community service tracking with photo verification makes volunteering seamless and recognized.
 
 **For Teachers:**  
-95% reduction in administrative time—service hour verification goes from 15 minutes to 30 seconds per student. That's 14 and a half minutes per student returned for actual teaching. Real-time classroom analytics without creating spreadsheets. One-click CSV export for district compliance systems. Measurable data for administrators and school boards.
+Teachers only do TWO things: (1) Approve service hours—30 seconds per student instead of 15 minutes, and (2) Optionally send quick encouragement to disengaged students. That's it. Everything else happens automatically. No daily tracking. No data entry. No spreadsheets. Character education runs in the background while teachers focus on teaching. The analytics, student tracking, and compliance reporting all happen automatically whether teachers use those features or not.
 
 **For Parents:**  
 Complete transparency into their child's character growth and community involvement. Parents see their own child's kindness posts—while posts remain anonymous to everyone else, parents can praise their child's character development. This creates positive conversations between teens and parents about values and kindness. Verified service hour tracking without requiring parent signatures. Family engagement through dual rewards that support parents while recognizing student achievement.
@@ -307,11 +312,11 @@ Auto-signed in as Maria Rodriguez
 ✨ **Photo verification** = one upload, no lost paperwork
 
 ### Teacher Experience (1:45-3:45):
-⚡ **95% time savings** = 15 minutes → 30 seconds per student  
-⚡ **Real-time analytics** = data-driven character education  
-⚡ **One-click compliance** = district requirements automated  
+⚡ **ONLY 2 TEACHER ACTIONS** = (1) Approve service hours in 30 seconds, (2) Optionally encourage disengaged students  
+⚡ **Everything else is automatic** = analytics, tracking, compliance happen in the background  
+⚡ **Not another thing to do** = actually removes workload from teachers' plates  
 ⚡ **Teacher rewards** = teachers earn rewards for approving hours and engaging students  
-⚡ **All 5 tabs demonstrated** = comprehensive platform showcase
+⚡ **All 5 tabs shown, but only 1 required** = Service Hours is the only mandatory tab
 
 ### Parent Experience (3:45-4:30):
 🔒 **See child's kindness posts** = parents can praise character development and spark positive conversations  
@@ -339,7 +344,7 @@ Auto-signed in as Maria Rodriguez
 "Complete anonymity eliminates social pressure. Real local rewards create genuine motivation."
 
 **Teacher Benefit:**  
-"From 15 minutes to 30 seconds per student—14 and a half minutes back for actual teaching."
+"Teachers only do two things: approve service hours in 30 seconds, and optionally encourage disengaged students. Everything else runs automatically. This isn't another thing to do—it actually removes things from their plate."
 
 **Parent Benefit:**  
 "Parents see their child's kindness posts—sparking positive conversations and allowing them to praise character development. Posts remain anonymous to everyone else."
