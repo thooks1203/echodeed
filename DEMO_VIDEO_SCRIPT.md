@@ -47,10 +47,10 @@ What makes EchoDeed different is that it reduces teacher workload by 95% while i
 
 ### Rewards Tab - Local Partnerships (1:30-1:45)
 [Click: "Rewards" tab (🎁 icon in bottom navigation)]  
-[Screen: Reward marketplace showing local business partners]
+[Screen: Reward marketplace showing featured offers - Trampoline Park, Bowling & Arcade, Movie Tickets]
 
 **YOU SAY:**  
-"And the Rewards tab shows why students genuinely engage. Real rewards from 21 local businesses—Chick-fil-A, Cook Out, Greensboro Science Center, bowling alleys, ice cream shops. Students redeem tokens instantly for rewards they can use today. Character education finally connects to real-world value."
+"And the Rewards tab shows why high school students genuinely engage. Real rewards from local businesses near Eastern Guilford—Trampoline Park passes at Urban Air for 400 tokens, Bowling and Arcade packages at Triad Lanes for 250 tokens, Movie Tickets with Snacks at Red Cinemas for 350 tokens, Hot Chicken Combos at Dave's, Ice Cream at Yum Yum. Students redeem tokens instantly for experiences they actually want. Character education finally connects to real-world value."
 
 ---
 
@@ -174,7 +174,7 @@ What makes EchoDeed different is that it reduces teacher workload by 95% while i
 [Screen: Shows family redemptions and dual kid+parent reward offers]
 
 **YOU SAY:**  
-"The Rewards tab shows family redemptions. Many rewards are dual rewards—student gets a LEGO set, parent gets Amazon credit. This engages entire families in character education, not just students."
+"The Rewards tab shows family redemptions. Students can browse featured offers like Trampoline Park passes at Urban Air for 400 tokens, Bowling and Arcade packages at Triad Lanes for 250 tokens, Movie Tickets with Snacks at Red Cinemas for 350 tokens, Hot Chicken Combos at Dave's Hot Chicken, Ice Cream Treats, and Pizza with Arcade Games. Real rewards high school students actually want."
 
 ---
 
