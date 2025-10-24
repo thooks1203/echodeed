@@ -780,6 +780,65 @@ export default function Home() {
       
       {/* Kindness Sparks Animation - Now mounted globally at App root */}
       
+      {/* Share Kindness Floating Action Button - Always visible while scrolling */}
+      {isAuthenticated && (
+        <div
+          onClick={() => setIsPostModalOpen(true)}
+          data-testid="button-share-kindness-fab"
+          style={{
+            position: 'fixed',
+            bottom: '90px',
+            left: '100px', // Position after sidebar
+            cursor: 'pointer',
+            zIndex: 101,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '6px'
+          }}
+        >
+          <button
+            style={{
+              width: '64px',
+              height: '64px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #9333ea 0%, #ec4899 100%)',
+              border: '3px solid white',
+              boxShadow: '0 8px 25px rgba(147, 51, 234, 0.4), 0 0 0 0 rgba(236, 72, 153, 0.7)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+              animation: 'pulse-share 2s infinite'
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = 'scale(1.1)';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = 'scale(1)';
+            }}
+          >
+            <span style={{ fontSize: '32px' }}>✨</span>
+          </button>
+          <div
+            style={{
+              background: 'linear-gradient(135deg, #9333ea 0%, #ec4899 100%)',
+              color: 'white',
+              padding: '6px 12px',
+              borderRadius: '12px',
+              fontSize: '12px',
+              fontWeight: '700',
+              boxShadow: '0 4px 12px rgba(147, 51, 234, 0.3)',
+              whiteSpace: 'nowrap',
+              border: '2px solid white'
+            }}
+          >
+            Share Kindness
+          </div>
+        </div>
+      )}
+      
       {/* Kindness Connect Floating Action Button - Visible to all authenticated users */}
       {isAuthenticated && (
         <>
@@ -834,6 +893,15 @@ export default function Home() {
           </div>
           
           <style>{`
+            @keyframes pulse-share {
+              0%, 100% {
+                box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4), 0 0 0 0 rgba(236, 72, 153, 0.7);
+              }
+              50% {
+                box-shadow: 0 8px 25px rgba(147, 51, 234, 0.4), 0 0 0 10px rgba(236, 72, 153, 0);
+              }
+            }
+            
             @keyframes pulse-kindness {
               0%, 100% {
                 box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4), 0 0 0 0 rgba(239, 68, 68, 0.7);
