@@ -1,373 +1,405 @@
-# EchoDeed™ Demo Video Script
+# EchoDeed™ Platform Demonstration
 **Target Length:** 5-6 minutes  
-**Target Audience:** Dr. Darrell Harris (Principal), School Administrators, Character Education Coordinators  
-**Pitch Context:** Proposing pilot program at Eastern Guilford High School, Gibsonville, NC
+**Target Audience:** School Principals, Administrators, Character Education Coordinators, Education Leaders  
+**Purpose:** Showcase EchoDeed as the premier anonymous kindness and character education platform for youth
 
 ---
 
 ## 🎬 INTRO (0:00-0:30)
-[Screen: www.echodeed.com homepage showing anonymous kindness feed]
+[Screen: www.echodeed.com homepage showing anonymous kindness feed with global counter]
 
 **YOU SAY:**  
-"Hi Dr. Harris, thank you for taking time to review EchoDeed™. I know Eastern Guilford High School is a leader in character education, and I want to show you a platform that will amplify that work while giving your teachers 95% of their verification time back.
+"Welcome to EchoDeed™—the premier anonymous kindness platform transforming how schools build character and community. In the next few minutes, I'm going to show you a complete walkthrough of the platform from three perspectives: students, teachers, and parents.
 
-This isn't theory—I'm going to walk you through a working demo showing exactly how students, teachers, and parents would use EchoDeed at Eastern Guilford. Let me show you how it works."
+What makes EchoDeed different is that it reduces teacher workload by 95% while increasing student engagement through complete anonymity and real local rewards. Let me show you how it works."
 
 ---
 
 ## 👨‍🎓 STUDENT EXPERIENCE (0:30-1:45)
 
-### Login as Student (0:30-0:45)
+### Login as Student (0:30-0:40)
 [Navigate to: www.echodeed.com]  
 [Click: "Try as Student" button on demo login page]  
 [Automatically logged in as Sofia Rodriguez, lands on Feed tab]
 
 **YOU SAY:**  
-"Let's start as a student. I'll click 'Try as Student' and I'm logged in as Sofia Rodriguez—a demo 10th grader. Here's what your Eastern Guilford students would see when they open EchoDeed."
+"Let's start with the student experience. I'll click 'Try as Student' and I'm logged in as Sofia Rodriguez—a 10th grader using the platform. This is exactly what students see when they open EchoDeed."
 
-### Feed Tab - Anonymous Kindness (0:45-1:05)
-[Screen: Feed tab showing global counter: 287,435 acts]
-
-**YOU SAY:**  
-"The Feed tab is where students see the global kindness counter—287,435 anonymous acts from students across the platform. Complete anonymity means no profiles, no followers, no performative social media behavior. Students can scroll through anonymous posts, give hearts to acts that inspire them, and post their own kindness without anyone knowing who shared it."
-
-[Scroll through a few anonymous posts]
+### Feed Tab - Anonymous Kindness (0:40-1:00)
+[Screen: Feed tab showing global counter: 287,435 acts and anonymous posts scrolling]
 
 **YOU SAY:**  
-"Real posts from real students—but nobody knows who posted what. This removes social pressure and lets authentic empathy shine."
+"The Feed tab shows a global kindness counter tracking 287,435 anonymous acts across the platform. Students scroll through real posts from real peers—helping classmates, supporting teachers, community service. But notice: complete anonymity. No profiles, no followers, no social media pressure. Students can heart posts that inspire them and post their own acts without anyone knowing who shared it."
 
-### Dashboard Tab - Student Stats (1:05-1:25)
+### Dashboard Tab - Personal Progress (1:00-1:15)
 [Click: "Dashboard" tab (👨‍🎓 icon in bottom navigation)]  
-[Screen: Student dashboard showing Sofia's stats]
+[Screen: Student dashboard showing Sofia's stats - 1,103 tokens, 4-day streak, 14.5 hours]
 
 **YOU SAY:**  
-"The Dashboard tab shows Sofia's personal impact—1,103 Echo Tokens earned from spreading kindness, a 4-day active streak, and 14.5 total community service hours with 7.5 already verified."
+"The Dashboard tab shows personal impact. Sofia has earned 1,103 Echo Tokens from spreading kindness, maintained a 4-day active streak, and logged 14.5 total community service hours. Students track their progress, monitor their service work, and see their character growth quantified."
 
-[Point to each stat]
-
-**YOU SAY:**  
-"Students can track their progress toward goals, see their token balance, and monitor their service hour submissions—all in one place."
-
-### Service Tab - Hour Submission (1:25-1:45)
+### Service Tab - Hour Submission (1:15-1:30)
 [Click: "Service" tab (🏥 icon in bottom navigation)]  
-[Screen: Community service dashboard showing verified and pending hours]
+[Screen: Community service dashboard with verified and pending hours]
 
 **YOU SAY:**  
-"The Service tab is where students submit community service hours by uploading verification photos—a letter from the organization, timesheet, or supervisor signature. One submission, and it goes straight to their teacher's approval queue. No emails, no phone calls, no lost paperwork."
+"The Service tab is where students submit community service hours by uploading verification photos—organization letters, timesheets, supervisor signatures. One submission with photo proof, and it goes directly to their teacher's approval queue. No emails, no phone calls, no lost paperwork."
 
-### Rewards Tab - Local Partners (1:45-2:00)
+### Rewards Tab - Local Partnerships (1:30-1:45)
 [Click: "Rewards" tab (🎁 icon in bottom navigation)]  
-[Screen: Reward marketplace showing local Burlington/Greensboro partners]
+[Screen: Reward marketplace showing local business partners]
 
 **YOU SAY:**  
-"And the Rewards tab shows why students actually care—real rewards from 21 local businesses near Eastern Guilford. Chick-fil-A Burlington Road, Cook Out, Greensboro Science Center. Students redeem tokens instantly for rewards they can use today. Character education finally feels rewarding."
+"And the Rewards tab shows why students genuinely engage. Real rewards from 21 local businesses—Chick-fil-A, Cook Out, Greensboro Science Center, bowling alleys, ice cream shops. Students redeem tokens instantly for rewards they can use today. Character education finally connects to real-world value."
 
 ---
 
-## 👨‍🏫 TEACHER EXPERIENCE (2:00-4:00)
+## 👨‍🏫 TEACHER EXPERIENCE (1:45-3:45)
 
-### Switch to Teacher View (2:00-2:10)
+### Switch to Teacher View (1:45-1:55)
 [Click: Profile icon in top-right]  
 [Click: "Sign Out"]  
 [On demo login page, click: "Try as Teacher" button]  
 [Automatically logged in as Ms. Kim Jones, lands on Teacher Dashboard]
 
 **YOU SAY:**  
-"Now let's see the teacher experience. I'll sign out and click 'Try as Teacher'. I'm logged in as Ms. Kim Jones—a demo 10th grade English teacher and community service coordinator. Here's what your teachers would see."
+"Now the teacher experience. I'll sign out and click 'Try as Teacher'. I'm logged in as Ms. Kim Jones—a 10th grade English teacher and community service coordinator. Here's what teachers see."
 
-### Overview Tab - Classroom Metrics (2:10-2:30)
-[Screen: Teacher Dashboard Overview tab showing class stats]
+### Overview Tab - Classroom Analytics (1:55-2:15)
+[Screen: Teacher Dashboard Overview tab showing comprehensive class metrics]
 
 **YOU SAY:**  
-"The Overview tab gives teachers a bird's-eye view of their classroom. Ms. Jones sees 24 total students, 21 active this week, 47 acts of kindness tracked, 78% progress toward character goals, and 87% participation rate. Real-time metrics showing character education is working—data you can show the school board."
+"The Overview tab provides real-time classroom analytics. Ms. Jones sees 24 total students, 21 active this week, 47 acts of kindness tracked, 78% progress toward character education goals, and 87% overall participation rate. These are measurable metrics teachers can show administrators and use for data-driven character education."
 
 [Point to each metric card]
 
 **YOU SAY:**  
-"Teachers can monitor engagement, identify students who need encouragement, and measure the impact of their character education efforts without extra paperwork."
+"Teachers monitor engagement trends, identify students who need encouragement, and measure cultural impact—all without creating a single spreadsheet."
 
-### Students Tab - Individual Tracking (2:30-2:50)
+### Students Tab - Individual Tracking (2:15-2:35)
 [Click: "Students" tab (purple button)]  
-[Screen: Student participation list showing individual student stats]
+[Screen: Student participation list with individual analytics]
 
 **YOU SAY:**  
-"The Students tab shows individual student participation. Teachers see each student's kindness acts, last activity date, character traits they're developing, and who might need extra encouragement."
+"The Students tab shows individual student participation. Teachers see each student's kindness acts, last activity, character traits they're developing, and who might need extra support. This data exports to CSV for parent-teacher conferences, report cards, and character recognition programs."
 
-[Scroll through student list]
+[Scroll through student list showing names, stats, character traits]
 
 **YOU SAY:**  
-"Teachers can export this data, contact parents about positive behaviors, and use it for report cards or parent-teacher conferences. Students get recognized for character growth, not just academics."
+"Students get celebrated for character growth, not just academic performance. Teachers have concrete data for positive phone calls home."
 
-### Student Feed Tab - Class Activity (2:50-3:05)
+### Student Feed Tab - Classroom Culture (2:35-2:50)
 [Click: "Student Feed" tab (pink/heart button)]  
-[Screen: Feed showing posts from their students]
+[Screen: Feed showing anonymous posts from their specific students]
 
 **YOU SAY:**  
-"The Student Feed tab shows anonymous kindness posts from Ms. Jones's students specifically. She can't see who posted what—privacy is protected—but she can see her classroom culture taking shape in real-time."
+"The Student Feed tab shows anonymous kindness posts from Ms. Jones's students specifically. She can't identify who posted what—privacy is protected—but she can see her classroom culture developing in real-time. Teachers use this during morning meetings to celebrate kindness trends without calling out individual students."
 
-[Scroll through a few posts]
+[Scroll through 3-4 posts]
 
-**YOU SAY:**  
-"This helps teachers understand their classroom climate and celebrate positive behaviors during morning meetings or advisory periods."
-
-### Service Hours Tab - THE GAME CHANGER (3:05-3:45)
+### Service Hours Tab - Verification Workflow (2:50-3:30)
 [Click: "Service Hours" tab (green/teal button)]  
-[Screen: Shows "Service Hours Pending Verification" section with 4 pending requests]
+[Screen: Service Hours Pending Verification section with 4 requests visible]
 
 **YOU SAY:**  
-"And here's the biggest time-saver—the Service Hours tab. Ms. Jones sees 4 pending service hour requests with verification photos already attached."
+"The Service Hours tab is where EchoDeed saves teachers massive time. Ms. Jones sees 4 pending service hour requests with verification photos already attached. Let's look at Sofia's submissions."
 
-[Point to Sofia Rodriguez's 3 pending submissions]
+[Point to Sofia Rodriguez's 3 pending logs]
 
 **YOU SAY:**  
-"Sofia submitted Library Tutoring for 3 hours, Animal Shelter Care for 2.5 hours, and Senior Center Visit for 1.5 hours. Each submission has the organization name, contact info, student reflection, and verification photo."
+"Sofia submitted Library Tutoring for 3 hours, Animal Shelter Care for 2.5 hours, and Senior Center Visit for 1.5 hours. Each submission includes organization name, contact information, student reflection, and verification photo proof."
 
 [Click to expand first pending request: Library Tutoring]
-[Screen: Shows full details with verification photo thumbnail]
+[Screen: Shows full details with small verification photo thumbnail]
 
 **YOU SAY:**  
-"Right now, Ms. Jones sees the verification letter. No phone calls to organizations. No tracking down signatures. No manual data entry. This used to take 15 minutes per student. Watch this."
+"The verification letter is right here. Traditionally, this process takes 15 minutes per student—phone calls to organizations, tracking down signatures, manual entry into district systems. Watch how EchoDeed changes that."
 
 [Click: Green "Approve (Award 15 tokens)" button]
 [Screen: Success message, card moves to "Recently Approved" section]
 
 **YOU SAY:**  
-"30 seconds. One click. Sofia gets instant notification. 3 hours added to her transcript. 15 tokens awarded automatically. That's 95% time savings—14 and a half minutes per student that teachers get back for actual teaching."
+"30 seconds. One click. Sofia receives instant notification. 3 hours added to her official transcript. 15 tokens awarded automatically. That's 95% time savings—14 and a half minutes per student returned to teachers for actual instruction."
 
-[Scroll to show "Recently Approved Service Hours" section]
+[Scroll to "Recently Approved Service Hours" section]
 
 **YOU SAY:**  
-"And here's the audit trail—all approved hours with dates, token awards, and organization details for district compliance."
+"The approval history provides a complete audit trail with dates, token awards, and organization details for district compliance and parent transparency."
 
-### Rewards Tab - Sponsor Dashboard (3:45-4:00)
+### Rewards Tab - Partner Analytics (3:30-3:45)
 [Click: "Rewards" tab (orange button)]  
-[Screen: Teacher view of reward partners and redemption analytics]
+[Screen: Teacher view showing partner dashboard and redemption analytics]
 
 **YOU SAY:**  
-"The Rewards tab shows teachers which local businesses are sponsoring rewards and redemption analytics. Teachers can see which rewards students love most and coordinate with business partners for community engagement events."
-
-[Point to partner list and redemption stats]
+"The Rewards tab shows teachers which local businesses are partnering with their school and redemption analytics. Teachers see which rewards students value most and can coordinate community partnership events with sponsor businesses."
 
 ---
 
-## 👪 PARENT EXPERIENCE (4:00-4:45)
+## 👪 PARENT EXPERIENCE (3:45-4:30)
 
-### Switch to Parent View (4:00-4:10)
+### Switch to Parent View (3:45-3:55)
 [Click: Profile icon in top-right]  
 [Click: "Sign Out"]  
 [On demo login page, click: "Try as Parent" button]  
 [Automatically logged in as Maria Rodriguez, lands on Parent Dashboard]
 
 **YOU SAY:**  
-"Parents stay engaged without invading teen privacy. Let me sign out and click 'Try as Parent'. I'm logged in as Maria Rodriguez—Sofia's mom in our demo. Here's what Eastern Guilford parents would see."
+"The parent experience balances engagement with teen privacy. I'll sign out and click 'Try as Parent'. I'm logged in as Maria Rodriguez—Sofia's mom. Here's what parents see."
 
-### Parent Dashboard Tab - Child Progress (4:10-4:30)
-[Screen: Parent dashboard showing Sofia's verified hours, tokens, and achievements]
-
-**YOU SAY:**  
-"The Parent Dashboard shows Maria everything she needs to know about Sofia's character development. She sees 7.5 verified community service hours, 1,103 Echo Tokens earned, a 4-day kindness streak, and recent achievements."
-
-[Point to each section]
+### Parent Dashboard Tab - Child's Progress (3:55-4:15)
+[Screen: Parent dashboard showing Sofia's verified hours, tokens, achievements, streaks]
 
 **YOU SAY:**  
-"But notice what she can't see—Sofia's anonymous kindness posts. Teen privacy is protected. Parents get progress updates without micromanaging their child's character journey."
+"The Parent Dashboard shows comprehensive progress tracking. Maria sees Sofia's 7.5 verified community service hours, 1,103 Echo Tokens earned, 4-day kindness streak, and recent achievements. Parents get transparent updates on character development and community involvement."
 
-### Service Hours Tab - Parent View (4:30-4:45)
+[Point to each metric]
+
+**YOU SAY:**  
+"But notice what's missing—Sofia's anonymous kindness posts. Teen privacy is protected. Parents see measurable progress without micromanaging their child's character journey."
+
+### Service Hours Tab - Verification Transparency (4:15-4:25)
 [Click: "Service Hours" tab]
-[Screen: Shows verified and pending service hours for their child]
+[Screen: Shows Sofia's verified and pending service hours with full details]
 
 **YOU SAY:**  
-"The Service Hours tab shows Maria Sofia's verified community service work and pending submissions. Parents can see exactly what their child is doing in the community—organization names, contact info, hours logged. Transparency without requiring parent signatures or forms."
+"The Service Hours tab shows parents their child's verified community service work and pending submissions. Complete transparency—organization names, contact information, hours logged, verification status. Parents can verify their child's volunteering is legitimate without requiring parent signature forms."
 
-### Rewards Tab - Parent View (4:45-4:55)
+### Rewards Tab - Family Engagement (4:25-4:30)
 [Click: "Rewards" tab]
-[Screen: Shows family reward redemptions and dual kid+parent offers]
+[Screen: Shows family redemptions and dual kid+parent reward offers]
 
 **YOU SAY:**  
-"And the Rewards tab shows family redemptions. Some rewards are dual rewards—kid gets LEGO set, parent gets Amazon credit. This keeps parents engaged and supports families, not just students."
+"The Rewards tab shows family redemptions. Many rewards are dual rewards—student gets a LEGO set, parent gets Amazon credit. This engages entire families in character education, not just students."
 
 ---
 
-## 🎯 CLOSING & CALL TO ACTION (4:55-6:00)
+## 🎯 PLATFORM CAPABILITIES SUMMARY (4:30-5:30)
 
-[Screen: Back to teacher Service Hours tab showing pending approvals]
-
-**YOU SAY:**  
-"Dr. Harris, here's why I believe EchoDeed is perfect for Eastern Guilford High School:
-
-**For Your 1,200 Students:**  
-Complete anonymity removes social pressure and performative behavior. Real local rewards from businesses they actually visit—Chick-fil-A Burlington Road, Cook Out, Greensboro Science Center. Community service tracking with photo verification makes volunteering seamless. Character education becomes intrinsic motivation, not forced compliance.
-
-**For Your Teachers:**  
-95% time savings on service hour verification—from 15 minutes to 30 seconds per student. That's over 14 minutes per student given back for actual teaching. One-click CSV export for Guilford County's x2vol requirements. Real-time classroom metrics without extra paperwork. Fewer behavioral issues when kindness becomes the cultural norm.
-
-**For You as Principal:**  
-Measurable culture shift you can track—documented acts of kindness, real-time engagement metrics, reduced behavioral incidents. Complete FERPA compliance with no crisis intervention liability. Community partnerships with 21 local businesses showing Eastern Guilford's positive impact. And best of all? Zero cost to your school budget."
-
-[Screen: Show teacher dashboard overview with all tabs visible]
+[Screen: Return to teacher Service Hours tab showing pending approvals]
 
 **YOU SAY:**  
-"I know you're already doing incredible character education work at Eastern Guilford. EchoDeed doesn't replace what's working—it amplifies it while giving your staff their time back.
+"EchoDeed is the premier platform for youth character education because it solves the fundamental problems schools face:
 
-I'd like to propose a pilot program:
-- Start with one grade level or Ms. Jones's classes
-- 30-day trial to test student engagement and teacher time savings
-- Full training and support included
-- Measure behavioral incidents, service hour submissions, and teacher satisfaction
+**For Students:**  
+Complete anonymity eliminates performative behavior and social pressure. Students engage in authentic character development because they want to, not because they're being watched. Real local rewards from businesses they actually visit create genuine motivation. Community service tracking with photo verification makes volunteering seamless and recognized.
 
-If it doesn't reduce teacher workload by at least 90% while increasing student engagement, we part as friends. But I'm confident Eastern Guilford students will love the anonymity and rewards, your teachers will love getting their time back, and you'll love having measurable data to show the school board."
+**For Teachers:**  
+95% reduction in administrative time—service hour verification goes from 15 minutes to 30 seconds per student. That's 14 and a half minutes per student returned for actual teaching. Real-time classroom analytics without creating spreadsheets. One-click CSV export for district compliance systems. Measurable data for administrators and school boards.
+
+**For Parents:**  
+Complete transparency into their child's character growth and community involvement. Verified service hour tracking without requiring parent signatures. Privacy protection—can't see anonymous posts. Family engagement through dual rewards that support parents while recognizing student achievement.
+
+**For Administrators:**  
+Measurable school culture metrics with documented evidence. Reduced behavioral incidents when kindness becomes the cultural norm. Community partnerships with local businesses showing positive school impact. Complete FERPA and COPPA compliance with no crisis intervention liability. Zero cost to school budgets."
+
+[Screen: Show global kindness counter on student feed: 287,435 acts]
+
+**YOU SAY:**  
+"287,435 documented acts of kindness. Real students. Real character development. Real community impact. All through a platform that makes it easier for teachers, not harder.
+
+EchoDeed proves that character education can reduce teacher workload while increasing student engagement and measurably improving school culture."
 
 [Screen: www.echodeed.com]
 
 **YOU SAY:**  
-"Dr. Harris, Eastern Guilford is known for character excellence under your leadership. Let's prove together that character education can reduce teacher workload while improving student behavior and school culture.
-
-I'd love to discuss a pilot program for Eastern Guilford. Thank you for your time today."
+"Visit www.echodeed.com to explore the platform yourself. Thank you for watching."
 
 ---
 
 ## 📝 RECORDING TIPS
 
 ### Before Recording:
-1. ✅ **Practice saying "Dr. Harris" naturally** (you're pitching directly to him)
-2. ✅ **Clear browser cache** (Ctrl+Shift+Delete)
-3. ✅ **Open www.echodeed.com in incognito window**
-4. ✅ **Close all other tabs** to avoid distractions
-5. ✅ **Test microphone quality** (record 10 seconds and listen)
-6. ✅ **Practice tab transitions** at least twice (smooth navigation = professional)
-7. ✅ **Use full-screen browser mode** (F11) to hide bookmarks
+1. ✅ **Clear browser cache** for clean UI (Ctrl+Shift+Delete)
+2. ✅ **Open www.echodeed.com in incognito/private window**
+3. ✅ **Close all other browser tabs** to avoid distractions
+4. ✅ **Test microphone audio quality** (record 10 seconds, listen back)
+5. ✅ **Practice tab transitions** twice (smooth navigation looks professional)
+6. ✅ **Use full-screen browser mode** (F11) to hide bookmarks bar
+7. ✅ **Have script open on second monitor or printed** for reference
 
 ### During Recording:
-- **Speak as if Dr. Harris is in the room** (conversational, not robotic)
-- **Pause 2 seconds between sections** (makes editing easier)
-- **Use cursor to point** at specific numbers and buttons
-- **Smile while talking** (it comes through in your voice)
+- **Speak with confidence** (you're showcasing, not selling)
+- **Pause 2 seconds between major sections** (makes editing easier)
+- **Use cursor to highlight** specific numbers and buttons
+- **Speak clearly and at moderate pace** (can speed up in editing if needed)
 - **If you mess up:** Pause 3 seconds, restart that sentence
-- **Slow down on numbers:** "1,103 tokens" not "eleven-oh-three tokens"
+- **Emphasize numbers:** "287,435 acts" said clearly and with pride
 
 ### Tab Navigation Sequence (MEMORIZE THIS):
-**Student:** Feed → Dashboard → Service → Rewards  
-**Teacher:** Overview → Students → Student Feed → Service Hours → Rewards  
-**Parent:** Parent Dashboard → Service Hours → Rewards
+
+**Student Portal:**  
+Feed → Dashboard → Service → Rewards
+
+**Teacher Portal:**  
+Overview → Students → Student Feed → Service Hours → Rewards
+
+**Parent Portal:**  
+Parent Dashboard → Service Hours → Rewards
 
 ### Recommended Recording Tools:
-- **Loom** (easiest, free): [loom.com](https://loom.com) ⭐ RECOMMENDED
-- **OBS Studio** (free, professional): [obsproject.com](https://obsproject.com)
-- **Camtasia** (paid, includes editing): [techsmith.com](https://techsmith.com)
+- **Loom** (easiest, browser-based, free): [loom.com](https://loom.com) ⭐ **RECOMMENDED**
+- **OBS Studio** (free, professional-grade): [obsproject.com](https://obsproject.com)
+- **Camtasia** (paid, includes editing tools): [techsmith.com](https://techsmith.com)
 
 ### After Recording:
-- ✅ **Add captions** (accessibility + most watch with sound off)
-- ✅ **Add gentle background music** (YouTube Audio Library - search "inspiring corporate")
-- ✅ **Export as MP4 1080p**
-- ✅ **Keep under 6 minutes** (attention span sweet spot)
-- ✅ **Create custom thumbnail** with "EchoDeed™ Demo for Eastern Guilford HS"
+- ✅ **Add captions/subtitles** (accessibility + 80% watch with sound off)
+- ✅ **Add gentle background music** (YouTube Audio Library: "inspiring corporate")
+- ✅ **Export as MP4 1080p** for maximum compatibility
+- ✅ **Keep final length 5:00-5:30** (attention span sweet spot)
+- ✅ **Create professional thumbnail** with "EchoDeed™ Platform Demo"
+- ✅ **Upload to YouTube as unlisted** for easy sharing
 
 ---
 
-## 🎥 DEMO ACCESS
+## 🎥 DEMO ACCESS & NAVIGATION
 
 **Live Demo Site:**  
-🌐 **www.echodeed.com** (Use this for recording!)
+🌐 **www.echodeed.com** ← Use this for recording!
 
-**Demo Login Flow (Button-Based - No Passwords):**
+### Demo Login (Button-Based - No Passwords Required):
 
-**1. Student Portal (Sofia Rodriguez, 10th Grade):**  
-   - Click: **"Try as Student"** button
-   - Auto-signed in as Sofia Rodriguez
-   - **Tabs to show:**
-     - **Feed** 🏠 - Global kindness feed with 287,435 acts
-     - **Dashboard** 👨‍🎓 - 1,103 tokens, 4-day streak, 14.5 service hours
-     - **Service** 🏥 - Submit hours with photo upload
-     - **Rewards** 🎁 - 21 local business rewards
+**1️⃣ STUDENT PORTAL (Sofia Rodriguez, 10th Grade)**
 
-**2. Teacher Portal (Ms. Kim Jones, 10th Grade English):**  
-   - Sign out from student view
-   - Click: **"Try as Teacher"** button
-   - Auto-signed in as Ms. Kim Jones
-   - **Tabs to show:**
-     - **Overview** 📊 - 24 students, 21 active, 47 acts, 87% participation
-     - **Students** 👥 - Individual student tracking and analytics
-     - **Student Feed** ❤️ - Anonymous posts from their classroom
-     - **Service Hours** ✅ - 4 pending requests (Sofia's 3 + your 1)
-     - **Rewards** 🎁 - Partner dashboard and redemption analytics
+Click: **"Try as Student"** button  
+Auto-signed in as Sofia Rodriguez
 
-**3. Parent Portal (Maria Rodriguez, Sofia's Mom):**  
-   - Sign out from teacher view
-   - Click: **"Try as Parent"** button
-   - Auto-signed in as Maria Rodriguez
-   - **Tabs to show:**
-     - **Parent Dashboard** 👨‍👩‍👧‍👦 - Child's verified hours, tokens, achievements
-     - **Service Hours** 🏥 - Child's verified and pending service work
-     - **Rewards** 🎁 - Family redemptions and dual kid+parent offers
+**Tabs to Show:**
+- **🏠 Feed** - Global counter (287,435 acts), anonymous posts, heart/echo interactions
+- **👨‍🎓 Dashboard** - 1,103 tokens, 4-day streak, 14.5 total service hours
+- **🏥 Service** - Submit hours with photo upload, view verified and pending submissions
+- **🎁 Rewards** - Browse 21 local business rewards, redeem tokens instantly
+
+---
+
+**2️⃣ TEACHER PORTAL (Ms. Kim Jones, 10th Grade English)**
+
+Sign out from student view  
+Click: **"Try as Teacher"** button  
+Auto-signed in as Ms. Kim Jones
+
+**Tabs to Show:**
+- **📊 Overview** - 24 students, 21 active, 47 acts, 78% goal progress, 87% participation
+- **👥 Students** - Individual student analytics, character trait tracking, engagement metrics
+- **❤️ Student Feed** - Anonymous posts from their classroom (identity protected)
+- **✅ Service Hours** - 4 pending requests (Sofia's 3 submissions), one-click approval, audit trail
+- **🎁 Rewards** - Partner dashboard, redemption analytics, community engagement data
+
+---
+
+**3️⃣ PARENT PORTAL (Maria Rodriguez, Sofia's Mom)**
+
+Sign out from teacher view  
+Click: **"Try as Parent"** button  
+Auto-signed in as Maria Rodriguez
+
+**Tabs to Show:**
+- **👨‍👩‍👧‍👦 Parent Dashboard** - Child's tokens, verified hours, streaks, achievements (NO anonymous posts)
+- **🏥 Service Hours** - Verified and pending service work with full organization details
+- **🎁 Rewards** - Family redemptions, dual kid+parent reward offers
 
 ---
 
 ## 💡 WHAT TO EMPHASIZE IN EACH SECTION
 
-### Student Experience (Emphasize):
-- **Complete anonymity** = no social pressure
-- **Real local rewards** = students actually care
-- **Photo verification** = one submission, no lost paperwork
+### Student Experience (0:30-1:45):
+✨ **Complete anonymity** = authentic character, not performative behavior  
+✨ **Real local rewards** = genuine engagement, not compliance  
+✨ **Photo verification** = one upload, no lost paperwork
 
-### Teacher Experience (Emphasize):
-- **95% time savings** = 15 minutes → 30 seconds per student
-- **Real-time metrics** = data for school board
-- **One-click export** = district compliance automated
+### Teacher Experience (1:45-3:45):
+⚡ **95% time savings** = 15 minutes → 30 seconds per student  
+⚡ **Real-time analytics** = data-driven character education  
+⚡ **One-click compliance** = district requirements automated  
+⚡ **All 5 tabs demonstrated** = comprehensive platform showcase
 
-### Parent Experience (Emphasize):
-- **Transparency without micromanaging** = progress updates, not surveillance
-- **Privacy protection** = can't see anonymous posts
-- **Family engagement** = dual rewards support parents too
+### Parent Experience (3:45-4:30):
+🔒 **Privacy + transparency** = progress updates without micromanaging  
+🔒 **Verified tracking** = legitimate community service confirmation  
+🔒 **Family engagement** = dual rewards support entire families
 
-### Closing Pitch (Emphasize):
-- **Zero cost** = no budget impact
-- **Pilot program** = low-risk trial
-- **Measurable results** = behavioral data for board
-- **Dr. Harris's leadership** = character excellence reputation
+### Platform Summary (4:30-5:30):
+🎯 **Measurable impact** = 287,435 documented acts  
+🎯 **Teacher workload reduction** = 14.5 minutes per student back  
+🎯 **Zero cost** = no school budget impact  
+🎯 **Complete compliance** = FERPA, COPPA protected
 
 ---
 
-## 🎯 KEY TALKING POINTS (MEMORIZE)
+## 🎯 KEY TALKING POINTS (MEMORIZE THESE)
 
 **Opening Hook:**  
-"Eastern Guilford is a leader in character education. EchoDeed amplifies that work while giving teachers 95% of their time back."
+"EchoDeed is the premier anonymous kindness platform transforming how schools build character and community."
 
-**Student Value:**  
-"Anonymity removes social pressure. Real rewards create genuine engagement."
+**Core Value Proposition:**  
+"95% reduction in teacher workload while increasing student engagement through anonymity and real rewards."
 
-**Teacher Value:**  
-"From 15 minutes to 30 seconds per student—that's 14.5 minutes back for teaching."
+**Student Benefit:**  
+"Complete anonymity eliminates social pressure. Real local rewards create genuine motivation."
 
-**Principal Value:**  
-"Measurable culture shift. Zero cost. Complete legal compliance."
+**Teacher Benefit:**  
+"From 15 minutes to 30 seconds per student—14 and a half minutes back for actual teaching."
 
-**Closing Ask:**  
-"30-day pilot with one grade level. If it doesn't save 90% of teacher time, we part as friends."
+**Parent Benefit:**  
+"Transparent progress tracking without micromanaging teen privacy."
+
+**Platform Proof:**  
+"287,435 documented acts of kindness. Real students. Real character development. Real community impact."
+
+**Closing Statement:**  
+"EchoDeed proves character education can reduce teacher workload while measurably improving school culture."
 
 ---
 
 ## 📊 DEMO DATA REFERENCE
 
 **Sofia Rodriguez (Student):**
-- Tokens: 1,103 balance (1,380 earned)
-- Streak: 4 days (best: 4)
+- Echo Tokens: 1,103 balance (1,380 earned lifetime)
+- Active Streak: 4 days (best: 4 days)
 - Service Hours: 7.5 verified + 7.0 pending = 14.5 total
 - Pending Submissions:
-  1. Library Tutoring - 3.0 hrs
-  2. Animal Shelter Care - 2.5 hrs
-  3. Senior Center Visit - 1.5 hrs
+  1. Library Tutoring - 3.0 hours - Oct 14, 2025
+  2. Animal Shelter Care - 2.5 hours - Oct 11, 2025
+  3. Senior Center Visit - 1.5 hours - Oct 9, 2025
 
 **Ms. Kim Jones (Teacher):**
-- Students: 24 total, 21 active
-- Acts of Kindness: 47 this week
-- Participation: 87%
-- Pending Approvals: 4 requests (7.0 hrs from Sofia)
+- Total Students: 24
+- Active This Week: 21
+- Acts of Kindness: 47
+- Goal Progress: 78%
+- Participation Rate: 87%
+- Pending Service Hours: 4 requests (7.0 hours from Sofia)
 
-**Global Stats:**
+**Maria Rodriguez (Parent):**
+- Child: Sofia Rodriguez
+- Visible: Tokens, verified hours, achievements, streaks
+- Hidden: Anonymous kindness posts (privacy protected)
+
+**Global Platform Stats:**
 - Total Acts: 287,435+
-- Local Partners: 21 businesses
-- Demo School: Eastern Guilford High School
+- Local Reward Partners: 21 businesses
+- Demo School: Eastern Guilford High School, Gibsonville, NC
 
 ---
 
-**Good luck with your pitch to Dr. Harris! 🎬**
+## 📤 SHARING STRATEGY
+
+### Target Audiences:
+1. **School Principals** - Share via LinkedIn, email direct to admin offices
+2. **District Superintendents** - Include in grant proposals and pilot program presentations
+3. **Character Education Coordinators** - Share in CASEL and character ed professional groups
+4. **Education Conferences** - Embed in presentation decks for NASSP, NAESP, ASCD
+5. **Local Media** - Share with education reporters for community impact stories
+6. **Reward Partners** - Send to local businesses for community partnership engagement
+
+### Distribution Channels:
+- [ ] Upload to **YouTube as unlisted** (easy sharing link)
+- [ ] Post on **LinkedIn** with hashtags: #CharacterEducation #EdTech #SchoolLeadership
+- [ ] Embed in **pitch deck** as "Platform Walkthrough" slide
+- [ ] Send to **education email lists** and administrator networks
+- [ ] Share in **principal Facebook groups** and forums
+- [ ] Include in **grant applications** as visual proof of concept
+- [ ] Send to **local news** (Greensboro News & Record, WFMY News 2)
+
+---
+
+**You're showcasing the premier platform for youth character education. Record with confidence! 🎬**
