@@ -3675,16 +3675,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get ALL reward offers (for the rewards page)
+  // PERFORMANCE FIX: Limit to 50 offers to prevent browser freeze
   app.get('/api/rewards/offers/all/all', async (req, res) => {
     try {
-      console.log('🎁 Fetching all reward offers...');
+      console.log('🎁 Fetching reward offers (limited for performance)...');
       const offers = await storage.getRewardOffers({
         isActive: true, // Only show active offers
       });
 
+      // Sort: Featured offers first, then by newest
+      const sortedOffers = offers.sort((a, b) => {
+        // Featured offers come first
+        if (a.isFeatured && !b.isFeatured) return -1;
+        if (!a.isFeatured && b.isFeatured) return 1;
+        // Then sort by ID (newer offers have higher IDs typically)
+        return b.id.localeCompare(a.id);
+      });
+
+      // LIMIT TO 50 OFFERS to prevent browser freeze from rendering 8,000+ cards
+      const limitedOffers = sortedOffers.slice(0, 50);
+
       // Enrich offers with partner information including logos
       const partners = await storage.getRewardPartners({});
-      const enrichedOffers = offers.map(offer => {
+      const enrichedOffers = limitedOffers.map(offer => {
         const partner = partners.find(p => p.id === offer.partnerId);
         return {
           ...offer,
@@ -3694,11 +3707,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         };
       });
 
-      console.log(`🎁 Found ${enrichedOffers.length} active reward offers`);
+      console.log(`🎁 Returning ${enrichedOffers.length} offers (out of ${offers.length} total) - featured first`);
       res.json(enrichedOffers);
     } catch (error: any) {
-      console.error('Failed to get all reward offers:', error);
-      res.status(500).json({ message: 'Failed to get all reward offers' });
+      console.error('Failed to get reward offers:', error);
+      res.status(500).json({ message: 'Failed to get reward offers' });
     }
   });
 
