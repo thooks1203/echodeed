@@ -1,7 +1,7 @@
 # EchoDeed™ - Anonymous Kindness Platform
 
 ## Overview
-EchoDeed™ is a mobile-first web application designed to **build character education, increase sense of belonging, and potentially boost attendance** through a community-driven kindness culture. The platform allows students to anonymously share kind acts, browse a global feed celebrating positive behaviors, and view a real-time global kindness counter (287,435 acts documented). **Parents receive instant notifications** of their child's good deeds, fostering positive parent/child interactions during crucial teen years - something traditional grade/discipline apps like Sycamore don't provide. Currently being demoed at **Eastern Guilford High School in Gibsonville, NC** (grades 9-12), led by Principal of the Year Dr. Darrell Harris, the platform focuses on building character and empathy in diverse school communities, with plans for future expansion into additional schools and corporate wellness. Key differentiators include dual rewards (students AND parents earn), local Greensboro business partnerships, and behavioral climate monitoring without crisis intervention liability.
+EchoDeed™ is a mobile-first web application designed to **build character education, increase sense of belonging, and potentially boost attendance** through a community-driven kindness culture. The platform allows students to anonymously share kind acts, browse a global feed celebrating positive behaviors, and view a real-time global kindness counter (287,435 acts documented). **Parents receive instant notifications** of their child's good deeds, fostering positive parent/child interactions during crucial teen years - something traditional grade/discipline apps don't provide. Currently being demoed at **Eastern Guilford High School in Gibsonville, NC** (grades 9-12), the platform focuses on building character and empathy in diverse school communities, with plans for future expansion into additional schools and corporate wellness. Key differentiators include dual rewards (students AND parents earn), local Greensboro business partnerships, and behavioral climate monitoring without crisis intervention liability.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -96,7 +96,6 @@ The frontend is a React 18, TypeScript, and Vite single-page application. It uti
 - **Phone**: (336) 449-4521
 - **Grade Range**: 9-12
 - **Student Count**: 1,200 students
-- **Principal**: Dr. Darrell Harris (Guilford County Principal of the Year)
 - **School Type**: Public High School
 - **Accreditation**: Southern Association of Colleges and Schools (SACS)
 - **Established**: 1965
