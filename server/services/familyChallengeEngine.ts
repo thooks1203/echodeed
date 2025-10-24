@@ -517,9 +517,13 @@ export class FamilyChallengeEngine {
           eq(familyChallenges.isActive, 1)
         ));
 
-      // If database has challenges, return them
+      // If database has challenges, transform field names for frontend compatibility
       if (challenges.length > 0) {
-        return challenges;
+        return challenges.map(challenge => ({
+          ...challenge,
+          kidPoints: challenge.studentTokens,
+          parentPoints: challenge.parentTokens,
+        }));
       }
     } catch (error) {
       console.log(`📋 Database table not found, using fallback templates for week ${currentWeek}, age group: ${ageGroup}`);
@@ -540,6 +544,8 @@ export class FamilyChallengeEngine {
       difficulty: template.difficulty,
       studentTokens: template.kidPoints,
       parentTokens: template.parentPoints,
+      kidPoints: template.kidPoints, // Frontend compatibility
+      parentPoints: template.parentPoints, // Frontend compatibility
       familyBonusTokens: 5,
       ageGroup,
       startDate: new Date(),
