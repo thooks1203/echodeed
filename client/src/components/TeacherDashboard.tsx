@@ -4,7 +4,6 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useLocation } from 'wouter';
 import { useAuth } from '@/hooks/useAuth';
-import { BottomNavigation } from '@/components/BottomNavigation';
 import { featureFlags } from '@shared/featureFlags';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -1170,39 +1169,6 @@ export function TeacherDashboard() {
           </TabsContent>
         </Tabs>
       </div>
-      
-      {/* Bottom Navigation for Teacher Tools */}
-      <BottomNavigation 
-        activeTab="teacher-dashboard" 
-        onTabChange={(tab) => {
-          // Don't navigate away if wellness modal is open
-          if (showWellnessModal) {
-            console.log('🚫 Blocked navigation while wellness modal is open:', tab);
-            return;
-          }
-          
-          // Handle tab navigation properly
-          if (tab === 'feed') {
-            // Navigate to main app with feed
-            navigate('/app');
-          } else if (tab === 'reports') {
-            // Switch to reports tab in the current teacher dashboard
-            setSelectedTab('reports');
-          } else if (tab === 'support') {
-            // Navigate to support page
-            navigate('/support');
-          } else if (tab === 'rewards') {
-            // Navigate to rewards page  
-            navigate('/rewards');
-          } else if (tab === 'sign-in') {
-            // Handle role switching - go to landing page
-            navigate('/');
-          } else if (tab === 'teacher-dashboard') {
-            // Stay on teacher dashboard but switch to overview
-            setSelectedTab('overview');
-          }
-        }} 
-      />
 
       {/* Student Details Modal */}
       <Dialog open={selectedStudent !== null} onOpenChange={(open) => !open && setSelectedStudent(null)}>
