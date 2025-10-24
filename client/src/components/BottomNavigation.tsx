@@ -148,7 +148,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
       boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
       display: 'flex',
       justifyContent: 'space-around',
-      padding: '8px 8px 10px 8px',
+      padding: '10px 8px 16px 8px',
       zIndex: 100
     }}>
       {filteredTabs.map((tab) => (
@@ -163,9 +163,9 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '4px',
+            gap: '2px',
             cursor: 'pointer',
-            padding: '6px 4px 8px 4px',
+            padding: '8px 4px 10px 4px',
             borderRadius: '6px',
             fontSize: '12px',
             fontWeight: '600',
@@ -200,10 +200,11 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
             {tab.icon}
           </span>
           <span style={{
-            fontSize: '10px',
-            letterSpacing: '0.2px',
-            fontWeight: '600',
-            whiteSpace: 'nowrap'
+            fontSize: '9px',
+            letterSpacing: '0.3px',
+            fontWeight: '700',
+            whiteSpace: 'nowrap',
+            textTransform: 'uppercase'
           }}>
             {tab.label}
           </span>
