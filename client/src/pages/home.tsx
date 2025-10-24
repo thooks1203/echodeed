@@ -653,11 +653,11 @@ export default function Home() {
   return (
     <div style={{ 
       maxWidth: '430px', 
-      margin: '0 auto', 
-      marginLeft: '80px', // Account for left sidebar
+      margin: '0 auto',
       backgroundColor: '#f8f9fa',
       minHeight: '100vh',
-      position: 'relative'
+      position: 'relative',
+      paddingLeft: '80px' // Account for left sidebar without breaking centering
     }}>
       <AppHeader 
         counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} 
@@ -780,15 +780,15 @@ export default function Home() {
       
       {/* Kindness Sparks Animation - Now mounted globally at App root */}
       
-      {/* Share Kindness Floating Action Button - Always visible while scrolling */}
+      {/* Share Kindness Floating Action Button - Stacked above Kindness Connect */}
       {isAuthenticated && (
         <div
           onClick={() => setIsPostModalOpen(true)}
           data-testid="button-share-kindness-fab"
           style={{
             position: 'fixed',
-            bottom: '90px',
-            left: '100px', // Position after sidebar
+            bottom: '180px', // Position above Kindness Connect
+            right: '16px',
             cursor: 'pointer',
             zIndex: 101,
             display: 'flex',
