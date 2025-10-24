@@ -10,13 +10,13 @@
 ## Opening: The Pain Point (0:00-0:45)
 
 **SCRIPT:**
-> "Dr. Darrell Harris at Eastern Guilford High School faces what every principal deals with: How do you build character education that actually *sticks*? 
+> "Every principal faces the same challenge: How do you build character education that actually *sticks*? 
 >
 > Schools have plenty of apps for tracking grades and discipline - but what about celebrating the GOOD? 
 >
 > That's the gap EchoDeed fills. We're not another administrative tool. We're a **character education platform** that builds belonging, improves school climate, and creates positive parent-teen interactions during the years that matter most."
 
-**VISUAL:** Show Eastern Guilford High School exterior, Dr. Harris photo
+**VISUAL:** Show EchoDeed logo, transition to platform overview
 
 ---
 
@@ -85,8 +85,8 @@
 
 **SHOW ON SCREEN:**
 - 🌍 **287,436 Acts of Kindness Documented**
-- 📈 **Eastern Guilford: 50 acts shared TODAY**
-- 🏪 **26 Local Greensboro Businesses** investing in character
+- 📈 **Pilot school: 50 acts shared TODAY**
+- 🏪 **26 Local Businesses** investing in character
 
 **DEMO ACTIONS:**
 1. Show global kindness feed scrolling
@@ -94,15 +94,15 @@
 3. Highlight: Chick-fil-A, Cook Out, Greensboro Science Center
 
 **SCRIPT:**
-> "Eastern Guilford has documented 50 acts of kindness just TODAY. That's 50 moments of character celebrated, 50 students feeling recognized, 50 families potentially having positive conversations.
+> "Our pilot school has documented 50 acts of kindness just TODAY. That's 50 moments of character celebrated, 50 students feeling recognized, 50 families potentially having positive conversations.
 >
-> And look at who's investing in this: **Chick-fil-A on Burlington Road** - walking distance from school. **Cook Out** - the NC institution students love. **Greensboro Science Center** - offering educational experiences as rewards.
+> And look at who's investing in this: **Local restaurants** within walking distance from school. **Community entertainment venues**. **Educational institutions** offering experiences as rewards.
 >
-> 26 local businesses saying 'We believe in your students' character.'
+> We work with you to build partnerships with businesses YOUR students actually visit - making rewards immediately accessible and meaningful.
 >
 > This is character education that spreads organically through celebration and real community investment."
 
-**VISUAL:** Map showing Eastern Guilford + nearby reward partners
+**VISUAL:** Map showing school + nearby reward partners (customizable per presentation)
 
 ---
 
@@ -138,15 +138,15 @@
 ## Closing: The Ask (4:30-4:45)
 
 **SCRIPT:**
-> "Dr. Harris chose EchoDeed because it builds what test scores can't measure: character, belonging, and positive school climate. Early data suggests it might even improve attendance through increased sense of connection.
+> "Pilot schools are choosing EchoDeed because it builds what test scores can't measure: character, belonging, and positive school climate. Early data suggests it might even improve attendance through increased sense of connection.
 >
 > Schools already have tools for grades and discipline. 
 >
 > **Now they can have EchoDeed for CHARACTER.**
 >
-> The platform is live at www.echodeed.com. We're ready to expand beyond Eastern Guilford.
+> The platform is live at www.echodeed.com. We're ready to partner with forward-thinking schools that prioritize culture and character.
 >
-> Which principals in Guilford County should we be talking to next?"
+> Is your school ready to transform character education?"
 
 **VISUAL:** Return to EchoDeed logo with tagline: "Building character, one kind act at a time."
 
@@ -174,9 +174,9 @@
 - ❌ Replacement for existing systems (we integrate)
 
 ### **Impact Metrics:**
-- **287,436** acts of kindness documented
-- **50** acts shared at Eastern Guilford TODAY
-- **26** local Greensboro businesses invested
+- **287,436** acts of kindness documented across platform
+- **50** acts shared at pilot school TODAY
+- **Local business partnerships** customized per school/community
 - **95%** teacher time savings on verification
 - **Increased** parent engagement during teen years
 - **Potential** attendance improvement through belonging
@@ -254,7 +254,7 @@ After the demo, send:
 ### **If they say "Let me think about it":**
 1. Send ECHODEED_GUIDE.md for review
 2. Offer to present to full admin team
-3. Connect them with Dr. Harris at Eastern Guilford (reference)
+3. Connect them with existing pilot school principal (reference available)
 4. Schedule follow-up in 1 week
 5. Provide trial access credentials
 
