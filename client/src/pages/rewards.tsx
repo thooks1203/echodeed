@@ -193,6 +193,7 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
 
   // Filter featured offers from filtered list
   const featuredOffers = filteredOffers.filter((offer: RewardOffer) => offer.isFeatured);
+  const nonFeaturedOffers = filteredOffers.filter((offer: RewardOffer) => !offer.isFeatured);
   const featuredPartners = partners.filter((partner: RewardPartner) => partner.isFeatured);
 
   return (
@@ -387,20 +388,17 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
               </div>
             )}
 
-            {/* All Offers */}
+            {/* All Offers - Only show non-featured to avoid duplication */}
+            {nonFeaturedOffers.length > 0 && (
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">All Rewards</h2>
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white">More Rewards</h2>
               {offersLoading ? (
                 <div className="text-center py-8">
                   <p className="text-gray-500 dark:text-gray-400">Loading rewards...</p>
                 </div>
-              ) : filteredOffers.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-500 dark:text-gray-400">No rewards available - check filters above</p>
-                </div>
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredOffers.map((offer: RewardOffer) => (
+                  {nonFeaturedOffers.map((offer: RewardOffer) => (
                   <Card key={offer.id} className="hover:shadow-lg transition-all bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm border border-white/20 dark:border-gray-700/20">
                     {offer.imageUrl && (
                       <div className="h-32 bg-cover bg-center rounded-t-lg" style={{ backgroundImage: `url(${offer.imageUrl})` }} />
@@ -476,6 +474,7 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
                 </div>
               )}
             </div>
+            )}
           </TabsContent>
 
           {/* Partners Tab */}
