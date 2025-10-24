@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useNavigation } from '@/hooks/useNavigation';
+import { useAuth } from '@/hooks/useAuth';
 import { BackButton } from '@/components/BackButton';
 import { Building2, Shield, Star, Gift, ShoppingBag, Coffee, Music, Trophy, CheckCircle2, AlertCircle, Clock, Bell } from 'lucide-react';
 import { RoleSwitcherDemo } from '@/components/RoleSwicherDemo';
@@ -100,6 +101,7 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { canGoBack, goBack } = useNavigation();
+  const { user } = useAuth();
 
   // Fetch user tokens
   const { data: userTokens } = useQuery<UserTokens>({
@@ -206,10 +208,19 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
               onClick={() => {
                 if (onBack) {
                   onBack();
-                } else if (canGoBack()) {
+                } else if (canGoBack) {
                   goBack();
                 } else {
-                  window.location.href = '/';
+                  // Navigate to role-specific dashboard instead of homepage
+                  const dashboardPaths: Record<string, string> = {
+                    student: '/app',
+                    teacher: '/teacher-dashboard',
+                    admin: '/admin-dashboard',
+                    parent: '/parent-dashboard',
+                    counselor: '/teacher-dashboard'
+                  };
+                  const defaultPath = user?.schoolRole ? dashboardPaths[user.schoolRole] : '/app';
+                  window.location.href = defaultPath || '/app';
                 }
               }}
               variant="minimal"
