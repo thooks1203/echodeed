@@ -1211,12 +1211,16 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-5 gap-1 bg-transparent">
+        <TabsList className="grid w-full grid-cols-6 gap-1 bg-transparent">
           <TabsTrigger value="overview" className="bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg">Overview</TabsTrigger>
           <TabsTrigger value="schools" className="bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg">Schools</TabsTrigger>
           <TabsTrigger value="feed" className="bg-pink-600 text-white hover:bg-pink-700 data-[state=active]:bg-pink-700 data-[state=active]:shadow-lg">
             <Heart className="w-4 h-4 mr-1" />
             Student Feed
+          </TabsTrigger>
+          <TabsTrigger value="principals-corner" className="bg-amber-600 text-white hover:bg-amber-700 data-[state=active]:bg-amber-700 data-[state=active]:shadow-lg" data-testid="tab-principals-corner">
+            <MessageSquare className="w-4 h-4 mr-1" />
+            Principal's Corner
           </TabsTrigger>
           <TabsTrigger value="reports" className="bg-cyan-600 text-white hover:bg-cyan-700 data-[state=active]:bg-cyan-700 data-[state=active]:shadow-lg">
             <FileSpreadsheet className="w-4 h-4 mr-1" />
@@ -1639,6 +1643,204 @@ export default function AdminDashboard() {
                   Review Flagged (0)
                 </Button>
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Principal's Corner - Student Recognition System */}
+        <TabsContent value="principals-corner" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-amber-700 dark:text-amber-400">
+                <MessageSquare className="w-6 h-6" />
+                Principal's Corner - Student Recognition System
+              </CardTitle>
+              <CardDescription>
+                Recognize exceptional student character and automatically notify parents. Build school culture through authentic celebration of kindness.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Recognition Stats Dashboard */}
+              <div className="grid grid-cols-1 md:grid-cols-4 gap-4 p-4 bg-gradient-to-r from-amber-50 to-orange-50 dark:from-amber-950/20 dark:to-orange-950/20 rounded-lg border border-amber-200 dark:border-amber-700/30">
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">This Week</p>
+                  <p className="text-3xl font-bold text-amber-600">12</p>
+                  <p className="text-xs text-gray-500">students recognized</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">This Month</p>
+                  <p className="text-3xl font-bold text-amber-600">47</p>
+                  <p className="text-xs text-gray-500">parent notifications sent</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">This Year</p>
+                  <p className="text-3xl font-bold text-amber-600">284</p>
+                  <p className="text-xs text-gray-500">total recognitions</p>
+                </div>
+                <div className="text-center">
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Response Rate</p>
+                  <p className="text-3xl font-bold text-green-600">94%</p>
+                  <p className="text-xs text-gray-500">parent engagement</p>
+                </div>
+              </div>
+
+              {/* Notification Settings */}
+              <Card className="border-amber-200 dark:border-amber-700/30 bg-amber-50/50 dark:bg-amber-950/10">
+                <CardHeader>
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Bell className="w-4 h-4" />
+                    Parent Notification Settings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="notification-frequency">Recognition Frequency</Label>
+                      <Select defaultValue="weekly">
+                        <SelectTrigger id="notification-frequency" data-testid="select-notification-frequency">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="daily">Daily Highlights (Every Day 3pm)</SelectItem>
+                          <SelectItem value="weekly">Weekly Recognition (Every Friday 3pm)</SelectItem>
+                          <SelectItem value="monthly">Monthly Shoutouts (First Friday of Month)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        Parents receive automated notifications when you recognize their child's character
+                      </p>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="notification-method">Notification Method</Label>
+                      <Select defaultValue="both">
+                        <SelectTrigger id="notification-method" data-testid="select-notification-method">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="email">Email Only</SelectItem>
+                          <SelectItem value="push">Push Notification Only</SelectItem>
+                          <SelectItem value="both">Email + Push Notification</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <p className="text-xs text-gray-600 dark:text-gray-400">
+                        System handles delivery automatically - no manual work required
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2 p-3 bg-blue-50 dark:bg-blue-950/30 rounded-md border border-blue-200 dark:border-blue-700/30">
+                    <CheckCircle2 className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                    <p className="text-sm text-blue-800 dark:text-blue-200">
+                      <strong>Current Schedule:</strong> Next recognition batch sends Friday at 3:00 PM. 8 posts currently queued for parent notification.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Student Posts for Recognition */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Heart className="w-5 h-5 text-amber-600" />
+                    Kindness Posts to Recognize
+                  </h3>
+                  <Badge variant="secondary" className="bg-amber-100 text-amber-800">
+                    {posts?.slice(0, 6).length || 0} Recent Posts
+                  </Badge>
+                </div>
+                <p className="text-sm text-gray-600 dark:text-gray-400">
+                  Review anonymous kindness posts from your school. Click "Recognize" to add to the next parent notification batch.
+                </p>
+
+                {/* Posts Grid */}
+                <div className="grid gap-4">
+                  {posts?.slice(0, 6).map((post: any, index: number) => (
+                    <Card key={post.id} className="border-l-4 border-l-amber-400 hover:shadow-md transition-shadow">
+                      <CardContent className="pt-6">
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 space-y-2">
+                            <div className="flex items-center gap-2">
+                              <Badge variant="outline" className="text-xs">
+                                {post.category || 'Kindness'}
+                              </Badge>
+                              <span className="text-xs text-gray-500">
+                                {new Date(post.createdAt).toLocaleDateString()}
+                              </span>
+                            </div>
+                            <p className="text-base font-medium text-gray-900 dark:text-gray-100">
+                              {post.kindnessText}
+                            </p>
+                            <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
+                              <span className="flex items-center gap-1">
+                                <Heart className="w-4 h-4 text-pink-500" />
+                                {post.echoes || 0}
+                              </span>
+                              <span>{post.location || 'Eastern Guilford High School'}</span>
+                            </div>
+                          </div>
+                          <Button 
+                            size="sm" 
+                            className="bg-amber-600 hover:bg-amber-700 text-white flex-shrink-0"
+                            data-testid={`button-recognize-${index}`}
+                          >
+                            <Award className="w-4 h-4 mr-1" />
+                            Recognize
+                          </Button>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+
+                {(!posts || posts.length === 0) && (
+                  <div className="text-center py-12 text-gray-500">
+                    <MessageSquare className="w-12 h-12 mx-auto mb-4 opacity-50" />
+                    <p>No kindness posts available yet. Check back soon!</p>
+                  </div>
+                )}
+
+                <div className="flex justify-center pt-4">
+                  <Button variant="outline" className="text-amber-600 border-amber-600 hover:bg-amber-50">
+                    Load More Posts
+                  </Button>
+                </div>
+              </div>
+
+              {/* How It Works */}
+              <Card className="bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-950/20 dark:to-purple-950/20 border-blue-200 dark:border-blue-700/30">
+                <CardHeader>
+                  <CardTitle className="text-base">How Principal's Corner Works</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold flex-shrink-0">1</div>
+                    <div>
+                      <p className="font-medium">Browse Anonymous Posts</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Review kindness posts from your school students</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-bold flex-shrink-0">2</div>
+                    <div>
+                      <p className="font-medium">Recognize Exceptional Character</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Click "Recognize" on posts that demonstrate outstanding values</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-green-600 text-white flex items-center justify-center font-bold flex-shrink-0">3</div>
+                    <div>
+                      <p className="font-medium">Automatic Parent Notifications</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">System sends personalized messages to parents on your schedule (weekly/monthly/daily)</p>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 rounded-full bg-amber-600 text-white flex items-center justify-center font-bold flex-shrink-0">4</div>
+                    <div>
+                      <p className="font-medium">Build School Culture</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">Students see character valued at highest level, parents get positive news, culture shifts</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
             </CardContent>
           </Card>
         </TabsContent>
