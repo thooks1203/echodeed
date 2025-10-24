@@ -6,12 +6,14 @@
 ---
 
 ## 🎬 INTRO (0:00-0:30)
-[Screen: www.echodeed.com homepage showing anonymous kindness feed with global counter]
+[Screen: www.echodeed.com landing page showing "Kindness Solves More Than You Think"]
 
 **YOU SAY:**  
-"Welcome to EchoDeed™—the premier anonymous kindness platform transforming how schools build character and community. In the next few minutes, I'm going to show you a complete walkthrough of the platform from three perspectives: students, teachers, and parents.
+"Welcome to EchoDeed™—the anonymous kindness platform backed by character education research. Our tagline says it all: 'Kindness Solves More Than You Think.'
 
-What makes EchoDeed different is that it reduces teacher workload by 95% while increasing student engagement through complete anonymity and real local rewards. Let me show you how it works."
+Most character education programs are abstract concepts that feel impossible to measure. EchoDeed transforms character education into daily, measurable action. This isn't just a mission—it's a proven methodology.
+
+In the next few minutes, I'm going to show you a complete walkthrough from three perspectives: students, teachers, and parents. What makes EchoDeed different is that it reduces teacher workload by 95% while increasing student engagement through complete anonymity and real local rewards. Let me show you how it works."
 
 ---
 
