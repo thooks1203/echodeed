@@ -129,9 +129,27 @@
 >
 > During the crucial high school years when parent-teen relationships often strain, EchoDeed gives parents something to celebrate. Those conversations build values. That's what strengthens families."
 
-### Complete Transparency (3:00-3:15)
+### Dual Rewards - Family Experiences (3:00-3:20)
 
-**[Click through Service Hours and Rewards tabs quickly]**
+**[Click: "Rewards" tab on Parent Dashboard]**  
+**[Screen: Shows parent reward options - family experiences]**
+
+**YOU SAY:**
+> "Here's where EchoDeed gets revolutionary: the Dual Reward System.
+>
+> When Sofia earns Echo Tokens for kindness, Maria earns family reward points SIMULTANEOUSLY. This is patent-pending—no other platform does this.
+>
+> Look at the parent rewards: Family Movie Night Package, Family Bowling Experience, Family Dinner at Local Restaurant, Family Science Center Pass. These aren't individual rewards—they're FAMILY experiences.
+>
+> So when Sofia does something kind, the entire family benefits. Maria can say: 'Sofia, because of your kindness this week, we earned enough for family bowling on Saturday.'
+>
+> That's not just praise—that's shared family time earned through character development. This creates conversations about values during the crucial teen years when parent-child connections often weaken.
+>
+> No other platform rewards both children AND parents. This is the only system where kindness becomes a shared family value with tangible benefits."
+
+### Complete Transparency (3:20-3:30)
+
+**[Click through Service Hours tab quickly]**
 
 **YOU SAY:**
 > "Parents also see verified service hours with organization details, pending submissions, and reward redemptions. Complete transparency—parents know volunteering is legitimate and how tokens are being spent.
@@ -140,9 +158,53 @@
 
 ---
 
-## 👨‍🏫 TEACHER EXPERIENCE - OPTIONAL SUPPORT (3:15-4:00)
+## 👨‍💼 ADMINISTRATOR EXPERIENCE - MEASURABLE IMPACT (3:30-4:00)
 
-**[Sign out, click: "Try as Teacher"]**  
+**[Sign out, click: "Try as School Administrator"]**  
+**[Auto-logged in as Administrator, lands on Overview tab]**
+
+**YOU SAY:**
+> "Now the administrator experience—what principals gain from EchoDeed. I'm logged in as a school administrator."
+
+### Real-Time Analytics & Compliance (3:30-3:45)
+
+**[Screen: Shows dashboard with school-wide metrics, compliance reports]**
+
+**YOU SAY:**
+> "Administrators get four game-changing benefits:
+>
+> **First: Automated Compliance Reporting.** That SEL reporting you spend hours on? EchoDeed generates it automatically. 90% reduction in reporting time. Character education data aligned to CASEL framework, ready for state requirements. No manual data collection.
+>
+> **Second: Data-Driven Decision Making.** Real-time insights into school climate. 287,435 documented acts of kindness across the platform. 87% student participation rate at this school. 24 acts shared just today. These aren't abstract metrics—they're measurable proof of character development you can show your school board.
+>
+> **Third: Cost Savings.** Traditional SEL programs cost $38,000-$60,000 annually. EchoDeed delivers the same outcomes for 75-80% less. Plus you get crisis detection, parent engagement tools, and service hour tracking included—things you'd pay separately for with other vendors."
+
+### Principal's Corner - Recognition System (3:45-4:00)
+
+**[Click or point to: Principal's Corner feature]**  
+**[Screen: Shows recognized student posts]**
+
+**YOU SAY:**
+> "And fourth: The Principal's Corner—this is powerful.
+>
+> As principal, you can browse anonymous kindness posts from your school and publicly recognize exceptional ones. You select a post—say, 'I stayed after school to help a teacher set up for the science fair'—and mark it for recognition.
+>
+> The system automatically sends a personalized notification to that student's parents: 'Your child was recognized by the principal for outstanding character. They stayed after school to help a teacher...'
+>
+> You can set the frequency—weekly recognition every Friday, monthly shoutouts, or daily highlights. Parents get these messages via email or push notification.
+>
+> This creates three powerful outcomes: Students see their character being valued at the highest level. Parents get positive communications from the principal—not just discipline calls. And you're building visible school culture around character.
+>
+> Imagine showing your school board: 'This month, I personally recognized 47 students for character excellence, and parents received automated notifications celebrating their children.'
+>
+> That's not just character education—that's documented leadership building positive culture."
+
+---
+
+## 👨‍🏫 TEACHER EXPERIENCE - OPTIONAL SUPPORT (4:00-4:30)
+
+**[Click: Profile, Sign Out]**  
+**[Click: "Try as Teacher" button]**  
 **[Lands on Teacher Dashboard]**
 
 **YOU SAY:**
@@ -150,14 +212,14 @@
 >
 > Teachers have optional features they can use, but the character education happens whether teachers actively manage it or not."
 
-### Quick Overview (3:15-3:25)
+### Quick Overview (4:00-4:05)
 
 **[Screen: Overview tab showing 24 students, 21 active this week, 47 acts, 87% participation]**
 
 **YOU SAY:**
 > "Ms. Kim Jones sees 24 students, 21 active this week, 47 acts of kindness tracked, 87% participation. These metrics update automatically—teachers don't enter data."
 
-### Service Hour Verification - Efficiency Bonus (3:25-3:45)
+### Service Hour Verification - Efficiency Bonus (4:05-4:20)
 
 **[Click: "Service Hours" tab]**  
 **[Click on pending request, show photo verification]**
@@ -172,7 +234,7 @@
 **YOU SAY:**
 > "Approved. Sofia gets instant notification, tokens awarded automatically. Teachers can handle 24 students' service hours in 11 minutes instead of 6 hours of weekend work. That's nearly a full work day back per month—but again, this is supporting character education, not replacing it."
 
-### Student Engagement Insights (3:45-4:00)
+### Student Engagement Insights (4:20-4:30)
 
 **[Click: "Students" tab, point to encouragement flags]**
 
@@ -185,7 +247,7 @@
 
 ---
 
-## 🎯 TRANSFORMATION & CLOSING (4:00-4:45)
+## 🎯 TRANSFORMATION & CLOSING (4:30-5:15)
 
 **[Screen: Return to global kindness feed showing 287,435 acts]**
 
@@ -198,20 +260,24 @@
 > When students feel they belong to something positive, attendance improves. When kindness becomes the cultural norm, behavioral issues decrease. This isn't just theory—it's measurable through daily engagement.
 >
 > **For Parents:**  
-> They see their child's character development in real-time and can offer immediate praise. 'Sofia, I saw you helped someone. I'm proud of you.' Those conversations build family values during crucial teen years. No other platform gives parents positive notifications—only grades and discipline alerts.
+> They see their child's character development in real-time and can offer immediate praise. But here's the revolution: the Dual Reward System. When children earn tokens for kindness, parents earn family experience rewards simultaneously. Movie nights, bowling, family dinners—earned through character development.
+>
+> No other platform does this. Parents get positive notifications about character, not just discipline calls. And families spend quality time together as a direct result of kindness. That builds values during crucial teen years.
 >
 > **For Teachers:**  
-> The platform runs automatically whether teachers actively manage it or not. Optional features reduce workload—like 28-second service hour approvals instead of 6-hour weekends. But the character education happens through student engagement, not teacher data entry.
+> The platform runs automatically whether teachers actively manage it or not. Optional features reduce workload—like 28-second service hour approvals instead of 6-hour weekends. They earn their own rewards for supporting character education. But the character development happens through student engagement, not teacher data entry.
 >
 > **For Principals:**  
-> You get measurable character education data to show your school board. 287,000 documented acts of kindness instead of abstract goals. Increased student belonging that improves attendance. Reduced behavioral incidents when kindness becomes cultural. Parent engagement that strengthens school-family partnerships.
+> You get automated compliance reporting—90% reduction in SEL documentation time. Real-time analytics showing measurable character development for school boards. Principal's Corner lets you personally recognize exceptional student character with automatic parent notifications on your schedule—weekly, monthly, or daily.
 >
-> Schools already have tools for grades and discipline. Now you can have EchoDeed for CHARACTER.
+> Cost savings of 75-80% vs traditional SEL programs. Crisis detection, parent communication, service hour tracking all included. One platform, complete solution.
+>
+> **Schools already have tools for grades and discipline. Now you can have EchoDeed for CHARACTER.**
 >
 > **The Bottom Line:**  
-> EchoDeed transforms character education from abstract posters to daily, measurable action. From forced compliance to authentic engagement. From parent notifications about problems to celebrations of growth.
+> EchoDeed transforms character education from abstract posters to daily, measurable action. From forced compliance to authentic engagement. From parent notifications about problems to celebrations of growth shared as family experiences.
 >
-> The platform is live at www.echodeed.com. We're ready to partner with schools that want to transform student belonging, parent engagement, and school culture.
+> The platform is live at www.echodeed.com. We're ready to partner with schools that want to transform student belonging, parent engagement, and school culture through a system where kindness creates family connections.
 >
 > **Is your school ready to build character, not just track compliance?"**
 
@@ -224,14 +290,21 @@
 ### Primary Benefits (Lead with these):
 1. **Student Belonging** - Anonymity creates authentic engagement, students want to participate
 2. **Parent Connection** - Positive notifications during teen years (unique differentiator!)
-3. **Attendance Improvement** - Students engaged in positive culture want to come to school
-4. **Behavioral Reduction** - Kindness as cultural norm reduces incidents
-5. **Measurable Character** - 287,435 documented acts vs. abstract goals
+3. **Dual Rewards System** - Parents AND kids earn rewards simultaneously for family experiences (PATENT-PENDING!)
+4. **Attendance Improvement** - Students engaged in positive culture want to come to school
+5. **Behavioral Reduction** - Kindness as cultural norm reduces incidents
+6. **Measurable Character** - 287,435 documented acts vs. abstract goals
+
+### Administrator Benefits (Critical for principals):
+7. **Automated Compliance** - 90% reduction in SEL reporting time
+8. **Principal's Corner** - Recognize exceptional character with automated parent notifications (weekly/monthly/daily)
+9. **Cost Savings** - 75-80% less than traditional SEL programs ($38k-$60k → $6k-$10k)
+10. **Real-Time Analytics** - Measurable data for school boards
 
 ### Supporting Benefits (Mention later):
-6. **Teacher Efficiency** - Bonus feature, not primary selling point
-7. **Service Hour Tracking** - Supporting tool for character demonstration
-8. **Local Business Partnerships** - Community investment in student character
+11. **Teacher Efficiency** - Bonus feature, not primary selling point
+12. **Service Hour Tracking** - Supporting tool for character demonstration
+13. **Local Business Partnerships** - Community investment in student character
 
 ---
 
@@ -269,14 +342,19 @@
 
 **Parent Benefits:**
 - First platform for POSITIVE parent-teen interactions
+- **Dual Reward System** - Parents earn family experience rewards when kids are kind (PATENT-PENDING!)
 - Real-time visibility into character development
 - Conversations about values, not just grades
+- Family bonding time earned through character (movie nights, bowling, dinners)
 - Strengthened family relationships during teen years
 
-**School Benefits:**
+**School Benefits (Administrators/Principals):**
+- **Automated compliance reporting** - 90% reduction in SEL documentation time
+- **Principal's Corner** - Personally recognize exceptional character with scheduled parent notifications
+- **Cost savings** - 75-80% less than traditional SEL programs
+- **Real-time analytics** - Measurable character data for school boards
 - Potential attendance improvement (students engaged want to attend)
 - Possible behavioral issue reduction (kindness as cultural norm)
-- Measurable character education data for school boards
 - Community business partnerships demonstrating investment
 
 **Efficiency (Supporting benefit only):**
