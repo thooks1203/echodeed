@@ -121,7 +121,7 @@ export default function MentorDashboard() {
 
   if (statsLoading || mentorshipsLoading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-green-50 p-4">
+      <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-green-50 p-4" style={{ paddingLeft: '96px' }}>
         <div className="container mx-auto">
           <BackButton 
           onClick={() => {
@@ -139,7 +139,7 @@ export default function MentorDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-green-50 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-green-50 p-4" style={{ paddingLeft: '96px' }}>
       <div className="container mx-auto max-w-7xl">
         <BackButton 
           onClick={() => {
