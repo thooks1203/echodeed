@@ -14,9 +14,9 @@ export function FilterBar({ activeFilter, location, onFilterChange }: FilterBarP
   };
 
   return (
-    <div className="bg-card border-b border-border max-w-full overflow-hidden">
+    <div className="bg-card border-b border-border w-full">
       <div className="py-3 overflow-x-auto scrollbar-hide" style={{ scrollBehavior: 'smooth', overscrollBehaviorX: 'contain', WebkitOverflowScrolling: 'touch' }}>
-        <div className="flex justify-start space-x-1.5 pb-1 px-4 min-w-max">
+        <div className="flex justify-center space-x-2 pb-1 px-4">
           <button 
           className={`flex items-center px-2.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-md hover:shadow-lg ${activeFilter === 'global' ? 'shadow-xl scale-105' : ''}`}
           onClick={() => handleFilterClick('global')}

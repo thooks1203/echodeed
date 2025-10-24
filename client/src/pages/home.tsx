@@ -652,7 +652,7 @@ export default function Home() {
   
   return (
     <div style={{ 
-      maxWidth: '430px', 
+      maxWidth: '600px', 
       margin: '0 auto',
       backgroundColor: '#f8f9fa',
       minHeight: '100vh',
