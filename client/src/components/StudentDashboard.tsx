@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
-import { BottomNavigation } from '@/components/BottomNavigation';
+import { LeftSidebar } from '@/components/LeftSidebar';
 import { BackButton } from '@/components/BackButton';
 import { NotificationPreferences } from '@/components/NotificationPreferences';
 import { apiRequest } from '@/lib/queryClient';
@@ -864,7 +864,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         borderRadius: '12px',
         padding: '16px',
         marginTop: '24px',
-        marginBottom: '80px', // Space for bottom navigation
+        marginBottom: '24px', // Space adjusted for left sidebar
         textAlign: 'center'
       }}>
         <div style={{ fontSize: '16px', fontWeight: '600', marginBottom: '4px' }}>
@@ -875,8 +875,8 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         </div>
       </div>
       
-      {/* Bottom Navigation for easy access back to Feed */}
-      <BottomNavigation 
+      {/* Left Sidebar for easy access back to Feed */}
+      <LeftSidebar 
         activeTab="student-dashboard" 
         onTabChange={(tab) => {
           if (onNavigateToTab) {

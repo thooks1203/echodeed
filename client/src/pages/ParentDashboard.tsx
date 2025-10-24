@@ -42,7 +42,7 @@ import {
 import { useLocation } from 'wouter';
 import PushNotificationSetup from '@/components/PushNotificationSetup';
 import { SponsorsPage } from '@/components/SponsorsPage';
-import { BottomNavigation } from '@/components/BottomNavigation';
+import { LeftSidebar } from '@/components/LeftSidebar';
 import { featureFlags } from '@shared/featureFlags';
 import { useDemoSchool } from '@/contexts/DemoSchoolContext';
 import { useToast } from '@/hooks/use-toast';
@@ -2121,8 +2121,8 @@ export default function ParentDashboard() {
         </Tabs>
       </div>
       
-      {/* Bottom Navigation for Parents */}
-      <BottomNavigation 
+      {/* Left Sidebar Navigation for Parents */}
+      <LeftSidebar 
         activeTab={activeBottomTab} 
         onTabChange={handleBottomTabChange} 
       />

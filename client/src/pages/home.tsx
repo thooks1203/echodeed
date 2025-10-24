@@ -6,7 +6,7 @@ import { AppHeader } from '@/components/AppHeader';
 import { FilterBar } from '@/components/FilterBar';
 import { KindnessFeed } from '@/components/KindnessFeed';
 import { PostDeedModal } from '@/components/PostDeedModal';
-import { BottomNavigation } from '@/components/BottomNavigation';
+import { LeftSidebar } from '@/components/LeftSidebar';
 import { WelcomeModal } from '@/components/WelcomeModal';
 import { SchoolsDashboard } from '@/components/SchoolsDashboard';
 import { TeacherDashboard } from '@/components/TeacherDashboard';
@@ -208,9 +208,9 @@ export default function Home() {
   if (activeTab === 'mentor-dashboard') {
     try {
       return (
-        <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+        <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
           <MentorDashboard />
-          <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+          <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
         </div>
       );
     } catch (error) {
@@ -224,7 +224,7 @@ export default function Home() {
               <p style={{ color: '#0066cc', margin: 0 }}>🚀 Please refresh the page if this persists</p>
             </div>
           </div>
-          <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+          <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
         </div>
       );
     }
@@ -232,27 +232,27 @@ export default function Home() {
 
   if (activeTab === 'support') {
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
         <SupportCircle onBack={handleBackToDashboard} />
-        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+        <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
   }
 
   if (activeTab === 'summer') {
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
         <SummerChallenges onBack={handleBackToDashboard} />
-        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+        <LeftSidebar activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
     );
   }
 
   if (activeTab === 'community-service') {
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
         <CommunityService onBack={handleBackToDashboard} />
-        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+        <LeftSidebar activeTab={activeTab} onTabChange={setActiveTab} />
         
         {/* Kindness Connect FAB - REMOVED: Community Service has its own UI */}
         {false && <div
@@ -310,18 +310,18 @@ export default function Home() {
 
   if (activeTab === 'sponsors') {
     return (
-      <div style={{ minHeight: '100vh', background: '#F9FAFB' }}>
+      <div style={{ minHeight: '100vh', background: '#F9FAFB', marginLeft: '80px' }}>
         <SponsorsPage />
-        <BottomNavigation activeTab={activeTab} onTabChange={setActiveTab} />
+        <LeftSidebar activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
     );
   }
 
   if (activeTab === 'rewards') {
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
         <RewardsPage onBack={handleBackToDashboard} />
-        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+        <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
         
         {/* Kindness Connect FAB - REMOVED: Not relevant on Rewards page */}
         {false && <div
@@ -399,9 +399,9 @@ export default function Home() {
     }
     
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
         <TeacherDashboard />
-        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+        <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
         
         {/* Kindness Connect FAB - REMOVED: Teachers don't need this on their dashboard */}
         {false && <div
@@ -464,9 +464,9 @@ export default function Home() {
     }
     
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
         <TeacherDashboard />
-        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+        <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
         
         {/* Kindness Connect FAB - REMOVED: Teachers don't need this on their dashboard */}
         {false && <div
@@ -525,12 +525,12 @@ export default function Home() {
   if (activeTab === 'student-dashboard') {
     try {
       return (
-        <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+        <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
           <StudentDashboard 
             onNavigateToTab={navigateToTab} 
             activeBottomTab={activeTab}
           />
-          <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+          <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
           
           {/* Kindness Connect FAB */}
           <div
@@ -619,7 +619,7 @@ export default function Home() {
               <p style={{ color: '#ff9800', margin: 0 }}>🌟 You're building an amazing habit of kindness!</p>
             </div>
           </div>
-          <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+          <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
         </div>
       );
     }
@@ -639,9 +639,9 @@ export default function Home() {
   if (activeTab === 'family-dashboard') {
     // Family dashboard accessible to parents and family members
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
         <FamilyDashboard />
-        <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+        <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
   }
@@ -654,6 +654,7 @@ export default function Home() {
     <div style={{ 
       maxWidth: '430px', 
       margin: '0 auto', 
+      marginLeft: '80px', // Account for left sidebar
       backgroundColor: '#f8f9fa',
       minHeight: '100vh',
       position: 'relative'
@@ -735,7 +736,7 @@ export default function Home() {
         />
       </div>
       
-      <BottomNavigation activeTab={activeTab} onTabChange={navigateToTab} />
+      <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
       
       {/* Modals */}
       <PostDeedModal 

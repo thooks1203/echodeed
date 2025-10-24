@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
-import { BottomNavigation } from '@/components/BottomNavigation';
+import { LeftSidebar } from '@/components/LeftSidebar';
 import { BackButton } from '@/components/BackButton';
 import { KindnessConnectModal } from '@/components/KindnessConnectModal';
 
@@ -576,14 +576,12 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
         </div>
       )}
       
-      {/* Bottom Navigation */}
+      {/* Left Sidebar */}
       {onNavigateToTab && (
-        <div style={{ paddingBottom: '100px' }}>
-          <BottomNavigation 
-            activeTab={activeBottomTab} 
-            onTabChange={onNavigateToTab}
-          />
-        </div>
+        <LeftSidebar 
+          activeTab={activeBottomTab} 
+          onTabChange={onNavigateToTab}
+        />
       )}
       
       {/* Kindness Connect FAB */}
