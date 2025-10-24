@@ -126,12 +126,12 @@ What makes EchoDeed different is that it reduces teacher workload by 95% while i
 **YOU SAY:**  
 "The approval history provides a complete audit trail with dates, token awards, and organization details for district compliance and parent transparency."
 
-### Rewards Tab - Partner Analytics (3:30-3:45)
+### Rewards Tab - Teacher Recognition & Rewards (3:30-3:45)
 [Click: "Rewards" tab (orange button)]  
-[Screen: Teacher view showing partner dashboard and redemption analytics]
+[Screen: Teacher view showing available teacher rewards and engagement metrics]
 
 **YOU SAY:**  
-"The Rewards tab shows teachers which local businesses are partnering with their school and redemption analytics. Teachers see which rewards students value most and can coordinate community partnership events with sponsor businesses."
+"The Rewards tab shows teachers what THEY can earn based on their engagement with the platform. Teachers receive reward points for approving service hours, engaging with students, and supporting character education. They can redeem their points for gift cards, professional development opportunities, classroom supplies, and local business rewards. This recognizes and rewards teachers for their work supporting student character growth."
 
 ---
 
@@ -282,7 +282,7 @@ Auto-signed in as Ms. Kim Jones
 - **👥 Students** - Individual student analytics, character trait tracking, engagement metrics
 - **❤️ Student Feed** - Anonymous posts from their classroom (identity protected)
 - **✅ Service Hours** - 4 pending requests (Sofia's 3 submissions), one-click approval, audit trail
-- **🎁 Rewards** - Partner dashboard, redemption analytics, community engagement data
+- **🎁 Rewards** - Teacher rewards earned from approving hours and platform engagement
 
 ---
 
@@ -310,6 +310,7 @@ Auto-signed in as Maria Rodriguez
 ⚡ **95% time savings** = 15 minutes → 30 seconds per student  
 ⚡ **Real-time analytics** = data-driven character education  
 ⚡ **One-click compliance** = district requirements automated  
+⚡ **Teacher rewards** = teachers earn rewards for approving hours and engaging students  
 ⚡ **All 5 tabs demonstrated** = comprehensive platform showcase
 
 ### Parent Experience (3:45-4:30):
