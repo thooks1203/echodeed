@@ -148,8 +148,7 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
       boxShadow: '0 -4px 20px rgba(0,0,0,0.15)',
       display: 'flex',
       justifyContent: 'space-around',
-      padding: '10px 8px max(18px, calc(env(safe-area-inset-bottom, 0px) + 12px)) 8px',
-      paddingBottom: 'max(18px, calc(env(safe-area-inset-bottom, 0px) + 12px))',
+      padding: '12px 8px 40px 8px',
       zIndex: 100
     }}>
       {filteredTabs.map((tab) => (
@@ -164,14 +163,14 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
-            gap: '3px',
+            gap: '4px',
             cursor: 'pointer',
-            padding: '6px 4px',
+            padding: '8px 6px',
             borderRadius: '6px',
             fontSize: '12px',
             fontWeight: '600',
-            color: activeTab === tab.id ? '#fff' : '#fff',
-            textShadow: activeTab === tab.id ? '0 1px 2px rgba(0,0,0,0.3)' : '0 1px 2px rgba(0,0,0,0.2)',
+            color: '#fff',
+            textShadow: '0 1px 2px rgba(0,0,0,0.3)',
             flex: '1',
             minWidth: '0',
             transform: activeTab === tab.id ? 'translateY(-2px)' : 'translateY(0)',
@@ -201,11 +200,12 @@ export function BottomNavigation({ activeTab, onTabChange }: BottomNavigationPro
             {tab.icon}
           </span>
           <span style={{
-            fontSize: '10px',
-            letterSpacing: '0.2px',
-            fontWeight: '600',
+            fontSize: '11px',
+            letterSpacing: '0.3px',
+            fontWeight: '700',
             whiteSpace: 'nowrap',
-            lineHeight: '1'
+            lineHeight: '1.2',
+            marginTop: '2px'
           }}>
             {tab.label}
           </span>
