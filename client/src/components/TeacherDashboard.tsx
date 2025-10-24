@@ -584,7 +584,7 @@ export function TeacherDashboard() {
         </div>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-6' : 'grid-cols-5'} gap-1 bg-transparent`}>
+          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-7' : 'grid-cols-6'} gap-1 bg-transparent`}>
             <TabsTrigger value="overview" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm">
               <BarChart3 className="w-4 h-4 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">Overview</span>
@@ -611,6 +611,11 @@ export function TeacherDashboard() {
               <CheckCircle className="w-4 h-4 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">Service Hours</span>
               <span className="sm:hidden">Hours</span>
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-indigo-600 text-white hover:bg-indigo-700 data-[state=active]:bg-indigo-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm" data-testid="tab-reports">
+              <Download className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Reports</span>
+              <span className="sm:hidden">Data</span>
             </TabsTrigger>
             <TabsTrigger value="rewards" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-amber-600 text-white hover:bg-amber-700 data-[state=active]:bg-amber-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm" data-testid="tab-rewards">
               <Award className="w-4 h-4 sm:w-4 sm:h-4" />
