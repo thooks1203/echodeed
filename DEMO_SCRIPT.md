@@ -86,7 +86,7 @@
 **SHOW ON SCREEN:**
 - 🌍 **287,436 Acts of Kindness Documented**
 - 📈 **Pilot school: 50 acts shared TODAY**
-- 🏪 **26 Local Businesses** investing in character
+- 🏪 **26 Local Greensboro Businesses** investing in character
 
 **DEMO ACTIONS:**
 1. Show global kindness feed scrolling
@@ -96,13 +96,13 @@
 **SCRIPT:**
 > "Our pilot school has documented 50 acts of kindness just TODAY. That's 50 moments of character celebrated, 50 students feeling recognized, 50 families potentially having positive conversations.
 >
-> And look at who's investing in this: **Local restaurants** within walking distance from school. **Community entertainment venues**. **Educational institutions** offering experiences as rewards.
+> And look at who's investing in this: **Chick-fil-A on Burlington Road** - walking distance from school. **Cook Out** - the NC institution students love. **Greensboro Science Center** - offering educational experiences as rewards.
 >
-> We work with you to build partnerships with businesses YOUR students actually visit - making rewards immediately accessible and meaningful.
+> 26 local businesses saying 'We believe in your students' character.'
 >
 > This is character education that spreads organically through celebration and real community investment."
 
-**VISUAL:** Map showing school + nearby reward partners (customizable per presentation)
+**VISUAL:** Map showing Eastern Guilford + nearby reward partners
 
 ---
 
@@ -174,9 +174,9 @@
 - ❌ Replacement for existing systems (we integrate)
 
 ### **Impact Metrics:**
-- **287,436** acts of kindness documented across platform
+- **287,436** acts of kindness documented
 - **50** acts shared at pilot school TODAY
-- **Local business partnerships** customized per school/community
+- **26** local Greensboro businesses invested
 - **95%** teacher time savings on verification
 - **Increased** parent engagement during teen years
 - **Potential** attendance improvement through belonging
