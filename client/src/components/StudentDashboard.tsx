@@ -372,7 +372,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
   };
 
   return (
-    <div style={{ padding: '20px', paddingLeft: '96px', minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
+    <div className="md:pl-24" style={{ padding: '20px', minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
       {/* Header */}
       <div style={{ textAlign: 'center', marginBottom: '24px', position: 'relative' }}>
         {/* Navigation Buttons */}

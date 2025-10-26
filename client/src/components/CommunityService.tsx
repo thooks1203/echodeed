@@ -217,7 +217,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
 
   if (summaryLoading) {
     return (
-      <div className="space-y-6 p-6" style={{ paddingLeft: '96px' }}>
+      <div className="space-y-6 p-6 md:pl-24">
         <div className="flex items-center justify-center py-12">
           <div className="text-center space-y-2">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
@@ -235,7 +235,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
   const tokensEarned = summary ? summary.totalTokensEarned || 0 : 0;
 
   return (
-    <div className="space-y-6 p-6" style={{ paddingLeft: '96px' }} data-testid="community-service-page">
+    <div className="space-y-6 p-6 md:pl-24" data-testid="community-service-page">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-3">

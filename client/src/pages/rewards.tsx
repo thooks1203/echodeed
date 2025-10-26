@@ -199,7 +199,7 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
   const featuredPartners = partners.filter((partner: RewardPartner) => partner.isFeatured);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-green-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-green-950/20 p-4 md:p-8" style={{ paddingLeft: '96px' }}>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-blue-50 to-green-50 dark:from-purple-950/20 dark:via-blue-950/20 dark:to-green-950/20 p-4 md:p-8 md:pl-24">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="text-center mb-8 relative">

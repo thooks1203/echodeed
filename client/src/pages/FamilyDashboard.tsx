@@ -249,7 +249,7 @@ export default function FamilyDashboard({
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-3 sm:p-4 pb-[calc(env(safe-area-inset-bottom)+88px)] overflow-x-hidden max-w-full" style={{ paddingLeft: '96px' }}>
+    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-blue-50 p-3 sm:p-4 pb-[calc(env(safe-area-inset-bottom)+88px)] overflow-x-hidden max-w-full md:pl-24">
       <div className="max-w-7xl mx-auto">
         {/* Back Button */}
         <div className="mb-6">
