@@ -486,6 +486,55 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         </p>
       </div>
 
+      {/* Kindness Connect Promotional Card */}
+      <div style={{
+        background: 'linear-gradient(135deg, #EC4899 0%, #EF4444 100%)',
+        borderRadius: '16px',
+        padding: '20px',
+        marginBottom: '16px',
+        boxShadow: '0 4px 12px rgba(236, 72, 153, 0.25)',
+        border: '2px solid rgba(255, 255, 255, 0.3)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
+          <span style={{ fontSize: '32px' }}>💝</span>
+          <div>
+            <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'white', margin: 0, marginBottom: '4px' }}>
+              Discover Kindness Connect
+            </h3>
+            <p style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.9)', margin: 0 }}>
+              Find verified service opportunities in your community
+            </p>
+          </div>
+        </div>
+        <button
+          onClick={() => onNavigateToTab ? onNavigateToTab('community-service') : window.location.href = '/app?tab=community-service'}
+          style={{
+            width: '100%',
+            background: 'white',
+            color: '#EC4899',
+            border: 'none',
+            borderRadius: '10px',
+            padding: '10px 16px',
+            fontSize: '14px',
+            fontWeight: '700',
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-1px)';
+            e.currentTarget.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.2)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 2px 8px rgba(0, 0, 0, 0.15)';
+          }}
+          data-testid="button-kindness-connect-promo"
+        >
+          Browse Service Opportunities →
+        </button>
+      </div>
+
       {/* Service Hours Action Button */}
       <div style={{ marginBottom: '24px' }}>
         <button

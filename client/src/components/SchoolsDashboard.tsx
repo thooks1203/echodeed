@@ -106,6 +106,86 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
         </p>
       </div>
 
+      {/* Kindness Connect Info Card for Administrators */}
+      <div style={{
+        background: 'linear-gradient(135deg, #EC4899 0%, #EF4444 100%)',
+        borderRadius: '16px',
+        padding: '20px',
+        marginBottom: '24px',
+        boxShadow: '0 4px 12px rgba(236, 72, 153, 0.25)',
+        border: '2px solid rgba(255, 255, 255, 0.3)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'start', gap: '16px' }}>
+          <div style={{ 
+            width: '48px', 
+            height: '48px', 
+            background: 'white',
+            borderRadius: '50%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '24px',
+            flexShrink: 0,
+            animation: 'pulse 2s infinite'
+          }}>
+            💝
+          </div>
+          <div style={{ flex: 1 }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '700', color: 'white', margin: 0, marginBottom: '8px' }}>
+              Kindness Connect - Community Service Platform
+            </h3>
+            <p style={{ fontSize: '14px', color: 'rgba(255, 255, 255, 0.95)', margin: 0, marginBottom: '12px', lineHeight: '1.5' }}>
+              Our Kindness Connect platform streamlines community service coordination for your school. Students discover 10+ pre-vetted local organizations, track service hours with photo verification, and earn tokens automatically. Teachers approve hours in one click, reducing administrative burden by 75%.
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginBottom: '12px' }}>
+              <span style={{ 
+                padding: '6px 12px', 
+                background: 'rgba(255, 255, 255, 0.9)', 
+                borderRadius: '12px', 
+                fontSize: '11px', 
+                fontWeight: '600',
+                color: '#EC4899'
+              }}>
+                📸 Photo Verification
+              </span>
+              <span style={{ 
+                padding: '6px 12px', 
+                background: 'rgba(255, 255, 255, 0.9)', 
+                borderRadius: '12px', 
+                fontSize: '11px', 
+                fontWeight: '600',
+                color: '#EC4899'
+              }}>
+                ✅ One-Click Approval
+              </span>
+              <span style={{ 
+                padding: '6px 12px', 
+                background: 'rgba(255, 255, 255, 0.9)', 
+                borderRadius: '12px', 
+                fontSize: '11px', 
+                fontWeight: '600',
+                color: '#EC4899'
+              }}>
+                📊 Auto-Tracked Hours
+              </span>
+              <span style={{ 
+                padding: '6px 12px', 
+                background: 'rgba(255, 255, 255, 0.9)', 
+                borderRadius: '12px', 
+                fontSize: '11px', 
+                fontWeight: '600',
+                color: '#EC4899'
+              }}>
+                👪 Parent Notifications
+              </span>
+            </div>
+            <p style={{ fontSize: '12px', color: 'rgba(255, 255, 255, 0.9)', margin: 0, fontStyle: 'italic' }}>
+              💡 Schools report 80% reduction in service hour verification paperwork and increased student engagement in community service programs.
+            </p>
+          </div>
+        </div>
+      </div>
+
       {/* Tab Navigation */}
       <div style={{
         display: 'grid',

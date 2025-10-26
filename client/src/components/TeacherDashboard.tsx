@@ -583,6 +583,39 @@ export function TeacherDashboard() {
           </Card>
         </div>
 
+        {/* Kindness Connect Info Card */}
+        <Card className="mb-8 bg-gradient-to-r from-pink-50 to-red-50 border-2 border-pink-200">
+          <CardContent className="p-6">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-pink-600 to-red-600 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
+                <span className="text-2xl">💝</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  Kindness Connect - Service Opportunity Discovery
+                </h3>
+                <p className="text-sm text-gray-700 mb-4">
+                  Help your students find verified service opportunities! Our Kindness Connect platform features 10+ local organizations actively seeking student volunteers. Students can browse opportunities, learn about causes, and connect directly with community partners.
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  <span className="px-3 py-1 bg-white rounded-full text-xs font-semibold text-pink-700 border border-pink-200">
+                    🏥 Healthcare & Senior Care
+                  </span>
+                  <span className="px-3 py-1 bg-white rounded-full text-xs font-semibold text-pink-700 border border-pink-200">
+                    🌱 Environmental Projects
+                  </span>
+                  <span className="px-3 py-1 bg-white rounded-full text-xs font-semibold text-pink-700 border border-pink-200">
+                    📚 Youth Tutoring & Mentoring
+                  </span>
+                </div>
+                <p className="text-xs text-gray-600 mt-4 italic">
+                  💡 Tip: Direct students to the Service Hours section where they can browse opportunities and log their service activities in one place!
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
           <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-7' : 'grid-cols-6'} gap-1 bg-transparent`}>
             <TabsTrigger value="overview" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm">

@@ -1390,6 +1390,37 @@ export default function ParentDashboard() {
           </div>
         </div>
 
+        {/* Kindness Connect Info Card for Parents */}
+        <Card className="mb-6 bg-gradient-to-r from-pink-50 to-red-50 border-2 border-pink-200">
+          <CardContent className="p-6">
+            <div className="flex items-start gap-4">
+              <div className="w-12 h-12 bg-gradient-to-br from-pink-600 to-red-600 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
+                <span className="text-2xl">💝</span>
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-bold text-gray-900 mb-2">
+                  🌟 Kindness Connect - Help Your Kids Find Meaningful Service
+                </h3>
+                <p className="text-sm text-gray-700 mb-3">
+                  Your {linkedStudents.length === 1 ? 'child can' : 'children can'} discover verified service opportunities through our Kindness Connect platform! We partner with 10+ trusted local organizations seeking young volunteers. From healthcare to environmental projects, there's something for every interest.
+                </p>
+                <div className="bg-white rounded-lg p-3 mb-3 border border-pink-200">
+                  <p className="text-xs font-semibold text-gray-800 mb-2">✨ Why Parents Love Kindness Connect:</p>
+                  <ul className="text-xs text-gray-700 space-y-1">
+                    <li>✓ All organizations are pre-vetted and verified</li>
+                    <li>✓ Kids can browse opportunities that match their interests</li>
+                    <li>✓ Service hours automatically tracked and teacher-verified</li>
+                    <li>✓ You receive real-time notifications when hours are approved</li>
+                  </ul>
+                </div>
+                <p className="text-xs text-gray-600 italic">
+                  💡 Encourage your {linkedStudents.length === 1 ? 'child' : 'children'} to explore the Service Hours section to find opportunities and start making a difference!
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
         {/* Main Dashboard */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
           <TabsList className="flex w-full flex-wrap justify-center gap-1 h-auto p-1 bg-transparent">
