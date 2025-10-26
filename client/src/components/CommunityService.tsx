@@ -16,9 +16,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Clock, MapPin, Users, Award, CheckCircle, Clock as Clock2, XCircle, Upload } from 'lucide-react';
+import { ArrowLeft, Clock, MapPin, Users, Award, CheckCircle, Clock as Clock2, XCircle, Upload, Heart } from 'lucide-react';
 import { ObjectUploader } from '@/components/ObjectUploader';
 import { ServiceVerificationFormDownload } from '@/components/ServiceVerificationForm';
+import { KindnessConnectModal } from '@/components/KindnessConnectModal';
 import type { UploadResult } from '@uppy/core';
 
 // Community Service interfaces
@@ -89,6 +90,7 @@ type ServiceLogForm = z.infer<typeof serviceLogSchema>;
 
 export function CommunityService({ onBack }: CommunityServiceProps) {
   const [activeTab, setActiveTab] = useState('overview');
+  const [isKindnessConnectOpen, setIsKindnessConnectOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -293,6 +295,29 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
                   Pre-filled with your info and includes all fields teachers need for instant approval!
                 </p>
                 <ServiceVerificationFormDownload />
+              </div>
+            </div>
+          </div>
+
+          {/* Kindness Connect - Find Service Opportunities */}
+          <div className="p-4 bg-gradient-to-r from-pink-50 to-red-50 border-2 border-pink-300 rounded-lg shadow-sm">
+            <div className="flex items-start gap-3">
+              <div className="flex-shrink-0 w-12 h-12 bg-gradient-to-br from-pink-600 to-red-600 rounded-full flex items-center justify-center text-white font-bold text-xl animate-pulse">
+                💝
+              </div>
+              <div className="flex-1">
+                <h4 className="font-bold text-gray-900 mb-1 text-lg">Find Service Opportunities</h4>
+                <p className="text-sm text-gray-700 mb-3">
+                  Discover local organizations looking for volunteers! Browse verified service opportunities in your community and connect with causes you care about.
+                </p>
+                <Button
+                  onClick={() => setIsKindnessConnectOpen(true)}
+                  className="bg-gradient-to-r from-pink-600 to-red-600 hover:from-pink-700 hover:to-red-700 text-white font-semibold shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200"
+                  data-testid="button-kindness-connect"
+                >
+                  <Heart className="mr-2 h-4 w-4" />
+                  Explore Kindness Connect
+                </Button>
               </div>
             </div>
           </div>
@@ -759,6 +784,12 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
           </Card>
         </TabsContent>
       </Tabs>
+
+      {/* Kindness Connect Modal */}
+      <KindnessConnectModal 
+        isOpen={isKindnessConnectOpen}
+        onClose={() => setIsKindnessConnectOpen(false)}
+      />
     </div>
   );
 }
