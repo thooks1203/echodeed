@@ -208,7 +208,7 @@ export default function Home() {
   if (activeTab === 'mentor-dashboard') {
     try {
       return (
-        <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
+        <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F0F9FF' }}>
           <MentorDashboard />
           <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
         </div>
@@ -232,7 +232,7 @@ export default function Home() {
 
   if (activeTab === 'support') {
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
+      <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F0F9FF' }}>
         <SupportCircle onBack={handleBackToDashboard} />
         <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
@@ -241,7 +241,7 @@ export default function Home() {
 
   if (activeTab === 'summer') {
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
+      <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F0F9FF' }}>
         <SummerChallenges onBack={handleBackToDashboard} />
         <LeftSidebar activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
@@ -250,7 +250,7 @@ export default function Home() {
 
   if (activeTab === 'community-service') {
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
+      <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F0F9FF' }}>
         <CommunityService onBack={handleBackToDashboard} />
         <LeftSidebar activeTab={activeTab} onTabChange={setActiveTab} />
         
@@ -310,7 +310,7 @@ export default function Home() {
 
   if (activeTab === 'sponsors') {
     return (
-      <div style={{ minHeight: '100vh', background: '#F9FAFB', marginLeft: '80px' }}>
+      <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F9FAFB' }}>
         <SponsorsPage />
         <LeftSidebar activeTab={activeTab} onTabChange={setActiveTab} />
       </div>
@@ -319,7 +319,7 @@ export default function Home() {
 
   if (activeTab === 'rewards') {
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
+      <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F0F9FF' }}>
         <RewardsPage onBack={handleBackToDashboard} />
         <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
         
@@ -399,7 +399,7 @@ export default function Home() {
     }
     
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
+      <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F0F9FF' }}>
         <TeacherDashboard />
         <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
         
@@ -464,7 +464,7 @@ export default function Home() {
     }
     
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
+      <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F0F9FF' }}>
         <TeacherDashboard />
         <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
         
@@ -525,7 +525,7 @@ export default function Home() {
   if (activeTab === 'student-dashboard') {
     try {
       return (
-        <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
+        <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F0F9FF' }}>
           <StudentDashboard 
             onNavigateToTab={navigateToTab} 
             activeBottomTab={activeTab}
@@ -639,7 +639,7 @@ export default function Home() {
   if (activeTab === 'family-dashboard') {
     // Family dashboard accessible to parents and family members
     return (
-      <div style={{ minHeight: '100vh', background: '#F0F9FF', marginLeft: '80px' }}>
+      <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F0F9FF' }}>
         <FamilyDashboard />
         <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
@@ -651,13 +651,12 @@ export default function Home() {
   console.log('🎯 RENDERING MAIN FEED - activeTab:', activeTab, 'posts:', posts?.length, 'postsLoading:', postsLoading);
   
   return (
-    <div style={{ 
+    <div className="md:pl-[80px]" style={{ 
       maxWidth: '600px', 
       margin: '0 auto',
       backgroundColor: '#f8f9fa',
       minHeight: '100vh',
-      position: 'relative',
-      paddingLeft: '80px' // Account for left sidebar without breaking centering
+      position: 'relative'
     }}>
       <AppHeader 
         counter={counter || { id: 'global', count: 0, updatedAt: new Date() }} 

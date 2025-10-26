@@ -67,7 +67,7 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
   if (!user) {
     const signInTabs = [{ id: 'sign-in', label: 'Sign In', icon: '👤' }];
     return (
-      <div style={{
+      <div className="hidden md:flex" style={{
         position: 'fixed',
         left: 0,
         top: 0,
@@ -76,7 +76,6 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
         background: 'linear-gradient(180deg, #667eea 0%, #764ba2 100%)',
         backdropFilter: 'blur(12px)',
         boxShadow: '4px 0 20px rgba(0,0,0,0.15)',
-        display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         paddingTop: '20px',
@@ -127,7 +126,7 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
   const filteredTabs = tabs;
 
   return (
-    <div style={{
+    <div className="hidden md:flex" style={{
       position: 'fixed',
       left: 0,
       top: 0,
@@ -136,7 +135,6 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
       background: 'linear-gradient(180deg, #667eea 0%, #764ba2 100%)',
       backdropFilter: 'blur(12px)',
       boxShadow: '4px 0 20px rgba(0,0,0,0.15)',
-      display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
       paddingTop: '20px',

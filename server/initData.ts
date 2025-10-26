@@ -472,8 +472,8 @@ export async function initializeSampleData() {
     
     try {
       const { db } = await import('./db');
-      const { users, userTokens, communityServiceLogs, studentServiceSummaries } = await import('@shared/schema');
-      const { eq } = await import('drizzle-orm');
+      const { users, userTokens, communityServiceLogs, studentServiceSummaries, communityServiceVerifications } = await import('@shared/schema');
+      const { eq, inArray } = await import('drizzle-orm');
       
       // Upsert Sofia Rodriguez user
       await storage.upsertUser({
@@ -516,6 +516,14 @@ export async function initializeSampleData() {
       
       // FORCE RE-SEED: Delete all service logs and recreate with 2 verified + 3 pending
       if (existingServiceLogs.length > 0) {
+        // First, delete any service verifications that reference these logs (to avoid FK constraint violation)
+        const serviceLogIds = existingServiceLogs.map(log => log.id);
+        if (serviceLogIds.length > 0) {
+          await db.delete(communityServiceVerifications).where(inArray(communityServiceVerifications.serviceLogId, serviceLogIds));
+          log('🔄 Deleted existing service verifications to prevent FK constraint violation');
+        }
+        
+        // Now safe to delete the service logs
         await db.delete(communityServiceLogs).where(eq(communityServiceLogs.userId, 'student-001'));
         log('🔄 Deleted existing service logs to recreate with 2 VERIFIED + 3 PENDING');
       }
