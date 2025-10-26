@@ -151,10 +151,10 @@ We've documented 25,000+ acts of kindness in Guilford County alone over the past
 
 DISTRICT-WIDE IMPACT OPPORTUNITY:
 - All 10 Guilford County high schools (~15,000 students)
-- Automated SEL compliance reporting (90% time reduction for administrators)
+- Automated character education compliance reporting (90% time reduction for administrators)
 - Real-time character development data for school board presentations
 - A&T State partnership provides academic validation
-- Cost: $6,000/school = $60,000/year (vs. $38,000-60,000 for traditional SEL programs PER SCHOOL)
+- Cost: $6,000/school = $60,000/year (vs. $38,000-60,000 for traditional character education programs PER SCHOOL)
 
 TOTAL DISTRICT SAVINGS: $320,000/year vs. traditional character education programs
 
