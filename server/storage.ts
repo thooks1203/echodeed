@@ -6512,6 +6512,53 @@ export class DatabaseStorage implements IStorage {
     
     return result.length > 0;
   }
+
+  // ============================================================================
+  // AMBASSADOR PROGRAM TRACKING
+  // ============================================================================
+
+  async getAllAmbassadors(schoolId: string): Promise<User[]> {
+    return await db
+      .select()
+      .from(users)
+      .where(and(
+        eq(users.schoolId, schoolId),
+        eq(users.isAmbassador, true)
+      ))
+      .orderBy(desc(users.totalReferrals));
+  }
+
+  async findUserByAmbassadorCode(ambassadorCode: string): Promise<User | undefined> {
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(eq(users.ambassadorCode, ambassadorCode))
+      .limit(1);
+    return user;
+  }
+
+  async updateUserReferral(userId: string, referredById: string, referralCode: string): Promise<void> {
+    await db
+      .update(users)
+      .set({ referredBy: referredById })
+      .where(eq(users.id, userId));
+  }
+
+  async incrementAmbassadorReferrals(ambassadorId: string): Promise<void> {
+    await db
+      .update(users)
+      .set({ 
+        totalReferrals: sql`${users.totalReferrals} + 1`,
+      })
+      .where(eq(users.id, ambassadorId));
+  }
+
+  async markAmbassadorRewardEarned(ambassadorId: string): Promise<void> {
+    await db
+      .update(users)
+      .set({ ambassadorRewardEarned: true })
+      .where(eq(users.id, ambassadorId));
+  }
 }
 
 export const storage = new DatabaseStorage();

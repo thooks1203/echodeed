@@ -26,6 +26,13 @@ export const users = pgTable("users", {
   referredBy: varchar("referred_by"),
   totalReferrals: integer("total_referrals").default(0),
   referralEarnings: integer("referral_earnings").default(0),
+  // AMBASSADOR PROGRAM TRACKING
+  isAmbassador: boolean("is_ambassador").default(false),
+  ambassadorTier: varchar("ambassador_tier", { length: 20 }), // 'founding' or 'associate'
+  ambassadorCode: varchar("ambassador_code"), // Unique code like "AMBASSADOR-SJ-2025"
+  ambassadorGoal: integer("ambassador_goal").default(0), // Recruit goal (15 for founding, 5 for associate)
+  ambassadorRewardEarned: boolean("ambassador_reward_earned").default(false), // True when they hit goal
+  ambassadorCampaignId: varchar("ambassador_campaign_id"), // Which campaign they're part of
   // SCHOOL ROLE SYSTEM - FOR EDUCATIONAL INSTITUTIONS  
   schoolRole: varchar("school_role", { length: 20 }).default("student").notNull(), // student, teacher, counselor, admin
   schoolId: varchar("school_id"), // Links user to a specific school

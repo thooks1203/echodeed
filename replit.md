@@ -1,7 +1,7 @@
 # EchoDeed™ - Anonymous Kindness Platform
 
 ## Overview
-EchoDeed™ is a mobile-first web application designed to **build character education, increase sense of belonging, and potentially boost attendance** through a community-driven kindness culture. The platform allows students to anonymously share kind acts, browse a global feed celebrating positive behaviors, and view a real-time global kindness counter (287,435 acts documented). **Parents receive instant notifications** of their child's good deeds, fostering positive parent/child interactions during crucial teen years - something traditional grade/discipline apps don't provide. Currently being demoed at **Eastern Guilford High School in Gibsonville, NC** (grades 9-12), the platform focuses on building character and empathy in diverse school communities, with plans for future expansion into additional schools and corporate wellness. Key differentiators include dual rewards (students AND parents earn), local Greensboro business partnerships, and behavioral climate monitoring without crisis intervention liability.
+EchoDeed™ is a mobile-first web application designed to foster character education, increase a sense of belonging, and boost attendance in school communities through a platform for anonymously sharing kind acts. It allows students to document good deeds, browse a global feed of positive behaviors, and track a real-time kindness counter. The system notifies parents of their child's good deeds, promoting positive family interactions. Currently piloted at Eastern Guilford High School, the platform aims to expand to other schools and corporate wellness programs, differentiating itself with dual rewards for students and parents, local business partnerships, and behavioral climate monitoring.
 
 ## User Preferences
 Preferred communication style: Simple, everyday language.
@@ -10,74 +10,43 @@ Business planning approach: Conservative, realistic projections always. Under-pr
 
 ## System Architecture
 ### UI/UX Decisions
-The frontend is a React 18, TypeScript, and Vite single-page application. It utilizes Radix UI primitives and shadcn/ui components with TailwindCSS for a mobile-first, responsive design. The UI/UX emphasizes minimalism, a custom color palette, consistent iconography (Lucide React), and an "Electric Heart Logo" with gradient ripple effects. All dashboard tabs feature permanent vibrant colors for enhanced visual engagement, and role-based logic ensures specific UI elements (e.g., Echo Tokens button) are displayed only to relevant user roles (students/parents). Quick action buttons are proportionally sized for a professional appearance.
-
-### Production Database Configuration (CRITICAL)
-**Development vs Production Database Separation:**
-- Development and production use **completely separate PostgreSQL databases**
-- Each environment has its own DATABASE_URL
-- Demo data (Emma's 7.5 service hours, tokens, streaks) must be initialized in BOTH databases
-
-**Required Production Secrets (MUST be configured):**
-1. **DEMO_MODE=true** - CRITICAL for demo data initialization in production
-   - Without this, production database remains empty (0 hours, 0 tokens)
-   - Set in: Replit Secrets → Production app secrets → DEMO_MODE = true
-2. **DATABASE_URL** - Automatically configured by Replit for production
-3. **OPENAI_API_KEY** - For AI features
-4. **SESSION_SECRET** - For session management
-
-**Production Deployment Checklist:**
-1. ✅ Verify DEMO_MODE=true exists in "Production app secrets"
-2. ✅ Click "Publish/Deploy" to trigger server restart
-3. ✅ Production logs will show initialization:
-   ```
-   🚀 INITIALIZING DEMO DATA
-   🎭 DEMO_MODE: true
-   🔍 DATABASE VERIFICATION FOR EMMA JOHNSON:
-      💰 Tokens: 1103 balance, 1380 earned, streak: 4/4
-      📝 Service Logs: 2 records (7.5 hours total)
-   ```
-4. ✅ Verify www.echodeed.com shows Emma's data correctly
-
-**Troubleshooting Production Issues:**
-- **Problem:** Production shows 0 hours/0 tokens
-- **Cause:** DEMO_MODE secret not enabled for production OR server not restarted after adding secret
-- **Fix:** Add DEMO_MODE=true to production secrets, then republish app
+The frontend uses React 18, TypeScript, and Vite, built with Radix UI, shadcn/ui, and TailwindCSS for a mobile-first, responsive design. It features a minimalist aesthetic, custom color palette, consistent Lucide React iconography, an "Electric Heart Logo," and permanent vibrant dashboard colors. Role-based logic ensures specific UI elements are displayed only to relevant user roles.
 
 ### Technical Implementations
 - **Frontend**: React 18, TypeScript, Vite, Wouter for routing, TanStack Query for server state.
 - **Backend**: Express.js, TypeScript, RESTful API with WebSocket support, layered and modular architecture.
-- **Data Storage**: Stores anonymous Kindness Posts (text, category, location, timestamps) and a global Kindness Counter. Schema supports geographic/category filtering and timestamp ordering.
-- **Real-time Communication**: WebSockets for live feed updates, counter synchronization, automatic reconnection, and broadcast messaging.
-- **Content Moderation**: Filters profanity and negative keywords, enforces length validation (10-280 characters), and automatically flags posts.
-- **Kindness Sparks Celebration**: Visual animated celebration upon posting deeds for engagement.
-- **COPPA Compliance System**: Digital consent, automated workflows, and annual renewal for K-8.
-- **Summer Challenges**: Engine supports age-appropriate challenges for high school (grades 9-12).
-- **Student Dashboard Streaks**: Data fixes ensure accurate display of current and best streaks.
-- **Authentication**: Improved flow redirects unauthenticated users to a clean `/demo-login` page. Development uses mock authentication, while production requires real Replit OAuth.
-- **Photo Verification System**: Complete implementation using Replit's App Storage with presigned URLs, ACL policies, and secure photo uploads via Uppy. Students can upload photos of verification letters when submitting service hours, and teachers see visual proof instantly for one-click approval - reducing verification time from 15 minutes to 30 seconds per student. Security features include school-level ACL enforcement (teachers can only view photos from their school), targeted database lookups for efficiency, and comprehensive audit logging.
-- **x2vol District Integration**: EchoDeed's service hour tracking system is fully compatible with Guilford County's required x2vol platform. Database schema includes all x2vol-required fields: start_time/end_time (clock in/out), annual_goal_hours (default 30), current_school_year tracking, student reflections, organization contact info, and verification status. Teachers can export service hours to x2vol-compatible CSV format, eliminating duplicate data entry and reducing administrative workload by 95%. System maintains separate tracking of verified vs pending hours to match x2vol's approval workflow.
-- **Kindness Connect Service Discovery**: Students discover and sign up for real service opportunities through an integrated opportunity browser featuring 10 verified Guilford County organizations (Greensboro Science Center, Interactive Resource Center, Out of the Garden Project, Habitat for Humanity, Urban Ministry, Second Harvest Food Bank, Books to Prisoners, Triad Health Project, Greensboro Public Library, Salvation Army). Backend includes service_opportunities and service_opportunity_signups tables with 8 API routes for browsing, filtering, signup management, and availability tracking.
-- **AI Behavioral Mitigation Architecture**: Three-layer system designed for legal compliance: (1) **Behavioral Pattern Analyzer** (`behavioralPatternAnalyzer.ts`) - Classifies content into low/medium/high severity tiers using pattern matching, NO crisis detection; (2) **Compliance Filter** (`complianceFilter.ts`) - Pre-posting filter blocks profanity/bullying, queues concerning content for review, NO automatic counselor alerts; (3) **Aggregate Climate Monitor** (`aggregateClimateMonitor.ts`) - School-wide trend analytics, sentiment tracking, NO individual student predictions. All services explicitly avoid automatic interventions and route flagged content to human moderation queue.
-- **Teacher Moderation Dashboard**: API endpoints for human review workflow: `/api/moderation/queue` (list flagged content), `/api/moderation/claim/:id` (assign to teacher), `/api/moderation/resolve/:id` (approve/reject), `/api/moderation/comment/:id` (add notes). All endpoints protected by `requireTeacherRole` middleware. Includes CSV export endpoints for Google Sheets integration: `/api/export/moderation-queue`, `/api/export/climate-metrics`, `/api/export/behavioral-trends`, `/api/export/comprehensive-report`.
+- **Data Storage**: PostgreSQL (via Drizzle ORM) stores anonymous Kindness Posts (text, category, location, timestamps) and a global Kindness Counter.
+- **Real-time Communication**: WebSockets provide live feed updates, counter synchronization, and broadcast messaging.
+- **Content Moderation**: Automated filtering for profanity and negative keywords, length validation (10-280 characters), and post flagging.
+- **Photo Verification System**: Secure photo uploads using Replit App Storage and Uppy, enabling teachers to approve student service hours quickly. Includes school-level ACL enforcement and audit logging.
+- **x2vol District Integration**: Service hour tracking system compatible with x2vol, supporting clock in/out, annual goals, student reflections, and CSV export for simplified administrative tasks.
+- **Kindness Connect Service Discovery**: Integrated platform for students to find and sign up for service opportunities with local organizations.
+- **AI Behavioral Mitigation Architecture**: A three-layer system (Behavioral Pattern Analyzer, Compliance Filter, Aggregate Climate Monitor) for legal compliance, focusing on content classification, pre-posting filtering, and school-wide trend analytics. **Crucially, it avoids automatic crisis interventions**, routing all flagged content to a human moderation queue.
+- **Teacher Moderation Dashboard**: API endpoints for human review workflows of flagged content, including claiming, resolving, and commenting, protected by role-based middleware, with CSV export options for various reports.
+- **Student Dashboard Streaks**: Accurate display of current and best streaks.
+- **Authentication**: Improved flow redirects unauthenticated users to a `/demo-login` page, with mock authentication for development and Replit OAuth for production.
 - **Scalability**: Designed for enterprise performance with database optimization, caching, load testing, real-time monitoring, and auto-scaling.
 
+### Production Database Configuration
+- **Separate Databases**: Development and production use entirely separate PostgreSQL databases.
+- **Demo Mode**: `DEMO_MODE=true` is critical for initializing demo data (e.g., Emma's service hours, tokens) in the production environment.
+- **Required Production Secrets**: `DEMO_MODE`, `DATABASE_URL`, `OPENAI_API_KEY`, `SESSION_SECRET`.
+
 ### Feature Specifications
-- **Anonymous Posting**: Users submit text-only descriptions of kind acts without personal identification.
-- **Global Kindness Feed**: Real-time display of shared acts with location and category filtering.
+- **Anonymous Posting**: Users can submit text-only descriptions of kind acts without personal identification.
+- **Global Kindness Feed**: Real-time display of shared acts with filtering capabilities.
 - **Real-time Counter**: Tracks total global acts.
-- **AI Behavioral Mitigation System**: Positions AI as a "Behavioral Mitigation and Documentation Tool" (NOT crisis intervention) to eliminate legal liability. System provides: (1) Compliance filtering for inappropriate content (profanity, bullying), (2) Aggregate school-wide climate monitoring (sentiment trends, behavioral patterns), (3) Human review queue for teacher decision-making on flagged content, (4) CSV export for Google Sheets integration. **CRITICAL: NO automatic crisis interventions** - no NCMEC reporting, no Slack alerts, no counselor notifications. All flagged content flows to teacher moderation queue requiring human approval. System provides documentation and decision-support analytics only.
-- **Dual Reward System**: Implemented for both kids and parents.
+- **AI Behavioral Mitigation System**: Provides compliance filtering, aggregate school-wide climate monitoring, and a human review queue for flagged content, emphasizing documentation and decision-support analytics without automatic crisis interventions.
+- **Dual Reward System**: Rewards for both students and parents.
 - **High School Curriculum**: 5 comprehensive character education lessons for grades 9-12.
 - **B2B Sponsor Monetization Platform**: Infrastructure for sponsor analytics, tiered sponsorships, and targeted campaigns.
-- **Anonymous Workplace Wellness**: AI-powered predictive analytics for burnout risk and sentiment analysis.
-- **Sustainable Reward Frequency Framework**: Optimized student surprise giveaways (weekly for high activity scores) and a structured teacher reward system with sponsor-covered and platform-funded frequencies.
+- **Student Ambassador Referral Tracking System**: Infrastructure for sponsor-funded ambassador programs, including unique referral codes, recruit attribution, leaderboards, and sponsor ROI analytics.
 
-### MVP Simplification: Hidden Features (Can be reactivated via feature flags)
-- **Support Circle (HIDDEN FOR MVP)**: Mental health support feature deferred until licensed responder network is established. Current UI promised "licensed professionals at your school" but lacked monitoring infrastructure, creating liability risk. Conflicts with teacher workload reduction goal. Requires: external licensed provider partnership, FERPA/COPPA compliance, crisis response protocols, 24/7 monitoring SLAs. Set `VITE_ENABLE_SUPPORT_CIRCLE=true` to reactivate.
-- **Challenges (HIDDEN)**: Summer and school-year challenges hidden to reduce complexity. Set `VITE_ENABLE_CHALLENGES=true` to reactivate.
-- **AI Wellness (HIDDEN)**: Predictive wellness dashboards hidden. Set `VITE_ENABLE_AI_FEATURES=true` to reactivate.
-- **Curriculum (HIDDEN)**: Lesson plans tab hidden from teacher dashboard. Set `VITE_ENABLE_CURRICULUM=true` to reactivate.
+### MVP Simplification (Features hidden by default, reactivated via feature flags)
+- **Support Circle**: Mental health support feature.
+- **Challenges**: Summer and school-year challenges.
+- **AI Wellness**: Predictive wellness dashboards.
+- **Curriculum**: Lesson plans tab.
 
 ## External Dependencies
 - **Frontend Frameworks**: React 18
@@ -86,51 +55,6 @@ The frontend is a React 18, TypeScript, and Vite single-page application. It uti
 - **UI Libraries**: Radix UI, shadcn/ui, TailwindCSS, Lucide React
 - **State Management/Forms/Validation**: TanStack Query, React Hook Form, Zod
 - **Database Technologies**: Drizzle ORM, Drizzle-Zod, @neondatabase/serverless (PostgreSQL)
-- **Object Storage**: @google-cloud/storage, @uppy/core, @uppy/react, @uppy/aws-s3 (for verification photo uploads)
+- **Object Storage**: @google-cloud/storage, @uppy/core, @uppy/react, @uppy/aws-s3
 - **Real-time/Routing**: ws, wouter
-- **Reward/Payment Integrations**: 21 Local Greensboro businesses (A Special Blend Coffee, Tate Street Coffee House, Chez Genèse, Chick-fil-A, Cook Out, Dames Chicken & Waffles, Dave's Hot Chicken, Boxcar Bar + Arcade, Yum Yum Better Ice Cream, Red Cinemas, Triad Lanes, Urban Air Trampoline Park, Greensboro Science Center, YMCA Greensboro, Barnes & Noble UNCG, Common Grounds Coffee, Greensboro Grasshoppers, Greensboro Public Library) plus national partners (Scholastic Books, Target Education, LEGO Education, Amazon Family)
-
-## Demo School Configuration
-**Primary School**: Eastern Guilford High School
-- **Location**: 3609 Terrace Drive, Gibsonville, NC 27249
-- **Phone**: (336) 449-4521
-- **Grade Range**: 9-12
-- **Student Count**: 1,200 students
-- **School Type**: Public High School
-- **Accreditation**: Southern Association of Colleges and Schools (SACS)
-- **Established**: 1965
-- **Demographics**: Diverse student population serving Gibsonville and surrounding communities outside city limits
-
-## Local Reward Partners (Eastern Guilford Area)
-The platform features local businesses within 15 miles of Eastern Guilford High School in Gibsonville/Burlington/Greensboro area:
-
-**Burlington Rd, Whitsett (0-2 miles from school - Walking/Biking Distance):**
-- Chick-fil-A Burlington Rd (closest restaurant to Eastern Guilford HS)
-- McDonald's Burlington Rd
-- Wendy's Burlington Rd
-- Taco Bell Burlington Rd
-- Subway Burlington Rd
-- Pizza Hut Burlington Rd
-- Cook Out (NC institution - student favorite!)
-
-**Greensboro Area (10-15 miles):**
-- Greensboro Science Center (educational trips)
-- Dave's Hot Chicken (trending Nashville-style hot chicken)
-- Dames Chicken & Waffles (downtown Greensboro favorite)
-- Boxcar Bar + Arcade (pizza & retro games)
-- Yum Yum Better Ice Cream (Greensboro tradition since 1906)
-- Red Cinemas (upscale downtown theater)
-- Triad Lanes (bowling & arcade)
-- Urban Air Trampoline Park
-- YMCA of Greensboro
-- Barnes & Noble UNCG
-- Greensboro Grasshoppers (minor league baseball)
-- Greensboro Public Library
-
-**National Partners (Dual Rewards - Kid + Parent):**
-- Scholastic Books
-- Target Education
-- LEGO Education
-- Amazon Family
-
-These hyper-local partnerships emphasize **Burlington Rd in Whitsett** (walking/biking distance from Eastern Guilford High School) to provide immediate, accessible rewards that students can actually use without transportation barriers, supporting the B2B sponsor monetization model while demonstrating community investment in character education.
+- **Reward/Payment Integrations**: 21 Local Greensboro businesses (e.g., Chick-fil-A, Greensboro Science Center, Dave's Hot Chicken, Red Cinemas), and national partners (Scholastic Books, Target Education, LEGO Education, Amazon Family).

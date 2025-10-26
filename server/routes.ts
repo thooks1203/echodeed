@@ -12346,6 +12346,97 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // =============================================================================
+  // AMBASSADOR PROGRAM TRACKING ROUTES
+  // =============================================================================
+
+  // Get all ambassadors (admin/teacher only)
+  app.get('/api/ambassadors', isAuthenticated, async (req: any, res) => {
+    try {
+      const user = req.user as any;
+      
+      // Only admins and teachers can view ambassador data
+      if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
+        return res.status(403).json({ error: 'Access denied. Admin or teacher role required.' });
+      }
+
+      const ambassadors = await storage.getAllAmbassadors(user.schoolId);
+      return res.json(ambassadors);
+    } catch (error) {
+      console.error('Error fetching ambassadors:', error);
+      return res.status(500).json({ error: 'Failed to fetch ambassadors' });
+    }
+  });
+
+  // Get ambassador stats (admin/teacher only)
+  app.get('/api/ambassadors/stats', isAuthenticated, async (req: any, res) => {
+    try {
+      const user = req.user as any;
+      
+      if (!user || (user.schoolRole !== 'admin' && user.schoolRole !== 'teacher')) {
+        return res.status(403).json({ error: 'Access denied' });
+      }
+
+      const ambassadors = await storage.getAllAmbassadors(user.schoolId);
+      
+      const stats = {
+        totalAmbassadors: ambassadors.length,
+        foundingAmbassadors: ambassadors.filter((a: any) => a.ambassadorTier === 'founding').length,
+        associateAmbassadors: ambassadors.filter((a: any) => a.ambassadorTier === 'associate').length,
+        totalRecruits: ambassadors.reduce((sum: number, a: any) => sum + (a.totalReferrals || 0), 0),
+        avgRecruitsPerAmbassador: ambassadors.length > 0 
+          ? ambassadors.reduce((sum: number, a: any) => sum + (a.totalReferrals || 0), 0) / ambassadors.length 
+          : 0,
+        rewardsEarned: ambassadors.filter((a: any) => a.ambassadorRewardEarned).length,
+        goalProgress: Math.round((ambassadors.reduce((sum: number, a: any) => sum + (a.totalReferrals || 0), 0) / 400) * 100),
+      };
+
+      return res.json(stats);
+    } catch (error) {
+      console.error('Error fetching ambassador stats:', error);
+      return res.status(500).json({ error: 'Failed to fetch stats' });
+    }
+  });
+
+  // Update referral when user signs up with a code
+  app.post('/api/track-referral', async (req, res) => {
+    try {
+      const { userId, referralCode } = req.body;
+      
+      if (!userId || !referralCode) {
+        return res.status(400).json({ error: 'Missing userId or referralCode' });
+      }
+
+      // Find the ambassador by their referral code
+      const ambassador = await storage.findUserByAmbassadorCode(referralCode);
+      
+      if (!ambassador) {
+        return res.status(404).json({ error: 'Invalid referral code' });
+      }
+
+      // Update the new user's referredBy field
+      await storage.updateUserReferral(userId, ambassador.id, referralCode);
+      
+      // Increment the ambassador's totalReferrals count
+      const newTotal = (ambassador.totalReferrals || 0) + 1;
+      await storage.incrementAmbassadorReferrals(ambassador.id);
+      
+      // Check if ambassador hit their goal and should earn reward
+      if (ambassador.ambassadorGoal && newTotal >= ambassador.ambassadorGoal && !ambassador.ambassadorRewardEarned) {
+        await storage.markAmbassadorRewardEarned(ambassador.id);
+      }
+
+      return res.json({ 
+        success: true, 
+        ambassadorName: `${ambassador.firstName} ${ambassador.lastName}`,
+        newReferralCount: newTotal 
+      });
+    } catch (error) {
+      console.error('Error tracking referral:', error);
+      return res.status(500).json({ error: 'Failed to track referral' });
+    }
+  });
+
   return httpServer;
 }
 
