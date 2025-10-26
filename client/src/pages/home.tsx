@@ -779,58 +779,27 @@ export default function Home() {
       
       {/* Kindness Sparks Animation - Now mounted globally at App root */}
       
-      {/* Share Kindness Floating Action Button - Balanced on left side */}
+      {/* Share Kindness Floating Action Button - Responsive positioning */}
       {isAuthenticated && (
         <div
           onClick={() => setIsPostModalOpen(true)}
           data-testid="button-share-kindness-fab"
-          style={{
-            position: 'fixed',
-            bottom: '90px',
-            left: '100px', // Balanced on left side after sidebar
-            cursor: 'pointer',
-            zIndex: 101,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            gap: '6px'
-          }}
+          className="fixed bottom-20 md:bottom-24 left-4 md:left-24 cursor-pointer z-[101] flex flex-col items-center gap-1.5"
         >
           <button
+            className="w-14 h-14 md:w-16 md:h-16 rounded-full border-2 md:border-3 border-white shadow-lg cursor-pointer flex items-center justify-center transition-transform duration-200 hover:scale-110"
             style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
               background: 'linear-gradient(135deg, #9333ea 0%, #ec4899 100%)',
-              border: '3px solid white',
               boxShadow: '0 8px 25px rgba(147, 51, 234, 0.4), 0 0 0 0 rgba(236, 72, 153, 0.7)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              transition: 'transform 0.2s ease, box-shadow 0.2s ease',
               animation: 'pulse-share 2s infinite'
             }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'scale(1.1)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
-            }}
           >
-            <span style={{ fontSize: '32px' }}>✨</span>
+            <span className="text-2xl md:text-3xl">✨</span>
           </button>
           <div
+            className="text-white px-2 md:px-3 py-1 md:py-1.5 rounded-lg text-[10px] md:text-xs font-bold shadow-md whitespace-nowrap border-2 border-white"
             style={{
               background: 'linear-gradient(135deg, #9333ea 0%, #ec4899 100%)',
-              color: 'white',
-              padding: '6px 12px',
-              borderRadius: '12px',
-              fontSize: '12px',
-              fontWeight: '700',
-              boxShadow: '0 4px 12px rgba(147, 51, 234, 0.3)',
-              whiteSpace: 'nowrap',
-              border: '2px solid white'
             }}
           >
             Share Kindness
@@ -838,59 +807,9 @@ export default function Home() {
         </div>
       )}
       
-      {/* Kindness Connect Floating Action Button - Visible to all authenticated users */}
+      {/* Kindness Connect Modal - Now only triggered from Service Hours section */}
       {isAuthenticated && (
         <>
-          <div
-            onClick={() => setIsKindnessConnectOpen(true)}
-            data-testid="button-kindness-connect-fab"
-            style={{
-              position: 'fixed',
-              bottom: '90px',
-              right: '16px',
-              cursor: 'pointer',
-              zIndex: 101,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            <button
-              style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #ec4899 0%, #ef4444 100%)',
-                border: '3px solid white',
-                boxShadow: '0 8px 25px rgba(239, 68, 68, 0.4), 0 0 0 0 rgba(239, 68, 68, 0.7)',
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
-                animation: 'pulse-kindness 2s infinite'
-              }}
-            >
-              <span style={{ fontSize: '32px' }}>💝</span>
-            </button>
-            <div
-              style={{
-                background: 'linear-gradient(135deg, #ec4899 0%, #ef4444 100%)',
-                color: 'white',
-                padding: '6px 12px',
-                borderRadius: '12px',
-                fontSize: '12px',
-                fontWeight: '700',
-                boxShadow: '0 4px 12px rgba(239, 68, 68, 0.3)',
-                whiteSpace: 'nowrap',
-                border: '2px solid white'
-              }}
-            >
-              Kindness Connect
-            </div>
-          </div>
-          
           <style>{`
             @keyframes pulse-share {
               0%, 100% {
