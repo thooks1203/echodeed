@@ -170,9 +170,9 @@ After this pilot proves successful at Eastern Guilford:
 
 **Option 1: Let's Talk**  
 Schedule 15-minute call to discuss details  
-Contact: [Your Name]  
-Email: [Your Email]  
-Phone: [Your Phone]
+Contact: Tavores Vanhook  
+Email: tavores@echodeed.com  
+Phone: 336-214-1645
 
 **Option 2: I'm Ready to Sponsor**  
 We'll send simple 1-page sponsorship agreement  
@@ -184,9 +184,9 @@ Timeline: Start within 1 week of payment
 ## 📞 **CONTACT**
 
 **EchoDeed™ Founder**  
-[Your Name]  
-[Your Email]  
-[Your Phone]
+Tavores Vanhook  
+tavores@echodeed.com  
+336-214-1645
 
 **Platform:** www.echodeed.com  
 **Current Reach:** 287,435 acts of kindness documented across platform
