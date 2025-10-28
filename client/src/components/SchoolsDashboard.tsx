@@ -4,6 +4,7 @@ import { useLocation } from 'wouter';
 import { LeftSidebar } from '@/components/LeftSidebar';
 import { BackButton } from '@/components/BackButton';
 import { KindnessConnectModal } from '@/components/KindnessConnectModal';
+import { TeacherAppreciationMetrics } from '@/components/TeacherAppreciationMetrics';
 
 interface School {
   id: string;
@@ -15,14 +16,6 @@ interface School {
   avgKindnessScore: number;
 }
 
-interface StudentKindnessPoint {
-  studentId: string;
-  studentName: string;
-  className: string;
-  grade: string;
-  totalPoints: number;
-  weeklyProgress: number;
-}
 
 interface SchoolsDashboardProps {
   onNavigateToTab?: (tab: string) => void;
@@ -53,13 +46,6 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
     }
   ];
 
-  const sampleStudentPoints: StudentKindnessPoint[] = studentPoints.length > 0 ? studentPoints : [
-    { studentId: '1', studentName: 'Emma Johnson', className: '9A', grade: '9th', totalPoints: 245, weeklyProgress: 15 },
-    { studentId: '2', studentName: 'Liam Smith', className: '6B', grade: '6th', totalPoints: 198, weeklyProgress: 12 },
-    { studentId: '3', studentName: 'Olivia Davis', className: '7A', grade: '7th', totalPoints: 267, weeklyProgress: 18 },
-    { studentId: '4', studentName: 'Noah Wilson', className: '7B', grade: '7th', totalPoints: 189, weeklyProgress: 9 },
-    { studentId: '5', studentName: 'Sophia Brown', className: '8A', grade: '8th', totalPoints: 321, weeklyProgress: 22 }
-  ];
 
   const getSchoolIcon = (type: string) => {
     switch (type) {
