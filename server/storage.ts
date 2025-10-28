@@ -927,6 +927,51 @@ export class DatabaseStorage implements IStorage {
     return updatedPost;
   }
 
+  // 🎓 TEACHER UPLIFT PULSE: Get teacher kudos
+  async getTeacherKudos(teacherId: string): Promise<KindnessPost[]> {
+    return await db.select()
+      .from(kindnessPosts)
+      .where(eq(kindnessPosts.mentionedTeacherId, teacherId))
+      .orderBy(desc(kindnessPosts.createdAt))
+      .limit(100);
+  }
+
+  // 🎓 TEACHER UPLIFT PULSE: Get teacher appreciation stats for school
+  async getTeacherKudosStats(schoolId: string): Promise<any> {
+    // Get all teachers in this school
+    const teachers = await db.select()
+      .from(users)
+      .where(and(
+        eq(users.schoolId, schoolId),
+        eq(users.schoolRole, 'teacher')
+      ));
+
+    // Count kudos for each teacher
+    const teacherStats = await Promise.all(
+      teachers.map(async (teacher) => {
+        const kudosCount = await db.select({ count: sql<number>`count(*)` })
+          .from(kindnessPosts)
+          .where(eq(kindnessPosts.mentionedTeacherId, teacher.id));
+        
+        return {
+          teacherId: teacher.id,
+          teacherName: `${teacher.firstName} ${teacher.lastName}`,
+          kudosCount: Number(kudosCount[0]?.count || 0)
+        };
+      })
+    );
+
+    // Calculate total kudos across school
+    const totalKudos = teacherStats.reduce((sum, stat) => sum + stat.kudosCount, 0);
+
+    return {
+      totalTeachers: teachers.length,
+      totalKudos,
+      teacherStats: teacherStats.sort((a, b) => b.kudosCount - a.kudosCount),
+      averageKudosPerTeacher: teachers.length > 0 ? totalKudos / teachers.length : 0
+    };
+  }
+
   async updatePostAnalytics(id: string, analytics: {
     sentimentScore?: number;
     impactScore?: number;

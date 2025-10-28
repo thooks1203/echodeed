@@ -84,6 +84,7 @@ export const kindnessPosts = pgTable("kindness_posts", {
   heartsCount: integer("hearts_count").default(0).notNull(),
   echoesCount: integer("echoes_count").default(0).notNull(),
   isAnonymous: integer("is_anonymous").default(1).notNull(), // 1 = anonymous, 0 = show user
+  mentionedTeacherId: varchar("mentioned_teacher_id").references(() => users.id), // Optional teacher appreciation tag
   createdAt: timestamp("created_at").defaultNow().notNull(),
   // AI Analysis Fields
   sentimentScore: integer("sentiment_score"), // 0-100

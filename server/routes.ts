@@ -1769,6 +1769,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 🎓 TEACHER UPLIFT PULSE: Get teacher kudos feed
+  // Get all kindness posts that mentioned a specific teacher
+  app.get("/api/teacher-kudos/:teacherId", async (req, res) => {
+    try {
+      const { teacherId } = req.params;
+      const kudosPosts = await storage.getTeacherKudos(teacherId);
+      res.json(kudosPosts);
+    } catch (error: any) {
+      console.error('Error fetching teacher kudos:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // 🎓 TEACHER UPLIFT PULSE: Get aggregate teacher appreciation stats
+  // Get stats on teacher appreciation across the school
+  app.get("/api/teacher-kudos/stats/:schoolId", async (req, res) => {
+    try {
+      const { schoolId } = req.params;
+      const stats = await storage.getTeacherKudosStats(schoolId);
+      res.json(stats);
+    } catch (error: any) {
+      console.error('Error fetching teacher kudos stats:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // 🔒 SECURE: Create new kindness post - Anonymous platform, no auth required
   app.post("/api/posts", async (req: any, res) => {
     try {
