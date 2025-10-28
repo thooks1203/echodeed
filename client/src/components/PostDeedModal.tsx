@@ -563,9 +563,9 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
                     <SelectValue placeholder="Select a teacher to appreciate..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">None - Keep anonymous</SelectItem>
-                    {teachers.map((teacher: any) => (
-                      <SelectItem key={teacher.id} value={teacher.id}>
+                    <SelectItem value="" data-testid="select-teacher-none">None - Keep anonymous</SelectItem>
+                    {teachers?.map((teacher: any) => (
+                      <SelectItem key={teacher.id} value={teacher.id} data-testid={`select-teacher-${teacher.id}`}>
                         {teacher.firstName} {teacher.lastName}
                       </SelectItem>
                     ))}
