@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { TeacherWellnessOverview } from '@/components/TeacherWellnessOverview';
 import { KindnessFeed } from '@/components/KindnessFeed';
+import { TeacherKudosFeed } from '@/components/TeacherKudosFeed';
 import { 
   Users, 
   Heart, 
@@ -31,7 +32,8 @@ import {
   AlertTriangle,
   HeartPulse,
   X,
-  Coffee
+  Coffee,
+  GraduationCap
 } from 'lucide-react';
 import { HelpButton, helpContent } from '@/components/HelpButton';
 
@@ -617,7 +619,7 @@ export function TeacherDashboard() {
         </Card>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-7' : 'grid-cols-6'} gap-1 bg-transparent`}>
+          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-8' : 'grid-cols-7'} gap-1 bg-transparent`}>
             <TabsTrigger value="overview" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm">
               <BarChart3 className="w-4 h-4 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">Overview</span>
@@ -627,6 +629,11 @@ export function TeacherDashboard() {
               <Users className="w-4 h-4 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">Students</span>
               <span className="sm:hidden">Kids</span>
+            </TabsTrigger>
+            <TabsTrigger value="kudos" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-rose-600 text-white hover:bg-rose-700 data-[state=active]:bg-rose-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm" data-testid="tab-kudos">
+              <GraduationCap className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Kudos</span>
+              <span className="sm:hidden">💝</span>
             </TabsTrigger>
             <TabsTrigger value="student-feed" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-pink-600 text-white hover:bg-pink-700 data-[state=active]:bg-pink-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm">
               <Heart className="w-4 h-4 sm:w-4 sm:h-4" />
@@ -863,6 +870,11 @@ export function TeacherDashboard() {
                 )}
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* 🎓 TEACHER UPLIFT PULSE: Kudos Tab */}
+          <TabsContent value="kudos" className="space-y-6" data-testid="tab-content-kudos">
+            <TeacherKudosFeed teacherId={user?.id || ''} />
           </TabsContent>
 
           {/* Lesson Plans Tab */}
