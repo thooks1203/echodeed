@@ -39,10 +39,6 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
     queryKey: ['/api/schools'],
   });
 
-  // Fetch student points
-  const { data: studentPoints = [] } = useQuery<StudentKindnessPoint[]>({
-    queryKey: ['/api/schools/student-points'],
-  });
 
   // Sample data for demonstration - Dudley High School
   const sampleSchools: School[] = [
@@ -585,6 +581,9 @@ export function SchoolsDashboard({ onNavigateToTab, activeBottomTab = 'schools' 
               </div>
             </div>
           </div>
+
+          {/* 🎓 TEACHER UPLIFT PULSE: Teacher Appreciation Metrics */}
+          <TeacherAppreciationMetrics schoolId="bc016cad-fa89-44fb-aab0-76f82c574f78" />
 
           {/* Recent Highlights */}
           <div style={{
