@@ -972,6 +972,17 @@ export class DatabaseStorage implements IStorage {
     };
   }
 
+  // 🎓 TEACHER UPLIFT PULSE: Get list of teachers for a school
+  async getTeachersForSchool(schoolId: string): Promise<User[]> {
+    return await db.select()
+      .from(users)
+      .where(and(
+        eq(users.schoolId, schoolId),
+        eq(users.schoolRole, 'teacher')
+      ))
+      .orderBy(users.lastName);
+  }
+
   async updatePostAnalytics(id: string, analytics: {
     sentimentScore?: number;
     impactScore?: number;

@@ -1,7 +1,7 @@
 import { useState, useMemo } from 'react';
-import { X, Heart, MapPin, HandHeart, Users, Smile, Lightbulb, Sparkles, BookOpen, TreePine, Smartphone, Crown, UserPlus, Plus, Search } from 'lucide-react';
+import { X, Heart, MapPin, HandHeart, Users, Smile, Lightbulb, Sparkles, BookOpen, TreePine, Smartphone, Crown, UserPlus, Plus, Search, GraduationCap } from 'lucide-react';
 // import electricLogoUrl from '../assets/echodeed_electric_logo.png';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { pushNotifications } from '../services/pushNotifications';
 import { useToast } from '@/hooks/use-toast';
@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Input } from '@/components/ui/input';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface PostDeedModalProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ interface PostData {
   state: string;
   country: string;
   emojis: string[];
+  mentionedTeacherId?: string;
 }
 
 export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: PostDeedModalProps) {
@@ -36,8 +38,15 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
   const [selectedEmojis, setSelectedEmojis] = useState<EmojiKey[]>([]);
   const [emojiSearch, setEmojiSearch] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [selectedTeacherId, setSelectedTeacherId] = useState<string>('');
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Fetch teachers for the school (using Eastern Guilford High School as demo)
+  const { data: teachers = [] } = useQuery<any[]>({
+    queryKey: ['/api/schools/bc016cad-fa89-44fb-aab0-76f82c574f78/teachers'],
+    enabled: isOpen, // Only fetch when modal is open
+  });
 
   // Intelligent kindness suggestions for grades 6-12
   const kindnessSuggestions = useMemo(() => {
@@ -209,10 +218,12 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
       
       queryClient.invalidateQueries({ queryKey: ['/api/posts'] });
       queryClient.invalidateQueries({ queryKey: ['/api/counter'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/teacher-kudos'] }); // 🎓 Invalidate teacher kudos
       setContent('');
       setCategory('Helping Others');
       setSelectedEmojis([]);
       setEmojiSearch('');
+      setSelectedTeacherId(''); // 🎓 Reset teacher selection
       
       // Trigger the sparks animation!
       console.log('🎆 POST SUCCESS - Calling onPostSuccess (should trigger sparks)');
@@ -301,6 +312,7 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
       state: location?.state || 'Unknown',
       country: location?.country || 'Unknown',
       emojis: selectedEmojis,
+      ...(selectedTeacherId && { mentionedTeacherId: selectedTeacherId }),
     };
 
     postMutation.mutate(postData);
@@ -538,6 +550,32 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
                 ))}
               </div>
             </div>
+
+            {/* 🎓 TEACHER UPLIFT PULSE: Optional Teacher Appreciation */}
+            {teachers && teachers.length > 0 && (
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-2">
+                  <GraduationCap size={16} className="text-pink-500" />
+                  💝 Thank a Teacher (Optional)
+                </label>
+                <Select value={selectedTeacherId} onValueChange={setSelectedTeacherId}>
+                  <SelectTrigger className="w-full" data-testid="select-teacher">
+                    <SelectValue placeholder="Select a teacher to appreciate..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">None - Keep anonymous</SelectItem>
+                    {teachers.map((teacher: any) => (
+                      <SelectItem key={teacher.id} value={teacher.id}>
+                        {teacher.firstName} {teacher.lastName}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                <p className="text-xs text-muted-foreground mt-1 italic">
+                  ✨ Recognize a teacher who helped you or inspired your kindness act. They'll see your appreciation privately!
+                </p>
+              </div>
+            )}
             
             <button 
               type="submit"

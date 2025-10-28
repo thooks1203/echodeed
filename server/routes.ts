@@ -1795,6 +1795,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // 🎓 TEACHER UPLIFT PULSE: Get list of teachers for a school (for dropdown)
+  app.get("/api/schools/:schoolId/teachers", async (req, res) => {
+    try {
+      const { schoolId } = req.params;
+      const teachers = await storage.getTeachersForSchool(schoolId);
+      res.json(teachers);
+    } catch (error: any) {
+      console.error('Error fetching teachers:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
   // 🔒 SECURE: Create new kindness post - Anonymous platform, no auth required
   app.post("/api/posts", async (req: any, res) => {
     try {
