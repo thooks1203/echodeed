@@ -556,13 +556,20 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
 
             {/* 🎓 TEACHER UPLIFT PULSE: Optional Teacher Appreciation */}
             {teachers && teachers.length > 0 && (
-              <div className="mt-4">
-                <label className="block text-sm font-medium text-foreground mb-2 flex items-center gap-2">
-                  <GraduationCap size={16} className="text-pink-500" />
+              <div className="mt-4 p-4 rounded-xl border-2 animate-pulse-slow" 
+                style={{
+                  background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 50%, #FCD34D 100%)',
+                  borderColor: '#F59E0B',
+                  boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3), 0 0 20px rgba(252, 211, 77, 0.4)',
+                  animation: 'teacher-glow 3s ease-in-out infinite'
+                }}
+              >
+                <label className="block text-sm font-bold text-orange-900 mb-3 flex items-center gap-2">
+                  <GraduationCap size={18} className="text-orange-600" />
                   💝 Thank a Teacher (Optional)
                 </label>
                 <Select value={selectedTeacherId} onValueChange={setSelectedTeacherId}>
-                  <SelectTrigger className="w-full" data-testid="select-teacher">
+                  <SelectTrigger className="w-full bg-white border-2 border-orange-300 hover:border-orange-500 transition-all" data-testid="select-teacher">
                     <SelectValue placeholder="Select a teacher to appreciate..." />
                   </SelectTrigger>
                   <SelectContent>
@@ -574,11 +581,25 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
                     ))}
                   </SelectContent>
                 </Select>
-                <p className="text-xs text-muted-foreground mt-1 italic">
-                  ✨ Recognize a teacher who helped you or inspired your kindness act. They'll see your appreciation privately!
+                <p className="text-xs text-orange-800 mt-2 italic font-medium flex items-center gap-1">
+                  <span className="text-base">✨</span> 
+                  Recognize a teacher who helped you or inspired your kindness act. They'll see your appreciation privately!
                 </p>
               </div>
             )}
+            
+            <style>{`
+              @keyframes teacher-glow {
+                0%, 100% {
+                  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3), 0 0 20px rgba(252, 211, 77, 0.4);
+                  border-color: #F59E0B;
+                }
+                50% {
+                  box-shadow: 0 4px 25px rgba(245, 158, 11, 0.5), 0 0 30px rgba(252, 211, 77, 0.6);
+                  border-color: #FBBF24;
+                }
+              }
+            `}</style>
             
             <button 
               type="submit"
