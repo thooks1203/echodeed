@@ -73,11 +73,27 @@ Submitted. And just like that, this kindness act is documented, the teacher gets
 
 *[Point to global counter if visible]*
 
-—the school's global kindness counter just went up."
+—the school's global kindness counter just went up.
+
+**Now let me show you what Coach Wilson sees.**
+
+*[Navigate to sidebar, click Teacher Dashboard tab]*
+
+This is the Teacher Dashboard—where teachers log in to see all the appreciation messages from students.
+
+*[Scroll through Teacher Kudos Feed]*
+
+Look at this. Each card shows the student's kindness act and the personal message they wrote for this teacher. 'Thanks for believing in our team.' 'You inspired me to help my friend today.'
+
+*[Point to metrics at top if visible]*
+
+Teachers see how many times they've been thanked, which categories of kindness they're inspiring. This isn't just feel-good data—this is teacher retention strategy built into your character education program.
+
+When teachers feel valued every single day by students, they stay. They engage. Your culture transforms."
 
 ---
 
-## [1:45-2:45] PARENT CONNECTION (The Differentiator)
+## [2:15-3:00] PARENT CONNECTION (The Differentiator)
 *[Navigate to Student Dashboard - show parent notification section]*
 
 "Now here's where EchoDeed becomes truly transformative for family engagement.
@@ -100,7 +116,7 @@ Why? Because imagine a parent at dinner saying, 'I saw you helped someone today 
 
 ---
 
-## [2:45-3:45] ADMINISTRATOR BENEFITS (The Close)
+## [3:00-4:00] ADMINISTRATOR BENEFITS (The Close)
 *[Navigate to Schools Dashboard or Admin view if available, or explain while showing student view]*
 
 "Alright, let's talk about what YOU care about as an administrator. Three things:
@@ -125,7 +141,7 @@ EchoDeed pilot pricing: $2,000 to $3,000 per year. That's 75 to 80 percent savin
 
 ---
 
-## [3:45-4:15] THE COMPLETE FLOW (Quick Recap)
+## [4:00-4:30] THE COMPLETE FLOW (Quick Recap)
 *[Navigate back to feed, gesture at screen]*
 
 "Let me recap what you just saw in real-time:
@@ -134,7 +150,7 @@ EchoDeed pilot pricing: $2,000 to $3,000 per year. That's 75 to 80 percent savin
 Student shares kindness—takes 30 seconds. Anonymous, authentic.
 
 *[Gesture to teacher feature]*
-They can thank a teacher who inspired them—builds staff morale.
+They can thank a teacher who inspired them—and teachers see those messages on their own dashboard. Builds staff morale every single day.
 
 *[Gesture to counter or dashboard]*
 Parent gets notified—strengthens family connection.
@@ -146,7 +162,7 @@ All of this happens simultaneously, every single time a student clicks 'Share Ki
 
 ---
 
-## [4:15-4:45] THE CALL TO ACTION
+## [4:30-5:00] THE CALL TO ACTION
 *[Return focus to camera, platform visible in background]*
 
 "Here's what I know: You didn't become a principal to fill out paperwork. You became a principal to transform lives.
@@ -176,20 +192,21 @@ Thank you. Let's make character education something students actually want to pa
 8. **Type:** Personal appreciation message
 9. **Click:** Submit
 10. **Watch:** Post appear in feed
-11. **Navigate:** To Student Dashboard (show parent notification)
-12. **Navigate:** To Schools Dashboard (if admin access available)
-13. **Return:** To Feed for recap
-14. **End:** Contact info visible
+11. **Navigate:** To Teacher Dashboard (sidebar) → Show teacher's appreciation feed
+12. **Navigate:** To Student Dashboard (show parent notification)
+13. **Navigate:** To Schools Dashboard (if admin access available)
+14. **Return:** To Feed for recap
+15. **End:** Contact info visible
 
 ---
 
 ## TIMING CHECKPOINTS:
 - **0:45** - Should be clicking "Share Kindness"
 - **1:15** - Should be showing teacher search
-- **1:45** - Should be submitting post
-- **2:00** - Should be on Student/Parent section
-- **2:45** - Should be explaining admin features
-- **4:15** - Should be wrapping up call to action
+- **1:45** - Should be submitting post, navigating to Teacher Dashboard
+- **2:15** - Should be on Student/Parent section
+- **3:00** - Should be explaining admin features
+- **4:30** - Should be wrapping up call to action
 
 ---
 
