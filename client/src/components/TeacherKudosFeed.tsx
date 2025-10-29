@@ -78,11 +78,35 @@ export function TeacherKudosFeed({ teacherId }: TeacherKudosFeedProps) {
               </div>
             </CardHeader>
             <CardContent>
-              <p className="text-foreground text-base leading-relaxed">
-                "{post.content}"
-              </p>
+              {/* SHOW THE PERSONAL APPRECIATION MESSAGE - THIS IS THE MAIN CONTENT */}
+              {post.teacherAppreciationMessage && (
+                <div className="bg-gradient-to-r from-yellow-50 to-orange-50 dark:from-yellow-950/30 dark:to-orange-950/30 border-2 border-orange-200 dark:border-orange-800 rounded-lg p-4 mb-4">
+                  <div className="flex items-start gap-2">
+                    <span className="text-2xl flex-shrink-0">💌</span>
+                    <div>
+                      <p className="text-base font-semibold text-orange-900 dark:text-orange-100 mb-1">
+                        Personal Message for You:
+                      </p>
+                      <p className="text-foreground text-base leading-relaxed italic">
+                        "{post.teacherAppreciationMessage}"
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              )}
+              
+              {/* Show kindness act for context */}
+              <div className="space-y-2">
+                <p className="text-sm font-semibold text-muted-foreground">
+                  The Kindness Act:
+                </p>
+                <p className="text-foreground text-base leading-relaxed">
+                  "{post.content}"
+                </p>
+              </div>
+              
               {post.location && (
-                <p className="text-sm text-muted-foreground mt-2">
+                <p className="text-sm text-muted-foreground mt-3">
                   📍 {post.location}
                 </p>
               )}
