@@ -619,16 +619,11 @@ export function TeacherDashboard() {
         </Card>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-8' : 'grid-cols-7'} gap-1 bg-transparent`}>
+          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-7' : 'grid-cols-6'} gap-1 bg-transparent`}>
             <TabsTrigger value="overview" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm">
               <BarChart3 className="w-4 h-4 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">Overview</span>
               <span className="sm:hidden">Info</span>
-            </TabsTrigger>
-            <TabsTrigger value="students" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm">
-              <Users className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="hidden sm:inline">Students</span>
-              <span className="sm:hidden">Kids</span>
             </TabsTrigger>
             <TabsTrigger value="kudos" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-rose-600 text-white hover:bg-rose-700 data-[state=active]:bg-rose-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm" data-testid="tab-kudos">
               <GraduationCap className="w-4 h-4 sm:w-4 sm:h-4" />
@@ -752,6 +747,77 @@ export function TeacherDashboard() {
               </Card>
             </div>
 
+            {/* Student Participation Summary Widget */}
+            <Card>
+              <CardHeader>
+                <div className="flex justify-between items-center">
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="w-5 h-5 text-purple-600" />
+                    Student Participation Summary
+                  </CardTitle>
+                  <div className="flex items-center gap-4">
+                    <label className="flex items-center gap-2 text-sm">
+                      <input
+                        type="checkbox"
+                        checked={filterNeedsEncouragement}
+                        onChange={(e) => setFilterNeedsEncouragement(e.target.checked)}
+                        className="rounded"
+                        data-testid="checkbox-filter-encouragement"
+                      />
+                      Show only students needing encouragement
+                    </label>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  {students.length === 0 ? (
+                    <div className="text-center py-8 text-gray-500">
+                      No students found matching your filter.
+                    </div>
+                  ) : (
+                    students.map((student) => (
+                      <div key={student.id} className="flex items-center justify-between p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                            student.needsEncouragement ? 'bg-orange-100' : 'bg-green-100'
+                          }`}>
+                            {student.needsEncouragement ? '⚠️' : '✅'}
+                          </div>
+                          <div>
+                            <div className="font-semibold text-sm">{student.name}</div>
+                            <div className="text-xs text-gray-600">
+                              Last active: {new Date(student.lastActive).toLocaleDateString()}
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div className="flex items-center gap-3">
+                          <div className="text-center">
+                            <div className="text-lg font-semibold text-purple-600">{student.kindnessActs}</div>
+                            <div className="text-xs text-gray-600">Kind acts</div>
+                          </div>
+                          
+                          <div className="flex flex-wrap gap-1 max-w-[150px]">
+                            {student.characterTraits.slice(0, 2).map((trait) => (
+                              <Badge key={trait} variant="outline" className="text-xs">
+                                {trait}
+                              </Badge>
+                            ))}
+                            {student.characterTraits.length > 2 && (
+                              <Badge variant="outline" className="text-xs">
+                                +{student.characterTraits.length - 2}
+                              </Badge>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
             {/* Quick Actions */}
             <Card>
               <CardHeader>
@@ -775,73 +841,6 @@ export function TeacherDashboard() {
                     <Target className="w-6 h-6" />
                     <span className="text-sm">Set Class Goal</span>
                   </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          {/* Students Tab */}
-          <TabsContent value="students" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <div className="flex justify-between items-center">
-                  <CardTitle>Student Participation</CardTitle>
-                  <div className="flex items-center gap-4">
-                    <label className="flex items-center gap-2 text-sm">
-                      <input
-                        type="checkbox"
-                        checked={filterNeedsEncouragement}
-                        onChange={(e) => setFilterNeedsEncouragement(e.target.checked)}
-                        className="rounded"
-                      />
-                      Show only students needing encouragement
-                    </label>
-                  </div>
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {students.map((student) => (
-                    <div key={student.id} className="flex items-center justify-between p-4 border rounded-lg">
-                      <div className="flex items-center gap-4">
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                          student.needsEncouragement ? 'bg-orange-100' : 'bg-green-100'
-                        }`}>
-                          {student.needsEncouragement ? '⚠️' : '✅'}
-                        </div>
-                        <div>
-                          <div className="font-semibold">{student.name}</div>
-                          <div className="text-sm text-gray-600">
-                            Last active: {new Date(student.lastActive).toLocaleDateString()}
-                          </div>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-4">
-                        <div className="text-center">
-                          <div className="text-lg font-semibold text-purple-600">{student.kindnessActs}</div>
-                          <div className="text-xs text-gray-600">Kind acts</div>
-                        </div>
-                        
-                        <div className="flex flex-wrap gap-1">
-                          {student.characterTraits.map((trait) => (
-                            <Badge key={trait} variant="outline" className="text-xs">
-                              {trait}
-                            </Badge>
-                          ))}
-                        </div>
-                        
-                        <Button 
-                          size="sm" 
-                          className="bg-indigo-600 hover:bg-indigo-700 text-white"
-                          onClick={() => setSelectedStudent(student)}
-                          data-testid={`button-view-details-${student.id}`}
-                        >
-                          View Details
-                        </Button>
-                      </div>
-                    </div>
-                  ))}
                 </div>
               </CardContent>
             </Card>
