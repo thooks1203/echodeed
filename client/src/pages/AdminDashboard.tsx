@@ -1584,10 +1584,25 @@ export default function AdminDashboard() {
                 <div className="bg-gradient-to-br from-pink-50 to-purple-50 p-4 rounded-lg border border-pink-200">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600">Total Posts Today</p>
-                      <p className="text-2xl font-bold text-pink-600">24</p>
+                      <p className="text-sm text-gray-600">Total Kindness Posts</p>
+                      <p className="text-2xl font-bold text-pink-600">{posts?.length || 0}</p>
                     </div>
                     <Heart className="w-8 h-8 text-pink-400" />
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-purple-50 to-pink-50 p-4 rounded-lg border border-purple-200">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm text-gray-600">Posts Today</p>
+                      <p className="text-2xl font-bold text-purple-600">
+                        {(posts ?? []).filter((p: any) => {
+                          const postDate = new Date(p.createdAt);
+                          const today = new Date();
+                          return postDate.toDateString() === today.toDateString();
+                        }).length}
+                      </p>
+                    </div>
+                    <Calendar className="w-8 h-8 text-purple-400" />
                   </div>
                 </div>
                 <div className="bg-gradient-to-br from-green-50 to-teal-50 p-4 rounded-lg border border-green-200">
@@ -1597,15 +1612,6 @@ export default function AdminDashboard() {
                       <p className="text-2xl font-bold text-green-600">187</p>
                     </div>
                     <Users className="w-8 h-8 text-green-400" />
-                  </div>
-                </div>
-                <div className="bg-gradient-to-br from-blue-50 to-cyan-50 p-4 rounded-lg border border-blue-200">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-sm text-gray-600">Engagement Rate</p>
-                      <p className="text-2xl font-bold text-blue-600">94%</p>
-                    </div>
-                    <TrendingUp className="w-8 h-8 text-blue-400" />
                   </div>
                 </div>
                 <div className="bg-gradient-to-br from-amber-50 to-orange-50 p-4 rounded-lg border border-amber-200">
