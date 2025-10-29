@@ -674,8 +674,8 @@ export default function Home() {
           onFilterChange={handleFilterChange}
         />
         
-        {/* Share Kindness Button - Enhanced to stand out more */}
-        <div className="px-4 py-4 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 border-b border-border relative overflow-visible">
+        {/* Share Kindness Button - Enhanced to stand out more - MOVED CLOSER TO FEED */}
+        <div className="px-4 py-3 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 border-b border-border relative overflow-visible">
           <div className="absolute inset-0 bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 animate-pulse opacity-75 z-0"></div>
           
           {/* Animated Corner Sparkles - z-20 to appear on top */}
@@ -692,7 +692,7 @@ export default function Home() {
           
           <button
             onClick={() => setIsPostModalOpen(true)}
-            className="relative w-full bg-gradient-to-r from-white to-yellow-50 text-purple-700 py-6 px-8 rounded-3xl font-black text-xl shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex items-center justify-center gap-4 border-4 border-white/50 z-10"
+            className="relative w-full bg-gradient-to-r from-white to-yellow-50 text-purple-700 py-4 px-6 rounded-3xl font-black text-lg shadow-2xl hover:shadow-purple-500/50 transition-all duration-300 hover:scale-105 hover:-translate-y-1 flex items-center justify-center gap-4 border-4 border-white/50 z-10"
             data-testid="button-share-kindness"
             style={{
               background: 'linear-gradient(135deg, #ffffff 0%, #fef3c7 50%, #fde68a 100%)',
@@ -715,7 +715,7 @@ export default function Home() {
         </div>
 
         {/* Visual Icon Legend - Always visible guide */}
-        <div className="px-4 py-3 bg-gradient-to-r from-purple-50 via-pink-50 to-purple-50 border-y border-purple-200/50">
+        <div className="px-4 py-2 bg-gradient-to-r from-purple-50 via-pink-50 to-purple-50 border-y border-purple-200/50">
           <div className="flex items-center justify-center gap-6">
             <div className="flex items-center gap-2">
               <Heart className="w-5 h-5 text-red-500 fill-red-500" />

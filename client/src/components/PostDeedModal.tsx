@@ -48,6 +48,9 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
     enabled: isOpen, // Only fetch when modal is open
   });
 
+  // Debug logging
+  console.log('🎓 PostDeedModal - Teachers:', teachers, 'Length:', teachers?.length, 'isOpen:', isOpen);
+
   // Intelligent kindness suggestions for grades 6-12
   const kindnessSuggestions = useMemo(() => {
     const suggestions = {
