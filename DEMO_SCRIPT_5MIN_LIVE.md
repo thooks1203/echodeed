@@ -5,6 +5,8 @@
 
 ---
 
+## 📄 PAGE 1 of 5
+
 ## STARTING POSITION: Main Feed
 
 ## [0:00-0:45] THE PROBLEM & HOOK
@@ -21,6 +23,8 @@ I'm Tavores Vanhook, and in the next 5 minutes, I'll show you how Eastern Guilfo
 Let me show you exactly how this works."
 
 ---
+
+## 📄 PAGE 2 of 5
 
 ## [0:45-1:45] STUDENT EXPERIENCE (Core Value)
 *[Navigate to main feed, scroll slowly through posts]*
@@ -93,6 +97,8 @@ When teachers feel valued every single day by students, they stay. They engage. 
 
 ---
 
+## 📄 PAGE 3 of 5
+
 ## [2:15-3:00] PARENT CONNECTION (The Differentiator)
 *[Navigate to Student Dashboard - show parent notification section]*
 
@@ -115,6 +121,8 @@ See these Echo tokens? Students earn them for acts of kindness. But their parent
 Why? Because imagine a parent at dinner saying, 'I saw you helped someone today at school. Tell me about it.' That's a positive conversation about school. That changes attendance. That strengthens families. No other character education platform does this."
 
 ---
+
+## 📄 PAGE 4 of 5
 
 ## [3:00-4:00] ADMINISTRATOR BENEFITS (The Close)
 *[Navigate to Schools Dashboard or Admin view if available, or explain while showing student view]*
@@ -140,6 +148,8 @@ Character Strong costs $8,000 to $12,000 per year. Panorama SEL costs $10,000 to
 EchoDeed pilot pricing: $2,000 to $3,000 per year. That's 75 to 80 percent savings for a solution that actually engages students AND parents."
 
 ---
+
+## 📄 PAGE 5 of 5
 
 ## [4:00-4:30] THE COMPLETE FLOW (Quick Recap)
 *[Navigate back to feed, gesture at screen]*
