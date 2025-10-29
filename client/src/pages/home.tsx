@@ -786,7 +786,7 @@ export default function Home() {
           data-testid="button-share-kindness-fab"
           className="fixed bottom-20 cursor-pointer z-[101] flex flex-col items-center gap-1.5"
           style={{
-            right: 'clamp(1rem, calc(50% - 380px), 8rem)' // Sweet spot: visible next to feed, never overlapping
+            right: 'clamp(1rem, calc(50% - 420px), 6rem)' // Moved further right - more clearance from feed
           }}
         >
           <button
