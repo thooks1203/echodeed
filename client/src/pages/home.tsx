@@ -779,14 +779,14 @@ export default function Home() {
       
       {/* Kindness Sparks Animation - Now mounted globally at App root */}
       
-      {/* Share Kindness Floating Action Button - POSITIONED NEXT TO FEED (NOT OVERLAPPING) */}
+      {/* Share Kindness Floating Action Button - POSITIONED TO THE RIGHT OF FEED */}
       {isAuthenticated && (
         <div
           onClick={() => setIsPostModalOpen(true)}
           data-testid="button-share-kindness-fab"
           className="fixed bottom-20 cursor-pointer z-[101] flex flex-col items-center gap-1.5"
           style={{
-            right: 'clamp(1rem, calc(50% - 420px), 6rem)' // Moved further right - more clearance from feed
+            left: 'clamp(calc(50% + 300px + 2rem), calc(50% + 300px + 2rem), calc(100vw - 6rem))'
           }}
         >
           <button
