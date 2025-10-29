@@ -118,23 +118,12 @@ export async function initializeSampleData() {
     // FORCE COMPREHENSIVE RE-SEEDING FOR COMPLETE DEMO DATA
     log('🔄 FORCE RE-SEEDING: Adding comprehensive demo data regardless of existing content');
     
-    // CRITICAL FIX: Reset the counter to prevent doubling
-    log('🔄 Resetting global kindness counter to prevent accumulation...');
+    // CRITICAL FIX: Set counter to match actual post count
+    log('🔄 Synchronizing global kindness counter with actual posts...');
     
-    // Get current counter and reset it to 0
+    // Get current counter value
     const currentCounter = await storage.getCounter();
     log(`📊 Current counter value: ${currentCounter.count}`);
-    
-    // Import database directly to reset counter
-    const { db } = await import('./db');
-    const { kindnessCounter } = await import('@shared/schema');
-    const { eq } = await import('drizzle-orm');
-    
-    await db.update(kindnessCounter)
-      .set({ count: 287435, updatedAt: new Date() })
-      .where(eq(kindnessCounter.id, "global"));
-    
-    log('✅ Global kindness counter set to 287,435');
     
     if (hasAdultContent) {
       log('Found adult content in posts, will add kid-friendly posts...');
@@ -463,9 +452,20 @@ export async function initializeSampleData() {
     
     log('✨ Added realistic hearts and echoes to demo posts');
 
-    // The global counter will automatically increment as posts are added
+    // Sync the global counter to match actual post count
+    const allPostsAfterCreation = await storage.getPosts({});
+    const actualPostCount = allPostsAfterCreation.length;
+    
+    const { db } = await import('./db');
+    const { kindnessCounter } = await import('@shared/schema');
+    const { eq } = await import('drizzle-orm');
+    
+    await db.update(kindnessCounter)
+      .set({ count: actualPostCount, updatedAt: new Date() })
+      .where(eq(kindnessCounter.id, "global"));
+    
     log(`✓ Added ${samplePosts.length} sample posts`);
-    log(`✓ Counter will reflect actual post count`);
+    log(`✅ Global kindness counter synchronized to ${actualPostCount} (matches total posts)`);
 
     // 🎓 Initialize Sofia Rodriguez's Demo Data (Eastern Guilford High School)
     log('📚 Initializing Sofia Rodriguez demo student data...');
