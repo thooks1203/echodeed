@@ -53,7 +53,7 @@ Students can search for and thank a teacher who inspired their kindness. Watch t
 
 *[Teacher search filters to Wilson]*
 
-—and instantly I see Coach Wilson.
+—and instantly I see Ms. Wilson.
 
 *[Select teacher, show personal message field appearing]*
 
@@ -61,7 +61,7 @@ Now watch what happens. A personal message field appears where students can writ
 
 *[Start typing appreciation message]*
 
-'Coach Wilson - Thanks for believing in our team and teaching us that helping others makes us stronger.'
+'Ms. Wilson - Thanks for helping me understand fractions yesterday. You inspired me to help my friend today.'
 
 *[Pause, look at camera]*
 
@@ -75,7 +75,7 @@ Submitted. And just like that, this kindness act is documented, the teacher gets
 
 —the school's global kindness counter just went up.
 
-**Now let me show you what Coach Wilson sees.**
+**Now let me show you what Ms. Wilson sees.**
 
 *[Navigate to sidebar, click Teacher Dashboard tab]*
 
