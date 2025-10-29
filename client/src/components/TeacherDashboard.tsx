@@ -33,7 +33,11 @@ import {
   HeartPulse,
   X,
   Coffee,
-  GraduationCap
+  GraduationCap,
+  Shield,
+  Eye,
+  XCircle,
+  Ban
 } from 'lucide-react';
 import { HelpButton, helpContent } from '@/components/HelpButton';
 
@@ -351,6 +355,245 @@ function RewardsTabContent() {
   );
 }
 
+// Review Queue Component for AI-Flagged Content
+function ReviewQueueContent({ user }: { user: any }) {
+  const [severityFilter, setSeverityFilter] = useState<string>('all');
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  // Fetch flagged posts from moderation queue
+  const { data: flaggedPosts = [], isLoading } = useQuery<any[]>({
+    queryKey: ['/api/moderation/queue', { status: 'pending', severity: severityFilter !== 'all' ? severityFilter : undefined }],
+    queryFn: async () => {
+      const params = new URLSearchParams({ status: 'pending' });
+      if (severityFilter !== 'all') {
+        params.append('severity', severityFilter);
+      }
+      const response = await apiRequest('GET', `/api/moderation/queue?${params.toString()}`);
+      if (!response.ok) {
+        throw new Error('Failed to fetch moderation queue');
+      }
+      return response.json();
+    }
+  });
+
+  // Mutation for reviewing flagged content
+  const reviewMutation = useMutation({
+    mutationFn: async ({ id, actionTaken, reviewNotes }: { id: string; actionTaken: string; reviewNotes?: string }) => {
+      const response = await apiRequest('PATCH', `/api/moderation/queue/${id}`, {
+        actionTaken,
+        reviewNotes: reviewNotes || `Teacher reviewed and took action: ${actionTaken}`
+      });
+      return response.json();
+    },
+    onSuccess: () => {
+      toast({
+        title: "✅ Review Complete",
+        description: "Your decision has been recorded.",
+      });
+      queryClient.invalidateQueries({ queryKey: ['/api/moderation/queue'] });
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: `Failed to update review: ${error?.message || 'Please try again.'}`,
+        variant: "destructive"
+      });
+    }
+  });
+
+  const handleReview = (id: string, action: string) => {
+    reviewMutation.mutate({ id, actionTaken: action });
+  };
+
+  const getSeverityColor = (severity: string) => {
+    switch (severity) {
+      case 'high': return 'bg-red-100 border-red-300 text-red-800';
+      case 'medium': return 'bg-orange-100 border-orange-300 text-orange-800';
+      case 'low': return 'bg-yellow-100 border-yellow-300 text-yellow-800';
+      default: return 'bg-gray-100 border-gray-300 text-gray-800';
+    }
+  };
+
+  const getSeverityBadge = (severity: string) => {
+    switch (severity) {
+      case 'high': return <Badge className="bg-red-600 text-white">High Risk</Badge>;
+      case 'medium': return <Badge className="bg-orange-600 text-white">Medium Risk</Badge>;
+      case 'low': return <Badge className="bg-yellow-600 text-white">Low Risk</Badge>;
+      default: return <Badge variant="outline">Unknown</Badge>;
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <Card>
+        <CardContent className="py-12 text-center">
+          <div className="animate-spin w-12 h-12 border-4 border-orange-600 border-t-transparent rounded-full mx-auto mb-4" />
+          <p className="text-gray-600">Loading review queue...</p>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Header with Filter */}
+      <Card className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-200">
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <div>
+              <CardTitle className="flex items-center gap-2 text-2xl">
+                <Shield className="w-6 h-6 text-orange-600" />
+                Content Review Queue
+              </CardTitle>
+              <CardDescription className="mt-2 text-base">
+                AI-flagged posts requiring human review for safety and compliance
+              </CardDescription>
+            </div>
+            <div className="flex items-center gap-2">
+              <label className="text-sm font-medium">Filter by Severity:</label>
+              <select 
+                value={severityFilter} 
+                onChange={(e) => setSeverityFilter(e.target.value)}
+                className="px-3 py-2 border rounded-md bg-white"
+                data-testid="select-severity-filter"
+              >
+                <option value="all">All Levels</option>
+                <option value="high">High Risk</option>
+                <option value="medium">Medium Risk</option>
+                <option value="low">Low Risk</option>
+              </select>
+            </div>
+          </div>
+        </CardHeader>
+      </Card>
+
+      {/* Flagged Posts List */}
+      {flaggedPosts.length === 0 ? (
+        <Card>
+          <CardContent className="py-16 text-center">
+            <Shield className="w-16 h-16 mx-auto mb-4 text-green-600" />
+            <h3 className="text-xl font-bold text-green-800 mb-2">
+              All Clear! 🎉
+            </h3>
+            <p className="text-gray-600 max-w-md mx-auto">
+              No posts currently flagged for review. Our AI safety system is monitoring content and will alert you if anything needs attention.
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-4">
+          <div className="flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-gray-900">
+              {flaggedPosts.length} {flaggedPosts.length === 1 ? 'Post' : 'Posts'} Awaiting Review
+            </h3>
+          </div>
+
+          {flaggedPosts.map((post) => (
+            <Card key={post.id} className={`border-2 ${getSeverityColor(post.severityLevel)}`}>
+              <CardHeader>
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-2">
+                      {getSeverityBadge(post.severityLevel)}
+                      <Badge variant="outline">{post.flagReason}</Badge>
+                      {post.aiConfidence && (
+                        <Badge variant="secondary">
+                          {post.aiConfidence}% confidence
+                        </Badge>
+                      )}
+                    </div>
+                    <CardDescription className="text-sm text-gray-600">
+                      Flagged: {new Date(post.flaggedAt).toLocaleString()} • Post Type: {post.postType}
+                    </CardDescription>
+                  </div>
+                </div>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {/* Post Content */}
+                <div className="bg-white p-4 rounded-lg border">
+                  <p className="text-sm font-semibold text-gray-700 mb-2">Post Content:</p>
+                  <p className="text-base text-gray-900 italic">"{post.content}"</p>
+                </div>
+
+                {/* AI Detection Info */}
+                {post.detectedPatterns && (
+                  <div className="bg-gray-50 p-3 rounded-lg border">
+                    <p className="text-sm font-semibold text-gray-700 mb-1">AI Detection:</p>
+                    <div className="flex flex-wrap gap-2">
+                      {Array.isArray(post.detectedPatterns) ? 
+                        post.detectedPatterns.map((pattern: string, idx: number) => (
+                          <Badge key={idx} variant="outline" className="text-xs">
+                            {pattern}
+                          </Badge>
+                        )) :
+                        <span className="text-xs text-gray-600">
+                          {typeof post.detectedPatterns === 'string' ? post.detectedPatterns : JSON.stringify(post.detectedPatterns)}
+                        </span>
+                      }
+                    </div>
+                  </div>
+                )}
+
+                {/* Action Buttons */}
+                <div className="flex items-center gap-3 pt-2">
+                  <Button
+                    onClick={() => handleReview(post.id, 'approved')}
+                    disabled={reviewMutation.isPending}
+                    className="bg-green-600 hover:bg-green-700 text-white"
+                    data-testid={`button-approve-${post.id}`}
+                  >
+                    <CheckCircle className="w-4 h-4 mr-2" />
+                    Approve Post
+                  </Button>
+                  <Button
+                    onClick={() => handleReview(post.id, 'blocked')}
+                    disabled={reviewMutation.isPending}
+                    className="bg-red-600 hover:bg-red-700 text-white"
+                    data-testid={`button-block-${post.id}`}
+                  >
+                    <Ban className="w-4 h-4 mr-2" />
+                    Block Post
+                  </Button>
+                  <Button
+                    onClick={() => handleReview(post.id, 'counselor_referred')}
+                    disabled={reviewMutation.isPending}
+                    variant="outline"
+                    className="border-purple-600 text-purple-600 hover:bg-purple-50"
+                    data-testid={`button-escalate-${post.id}`}
+                  >
+                    <Eye className="w-4 h-4 mr-2" />
+                    Refer to Counselor
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      )}
+
+      {/* Info Card */}
+      <Card className="bg-blue-50 border-blue-200">
+        <CardContent className="pt-6">
+          <div className="flex items-start gap-3">
+            <Shield className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+            <div>
+              <h4 className="font-semibold text-blue-900 mb-1">
+                🛡️ AI Safety & Compliance
+              </h4>
+              <p className="text-sm text-blue-800">
+                Our three-layer AI system (Behavioral Pattern Analyzer → Compliance Filter → Aggregate Climate Monitor) 
+                flags content for human review. This ensures FERPA compliance and student safety while maintaining privacy. 
+                All decisions are documented for compliance reporting.
+              </p>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export function TeacherDashboard() {
   const [selectedTab, setSelectedTab] = useState<string>('overview');
   const [filterNeedsEncouragement, setFilterNeedsEncouragement] = useState<boolean>(false);
@@ -619,11 +862,16 @@ export function TeacherDashboard() {
         </Card>
 
         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="space-y-6">
-          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-7' : 'grid-cols-6'} gap-1 bg-transparent`}>
+          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-8' : 'grid-cols-7'} gap-1 bg-transparent`}>
             <TabsTrigger value="overview" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm">
               <BarChart3 className="w-4 h-4 sm:w-4 sm:h-4" />
               <span className="hidden sm:inline">Overview</span>
               <span className="sm:hidden">Info</span>
+            </TabsTrigger>
+            <TabsTrigger value="review-queue" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-orange-600 text-white hover:bg-orange-700 data-[state=active]:bg-orange-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm" data-testid="tab-review-queue">
+              <Shield className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="hidden sm:inline">Review Queue</span>
+              <span className="sm:hidden">🛡️</span>
             </TabsTrigger>
             <TabsTrigger value="kudos" className="flex flex-col sm:flex-row items-center gap-0.5 sm:gap-1 bg-rose-600 text-white hover:bg-rose-700 data-[state=active]:bg-rose-700 data-[state=active]:shadow-lg px-1 sm:px-3 py-2 text-[10px] sm:text-sm" data-testid="tab-kudos">
               <GraduationCap className="w-4 h-4 sm:w-4 sm:h-4" />
@@ -844,6 +1092,11 @@ export function TeacherDashboard() {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          {/* Review Queue Tab - AI-Flagged Content for Human Review */}
+          <TabsContent value="review-queue" className="space-y-6" data-testid="tab-content-review-queue">
+            <ReviewQueueContent user={user} />
           </TabsContent>
 
           {/* Student Feed Tab */}
