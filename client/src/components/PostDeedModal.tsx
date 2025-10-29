@@ -38,7 +38,7 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
   const [selectedEmojis, setSelectedEmojis] = useState<EmojiKey[]>([]);
   const [emojiSearch, setEmojiSearch] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [selectedTeacherId, setSelectedTeacherId] = useState<string>('');
+  const [selectedTeacherId, setSelectedTeacherId] = useState<string>('none');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -226,7 +226,7 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
       setCategory('Helping Others');
       setSelectedEmojis([]);
       setEmojiSearch('');
-      setSelectedTeacherId(''); // 🎓 Reset teacher selection
+      setSelectedTeacherId('none'); // 🎓 Reset teacher selection
       
       // Trigger the sparks animation!
       console.log('🎆 POST SUCCESS - Calling onPostSuccess (should trigger sparks)');
@@ -315,7 +315,7 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
       state: location?.state || 'Unknown',
       country: location?.country || 'Unknown',
       emojis: selectedEmojis,
-      ...(selectedTeacherId && { mentionedTeacherId: selectedTeacherId }),
+      ...(selectedTeacherId && selectedTeacherId !== 'none' && { mentionedTeacherId: selectedTeacherId }),
     };
 
     postMutation.mutate(postData);
@@ -566,7 +566,7 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
                     <SelectValue placeholder="Select a teacher to appreciate..." />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="" data-testid="select-teacher-none">None - Keep anonymous</SelectItem>
+                    <SelectItem value="none" data-testid="select-teacher-none">None - Keep anonymous</SelectItem>
                     {teachers?.map((teacher: any) => (
                       <SelectItem key={teacher.id} value={teacher.id} data-testid={`select-teacher-${teacher.id}`}>
                         {teacher.firstName} {teacher.lastName}
