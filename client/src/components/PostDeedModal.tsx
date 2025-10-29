@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react';
-import { X, Heart, MapPin, HandHeart, Users, Smile, Lightbulb, Sparkles, BookOpen, TreePine, Smartphone, Crown, UserPlus, Plus, Search, GraduationCap } from 'lucide-react';
+import { X, Heart, MapPin, HandHeart, Users, Smile, Lightbulb, Sparkles, BookOpen, TreePine, Smartphone, Crown, UserPlus, Plus, Search, GraduationCap, Check, ChevronsUpDown } from 'lucide-react';
 // import electricLogoUrl from '../assets/echodeed_electric_logo.png';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
@@ -41,6 +41,7 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedTeacherId, setSelectedTeacherId] = useState<string>('none');
   const [teacherMessage, setTeacherMessage] = useState<string>('');
+  const [teacherSearchOpen, setTeacherSearchOpen] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -574,19 +575,67 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
                   <GraduationCap size={18} className="text-orange-600" />
                   💝 Thank a Teacher (Optional)
                 </label>
-                <Select value={selectedTeacherId} onValueChange={setSelectedTeacherId}>
-                  <SelectTrigger className="w-full bg-white border-2 border-orange-300 hover:border-orange-500 transition-all" data-testid="select-teacher">
-                    <SelectValue placeholder="Select a teacher to appreciate..." />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="none" data-testid="select-teacher-none">None - Keep anonymous</SelectItem>
-                    {teachers?.map((teacher: any) => (
-                      <SelectItem key={teacher.id} value={teacher.id} data-testid={`select-teacher-${teacher.id}`}>
-                        {teacher.firstName} {teacher.lastName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
+                
+                {/* Searchable Teacher Combobox - Fast filtering! */}
+                <Popover open={teacherSearchOpen} onOpenChange={setTeacherSearchOpen}>
+                  <PopoverTrigger asChild>
+                    <Button
+                      variant="outline"
+                      role="combobox"
+                      aria-expanded={teacherSearchOpen}
+                      className="w-full justify-between bg-white border-2 border-orange-300 hover:border-orange-500 hover:bg-white transition-all text-gray-900"
+                      data-testid="select-teacher"
+                    >
+                      {selectedTeacherId === 'none' 
+                        ? "Type to search teachers..." 
+                        : `${teachers?.find((t: any) => t.id === selectedTeacherId)?.firstName} ${teachers?.find((t: any) => t.id === selectedTeacherId)?.lastName}`
+                      }
+                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                    </Button>
+                  </PopoverTrigger>
+                  <PopoverContent className="w-[400px] p-0" align="start">
+                    <Command>
+                      <CommandInput 
+                        placeholder="Type teacher's name... (e.g., Sarah, Wilson)" 
+                        className="h-9"
+                      />
+                      <CommandList>
+                        <CommandEmpty>No teacher found.</CommandEmpty>
+                        <CommandGroup>
+                          <CommandItem
+                            value="none"
+                            onSelect={() => {
+                              setSelectedTeacherId('none');
+                              setTeacherSearchOpen(false);
+                            }}
+                            data-testid="select-teacher-none"
+                          >
+                            <Check
+                              className={`mr-2 h-4 w-4 ${selectedTeacherId === 'none' ? 'opacity-100' : 'opacity-0'}`}
+                            />
+                            None - Keep anonymous
+                          </CommandItem>
+                          {teachers?.map((teacher: any) => (
+                            <CommandItem
+                              key={teacher.id}
+                              value={`${teacher.firstName} ${teacher.lastName}`}
+                              onSelect={() => {
+                                setSelectedTeacherId(teacher.id);
+                                setTeacherSearchOpen(false);
+                              }}
+                              data-testid={`select-teacher-${teacher.id}`}
+                            >
+                              <Check
+                                className={`mr-2 h-4 w-4 ${selectedTeacherId === teacher.id ? 'opacity-100' : 'opacity-0'}`}
+                              />
+                              {teacher.firstName} {teacher.lastName}
+                            </CommandItem>
+                          ))}
+                        </CommandGroup>
+                      </CommandList>
+                    </Command>
+                  </PopoverContent>
+                </Popover>
                 <p className="text-xs text-orange-800 mt-2 italic font-medium flex items-center gap-1">
                   <span className="text-base">✨</span> 
                   Recognize a teacher who helped you or inspired your kindness act. They'll see your appreciation privately!
