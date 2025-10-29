@@ -1767,7 +1767,7 @@ export default function AdminDashboard() {
                               </span>
                             </div>
                             <p className="text-base font-medium text-gray-900 dark:text-gray-100">
-                              {post.kindnessText}
+                              {post.content}
                             </p>
                             <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400">
                               <span className="flex items-center gap-1">
