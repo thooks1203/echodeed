@@ -29,6 +29,7 @@ interface PostData {
   country: string;
   emojis: string[];
   mentionedTeacherId?: string;
+  teacherAppreciationMessage?: string;
 }
 
 export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: PostDeedModalProps) {
@@ -39,6 +40,7 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
   const [emojiSearch, setEmojiSearch] = useState('');
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [selectedTeacherId, setSelectedTeacherId] = useState<string>('none');
+  const [teacherMessage, setTeacherMessage] = useState<string>('');
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -227,6 +229,7 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
       setSelectedEmojis([]);
       setEmojiSearch('');
       setSelectedTeacherId('none'); // 🎓 Reset teacher selection
+      setTeacherMessage(''); // 🎓 Reset teacher message
       
       // Trigger the sparks animation!
       console.log('🎆 POST SUCCESS - Calling onPostSuccess (should trigger sparks)');
@@ -315,7 +318,10 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
       state: location?.state || 'Unknown',
       country: location?.country || 'Unknown',
       emojis: selectedEmojis,
-      ...(selectedTeacherId && selectedTeacherId !== 'none' && { mentionedTeacherId: selectedTeacherId }),
+      ...(selectedTeacherId && selectedTeacherId !== 'none' && { 
+        mentionedTeacherId: selectedTeacherId,
+        ...(teacherMessage.trim() && { teacherAppreciationMessage: teacherMessage.trim() })
+      }),
     };
 
     postMutation.mutate(postData);
@@ -585,6 +591,32 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
                   <span className="text-base">✨</span> 
                   Recognize a teacher who helped you or inspired your kindness act. They'll see your appreciation privately!
                 </p>
+                
+                {/* Show personal message field when teacher is selected */}
+                {selectedTeacherId !== 'none' && (
+                  <div className="mt-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                    <label className="block text-sm font-semibold text-orange-900 mb-2">
+                      💌 Personal Message for {teachers?.find((t: any) => t.id === selectedTeacherId)?.firstName}
+                    </label>
+                    <textarea
+                      value={teacherMessage}
+                      onChange={(e) => setTeacherMessage(e.target.value)}
+                      placeholder="Example: Thank you for helping me understand fractions yesterday. You inspired me to help my friend today!"
+                      className="w-full px-3 py-2 border-2 border-orange-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 resize-none bg-white text-gray-800"
+                      rows={3}
+                      maxLength={280}
+                      data-testid="textarea-teacher-message"
+                    />
+                    <div className="flex justify-between items-center mt-1">
+                      <p className="text-xs text-orange-700 italic">
+                        This private message will brighten their day! 🌟
+                      </p>
+                      <span className="text-xs text-orange-600 font-medium">
+                        {teacherMessage.length}/280
+                      </span>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
             
