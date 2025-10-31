@@ -334,32 +334,33 @@ Target 5-7 schools with HIGHEST alignment:
 ## 📧 CUSTOMIZED OUTREACH ANGLES BY SCHOOL TYPE
 
 ### **For Episcopal Schools (Heathwood Hall, Christ Church, St. David's):**
-"EchoDeed's anonymous posting honors the inherent dignity of every student - no social pressure, just authentic belonging. Perfect for Episcopal values of inclusion and community."
+"EchoDeed's anonymous platform honors every student's inherent dignity - no social pressure, no popularity contests. Students share authentically because they feel safe. Perfect alignment with Episcopal values of inclusion and belonging."
 
 ### **For Classical Christian Schools (Trinity, Veritas, Dominion Ridge):**
-"Character education that works WITH your classical curriculum - not another add-on. Tracks virtue development (kindness, service, gratitude) automatically."
+"Character education that complements your classical curriculum. EchoDeed automatically documents virtue development (kindness, service, gratitude) as students practice it - not as another curriculum to teach."
 
 ### **For University Model/Hybrid Schools (Heritage Leadership, Covenant Christian):**
-"Parent partnership is already your strength. EchoDeed's dual reward system + parent notifications supercharge family engagement."
+"Your parent partnership model is already strong. EchoDeed amplifies it with real-time parent notifications when their teen shares kindness + dual rewards that spark positive dinner conversations about school."
 
 ### **For Service-Focused Schools (All):**
-"Turn service hours into character documentation. EchoDeed tracks student kindness acts automatically - 90% less compliance paperwork."
+"EchoDeed automatically documents character education compliance as students participate - no separate paperwork needed. Every kindness act is timestamped, categorized, and exportable for accreditation reports."
 
 ---
 
 ## 🎁 LEAD MAGNETS TO CREATE FOR OUTREACH
 
-1. **"Private School Character Education Compliance Guide"** (2-page PDF)
-   - How to meet accreditation standards with 90% less work
+1. **"The 90% Paperwork Reduction Framework"** (2-page PDF)
+   - How automated character education documentation works
+   - Comparison: manual tracking vs. EchoDeed system
    
-2. **"Teacher Retention Through Daily Appreciation"** (case study)
-   - Eastern Guilford data on teacher morale
+2. **"5 Questions Every Principal Should Ask Their Character Ed Vendor"** (1-page checklist)
+   - Helps principals evaluate current programs vs. EchoDeed
    
-3. **"Episcopal Values + EdTech: A Perfect Match"** (white paper)
-   - How EchoDeed honors dignity, inclusion, belonging
+3. **"Episcopal Values + Anonymous Kindness: A Natural Fit"** (white paper)
+   - How EchoDeed's design honors student dignity and belonging
    
-4. **"Parent Engagement ROI Calculator"** (interactive tool)
-   - Show projected family connection improvement
+4. **"Parent Notification Templates"** (sample emails/SMS)
+   - Show what parent engagement looks like with EchoDeed
 
 ---
 
