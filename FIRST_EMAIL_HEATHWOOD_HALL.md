@@ -49,16 +49,11 @@ virtue for Instagram).
 ✅ Automated compliance documentation → 90% paperwork reduction for 
    character education requirements
 
-**Cost:** $7,500/year ($8.30 per student for 903 students)
-
-**Early adopter pricing:** $6,000 for first 10 schools - lock in this 
-rate forever (increases to $7,500 after)
-
 I wrote a white paper specifically for Episcopal schools titled 
 "Episcopal Values + Anonymous Kindness: A Natural Fit" that shows how 
 this operationalizes what you're already teaching.
 
-Would you be open to a 5-minute demo? I can show you:
+Would you be open to a 5-minute demo? I can walk you through:
 1. How students post anonymously
 2. What parent notifications look like
 3. The compliance dashboard (one-click reporting)
@@ -69,10 +64,8 @@ Founder, EchoDeed
 336-214-1645
 tavores@echodeed.com
 
-P.S. Heathwood Hall serves 903 students - that's $8.30 per student for 
-a platform that operationalizes your Episcopal values of dignity and 
-belonging. Character Strong charges $12,000 ($13.30/student) and doesn't 
-engage parents or teachers.
+P.S. We're significantly more affordable than Character Strong or 
+Panorama, and we actually engage parents and teachers (they don't).
 ```
 
 ---
