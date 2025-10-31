@@ -22,8 +22,9 @@ I was reading about Heathwood Hall's commitment to Episcopal education
 and noticed you have 14 Teachers of the Year on staff - that's 
 extraordinary.
 
-I'm reaching out because I built something specifically for Episcopal 
-schools like yours: a platform where students practice dignity and 
+I'm Tavores Vanhook, founder of EchoDeed - a character education 
+platform designed specifically for mission-driven schools like yours. 
+I'm reaching out because EchoDeed helps students practice dignity and 
 belonging through anonymous acts of kindness.
 
 Here's how it works:
