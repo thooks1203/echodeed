@@ -1,8 +1,8 @@
 # Personalized School Outreach Emails
 **38 Ready-to-Send Emails Customized by School Mission**
 
-**Pricing:** $5,000/year (50-60% savings vs. Character Strong/Panorama)  
-**Early Adopter Special:** $4,000 for first 5 pilot schools
+**Pricing:** $7,500/year (37-50% savings vs. Character Strong/Panorama)  
+**Early Adopter Special:** $6,000 for first 10 pilot schools (locked in forever)
 
 ---
 
@@ -45,7 +45,9 @@ Bonus: The system auto-documents your character education compliance
 (90% paperwork reduction) and engages parents with real-time 
 notifications when their teen does something kind.
 
-Cost: $5,000/year (vs. $8,000-$12,000 for Character Strong)
+Cost: $7,500/year (vs. $8,000-$12,000 for Character Strong)
+
+Early adopter pricing: $6,000 for first 10 schools (locked in forever)
 
 Would you be open to a 5-minute demo showing how this works?
 
@@ -95,7 +97,9 @@ The result: Students develop authentic character (not performative
 virtue), and you get automated compliance documentation for 
 accreditation.
 
-Cost: $5,000/year (50% less than Panorama SEL)
+Cost: $7,500/year (50% less than Panorama SEL - and does more)
+
+Early adopter pricing: $6,000 for first 10 schools (locked in forever)
 
 Can I show you a 5-minute demo of how anonymous kindness builds 
 the humility you're already teaching?
@@ -141,9 +145,9 @@ auto-generate.
 One principal told me: "I spent 20 hours last month compiling 
 character ed documentation. This would've taken 2 minutes."
 
-Cost: $5,000/year (vs. $8,000-$12,000 for Character Strong)
+Cost: $7,500/year (vs. $8,000-$12,000 for Character Strong)
 
-Early adopter pricing: $4,000 if we launch by [date]
+Early adopter pricing: $6,000 for first 10 schools - lock in this rate forever (increases to $7,500 after)
 
 Want a 5-minute demo showing the compliance dashboard?
 
@@ -195,7 +199,7 @@ changes how parents feel about your school.
 Plus: You get 90% paperwork reduction on character education 
 compliance + teacher appreciation built in.
 
-Cost: $5,000/year (less than 2 scholarship awards, impacts 800 
+Cost: $7,500/year (less than 2 scholarship awards, impacts 800 
 students)
 
 Can I show you the parent notification flow in a 5-minute demo?
@@ -247,7 +251,9 @@ Plus:
    valued!)
 ✅ 90% compliance paperwork reduction (auto-documentation)
 
-Cost: $5,000/year (50% less than Panorama SEL)
+Cost: $7,500/year (50% less than Panorama SEL - and does more)
+
+Early adopter pricing: $6,000 for first 10 schools (locked in forever)
 
 I wrote a white paper specifically for Episcopal schools about why 
 anonymous kindness aligns with Imago Dei theology. Want me to send 
@@ -258,7 +264,7 @@ Tavores Vanhook
 336-214-1645
 tavores@echodeed.com
 
-P.S. Your school serves 903 students - that's $5.50 per student for 
+P.S. Your school serves 903 students - that's $8.30 per student for 
 a platform that operationalizes your Episcopal values.
 ```
 
@@ -301,7 +307,7 @@ Plus: You get automated character education compliance (90%
 paperwork reduction) and data showing which boys are engaging vs. 
 who might need support.
 
-Cost: $5,000/year
+Cost: $7,500/year
 
 Can I show you the male student engagement flow in a 5-minute demo?
 
@@ -347,7 +353,7 @@ Plus:
 ✅ Anonymous posting honors every student's "God-given purpose" 
    equally
 
-Cost: $5,000/year
+Cost: $7,500/year
 
 Your parent partnership model is your competitive advantage. Want 
 to see how EchoDeed supercharges it?
@@ -398,7 +404,7 @@ Plus:
 ✅ Teachers receive student appreciation (retention support)
 ✅ 90% less compliance paperwork
 
-Cost: $5,000/year
+Cost: $7,500/year
 
 Can I show you how this works in a 5-minute demo?
 
@@ -428,7 +434,7 @@ $12,000/year for Character Strong.
 
 Good news: You don't have to.
 
-EchoDeed costs $5,000/year and delivers:
+EchoDeed costs $7,500/year and delivers:
 
 ✅ Automated character education compliance (90% paperwork reduction)
 ✅ Parent engagement system (real-time "your teen did something kind" 
@@ -440,7 +446,7 @@ Your mission is to provide a "safe, Christ-centered environment
 where students inspired to lead." EchoDeed documents that mission 
 in action.
 
-Early adopter pricing: $4,000 if we launch by [date]
+Early adopter pricing: $6,000 for first 10 schools - lock in this rate forever (increases to $7,500 after)
 
 Want a 5-minute demo?
 
@@ -484,7 +490,7 @@ Plus:
 ✅ Parent notifications strengthen family partnership
 ✅ Teacher appreciation supports faculty retention
 
-Cost: $5,000/year (less than your curriculum budget, impacts every 
+Cost: $7,500/year (less than your curriculum budget, impacts every 
 student)
 
 Can I show you the virtue tracking dashboard in 5 minutes?
@@ -526,7 +532,9 @@ EchoDeed reduces that to 2 hours through automated documentation:
 ✅ Parents get real-time notifications (family engagement)
 ✅ Teachers receive student appreciation (retention support)
 
-Cost: $5,000/year (vs. $8,000-$12,000 for Character Strong)
+Cost: $7,500/year (vs. $8,000-$12,000 for Character Strong)
+
+Early adopter pricing: $6,000 for first 10 schools (locked in forever)
 
 5-minute demo available this week if you're interested.
 
@@ -589,7 +597,7 @@ Plus:
 ✅ Service learning programs × auto-documentation = 90% less 
    paperwork
 
-Cost: $5,000/year ($5.50 per student)
+Cost: $7,500/year ($8.30 per student for 903 students)
 
 I wrote a white paper specifically for Episcopal schools titled 
 "Episcopal Values + Anonymous Kindness: A Natural Fit." Want me to 
@@ -646,7 +654,7 @@ Plus:
 ✅ Teacher appreciation built in (retention support)
 ✅ Anonymous posting honors every student's dignity equally
 
-Cost: $5,000/year (less than your annual wellness budget)
+Cost: $7,500/year (less than your annual wellness budget)
 
 Can I show you the parent notification flow in 5 minutes?
 
@@ -689,7 +697,7 @@ This strengthens the three relationships that matter most:
 Plus: Automated compliance documentation (90% paperwork reduction) 
 so you spend less time on paperwork, more time on relationships.
 
-Cost: $5,000/year
+Cost: $7,500/year
 
 Can I show you the relational features in a 5-minute demo?
 
@@ -731,7 +739,7 @@ EchoDeed makes it effortless:
 ✅ Parents get real-time notifications (family engagement)
 ✅ Teachers receive appreciation messages (retention support)
 
-Cost: $5,000/year
+Cost: $7,500/year
 
 Your classical model emphasizes virtue - EchoDeed documents virtue 
 development automatically.
@@ -775,7 +783,7 @@ EchoDeed gives you the proof:
 Plus: Parents get notified, teachers get appreciated, compliance 
 reports auto-generate.
 
-Cost: $5,000/year
+Cost: $7,500/year
 
 Can I show you the character development dashboard in 5 minutes?
 
@@ -818,7 +826,7 @@ Plus:
 ✅ Teacher appreciation (retention support)
 ✅ 90% paperwork reduction
 
-Cost: $5,000/year
+Cost: $7,500/year
 
 5-minute demo available.
 
@@ -855,7 +863,7 @@ EchoDeed reduces it to 2 hours through automation:
 ✅ Parent engagement → Real-time notifications
 ✅ Teacher retention → Daily appreciation
 
-Cost: $5,000/year (50% less than Character Strong)
+Cost: $7,500/year (37-50% less than Character Strong's $8K-$12K)
 
 5-minute demo available this week.
 
@@ -904,7 +912,7 @@ EchoDeed is purpose-driven edtech:
 ✅ Parent notifications (family partnership = your stated mission)
 ✅ Teacher appreciation (retention in competitive DC market)
 
-Cost: $5,000/year
+Cost: $7,500/year
 
 DC-area schools get watched closely. Want to pilot something that 
 demonstrates innovation + Episcopal values?
@@ -960,7 +968,7 @@ Plus:
 ✅ Classical education + automated virtue tracking = Aristotle meets 
    edtech
 
-Cost: $5,000/year
+Cost: $7,500/year
 
 Your mission already says "belonging." Want to see how we make it 
 measurable?
@@ -1011,7 +1019,7 @@ EchoDeed scales WITH you:
 Your "servant leadership" program teaches students to serve. 
 EchoDeed documents it automatically.
 
-Cost: $5,000/year (one-time, scales with growth)
+Cost: $7,500/year (one-time, scales with growth)
 
 Can I show you how this supports your expansion in a 5-minute demo?
 
@@ -1055,7 +1063,7 @@ Plus: Your commitment to "physical wellness and character
 development through athletic activities" gets documented alongside 
 academic kindness.
 
-Cost: $5,000/year
+Cost: $7,500/year
 
 Can I show you the compliance dashboard in 5 minutes?
 
@@ -1094,7 +1102,7 @@ EMOTIONAL DIMENSION: Safe anonymous sharing (no social pressure)
 Plus: Dual accreditation (ICAA + Cognia) = compliance matters. 
 EchoDeed auto-generates reports for both.
 
-Cost: $5,000/year
+Cost: $7,500/year
 
 5-minute demo available.
 
@@ -1133,7 +1141,7 @@ Plus:
 ✅ Teacher appreciation (retention support)
 ✅ 90% paperwork reduction
 
-Cost: $5,000/year
+Cost: $7,500/year
 
 5-minute demo available.
 
@@ -1169,7 +1177,7 @@ EchoDeed automates it:
 ✅ Compliance reports → One-click export
 ✅ 90% time savings
 
-Cost: $5,000/year (50% less than Character Strong)
+Cost: $7,500/year (37-50% less than Character Strong's $8K-$12K)
 
 5-minute demo: tavores@echodeed.com
 
@@ -1214,13 +1222,13 @@ SCHOOL_OUTREACH_EMAIL_TEMPLATES.md
 ## 💰 PRICING POSITIONING IN EMAILS
 
 **Always frame as:**
-- "$5,000/year (50-60% less than Character Strong/Panorama)"
-- "Cost per student: $10 for 500 students"
+- "$7,500/year (37-50% less than Character Strong/Panorama)"
+- "Cost per student: $15 for 500 students (vs. $20-$30 for competitors)"
 - "Less than your annual copier lease"
 - "One-time fee, scales with growth"
 
 **Early adopter urgency:**
-- "$4,000 for first 5 pilot schools (launches by [date])"
+- "$6,000 for first 10 pilot schools (locked in forever - increases to $7,500 after)"
 - Creates scarcity + urgency
 
 ---
@@ -1242,7 +1250,7 @@ Use "5 Questions Principals Should Ask" lead magnet for non-responders in Week 2
 **Total Emails:** 38 ready to send  
 **Expected Reply Rate:** 10-20% (vs. 1-3% generic emails)  
 **Expected Demos:** 4-8 schools  
-**Target Closes:** 2-3 pilot schools at $4,000-$5,000
+**Target Closes:** 2-3 pilot schools at $6,000-$7,500
 
-**Revenue Potential:** 3 schools × $5,000 = $15,000 year 1  
-**Expansion Potential:** 38 schools × $5,000 = $190,000 at full adoption
+**Revenue Potential:** 3 schools × $6,500 avg = $19,500 year 1  
+**Expansion Potential:** 38 schools × $7,500 = $285,000 at full adoption (first 10 at $6,000 = $60K, next 28 at $7,500 = $210K, total $270K)
