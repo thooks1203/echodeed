@@ -13,6 +13,7 @@ import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, For
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -47,6 +48,16 @@ interface ServiceLog {
   parentNotified: boolean;
   createdAt: string;
   updatedAt?: string;
+  // v2.1 IPARD fields
+  ipardPhase?: 'investigation' | 'preparation' | 'action' | 'reflection' | 'demonstration' | 'complete';
+  approvalFormSubmitted?: boolean;
+  approvalFormSubmittedAt?: string;
+  reflectionQualityApproved?: boolean;
+  reflectionApprovedAt?: string;
+  demonstrationCompleted?: boolean;
+  demonstrationUrl?: string;
+  demonstrationCompletedAt?: string;
+  ipardBonusTokensEarned?: number;
 }
 
 interface ServiceSummary {
@@ -91,6 +102,8 @@ type ServiceLogForm = z.infer<typeof serviceLogSchema>;
 export function CommunityService({ onBack }: CommunityServiceProps) {
   const [activeTab, setActiveTab] = useState('overview');
   const [isKindnessConnectOpen, setIsKindnessConnectOpen] = useState(false);
+  const [selectedSkillIds, setSelectedSkillIds] = useState<string[]>([]);
+  const [selectedTraitIds, setSelectedTraitIds] = useState<string[]>([]);
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
@@ -148,22 +161,50 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
     }
   });
 
+  // Get reflection skills and traits for tagging
+  const { data: skillsAndTraits, isLoading: skillsTraitsLoading } = useQuery<{
+    skills: Array<{ id: string; skillName: string; description: string }>;
+    traits: Array<{ id: string; traitName: string; description: string }>;
+  }>({
+    queryKey: ['/api/reflection/skills-and-traits'],
+    queryFn: async () => {
+      return await apiRequest('GET', '/api/reflection/skills-and-traits');
+    },
+    retry: 2,
+    staleTime: 1000 * 60 * 5
+  });
+
   // Submit service hours mutation
   const submitServiceMutation = useMutation({
     mutationFn: async (data: ServiceLogForm) => {
-      return apiRequest('POST', '/api/community-service/log', {
+      return await apiRequest('POST', '/api/community-service/log', {
         ...data,
         userId,
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Dudley High School
         serviceDate: new Date(data.serviceDate)
       });
     },
-    onSuccess: () => {
+    onSuccess: async (createdLog: any) => {
+      // Tag reflections if any skills or traits were selected
+      if (selectedSkillIds.length > 0 || selectedTraitIds.length > 0) {
+        try {
+          await apiRequest('POST', `/api/community-service/${createdLog.id}/tag-reflections`, {
+            skillIds: selectedSkillIds,
+            traitIds: selectedTraitIds
+          });
+          console.log(`Tagged service log with ${selectedSkillIds.length} skills and ${selectedTraitIds.length} traits`);
+        } catch (error) {
+          console.error('Failed to tag reflections:', error);
+        }
+      }
+
       toast({
         title: '✅ Service Hours Logged!',
         description: 'Your community service has been submitted for verification. You\'ll receive tokens once approved.',
       });
       form.reset();
+      setSelectedSkillIds([]);
+      setSelectedTraitIds([]);
       // Invalidate community service queries
       queryClient.invalidateQueries({ queryKey: ['/api/community-service/summary'] });
       queryClient.invalidateQueries({ queryKey: ['/api/community-service/logs'] });
@@ -206,6 +247,26 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
       case 'approved': return <CheckCircle className="h-4 w-4 text-green-600" />;
       case 'rejected': return <XCircle className="h-4 w-4 text-red-600" />;
       default: return <Clock2 className="h-4 w-4 text-yellow-600" />;
+    }
+  };
+
+  // Get IPARD phase display information
+  const getIpardPhaseInfo = (phase?: string) => {
+    switch (phase) {
+      case 'investigation':
+        return { label: 'Investigation', color: 'bg-blue-100 text-blue-800', icon: '🔍' };
+      case 'preparation':
+        return { label: 'Preparation', color: 'bg-indigo-100 text-indigo-800', icon: '📋' };
+      case 'action':
+        return { label: 'Action', color: 'bg-purple-100 text-purple-800', icon: '💪' };
+      case 'reflection':
+        return { label: 'Reflection', color: 'bg-pink-100 text-pink-800', icon: '💭' };
+      case 'demonstration':
+        return { label: 'Demonstration', color: 'bg-orange-100 text-orange-800', icon: '🎬' };
+      case 'complete':
+        return { label: 'Complete', color: 'bg-green-100 text-green-800', icon: '✅' };
+      default:
+        return { label: 'Investigation', color: 'bg-gray-100 text-gray-800', icon: '🔍' };
     }
   };
 
@@ -627,6 +688,87 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
                     )}
                   />
 
+                  {/* v2.1 IPARD Reflection Tagging */}
+                  {!skillsTraitsLoading && skillsAndTraits && (skillsAndTraits.skills?.length > 0 || skillsAndTraits.traits?.length > 0) && (
+                    <div className="space-y-4 p-4 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg border-2 border-purple-200">
+                      <div>
+                        <h4 className="font-semibold text-gray-900 dark:text-white mb-2 flex items-center gap-2">
+                          <Award className="h-5 w-5 text-purple-600" />
+                          Skills & Character Development (Optional)
+                        </h4>
+                        <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
+                          Select the 21st Century Skills and Character Traits you developed during this service. This helps track your personal growth for the Service-Learning Diploma.
+                        </p>
+                      </div>
+
+                      {skillsAndTraits.skills && skillsAndTraits.skills.length > 0 && (
+                        <div>
+                          <h5 className="font-medium text-sm text-gray-700 dark:text-gray-200 mb-2">21st Century Learning Skills</h5>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {skillsAndTraits.skills.map((skill) => (
+                              <div key={skill.id} className="flex items-start space-x-2">
+                                <Checkbox
+                                  id={`skill-${skill.id}`}
+                                  checked={selectedSkillIds.includes(skill.id)}
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      setSelectedSkillIds([...selectedSkillIds, skill.id]);
+                                    } else {
+                                      setSelectedSkillIds(selectedSkillIds.filter(id => id !== skill.id));
+                                    }
+                                  }}
+                                  data-testid={`checkbox-skill-${skill.skillName.toLowerCase().replace(/\s+/g, '-')}`}
+                                />
+                                <label
+                                  htmlFor={`skill-${skill.id}`}
+                                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                >
+                                  {skill.skillName}
+                                  {skill.description && (
+                                    <span className="block text-xs text-muted-foreground font-normal">{skill.description}</span>
+                                  )}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+
+                      {skillsAndTraits.traits && skillsAndTraits.traits.length > 0 && (
+                        <div>
+                          <h5 className="font-medium text-sm text-gray-700 dark:text-gray-200 mb-2">Character Traits</h5>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                            {skillsAndTraits.traits.map((trait) => (
+                              <div key={trait.id} className="flex items-start space-x-2">
+                                <Checkbox
+                                  id={`trait-${trait.id}`}
+                                  checked={selectedTraitIds.includes(trait.id)}
+                                  onCheckedChange={(checked) => {
+                                    if (checked) {
+                                      setSelectedTraitIds([...selectedTraitIds, trait.id]);
+                                    } else {
+                                      setSelectedTraitIds(selectedTraitIds.filter(id => id !== trait.id));
+                                    }
+                                  }}
+                                  data-testid={`checkbox-trait-${trait.traitName.toLowerCase().replace(/\s+/g, '-')}`}
+                                />
+                                <label
+                                  htmlFor={`trait-${trait.id}`}
+                                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 cursor-pointer"
+                                >
+                                  {trait.traitName}
+                                  {trait.description && (
+                                    <span className="block text-xs text-muted-foreground font-normal">{trait.description}</span>
+                                  )}
+                                </label>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+
                   <FormField
                     control={form.control}
                     name="verificationPhotoUrl"
@@ -771,6 +913,67 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
                               <div className="bg-muted rounded-md p-3 text-sm">
                                 <p className="font-medium">Verification Notes:</p>
                                 <p className="text-muted-foreground">{log.verificationNotes}</p>
+                              </div>
+                            )}
+
+                            {/* v2.1 IPARD Progress Tracking */}
+                            {log.ipardPhase && (
+                              <div className="mt-4 p-4 bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-lg border border-purple-200">
+                                <div className="flex items-center justify-between mb-3">
+                                  <h5 className="font-semibold text-sm">IPARD Service-Learning Progress</h5>
+                                  <Badge className={getIpardPhaseInfo(log.ipardPhase).color}>
+                                    {getIpardPhaseInfo(log.ipardPhase).icon} {getIpardPhaseInfo(log.ipardPhase).label}
+                                  </Badge>
+                                </div>
+                                
+                                <div className="space-y-2 text-xs">
+                                  <div className="flex items-center gap-2">
+                                    {log.approvalFormSubmitted ? (
+                                      <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                                    ) : (
+                                      <div className="h-4 w-4 rounded-full border-2 border-gray-300 flex-shrink-0"></div>
+                                    )}
+                                    <span className={log.approvalFormSubmitted ? 'text-green-700 font-medium' : 'text-gray-500'}>
+                                      Investigation + Preparation Complete
+                                      {log.approvalFormSubmitted && ' (+25 bonus tokens)'}
+                                    </span>
+                                  </div>
+                                  
+                                  <div className="flex items-center gap-2">
+                                    {log.reflectionQualityApproved ? (
+                                      <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                                    ) : (
+                                      <div className="h-4 w-4 rounded-full border-2 border-gray-300 flex-shrink-0"></div>
+                                    )}
+                                    <span className={log.reflectionQualityApproved ? 'text-green-700 font-medium' : 'text-gray-500'}>
+                                      High-Quality Reflection Approved
+                                      {log.reflectionQualityApproved && ' (+50 bonus tokens)'}
+                                    </span>
+                                  </div>
+                                  
+                                  <div className="flex items-center gap-2">
+                                    {log.demonstrationCompleted ? (
+                                      <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                                    ) : (
+                                      <div className="h-4 w-4 rounded-full border-2 border-gray-300 flex-shrink-0"></div>
+                                    )}
+                                    <span className={log.demonstrationCompleted ? 'text-green-700 font-medium' : 'text-gray-500'}>
+                                      Demonstration Shared
+                                      {log.demonstrationCompleted && ' (+75 bonus tokens)'}
+                                    </span>
+                                  </div>
+                                </div>
+
+                                {log.ipardBonusTokensEarned && log.ipardBonusTokensEarned > 0 && (
+                                  <div className="mt-3 pt-3 border-t border-purple-200">
+                                    <div className="flex items-center justify-between text-sm">
+                                      <span className="font-medium text-purple-700">IPARD Bonus Tokens Earned:</span>
+                                      <Badge variant="outline" className="bg-purple-100 text-purple-700 border-purple-300">
+                                        +{log.ipardBonusTokensEarned} tokens
+                                      </Badge>
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                             )}
                           </div>

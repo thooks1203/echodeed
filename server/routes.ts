@@ -10426,6 +10426,244 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // =======================================
+  // 🏆 v2.1 ADMIN REWARDS & CHARACTER EXCELLENCE
+  // =======================================
+
+  // Get all admin rewards for a school
+  app.get('/api/admin-rewards', isAuthenticated, async (req: any, res) => {
+    try {
+      const { schoolId } = req.query;
+      const rewards = await db.select().from(adminRewards)
+        .where(and(
+          eq(adminRewards.schoolId, schoolId),
+          eq(adminRewards.isActive, true)
+        ));
+      res.json(rewards);
+    } catch (error) {
+      console.error('Failed to get admin rewards:', error);
+      res.status(500).json({ error: 'Failed to get admin rewards' });
+    }
+  });
+
+  // Create new admin reward (admin only)
+  app.post('/api/admin-rewards', requireTeacherRole, async (req: any, res) => {
+    try {
+      const schema = z.object({
+        rewardName: z.string().min(1),
+        rewardDescription: z.string(),
+        tokenCost: z.number().int().min(0),
+        category: z.string(),
+        termsConditions: z.string().optional(),
+        stockQuantity: z.number().int().optional(),
+        schoolId: z.string()
+      });
+      const data = schema.parse(req.body);
+      
+      const [reward] = await db.insert(adminRewards).values(data).returning();
+      res.json(reward);
+    } catch (error: any) {
+      console.error('Failed to create admin reward:', error);
+      if (error.name === 'ZodError') {
+        res.status(400).json({ error: 'Invalid request data', details: error.errors });
+      } else {
+        res.status(500).json({ error: 'Failed to create reward' });
+      }
+    }
+  });
+
+  // Submit reward redemption application (student)
+  app.post('/api/admin-rewards/:rewardId/redeem', isAuthenticated, async (req: any, res) => {
+    try {
+      const { rewardId } = req.params;
+      const userId = req.user?.claims?.sub;
+      const { applicationNotes } = req.body;
+
+      const [redemption] = await db.insert(adminRewardRedemptions).values({
+        userId,
+        rewardId,
+        redemptionStatus: 'pending',
+        applicationNotes
+      }).returning();
+
+      res.json(redemption);
+    } catch (error) {
+      console.error('Failed to submit redemption:', error);
+      res.status(500).json({ error: 'Failed to submit redemption' });
+    }
+  });
+
+  // Get all reward redemption requests (admin)
+  app.get('/api/admin-rewards/redemptions', requireTeacherRole, async (req: any, res) => {
+    try {
+      const { schoolId, status } = req.query;
+      
+      const redemptions = await db.select({
+        redemption: adminRewardRedemptions,
+        reward: adminRewards,
+        student: users
+      })
+        .from(adminRewardRedemptions)
+        .leftJoin(adminRewards, eq(adminRewardRedemptions.rewardId, adminRewards.id))
+        .leftJoin(users, eq(adminRewardRedemptions.userId, users.id))
+        .where(
+          status ? eq(adminRewardRedemptions.redemptionStatus, status as any) : undefined
+        );
+
+      res.json(redemptions);
+    } catch (error) {
+      console.error('Failed to get redemptions:', error);
+      res.status(500).json({ error: 'Failed to get redemptions' });
+    }
+  });
+
+  // Approve/deny reward redemption (admin only)
+  app.patch('/api/admin-rewards/redemptions/:redemptionId', requireTeacherRole, async (req: any, res) => {
+    try {
+      const { redemptionId } = req.params;
+      const teacherId = req.teacherContext?.userId;
+      const schema = z.object({
+        redemptionStatus: z.enum(['approved', 'denied', 'fulfilled']),
+        adminNotes: z.string().optional()
+      });
+      const { redemptionStatus, adminNotes } = schema.parse(req.body);
+
+      const [redemption] = await db.update(adminRewardRedemptions)
+        .set({
+          redemptionStatus,
+          adminNotes,
+          approvedBy: teacherId,
+          approvedAt: new Date(),
+          updatedAt: new Date()
+        })
+        .where(eq(adminRewardRedemptions.id, redemptionId))
+        .returning();
+
+      res.json(redemption);
+    } catch (error: any) {
+      console.error('Failed to update redemption:', error);
+      if (error.name === 'ZodError') {
+        res.status(400).json({ error: 'Invalid request data', details: error.errors });
+      } else {
+        res.status(500).json({ error: 'Failed to update redemption' });
+      }
+    }
+  });
+
+  // Award Character Excellence tokens (teacher only)
+  app.post('/api/character-excellence/award', requireTeacherRole, async (req: any, res) => {
+    try {
+      const teacherId = req.teacherContext?.userId;
+      const schema = z.object({
+        studentId: z.string(),
+        narrative: z.string().min(20),
+        tokensAwarded: z.number().int().min(500).max(1000)
+      });
+      const { studentId, narrative, tokensAwarded } = schema.parse(req.body);
+
+      // Create transaction-safe award
+      const result = await db.transaction(async (tx) => {
+        // Get student's current token balance
+        const [userToken] = await tx.select().from(userTokens)
+          .where(eq(userTokens.userId, studentId))
+          .for('update');
+
+        if (!userToken) {
+          throw new Error('Student token record not found');
+        }
+
+        const balanceBefore = userToken.echoBalance;
+        const balanceAfter = balanceBefore + tokensAwarded;
+
+        // Award tokens
+        await tx.update(userTokens)
+          .set({
+            echoBalance: balanceAfter,
+            totalEarned: userToken.totalEarned + tokensAwarded
+          })
+          .where(eq(userTokens.userId, studentId));
+
+        // Log transaction
+        await tx.insert(tokenTransactions).values({
+          userId: studentId,
+          transactionType: 'character_excellence',
+          amount: tokensAwarded,
+          sourceType: 'manual_award',
+          description: `Character Excellence Award: ${narrative}`,
+          balanceBefore,
+          balanceAfter,
+          createdBy: teacherId
+        });
+
+        // Record in character excellence awards table
+        const [award] = await tx.insert(characterExcellenceAwards).values({
+          studentId,
+          awardedByTeacherId: teacherId,
+          narrative,
+          tokensAwarded
+        }).returning();
+
+        return { award, newBalance: balanceAfter, tokensAwarded };
+      });
+
+      console.log(`🌟 Teacher ${teacherId} awarded ${tokensAwarded} Character Excellence tokens to ${studentId}`);
+      res.json(result);
+    } catch (error: any) {
+      console.error('Failed to award character excellence:', error);
+      if (error.name === 'ZodError') {
+        res.status(400).json({ error: 'Invalid request data', details: error.errors });
+      } else {
+        res.status(400).json({ error: error.message || 'Failed to award character excellence' });
+      }
+    }
+  });
+
+  // Get monthly top 5 token earners per grade
+  app.get('/api/leaderboard/monthly-top-earners', requireTeacherRole, async (req: any, res) => {
+    try {
+      const { schoolId } = req.query;
+      const startOfMonth = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+
+      // Get token transactions for this month grouped by user
+      const monthlyEarnings = await db
+        .select({
+          userId: tokenTransactions.userId,
+          totalEarned: sql<number>`COALESCE(SUM(${tokenTransactions.amount}), 0)`,
+          gradeLevel: users.gradeLevel,
+          firstName: users.firstName,
+          lastName: users.lastName
+        })
+        .from(tokenTransactions)
+        .leftJoin(users, eq(tokenTransactions.userId, users.id))
+        .where(
+          and(
+            sql`${tokenTransactions.createdAt} >= ${startOfMonth}`,
+            sql`${tokenTransactions.amount} > 0`
+          )
+        )
+        .groupBy(tokenTransactions.userId, users.gradeLevel, users.firstName, users.lastName)
+        .orderBy(sql`total_earned DESC`)
+        .limit(50);
+
+      // Group by grade level and take top 5 from each
+      const leaderboardByGrade: Record<string, any[]> = {};
+      for (const entry of monthlyEarnings) {
+        const grade = entry.gradeLevel || 'Unknown';
+        if (!leaderboardByGrade[grade]) {
+          leaderboardByGrade[grade] = [];
+        }
+        if (leaderboardByGrade[grade].length < 5) {
+          leaderboardByGrade[grade].push(entry);
+        }
+      }
+
+      res.json({ leaderboardByGrade, monthStart: startOfMonth });
+    } catch (error) {
+      console.error('Failed to get monthly leaderboard:', error);
+      res.status(500).json({ error: 'Failed to get monthly leaderboard' });
+    }
+  });
+
+  // =======================================
   // 👨‍👩‍👧‍👦 PARENT COMMUNITY SERVICE ENDPOINTS
   // =======================================
   
