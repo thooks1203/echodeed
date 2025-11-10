@@ -370,25 +370,25 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
 
           <Card>
             <CardHeader>
-              <CardTitle>Progress Toward School Year Requirement</CardTitle>
+              <CardTitle>📜 Service-Learning Diploma Goal</CardTitle>
               <CardDescription>
-                You need {goalHours} service hours for the school year. Keep up the great work!
+                4-Year Requirement: 200 hours needed for graduation. Keep up the great work!
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Hours Completed</span>
-                  <span>{hoursVerified} / {goalHours}</span>
+                  <span>{hoursVerified} / 200</span>
                 </div>
-                <Progress value={progressPercentage} className="w-full" data-testid="progress-goal" />
+                <Progress value={(hoursVerified / 200) * 100} className="w-full" data-testid="progress-goal" />
               </div>
               
-              {progressPercentage >= 100 ? (
+              {hoursVerified >= 200 ? (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600" />
-                    <span className="font-medium text-green-900">Congratulations! You've met your service requirement!</span>
+                    <span className="font-medium text-green-900">Congratulations! You've met your Service-Learning Diploma requirement!</span>
                   </div>
                 </div>
               ) : (
@@ -396,7 +396,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
                   <div className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-blue-600" />
                     <span className="font-medium text-blue-900">
-                      You need {goalHours - hoursVerified} more verified hours to reach your goal
+                      You need {(200 - hoursVerified).toFixed(1)} more verified hours to reach your diploma goal
                     </span>
                   </div>
                 </div>
