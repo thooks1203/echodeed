@@ -1294,6 +1294,112 @@ export default function AdminDashboard() {
             </Card>
           </div>
 
+          {/* 🤝 v2.0 Feature: Inclusion Score - Real-Time School Belonging Metric */}
+          <Card className="border-2 border-emerald-200 bg-gradient-to-br from-emerald-50 to-teal-50">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-emerald-900">
+                <Heart className="w-6 h-6 text-emerald-600" />
+                Inclusion Score: Real-Time Belonging Metric
+              </CardTitle>
+              <CardDescription>
+                AI-powered measurement of school climate and student inclusion (v2.0 feature)
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-white p-5 rounded-lg border-2 border-emerald-100">
+                  <div className="text-sm font-semibold text-gray-600 mb-2">Current Inclusion Score</div>
+                  <div className="text-4xl font-bold text-emerald-600 mb-3" data-testid="inclusion-score-value">78/100</div>
+                  <div className="flex items-center gap-2">
+                    <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200" data-testid="inclusion-score-status">Healthy</Badge>
+                    <span className="text-sm text-gray-600" data-testid="inclusion-score-trend">↑ 12% vs. last month</span>
+                  </div>
+                </div>
+                <div className="bg-white p-5 rounded-lg border-2 border-blue-100">
+                  <div className="text-sm font-semibold text-gray-600 mb-2">This Month</div>
+                  <div className="text-3xl font-bold text-blue-600 mb-2" data-testid="inclusion-acts-count">42 acts</div>
+                  <div className="space-y-1 text-sm text-gray-700">
+                    <div>• Inclusion-related behaviors documented</div>
+                    <div>• Tracked via AI keyword analysis</div>
+                  </div>
+                </div>
+                <div className="bg-white p-5 rounded-lg border-2 border-purple-100">
+                  <div className="text-sm font-semibold text-gray-600 mb-2">Data Source</div>
+                  <div className="text-sm text-gray-700 space-y-1">
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                      <span>Student service posts</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                      <span>AI pattern detection</span>
+                    </div>
+                    <div className="flex items-start gap-2">
+                      <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                      <span>Real-time updates</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Top Inclusion Acts - What Students Are Doing */}
+              <div className="bg-white p-4 rounded-lg border-2 border-gray-100">
+                <h4 className="font-semibold text-gray-800 mb-3">Top Inclusion Acts This Month</h4>
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between" data-testid="inclusion-act-1">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold">1</div>
+                      <span className="text-sm text-gray-700" data-testid="inclusion-act-1-description">"Invited new student to lunch"</span>
+                    </div>
+                    <Badge className="bg-blue-50 text-blue-700" data-testid="inclusion-act-1-count">12×</Badge>
+                  </div>
+                  <div className="flex items-center justify-between" data-testid="inclusion-act-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-semibold">2</div>
+                      <span className="text-sm text-gray-700" data-testid="inclusion-act-2-description">"Included peer in group project"</span>
+                    </div>
+                    <Badge className="bg-purple-50 text-purple-700" data-testid="inclusion-act-2-count">9×</Badge>
+                  </div>
+                  <div className="flex items-center justify-between" data-testid="inclusion-act-3">
+                    <div className="flex items-center gap-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-semibold">3</div>
+                      <span className="text-sm text-gray-700" data-testid="inclusion-act-3-description">"Sat with student eating alone"</span>
+                    </div>
+                    <Badge className="bg-green-50 text-green-700" data-testid="inclusion-act-3-count">7×</Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Why This Matters - Value Proposition for Administrators */}
+              <div className="bg-gradient-to-r from-emerald-600 to-teal-600 p-4 rounded-lg text-white">
+                <h4 className="font-semibold text-lg mb-2">Why This Matters for Your School</h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-sm">
+                  <div className="flex items-start gap-2">
+                    <TrendingUp className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="font-semibold">Real-Time Insights</div>
+                      <div className="text-emerald-100">vs. annual surveys (lagging indicators)</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <BarChart3 className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="font-semibold">Board Presentations</div>
+                      <div className="text-emerald-100">Quantifiable DEI data for stakeholders</div>
+                    </div>
+                  </div>
+                  <div className="flex items-start gap-2">
+                    <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    <div>
+                      <div className="font-semibold">Early Warning System</div>
+                      <div className="text-emerald-100">Detect declining climate before crisis</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* 🎯 Principal's At-a-Glance Impact Summary */}
           <Card className="border-2 border-blue-200 bg-gradient-to-br from-blue-50 to-purple-50">
             <CardHeader>

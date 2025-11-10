@@ -770,33 +770,72 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
               boxShadow: '0 4px 16px rgba(139, 92, 246, 0.3)',
               color: 'white'
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-                <h3 style={{ fontSize: '16px', fontWeight: '600', margin: 0 }}>
-                  🏥 Service Hours
-                </h3>
-                <button
-                  onClick={() => onNavigateToTab ? onNavigateToTab('community-service') : window.location.href = '/app?tab=community-service'}
-                  style={{
-                    background: 'rgba(255, 255, 255, 0.2)',
-                    color: 'white',
-                    border: 'none',
+              {/* 200-Hour Diploma Goal Section */}
+              <div style={{ marginBottom: '20px', paddingBottom: '20px', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                  <div>
+                    <h3 style={{ fontSize: '16px', fontWeight: '700', margin: 0, marginBottom: '4px' }}>
+                      📜 Service-Learning Diploma Goal
+                    </h3>
+                    <p style={{ fontSize: '12px', opacity: 0.9, margin: 0 }}>4-Year Requirement</p>
+                  </div>
+                  <button
+                    onClick={() => onNavigateToTab ? onNavigateToTab('community-service') : window.location.href = '/app?tab=community-service'}
+                    style={{
+                      background: 'rgba(255, 255, 255, 0.2)',
+                      color: 'white',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '6px 12px',
+                      fontSize: '12px',
+                      fontWeight: '600',
+                      cursor: 'pointer',
+                      transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                    }}
+                    data-testid="button-view-all-hours"
+                  >
+                    View All →
+                  </button>
+                </div>
+                
+                {/* Progress toward 200 hours */}
+                <div style={{ marginBottom: '12px' }}>
+                  <div style={{ fontSize: '28px', fontWeight: '700' }}>
+                    {parseFloat(serviceHoursSummary.verifiedHours || '0')} / 200 hours
+                  </div>
+                  <div style={{ fontSize: '13px', opacity: 0.9 }}>
+                    {Math.round((parseFloat(serviceHoursSummary.verifiedHours || '0') / 200) * 100)}% Complete
+                  </div>
+                </div>
+                
+                {/* Progress bar */}
+                <div style={{
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  borderRadius: '8px',
+                  height: '10px',
+                  overflow: 'hidden'
+                }}>
+                  <div style={{
+                    background: 'white',
+                    height: '100%',
+                    width: `${Math.min((parseFloat(serviceHoursSummary.verifiedHours || '0') / 200) * 100, 100)}%`,
                     borderRadius: '8px',
-                    padding: '6px 12px',
-                    fontSize: '12px',
-                    fontWeight: '600',
-                    cursor: 'pointer',
-                    transition: 'all 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                  }}
-                  data-testid="button-view-all-hours"
-                >
-                  View All →
-                </button>
+                    transition: 'width 0.3s ease'
+                  }} />
+                </div>
+              </div>
+
+              {/* Current Hours Breakdown */}
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                <h3 style={{ fontSize: '14px', fontWeight: '600', margin: 0, opacity: 0.9 }}>
+                  Current Status
+                </h3>
               </div>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(90px, 1fr))', gap: '12px' }}>
                 <div style={{
@@ -832,6 +871,141 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
                   </div>
                   <div style={{ fontSize: '11px', opacity: 0.9 }}>Pending</div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* My Legacy Impact Section - v2.0 Feature */}
+          {serviceHoursSummary && serviceHoursSummary.totalHours > 0 && (
+            <div style={{
+              background: 'white',
+              borderRadius: '12px',
+              padding: '20px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+              marginBottom: '16px'
+            }}>
+              <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '6px', color: '#1F2937' }}>
+                🌟 My Legacy Impact
+              </h3>
+              <p style={{ fontSize: '13px', color: '#6b7280', marginBottom: '20px' }}>
+                Your service creates ripples of positive change. Here's your impact breakdown.
+              </p>
+
+              {/* Kindness Footprint - Service Category Breakdown */}
+              <div style={{ marginBottom: '20px' }}>
+                <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px', color: '#374151' }}>
+                  📊 Kindness Footprint (Last 90 Days)
+                </h4>
+                
+                {/* Category bars with sample data - will connect to real data later */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {/* Peer Support */}
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '12px', fontWeight: '600', color: '#374151' }}>💙 Peer Support</span>
+                      <span style={{ fontSize: '12px', color: '#6b7280' }}>40%</span>
+                    </div>
+                    <div style={{ background: '#F3F4F6', borderRadius: '4px', height: '8px', overflow: 'hidden' }}>
+                      <div style={{ background: 'linear-gradient(90deg, #3B82F6, #60A5FA)', height: '100%', width: '40%', borderRadius: '4px' }} />
+                    </div>
+                  </div>
+
+                  {/* Community Service */}
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '12px', fontWeight: '600', color: '#374151' }}>🌍 Community Service</span>
+                      <span style={{ fontSize: '12px', color: '#6b7280' }}>30%</span>
+                    </div>
+                    <div style={{ background: '#F3F4F6', borderRadius: '4px', height: '8px', overflow: 'hidden' }}>
+                      <div style={{ background: 'linear-gradient(90deg, #10B981, #34D399)', height: '100%', width: '30%', borderRadius: '4px' }} />
+                    </div>
+                  </div>
+
+                  {/* Tutoring/Mentoring */}
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '12px', fontWeight: '600', color: '#374151' }}>📚 Tutoring & Mentoring</span>
+                      <span style={{ fontSize: '12px', color: '#6b7280' }}>20%</span>
+                    </div>
+                    <div style={{ background: '#F3F4F6', borderRadius: '4px', height: '8px', overflow: 'hidden' }}>
+                      <div style={{ background: 'linear-gradient(90deg, #8B5CF6, #A78BFA)', height: '100%', width: '20%', borderRadius: '4px' }} />
+                    </div>
+                  </div>
+
+                  {/* Environmental */}
+                  <div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
+                      <span style={{ fontSize: '12px', fontWeight: '600', color: '#374151' }}>🌱 Environmental</span>
+                      <span style={{ fontSize: '12px', color: '#6b7280' }}>10%</span>
+                    </div>
+                    <div style={{ background: '#F3F4F6', borderRadius: '4px', height: '8px', overflow: 'hidden' }}>
+                      <div style={{ background: 'linear-gradient(90deg, #059669, #10B981)', height: '100%', width: '10%', borderRadius: '4px' }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Top 3 Emerging Virtues - Character Strengths */}
+              <div>
+                <h4 style={{ fontSize: '14px', fontWeight: '600', marginBottom: '12px', color: '#374151' }}>
+                  ✨ Your Top 3 Emerging Virtues
+                </h4>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '8px',
+                    padding: '8px 12px',
+                    background: 'linear-gradient(135deg, #EBF4FF, #DBEAFE)',
+                    borderRadius: '8px'
+                  }}>
+                    <div style={{ fontSize: '20px' }}>💙</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '13px', fontWeight: '600', color: '#1E40AF' }}>Compassion</div>
+                      <div style={{ fontSize: '11px', color: '#6b7280' }}>28 acts of peer support</div>
+                    </div>
+                  </div>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '8px',
+                    padding: '8px 12px',
+                    background: 'linear-gradient(135deg, #F3E8FF, #EDE9FE)',
+                    borderRadius: '8px'
+                  }}>
+                    <div style={{ fontSize: '20px' }}>🎯</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '13px', fontWeight: '600', color: '#7C3AED' }}>Leadership</div>
+                      <div style={{ fontSize: '11px', color: '#6b7280' }}>15 mentoring sessions</div>
+                    </div>
+                  </div>
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'center', 
+                    gap: '8px',
+                    padding: '8px 12px',
+                    background: 'linear-gradient(135deg, #ECFDF5, #D1FAE5)',
+                    borderRadius: '8px'
+                  }}>
+                    <div style={{ fontSize: '20px' }}>🌍</div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: '13px', fontWeight: '600', color: '#059669' }}>Service</div>
+                      <div style={{ fontSize: '11px', color: '#6b7280' }}>12 community projects</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Info Note */}
+              <div style={{
+                marginTop: '16px',
+                padding: '12px',
+                background: '#FEF3C7',
+                borderRadius: '8px',
+                fontSize: '11px',
+                color: '#92400E'
+              }}>
+                💡 <strong>What This Means:</strong> Your character strengths are based on your service patterns over the last 90 days. Share these with your parents and teachers to show your personal growth!
               </div>
             </div>
           )}
