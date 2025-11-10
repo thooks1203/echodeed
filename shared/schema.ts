@@ -386,6 +386,16 @@ export const communityServiceLogs = pgTable("community_service_logs", {
   verificationNotes: text("verification_notes"),
   tokensEarned: integer("tokens_earned").default(0),
   parentNotified: boolean("parent_notified").default(false),
+  // v2.1: IPARD Model Integration (Investigation, Preparation, Action, Reflection, Demonstration)
+  ipardPhase: varchar("ipard_phase", { length: 20 }).default("investigation").notNull(), // investigation, preparation, action, reflection, demonstration, complete
+  approvalFormSubmitted: boolean("approval_form_submitted").default(false),
+  approvalFormSubmittedAt: timestamp("approval_form_submitted_at"),
+  reflectionQualityApproved: boolean("reflection_quality_approved").default(false),
+  reflectionApprovedAt: timestamp("reflection_approved_at"),
+  demonstrationCompleted: boolean("demonstration_completed").default(false),
+  demonstrationUrl: text("demonstration_url"), // Photo/link of student sharing their experience
+  demonstrationCompletedAt: timestamp("demonstration_completed_at"),
+  ipardBonusTokensEarned: integer("ipard_bonus_tokens_earned").default(0), // Total bonus tokens from IPARD milestones
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -403,6 +413,114 @@ export const communityServiceVerifications = pgTable("service_verifications", {
   verifiedAt: timestamp("verified_at"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   followUpRequired: integer("follow_up_required").default(0),
+});
+
+// v2.1: IPARD Phase Events - Audit trail for milestone completion
+export const ipardPhaseEvents = pgTable("ipard_phase_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceLogId: varchar("service_log_id").notNull().references(() => communityServiceLogs.id),
+  phase: varchar("phase", { length: 20 }).notNull(), // investigation, preparation, action, reflection, demonstration
+  actorId: varchar("actor_id").references(() => users.id), // Teacher/admin who approved the phase
+  notes: text("notes"),
+  tokensAwarded: integer("tokens_awarded").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// v2.1: Reflection Skills - Normalized reference table for 21st Century Learning Skills
+export const reflectionSkills = pgTable("reflection_skills", {
+  id: varchar("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(),
+  description: text("description"),
+  category: varchar("category", { length: 50 }), // For grouping (e.g., "21st Century Skills")
+  displayOrder: integer("display_order").default(0),
+  isActive: boolean("is_active").default(true).notNull(),
+});
+
+// v2.1: Reflection Traits - Normalized reference table for Character Traits
+export const reflectionTraits = pgTable("reflection_traits", {
+  id: varchar("id").primaryKey(),
+  name: varchar("name", { length: 100 }).notNull().unique(),
+  description: text("description"),
+  displayOrder: integer("display_order").default(0),
+  isActive: boolean("is_active").default(true).notNull(),
+});
+
+// v2.1: Service Log Skills - Junction table linking service logs to skills developed
+export const communityServiceLogSkills = pgTable("community_service_log_skills", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceLogId: varchar("service_log_id").notNull().references(() => communityServiceLogs.id),
+  skillId: varchar("skill_id").notNull().references(() => reflectionSkills.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// v2.1: Service Log Traits - Junction table linking service logs to character traits developed
+export const communityServiceLogTraits = pgTable("community_service_log_traits", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  serviceLogId: varchar("service_log_id").notNull().references(() => communityServiceLogs.id),
+  traitId: varchar("trait_id").notNull().references(() => reflectionTraits.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// v2.1: Token Transactions - Audit log for all token awards/spending
+export const tokenTransactions = pgTable("token_transactions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  transactionType: varchar("transaction_type", { length: 50 }).notNull(), // ipard_bonus, service_verification, character_excellence, redemption
+  amount: integer("amount").notNull(), // Positive for earning, negative for spending
+  sourceId: varchar("source_id"), // Reference to service log, redemption, or award ID
+  sourceType: varchar("source_type", { length: 50 }), // service_log, redemption, character_award
+  description: text("description"),
+  balanceBefore: integer("balance_before").notNull(),
+  balanceAfter: integer("balance_after").notNull(),
+  createdBy: varchar("created_by").references(() => users.id), // Teacher/admin who awarded
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// v2.1: Admin Rewards - High-value non-token rewards managed by school leadership
+export const adminRewards = pgTable("admin_rewards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolId: varchar("school_id").notNull(),
+  rewardName: varchar("reward_name", { length: 200 }).notNull(),
+  rewardType: varchar("reward_type", { length: 50 }).notNull(), // vip_parking, homework_pass, lunch_skip, principal_lunch, etc.
+  description: text("description"),
+  quantityAvailable: integer("quantity_available").default(0).notNull(),
+  quantityAllocated: integer("quantity_allocated").default(0).notNull(),
+  tokenCost: integer("token_cost").default(0), // Some admin rewards may require tokens
+  eligibilityRequirements: jsonb("eligibility_requirements"), // JSON of requirements (grade, GPA, etc.)
+  isActive: boolean("is_active").default(true).notNull(),
+  createdBy: varchar("created_by").notNull().references(() => users.id),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// v2.1: Admin Reward Redemptions - Track allocation of high-value rewards
+export const adminRewardRedemptions = pgTable("admin_reward_redemptions", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  rewardId: varchar("reward_id").notNull().references(() => adminRewards.id),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id").notNull(),
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, approved, fulfilled, revoked
+  tokensSpent: integer("tokens_spent").default(0),
+  approvedBy: varchar("approved_by").references(() => users.id), // Admin/principal who approved
+  fulfilledBy: varchar("fulfilled_by").references(() => users.id), // Staff who fulfilled (e.g., parking pass issued)
+  fulfilledAt: timestamp("fulfilled_at"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// v2.1: Character Excellence Awards - Manual teacher override for exceptional character (500+ tokens)
+export const characterExcellenceAwards = pgTable("character_excellence_awards", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentId: varchar("student_id").notNull().references(() => users.id),
+  teacherId: varchar("teacher_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id").notNull(),
+  tokensAwarded: integer("tokens_awarded").notNull(), // Typically 500+
+  reason: text("reason").notNull(), // Why the student received this award
+  characterTrait: varchar("character_trait", { length: 100 }), // integrity, leadership, compassion, etc.
+  witnessedBehavior: text("witnessed_behavior"), // Specific example of the character trait
+  approvedBy: varchar("approved_by").references(() => users.id), // Admin approval if required
+  awardedAt: timestamp("awarded_at").defaultNow().notNull(),
 });
 
 // Student service hours summary - MATCHES DEVELOPMENT DATABASE
@@ -1592,6 +1710,17 @@ export const insertStudentGoalSchema = createInsertSchema(studentGoals).omit({ i
 export const insertPrincipalBlogPostSchema = createInsertSchema(principalBlogPosts).omit({ id: true, createdAt: true, updatedAt: true, viewCount: true });
 export const insertParentCommunityPostSchema = createInsertSchema(parentCommunityPosts).omit({ id: true, createdAt: true, updatedAt: true, likesCount: true, commentsCount: true });
 
+// v2.1 Insert Schemas
+export const insertIpardPhaseEventSchema = createInsertSchema(ipardPhaseEvents).omit({ id: true, createdAt: true });
+export const insertReflectionSkillSchema = createInsertSchema(reflectionSkills);
+export const insertReflectionTraitSchema = createInsertSchema(reflectionTraits);
+export const insertCommunityServiceLogSkillSchema = createInsertSchema(communityServiceLogSkills).omit({ id: true, createdAt: true });
+export const insertCommunityServiceLogTraitSchema = createInsertSchema(communityServiceLogTraits).omit({ id: true, createdAt: true });
+export const insertTokenTransactionSchema = createInsertSchema(tokenTransactions).omit({ id: true, createdAt: true });
+export const insertAdminRewardSchema = createInsertSchema(adminRewards).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertAdminRewardRedemptionSchema = createInsertSchema(adminRewardRedemptions).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertCharacterExcellenceAwardSchema = createInsertSchema(characterExcellenceAwards).omit({ id: true, awardedAt: true });
+
 // Type Exports
 export type ContentModerationQueue = typeof contentModerationQueue.$inferSelect;
 export type InsertContentModerationQueue = z.infer<typeof insertContentModerationQueueSchema>;
@@ -1611,3 +1740,23 @@ export type PrincipalBlogPost = typeof principalBlogPosts.$inferSelect;
 export type InsertPrincipalBlogPost = z.infer<typeof insertPrincipalBlogPostSchema>;
 export type ParentCommunityPost = typeof parentCommunityPosts.$inferSelect;
 export type InsertParentCommunityPost = z.infer<typeof insertParentCommunityPostSchema>;
+
+// v2.1 Type Exports
+export type IpardPhaseEvent = typeof ipardPhaseEvents.$inferSelect;
+export type InsertIpardPhaseEvent = z.infer<typeof insertIpardPhaseEventSchema>;
+export type ReflectionSkill = typeof reflectionSkills.$inferSelect;
+export type InsertReflectionSkill = z.infer<typeof insertReflectionSkillSchema>;
+export type ReflectionTrait = typeof reflectionTraits.$inferSelect;
+export type InsertReflectionTrait = z.infer<typeof insertReflectionTraitSchema>;
+export type CommunityServiceLogSkill = typeof communityServiceLogSkills.$inferSelect;
+export type InsertCommunityServiceLogSkill = z.infer<typeof insertCommunityServiceLogSkillSchema>;
+export type CommunityServiceLogTrait = typeof communityServiceLogTraits.$inferSelect;
+export type InsertCommunityServiceLogTrait = z.infer<typeof insertCommunityServiceLogTraitSchema>;
+export type TokenTransaction = typeof tokenTransactions.$inferSelect;
+export type InsertTokenTransaction = z.infer<typeof insertTokenTransactionSchema>;
+export type AdminReward = typeof adminRewards.$inferSelect;
+export type InsertAdminReward = z.infer<typeof insertAdminRewardSchema>;
+export type AdminRewardRedemption = typeof adminRewardRedemptions.$inferSelect;
+export type InsertAdminRewardRedemption = z.infer<typeof insertAdminRewardRedemptionSchema>;
+export type CharacterExcellenceAward = typeof characterExcellenceAwards.$inferSelect;
+export type InsertCharacterExcellenceAward = z.infer<typeof insertCharacterExcellenceAwardSchema>;
