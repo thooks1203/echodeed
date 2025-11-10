@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Filter, Search, Award, Gift, Coffee, Trophy, Shield, AlertTriangle, FileText, Download, MessageCircle, ArrowLeft } from 'lucide-react';
+import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Filter, Search, Award, Gift, Coffee, Trophy, Shield, AlertTriangle, FileText, Download, MessageCircle, ArrowLeft, BarChart3, Sparkles } from 'lucide-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -382,7 +382,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
         </header>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-8' : 'grid-cols-5'} mb-6 bg-transparent p-1 h-auto gap-1 sm:gap-2 overflow-x-auto`}>
+          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-11' : 'grid-cols-8'} mb-6 bg-transparent p-1 h-auto gap-1 sm:gap-2 overflow-x-auto`}>
             <TabsTrigger 
               value="feed" 
               data-testid="tab-feed"
@@ -458,6 +458,33 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
               <Award className="h-3 w-3 sm:h-4 sm:w-4" />
               <span className="hidden sm:inline">Teacher Rewards</span>
               <span className="sm:hidden">Rewards</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="admin-rewards" 
+              data-testid="tab-admin-rewards"
+              className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
+            >
+              <Gift className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Admin Rewards</span>
+              <span className="sm:hidden">Admin</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="character-excellence" 
+              data-testid="tab-character-excellence"
+              className="bg-gradient-to-r from-rose-500 to-red-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
+            >
+              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Character Excellence</span>
+              <span className="sm:hidden">Excel</span>
+            </TabsTrigger>
+            <TabsTrigger 
+              value="leaderboard" 
+              data-testid="tab-leaderboard"
+              className="bg-gradient-to-r from-fuchsia-500 to-pink-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
+            >
+              <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
+              <span className="hidden sm:inline">Leaderboard</span>
+              <span className="sm:hidden">Top 5</span>
             </TabsTrigger>
           </TabsList>
 
@@ -951,6 +978,21 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
           {/* Teacher Rewards Tab */}
           <TabsContent value="rewards" className="space-y-6">
             <TeacherRewardsSection />
+          </TabsContent>
+
+          {/* v2.1 Admin Rewards Portal Tab */}
+          <TabsContent value="admin-rewards" className="space-y-6">
+            <AdminRewardsPortal />
+          </TabsContent>
+
+          {/* v2.1 Character Excellence Awards Tab */}
+          <TabsContent value="character-excellence" className="space-y-6">
+            <CharacterExcellence />
+          </TabsContent>
+
+          {/* v2.1 Monthly Leaderboard Tab */}
+          <TabsContent value="leaderboard" className="space-y-6">
+            <MonthlyLeaderboard />
           </TabsContent>
         </Tabs>
 
@@ -1460,6 +1502,532 @@ function TeacherRewardsSection() {
                 </p>
               </CardContent>
             </Card>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// v2.1 Admin Rewards Portal Component
+function AdminRewardsPortal() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [newReward, setNewReward] = useState({
+    rewardName: '',
+    description: '',
+    tokenCost: 0,
+    quantityAvailable: 1,
+  });
+
+  const { data: rewards = [], isLoading: rewardsLoading } = useQuery<any[]>({
+    queryKey: ['/api/admin-rewards'],
+    staleTime: 30000,
+  });
+
+  const { data: redemptions = [], isLoading: redemptionsLoading } = useQuery<any[]>({
+    queryKey: ['/api/admin-rewards/redemptions'],
+    staleTime: 30000,
+  });
+
+  const createRewardMutation = useMutation({
+    mutationFn: async (data: any) => {
+      return await apiRequest('POST', '/api/admin-rewards', data);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin-rewards'] });
+      toast({ title: "Success", description: "School reward created successfully!" });
+      setIsCreateDialogOpen(false);
+      setNewReward({ rewardName: '', description: '', tokenCost: 0, quantityAvailable: 1 });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to create reward", variant: "destructive" });
+    },
+  });
+
+  const updateRedemptionMutation = useMutation({
+    mutationFn: async ({ id, action }: { id: string; action: 'approved' | 'denied' | 'fulfilled' }) => {
+      return await apiRequest('PATCH', `/api/admin-rewards/redemptions/${id}`, { status: action });
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/admin-rewards/redemptions'] });
+      toast({ title: "Success", description: "Redemption status updated!" });
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to update redemption", variant: "destructive" });
+    },
+  });
+
+  if (rewardsLoading || redemptionsLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading admin rewards...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card className="bg-gradient-to-r from-purple-50 to-indigo-50 border-2 border-purple-300">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Gift className="h-6 w-6 text-purple-600" />
+            Admin School Rewards Portal
+          </CardTitle>
+          <CardDescription>
+            Manage high-value non-token rewards like VIP parking passes, homework passes, and field trip vouchers
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex justify-end">
+            <Button 
+              onClick={() => setIsCreateDialogOpen(true)}
+              className="bg-gradient-to-r from-purple-500 to-indigo-500 hover:from-purple-600 hover:to-indigo-600"
+              data-testid="button-create-reward"
+            >
+              <Gift className="h-4 w-4 mr-2" />
+              Create New Reward
+            </Button>
+          </div>
+
+          {isCreateDialogOpen && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+              <Card className="w-full max-w-lg">
+                <CardHeader>
+                  <CardTitle>Create School Reward</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <Label>Reward Name</Label>
+                    <Input
+                      value={newReward.rewardName}
+                      onChange={(e) => setNewReward({ ...newReward, rewardName: e.target.value })}
+                      placeholder="VIP Parking Pass"
+                      data-testid="input-reward-name"
+                    />
+                  </div>
+                  <div>
+                    <Label>Description</Label>
+                    <Input
+                      value={newReward.description}
+                      onChange={(e) => setNewReward({ ...newReward, description: e.target.value })}
+                      placeholder="Reserved parking spot for one month"
+                      data-testid="input-reward-description"
+                    />
+                  </div>
+                  <div>
+                    <Label>Token Cost (0 for admin-approval-only)</Label>
+                    <Input
+                      type="number"
+                      value={newReward.tokenCost}
+                      onChange={(e) => setNewReward({ ...newReward, tokenCost: parseInt(e.target.value) || 0 })}
+                      data-testid="input-token-cost"
+                    />
+                  </div>
+                  <div>
+                    <Label>Quantity Available</Label>
+                    <Input
+                      type="number"
+                      value={newReward.quantityAvailable}
+                      onChange={(e) => setNewReward({ ...newReward, quantityAvailable: parseInt(e.target.value) || 1 })}
+                      data-testid="input-quantity"
+                    />
+                  </div>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => createRewardMutation.mutate(newReward)}
+                      disabled={!newReward.rewardName || createRewardMutation.isPending}
+                      className="flex-1"
+                      data-testid="button-submit-reward"
+                    >
+                      {createRewardMutation.isPending ? 'Creating...' : 'Create Reward'}
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsCreateDialogOpen(false)}
+                      data-testid="button-cancel-reward"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {rewards.length === 0 ? (
+              <div className="col-span-2 text-center py-8 text-gray-500">
+                <Gift className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+                <p>No rewards created yet. Click "Create New Reward" to get started!</p>
+              </div>
+            ) : (
+              rewards.map((reward: any) => (
+                <Card key={reward.id} data-testid={`reward-card-${reward.id}`}>
+                  <CardHeader>
+                    <CardTitle className="text-lg">{reward.rewardName}</CardTitle>
+                    <CardDescription>{reward.description}</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-2 text-sm">
+                      <p><strong>Token Cost:</strong> {reward.tokenCost === 0 ? 'Admin Approval Only' : `${reward.tokenCost} tokens`}</p>
+                      <p><strong>Available:</strong> {reward.quantityAvailable}</p>
+                      <Badge variant={reward.isActive ? 'default' : 'secondary'}>
+                        {reward.isActive ? 'Active' : 'Inactive'}
+                      </Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CheckCircle className="h-5 w-5" />
+            Pending Redemption Requests
+          </CardTitle>
+          <CardDescription>
+            Review and approve student applications for school rewards
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          {redemptions.filter((r: any) => r.status === 'pending').length === 0 ? (
+            <div className="text-center py-8 text-gray-500">
+              <CheckCircle className="h-12 w-12 mx-auto mb-2 text-gray-300" />
+              <p>No pending redemption requests</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {redemptions
+                .filter((r: any) => r.status === 'pending')
+                .map((redemption: any) => (
+                  <Card key={redemption.id} className="border-2 border-yellow-200" data-testid={`redemption-${redemption.id}`}>
+                    <CardContent className="pt-6">
+                      <div className="flex justify-between items-start">
+                        <div>
+                          <h4 className="font-semibold">{redemption.rewardName}</h4>
+                          <p className="text-sm text-gray-600">Student: {redemption.studentName}</p>
+                          <p className="text-sm text-gray-500">Applied: {new Date(redemption.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <div className="flex gap-2">
+                          <Button
+                            size="sm"
+                            onClick={() => updateRedemptionMutation.mutate({ id: redemption.id, action: 'approved' })}
+                            className="bg-green-600 hover:bg-green-700"
+                            data-testid={`button-approve-${redemption.id}`}
+                          >
+                            Approve
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => updateRedemptionMutation.mutate({ id: redemption.id, action: 'denied' })}
+                            className="border-red-600 text-red-600 hover:bg-red-50"
+                            data-testid={`button-deny-${redemption.id}`}
+                          >
+                            Deny
+                          </Button>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// v2.1 Character Excellence Awards Component
+function CharacterExcellence() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [selectedStudentId, setSelectedStudentId] = useState('');
+  const [tokensAwarded, setTokensAwarded] = useState(500);
+  const [narrative, setNarrative] = useState('');
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const { data: students = [], isLoading: studentsLoading } = useQuery<any[]>({
+    queryKey: ['/api/users', 'student'],
+    queryFn: async () => {
+      const response = await fetch('/api/users?role=student');
+      if (!response.ok) throw new Error('Failed to fetch students');
+      return response.json();
+    },
+    staleTime: 60000,
+  });
+
+  const awardMutation = useMutation({
+    mutationFn: async (data: any) => {
+      return await apiRequest('POST', '/api/character-excellence/award', data);
+    },
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/users'] });
+      toast({ 
+        title: "Character Excellence Award Granted!", 
+        description: `${data.studentName} awarded ${tokensAwarded} tokens for exceptional character demonstration.` 
+      });
+      setSelectedStudentId('');
+      setTokensAwarded(500);
+      setNarrative('');
+      setSearchTerm('');
+    },
+    onError: () => {
+      toast({ title: "Error", description: "Failed to award tokens", variant: "destructive" });
+    },
+  });
+
+  const filteredStudents = students.filter((s: any) => 
+    s.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    s.email?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  if (studentsLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-rose-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading students...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <Card className="bg-gradient-to-r from-rose-50 to-red-50 border-2 border-rose-300">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Sparkles className="h-6 w-6 text-rose-600" />
+            Character Excellence Recognition
+          </CardTitle>
+          <CardDescription>
+            Award 500-1000 bonus tokens to students who demonstrate exceptional character traits and leadership
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="bg-white p-6 rounded-lg border-2 border-rose-200 space-y-4">
+            <div>
+              <Label htmlFor="student-search">Search for Student</Label>
+              <Input
+                id="student-search"
+                placeholder="Type student name or email..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                data-testid="input-student-search"
+                className="mb-2"
+              />
+              {searchTerm && (
+                <Select value={selectedStudentId} onValueChange={setSelectedStudentId}>
+                  <SelectTrigger data-testid="select-student">
+                    <SelectValue placeholder="Select a student" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {filteredStudents.slice(0, 10).map((student: any) => (
+                      <SelectItem key={student.id} value={student.id}>
+                        {student.name || student.email} {student.gradeLevel && `(Grade ${student.gradeLevel})`}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+
+            <div>
+              <Label htmlFor="token-amount">Token Amount (500-1000)</Label>
+              <div className="flex items-center gap-4">
+                <Input
+                  id="token-amount"
+                  type="range"
+                  min="500"
+                  max="1000"
+                  step="50"
+                  value={tokensAwarded}
+                  onChange={(e) => setTokensAwarded(parseInt(e.target.value))}
+                  className="flex-1"
+                  data-testid="slider-tokens"
+                />
+                <Badge className="w-24 justify-center text-lg" variant="secondary">
+                  {tokensAwarded}
+                </Badge>
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="narrative">Narrative Justification (Required, min 20 characters)</Label>
+              <textarea
+                id="narrative"
+                placeholder="Describe why this student deserves this recognition. What character traits did they demonstrate? What impact did their actions have?"
+                value={narrative}
+                onChange={(e) => setNarrative(e.target.value)}
+                className="w-full min-h-[120px] p-3 border rounded-md"
+                data-testid="textarea-narrative"
+              />
+              <p className="text-sm text-gray-500 mt-1">
+                {narrative.length}/20 characters minimum
+              </p>
+            </div>
+
+            <Button
+              onClick={() => awardMutation.mutate({
+                studentId: selectedStudentId,
+                tokensAwarded,
+                narrative,
+              })}
+              disabled={!selectedStudentId || narrative.length < 20 || awardMutation.isPending}
+              className="w-full bg-gradient-to-r from-rose-500 to-red-500 hover:from-rose-600 hover:to-red-600"
+              data-testid="button-award-excellence"
+            >
+              <Trophy className="h-4 w-4 mr-2" />
+              {awardMutation.isPending ? 'Awarding Tokens...' : 'Award Character Excellence Tokens'}
+            </Button>
+          </div>
+
+          <div className="bg-gradient-to-r from-yellow-50 to-orange-50 p-4 rounded-lg border-2 border-yellow-300">
+            <h4 className="font-semibold text-yellow-900 mb-2 flex items-center gap-2">
+              <Trophy className="h-5 w-5" />
+              Recognition Guidelines
+            </h4>
+            <ul className="text-sm text-yellow-800 space-y-1">
+              <li>• Awards range from 500-1000 tokens based on impact</li>
+              <li>• Narrative should describe specific character traits demonstrated</li>
+              <li>• Examples: Consistent kindness leadership, organizing service events, mentoring peers</li>
+              <li>• All awards are logged in transaction history for audit trail</li>
+            </ul>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
+// v2.1 Monthly Leaderboard Component
+function MonthlyLeaderboard() {
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+
+  const { data: leaderboardData, isLoading, refetch } = useQuery<any>({
+    queryKey: ['/api/leaderboard/monthly-top-earners'],
+    staleTime: 60000,
+  });
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-fuchsia-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading leaderboard...</p>
+        </div>
+      </div>
+    );
+  }
+
+  const currentMonth = new Date().toLocaleString('default', { month: 'long', year: 'numeric' });
+  const getMedal = (rank: number) => {
+    switch (rank) {
+      case 1: return '🥇';
+      case 2: return '🥈';
+      case 3: return '🥉';
+      default: return `#${rank}`;
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card className="bg-gradient-to-r from-fuchsia-50 to-pink-50 border-2 border-fuchsia-300">
+        <CardHeader>
+          <div className="flex justify-between items-start">
+            <div>
+              <CardTitle className="flex items-center gap-2">
+                <BarChart3 className="h-6 w-6 text-fuchsia-600" />
+                Monthly Top 5 Token Earners - {currentMonth}
+              </CardTitle>
+              <CardDescription>
+                Recognition for Principal's Corner announcements and positive reinforcement
+              </CardDescription>
+            </div>
+            <Button 
+              onClick={() => {
+                refetch();
+                toast({ title: "Refreshed", description: "Leaderboard data updated!" });
+              }}
+              variant="outline"
+              size="sm"
+              data-testid="button-refresh-leaderboard"
+            >
+              <Trophy className="h-4 w-4 mr-2" />
+              Refresh
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent>
+          {!leaderboardData || Object.keys(leaderboardData).length === 0 ? (
+            <div className="text-center py-12 text-gray-500">
+              <BarChart3 className="h-16 w-16 mx-auto mb-4 text-gray-300" />
+              <p>No leaderboard data available for this month</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {[9, 10, 11, 12].map((grade) => {
+                const gradeKey = `grade${grade}`;
+                const topStudents = leaderboardData[gradeKey] || [];
+                
+                return (
+                  <Card key={grade} className="border-2 border-fuchsia-200" data-testid={`leaderboard-grade-${grade}`}>
+                    <CardHeader className="bg-gradient-to-r from-fuchsia-100 to-pink-100 pb-3">
+                      <CardTitle className="text-lg text-center">
+                        Grade {grade}
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent className="pt-4">
+                      {topStudents.length === 0 ? (
+                        <p className="text-sm text-gray-500 text-center py-4">No students yet</p>
+                      ) : (
+                        <div className="space-y-3">
+                          {topStudents.map((student: any, index: number) => (
+                            <div 
+                              key={student.userId}
+                              className="flex items-center justify-between p-2 rounded-lg bg-gradient-to-r from-fuchsia-50 to-pink-50"
+                              data-testid={`student-rank-${index + 1}`}
+                            >
+                              <div className="flex items-center gap-2">
+                                <span className="text-lg font-bold w-8">
+                                  {getMedal(index + 1)}
+                                </span>
+                                <div>
+                                  <p className="font-semibold text-sm">{student.userName}</p>
+                                  <p className="text-xs text-gray-500">{student.tokensEarned} tokens</p>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+
+          <div className="mt-6 p-4 bg-gradient-to-r from-blue-50 to-cyan-50 rounded-lg border-2 border-blue-200">
+            <h4 className="font-semibold text-blue-900 mb-2 flex items-center gap-2">
+              <Award className="h-5 w-5" />
+              Principal's Corner Recognition
+            </h4>
+            <p className="text-sm text-blue-800">
+              Share these top performers in your weekly Principal's Corner announcements to celebrate student achievement and encourage positive behavior across the school.
+            </p>
           </div>
         </CardContent>
       </Card>
