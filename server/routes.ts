@@ -10324,6 +10324,108 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // =======================================
+  // 🎯 v2.1: IPARD BONUS TOKEN AWARDS
+  // =======================================
+
+  // Submit Service-Learning Approval Form (Investigation + Preparation) → 25 bonus tokens
+  app.post('/api/community-service/:id/submit-approval-form', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user?.claims?.sub;
+      console.log(`📋 Student ${userId} submitting approval form for service log ${id}`);
+      
+      const { ipardService } = await import('./services/ipardService');
+      const result = await ipardService.awardApprovalFormBonus(id, userId);
+      res.json(result);
+    } catch (error: any) {
+      console.error('Failed to award approval form bonus:', error);
+      res.status(400).json({ error: error.message || 'Failed to award approval form bonus' });
+    }
+  });
+
+  // Approve high-quality reflection (Reflection) → 50 bonus tokens (teacher only)
+  app.post('/api/community-service/:id/approve-reflection', requireTeacherRole, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const teacherId = req.teacherContext?.userId;
+      console.log(`✅ Teacher ${teacherId} approving reflection for service log ${id}`);
+      
+      const { ipardService } = await import('./services/ipardService');
+      const result = await ipardService.awardReflectionBonus(id, teacherId);
+      res.json(result);
+    } catch (error: any) {
+      console.error('Failed to award reflection bonus:', error);
+      res.status(400).json({ error: error.message || 'Failed to award reflection bonus' });
+    }
+  });
+
+  // Submit demonstration of service experience (Demonstration) → 75 bonus tokens
+  app.post('/api/community-service/:id/submit-demonstration', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const userId = req.user?.claims?.sub;
+      
+      // Validate request body
+      const demonstrationSchema = z.object({
+        demonstrationUrl: z.string().min(1, 'Demonstration URL is required').url('Must be a valid URL')
+      });
+      const { demonstrationUrl } = demonstrationSchema.parse(req.body);
+      
+      console.log(`🎬 Student ${userId} submitting demonstration for service log ${id}`);
+      
+      const { ipardService } = await import('./services/ipardService');
+      const result = await ipardService.awardDemonstrationBonus(id, userId, demonstrationUrl);
+      res.json(result);
+    } catch (error: any) {
+      console.error('Failed to award demonstration bonus:', error);
+      if (error.name === 'ZodError') {
+        res.status(400).json({ error: 'Invalid request data', details: error.errors });
+      } else {
+        res.status(400).json({ error: error.message || 'Failed to award demonstration bonus' });
+      }
+    }
+  });
+
+  // Get reflection skills and traits for tagging
+  app.get('/api/reflection/skills-and-traits', isAuthenticated, async (req: any, res) => {
+    try {
+      const { ipardService } = await import('./services/ipardService');
+      const data = await ipardService.getSkillsAndTraits();
+      res.json(data);
+    } catch (error) {
+      console.error('Failed to get skills and traits:', error);
+      res.status(500).json({ error: 'Failed to get skills and traits' });
+    }
+  });
+
+  // Tag service log with skills and traits developed
+  app.post('/api/community-service/:id/tag-reflections', isAuthenticated, async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      
+      // Validate request body
+      const tagReflectionsSchema = z.object({
+        skillIds: z.array(z.string()).default([]),
+        traitIds: z.array(z.string()).default([])
+      });
+      const { skillIds, traitIds } = tagReflectionsSchema.parse(req.body);
+      
+      console.log(`🏷️  Tagging service log ${id} with ${skillIds.length} skills and ${traitIds.length} traits`);
+      
+      const { ipardService } = await import('./services/ipardService');
+      const result = await ipardService.tagServiceLogReflections(id, skillIds, traitIds);
+      res.json(result);
+    } catch (error: any) {
+      console.error('Failed to tag service log:', error);
+      if (error.name === 'ZodError') {
+        res.status(400).json({ error: 'Invalid request data', details: error.errors });
+      } else {
+        res.status(500).json({ error: 'Failed to tag service log' });
+      }
+    }
+  });
+
+  // =======================================
   // 👨‍👩‍👧‍👦 PARENT COMMUNITY SERVICE ENDPOINTS
   // =======================================
   
