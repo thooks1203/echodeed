@@ -10519,8 +10519,52 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.post('/api/admin-rewards/:rewardId/redeem', isAuthenticated, async (req: any, res) => {
     try {
       const { rewardId } = req.params;
-      const userId = req.user?.claims?.sub;
       const { applicationNotes } = req.body;
+      
+      // Get userId and schoolId with demo bypass support
+      let userId = req.user?.claims?.sub;
+      let userSchoolId: string | undefined;
+      
+      if (!userId) {
+        // Demo bypass for X-Session-ID
+        if (process.env.NODE_ENV === 'development' || process.env.DEMO_MODE === 'true') {
+          const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
+          const demoRole = req.headers['x-demo-role'];
+          
+          if (sessionId && demoRole && ['student', 'parent'].includes(demoRole)) {
+            console.log('✅ DEMO BYPASS: Admin reward redemption for demo user with role:', demoRole);
+            userId = sessionId;
+            userSchoolId = 'bc016cad-fa89-44fb-aab0-76f82c574f78'; // Eastern Guilford HS
+          }
+        }
+        
+        if (!userId) {
+          return res.status(401).json({ error: 'Unauthorized - no user ID' });
+        }
+      }
+      
+      // Get user's authorized schools if not set by demo bypass
+      if (!userSchoolId) {
+        const userSchools = await storage.getUserSchools(userId);
+        if (!userSchools || userSchools.length === 0) {
+          return res.status(403).json({ error: 'No school access found' });
+        }
+        userSchoolId = userSchools[0].schoolId;
+      }
+      
+      // SECURITY: Verify the reward belongs to user's school (prevents cross-school redemption)
+      const [reward] = await db.select().from(adminRewards)
+        .where(eq(adminRewards.id, rewardId))
+        .limit(1);
+      
+      if (!reward) {
+        return res.status(404).json({ error: 'Reward not found' });
+      }
+      
+      if (reward.schoolId !== userSchoolId) {
+        console.error(`🚨 SECURITY: User ${userId} attempted cross-school redemption. User school: ${userSchoolId}, Reward school: ${reward.schoolId}`);
+        return res.status(403).json({ error: 'Access denied - reward belongs to a different school' });
+      }
 
       const [redemption] = await db.insert(adminRewardRedemptions).values({
         userId,
@@ -10529,6 +10573,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         applicationNotes
       }).returning();
 
+      console.log(`✅ Reward redemption created: User ${userId} applied for reward ${rewardId} at school ${userSchoolId}`);
       res.json(redemption);
     } catch (error) {
       console.error('Failed to submit redemption:', error);
