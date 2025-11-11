@@ -717,7 +717,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Auth routes - Get current user info
   app.get('/api/auth/user', isAuthenticated, async (req: any, res) => {
     try {
-      const userId = req.user?.claims?.sub || req.user?.id;
+      let userId = req.user?.claims?.sub || req.user?.id;
+      
+      // Demo bypass pattern for X-Session-ID (supports all demo roles)
+      if (!userId) {
+        if (process.env.NODE_ENV === 'development' || process.env.DEMO_MODE === 'true') {
+          const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
+          const demoRole = req.headers['x-demo-role'];
+          
+          if (sessionId && demoRole && ['student', 'teacher', 'admin', 'parent'].includes(demoRole)) {
+            console.log('✅ DEMO BYPASS: /api/auth/user for demo user with role:', demoRole);
+            userId = sessionId;
+          }
+        }
+      }
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized - no user ID" });
+      }
+      
       const user = await storage.getUser(userId);
       
       if (user) {
