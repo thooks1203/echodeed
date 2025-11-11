@@ -10432,7 +10432,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all admin rewards for a school
   app.get('/api/admin-rewards', isAuthenticated, async (req: any, res) => {
     try {
-      const { schoolId } = req.query;
+      let schoolId = req.query.schoolId as string;
+      
+      // If schoolId not provided, derive it from the authenticated user
+      if (!schoolId) {
+        // Demo bypass pattern (matches requireSchoolAccess)
+        if (process.env.NODE_ENV === 'development' || process.env.DEMO_MODE === 'true') {
+          const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
+          const demoRole = req.headers['x-demo-role'];
+          
+          if (sessionId && demoRole && ['student', 'teacher', 'admin', 'parent'].includes(demoRole)) {
+            console.log('✅ DEMO BYPASS: Admin rewards for demo user with role:', demoRole);
+            schoolId = 'bc016cad-fa89-44fb-aab0-76f82c574f78'; // Eastern Guilford HS
+          }
+        }
+        
+        // If still no schoolId, look up from authenticated user's schools
+        if (!schoolId) {
+          const userId = req.user?.claims?.sub || req.user?.id;
+          if (!userId) {
+            return res.status(401).json({ error: 'Unauthorized - no user ID' });
+          }
+          
+          // Use canonical school lookup (same as requireSchoolAccess)
+          const userSchools = await storage.getUserSchools(userId);
+          
+          if (!userSchools || userSchools.length === 0) {
+            return res.status(400).json({ error: 'No school associated with user' });
+          }
+          
+          schoolId = userSchools[0].schoolId;
+        }
+      }
+      
       const rewards = await db.select().from(adminRewards)
         .where(and(
           eq(adminRewards.schoolId, schoolId),
