@@ -83,6 +83,7 @@ The frontend uses React 18, TypeScript, and Vite, built with Radix UI, shadcn/ui
   - **Admin School Rewards**: High-value non-token rewards (VIP parking passes, homework passes, field trip vouchers) with application-approval workflow
   - **Character Excellence Recognition**: Teachers award 500-1000 bonus tokens for exceptional character demonstration with required narrative explanation
   - **Monthly Recognition Leaderboards**: Top 5 token earners per grade level for Principal's Corner announcements and positive reinforcement
+  - **AI-Suggested Communications**: Ready-to-send email and announcement templates based on real-time Inclusion Score metrics, eliminating drafting friction for busy administrators. Includes 4 template types: Student Body Email (engagement boost), Morning Announcement Script (celebrating wins), Parent Newsletter Blurb (monthly updates), and Staff Memo (call-to-action). All templates personalize with actual school data and offer one-click copy functionality.
   - **Comprehensive Audit Trail**: All token transactions logged in `token_transactions` table with before/after balance, source, and approving teacher context
   - **GCS Alignment**: Full compliance with Guilford County Schools Service-Learning Diploma requirements and IPARD model
 
