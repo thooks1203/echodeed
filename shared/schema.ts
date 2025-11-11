@@ -66,8 +66,6 @@ export const studentAccounts = pgTable("student_accounts", {
   parentalConsentMethod: varchar("parental_consent_method", { length: 50 }), // email, phone, in-person
   parentalConsentDate: timestamp("parental_consent_date"),
   parentalConsentIP: varchar("parental_consent_ip"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const kindnessPosts = pgTable("kindness_posts", {

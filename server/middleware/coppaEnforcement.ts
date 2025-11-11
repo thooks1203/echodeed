@@ -93,7 +93,7 @@ export const enforceCOPPA = async (req: COPPAEnforcedRequest, res: Response, nex
           hasValidConsent = true;
         } else if (latestConsentRecord.consentStatus === 'pending' || !latestConsentRecord.isImmutable) {
           // Pre-approval verification - check linkExpiresAt
-          hasValidConsent = new Date() <= latestConsentRecord.linkExpiresAt;
+          hasValidConsent = latestConsentRecord.linkExpiresAt ? new Date() <= latestConsentRecord.linkExpiresAt : false;
         }
       }
       
@@ -122,7 +122,7 @@ export const enforceCOPPA = async (req: COPPAEnforcedRequest, res: Response, nex
             endpoint: req.path,
             method: req.method,
             consentRecordId: latestConsentRecord?.id,
-            consentExpiry: latestConsentRecord?.linkExpiresAt,
+            consentExpiry: latestConsentRecord?.linkExpiresAt ?? null,
             isImmutable: latestConsentRecord?.isImmutable
           },
           ipAddress,
@@ -141,7 +141,7 @@ export const enforceCOPPA = async (req: COPPAEnforcedRequest, res: Response, nex
             hasValidConsent,
             parentNotificationEmail: studentAccount.parentNotificationEmail,
             consentRecordId: latestConsentRecord?.id,
-            consentExpired: latestConsentRecord ? new Date() > latestConsentRecord.linkExpiresAt : false,
+            consentExpired: latestConsentRecord?.linkExpiresAt ? new Date() > latestConsentRecord.linkExpiresAt : false,
             isImmutable: latestConsentRecord?.isImmutable || false,
             message: getConsentStatusMessage(consentStatus, latestConsentRecord)
           }
