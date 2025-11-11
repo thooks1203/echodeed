@@ -358,8 +358,15 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
   // Fetch service hours summary
   const { data: serviceHoursSummary } = useQuery({
     queryKey: ['/api/community-service/summary', user?.id],
-    queryFn: () => fetch(`/api/community-service/summary/${user?.id}`).then(r => r.json()),
-    enabled: !!user?.id
+    queryFn: async () => {
+      const userId = user?.id || 'student-001'; // Fallback to demo user
+      console.log('🔍 Fetching service hours for user:', userId);
+      const response = await fetch(`/api/community-service/summary/${userId}`);
+      const data = await response.json();
+      console.log('📊 Service hours data:', data);
+      return data;
+    },
+    enabled: true // Always enabled for demo
   });
 
   const stats = studentStats || {
