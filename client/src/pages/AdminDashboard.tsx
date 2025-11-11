@@ -766,6 +766,26 @@ export default function AdminDashboard() {
     refetchOnWindowFocus: false
   });
   
+  // Fetch climate metrics and inclusion score data
+  const { data: climateData, isLoading: isLoadingClimate } = useQuery({
+    queryKey: ['/api/climate/metrics'],
+    queryFn: () => fetch('/api/climate/metrics').then(r => r.json())
+  });
+
+  const inclusionScore = climateData?.inclusionScore;
+  
+  // Helper function to format qualitative band for display
+  const formatQualitativeBand = (band: string | undefined): string => {
+    if (!band) return 'Needs Action';
+    switch (band) {
+      case 'needs_action': return 'Needs Action';
+      case 'watch': return 'Watch';
+      case 'healthy': return 'Healthy';
+      case 'thriving': return 'Thriving';
+      default: return 'Needs Action';
+    }
+  };
+  
   // Mock admin data (in production, get from auth context)
   const currentAdmin: SchoolAdmin = {
     id: 'admin-001',
@@ -1311,9 +1331,13 @@ export default function AdminDashboard() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div className="bg-white p-5 rounded-lg border-2 border-emerald-100">
                   <div className="text-sm font-semibold text-gray-600 mb-2">Current Inclusion Score</div>
-                  <div className="text-4xl font-bold text-emerald-600 mb-3" data-testid="inclusion-score-value">78/100</div>
+                  <div className="text-4xl font-bold text-emerald-600 mb-3" data-testid="inclusion-score-value">
+                    {isLoadingClimate ? '...' : `${inclusionScore?.score || 0}/100`}
+                  </div>
                   <div className="flex items-center gap-2">
-                    <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200" data-testid="inclusion-score-status">Healthy</Badge>
+                    <Badge className="bg-emerald-100 text-emerald-700 border-emerald-200" data-testid="inclusion-score-status">
+                      {isLoadingClimate ? 'Loading...' : formatQualitativeBand(inclusionScore?.qualitativeBand)}
+                    </Badge>
                     <span className="text-sm text-gray-600" data-testid="inclusion-score-trend">↑ 12% vs. last month</span>
                   </div>
                 </div>
@@ -1347,29 +1371,53 @@ export default function AdminDashboard() {
               {/* Top Inclusion Acts - What Students Are Doing */}
               <div className="bg-white p-4 rounded-lg border-2 border-gray-100">
                 <h4 className="font-semibold text-gray-800 mb-3">Top Inclusion Acts This Month</h4>
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between" data-testid="inclusion-act-1">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold">1</div>
-                      <span className="text-sm text-gray-700" data-testid="inclusion-act-1-description">"Invited new student to lunch"</span>
-                    </div>
-                    <Badge className="bg-blue-50 text-blue-700" data-testid="inclusion-act-1-count">12×</Badge>
+                {isLoadingClimate ? (
+                  <div className="text-center py-4 text-gray-500">Loading inclusion acts...</div>
+                ) : inclusionScore?.topInclusionActs && inclusionScore.topInclusionActs.length > 0 ? (
+                  <div className="space-y-2">
+                    {inclusionScore.topInclusionActs.slice(0, 3).map((act: { category: string; count: number }, index: number) => {
+                      const colors = [
+                        { bg: 'bg-blue-100', text: 'text-blue-600', badgeBg: 'bg-blue-50', badgeText: 'text-blue-700' },
+                        { bg: 'bg-purple-100', text: 'text-purple-600', badgeBg: 'bg-purple-50', badgeText: 'text-purple-700' },
+                        { bg: 'bg-green-100', text: 'text-green-600', badgeBg: 'bg-green-50', badgeText: 'text-green-700' }
+                      ];
+                      const color = colors[index] || colors[0];
+                      return (
+                        <div key={index} className="flex items-center justify-between" data-testid={`inclusion-act-${index + 1}`}>
+                          <div className="flex items-center gap-2">
+                            <div className={`w-8 h-8 ${color.bg} rounded-full flex items-center justify-center ${color.text} font-semibold`}>{index + 1}</div>
+                            <span className="text-sm text-gray-700" data-testid={`inclusion-act-${index + 1}-description`}>"{act.category}"</span>
+                          </div>
+                          <Badge className={`${color.badgeBg} ${color.badgeText}`} data-testid={`inclusion-act-${index + 1}-count`}>{act.count}×</Badge>
+                        </div>
+                      );
+                    })}
                   </div>
-                  <div className="flex items-center justify-between" data-testid="inclusion-act-2">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-semibold">2</div>
-                      <span className="text-sm text-gray-700" data-testid="inclusion-act-2-description">"Included peer in group project"</span>
+                ) : (
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between" data-testid="inclusion-act-1">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-semibold">1</div>
+                        <span className="text-sm text-gray-700" data-testid="inclusion-act-1-description">"Invited new student to lunch"</span>
+                      </div>
+                      <Badge className="bg-blue-50 text-blue-700" data-testid="inclusion-act-1-count">12×</Badge>
                     </div>
-                    <Badge className="bg-purple-50 text-purple-700" data-testid="inclusion-act-2-count">9×</Badge>
-                  </div>
-                  <div className="flex items-center justify-between" data-testid="inclusion-act-3">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-semibold">3</div>
-                      <span className="text-sm text-gray-700" data-testid="inclusion-act-3-description">"Sat with student eating alone"</span>
+                    <div className="flex items-center justify-between" data-testid="inclusion-act-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center text-purple-600 font-semibold">2</div>
+                        <span className="text-sm text-gray-700" data-testid="inclusion-act-2-description">"Included peer in group project"</span>
+                      </div>
+                      <Badge className="bg-purple-50 text-purple-700" data-testid="inclusion-act-2-count">9×</Badge>
                     </div>
-                    <Badge className="bg-green-50 text-green-700" data-testid="inclusion-act-3-count">7×</Badge>
+                    <div className="flex items-center justify-between" data-testid="inclusion-act-3">
+                      <div className="flex items-center gap-2">
+                        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-semibold">3</div>
+                        <span className="text-sm text-gray-700" data-testid="inclusion-act-3-description">"Sat with student eating alone"</span>
+                      </div>
+                      <Badge className="bg-green-50 text-green-700" data-testid="inclusion-act-3-count">7×</Badge>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
 
               {/* Why This Matters - Value Proposition for Administrators */}
@@ -1419,7 +1467,7 @@ export default function AdminDashboard() {
                 <div className="flex items-start gap-2">
                   <Sparkles className="w-5 h-5 text-indigo-600 mt-0.5 flex-shrink-0" />
                   <div className="text-sm text-indigo-900">
-                    <strong>AI analyzes your data</strong> to suggest high-impact messages. Based on your current Inclusion Score (78/100) and engagement trends, here are recommended communications:
+                    <strong>AI analyzes your data</strong> to suggest high-impact messages. Based on your current Inclusion Score ({isLoadingClimate ? '...' : `${inclusionScore?.score || 0}/100`}) and engagement trends, here are recommended communications:
                   </div>
                 </div>
               </div>
@@ -1451,7 +1499,7 @@ Here's how YOU can contribute (takes 2 minutes):
 • Share ONE act of kindness you witnessed or did this week
 • Encourage one friend who hasn't joined yet
 
-Current Inclusion Score: 78/100 - You're building something special.
+Current Inclusion Score: ${inclusionScore?.score || 0}/100 - You're building something special.
 
 Join the movement: www.echodeed.com
 School Code: EGHS-2025
@@ -1504,7 +1552,7 @@ Good morning, Eagles! Some INCREDIBLE numbers to share today:
 📊 This week on EchoDeed:
 • 156 service hours logged by YOUR classmates
 • 42 inclusion acts documented (inviting new students to lunch, including peers in projects)
-• Inclusion Score: 78/100 - up 12% from last month!
+• Inclusion Score: ${inclusionScore?.score || 0}/100 - up 12% from last month!
 
 🏆 Special shoutout to these inclusion champions:
 • 12 students helped elderly neighbors with groceries
@@ -1561,7 +1609,7 @@ Your students are making history! This month's character education highlights:
 
 ✅ 1,068 acts of kindness documented
 ✅ 156 service hours logged toward 200-hour diploma requirement
-✅ Inclusion Score: 78/100 (12% improvement from last month!)
+✅ Inclusion Score: ${inclusionScore?.score || 0}/100 (12% improvement from last month!)
 ✅ 68% student participation - highest in the district
 
 What This Means for Your Student:
@@ -1631,7 +1679,7 @@ Date: [Date]
 
 Team,
 
-Our Inclusion Score has plateaued at 78/100 over the past two weeks. While this is still "Healthy" range, I want us to proactively boost engagement before winter break.
+Our Inclusion Score has plateaued at ${inclusionScore?.score || 0}/100 over the past two weeks. While this is still "${formatQualitativeBand(inclusionScore?.qualitativeBand)}" range, I want us to proactively boost engagement before winter break.
 
 📊 Current Stats:
 • 68% student participation (down 3% from peak)
@@ -1672,7 +1720,7 @@ P.S. Teachers who approve 10+ service hours this week earn bonus tokens toward B
                 </div>
                 <div className="text-xs text-gray-600 bg-gray-50 p-3 rounded border border-gray-200 font-mono max-h-32 overflow-y-auto">
                   📧 STAFF MEMO - Re: Supporting Student Engagement<br/>
-                  Team, Our Inclusion Score has plateaued at 78/100...<br/>
+                  Team, Our Inclusion Score has plateaued at {inclusionScore?.score || 0}/100...<br/>
                   <span className="text-gray-400">[Click "Copy Memo" to see full template]</span>
                 </div>
               </div>

@@ -10542,8 +10542,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const [redemption] = await db.insert(adminRewardRedemptions).values({
         userId,
         rewardId,
-        redemptionStatus: 'pending',
-        applicationNotes
+        schoolId: userSchoolId,
+        status: 'pending',
+        tokensSpent: reward.tokenCost || 0
       }).returning();
 
       console.log(`✅ Reward redemption created: User ${userId} applied for reward ${rewardId} at school ${userSchoolId}`);
@@ -10551,6 +10552,38 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Failed to submit redemption:', error);
       res.status(500).json({ error: 'Failed to submit redemption' });
+    }
+  });
+
+  // Get student's own reward applications
+  app.get('/api/admin-rewards/my-redemptions', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.id || req.session?.userId || req.session?.passport?.user || 'demo-student-001';
+      
+      const redemptions = await db.select({
+        id: adminRewardRedemptions.id,
+        rewardId: adminRewardRedemptions.rewardId,
+        userId: adminRewardRedemptions.userId,
+        schoolId: adminRewardRedemptions.schoolId,
+        status: adminRewardRedemptions.status,
+        tokensSpent: adminRewardRedemptions.tokensSpent,
+        approvedBy: adminRewardRedemptions.approvedBy,
+        fulfilledBy: adminRewardRedemptions.fulfilledBy,
+        fulfilledAt: adminRewardRedemptions.fulfilledAt,
+        notes: adminRewardRedemptions.notes,
+        createdAt: adminRewardRedemptions.createdAt,
+        updatedAt: adminRewardRedemptions.updatedAt,
+        rewardName: adminRewards.rewardName,
+        rewardType: adminRewards.rewardType
+      })
+        .from(adminRewardRedemptions)
+        .leftJoin(adminRewards, eq(adminRewardRedemptions.rewardId, adminRewards.id))
+        .where(eq(adminRewardRedemptions.userId, userId));
+
+      res.json(redemptions);
+    } catch (error) {
+      console.error('Failed to get student redemptions:', error);
+      res.status(500).json({ error: 'Failed to get student redemptions' });
     }
   });
 
@@ -12371,9 +12404,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { aggregateClimateMonitor } = await import('./services/aggregateClimateMonitor');
       const metrics = await aggregateClimateMonitor.calculateSchoolClimateMetrics(schoolId, dateRange);
 
+      // Import and calculate Inclusion Score
+      const { getInclusionScoreWithCache } = await import('./services/inclusionScoreCalculator');
+      const inclusionScore = await getInclusionScoreWithCache(schoolId);
+
       res.json({
         success: true,
         metrics,
+        inclusionScore, // Add real-time Inclusion Score
         dateRange: {
           start: dateRange.start.toISOString(),
           end: dateRange.end.toISOString(),
@@ -12414,6 +12452,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       console.error('Error fetching behavioral trends:', error);
       res.status(500).json({ error: 'Failed to fetch behavioral trends' });
+    }
+  });
+
+  // GET /api/climate/inclusion/trends - Get Inclusion Score historical trends
+  app.get('/api/climate/inclusion/trends', requireTeacherRole, async (req: any, res) => {
+    try {
+      const schoolId = req.teacherContext?.schoolId || req.user?.schoolId;
+      const { range = '90' } = req.query;
+
+      if (!schoolId) {
+        return res.status(400).json({ error: 'School ID required' });
+      }
+
+      const daysBack = parseInt(range as string);
+      if (isNaN(daysBack) || daysBack < 1 || daysBack > 365) {
+        return res.status(400).json({ error: 'Invalid range (must be 1-365 days)' });
+      }
+
+      // Import inclusion score calculator service
+      const { getHistoricalTrends } = await import('./services/inclusionScoreCalculator');
+      const trends = await getHistoricalTrends(schoolId, daysBack);
+
+      res.json({
+        success: true,
+        trends,
+        schoolId,
+        range: daysBack
+      });
+    } catch (error) {
+      console.error('Error fetching inclusion score trends:', error);
+      res.status(500).json({ error: 'Failed to fetch inclusion score trends' });
     }
   });
 

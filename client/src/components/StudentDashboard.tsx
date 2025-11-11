@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { LeftSidebar } from '@/components/LeftSidebar';
 import { BackButton } from '@/components/BackButton';
 import { NotificationPreferences } from '@/components/NotificationPreferences';
+import { SchoolRewardsView } from '@/components/SchoolRewardsView';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
@@ -329,7 +330,7 @@ function WeeklyChallengesView() {
 
 export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: StudentDashboardProps) {
   const { user } = useAuth();
-  const [activeTab, setActiveTab] = useState<'overview' | 'challenges' | 'progress' | 'settings'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'challenges' | 'progress' | 'rewards' | 'settings'>('overview');
 
   // Fetch student's personal data from tokens endpoint
   const { data: userTokens } = useQuery({
@@ -588,7 +589,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
       {/* Tab Navigation */}
       <div style={{
         display: 'grid',
-        gridTemplateColumns: featureFlags.schoolYearChallenges ? '1fr 1fr 1fr 1fr' : '1fr 1fr 1fr',
+        gridTemplateColumns: featureFlags.schoolYearChallenges ? '1fr 1fr 1fr 1fr 1fr' : '1fr 1fr 1fr 1fr',
         background: '#f3f4f6',
         borderRadius: '12px',
         padding: '4px',
@@ -598,6 +599,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         {[
           { id: 'overview', label: '📊 Overview' },
           ...(featureFlags.schoolYearChallenges ? [{ id: 'challenges', label: '🎯 Challenges' }] : []),
+          { id: 'rewards', label: '🎁 Rewards' },
           { id: 'progress', label: '📈 Progress' },
           { id: 'settings', label: '⚙️ Settings' }
         ].map((tab) => {
@@ -605,6 +607,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           const tabColors = {
             overview: { bg: 'linear-gradient(135deg, #667eea, #764ba2)', shadow: 'rgba(102, 126, 234, 0.4)' },
             challenges: { bg: 'linear-gradient(135deg, #f093fb, #f5576c)', shadow: 'rgba(240, 147, 251, 0.4)' },
+            rewards: { bg: 'linear-gradient(135deg, #8B5CF6, #EC4899)', shadow: 'rgba(139, 92, 246, 0.4)' },
             progress: { bg: 'linear-gradient(135deg, #4facfe, #00f2fe)', shadow: 'rgba(79, 172, 254, 0.4)' },
             settings: { bg: 'linear-gradient(135deg, #43e97b, #38f9d7)', shadow: 'rgba(67, 233, 123, 0.4)' }
           };
@@ -1048,6 +1051,8 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
       )}
 
       {activeTab === 'challenges' && <WeeklyChallengesView />}
+
+      {activeTab === 'rewards' && <SchoolRewardsView />}
 
       {activeTab === 'progress' && (
         <div style={{

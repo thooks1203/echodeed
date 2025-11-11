@@ -1699,6 +1699,38 @@ export const studentGoals = pgTable("student_goals", {
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
+// v2.0: School Inclusion Scores - Real-time school climate and belonging metric (0-100)
+export const schoolInclusionScores = pgTable("school_inclusion_scores", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolId: varchar("school_id").notNull(),
+  score: integer("score").notNull(), // 0-100 composite score
+  componentBreakdown: jsonb("component_breakdown").notNull(), // { participation: 28, diversity: 12, sentiment: 18, serviceVelocity: 13, engagement: 14 }
+  qualitativeBand: varchar("qualitative_band", { length: 20 }).notNull(), // needs_action, watch, healthy, thriving
+  participationRate: decimal("participation_rate", { precision: 5, scale: 2 }), // % of active students posting
+  kindnessDiversityScore: decimal("kindness_diversity_score", { precision: 5, scale: 2 }), // Entropy measure
+  positiveClimateScore: decimal("positive_climate_score", { precision: 5, scale: 2 }), // Positive vs concerning posts
+  serviceCompletionRate: decimal("service_completion_rate", { precision: 5, scale: 2 }), // Verified hours vs pace
+  engagementScore: decimal("engagement_score", { precision: 5, scale: 2 }), // Token redemptions + events
+  activeStudentCount: integer("active_student_count").default(0),
+  totalKindnessPosts: integer("total_kindness_posts").default(0),
+  topInclusionActs: jsonb("top_inclusion_acts"), // Array of {category, count} for dashboard display
+  computedAt: timestamp("computed_at").defaultNow().notNull(),
+  cacheExpiresAt: timestamp("cache_expires_at"), // 15-minute TTL for caching
+});
+
+// v2.0: School Inclusion Trend Daily - Historical snapshots for trend analysis
+export const schoolInclusionTrendDaily = pgTable("school_inclusion_trend_daily", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  schoolId: varchar("school_id").notNull(),
+  date: timestamp("date").notNull(), // Daily snapshot date
+  score: integer("score").notNull(), // 0-100 score for that day
+  componentBreakdown: jsonb("component_breakdown").notNull(),
+  qualitativeBand: varchar("qualitative_band", { length: 20 }).notNull(),
+  weekDelta: integer("week_delta"), // Change from 7 days ago
+  monthDelta: integer("month_delta"), // Change from 30 days ago
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Insert Schemas
 export const insertContentModerationQueueSchema = createInsertSchema(contentModerationQueue).omit({ id: true, flaggedAt: true, createdAt: true });
 export const insertBehavioralTrendAnalyticsSchema = createInsertSchema(behavioralTrendAnalytics).omit({ id: true, generatedAt: true });
@@ -1709,6 +1741,8 @@ export const insertStudentNotificationPreferencesSchema = createInsertSchema(stu
 export const insertStudentGoalSchema = createInsertSchema(studentGoals).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertPrincipalBlogPostSchema = createInsertSchema(principalBlogPosts).omit({ id: true, createdAt: true, updatedAt: true, viewCount: true });
 export const insertParentCommunityPostSchema = createInsertSchema(parentCommunityPosts).omit({ id: true, createdAt: true, updatedAt: true, likesCount: true, commentsCount: true });
+export const insertSchoolInclusionScoreSchema = createInsertSchema(schoolInclusionScores).omit({ id: true, computedAt: true });
+export const insertSchoolInclusionTrendDailySchema = createInsertSchema(schoolInclusionTrendDaily).omit({ id: true, createdAt: true });
 
 // v2.1 Insert Schemas
 export const insertIpardPhaseEventSchema = createInsertSchema(ipardPhaseEvents).omit({ id: true, createdAt: true });
@@ -1740,6 +1774,10 @@ export type PrincipalBlogPost = typeof principalBlogPosts.$inferSelect;
 export type InsertPrincipalBlogPost = z.infer<typeof insertPrincipalBlogPostSchema>;
 export type ParentCommunityPost = typeof parentCommunityPosts.$inferSelect;
 export type InsertParentCommunityPost = z.infer<typeof insertParentCommunityPostSchema>;
+export type SchoolInclusionScore = typeof schoolInclusionScores.$inferSelect;
+export type InsertSchoolInclusionScore = z.infer<typeof insertSchoolInclusionScoreSchema>;
+export type SchoolInclusionTrendDaily = typeof schoolInclusionTrendDaily.$inferSelect;
+export type InsertSchoolInclusionTrendDaily = z.infer<typeof insertSchoolInclusionTrendDailySchema>;
 
 // v2.1 Type Exports
 export type IpardPhaseEvent = typeof ipardPhaseEvents.$inferSelect;
