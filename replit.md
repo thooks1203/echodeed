@@ -84,6 +84,19 @@ The frontend uses React 18, TypeScript, and Vite, built with Radix UI, shadcn/ui
   - **Character Excellence Recognition**: Teachers award 500-1000 bonus tokens for exceptional character demonstration with required narrative explanation
   - **Monthly Recognition Leaderboards**: Top 5 token earners per grade level for Principal's Corner announcements and positive reinforcement
   - **AI-Suggested Communications**: Ready-to-send email and announcement templates based on real-time Inclusion Score metrics, eliminating drafting friction for busy administrators. Includes 4 template types: Student Body Email (engagement boost), Morning Announcement Script (celebrating wins), Parent Newsletter Blurb (monthly updates), and Staff Memo (call-to-action). All templates personalize with actual school data and offer one-click copy functionality.
+  - **Student Notification System**: Email-first digest architecture complying with high school phone restrictions and FERPA requirements
+    - **Architecture**: Queue-based system with 7:30am daily digests and 3:30pm milestone notifications sent to parent emails
+    - **Database Schema**: 3 tables (`student_notification_preferences`, `student_notification_events`, `student_notifications`) with indexed userId/status fields
+    - **Service Layer** (`server/services/studentNotificationService.ts`): 331-line service with 6 queue methods (service approval, token milestones, streak achievements, IPARD bonuses, reward status, daily encouragement) and 3 processing methods (immediate, daily digest, milestone digest)
+    - **Email Integration**: Two new methods added to EmailService interface (`sendStudentNotificationEmail`, `sendStudentDigestEmail`) implemented in NodemailerEmailService class with proper DEMO_MODE.enabled checks
+    - **API Endpoints**:
+      - `GET /api/student-notifications/preferences` - Fetch user notification preferences
+      - `PUT /api/student-notifications/preferences` - Update preferences (emailNotificationsEnabled, dailyDigestTime, milestoneDigestTime)
+      - `GET /api/student-notifications/history` - Paginated notification history with status filters
+    - **Notification Types**: 6 event types (service_approved, token_milestone, streak_achievement, reward_status, ipard_bonus, daily_encouragement)
+    - **Milestone Anti-Spam**: Tracks lastTokenMilestoneNotified and lastStreakMilestoneNotified per user to prevent duplicate notifications
+    - **UI Component**: NotificationPreferences component integrated into StudentDashboard settings tab with email toggle, digest time selectors, and save functionality
+    - **Trigger Integration**: Wired into 6 existing routes (service verification, IPARD bonuses, character excellence, reward redemptions) with try-catch error handling
   - **Comprehensive Audit Trail**: All token transactions logged in `token_transactions` table with before/after balance, source, and approving teacher context
   - **GCS Alignment**: Full compliance with Guilford County Schools Service-Learning Diploma requirements and IPARD model
 

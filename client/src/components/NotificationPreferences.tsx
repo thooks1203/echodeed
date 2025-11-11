@@ -30,7 +30,7 @@ export function NotificationPreferences() {
 
   // Fetch notification preferences
   const { data: preferences, isLoading } = useQuery<NotificationPreferences>({
-    queryKey: ['/api/notifications/preferences'],
+    queryKey: ['/api/student-notifications/preferences'],
   });
 
   // Local state for immediate UI updates
@@ -50,11 +50,11 @@ export function NotificationPreferences() {
   // Update preferences mutation
   const updateMutation = useMutation({
     mutationFn: async (updates: Partial<NotificationPreferences>) => {
-      const res = await apiRequest('PUT', '/api/notifications/preferences', updates);
+      const res = await apiRequest('PUT', '/api/student-notifications/preferences', updates);
       return await res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['/api/notifications/preferences'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/student-notifications/preferences'] });
       toast({
         title: '✅ Preferences Updated',
         description: 'Your notification settings have been saved.',
