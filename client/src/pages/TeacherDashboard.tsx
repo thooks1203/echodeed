@@ -1522,18 +1522,28 @@ function AdminRewardsPortal() {
   });
 
   const { data: rewards = [], isLoading: rewardsLoading } = useQuery<any[]>({
-    queryKey: ['/api/admin-rewards'],
+    queryKey: ['/api/admin-rewards', { schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78' }],
     staleTime: 30000,
   });
 
   const { data: redemptions = [], isLoading: redemptionsLoading } = useQuery<any[]>({
-    queryKey: ['/api/admin-rewards/redemptions'],
+    queryKey: ['/api/admin-rewards/redemptions', { schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78' }],
     staleTime: 30000,
   });
 
   const createRewardMutation = useMutation({
     mutationFn: async (data: any) => {
-      return await apiRequest('POST', '/api/admin-rewards', data);
+      // Map frontend field names to backend expectations
+      const payload = {
+        rewardName: data.rewardName,
+        rewardDescription: data.description, // Backend expects rewardDescription
+        tokenCost: data.tokenCost,
+        category: 'school_reward', // Required field
+        stockQuantity: data.quantityAvailable, // Backend expects stockQuantity
+        schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Eastern Guilford HS ID
+        termsConditions: 'Subject to availability and school policies'
+      };
+      return await apiRequest('POST', '/api/admin-rewards', payload);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/admin-rewards'] });
@@ -1541,7 +1551,8 @@ function AdminRewardsPortal() {
       setIsCreateDialogOpen(false);
       setNewReward({ rewardName: '', description: '', tokenCost: 0, quantityAvailable: 1 });
     },
-    onError: () => {
+    onError: (error: any) => {
+      console.error('Create reward error:', error);
       toast({ title: "Error", description: "Failed to create reward", variant: "destructive" });
     },
   });

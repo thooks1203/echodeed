@@ -10448,6 +10448,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Create new admin reward (admin only)
   app.post('/api/admin-rewards', requireTeacherRole, async (req: any, res) => {
     try {
+      const teacherId = req.teacherContext?.userId || 'teacher-001';
       const schema = z.object({
         rewardName: z.string().min(1),
         rewardDescription: z.string(),
@@ -10459,7 +10460,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
       const data = schema.parse(req.body);
       
-      const [reward] = await db.insert(adminRewards).values(data).returning();
+      // Map frontend field names to database schema
+      const [reward] = await db.insert(adminRewards).values({
+        schoolId: data.schoolId,
+        rewardName: data.rewardName,
+        rewardType: data.category, // category → reward_type
+        description: data.rewardDescription, // rewardDescription → description
+        quantityAvailable: data.stockQuantity || 0,
+        tokenCost: data.tokenCost,
+        createdBy: teacherId,
+        isActive: true
+      }).returning();
+      
       res.json(reward);
     } catch (error: any) {
       console.error('Failed to create admin reward:', error);
