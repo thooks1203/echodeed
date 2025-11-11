@@ -1661,13 +1661,17 @@ export const studentNotificationPreferences = pgTable("student_notification_pref
   
   // Daily Encouragement Settings
   dailyEncouragementEnabled: integer("daily_encouragement_enabled").default(1).notNull(), // 1 = enabled, 0 = disabled
-  notificationFrequency: varchar("notification_frequency", { length: 20 }).default("daily").notNull(), // daily, every_other_day, weekly
-  preferredTime: varchar("preferred_time", { length: 5 }).default("09:00").notNull(), // HH:MM format (24-hour)
+  notificationFrequency: varchar("notification_frequency", { length: 20 }).default("digest").notNull(), // digest, milestones, immediate, off
+  preferredTime: varchar("preferred_time", { length: 5 }).default("07:30").notNull(), // HH:MM format (24-hour) - 07:30 or 15:30 for digest windows
   timezone: varchar("timezone", { length: 50 }).default("America/New_York").notNull(),
   
   // Delivery Methods
-  pushNotificationsEnabled: integer("push_notifications_enabled").default(1).notNull(),
-  emailNotificationsEnabled: integer("email_notifications_enabled").default(0).notNull(),
+  pushNotificationsEnabled: integer("push_notifications_enabled").default(0).notNull(),
+  emailNotificationsEnabled: integer("email_notifications_enabled").default(1).notNull(), // Email-first for FERPA compliance
+  
+  // Milestone Tracking (prevent duplicate notifications)
+  lastTokenMilestoneNotified: integer("last_token_milestone_notified").default(0).notNull(), // Last milestone notified (0, 100, 500, 1000)
+  lastStreakMilestoneNotified: integer("last_streak_milestone_notified").default(0).notNull(), // Last streak notified (0, 3, 7, 30)
   
   // Tracking
   lastNotificationSent: timestamp("last_notification_sent"),
@@ -1676,6 +1680,51 @@ export const studentNotificationPreferences = pgTable("student_notification_pref
   
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Student Notifications - History of sent notifications
+export const studentNotifications = pgTable("student_notifications", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  
+  // Notification Content
+  type: varchar("type", { length: 50 }).notNull(), // service_approved, token_milestone, streak_achievement, reward_status, ipard_bonus, daily_encouragement
+  title: varchar("title", { length: 200 }).notNull(),
+  message: text("message").notNull(),
+  payload: jsonb("payload"), // Additional context data (serviceId, tokens, etc.)
+  
+  // Delivery Info
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, sent, failed, read
+  deliveryMethod: varchar("delivery_method", { length: 20 }).notNull(), // email, push
+  emailTo: varchar("email_to"),
+  
+  // Digest Batching
+  digestBatchId: varchar("digest_batch_id"), // Groups notifications into digest emails
+  isDigest: integer("is_digest").default(0).notNull(), // 1 if part of digest batch, 0 if immediate
+  
+  // Tracking
+  sentAt: timestamp("sent_at"),
+  readAt: timestamp("read_at"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+// Student Notification Events Queue - Pending notifications to be processed
+export const studentNotificationEvents = pgTable("student_notification_events", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  
+  // Event Details
+  eventType: varchar("event_type", { length: 50 }).notNull(), // service_approved, token_earned, streak_increased, reward_updated, ipard_completed
+  priority: varchar("priority", { length: 20 }).default("normal").notNull(), // urgent, normal, low
+  payload: jsonb("payload").notNull(), // Event-specific data
+  
+  // Processing Status
+  status: varchar("status", { length: 20 }).default("pending").notNull(), // pending, processed, failed
+  processedAt: timestamp("processed_at"),
+  notificationId: varchar("notification_id").references(() => studentNotifications.id), // Link to created notification
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
 // Student Goals - Personal goal-setting and progress tracking
@@ -1735,7 +1784,25 @@ export const insertBehavioralTrendAnalyticsSchema = createInsertSchema(behaviora
 export const insertClimateMetricsSchema = createInsertSchema(climateMetrics).omit({ id: true, calculatedAt: true });
 export const insertServiceOpportunitySchema = createInsertSchema(serviceOpportunities).omit({ id: true, createdAt: true, updatedAt: true, totalSignups: true, totalCompleted: true, totalHoursGenerated: true });
 export const insertServiceOpportunitySignupSchema = createInsertSchema(serviceOpportunitySignups).omit({ id: true, createdAt: true, updatedAt: true });
-export const insertStudentNotificationPreferencesSchema = createInsertSchema(studentNotificationPreferences).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertStudentNotificationPreferencesSchema = createInsertSchema(studentNotificationPreferences).omit({ id: true, createdAt: true, updatedAt: true, lastNotificationSent: true, totalNotificationsSent: true, totalNotificationsOpened: true }).extend({
+  notificationFrequency: z.enum(['digest', 'milestones', 'immediate', 'off']).default('digest'),
+  preferredTime: z.string().regex(/^(07:30|15:30)$/),  // Only allow 7:30am or 3:30pm digest windows
+  emailNotificationsEnabled: z.number().int().min(0).max(1),
+  pushNotificationsEnabled: z.number().int().min(0).max(1),
+});
+
+export const insertStudentNotificationSchema = createInsertSchema(studentNotifications).omit({ id: true, createdAt: true, sentAt: true, readAt: true }).extend({
+  type: z.enum(['service_approved', 'token_milestone', 'streak_achievement', 'reward_status', 'ipard_bonus', 'daily_encouragement']),
+  status: z.enum(['pending', 'sent', 'failed', 'read']).default('pending'),
+  deliveryMethod: z.enum(['email', 'push']),
+  isDigest: z.number().int().min(0).max(1).default(0),
+});
+
+export const insertStudentNotificationEventSchema = createInsertSchema(studentNotificationEvents).omit({ id: true, createdAt: true, processedAt: true }).extend({
+  eventType: z.enum(['service_approved', 'token_earned', 'streak_increased', 'reward_updated', 'ipard_completed']),
+  priority: z.enum(['urgent', 'normal', 'low']).default('normal'),
+  status: z.enum(['pending', 'processed', 'failed']).default('pending'),
+});
 export const insertStudentGoalSchema = createInsertSchema(studentGoals).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertPrincipalBlogPostSchema = createInsertSchema(principalBlogPosts).omit({ id: true, createdAt: true, updatedAt: true, viewCount: true });
 export const insertParentCommunityPostSchema = createInsertSchema(parentCommunityPosts).omit({ id: true, createdAt: true, updatedAt: true, likesCount: true, commentsCount: true });
@@ -1766,6 +1833,10 @@ export type ServiceOpportunitySignup = typeof serviceOpportunitySignups.$inferSe
 export type InsertServiceOpportunitySignup = z.infer<typeof insertServiceOpportunitySignupSchema>;
 export type StudentNotificationPreferences = typeof studentNotificationPreferences.$inferSelect;
 export type InsertStudentNotificationPreferences = z.infer<typeof insertStudentNotificationPreferencesSchema>;
+export type StudentNotification = typeof studentNotifications.$inferSelect;
+export type InsertStudentNotification = z.infer<typeof insertStudentNotificationSchema>;
+export type StudentNotificationEvent = typeof studentNotificationEvents.$inferSelect;
+export type InsertStudentNotificationEvent = z.infer<typeof insertStudentNotificationEventSchema>;
 export type StudentGoal = typeof studentGoals.$inferSelect;
 export type InsertStudentGoal = z.infer<typeof insertStudentGoalSchema>;
 export type PrincipalBlogPost = typeof principalBlogPosts.$inferSelect;

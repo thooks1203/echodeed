@@ -61,6 +61,8 @@ import {
   behavioralTrendAnalytics,
   climateMetrics,
   studentNotificationPreferences,
+  studentNotifications,
+  studentNotificationEvents,
   type User,
   type UpsertUser,
   type KindnessPost,
@@ -206,6 +208,10 @@ import {
   type InsertClimateMetrics,
   type StudentNotificationPreferences,
   type InsertStudentNotificationPreferences,
+  type StudentNotification,
+  type InsertStudentNotification,
+  type StudentNotificationEvent,
+  type InsertStudentNotificationEvent,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte, lte, isNotNull, isNull, inArray, gt, getTableColumns } from "drizzle-orm";
