@@ -121,6 +121,20 @@ interface EmailService {
   sendServiceHoursNotificationEmail(data: ServiceHoursNotificationData): Promise<boolean>;
   // 🎁 Reward redemption notifications
   sendRewardRedemptionEmail(data: RewardRedemptionEmailData): Promise<boolean>;
+  // 📧 Student notification methods
+  sendStudentNotificationEmail(data: {
+    to: string;
+    subject: string;
+    body: string;
+    category: string;
+    isDigest: boolean;
+  }): Promise<boolean>;
+  sendStudentDigestEmail(data: {
+    to: string;
+    studentName: string;
+    items: Array<{ title: string; message: string; type: string }>;
+    digestType: 'daily' | 'milestone';
+  }): Promise<boolean>;
 }
 
 class NodemailerEmailService implements EmailService {
@@ -1926,6 +1940,97 @@ Burlington Christian Academy • COPPA Compliant • Renewal System
       </body>
       </html>
     `;
+  }
+
+  async sendStudentNotificationEmail(data: {
+    to: string;
+    subject: string;
+    body: string;
+    category: string;
+    isDigest: boolean;
+  }): Promise<boolean> {
+    if (!this.transporter) {
+      console.log('[Email Service] Transporter not initialized. Skipping student notification email.');
+      return false;
+    }
+
+    if (DEMO_MODE.enabled) {
+      console.log(`[DEMO] Student notification to ${data.to}: ${data.subject}`);
+      return true;
+    }
+
+    try {
+      await this.transporter.sendMail({
+        from: '"EchoDeed" <notifications@echodeed.org>',
+        to: data.to,
+        subject: data.subject,
+        text: data.body,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2>${data.subject}</h2>
+            <p>${data.body}</p>
+            <p style="color: #666; font-size: 12px; margin-top: 20px;">
+              ${data.isDigest ? 'This is a digest notification.' : ''}
+            </p>
+          </div>
+        `,
+      });
+      return true;
+    } catch (error) {
+      console.error('Failed to send student notification:', error);
+      return false;
+    }
+  }
+
+  async sendStudentDigestEmail(data: {
+    to: string;
+    studentName: string;
+    items: Array<{ title: string; message: string; type: string }>;
+    digestType: 'daily' | 'milestone';
+  }): Promise<boolean> {
+    if (!this.transporter) {
+      console.log('[Email Service] Transporter not initialized. Skipping digest email.');
+      return false;
+    }
+
+    if (DEMO_MODE.enabled) {
+      console.log(`[DEMO] Digest email to ${data.to} for ${data.studentName} (${data.items.length} items)`);
+      return true;
+    }
+
+    const title = data.digestType === 'daily' 
+      ? `Daily Digest for ${data.studentName}`
+      : `Milestone Update for ${data.studentName}`;
+
+    const itemsHtml = data.items.map(item => `
+      <li style="margin-bottom: 15px;">
+        <strong>${item.title}</strong><br/>
+        ${item.message}
+      </li>
+    `).join('');
+
+    try {
+      await this.transporter.sendMail({
+        from: '"EchoDeed" <notifications@echodeed.org>',
+        to: data.to,
+        subject: title,
+        html: `
+          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <h2>${title}</h2>
+            <p>Hello!</p>
+            <ul style="list-style: none; padding: 0;">
+              ${itemsHtml}
+            </ul>
+            <p style="margin-top: 30px;">Keep up the great work!</p>
+            <p style="color: #666;">- EchoDeed Team</p>
+          </div>
+        `,
+      });
+      return true;
+    } catch (error) {
+      console.error('Failed to send digest email:', error);
+      return false;
+    }
   }
 
   private generateRewardRedemptionText(data: any): string {
