@@ -763,6 +763,34 @@ export interface IStorage {
   getAllCommunityServiceLogs(): Promise<any[]>;
   getServiceLogByPhotoUrl(photoUrl: string): Promise<any | null>;
   
+  // 📧 STUDENT NOTIFICATION SYSTEM - Email-first digest architecture
+  // Student Notification Event Queue (pending notifications)
+  createNotificationEvent(event: InsertStudentNotificationEvent): Promise<StudentNotificationEvent>;
+  getPendingNotificationEvents(filters?: {
+    userId?: string;
+    status?: 'pending' | 'processed' | 'failed';
+    priority?: 'urgent' | 'normal' | 'low';
+    eventType?: string;
+    beforeDate?: Date;
+  }): Promise<StudentNotificationEvent[]>;
+  markEventProcessed(eventId: string, notificationId: string): Promise<void>;
+  markEventFailed(eventId: string, errorMessage: string): Promise<void>;
+  
+  // Student Notification History
+  createNotification(notification: InsertStudentNotification): Promise<StudentNotification>;
+  getNotificationHistory(userId: string, limit?: number): Promise<StudentNotification[]>;
+  getUnreadNotifications(userId: string): Promise<StudentNotification[]>;
+  markNotificationRead(notificationId: string): Promise<void>;
+  markNotificationSent(notificationId: string, sentAt: Date): Promise<void>;
+  
+  // Student Notification Preferences
+  getNotificationPreferences(userId: string): Promise<StudentNotificationPreferences | undefined>;
+  createNotificationPreferences(prefs: InsertStudentNotificationPreferences): Promise<StudentNotificationPreferences>;
+  updateNotificationPreferences(userId: string, prefs: Partial<StudentNotificationPreferences>): Promise<StudentNotificationPreferences | undefined>;
+  
+  // Milestone Tracking (prevent duplicate notifications)
+  updateMilestone(userId: string, kind: 'token' | 'streak', value: number): Promise<void>;
+  
   // AI Behavioral Mitigation - Content Moderation Queue
   createContentModerationQueueEntry(entry: Omit<InsertContentModerationQueue, 'reviewStatus'>): Promise<ContentModerationQueue>;
   getContentModerationQueueByDateRange(schoolId: string, startDate: Date, endDate: Date): Promise<ContentModerationQueue[]>;
@@ -5862,6 +5890,151 @@ export class DatabaseStorage implements IStorage {
       .where(eq(communityServiceLogs.verificationPhotoUrl, photoUrl))
       .limit(1);
     return log || null;
+  }
+
+  // 📧 STUDENT NOTIFICATION SYSTEM IMPLEMENTATIONS
+  
+  // Event Queue Methods
+  async createNotificationEvent(event: InsertStudentNotificationEvent): Promise<StudentNotificationEvent> {
+    const [newEvent] = await db.insert(studentNotificationEvents).values(event).returning();
+    return newEvent;
+  }
+
+  async getPendingNotificationEvents(filters?: {
+    userId?: string;
+    status?: 'pending' | 'processed' | 'failed';
+    priority?: 'urgent' | 'normal' | 'low';
+    eventType?: string;
+    beforeDate?: Date;
+  }): Promise<StudentNotificationEvent[]> {
+    const conditions = [];
+    
+    if (filters?.userId) {
+      conditions.push(eq(studentNotificationEvents.userId, filters.userId));
+    }
+    if (filters?.status) {
+      conditions.push(eq(studentNotificationEvents.status, filters.status));
+    }
+    if (filters?.priority) {
+      conditions.push(eq(studentNotificationEvents.priority, filters.priority));
+    }
+    if (filters?.eventType) {
+      conditions.push(eq(studentNotificationEvents.eventType, filters.eventType));
+    }
+    if (filters?.beforeDate) {
+      conditions.push(lte(studentNotificationEvents.createdAt, filters.beforeDate));
+    }
+    
+    const query = conditions.length > 0
+      ? db.select().from(studentNotificationEvents).where(and(...conditions))
+      : db.select().from(studentNotificationEvents);
+    
+    return await query.orderBy(desc(studentNotificationEvents.createdAt));
+  }
+
+  async markEventProcessed(eventId: string, notificationId: string): Promise<void> {
+    await db
+      .update(studentNotificationEvents)
+      .set({ 
+        status: 'processed',
+        processedAt: new Date(),
+        notificationId 
+      })
+      .where(eq(studentNotificationEvents.id, eventId));
+  }
+
+  async markEventFailed(eventId: string, errorMessage: string): Promise<void> {
+    await db
+      .update(studentNotificationEvents)
+      .set({ 
+        status: 'failed',
+        processedAt: new Date(),
+        metadata: sql`json_build_object('error', ${errorMessage})`
+      })
+      .where(eq(studentNotificationEvents.id, eventId));
+  }
+
+  // Notification History Methods
+  async createNotification(notification: InsertStudentNotification): Promise<StudentNotification> {
+    const [newNotification] = await db.insert(studentNotifications).values(notification).returning();
+    return newNotification;
+  }
+
+  async getNotificationHistory(userId: string, limit = 50): Promise<StudentNotification[]> {
+    return await db
+      .select()
+      .from(studentNotifications)
+      .where(eq(studentNotifications.userId, userId))
+      .orderBy(desc(studentNotifications.createdAt))
+      .limit(limit);
+  }
+
+  async getUnreadNotifications(userId: string): Promise<StudentNotification[]> {
+    return await db
+      .select()
+      .from(studentNotifications)
+      .where(
+        and(
+          eq(studentNotifications.userId, userId),
+          isNull(studentNotifications.readAt)
+        )
+      )
+      .orderBy(desc(studentNotifications.createdAt));
+  }
+
+  async markNotificationRead(notificationId: string): Promise<void> {
+    await db
+      .update(studentNotifications)
+      .set({ 
+        status: 'read',
+        readAt: new Date()
+      })
+      .where(eq(studentNotifications.id, notificationId));
+  }
+
+  async markNotificationSent(notificationId: string, sentAt: Date): Promise<void> {
+    await db
+      .update(studentNotifications)
+      .set({ 
+        status: 'sent',
+        sentAt 
+      })
+      .where(eq(studentNotifications.id, notificationId));
+  }
+
+  // Notification Preferences Methods
+  async getNotificationPreferences(userId: string): Promise<StudentNotificationPreferences | undefined> {
+    const [prefs] = await db
+      .select()
+      .from(studentNotificationPreferences)
+      .where(eq(studentNotificationPreferences.userId, userId));
+    return prefs;
+  }
+
+  async createNotificationPreferences(prefs: InsertStudentNotificationPreferences): Promise<StudentNotificationPreferences> {
+    const [newPrefs] = await db.insert(studentNotificationPreferences).values(prefs).returning();
+    return newPrefs;
+  }
+
+  async updateNotificationPreferences(userId: string, prefs: Partial<StudentNotificationPreferences>): Promise<StudentNotificationPreferences | undefined> {
+    const [updated] = await db
+      .update(studentNotificationPreferences)
+      .set({ ...prefs, updatedAt: new Date() })
+      .where(eq(studentNotificationPreferences.userId, userId))
+      .returning();
+    return updated;
+  }
+
+  // Milestone Tracking Method
+  async updateMilestone(userId: string, kind: 'token' | 'streak', value: number): Promise<void> {
+    const field = kind === 'token' ? 'lastTokenMilestoneNotified' : 'lastStreakMilestoneNotified';
+    await db
+      .update(studentNotificationPreferences)
+      .set({ 
+        [field]: value,
+        updatedAt: new Date()
+      })
+      .where(eq(studentNotificationPreferences.userId, userId));
   }
 
   async createTeacherClaimCode(claimCodeData: InsertTeacherClaimCode): Promise<TeacherClaimCode> {
