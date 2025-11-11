@@ -4,6 +4,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { LeftSidebar } from '@/components/LeftSidebar';
 import { BackButton } from '@/components/BackButton';
 import { NotificationPreferences } from '@/components/NotificationPreferences';
+import { StudentNotificationPreferences } from '@/components/StudentNotificationPreferences';
 import { SchoolRewardsView } from '@/components/SchoolRewardsView';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
@@ -1088,6 +1089,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
 
       {activeTab === 'settings' && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          <StudentNotificationPreferences />
           <NotificationPreferences />
         </div>
       )}

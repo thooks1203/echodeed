@@ -50,14 +50,8 @@ export function NotificationPreferences() {
   // Update preferences mutation
   const updateMutation = useMutation({
     mutationFn: async (updates: Partial<NotificationPreferences>) => {
-      return await apiRequest(
-        '/api/notifications/preferences',
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(updates),
-        }
-      );
+      const res = await apiRequest('PUT', '/api/notifications/preferences', updates);
+      return await res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['/api/notifications/preferences'] });

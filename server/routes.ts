@@ -4,6 +4,7 @@ import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { insertKindnessPostSchema, insertSupportPostSchema, insertWellnessCheckinSchema } from "@shared/schema";
 import { nanoid } from 'nanoid';
+import { z } from 'zod';
 import { contentFilter } from "./services/contentFilter";
 import { crisisDetectionService } from "./services/crisisDetection";
 import { realTimeMonitoring } from "./services/realTimeMonitoring";
@@ -84,6 +85,7 @@ import { requireCounselorRole, logCounselorAction, validateCrisisPermissions, cr
 import { mandatoryReportingService } from "./services/mandatoryReporting";
 import { enforceCOPPA, requireCOPPACompliance } from "./middleware/coppaEnforcement";
 import { dailyEncouragementService } from "./services/dailyEncouragementNotifications";
+import { StudentNotificationService } from "./services/studentNotificationService";
 
 // 🔒 TEACHER AUTHORIZATION MIDDLEWARE
 const requireTeacherRole = async (req: any, res: any, next: any) => {
@@ -264,6 +266,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Initialize surprise giveaway service
   const surpriseGiveawayService = new SurpriseGiveawayService(storage, fulfillmentService);
+  
+  // Initialize student notification service
+  const studentNotificationService = new StudentNotificationService(storage);
   
   // Initialize sample subscription plans for revenue diversification
   setTimeout(async () => {
@@ -2265,6 +2270,99 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Error processing notifications:', error);
       res.status(500).json({ message: error.message });
+    }
+  });
+
+  // ===== STUDENT NOTIFICATION SYSTEM API =====
+  
+  // GET /api/student-notifications/preferences - Fetch current user's notification preferences
+  app.get('/api/student-notifications/preferences', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const preferences = await storage.getNotificationPreferences(userId);
+      
+      if (!preferences) {
+        // Return default values if no preferences exist
+        return res.json({
+          userId,
+          emailNotificationsEnabled: true,
+          dailyDigestTime: '07:00',
+          milestoneDigestTime: '15:00',
+          lastTokenMilestoneNotified: 0,
+          lastStreakMilestoneNotified: 0
+        });
+      }
+      
+      res.json(preferences);
+    } catch (error: any) {
+      console.error('Error fetching student notification preferences:', error);
+      res.status(500).json({ error: error.message || 'Failed to fetch preferences' });
+    }
+  });
+
+  // PUT /api/student-notifications/preferences - Update notification preferences
+  app.put('/api/student-notifications/preferences', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      
+      // Validate request body
+      const preferencesSchema = z.object({
+        emailNotificationsEnabled: z.boolean().optional(),
+        dailyDigestTime: z.string().optional(),
+        milestoneDigestTime: z.string().optional()
+      });
+      
+      const updates = preferencesSchema.parse(req.body);
+      
+      // Check if preferences exist, create if not
+      let preferences = await storage.getNotificationPreferences(userId);
+      if (!preferences) {
+        preferences = await storage.createNotificationPreferences({
+          userId,
+          emailNotificationsEnabled: updates.emailNotificationsEnabled ?? true,
+          dailyDigestTime: updates.dailyDigestTime || '07:00',
+          milestoneDigestTime: updates.milestoneDigestTime || '15:00',
+          lastTokenMilestoneNotified: 0,
+          lastStreakMilestoneNotified: 0
+        });
+      } else {
+        preferences = await storage.updateNotificationPreferences(userId, updates);
+      }
+      
+      console.log(`✅ Student notification preferences updated for user ${userId}:`, updates);
+      res.json(preferences);
+    } catch (error: any) {
+      console.error('Error updating student notification preferences:', error);
+      if (error.name === 'ZodError') {
+        res.status(400).json({ error: 'Invalid request data', details: error.errors });
+      } else {
+        res.status(500).json({ error: error.message || 'Failed to update preferences' });
+      }
+    }
+  });
+
+  // GET /api/student-notifications/history - Fetch notification history
+  app.get('/api/student-notifications/history', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user.claims.sub;
+      const { status, limit, offset } = req.query;
+      
+      const filters: any = {};
+      if (status) filters.status = status as string;
+      if (limit) filters.limit = parseInt(limit as string);
+      if (offset) filters.offset = parseInt(offset as string);
+      
+      const notifications = await storage.getNotificationHistory(userId, filters);
+      
+      res.json({
+        notifications,
+        total: notifications.length,
+        limit: filters.limit || 50,
+        offset: filters.offset || 0
+      });
+    } catch (error: any) {
+      console.error('Error fetching notification history:', error);
+      res.status(500).json({ error: error.message || 'Failed to fetch notification history' });
     }
   });
 
@@ -10248,6 +10346,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { communityServiceEngine } = await import('./services/communityServiceEngine');
       const verification = await communityServiceEngine.verifyServiceHours(verificationData);
+      
+      // 🔔 Queue notification for service approval
+      try {
+        if (verification && verificationData.serviceLogId) {
+          const serviceLog = await storage.getServiceLog(verificationData.serviceLogId);
+          if (serviceLog) {
+            await studentNotificationService.queueServiceApprovalNotification(
+              serviceLog.userId,
+              serviceLog.serviceName,
+              serviceLog.hoursLogged,
+              serviceLog.tokensEarned || 0
+            );
+          }
+        }
+      } catch (notifError) {
+        console.error('Failed to queue service approval notification:', notifError);
+      }
+      
       res.json(verification);
     } catch (error) {
       console.error('Failed to verify service hours:', error);
@@ -10309,6 +10425,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { ipardService } = await import('./services/ipardService');
       const result = await ipardService.awardApprovalFormBonus(id, userId);
+      
+      // 🔔 Queue notification for IPARD bonus
+      try {
+        await studentNotificationService.queueIpardBonusNotification(
+          userId,
+          'investigation_preparation',
+          25
+        );
+      } catch (notifError) {
+        console.error('Failed to queue IPARD notification:', notifError);
+      }
+      
       res.json(result);
     } catch (error: any) {
       console.error('Failed to award approval form bonus:', error);
@@ -10325,6 +10453,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { ipardService } = await import('./services/ipardService');
       const result = await ipardService.awardReflectionBonus(id, teacherId);
+      
+      // 🔔 Queue notification for IPARD bonus - need to get student ID from service log
+      try {
+        const serviceLog = await storage.getServiceLog(id);
+        if (serviceLog) {
+          await studentNotificationService.queueIpardBonusNotification(
+            serviceLog.userId,
+            'reflection',
+            50
+          );
+        }
+      } catch (notifError) {
+        console.error('Failed to queue IPARD notification:', notifError);
+      }
+      
       res.json(result);
     } catch (error: any) {
       console.error('Failed to award reflection bonus:', error);
@@ -10348,6 +10491,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       
       const { ipardService } = await import('./services/ipardService');
       const result = await ipardService.awardDemonstrationBonus(id, userId, demonstrationUrl);
+      
+      // 🔔 Queue notification for IPARD bonus
+      try {
+        await studentNotificationService.queueIpardBonusNotification(
+          userId,
+          'demonstration',
+          75
+        );
+      } catch (notifError) {
+        console.error('Failed to queue IPARD notification:', notifError);
+      }
+      
       res.json(result);
     } catch (error: any) {
       console.error('Failed to award demonstration bonus:', error);
@@ -10633,6 +10788,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .where(eq(adminRewardRedemptions.id, redemptionId))
         .returning();
 
+      // 🔔 Queue notification for reward status update
+      try {
+        if (redemption) {
+          const [reward] = await db.select().from(adminRewards)
+            .where(eq(adminRewards.id, redemption.rewardId))
+            .limit(1);
+          
+          if (reward) {
+            await studentNotificationService.queueRewardStatusNotification(
+              redemption.userId,
+              reward.rewardName,
+              redemptionStatus
+            );
+          }
+        }
+      } catch (notifError) {
+        console.error('Failed to queue reward status notification:', notifError);
+      }
+
       res.json(redemption);
     } catch (error: any) {
       console.error('Failed to update redemption:', error);
@@ -10701,6 +10875,17 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
 
       console.log(`🌟 Teacher ${teacherId} awarded ${tokensAwarded} Character Excellence tokens to ${studentId}`);
+      
+      // 🔔 Queue notification for token milestone if applicable
+      try {
+        await studentNotificationService.queueTokenMilestoneNotification(
+          studentId,
+          result.newBalance
+        );
+      } catch (notifError) {
+        console.error('Failed to queue token milestone notification:', notifError);
+      }
+      
       res.json(result);
     } catch (error: any) {
       console.error('Failed to award character excellence:', error);
