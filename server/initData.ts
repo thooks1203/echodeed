@@ -56,6 +56,29 @@ export async function initializeSampleData() {
       log(`⚠️ Could not create notification preferences table: ${error.message}`);
     }
     
+    // 🏫 Add school-level configuration columns for MS/HS differentiation
+    try {
+      log('🏫 Adding school-level configuration columns...');
+      const { db } = await import('./db');
+      const { sql } = await import('drizzle-orm');
+      
+      // Add school_level to schools table (corporate_accounts)
+      await db.execute(sql`
+        ALTER TABLE corporate_accounts 
+        ADD COLUMN IF NOT EXISTS school_level VARCHAR(20) NOT NULL DEFAULT 'high_school'
+      `);
+      
+      // Add applicable_level to admin_rewards table
+      await db.execute(sql`
+        ALTER TABLE admin_rewards
+        ADD COLUMN IF NOT EXISTS applicable_level VARCHAR(20) NOT NULL DEFAULT 'both'
+      `);
+      
+      log('✅ School-level configuration columns added successfully');
+    } catch (error: any) {
+      log(`⚠️ Could not add school-level columns: ${error.message}`);
+    }
+    
     // Update schools with enrollment codes for secure student registration
     try {
       log('🔐 Updating schools with enrollment codes...');
