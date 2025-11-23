@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -13,11 +14,16 @@ import {
   Target,
   Award,
   Clock,
-  BarChart3
+  BarChart3,
+  Sparkles,
+  Star
 } from 'lucide-react';
 import { Link, useRoute } from 'wouter';
 import { switchDemoRole } from '@/hooks/useAuth';
 import DemoRoleSwitcher from '@/components/DemoRoleSwitcher';
+import { DemoSchoolLevelSwitcher } from '@/components/DemoSchoolLevelSwitcher';
+
+const DEMO_SCHOOL_LEVEL_KEY = 'demo_school_level_override';
 
 interface RoleConfig {
   role: 'student' | 'parent' | 'admin' | 'teacher';
@@ -39,7 +45,160 @@ interface RoleConfig {
   iconGradient: string;
 }
 
-const roleConfigs: Record<string, RoleConfig> = {
+// Middle School Configurations (Optional Service)
+const middleSchoolConfigs: Record<string, RoleConfig> = {
+  students: {
+    role: 'student',
+    title: 'EchoDeed for Middle School Students',
+    subtitle: 'Turn Your Kindness Into Fun Rewards!',
+    heroTitle: 'Be Kind, Get Rewarded!',
+    heroDescription: 'Every kind act you do earns you tokens you can trade for cool stuff! Share your kindness anonymously, inspire your friends, and have fun building good character. No pressure, no requirements—just be yourself and do good!',
+    benefits: [
+      {
+        icon: Sparkles,
+        title: 'Earn Tokens for Being Kind',
+        description: 'Do something nice? Post it and earn tokens! Trade them for snacks, games, movie tickets, and more at local spots.'
+      },
+      {
+        icon: Star,
+        title: 'Share Kindness Anonymously',
+        description: 'Your posts are totally anonymous! No one knows it\'s you, so you can spread kindness without worrying about what people think.'
+      },
+      {
+        icon: Gift,
+        title: 'Get Cool Rewards',
+        description: 'Redeem at Chick-fil-A, Cook Out, Urban Air, movies, and 20+ local Greensboro partners. Real rewards for real kindness!'
+      },
+      {
+        icon: Target,
+        title: 'Inspire Your Friends',
+        description: 'Your kindness posts inspire classmates and friends to do good stuff too. Start a kindness wave at your school!'
+      }
+    ],
+    proofPoints: [
+      { stat: 'Fun!', label: 'no pressure or requirements' },
+      { stat: '20+', label: 'awesome reward partners' },
+      { stat: '100%', label: 'anonymous & safe' }
+    ],
+    ctaText: 'Sign Up as Student ✨',
+    gradient: 'from-yellow-400 to-orange-500',
+    iconGradient: 'from-yellow-300 to-orange-400'
+  },
+  parents: {
+    role: 'parent',
+    title: 'EchoDeed for Middle School Parents',
+    subtitle: 'Watch Your Child Discover the Joy of Kindness',
+    heroTitle: 'Celebrate Your Child\'s Kind Heart',
+    heroDescription: 'Character development starts in middle school! Get real-time notifications when your child does kind acts. Earn rewards together—they get student rewards, you get family rewards. No pressure, no requirements, just celebrating kindness.',
+    benefits: [
+      {
+        icon: Heart,
+        title: 'See Their Kind Acts',
+        description: 'Get instant notifications when your child posts kind acts. Celebrate their good character together!'
+      },
+      {
+        icon: Gift,
+        title: 'Dual Rewards Together',
+        description: 'Your child earns tokens for fun stuff. You earn family rewards at Target and Amazon. Growing character pays off for everyone!'
+      },
+      {
+        icon: Shield,
+        title: 'Safe & Age-Appropriate',
+        description: '100% anonymous platform with COPPA compliance. Your middle schooler explores kindness in a safe, supervised environment.'
+      },
+      {
+        icon: TrendingUp,
+        title: 'Watch Them Grow',
+        description: 'Track kindness streaks and character development. No requirements or pressure—just encouraging good habits.'
+      }
+    ],
+    proofPoints: [
+      { stat: '100%', label: 'safe & anonymous' },
+      { stat: '2x', label: 'rewards for family' },
+      { stat: 'Real-time', label: 'see their kindness' }
+    ],
+    ctaText: 'Sign Up as Parent ❤️',
+    gradient: 'from-rose-500 to-pink-600',
+    iconGradient: 'from-rose-400 to-pink-500'
+  },
+  teachers: {
+    role: 'teacher',
+    title: 'EchoDeed for Middle School Teachers',
+    subtitle: 'Make Character Ed Fun & Engaging',
+    heroTitle: 'Students Actually Want to Share Kindness',
+    heroDescription: 'Middle schoolers are intrinsically motivated by tokens and rewards! They WANT to share kind acts because it\'s fun and rewarding. You encourage character development without the paperwork. Parents see their child\'s growth, reducing "how\'s my kid doing?" questions.',
+    benefits: [
+      {
+        icon: Sparkles,
+        title: 'Kids Are Excited to Participate',
+        description: 'Students earn tokens for kind acts. They WANT to share because it\'s fun—no more forcing character education lessons.'
+      },
+      {
+        icon: Users,
+        title: 'Parents See Everything',
+        description: 'Real-time parent visibility means fewer emails. Parents watch progress automatically—you never have to send updates.'
+      },
+      {
+        icon: Award,
+        title: 'You Get Rewarded Too',
+        description: 'Earn Coffee, Spa Days, and Restaurant Cards for fostering classroom community. Recognition for the culture you build!'
+      },
+      {
+        icon: Target,
+        title: 'Build Positive Culture',
+        description: 'No requirements, no stress. Just encourage kindness and watch your classroom culture transform.'
+      }
+    ],
+    proofPoints: [
+      { stat: 'Fun!', label: 'students love it' },
+      { stat: '95%', label: 'fewer parent emails' },
+      { stat: '100%', label: 'no paperwork stress' }
+    ],
+    ctaText: 'Access Teacher Dashboard 📚',
+    gradient: 'from-blue-500 to-indigo-600',
+    iconGradient: 'from-blue-400 to-indigo-500'
+  },
+  'school-leaders': {
+    role: 'admin',
+    title: 'EchoDeed for Middle School Leaders',
+    subtitle: 'Build Character Culture Without Requirements',
+    heroTitle: 'Foster Kindness Without the Pressure',
+    heroDescription: 'Middle school is about exploration and character development. EchoDeed encourages optional community service and builds positive school culture. Students participate because it\'s fun, not because it\'s required. Parent engagement increases, behavioral issues decrease.',
+    benefits: [
+      {
+        icon: BarChart3,
+        title: 'Measure Character Growth',
+        description: 'Track daily kindness acts that build school culture. Measure what matters: belonging, empathy, and positive behavior.'
+      },
+      {
+        icon: Users,
+        title: 'Increase Parent Engagement',
+        description: 'Parents see real-time kindness acts, earn rewards together. Higher parent engagement = better student outcomes.'
+      },
+      {
+        icon: Shield,
+        title: 'Anonymous & COPPA Compliant',
+        description: 'No profiles, no names, no cyberbullying risk. Privacy-first middle school engagement with built-in safety.'
+      },
+      {
+        icon: Sparkles,
+        title: 'Optional, Not Required',
+        description: 'Students explore service at their own pace. No graduation requirements, no pressure—just building good character habits.'
+      }
+    ],
+    proofPoints: [
+      { stat: '100%', label: 'optional & fun' },
+      { stat: 'Daily', label: 'character culture data' },
+      { stat: 'COPPA', label: 'compliant & safe' }
+    ],
+    ctaText: 'Sign Up as School Leader 🏆',
+    gradient: 'from-amber-500 to-orange-600',
+    iconGradient: 'from-amber-400 to-orange-500'
+  }
+};
+
+// High School Configurations (Required 200-Hour Diploma)
+const highSchoolConfigs: Record<string, RoleConfig> = {
   students: {
     role: 'student',
     title: 'EchoDeed for Students',
@@ -191,8 +350,22 @@ const roleConfigs: Record<string, RoleConfig> = {
 };
 
 export default function ExploreRolePage() {
+  const [demoLevel, setDemoLevel] = useState<'middle_school' | 'high_school'>('high_school');
   const [match, params] = useRoute('/explore/:role');
   const roleKey = params?.role || 'students';
+
+  // Check for demo override in localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(DEMO_SCHOOL_LEVEL_KEY);
+      if (stored === 'middle_school' || stored === 'high_school') {
+        setDemoLevel(stored);
+      }
+    }
+  }, []);
+
+  const isMiddleSchool = demoLevel === 'middle_school';
+  const roleConfigs = isMiddleSchool ? middleSchoolConfigs : highSchoolConfigs;
   const config = roleConfigs[roleKey];
 
   if (!config) {
@@ -217,7 +390,11 @@ export default function ExploreRolePage() {
   const Icon = config.benefits[0].icon;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900">
+    <div className={`min-h-screen ${
+      isMiddleSchool 
+        ? 'bg-gradient-to-br from-pink-400 via-purple-400 to-indigo-400 dark:from-pink-700 dark:via-purple-700 dark:to-indigo-700'
+        : 'bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900'
+    }`}>
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-5xl mx-auto">
@@ -272,8 +449,8 @@ export default function ExploreRolePage() {
             </CardContent>
           </Card>
 
-          {/* Administrative ROI Section - Only for School Leaders */}
-          {roleKey === 'school-leaders' && (
+          {/* Administrative ROI Section - Only for High School Leaders */}
+          {roleKey === 'school-leaders' && !isMiddleSchool && (
             <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-2xl mb-12">
               <CardContent className="p-8 md:p-12">
                 <h2 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 text-center">
@@ -340,7 +517,10 @@ export default function ExploreRolePage() {
                 Ready to Get Started?
               </h2>
               <p className="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
-                Join EchoDeed today and start making kindness count. It's free to sign up.
+                {isMiddleSchool 
+                  ? 'Join EchoDeed today and start having fun with kindness!'
+                  : 'Join EchoDeed today and start making kindness count. It\'s free to sign up.'
+                }
               </p>
               <Button
                 onClick={handleSignUp}
@@ -356,7 +536,7 @@ export default function ExploreRolePage() {
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-600" />
-                  <span>FERPA Compliant</span>
+                  <span>{isMiddleSchool ? 'COPPA Compliant' : 'FERPA Compliant'}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <CheckCircle className="w-4 h-4 text-green-600" />
@@ -368,12 +548,21 @@ export default function ExploreRolePage() {
 
           {/* Footer */}
           <div className="mt-12 text-center">
-            <p className="text-white/70 text-sm">
-              Currently piloting at Eastern Guilford High School, Gibsonville, NC
-            </p>
+            {isMiddleSchool ? (
+              <p className="text-white/70 text-sm">
+                🌟 Perfect for Middle Schools (Grades 6-8)
+              </p>
+            ) : (
+              <p className="text-white/70 text-sm">
+                Currently piloting at Eastern Guilford High School, Gibsonville, NC
+              </p>
+            )}
           </div>
         </div>
       </div>
+      
+      {/* Demo School Level Switcher */}
+      <DemoSchoolLevelSwitcher />
     </div>
   );
 }
