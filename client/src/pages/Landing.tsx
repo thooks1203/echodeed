@@ -1,13 +1,34 @@
+import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Heart, CheckCircle, Users, GraduationCap, Shield } from 'lucide-react';
+import { Heart, CheckCircle, Users, GraduationCap, Shield, Star, Trophy, Sparkles, Award } from 'lucide-react';
 import { Link } from 'wouter';
 import LogoSparkEffect from '@/components/LogoSparkEffect';
+import { DemoSchoolLevelSwitcher } from '@/components/DemoSchoolLevelSwitcher';
+
+const DEMO_SCHOOL_LEVEL_KEY = 'demo_school_level_override';
 
 export default function Landing() {
+  const [demoLevel, setDemoLevel] = useState<'middle_school' | 'high_school'>('high_school');
+
+  // Check for demo override in localStorage
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const stored = localStorage.getItem(DEMO_SCHOOL_LEVEL_KEY);
+      if (stored === 'middle_school' || stored === 'high_school') {
+        setDemoLevel(stored);
+      }
+    }
+  }, []);
+
+  const isMiddleSchool = demoLevel === 'middle_school';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900">
+    <div className={`min-h-screen ${
+      isMiddleSchool 
+        ? 'bg-gradient-to-br from-pink-400 via-purple-400 to-indigo-400 dark:from-pink-700 dark:via-purple-700 dark:to-indigo-700'
+        : 'bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-500 dark:from-indigo-900 dark:via-purple-900 dark:to-pink-900'
+    }`}>
       {/* Hero Section */}
       <div className="container mx-auto px-4 py-16 md:py-24">
         <div className="max-w-4xl mx-auto text-center">
@@ -26,73 +47,121 @@ export default function Landing() {
               EchoDeed™
             </h1>
             <p className="text-xl text-white font-medium">
-              Anonymous Kindness Platform
+              {isMiddleSchool ? 'Where Kindness Earns Cool Rewards' : 'Anonymous Kindness Platform'}
             </p>
           </div>
 
-          {/* Pre-Headline */}
+          {/* Pre-Headline - Different for MS vs HS */}
           <div className="mb-6">
             <span className="inline-block px-4 py-2 bg-white/20 backdrop-blur-sm rounded-full text-white text-sm font-semibold tracking-wide uppercase border border-white/30">
-              Backed by Character Education Research
+              {isMiddleSchool 
+                ? '✨ Fun, Safe, & Rewarding for Grades 6-8'
+                : 'Backed by Character Education Research'
+              }
             </span>
           </div>
 
-          {/* Master Headline */}
-          <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight px-2">
-            Kindness Solves More Than You Think.
-          </h1>
+          {/* Master Headline - Different for MS vs HS */}
+          {isMiddleSchool ? (
+            <>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight px-2">
+                Be Kind. Earn Rewards. Have Fun! 🎉
+              </h2>
+              <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-4 leading-relaxed px-2">
+                Explore kindness at your own pace—no pressure, all rewards!
+              </p>
+              <p className="text-base sm:text-lg md:text-xl text-white/80 mb-12 italic px-2">
+                Make friends while making a difference in your community.
+              </p>
+            </>
+          ) : (
+            <>
+              <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight px-2">
+                Kindness Solves More Than You Think.
+              </h2>
+              <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-4 leading-relaxed px-2">
+                Transform abstract character education into daily, measurable action.
+              </p>
+              <p className="text-base sm:text-lg md:text-xl text-white/80 mb-12 italic px-2">
+                Not just a mission—a proven methodology.
+              </p>
+            </>
+          )}
 
-          {/* Sub-Headline */}
-          <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-4 leading-relaxed px-2">
-            Transform abstract character education into daily, measurable action.
-          </p>
-          <p className="text-base sm:text-lg md:text-xl text-white/80 mb-12 italic px-2">
-            Not just a mission—a proven methodology.
-          </p>
-
-          {/* Proof Points */}
-          <div className="grid sm:grid-cols-2 gap-4 mb-12 max-w-2xl mx-auto px-2">
-            <div className="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl p-4 sm:p-5 border-2 border-emerald-300 shadow-xl">
-              <div className="flex items-center gap-2 sm:gap-3 text-white">
-                <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-white drop-shadow-md flex-shrink-0" />
-                <span className="font-bold text-sm sm:text-base md:text-lg">95% reduction in service-hour paperwork</span>
+          {/* Proof Points - Different for MS vs HS */}
+          {isMiddleSchool ? (
+            <div className="grid sm:grid-cols-2 gap-4 mb-12 max-w-2xl mx-auto px-2">
+              <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl p-4 sm:p-5 border-2 border-yellow-300 shadow-xl">
+                <div className="flex items-center gap-2 sm:gap-3 text-white">
+                  <Sparkles className="h-5 w-5 sm:h-6 sm:w-6 text-white drop-shadow-md flex-shrink-0" />
+                  <span className="font-bold text-sm sm:text-base md:text-lg">Earn tokens for every kind act!</span>
+                </div>
+              </div>
+              <div className="bg-gradient-to-br from-pink-400 to-purple-500 rounded-xl p-4 sm:p-5 border-2 border-pink-300 shadow-xl">
+                <div className="flex items-center gap-2 sm:gap-3 text-white">
+                  <Star className="h-5 w-5 sm:h-6 sm:w-6 text-white drop-shadow-md flex-shrink-0" />
+                  <span className="font-bold text-sm sm:text-base md:text-lg">Trade tokens for awesome prizes</span>
+                </div>
               </div>
             </div>
-            <div className="bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl p-4 sm:p-5 border-2 border-cyan-300 shadow-xl">
-              <div className="flex items-center gap-2 sm:gap-3 text-white">
-                <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-white drop-shadow-md flex-shrink-0" />
-                <span className="font-bold text-sm sm:text-base md:text-lg">Privacy-first design & AI safety</span>
+          ) : (
+            <div className="grid sm:grid-cols-2 gap-4 mb-12 max-w-2xl mx-auto px-2">
+              <div className="bg-gradient-to-br from-emerald-400 to-teal-500 rounded-xl p-4 sm:p-5 border-2 border-emerald-300 shadow-xl">
+                <div className="flex items-center gap-2 sm:gap-3 text-white">
+                  <CheckCircle className="h-5 w-5 sm:h-6 sm:w-6 text-white drop-shadow-md flex-shrink-0" />
+                  <span className="font-bold text-sm sm:text-base md:text-lg">95% reduction in service-hour paperwork</span>
+                </div>
+              </div>
+              <div className="bg-gradient-to-br from-cyan-400 to-blue-500 rounded-xl p-4 sm:p-5 border-2 border-cyan-300 shadow-xl">
+                <div className="flex items-center gap-2 sm:gap-3 text-white">
+                  <Trophy className="h-5 w-5 sm:h-6 sm:w-6 text-white drop-shadow-md flex-shrink-0" />
+                  <span className="font-bold text-sm sm:text-base md:text-lg">Earn 200-hour Service Diploma</span>
+                </div>
               </div>
             </div>
-          </div>
+          )}
 
-          {/* CTA Section - Three Audience Paths */}
+          {/* CTA Section - Different messaging for MS vs HS */}
           <div className="mb-8">
             <h2 className="text-2xl font-semibold text-white mb-2">
-              Explore EchoDeed:
+              {isMiddleSchool ? 'Who Can Join?' : 'Explore EchoDeed:'}
             </h2>
             <p className="text-white/80 text-sm">
-              See what EchoDeed can do for you
+              {isMiddleSchool 
+                ? 'Find out what EchoDeed can do for you!'
+                : 'See what EchoDeed can do for you'
+              }
             </p>
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto mb-12">
-            {/* Students CTA */}
+            {/* Students CTA - Different wording for MS vs HS */}
             <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
               <CardContent className="p-6 text-center">
-                <div className="w-16 h-16 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <GraduationCap className="w-8 h-8 text-white" />
+                <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
+                  isMiddleSchool 
+                    ? 'bg-gradient-to-br from-yellow-400 to-orange-500'
+                    : 'bg-gradient-to-br from-emerald-500 to-teal-600'
+                }`}>
+                  {isMiddleSchool ? <Sparkles className="w-8 h-8 text-white" /> : <GraduationCap className="w-8 h-8 text-white" />}
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-gray-900 whitespace-nowrap">For Students</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Turn kindness into tokens, earn rewards, track service hours
+                  {isMiddleSchool 
+                    ? 'Do kind stuff, earn tokens, get cool rewards!'
+                    : 'Turn kindness into tokens, earn rewards, track service hours'
+                  }
                 </p>
                 <Link href="/explore/students">
                   <Button
-                    className="w-full bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white"
+                    className={`w-full text-white ${
+                      isMiddleSchool
+                        ? 'bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600'
+                        : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700'
+                    }`}
                     data-testid="button-explore-student"
                   >
-                    Explore for Students
+                    {isMiddleSchool ? 'Explore for Students ✨' : 'Explore for Students'}
                   </Button>
                 </Link>
               </CardContent>
@@ -106,14 +175,17 @@ export default function Landing() {
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-gray-900 whitespace-nowrap">For Parents</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Track your child's growth, earn dual rewards together
+                  {isMiddleSchool
+                    ? 'Watch your kid grow & earn rewards together'
+                    : 'Track your child\'s growth, earn dual rewards together'
+                  }
                 </p>
                 <Link href="/explore/parents">
                   <Button
                     className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
                     data-testid="button-explore-parent"
                   >
-                    Explore for Parents
+                    {isMiddleSchool ? 'Explore for Parents ❤️' : 'Explore for Parents'}
                   </Button>
                 </Link>
               </CardContent>
@@ -127,14 +199,17 @@ export default function Landing() {
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-gray-900 whitespace-nowrap">For Teachers</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Verify service hours, manage classroom, reduce workload
+                  {isMiddleSchool
+                    ? 'Make character ed easy & fun for your class'
+                    : 'Verify service hours, manage classroom, reduce workload'
+                  }
                 </p>
                 <Link href="/explore/teachers">
                   <Button
                     className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
                     data-testid="button-explore-teacher"
                   >
-                    Explore for Teachers
+                    {isMiddleSchool ? 'Explore for Teachers 📚' : 'Explore for Teachers'}
                   </Button>
                 </Link>
               </CardContent>
@@ -144,35 +219,54 @@ export default function Landing() {
             <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
               <CardContent className="p-6 text-center">
                 <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-8 h-8 text-white" />
+                  {isMiddleSchool ? <Award className="w-8 h-8 text-white" /> : <Shield className="w-8 h-8 text-white" />}
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-gray-900 whitespace-nowrap">For School Leaders</h3>
                 <p className="text-sm text-gray-600 mb-4">
-                  Get the data, see measurable character outcomes
+                  {isMiddleSchool
+                    ? 'Build character culture & measure outcomes'
+                    : 'Get the data, see measurable character outcomes'
+                  }
                 </p>
                 <Link href="/explore/school-leaders">
                   <Button
                     className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
                     data-testid="button-explore-admin"
                   >
-                    For School Leaders
+                    {isMiddleSchool ? 'For School Leaders 🏆' : 'For School Leaders'}
                   </Button>
                 </Link>
               </CardContent>
             </Card>
           </div>
 
-          {/* Footer Info */}
+          {/* Footer Info - Different for MS vs HS */}
           <div className="mt-16 pt-8 border-t border-white/20">
-            <p className="text-sm text-white/70">
-              Currently piloting at Eastern Guilford High School, Gibsonville, NC
-            </p>
-            <p className="text-xs text-white/60 mt-2">
-              Grades 9-12 • 1,200 Students • Led by Principal Dr. Darrell Harris
-            </p>
+            {isMiddleSchool ? (
+              <>
+                <p className="text-sm text-white/70">
+                  🌟 Perfect for Middle Schools (Grades 6-8)
+                </p>
+                <p className="text-xs text-white/60 mt-2">
+                  Optional Community Service • Fun Character Building • Age-Appropriate Rewards
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-white/70">
+                  Currently piloting at Eastern Guilford High School, Gibsonville, NC
+                </p>
+                <p className="text-xs text-white/60 mt-2">
+                  Grades 9-12 • 1,200 Students • Led by Principal Dr. Darrell Harris
+                </p>
+              </>
+            )}
           </div>
         </div>
       </div>
+      
+      {/* Demo School Level Switcher - For presentations */}
+      <DemoSchoolLevelSwitcher />
     </div>
   );
 }
