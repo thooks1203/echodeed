@@ -39,7 +39,7 @@ export const MIDDLE_SCHOOL_CONFIG: SchoolLevelConfig = {
   displayName: 'Middle School',
   gradeRange: '6-8',
   
-  annualServiceHoursGoal: 50, // Explorer Track: 40-60 hours
+  annualServiceHoursGoal: 0, // No requirements - community service is optional/encouraged
   diplomaServiceHoursGoal: 0, // No diploma program for MS
   
   tokenMilestones: [25, 75, 150, 300], // Lower thresholds for younger students

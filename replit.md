@@ -34,7 +34,9 @@ The frontend utilizes React 18, TypeScript, and Vite, with Radix UI, shadcn/ui, 
 - **Student Dashboard Streaks**: Accurate display of current and best streaks.
 - **Authentication**: Replit OAuth for production, with a `/demo-login` page for unauthenticated users and mock authentication for development.
 - **Scalability**: Designed for enterprise performance with database optimization, caching, load testing, real-time monitoring, and auto-scaling.
-- **School-Level Configuration System**: Supports middle and high school deployments with differentiated experiences based on `schoolLevel` enum in the `schools` table. Configurations include distinct service hour goals, workflow phases (3-phase Explorer Track for MS, 5-phase IPARD for HS), token milestones, age-appropriate rewards, and UI adaptations.
+- **School-Level Configuration System**: Supports middle and high school deployments with differentiated experiences based on `schoolLevel` enum in the `schools` table. School administrators select their configuration during registration using a dropdown that clearly explains each option. Configurations include:
+  - **Middle School (Grades 6-8)**: Optional community service (0-hour requirement), 3-phase workflow, tokens 25/75/150/300, age-appropriate rewards. Service hours are encouraged but NOT required - students can log activities and earn rewards, but no goals or progress bars are shown.
+  - **High School (Grades 9-12)**: 200-hour Service-Learning Diploma (required), 5-phase IPARD workflow, tokens 100/250/500/1000, advanced rewards including VIP parking. Full diploma tracking with progress visualization.
 - **Student Notification System**: Email-first digest architecture (7:30am daily, 3:30pm milestone notifications) complying with FERPA, using a queue-based system and new `student_notification_preferences`, `student_notification_events`, `student_notifications` tables.
 - **AI-Suggested Communications**: Generates ready-to-send email and announcement templates based on real-time Inclusion Score metrics for administrators.
 
@@ -53,7 +55,7 @@ The frontend utilizes React 18, TypeScript, and Vite, with Radix UI, shadcn/ui, 
 - **B2B Sponsor Monetization Platform**: Infrastructure for sponsor analytics, tiered sponsorships, and targeted campaigns.
 - **Student Ambassador Referral Tracking System**: Infrastructure for sponsor-funded programs, including referral codes, attribution, leaderboards, and ROI analytics.
 - **IPARD Service-Learning Features**: Process-based token rewards, 21st Century Skills and Character Traits tagging, IPARD phase visualization, Admin School Rewards, Character Excellence Recognition, Monthly Recognition Leaderboards, AI-Suggested Communications, and comprehensive audit trails.
-- **School-Level Configuration**: Differentiated experiences for middle and high school students, including annual goals, workflow phases, token milestones, and reward filtering.
+- **School Registration with Level Selection**: During school registration, administrators use a dropdown to select their service-learning configuration (Middle School: optional community service, or High School: required 200-hour diploma). The selection determines platform behavior, UI displays, token milestones, and reward accessibility.
 - **Student Notification System**: Email-first digests for approvals, token milestones, streaks, IPARD bonuses, and reward status.
 
 ## External Dependencies

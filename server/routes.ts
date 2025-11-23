@@ -12308,6 +12308,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
 
+      // Create school configuration record with selected schoolLevel
+      try {
+        await db.insert(schools).values({
+          id: schoolAccount.id, // Use same ID as corporate account for consistency
+          name: schoolName,
+          address: schoolAddress,
+          city,
+          state,
+          phoneNumber: principalPhone,
+          emailDomain,
+          schoolLevel: selectedSchoolLevel as 'middle_school' | 'high_school',
+          studentCount,
+          isActive: 1
+        }).onConflictDoNothing(); // Skip if already exists
+      } catch (schoolError) {
+        console.log('School record already exists or conflict:', schoolError);
+        // Continue - not a blocking error
+      }
+
       // Create or get existing school administrator user
       let adminUser;
       try {
@@ -12316,6 +12335,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
           firstName: principalName.split(' ')[0],
           lastName: principalName.split(' ').slice(1).join(' '),
           workplaceId: schoolAccount.id,
+          schoolId: schoolAccount.id, // Link user to school
+          schoolRole: 'admin', // Set school role
         });
       } catch (userError: any) {
         // If user already exists, get the existing user

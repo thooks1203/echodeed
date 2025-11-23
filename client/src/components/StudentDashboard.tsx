@@ -792,8 +792,8 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
               boxShadow: '0 4px 16px rgba(139, 92, 246, 0.3)',
               color: 'white'
             }}>
-              {/* Service Hour Goal Section - Contextual for MS/HS */}
-              {!isLoadingConfig && schoolConfig && (
+              {/* Service Hour Goal Section - Only shown for high school (required), hidden for middle school (optional) */}
+              {!isLoadingConfig && schoolConfig && schoolConfig.annualServiceHoursGoal > 0 && (
                 <div style={{ marginBottom: '20px', paddingBottom: '20px', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
                     <div>

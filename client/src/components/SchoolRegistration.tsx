@@ -273,16 +273,16 @@ export function SchoolRegistration({ onSuccess }: SchoolRegistrationProps) {
                       <SelectContent>
                         <SelectItem value="middle_school">
                           <div className="py-2">
-                            <div className="font-semibold text-purple-600">Middle School Explorer Track</div>
-                            <div className="text-sm text-gray-600">50-hour annual goal • 3-phase workflow • Tokens: 25/75/150/300</div>
-                            <div className="text-xs text-gray-500 mt-1">Age-appropriate rewards with parent co-sign</div>
+                            <div className="font-semibold text-purple-600">Middle School (Grades 6-8)</div>
+                            <div className="text-sm text-gray-600">Optional community service • No hour requirements • Tokens: 25/75/150/300</div>
+                            <div className="text-xs text-gray-500 mt-1">Students can log service activities and earn rewards - encouraged but not required</div>
                           </div>
                         </SelectItem>
                         <SelectItem value="high_school">
                           <div className="py-2">
-                            <div className="font-semibold text-blue-600">High School Service-Learning Diploma</div>
-                            <div className="text-sm text-gray-600">200-hour diploma requirement • 5-phase IPARD • Tokens: 100/250/500/1000</div>
-                            <div className="text-xs text-gray-500 mt-1">Advanced rewards including VIP parking, leadership opportunities</div>
+                            <div className="font-semibold text-blue-600">High School (Grades 9-12)</div>
+                            <div className="text-sm text-gray-600">200-hour Service-Learning Diploma • 5-phase IPARD • Tokens: 100/250/500/1000</div>
+                            <div className="text-xs text-gray-500 mt-1">Required diploma program with VIP parking, leadership opportunities</div>
                           </div>
                         </SelectItem>
                       </SelectContent>
