@@ -6,6 +6,7 @@ import { BackButton } from '@/components/BackButton';
 import { NotificationPreferences } from '@/components/NotificationPreferences';
 import { StudentNotificationPreferences } from '@/components/StudentNotificationPreferences';
 import { SchoolRewardsView } from '@/components/SchoolRewardsView';
+import { DemoSchoolLevelSwitcher } from '@/components/DemoSchoolLevelSwitcher';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
@@ -1157,6 +1158,9 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           }
         }} 
       />
+      
+      {/* Demo School Level Switcher - Only visible in demo mode */}
+      <DemoSchoolLevelSwitcher />
     </div>
   );
 }
