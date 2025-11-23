@@ -383,7 +383,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid at Burlington Rd location. Walking distance from school!',
-        imageUrl: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400',
+        ageGroup: 'all'
       },
 
       // McDonald's Burlington Rd
@@ -401,7 +402,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid at Whitsett location. Student-friendly hours.',
-        imageUrl: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?w=400',
+        ageGroup: 'all'
       },
 
       // Greensboro Grasshoppers Baseball Offers
@@ -419,7 +421,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 1,
         expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid for home games only. Subject to availability.',
-        imageUrl: 'https://images.unsplash.com/photo-1566577134770-3d85bb3a9cc4?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1566577134770-3d85bb3a9cc4?w=400',
+        ageGroup: 'all'
       },
 
       // Wendy's Burlington Rd
@@ -437,7 +440,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 60 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid at Whitsett location. Student ID recommended.',
-        imageUrl: 'https://images.unsplash.com/photo-1585238341710-4a44f797bf81?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1585238341710-4a44f797bf81?w=400',
+        ageGroup: 'all'
       },
 
       // Taco Bell Burlington Rd
@@ -455,7 +459,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid at Whitsett location. Craveable rewards!',
-        imageUrl: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1565299585323-38d6b0865b47?w=400',
+        ageGroup: 'all'
       },
 
       // Subway Burlington Rd
@@ -473,7 +478,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid at Whitsett location. Customize your sub!',
-        imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=400',
+        ageGroup: 'all'
       },
 
       // Greensboro Science Center
@@ -491,7 +497,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 180 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid for student admission. Check website for hours.',
-        imageUrl: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400',
+        ageGroup: 'middle_school'
       },
 
       // Pizza Hut Burlington Rd
@@ -509,7 +516,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid at Whitsett location. Dine-in or carryout.',
-        imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400',
+        ageGroup: 'all'
       },
 
       // Cook Out - NC FAVORITE!
@@ -527,7 +535,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid at all Greensboro locations. Student favorite!',
-        imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=400',
+        ageGroup: 'all'
       },
 
       // Dames Chicken & Waffles - DOWNTOWN FAVORITE
@@ -545,7 +554,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid at 301 MLK Jr Dr location. Dine-in or takeout.',
-        imageUrl: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400',
+        ageGroup: 'all'
       },
 
       // Dave's Hot Chicken - TRENDING SPOT
@@ -563,7 +573,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid at W. Market St location. Choose your heat level!',
-        imageUrl: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400',
+        ageGroup: 'high_school'
       },
 
       // Boxcar Bar + Arcade - DOWNTOWN HANGOUT
@@ -581,7 +592,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid at downtown Greensboro location. All ages welcome!',
-        imageUrl: 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1593305841991-05c297ba4575?w=400',
+        ageGroup: 'middle_school'
       },
 
       // Yum Yum Better Ice Cream - GREENSBORO TRADITION SINCE 1906
@@ -599,7 +611,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Choice of flavors and toppings. Perfect for celebrating kindness!',
-        imageUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1563805042-7684c019e1cb?w=400',
+        ageGroup: 'middle_school'
       },
 
       // Red Cinemas - UPSCALE DOWNTOWN THEATER
@@ -617,7 +630,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid at downtown Greensboro location. Reserved seating included!',
-        imageUrl: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400',
+        ageGroup: 'high_school'
       },
 
       // Triad Lanes - BOWLING & ARCADE
@@ -635,7 +649,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Includes shoe rental, lane time, and arcade tokens.',
-        imageUrl: 'https://images.unsplash.com/photo-1594717527389-b0e4219556ba?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1594717527389-b0e4219556ba?w=400',
+        ageGroup: 'middle_school'
       },
 
       // Urban Air Trampoline Park - ACTIVE FUN
@@ -653,7 +668,8 @@ export async function initializeSampleRewardData() {
         requiresVerification: 0,
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Valid at Greensboro location. Waiver required for first visit.',
-        imageUrl: 'https://images.unsplash.com/photo-1610041321420-a148f17fe5d1?w=400'
+        imageUrl: 'https://images.unsplash.com/photo-1610041321420-a148f17fe5d1?w=400',
+        ageGroup: 'middle_school'
       },
 
       // DUAL REWARD OFFERS - National Partners (NOT FEATURED for high school)
@@ -674,7 +690,8 @@ export async function initializeSampleRewardData() {
         parentReward: '$10 Amazon Gift Card',
         expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Parent must provide email for Amazon credit. Books age-appropriate.',
-        imageUrl: 'https://via.placeholder.com/300/4CAF50/FFFFFF?text=Dual+Book+Reward'
+        imageUrl: 'https://via.placeholder.com/300/4CAF50/FFFFFF?text=Dual+Book+Reward',
+        ageGroup: 'middle_school'
       },
 
       {
@@ -694,7 +711,8 @@ export async function initializeSampleRewardData() {
         parentReward: '$15 Target Gift Card',
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Supply bundle varies by grade level. Target credit via email.',
-        imageUrl: 'https://via.placeholder.com/300/2196F3/FFFFFF?text=Dual+Supply+Reward'
+        imageUrl: 'https://via.placeholder.com/300/2196F3/FFFFFF?text=Dual+Supply+Reward',
+        ageGroup: 'all'
       },
 
       {
@@ -714,7 +732,8 @@ export async function initializeSampleRewardData() {
         parentReward: '$20 Amazon Gift Card',
         expiresAt: new Date(Date.now() + 120 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'LEGO set selected based on child age. Amazon credit via email.',
-        imageUrl: 'https://via.placeholder.com/300/FF9800/FFFFFF?text=Dual+LEGO+Reward'
+        imageUrl: 'https://via.placeholder.com/300/FF9800/FFFFFF?text=Dual+LEGO+Reward',
+        ageGroup: 'middle_school'
       },
 
       {
@@ -734,7 +753,8 @@ export async function initializeSampleRewardData() {
         parentReward: '$8 Amazon Gift Card',
         expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
         termsAndConditions: 'Book selection based on reading level. Amazon credit via email.',
-        imageUrl: 'https://via.placeholder.com/300/8BC34A/FFFFFF?text=Dual+Book+Reward'
+        imageUrl: 'https://via.placeholder.com/300/8BC34A/FFFFFF?text=Dual+Book+Reward',
+        ageGroup: 'all'
       }
     ];
 
