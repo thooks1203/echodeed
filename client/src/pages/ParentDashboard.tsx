@@ -50,6 +50,8 @@ import { apiRequest, queryClient } from '@/lib/queryClient';
 import { HelpButton, helpContent } from '@/components/HelpButton';
 import { useForm } from 'react-hook-form';
 import type { PrincipalBlogPost, ParentCommunityPost } from '@shared/schema';
+import { useSchoolLevel } from '@/hooks/useSchoolLevel';
+import { DemoSchoolLevelSwitcher } from '@/components/DemoSchoolLevelSwitcher';
 
 interface ParentNotification {
   id: string;
@@ -279,7 +281,7 @@ function RewardsSection({ currentStats }: { currentStats: ParentStats }) {
 }
 
 // Service Hours Section Component - Parent view of child's community service
-function ServiceHoursSection() {
+function ServiceHoursSection({ isMiddleSchool }: { isMiddleSchool: boolean }) {
   // Demo parent viewing child's service hours (Sofia Rodriguez is the primary demo child)
   const { data: serviceData, isLoading: serviceLoading } = useQuery({
     queryKey: ['/api/community-service/parent', 'demo-parent', 'child', 'student-001'],
@@ -353,14 +355,24 @@ function ServiceHoursSection() {
             </Alert>
           )}
 
-          {summary && (
+          {summary && !isMiddleSchool && (
             <div className="mb-4">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-sm font-medium">Progress toward 30-hour goal</span>
+                <span className="text-sm font-medium">Progress toward 200-hour Service-Learning Diploma</span>
                 <span className="text-sm text-gray-600">{summary.goalProgress || 0}% complete</span>
               </div>
               <Progress value={parseFloat(summary.goalProgress || '0')} className="h-2" />
             </div>
+          )}
+          
+          {isMiddleSchool && summary && (
+            <Alert className="border-purple-200 bg-purple-50 dark:bg-purple-900/10">
+              <Sparkles className="h-4 w-4 text-purple-600" />
+              <AlertTitle className="text-purple-900 dark:text-purple-100">Optional Community Service 🌟</AlertTitle>
+              <AlertDescription className="text-purple-700 dark:text-purple-200">
+                Middle school service is encouraged but not required! Your child is building great character habits through kindness.
+              </AlertDescription>
+            </Alert>
           )}
         </CardContent>
       </Card>
@@ -971,6 +983,8 @@ export default function ParentDashboard() {
   const [, navigate] = useLocation();
   const [activeBottomTab, setActiveBottomTab] = useState('parent-dashboard');
   const { schoolConfig } = useDemoSchool();
+  const { schoolLevel } = useSchoolLevel();
+  const isMiddleSchool = schoolLevel === 'middle_school';
 
   // Conversation Starters for parent-child engagement
   const conversationStarters = [
@@ -1086,7 +1100,7 @@ export default function ParentDashboard() {
     {
       userId: schoolConfig.users.student.id,
       name: schoolConfig.users.student.name,
-      grade: schoolConfig.users.student.grade + 'th',
+      grade: isMiddleSchool ? 'Middle School' : schoolConfig.users.student.grade + 'th Grade',
       school: schoolConfig.school.name,
       isActive: true,
       lastActivity: new Date().toISOString(),
@@ -1737,7 +1751,7 @@ export default function ParentDashboard() {
 
           {/* Service Hours Tab - NEW FEATURE! */}
           <TabsContent value="service-hours">
-            <ServiceHoursSection />
+            <ServiceHoursSection isMiddleSchool={isMiddleSchool} />
           </TabsContent>
 
           {/* FAQ Tab */}
@@ -2157,6 +2171,9 @@ export default function ParentDashboard() {
         activeTab={activeBottomTab} 
         onTabChange={handleBottomTabChange} 
       />
+      
+      {/* Demo School Level Switcher */}
+      <DemoSchoolLevelSwitcher />
     </div>
   );
 }
