@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
 import { useNavigation } from '@/hooks/useNavigation';
 import { useAuth } from '@/hooks/useAuth';
+import { useSchoolLevel } from '@/hooks/useSchoolLevel';
 import { BackButton } from '@/components/BackButton';
 import { Building2, Shield, Star, Gift, ShoppingBag, Coffee, Music, Trophy, CheckCircle2, AlertCircle, Clock, Bell } from 'lucide-react';
 import { RoleSwitcherDemo } from '@/components/RoleSwicherDemo';
@@ -33,6 +34,7 @@ interface RewardOffer {
   termsAndConditions?: string;
   imageUrl?: string;
   expiresAt?: string;
+  ageGroup?: 'middle_school' | 'high_school' | 'all';
   // Corporate Sponsorship Fields
   sponsorCompany?: string;
   sponsorLogo?: string;
@@ -102,6 +104,7 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
   const queryClient = useQueryClient();
   const { canGoBack, goBack } = useNavigation();
   const { user } = useAuth();
+  const { schoolLevel } = useSchoolLevel();
 
   // Fetch user tokens
   const { data: userTokens } = useQuery<UserTokens>({
@@ -188,6 +191,20 @@ export default function RewardsPage({ onBack }: RewardsPageProps) {
     // Filter by offer type - only filter if NOT 'all' 
     if (selectedOfferType !== 'all' && offer.offerType !== selectedOfferType) {
       return false;
+    }
+    
+    // Filter by age group - show rewards appropriate for school level
+    if (offer.ageGroup) {
+      if (offer.ageGroup === 'all') {
+        // Show 'all' rewards to everyone
+        return true;
+      } else if (schoolLevel === 'middle_school' && offer.ageGroup === 'high_school') {
+        // Hide high school exclusive rewards from middle school students
+        return false;
+      } else if (schoolLevel === 'high_school' && offer.ageGroup === 'middle_school') {
+        // Hide middle school exclusive rewards from high school students
+        return false;
+      }
     }
     
     return true;
