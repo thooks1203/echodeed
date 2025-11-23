@@ -251,6 +251,7 @@ export const schools = pgTable("schools", {
   phoneNumber: varchar("phone_number", { length: 20 }),
   emailDomain: varchar("email_domain", { length: 100 }), // For auto-assigning users to schools
   enrollmentCode: varchar("enrollment_code", { length: 50 }).unique(), // Unique code students use to verify their school
+  schoolLevel: varchar("school_level", { length: 20 }).$type<'middle_school' | 'high_school'>().notNull().default('high_school'), // Determines platform experience: MS (grades 6-8) or HS (grades 9-12)
   studentCount: integer("student_count").default(0),
   teacherCount: integer("teacher_count").default(0),
   kindnessPostsCount: integer("kindness_posts_count").default(0),
@@ -481,6 +482,7 @@ export const adminRewards = pgTable("admin_rewards", {
   rewardName: varchar("reward_name", { length: 200 }).notNull(),
   rewardType: varchar("reward_type", { length: 50 }).notNull(), // vip_parking, homework_pass, lunch_skip, principal_lunch, etc.
   description: text("description"),
+  applicableLevel: varchar("applicable_level", { length: 20 }).$type<'middle_school' | 'high_school' | 'both'>().notNull().default('both'), // Which school level can use this reward
   quantityAvailable: integer("quantity_available").default(0).notNull(),
   quantityAllocated: integer("quantity_allocated").default(0).notNull(),
   tokenCost: integer("token_cost").default(0), // Some admin rewards may require tokens
