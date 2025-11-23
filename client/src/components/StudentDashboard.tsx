@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
+import { useSchoolLevel } from '@/hooks/useSchoolLevel';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
@@ -370,6 +371,16 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
     },
     enabled: true // Always enabled for demo
   });
+
+  // Fetch school-level configuration (MS vs HS)
+  const { config: schoolConfig, isLoading: isLoadingConfig } = useSchoolLevel();
+  
+  // Helper: Calculate service hour progress with safe division
+  const calculateServiceProgress = (verifiedHours: string | number, goal: number): number => {
+    if (!goal || goal === 0) return 0; // Avoid division by zero (e.g., MS diploma goal)
+    const hours = typeof verifiedHours === 'string' ? parseFloat(verifiedHours) : verifiedHours;
+    return Math.min(Math.round((hours / goal) * 100), 100);
+  };
 
   const stats = studentStats || {
     totalKindnessPoints: 245,
@@ -781,66 +792,91 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
               boxShadow: '0 4px 16px rgba(139, 92, 246, 0.3)',
               color: 'white'
             }}>
-              {/* 200-Hour Diploma Goal Section */}
-              <div style={{ marginBottom: '20px', paddingBottom: '20px', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
-                  <div>
-                    <h3 style={{ fontSize: '16px', fontWeight: '700', margin: 0, marginBottom: '4px' }}>
-                      📜 Service-Learning Diploma Goal
-                    </h3>
-                    <p style={{ fontSize: '12px', opacity: 0.9, margin: 0 }}>4-Year Requirement</p>
+              {/* Service Hour Goal Section - Contextual for MS/HS */}
+              {!isLoadingConfig && schoolConfig && (
+                <div style={{ marginBottom: '20px', paddingBottom: '20px', borderBottom: '1px solid rgba(255, 255, 255, 0.2)' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>
+                    <div>
+                      <h3 style={{ fontSize: '16px', fontWeight: '700', margin: 0, marginBottom: '4px' }}>
+                        {schoolConfig.features.serviceLearningDiploma 
+                          ? '📜 Service-Learning Diploma Goal'
+                          : '📚 Annual Service Goal'}
+                      </h3>
+                      <p style={{ fontSize: '12px', opacity: 0.9, margin: 0 }}>
+                        {schoolConfig.features.serviceLearningDiploma 
+                          ? '4-Year Requirement'
+                          : `${schoolConfig.displayName} Explorer Track`}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => onNavigateToTab ? onNavigateToTab('community-service') : window.location.href = '/app?tab=community-service'}
+                      style={{
+                        background: 'rgba(255, 255, 255, 0.2)',
+                        color: 'white',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '6px 12px',
+                        fontSize: '12px',
+                        fontWeight: '600',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
+                      }}
+                      data-testid="button-view-all-hours"
+                    >
+                      View All →
+                    </button>
                   </div>
-                  <button
-                    onClick={() => onNavigateToTab ? onNavigateToTab('community-service') : window.location.href = '/app?tab=community-service'}
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      color: 'white',
-                      border: 'none',
-                      borderRadius: '8px',
-                      padding: '6px 12px',
-                      fontSize: '12px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.2s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                    }}
-                    data-testid="button-view-all-hours"
-                  >
-                    View All →
-                  </button>
-                </div>
-                
-                {/* Progress toward 200 hours */}
-                <div style={{ marginBottom: '12px' }}>
-                  <div style={{ fontSize: '28px', fontWeight: '700' }}>
-                    {parseFloat(serviceHoursSummary.verifiedHours || '0')} / 200 hours
+                  
+                  {/* Progress toward goal (diploma for HS, annual for MS) */}
+                  <div style={{ marginBottom: '12px' }}>
+                    <div style={{ fontSize: '28px', fontWeight: '700' }}>
+                      {parseFloat(serviceHoursSummary.verifiedHours || '0')} / {schoolConfig.features.serviceLearningDiploma ? schoolConfig.diplomaServiceHoursGoal : schoolConfig.annualServiceHoursGoal} hours
+                    </div>
+                    <div style={{ fontSize: '13px', opacity: 0.9 }}>
+                      {calculateServiceProgress(
+                        serviceHoursSummary.verifiedHours || '0',
+                        schoolConfig.features.serviceLearningDiploma 
+                          ? schoolConfig.diplomaServiceHoursGoal 
+                          : schoolConfig.annualServiceHoursGoal
+                      )}% Complete
+                    </div>
                   </div>
-                  <div style={{ fontSize: '13px', opacity: 0.9 }}>
-                    {Math.round((parseFloat(serviceHoursSummary.verifiedHours || '0') / 200) * 100)}% Complete
-                  </div>
-                </div>
-                
-                {/* Progress bar */}
-                <div style={{
-                  background: 'rgba(255, 255, 255, 0.2)',
-                  borderRadius: '8px',
-                  height: '10px',
-                  overflow: 'hidden'
-                }}>
+                  
+                  {/* Progress bar */}
                   <div style={{
-                    background: 'white',
-                    height: '100%',
-                    width: `${Math.min((parseFloat(serviceHoursSummary.verifiedHours || '0') / 200) * 100, 100)}%`,
+                    background: 'rgba(255, 255, 255, 0.2)',
                     borderRadius: '8px',
-                    transition: 'width 0.3s ease'
-                  }} />
+                    height: '10px',
+                    overflow: 'hidden'
+                  }}>
+                    <div style={{
+                      background: 'white',
+                      height: '100%',
+                      width: `${calculateServiceProgress(
+                        serviceHoursSummary.verifiedHours || '0',
+                        schoolConfig.features.serviceLearningDiploma 
+                          ? schoolConfig.diplomaServiceHoursGoal 
+                          : schoolConfig.annualServiceHoursGoal
+                      )}%`,
+                      borderRadius: '8px',
+                      transition: 'width 0.3s ease'
+                    }} />
+                  </div>
                 </div>
-              </div>
+              )}
+              
+              {/* Loading state - avoid flashing stale data */}
+              {isLoadingConfig && (
+                <div style={{ marginBottom: '20px', paddingBottom: '20px', borderBottom: '1px solid rgba(255, 255, 255, 0.2)', textAlign: 'center', opacity: 0.7 }}>
+                  <p style={{ fontSize: '14px', margin: 0 }}>Loading service goals...</p>
+                </div>
+              )}
 
               {/* Current Hours Breakdown */}
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '12px' }}>

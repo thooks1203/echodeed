@@ -10381,21 +10381,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const { communityServiceEngine } = await import('./services/communityServiceEngine');
       const verification = await communityServiceEngine.verifyServiceHours(verificationData);
       
-      // 🔔 Queue notification for service approval
+      // 🔔 Queue notifications for service approval and token milestones
       try {
-        if (verification && verificationData.serviceLogId) {
+        if (verification && verificationData.serviceLogId && verificationData.status === 'approved') {
           const serviceLog = await storage.getServiceLog(verificationData.serviceLogId);
           if (serviceLog) {
+            // Calculate tokens awarded: 5 tokens per hour (matches communityServiceEngine.ts line 196)
+            const tokensAwarded = Math.floor(parseFloat(serviceLog.hoursLogged.toString()) * 5);
+            
+            // Service approval notification
             await studentNotificationService.queueServiceApprovalNotification(
               serviceLog.userId,
               serviceLog.serviceName,
               serviceLog.hoursLogged,
-              serviceLog.tokensEarned || 0
+              tokensAwarded
             );
+            
+            // Token milestone notification (school-level aware)
+            // CRITICAL: Fetch fresh token balance AFTER verification commits to database
+            if (tokensAwarded > 0) {
+              const userToken = await storage.getUserTokens(serviceLog.userId);
+              if (userToken) {
+                const { schoolConfigService } = await import('./services/schoolConfigService');
+                const { getTokenMilestones } = await import('@shared/config/schoolLevels');
+                
+                const schoolLevel = await schoolConfigService.getSchoolLevelForUser(serviceLog.userId);
+                const milestones = getTokenMilestones(schoolLevel);
+                const newBalance = userToken.echoBalance; // Post-verification balance from database
+                const oldBalance = newBalance - tokensAwarded; // Pre-verification balance (calculated)
+                
+                console.log(`🎯 Token milestone check (teacher): user=${serviceLog.userId}, earned=${tokensAwarded}, balance ${oldBalance} → ${newBalance}, schoolLevel=${schoolLevel}, milestones=[${milestones.join(',')}]`);
+                
+                for (const milestone of milestones) {
+                  if (newBalance >= milestone && oldBalance < milestone) {
+                    console.log(`🎉 MILESTONE CROSSED! ${milestone} tokens reached for ${schoolLevel} student`);
+                    await studentNotificationService.queueTokenMilestoneNotification(
+                      serviceLog.userId,
+                      newBalance,
+                      milestone
+                    );
+                    break; // Only notify for first milestone crossed
+                  }
+                }
+              }
+            }
           }
         }
       } catch (notifError) {
-        console.error('Failed to queue service approval notification:', notifError);
+        console.error('Failed to queue service/token notifications:', notifError);
       }
       
       res.json(verification);
@@ -10627,12 +10660,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       }
       
-      const rewards = await db.select().from(adminRewards)
+      // Fetch user's school level to filter applicable rewards
+      const { schoolConfigService } = await import('./services/schoolConfigService');
+      const userId = req.user?.claims?.sub || req.user?.id || req.headers['x-session-id'] || req.headers['X-Session-ID'];
+      
+      // Guard: If no userId, only return 'both' level rewards (safe default for demos/public)
+      if (!userId) {
+        const publicRewards = await db.select().from(adminRewards)
+          .where(and(
+            eq(adminRewards.schoolId, schoolId),
+            eq(adminRewards.isActive, true)
+          ));
+        const filteredPublic = publicRewards.filter(r => !r.applicableLevel || r.applicableLevel === 'both');
+        console.log(`🎁 Admin rewards (public/demo): ${publicRewards.length} total, ${filteredPublic.length} showing 'both' only`);
+        return res.json(filteredPublic);
+      }
+      
+      const schoolLevel = await schoolConfigService.getSchoolLevelForUser(userId);
+      
+      // Fetch all active rewards for this school
+      const allRewards = await db.select().from(adminRewards)
         .where(and(
           eq(adminRewards.schoolId, schoolId),
           eq(adminRewards.isActive, true)
         ));
-      res.json(rewards);
+      
+      // Filter by applicableLevel: show 'both' OR matching school level
+      const filteredRewards = allRewards.filter(reward => 
+        !reward.applicableLevel || // Backwards compatibility (rewards without applicableLevel show to everyone)
+        reward.applicableLevel === 'both' || 
+        reward.applicableLevel === schoolLevel
+      );
+      
+      console.log(`🎁 Admin rewards: ${allRewards.length} total, ${filteredRewards.length} applicable for ${schoolLevel} students`);
+      res.json(filteredRewards);
     } catch (error) {
       console.error('Failed to get admin rewards:', error);
       res.status(500).json({ error: 'Failed to get admin rewards' });
@@ -10910,12 +10971,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       console.log(`🌟 Teacher ${teacherId} awarded ${tokensAwarded} Character Excellence tokens to ${studentId}`);
       
-      // 🔔 Queue notification for token milestone if applicable
+      // 🔔 Queue notification for token milestone if applicable (school-level aware)
       try {
-        await studentNotificationService.queueTokenMilestoneNotification(
-          studentId,
-          result.newBalance
-        );
+        const { schoolConfigService } = await import('./services/schoolConfigService');
+        const { getTokenMilestones } = await import('@shared/config/schoolLevels');
+        
+        const schoolLevel = await schoolConfigService.getSchoolLevelForUser(studentId);
+        const milestones = getTokenMilestones(schoolLevel);
+        
+        // Check if the new balance crossed any milestone
+        for (const milestone of milestones) {
+          if (result.newBalance >= milestone && balanceBefore < milestone) {
+            await studentNotificationService.queueTokenMilestoneNotification(
+              studentId,
+              result.newBalance,
+              milestone
+            );
+            break; // Only notify for the first milestone crossed
+          }
+        }
       } catch (notifError) {
         console.error('Failed to queue token milestone notification:', notifError);
       }
@@ -11053,6 +11127,56 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const verification = await communityServiceEngine.verifyServiceHours(verificationData);
       
       console.log('✅ Parent verification completed:', verification);
+      
+      // 🔔 Queue notifications for parent-verified service (same as teacher verification)
+      try {
+        if (verification && req.body.serviceLogId && req.body.status === 'approved') {
+          const serviceLog = await storage.getServiceLog(req.body.serviceLogId);
+          if (serviceLog) {
+            // Calculate tokens awarded: 5 tokens per hour (matches communityServiceEngine.ts line 196)
+            const tokensAwarded = Math.floor(parseFloat(serviceLog.hoursLogged.toString()) * 5);
+            
+            await studentNotificationService.queueServiceApprovalNotification(
+              serviceLog.userId,
+              serviceLog.serviceName,
+              serviceLog.hoursLogged,
+              tokensAwarded
+            );
+            
+            // Token milestone notification (school-level aware)
+            // CRITICAL: Fetch fresh token balance AFTER verification commits to database
+            if (tokensAwarded > 0) {
+              const userToken = await storage.getUserTokens(serviceLog.userId);
+              if (userToken) {
+                const { schoolConfigService } = await import('./services/schoolConfigService');
+                const { getTokenMilestones } = await import('@shared/config/schoolLevels');
+                
+                const schoolLevel = await schoolConfigService.getSchoolLevelForUser(serviceLog.userId);
+                const milestones = getTokenMilestones(schoolLevel);
+                const newBalance = userToken.echoBalance; // Post-verification balance from database
+                const oldBalance = newBalance - tokensAwarded; // Pre-verification balance (calculated)
+                
+                console.log(`🎯 Token milestone check (parent): user=${serviceLog.userId}, earned=${tokensAwarded}, balance ${oldBalance} → ${newBalance}, schoolLevel=${schoolLevel}, milestones=[${milestones.join(',')}]`);
+                
+                for (const milestone of milestones) {
+                  if (newBalance >= milestone && oldBalance < milestone) {
+                    console.log(`🎉 MILESTONE CROSSED (parent verify)! ${milestone} tokens reached for ${schoolLevel} student`);
+                    await studentNotificationService.queueTokenMilestoneNotification(
+                      serviceLog.userId,
+                      newBalance,
+                      milestone
+                    );
+                    break; // Only notify for first milestone crossed
+                  }
+                }
+              }
+            }
+          }
+        }
+      } catch (notifError) {
+        console.error('Failed to queue parent verification notifications:', notifError);
+      }
+      
       res.json(verification);
     } catch (error) {
       console.error('Failed to complete parent verification:', error);
