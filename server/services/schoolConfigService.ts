@@ -1,4 +1,4 @@
-import db from "../db";
+import { db } from "../db";
 import { corporateAccounts } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { getSchoolLevelConfig, type SchoolLevel, type SchoolLevelConfig } from "@shared/config/schoolLevels";

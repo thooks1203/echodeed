@@ -750,6 +750,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // GET /api/school-level/config - Fetch school-level configuration for current user
+  app.get('/api/school-level/config', isAuthenticated, async (req: any, res) => {
+    try {
+      const { schoolConfigService } = await import('./services/schoolConfigService');
+      
+      let userId = req.user?.claims?.sub || req.user?.id;
+      
+      // Demo bypass pattern for X-Session-ID
+      if (!userId) {
+        if (process.env.NODE_ENV === 'development' || process.env.DEMO_MODE === 'true') {
+          const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
+          if (sessionId) {
+            userId = sessionId;
+          }
+        }
+      }
+      
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized - no user ID" });
+      }
+      
+      // Fetch school-level configuration for the user's school
+      const config = await schoolConfigService.getSchoolLevelForUser(userId).then(level => {
+        const { getSchoolLevelConfig } = require('@shared/config/schoolLevels');
+        return getSchoolLevelConfig(level);
+      });
+      
+      res.json(config);
+    } catch (error) {
+      console.error("[API] Error fetching school-level config:", error);
+      res.status(500).json({ message: "Failed to fetch school-level configuration" });
+    }
+  });
+
   // CURRICULUM LESSONS API ROUTES
   app.get('/api/curriculum/lessons', async (req, res) => {
     try {
