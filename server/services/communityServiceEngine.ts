@@ -114,6 +114,52 @@ export class CommunityServiceEngine {
     }
   }
 
+  // Update student summary within a transaction (used by verifyServiceHours)
+  async updateStudentSummaryInTransaction(tx: any, userId: string, hours: number, status: 'pending' | 'verified' | 'rejected') {
+    const existingSummary = await tx.select()
+      .from(studentServiceSummaries)
+      .where(eq(studentServiceSummaries.userId, userId));
+
+    if (existingSummary.length === 0) {
+      await tx.insert(studentServiceSummaries).values({
+        userId,
+        totalHours: hours.toString(),
+        verifiedHours: status === 'verified' ? hours.toString() : '0.00',
+        pendingHours: status === 'pending' ? hours.toString() : '0.00',
+        rejectedHours: status === 'rejected' ? hours.toString() : '0.00',
+        totalTokensEarned: status === 'verified' ? Math.floor(hours * 5) : 0,
+        totalServiceSessions: 1,
+        currentStreak: 0,
+        longestStreak: 0
+      });
+      return;
+    }
+
+    const current = existingSummary[0];
+    const currentVerified = parseFloat((current.verifiedHours || 0).toString());
+    const currentPending = parseFloat((current.pendingHours || 0).toString());
+
+    let newVerified = currentVerified;
+    let newPending = currentPending;
+
+    if (status === 'verified') {
+      newVerified += hours;
+      newPending = Math.max(0, newPending - hours);
+    }
+
+    const tokensFromVerified = Math.floor(newVerified * 5);
+
+    await tx.update(studentServiceSummaries)
+      .set({
+        verifiedHours: newVerified.toString(),
+        pendingHours: newPending.toString(),
+        totalTokensEarned: tokensFromVerified,
+        lastServiceDate: new Date(),
+        lastUpdated: new Date()
+      })
+      .where(eq(studentServiceSummaries.userId, userId));
+  }
+
   // Update student service summary totals
   async updateStudentSummary(userId: string, hours: number, status: 'pending' | 'verified' | 'rejected') {
     try {
@@ -173,78 +219,94 @@ export class CommunityServiceEngine {
   }
 
   // Verify service hours (approve/reject)
+  // TRANSACTIONAL: Ensures atomic token awards and accurate milestone detection
   async verifyServiceHours(request: ServiceVerificationRequest) {
     console.log(`🔍 Verifying service hours: ${request.serviceLogId} by ${request.verifierId}`);
     
     try {
-      // Create verification record
-      const [verification] = await db.insert(communityServiceVerifications)
-        .values({
-          serviceLogId: request.serviceLogId,
-          verifierType: request.verifierType,
-          verifierId: request.verifierId,
-          verificationMethod: request.verificationMethod,
-          status: request.status,
-          feedback: request.feedback,
-          requestedChanges: request.requestedChanges,
-          followUpRequired: request.status === 'rejected' && !!request.requestedChanges,
-          verifiedAt: request.status !== 'pending' ? new Date() : null
-        })
-        .returning();
+      // Wrap entire verification workflow in transaction for atomicity
+      return await db.transaction(async (tx) => {
+        // Create verification record
+        const [verification] = await tx.insert(communityServiceVerifications)
+          .values({
+            serviceLogId: request.serviceLogId,
+            verifierType: request.verifierType,
+            verifierId: request.verifierId,
+            verificationMethod: request.verificationMethod,
+            status: request.status,
+            feedback: request.feedback,
+            requestedChanges: request.requestedChanges,
+            followUpRequired: request.status === 'rejected' && !!request.requestedChanges,
+            verifiedAt: request.status !== 'pending' ? new Date() : null
+          })
+          .returning();
 
-      // Update service log status
-      const tokensToAward = request.status === 'approved' ? 5 : 0; // 5 tokens per verified hour
-      
-      await db.update(communityServiceLogs)
-        .set({
-          verificationStatus: request.status === 'approved' ? 'approved' : 'rejected',
-          verifiedBy: request.verifierId,
-          verifiedAt: request.status === 'approved' ? new Date() : null,
-          verificationNotes: request.feedback,
-          tokensEarned: tokensToAward,
-          parentNotified: false, // Will trigger notification
-          updatedAt: new Date()
-        })
-        .where(eq(communityServiceLogs.id, request.serviceLogId));
-
-      // If approved, award tokens and update summary
-      let tokenAwardInfo = null;
-      if (request.status === 'approved') {
-        const serviceLog = await db.select()
-          .from(communityServiceLogs)
+        // Update service log status
+        const tokensToAward = request.status === 'approved' ? 5 : 0;
+        
+        await tx.update(communityServiceLogs)
+          .set({
+            verificationStatus: request.status === 'approved' ? 'approved' : 'rejected',
+            verifiedBy: request.verifierId,
+            verifiedAt: request.status === 'approved' ? new Date() : null,
+            verificationNotes: request.feedback,
+            tokensEarned: tokensToAward,
+            parentNotified: false,
+            updatedAt: new Date()
+          })
           .where(eq(communityServiceLogs.id, request.serviceLogId));
 
-        if (serviceLog.length > 0) {
-          const hours = parseFloat(serviceLog[0].hoursLogged.toString());
-          const userId = serviceLog[0].userId;
-          const tokensAwarded = Math.floor(hours * 5);
-          
-          // Award tokens to user - RETURNING atomically gets new balance (no race condition)
-          const newBalance = await this.awardTokensForService(userId, tokensAwarded);
-          
-          // Verify award succeeded and store award info for milestone notifications
-          if (newBalance !== null) {
-            // Calculate oldBalance from newBalance (no separate query = no race)
-            const oldBalance = newBalance - tokensAwarded;
+        // If approved, award tokens atomically within transaction
+        let tokenAwardInfo = null;
+        if (request.status === 'approved') {
+          const serviceLog = await tx.select()
+            .from(communityServiceLogs)
+            .where(eq(communityServiceLogs.id, request.serviceLogId));
+
+          if (serviceLog.length > 0) {
+            const hours = parseFloat(serviceLog[0].hoursLogged.toString());
+            const userId = serviceLog[0].userId;
+            const tokensAwarded = Math.floor(hours * 5);
             
-            tokenAwardInfo = {
-              userId,
-              tokensAwarded,
-              oldBalance,
-              newBalance
-            };
+            // Lock token row for update (prevents concurrent modifications)
+            const [oldTokenRecord] = await tx.select()
+              .from(userTokens)
+              .where(eq(userTokens.userId, userId))
+              .for('update'); // SELECT ... FOR UPDATE lock
             
-            // Update student summary 
-            await this.updateStudentSummary(userId, hours, 'verified');
-          } else {
-            console.error(`❌ Failed to award tokens to ${userId}`);
-            tokenAwardInfo = null;
+            if (oldTokenRecord) {
+              const oldBalance = oldTokenRecord.echoBalance;
+              
+              // Update tokens and get new balance atomically
+              const [updated] = await tx.update(userTokens)
+                .set({
+                  echoBalance: sql`${userTokens.echoBalance} + ${tokensAwarded}`,
+                  totalEarned: sql`${userTokens.totalEarned} + ${tokensAwarded}`,
+                  lastActive: new Date()
+                })
+                .where(eq(userTokens.userId, userId))
+                .returning({ newBalance: userTokens.echoBalance });
+              
+              console.log(`🏆 Awarded ${tokensAwarded} tokens to ${userId} (${oldBalance} → ${updated.newBalance})`);
+              
+              tokenAwardInfo = {
+                userId,
+                tokensAwarded,
+                oldBalance,
+                newBalance: updated.newBalance
+              };
+              
+              // Update student summary within same transaction
+              await this.updateStudentSummaryInTransaction(tx, userId, hours, 'verified');
+            } else {
+              console.error(`❌ No token record found for user ${userId}`);
+            }
           }
         }
-      }
 
-      console.log(`✅ Service verification completed: ${verification.id}`);
-      return { verification, tokenAwardInfo };
+        console.log(`✅ Service verification completed: ${verification.id}`);
+        return { verification, tokenAwardInfo };
+      });
       
     } catch (error) {
       console.error('❌ Error verifying service hours:', error);
