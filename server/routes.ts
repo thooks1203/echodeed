@@ -12249,6 +12249,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         studentCount,
         gradeRange,
         schoolType,
+        schoolLevel,
         goals
       } = req.body;
 
@@ -12256,6 +12257,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!schoolName || !principalName || !principalEmail || !schoolAddress || !city || !state || !studentCount || !gradeRange || !schoolType) {
         return res.status(400).json({ message: 'Missing required fields' });
       }
+      
+      // Default to high_school if not provided
+      const selectedSchoolLevel = schoolLevel || 'high_school';
 
       // Check if school domain already exists
       const emailDomain = principalEmail.split('@')[1];

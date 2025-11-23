@@ -26,6 +26,7 @@ const schoolRegistrationSchema = z.object({
   studentCount: z.number().min(1, "Student count is required"),
   gradeRange: z.string().min(1, "Grade range is required"),
   schoolType: z.string().min(1, "School type is required"),
+  schoolLevel: z.enum(["middle_school", "high_school"]).default("high_school"),
   goals: z.string().optional(),
 });
 
@@ -54,6 +55,7 @@ export function SchoolRegistration({ onSuccess }: SchoolRegistrationProps) {
       studentCount: 0,
       gradeRange: "",
       schoolType: "",
+      schoolLevel: "high_school",
       goals: "",
     },
   });
@@ -258,6 +260,35 @@ export function SchoolRegistration({ onSuccess }: SchoolRegistrationProps) {
                     </Select>
                     {form.formState.errors.schoolType && (
                       <p className="text-sm text-red-500 mt-1">{form.formState.errors.schoolType.message}</p>
+                    )}
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <Label htmlFor="schoolLevel" className="text-base font-semibold">Service-Learning Program Configuration</Label>
+                    <p className="text-sm text-gray-600 mb-2">Choose the service-learning track for your students:</p>
+                    <Select onValueChange={(value: "middle_school" | "high_school") => form.setValue("schoolLevel", value)} defaultValue="high_school">
+                      <SelectTrigger data-testid="select-school-level" className="h-auto py-3">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="middle_school">
+                          <div className="py-2">
+                            <div className="font-semibold text-purple-600">Middle School Explorer Track</div>
+                            <div className="text-sm text-gray-600">50-hour annual goal • 3-phase workflow • Tokens: 25/75/150/300</div>
+                            <div className="text-xs text-gray-500 mt-1">Age-appropriate rewards with parent co-sign</div>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="high_school">
+                          <div className="py-2">
+                            <div className="font-semibold text-blue-600">High School Service-Learning Diploma</div>
+                            <div className="text-sm text-gray-600">200-hour diploma requirement • 5-phase IPARD • Tokens: 100/250/500/1000</div>
+                            <div className="text-xs text-gray-500 mt-1">Advanced rewards including VIP parking, leadership opportunities</div>
+                          </div>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    {form.formState.errors.schoolLevel && (
+                      <p className="text-sm text-red-500 mt-1">{form.formState.errors.schoolLevel.message}</p>
                     )}
                   </div>
                 </div>
