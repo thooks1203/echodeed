@@ -1299,8 +1299,6 @@ export const insertSchoolSchema = createInsertSchema(schools).omit({
 
 export const insertStudentAccountSchema = createInsertSchema(studentAccounts).omit({
   id: true,
-  createdAt: true,
-  updatedAt: true,
 });
 
 export const insertRewardPartnerSchema = createInsertSchema(rewardPartners).omit({
