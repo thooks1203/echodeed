@@ -343,6 +343,7 @@ export const rewardOffers = pgTable("reward_offers", {
   sponsorshipType: varchar("sponsorship_type", { length: 50 }),
   sponsorshipMessage: text("sponsorship_message"),
   monthlySponsorship: integer("monthly_sponsorship").default(0),
+  ageGroup: varchar("age_group", { length: 20 }).default("all"), // "middle_school", "high_school", "all"
 });
 
 // Track reward redemptions
