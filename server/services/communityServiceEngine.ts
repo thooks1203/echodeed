@@ -208,6 +208,7 @@ export class CommunityServiceEngine {
         .where(eq(communityServiceLogs.id, request.serviceLogId));
 
       // If approved, award tokens and update summary
+      let tokenAwardInfo = null;
       if (request.status === 'approved') {
         const serviceLog = await db.select()
           .from(communityServiceLogs)
@@ -216,17 +217,34 @@ export class CommunityServiceEngine {
         if (serviceLog.length > 0) {
           const hours = parseFloat(serviceLog[0].hoursLogged.toString());
           const userId = serviceLog[0].userId;
+          const tokensAwarded = Math.floor(hours * 5);
           
-          // Award tokens to user
-          await this.awardTokensForService(userId, Math.floor(hours * 5));
+          // Award tokens to user - RETURNING atomically gets new balance (no race condition)
+          const newBalance = await this.awardTokensForService(userId, tokensAwarded);
           
-          // Update student summary 
-          await this.updateStudentSummary(userId, hours, 'verified');
+          // Verify award succeeded and store award info for milestone notifications
+          if (newBalance !== null) {
+            // Calculate oldBalance from newBalance (no separate query = no race)
+            const oldBalance = newBalance - tokensAwarded;
+            
+            tokenAwardInfo = {
+              userId,
+              tokensAwarded,
+              oldBalance,
+              newBalance
+            };
+            
+            // Update student summary 
+            await this.updateStudentSummary(userId, hours, 'verified');
+          } else {
+            console.error(`❌ Failed to award tokens to ${userId}`);
+            tokenAwardInfo = null;
+          }
         }
       }
 
       console.log(`✅ Service verification completed: ${verification.id}`);
-      return verification;
+      return { verification, tokenAwardInfo };
       
     } catch (error) {
       console.error('❌ Error verifying service hours:', error);
@@ -235,25 +253,33 @@ export class CommunityServiceEngine {
   }
 
   // Award tokens for verified service hours
-  async awardTokensForService(userId: string, tokens: number) {
+  // Returns the new balance using RETURNING for atomic reads
+  async awardTokensForService(userId: string, tokens: number): Promise<number | null> {
     try {
       const userTokenRecord = await db.select()
         .from(userTokens)
         .where(eq(userTokens.userId, userId));
 
       if (userTokenRecord.length > 0) {
-        await db.update(userTokens)
+        const oldBalance = userTokenRecord[0].echoBalance;
+        
+        // Use RETURNING to get new balance atomically
+        const [updated] = await db.update(userTokens)
           .set({
             echoBalance: sql`${userTokens.echoBalance} + ${tokens}`,
             totalEarned: sql`${userTokens.totalEarned} + ${tokens}`,
             lastActive: new Date()
           })
-          .where(eq(userTokens.userId, userId));
+          .where(eq(userTokens.userId, userId))
+          .returning({ newBalance: userTokens.echoBalance });
 
-        console.log(`🏆 Awarded ${tokens} tokens for community service to user ${userId}`);
+        console.log(`🏆 Awarded ${tokens} tokens for community service to user ${userId} (${oldBalance} → ${updated.newBalance})`);
+        return updated.newBalance;
       }
+      return null;
     } catch (error) {
       console.error('❌ Error awarding service tokens:', error);
+      return null;
     }
   }
 
