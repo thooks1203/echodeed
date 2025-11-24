@@ -11,6 +11,7 @@ import { Heart, BookOpen, Users, Star, Clock, Target, CheckCircle, Filter, Searc
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
+import { useSchoolLevel } from '@/hooks/useSchoolLevel';
 import { featureFlags } from '@shared/featureFlags';
 import { KindnessFeed } from '@/components/KindnessFeed';
 import { KindnessConnectModal } from '@/components/KindnessConnectModal';
@@ -80,6 +81,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
   const [, navigate] = useLocation();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { schoolLevel } = useSchoolLevel();
   
   // Tab state that syncs with initialTab prop
   const [activeTab, setActiveTab] = useState(initialTab.toLowerCase());
@@ -278,8 +280,10 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['/api/community-service/pending-verifications'] });
         toast({
-          title: "Service Hours Approved",
-          description: "Student will receive tokens for their community service.",
+          title: schoolLevel === 'middle_school' ? "Activity Approved" : "Service Hours Approved",
+          description: schoolLevel === 'middle_school' 
+            ? "Student will receive tokens for their community activity."
+            : "Student will receive tokens for their community service.",
         });
       },
     });
@@ -289,7 +293,12 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
         <div className="flex items-center justify-center py-12">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading pending service hours...</p>
+            <p className="text-gray-600">
+              {schoolLevel === 'middle_school' 
+                ? 'Loading pending activities...'
+                : 'Loading pending service hours...'
+              }
+            </p>
           </div>
         </div>
       );
@@ -302,7 +311,12 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
         <div className="text-center py-12">
           <Clock className="h-16 w-16 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-700 mb-2">All Caught Up!</h3>
-          <p className="text-gray-600">No pending service hours to verify at this time.</p>
+          <p className="text-gray-600">
+            {schoolLevel === 'middle_school'
+              ? 'No pending community activities to verify at this time.'
+              : 'No pending service hours to verify at this time.'
+            }
+          </p>
         </div>
       );
     }
@@ -377,7 +391,10 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
             <h1 className="text-4xl font-bold text-gray-900">Teacher Dashboard</h1>
           </div>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            Eastern Guilford High School (Grades 9-12) - Empowering kindness and character through community service
+            {schoolLevel === 'middle_school' 
+              ? 'Eastern Guilford Middle School (Grades 6-8) - Encouraging kindness and character through optional community activities'
+              : 'Eastern Guilford High School (Grades 9-12) - Empowering kindness and character through community service'
+            }
           </p>
         </header>
 
@@ -398,8 +415,8 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
               className="bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
             >
               <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Service Hours</span>
-              <span className="sm:hidden">Hours</span>
+              <span className="hidden sm:inline">{schoolLevel === 'middle_school' ? 'Activities' : 'Service Hours'}</span>
+              <span className="sm:hidden">{schoolLevel === 'middle_school' ? 'Acts' : 'Hours'}</span>
             </TabsTrigger>
             {featureFlags.curriculum && (
               <>
@@ -497,7 +514,10 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
                   Anonymous Kindness Feed
                 </CardTitle>
                 <CardDescription>
-                  View all kindness posts from Eastern Guilford High School students
+                  {schoolLevel === 'middle_school'
+                    ? 'View all kindness posts from Eastern Guilford Middle School students'
+                    : 'View all kindness posts from Eastern Guilford High School students'
+                  }
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -523,7 +543,7 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
                 <div className="space-y-3">
                   <p className="text-sm text-gray-700">
                     <strong>When to use:</strong> Student needs a form but doesn't have access to a printer at home. 
-                    You can print it for them and they'll bring it to their service organization.
+                    You can print it for them and they'll bring it to their {schoolLevel === 'middle_school' ? 'activity location' : 'service organization'}.
                   </p>
                   <ServiceVerificationFormDownload />
                 </div>
@@ -534,10 +554,16 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Clock className="h-5 w-5" />
-                  Pending Service Hours Verification
+                  {schoolLevel === 'middle_school' 
+                    ? 'Pending Community Activity Verification'
+                    : 'Pending Service Hours Verification'
+                  }
                 </CardTitle>
                 <CardDescription>
-                  Review and approve student community service submissions with photo proof
+                  {schoolLevel === 'middle_school'
+                    ? 'Review and approve student community activity submissions with photo proof'
+                    : 'Review and approve student community service submissions with photo proof'
+                  }
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -816,7 +842,12 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
                     <div className="text-center">
                       <Users className="h-8 w-8 text-blue-600 mx-auto mb-3" />
                       <h3 className="font-semibold mb-2">Community Helpers Guide</h3>
-                      <p className="text-sm text-gray-600 mb-4">Connect lessons with local community service</p>
+                      <p className="text-sm text-gray-600 mb-4">
+                        {schoolLevel === 'middle_school'
+                          ? 'Connect lessons with local community activities and volunteer opportunities'
+                          : 'Connect lessons with local community service'
+                        }
+                      </p>
                       <Button variant="outline" size="sm" data-testid="button-download-guide">Download</Button>
                     </div>
                   </Card>
