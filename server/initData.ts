@@ -1108,6 +1108,177 @@ export async function initializeSampleData() {
       log(`⚠️ Could not initialize service opportunities: ${error.message}`);
     }
 
+    // Initialize school-based admin rewards (MS: ice cream, hoodies, hats; HS: VIP parking, lunch skip passes)
+    try {
+      log('🎁 Initializing admin school rewards...');
+      const { db } = await import('./db');
+      const { adminRewards, users } = await import('@shared/schema');
+      const { count, eq } = await import('drizzle-orm');
+      
+      // Check if admin rewards already exist
+      const existingRewards = await db.select({ count: count() }).from(adminRewards);
+      const rewardCount = existingRewards[0]?.count || 0;
+      
+      if (rewardCount === 0) {
+        // Create system admin user for rewards if doesn't exist
+        const systemAdminId = 'admin-system';
+        const existingSystemAdmin = await db.select().from(users).where(eq(users.id, systemAdminId)).limit(1);
+        if (existingSystemAdmin.length === 0) {
+          await db.insert(users).values({
+            id: systemAdminId,
+            email: 'system@echodeed.com',
+            firstName: 'System',
+            lastName: 'Admin',
+            schoolRole: 'admin',
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
+          });
+        }
+
+        const schoolRewards = [
+          // Middle School Rewards - Fun, playful, age-appropriate
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Ice Cream Treat',
+            rewardType: 'food_treat',
+            description: 'Ice cream sandwich or cup from the cafeteria',
+            applicableLevel: 'middle_school',
+            quantityAvailable: 50,
+            tokenCost: 150,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'School Spirit Hoodie',
+            rewardType: 'apparel',
+            description: 'Official Eastern Guilford Middle School hoodie',
+            applicableLevel: 'middle_school',
+            quantityAvailable: 25,
+            tokenCost: 500,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'School Spirit Hat',
+            rewardType: 'apparel',
+            description: 'Official EGMS baseball cap or beanie',
+            applicableLevel: 'middle_school',
+            quantityAvailable: 30,
+            tokenCost: 300,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Homework Pass',
+            rewardType: 'academic_privilege',
+            description: 'One free homework pass for any class',
+            applicableLevel: 'middle_school',
+            quantityAvailable: 40,
+            tokenCost: 200,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Pizza Party Invite',
+            rewardType: 'social_event',
+            description: 'Invitation to monthly pizza party with Principal McNeil',
+            applicableLevel: 'middle_school',
+            quantityAvailable: 15,
+            tokenCost: 400,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          
+          // High School Rewards - Achievement-oriented, mature
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'VIP Parking Pass',
+            rewardType: 'parking_privilege',
+            description: 'Reserved parking spot for one semester',
+            applicableLevel: 'high_school',
+            quantityAvailable: 10,
+            tokenCost: 1000,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Lunch Skip Pass',
+            rewardType: 'schedule_privilege',
+            description: 'Permission to leave campus for lunch (one month)',
+            applicableLevel: 'high_school',
+            quantityAvailable: 8,
+            tokenCost: 800,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Early Dismissal Pass',
+            rewardType: 'schedule_privilege',
+            description: 'Leave school 30 minutes early on Fridays (one month)',
+            applicableLevel: 'high_school',
+            quantityAvailable: 12,
+            tokenCost: 750,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Principal Lunch Meeting',
+            rewardType: 'social_recognition',
+            description: 'Lunch meeting with Dr. Harris to discuss leadership',
+            applicableLevel: 'high_school',
+            quantityAvailable: 6,
+            tokenCost: 600,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          
+          // Universal Rewards - Both school levels
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Dress Down Day Pass',
+            rewardType: 'dress_code_privilege',
+            description: 'Wear casual clothes for one day (no uniform required)',
+            applicableLevel: 'both',
+            quantityAvailable: 50,
+            tokenCost: 150,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Student of the Month Certificate',
+            rewardType: 'recognition',
+            description: 'Official certificate and photo on school website',
+            applicableLevel: 'both',
+            quantityAvailable: 20,
+            tokenCost: 350,
+            isActive: true,
+            createdBy: systemAdminId
+          }
+        ];
+
+        // Insert all admin rewards
+        for (const reward of schoolRewards) {
+          await db.insert(adminRewards).values(reward);
+        }
+
+        log(`✅ Initialized ${schoolRewards.length} admin school rewards`);
+        log('🏫 MS: Ice cream, hoodies, hats, homework passes, pizza parties');
+        log('🎓 HS: VIP parking, lunch skip, early dismissal, principal meetings');
+        log('🌟 Both: Dress down passes, student of the month certificates');
+      } else {
+        log(`ℹ️  ${rewardCount} admin rewards already exist, skipping creation`);
+      }
+    } catch (error: any) {
+      log(`⚠️ Could not initialize admin rewards: ${error.message}`);
+    }
+
     // Initialize mentor sample data (mentorships, activities, badges)
     try {
       const { initializeMentorSampleData } = await import('./mentorSampleData');

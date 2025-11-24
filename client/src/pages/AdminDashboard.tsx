@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { useLocation } from 'wouter';
 import { featureFlags } from '@shared/featureFlags';
+import { useSchoolLevel } from '@/hooks/useSchoolLevel';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -697,6 +698,7 @@ export default function AdminDashboard() {
   const [, navigate] = useLocation();
   const { user, isAdmin, isTeacher, isStudent, isParent } = useAuth();
   const demoRoles = getDemoRoles();
+  const { schoolLevel } = useSchoolLevel();
   const [isKindnessConnectOpen, setIsKindnessConnectOpen] = useState(false);
   
   // ROLE-BASED ACCESS CONTROL: Only admins can access this dashboard
@@ -1093,7 +1095,7 @@ export default function AdminDashboard() {
             {bcaDemoMode && (
               <div className="flex items-center gap-2">
                 <School2 className="w-4 h-4" />
-                <span>Eastern Guilford Demo - Eastern Guilford High School, Gibsonville, NC</span>
+                <span>Eastern Guilford Demo - {schoolLevel === 'middle_school' ? 'Eastern Guilford Middle School' : 'Eastern Guilford High School'}, Gibsonville, NC</span>
               </div>
             )}
             {privacyMode && (
@@ -1121,7 +1123,7 @@ export default function AdminDashboard() {
               )}
             </h1>
             <p className="text-gray-600 dark:text-gray-300 mt-1">
-              {maskName(currentAdmin.name)} • Principal • Eastern Guilford High School, Gibsonville
+              {schoolLevel === 'middle_school' ? 'Ms McNeil' : 'Dr. Darrell Harris'} • Principal • {schoolLevel === 'middle_school' ? 'Eastern Guilford Middle School' : 'Eastern Guilford High School'}, Gibsonville
             </p>
           </div>
         </div>
