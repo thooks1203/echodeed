@@ -480,57 +480,97 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
             </Card>
           </TabsContent>
 
-          {/* Service Hours Verification Tab - ALWAYS VISIBLE (Core Feature) */}
+          {/* Service Hours Verification Tab - Only shown for High School */}
           <TabsContent value="service-hours" className="space-y-6">
-            {/* Verification Form Download for Teachers */}
-            <Card className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-300">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Download className="h-5 w-5 text-orange-600" />
-                  Print Verification Forms for Students
-                </CardTitle>
-                <CardDescription>
-                  Students without printer access? Download and print the official verification form for them right here.
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
-                  <p className="text-sm text-gray-700">
-                    <strong>When to use:</strong> Student needs a form but doesn't have access to a printer at home. 
-                    You can print it for them and they'll bring it to their {schoolLevel === 'middle_school' ? 'activity location' : 'service organization'}.
-                  </p>
-                  <ServiceVerificationFormDownload />
-                </div>
-              </CardContent>
-            </Card>
+            {schoolLevel === 'middle_school' ? (
+              /* Middle School: Simple kindness activity overview - no verification needed */
+              <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-2 border-purple-200">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Heart className="h-5 w-5 text-purple-600" />
+                    💝 Kindness Activities Overview
+                  </CardTitle>
+                  <CardDescription>
+                    Middle school students participate in optional kindness activities - no hour tracking required!
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="bg-white p-4 rounded-lg border border-purple-100">
+                      <p className="text-gray-700 mb-3">
+                        At Eastern Guilford Middle School, we encourage students to practice kindness through:
+                      </p>
+                      <ul className="space-y-2 text-sm text-gray-600">
+                        <li className="flex items-center gap-2">
+                          <span className="text-purple-500">✨</span> Sharing kind acts on the Kindness Feed
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-pink-500">🤝</span> Helping classmates and community members
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-blue-500">🌟</span> Earning tokens for positive behavior
+                        </li>
+                        <li className="flex items-center gap-2">
+                          <span className="text-green-500">🎁</span> Redeeming rewards at local partners
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="bg-purple-100 p-3 rounded-lg">
+                      <p className="text-sm text-purple-800">
+                        <strong>💡 No Paperwork Needed:</strong> Middle school kindness activities are self-reported through the app. Students earn tokens for participation without formal verification requirements.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              /* High School: Full verification workflow for 200-hour diploma */
+              <>
+                {/* Verification Form Download for Teachers */}
+                <Card className="bg-gradient-to-r from-orange-50 to-red-50 border-2 border-orange-300">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Download className="h-5 w-5 text-orange-600" />
+                      Print Verification Forms for Students
+                    </CardTitle>
+                    <CardDescription>
+                      Students without printer access? Download and print the official verification form for them right here.
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-3">
+                      <p className="text-sm text-gray-700">
+                        <strong>When to use:</strong> Student needs a form but doesn't have access to a printer at home. 
+                        You can print it for them and they'll bring it to their service organization.
+                      </p>
+                      <ServiceVerificationFormDownload />
+                    </div>
+                  </CardContent>
+                </Card>
 
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Clock className="h-5 w-5" />
-                  {schoolLevel === 'middle_school' 
-                    ? 'Pending Community Activity Verification'
-                    : 'Pending Service Hours Verification'
-                  }
-                </CardTitle>
-                <CardDescription>
-                  {schoolLevel === 'middle_school'
-                    ? 'Review and approve student community activity submissions with photo proof'
-                    : 'Review and approve student community service submissions with photo proof'
-                  }
-                </CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ServiceHoursContent />
-              </CardContent>
-            </Card>
-            <Card className="bg-blue-50 border-blue-200">
-              <CardContent className="pt-6">
-                <p className="text-sm text-blue-800">
-                  <strong>💡 Time Savings:</strong> Reduces verification from 15 minutes to 30 seconds per student with one-click approval
-                </p>
-              </CardContent>
-            </Card>
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Clock className="h-5 w-5" />
+                      Pending Service Hours Verification
+                    </CardTitle>
+                    <CardDescription>
+                      Review and approve student community service submissions with photo proof
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ServiceHoursContent />
+                  </CardContent>
+                </Card>
+                <Card className="bg-blue-50 border-blue-200">
+                  <CardContent className="pt-6">
+                    <p className="text-sm text-blue-800">
+                      <strong>💡 Time Savings:</strong> Reduces verification from 15 minutes to 30 seconds per student with one-click approval
+                    </p>
+                  </CardContent>
+                </Card>
+              </>
+            )}
           </TabsContent>
 
           {featureFlags.curriculum && (
