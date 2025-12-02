@@ -1,6 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import { canAccessSchoolsDashboard } from "@/lib/roleUtils";
 import { featureFlags } from "@shared/featureFlags";
+import { useSchoolLevel } from "@/hooks/useSchoolLevel";
 
 interface LeftSidebarProps {
   activeTab: string;
@@ -9,6 +10,8 @@ interface LeftSidebarProps {
 
 export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
   const { user } = useAuth();
+  const { schoolLevel } = useSchoolLevel();
+  const isMiddleSchool = schoolLevel === 'middle_school';
   
   const baseTabs = [
     { id: 'feed', label: 'Feed', icon: '🏠' },
@@ -18,7 +21,7 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
     { id: 'mentor-dashboard', label: 'Mentor', icon: '🌟' },
     { id: 'student-dashboard', label: 'Dashboard', icon: '👨‍🎓' },
     { id: 'summer', label: 'Summer', icon: '🏖️' },
-    { id: 'community-service', label: 'Service', icon: '🏥' },
+    { id: 'community-service', label: isMiddleSchool ? 'Kindness' : 'Service', icon: isMiddleSchool ? '💝' : '🏥' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
   ];
@@ -36,7 +39,7 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
   const allTeacherTabs = [
     { id: 'feed', label: 'Feed', icon: '🏠' },
     { id: 'teacher-dashboard', label: 'Dashboard', icon: '👩‍🏫' },
-    { id: 'community-service', label: 'Service', icon: '🏥' },
+    { id: 'community-service', label: isMiddleSchool ? 'Activities' : 'Service', icon: isMiddleSchool ? '💝' : '🏥' },
     { id: 'reports', label: 'Reports', icon: '📊' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
@@ -52,7 +55,7 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
   const allParentTabs = [
     { id: 'parent-dashboard', label: 'Parent', icon: '👨‍👩‍👧‍👦' },
     { id: 'family-dashboard', label: 'Family', icon: '🎯' },
-    { id: 'community-service', label: 'Service', icon: '🏥' },
+    { id: 'community-service', label: isMiddleSchool ? 'Kindness' : 'Service', icon: isMiddleSchool ? '💝' : '🏥' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
   ];

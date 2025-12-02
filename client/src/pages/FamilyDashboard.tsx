@@ -26,6 +26,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useLocation } from 'wouter';
 import { RoleSwitcherDemo } from '@/components/RoleSwicherDemo';
 import { BackButton } from '@/components/BackButton';
+import { useSchoolLevel } from '@/hooks/useSchoolLevel';
 
 interface FamilyChallenge {
   id: string;
@@ -96,7 +97,10 @@ export default function FamilyDashboard({
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [, setLocation] = useLocation();
-  const [selectedAgeGroup, setSelectedAgeGroup] = useState<'9-12'>('9-12');
+  const { schoolLevel } = useSchoolLevel();
+  const isMiddleSchool = schoolLevel === 'middle_school';
+  const selectedAgeGroup = isMiddleSchool ? 'middle_school' : 'high_school';
+  const gradeLabel = isMiddleSchool ? '6-8' : '9-12';
   const [selectedChallenge, setSelectedChallenge] = useState<FamilyChallenge | null>(null);
   const [selectedFundraiser, setSelectedFundraiser] = useState<SchoolFundraiser | null>(null);
   const [donationAmount, setDonationAmount] = useState<string>('25');
@@ -285,11 +289,13 @@ export default function FamilyDashboard({
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="text-2xl font-bold mb-2">
-                    Week {(currentWeek as any).week}: {
-                      typeof (currentWeek as any).theme === 'object' && (currentWeek as any).theme?.theme
-                        ? `${String((currentWeek as any).theme.emoji || '🌟')} ${String((currentWeek as any).theme.theme)}`
-                        : String((currentWeek as any).theme || 'Kindness Week')
-                    }
+                    Week {(currentWeek as unknown as { week: number }).week}: {(() => {
+                      const weekData = currentWeek as unknown as { theme: { emoji?: string; theme?: string } | string };
+                      if (typeof weekData.theme === 'object' && weekData.theme?.theme) {
+                        return `${weekData.theme.emoji || '🌟'} ${weekData.theme.theme}`;
+                      }
+                      return typeof weekData.theme === 'string' ? weekData.theme : 'Kindness Week';
+                    })()}
                   </h2>
                   <p className="text-blue-100">This week's family kindness theme</p>
                 </div>
@@ -318,7 +324,7 @@ export default function FamilyDashboard({
                 data-testid="button-age-family"
               >
                 <Users className="h-4 h-4" />
-                All Ages (Grades 9-12 & Families)
+                All Ages (Grades {gradeLabel} & Families)
               </Button>
             </div>
           </CardContent>

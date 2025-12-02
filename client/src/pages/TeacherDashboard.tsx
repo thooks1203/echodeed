@@ -399,109 +399,63 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
         </header>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className={`grid w-full ${featureFlags.curriculum ? 'grid-cols-11' : 'grid-cols-8'} mb-6 bg-transparent p-1 h-auto gap-1 sm:gap-2 overflow-x-auto`}>
+          {/* Simplified tab layout - flex wrap with proper spacing */}
+          <TabsList className="flex flex-wrap gap-2 mb-6 bg-transparent p-1 h-auto justify-center">
             <TabsTrigger 
               value="feed" 
               data-testid="tab-feed"
-              className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
+              className="bg-gradient-to-r from-blue-500 to-cyan-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 px-3 font-semibold transition-all duration-200 flex items-center gap-1 text-xs sm:text-sm rounded-lg"
             >
-              <MessageCircle className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Kindness Feed</span>
-              <span className="sm:hidden">Feed</span>
+              <MessageCircle className="h-4 w-4" />
+              Feed
             </TabsTrigger>
             <TabsTrigger 
               value="service-hours" 
               data-testid="tab-service-hours"
-              className="bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
+              className="bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 px-3 font-semibold transition-all duration-200 flex items-center gap-1 text-xs sm:text-sm rounded-lg"
             >
-              <Clock className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">{schoolLevel === 'middle_school' ? 'Activities' : 'Service Hours'}</span>
-              <span className="sm:hidden">{schoolLevel === 'middle_school' ? 'Acts' : 'Hours'}</span>
+              <Clock className="h-4 w-4" />
+              {schoolLevel === 'middle_school' ? 'Activities' : 'Hours'}
             </TabsTrigger>
-            {featureFlags.curriculum && (
-              <>
-                <TabsTrigger 
-                  value="lessons" 
-                  data-testid="tab-lessons"
-                  className="bg-gradient-to-r from-purple-500 to-pink-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
-                >
-                  <BookOpen className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Lesson Library</span>
-                  <span className="sm:hidden">Lessons</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="progress" 
-                  data-testid="tab-progress"
-                  className="bg-gradient-to-r from-orange-500 to-red-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
-                >
-                  <Target className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">My Progress</span>
-                  <span className="sm:hidden">Progress</span>
-                </TabsTrigger>
-                <TabsTrigger 
-                  value="resources" 
-                  data-testid="tab-resources"
-                  className="bg-gradient-to-r from-yellow-500 to-orange-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
-                >
-                  <Star className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="hidden sm:inline">Resources</span>
-                  <span className="sm:hidden">Files</span>
-                </TabsTrigger>
-              </>
-            )}
             <TabsTrigger 
               value="moderation" 
               data-testid="tab-moderation"
-              className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
+              className="bg-gradient-to-r from-indigo-500 to-purple-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 px-3 font-semibold transition-all duration-200 flex items-center gap-1 text-xs sm:text-sm rounded-lg"
             >
-              <Shield className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Review Queue</span>
-              <span className="sm:hidden">Queue</span>
+              <Shield className="h-4 w-4" />
+              Review
             </TabsTrigger>
             <TabsTrigger 
               value="reports" 
               data-testid="tab-reports"
-              className="bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
+              className="bg-gradient-to-r from-teal-500 to-cyan-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 px-3 font-semibold transition-all duration-200 flex items-center gap-1 text-xs sm:text-sm rounded-lg"
             >
-              <Users className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Reports</span>
-              <span className="sm:hidden">Data</span>
+              <Users className="h-4 w-4" />
+              Reports
             </TabsTrigger>
             <TabsTrigger 
               value="rewards" 
               data-testid="tab-rewards"
-              className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
+              className="bg-gradient-to-r from-amber-500 to-yellow-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 px-3 font-semibold transition-all duration-200 flex items-center gap-1 text-xs sm:text-sm rounded-lg"
             >
-              <Award className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Teacher Rewards</span>
-              <span className="sm:hidden">Rewards</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="admin-rewards" 
-              data-testid="tab-admin-rewards"
-              className="bg-gradient-to-r from-purple-500 to-indigo-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
-            >
-              <Gift className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Admin Rewards</span>
-              <span className="sm:hidden">Admin</span>
+              <Award className="h-4 w-4" />
+              Rewards
             </TabsTrigger>
             <TabsTrigger 
               value="character-excellence" 
               data-testid="tab-character-excellence"
-              className="bg-gradient-to-r from-rose-500 to-red-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
+              className="bg-gradient-to-r from-rose-500 to-red-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 px-3 font-semibold transition-all duration-200 flex items-center gap-1 text-xs sm:text-sm rounded-lg"
             >
-              <Sparkles className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Character Excellence</span>
-              <span className="sm:hidden">Excel</span>
+              <Sparkles className="h-4 w-4" />
+              Excellence
             </TabsTrigger>
             <TabsTrigger 
               value="leaderboard" 
               data-testid="tab-leaderboard"
-              className="bg-gradient-to-r from-fuchsia-500 to-pink-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 sm:py-3 font-semibold transition-all duration-200 flex items-center justify-center gap-1 px-1 sm:px-3 text-[10px] sm:text-sm whitespace-nowrap"
+              className="bg-gradient-to-r from-fuchsia-500 to-pink-500 text-white shadow-lg hover:shadow-xl data-[state=active]:shadow-2xl data-[state=active]:scale-105 py-2 px-3 font-semibold transition-all duration-200 flex items-center gap-1 text-xs sm:text-sm rounded-lg"
             >
-              <BarChart3 className="h-3 w-3 sm:h-4 sm:w-4" />
-              <span className="hidden sm:inline">Leaderboard</span>
-              <span className="sm:hidden">Top 5</span>
+              <BarChart3 className="h-4 w-4" />
+              Top 5
             </TabsTrigger>
           </TabsList>
 
