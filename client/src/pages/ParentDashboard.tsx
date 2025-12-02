@@ -1899,7 +1899,7 @@ export default function ParentDashboard() {
                         <li>Kindness posts never show student names or identifiable information</li>
                         <li>Only parents and teachers can see which specific child posted what</li>
                         <li>Other students only see anonymous posts in the community feed</li>
-                        <li>FERPA compliant - no personal data shared without consent</li>
+                        <li>{isMiddleSchool ? 'COPPA compliant - extra privacy protections for children under 13' : 'FERPA compliant - no personal data shared without consent'}</li>
                       </ul>
                       <p className="mt-2 text-gray-700 dark:text-gray-300">
                         You can view YOUR children's posts in the "Activity" tab, but they remain anonymous to other families.
@@ -1934,16 +1934,24 @@ export default function ParentDashboard() {
                     <AccordionTrigger>What rewards can my children redeem?</AccordionTrigger>
                     <AccordionContent>
                       <p className="text-gray-700 dark:text-gray-300 mb-2">
-                        <strong>20+ local Greensboro partners offer rewards:</strong>
+                        <strong>20+ local {isMiddleSchool ? 'Burlington/Gibsonville area' : 'Greensboro'} partners offer rewards:</strong>
                       </p>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3">
                         <div className="bg-orange-50 dark:bg-orange-900/20 p-3 rounded-lg">
                           <p className="font-semibold text-orange-900 dark:text-orange-100">🍔 Food & Treats</p>
-                          <p className="text-sm text-orange-700 dark:text-orange-300">Cook Out, Chick-fil-A, Dave's Hot Chicken, Dames Chicken & Waffles, Yum Yum Ice Cream</p>
+                          <p className="text-sm text-orange-700 dark:text-orange-300">
+                            {isMiddleSchool 
+                              ? 'Biscuitville, Bojangles, Zaxby\'s, Chick-fil-A, Cook Out'
+                              : 'Cook Out, Chick-fil-A, Dave\'s Hot Chicken, Dames Chicken & Waffles, Yum Yum Ice Cream'}
+                          </p>
                         </div>
                         <div className="bg-purple-50 dark:bg-purple-900/20 p-3 rounded-lg">
                           <p className="font-semibold text-purple-900 dark:text-purple-100">🎮 Entertainment</p>
-                          <p className="text-sm text-purple-700 dark:text-purple-300">Boxcar Bar + Arcade, Red Cinemas, Triad Lanes, Urban Air Trampoline Park</p>
+                          <p className="text-sm text-purple-700 dark:text-purple-300">
+                            {isMiddleSchool 
+                              ? 'Fun360 Trampoline Park, Movies 278, Triad Lanes, Urban Air'
+                              : 'Boxcar Bar + Arcade, Red Cinemas, Triad Lanes, Urban Air Trampoline Park'}
+                          </p>
                         </div>
                         <div className="bg-blue-50 dark:bg-blue-900/20 p-3 rounded-lg">
                           <p className="font-semibold text-blue-900 dark:text-blue-100">🎓 Education</p>
@@ -1951,7 +1959,11 @@ export default function ParentDashboard() {
                         </div>
                         <div className="bg-green-50 dark:bg-green-900/20 p-3 rounded-lg">
                           <p className="font-semibold text-green-900 dark:text-green-100">🏃 Activities</p>
-                          <p className="text-sm text-green-700 dark:text-green-300">Greensboro Science Center, YMCA, Greensboro Grasshoppers games</p>
+                          <p className="text-sm text-green-700 dark:text-green-300">
+                            {isMiddleSchool 
+                              ? 'Burlington Sock Puppets, Greensboro Science Center, YMCA'
+                              : 'Greensboro Science Center, YMCA, Greensboro Grasshoppers games'}
+                          </p>
                         </div>
                       </div>
                     </AccordionContent>
@@ -1985,7 +1997,7 @@ export default function ParentDashboard() {
                         <li>Look for the student selector cards above the main tabs</li>
                         <li>Click on any child's card to view their individual stats</li>
                         <li>Click "Family Overview" to see combined family totals</li>
-                        <li>All tabs (Activity, Service, Rewards) filter based on your selection</li>
+                        <li>All tabs ({isMiddleSchool ? 'Activity, Rewards' : 'Activity, Service, Rewards'}) filter based on your selection</li>
                       </ol>
                       <p className="mt-2 text-gray-700 dark:text-gray-300">
                         Each child's data stays separate but contributes to your family ranking!

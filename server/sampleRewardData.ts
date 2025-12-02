@@ -95,6 +95,45 @@ export async function initializeSampleRewardData() {
         location: 'Burlington Rd, Whitsett'
       },
       {
+        partnerName: 'Biscuitville Burlington Rd',
+        partnerLogo: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.biscuitville.com',
+        description: 'Fresh-baked biscuits & Southern breakfast on Burlington Rd - made fresh every 15 minutes!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 150, // 150 $ECHO = breakfast combo
+        maxRedemptionAmount: 600, // 600 $ECHO = group breakfast
+        contactEmail: 'burlingtonrd@biscuitville.com',
+        location: 'Burlington Rd, Gibsonville'
+      },
+      {
+        partnerName: 'Bojangles Burlington Rd',
+        partnerLogo: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.bojangles.com',
+        description: 'Famous Cajun chicken & Bo-Berry biscuits on Burlington Rd - Southern comfort food!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 150, // 150 $ECHO = combo meal
+        maxRedemptionAmount: 600, // 600 $ECHO = family meal
+        contactEmail: 'gibsonville@bojangles.com',
+        location: 'Burlington Rd, Gibsonville'
+      },
+      {
+        partnerName: 'Zaxby\'s Burlington Rd',
+        partnerLogo: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.zaxbys.com',
+        description: 'Chicken fingers, wings & Zalads on Burlington Rd - student favorite!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 175, // 175 $ECHO = meal combo
+        maxRedemptionAmount: 700, // 700 $ECHO = group meal
+        contactEmail: 'gibsonville@zaxbys.com',
+        location: 'Burlington Rd, Gibsonville'
+      },
+      {
         partnerName: 'Greensboro Science Center',
         partnerLogo: 'https://images.unsplash.com/photo-1503454537195-1dcabb73ffb9?w=400',
         partnerType: 'educational',
