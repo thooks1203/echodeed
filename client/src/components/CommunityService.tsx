@@ -38,7 +38,7 @@ function MiddleSchoolKindnessExplorer({ onBack }: { onBack?: () => void }) {
       title: '🦸 Helper Hero',
       description: 'Help someone in your school or neighborhood today!',
       examples: ['Help a classmate with homework', 'Hold the door for someone', 'Help clean up after lunch'],
-      stars: 10,
+      tokens: 10,
       color: 'from-blue-400 to-cyan-400',
       icon: '💪'
     },
@@ -47,7 +47,7 @@ function MiddleSchoolKindnessExplorer({ onBack }: { onBack?: () => void }) {
       title: '🌱 Eco Warrior',
       description: 'Do something good for the planet!',
       examples: ['Pick up litter at recess', 'Start a recycling habit', 'Plant something'],
-      stars: 15,
+      tokens: 15,
       color: 'from-green-400 to-emerald-400',
       icon: '🌍'
     },
@@ -56,7 +56,7 @@ function MiddleSchoolKindnessExplorer({ onBack }: { onBack?: () => void }) {
       title: '🤝 Friendship Builder',
       description: 'Make someone feel included and valued!',
       examples: ['Invite someone new to sit with you', 'Write a thank-you note', 'Give a genuine compliment'],
-      stars: 10,
+      tokens: 10,
       color: 'from-pink-400 to-rose-400',
       icon: '💝'
     },
@@ -65,7 +65,7 @@ function MiddleSchoolKindnessExplorer({ onBack }: { onBack?: () => void }) {
       title: '🏆 Community Champion',
       description: 'Help make your community better!',
       examples: ['Volunteer with family', 'Donate toys or books', 'Visit someone who needs company'],
-      stars: 25,
+      tokens: 25,
       color: 'from-purple-400 to-violet-400',
       icon: '🌟'
     },
@@ -74,7 +74,7 @@ function MiddleSchoolKindnessExplorer({ onBack }: { onBack?: () => void }) {
       title: '🎨 Creative Kindness',
       description: 'Use your talents to spread joy!',
       examples: ['Make cards for seniors', 'Perform for family', 'Create artwork to donate'],
-      stars: 20,
+      tokens: 20,
       color: 'from-orange-400 to-amber-400',
       icon: '✨'
     },
@@ -83,7 +83,7 @@ function MiddleSchoolKindnessExplorer({ onBack }: { onBack?: () => void }) {
       title: '🐾 Animal Friend',
       description: 'Show kindness to our furry friends!',
       examples: ['Help at an animal shelter', 'Make bird feeders', 'Care for a pet'],
-      stars: 15,
+      tokens: 15,
       color: 'from-teal-400 to-cyan-400',
       icon: '🐕'
     }
@@ -96,7 +96,7 @@ function MiddleSchoolKindnessExplorer({ onBack }: { onBack?: () => void }) {
     { id: 'helper-10', name: 'Super Helper', description: 'Help 10 people', icon: '🦸', earned: false },
     { id: 'eco-5', name: 'Planet Protector', description: 'Complete 5 eco quests', icon: '🌍', earned: false },
     { id: 'friend-maker', name: 'Friend Maker', description: 'Include 5 new people', icon: '👋', earned: true },
-    { id: 'kindness-100', name: 'Kindness Legend', description: 'Earn 100 kindness stars', icon: '👑', earned: false }
+    { id: 'kindness-100', name: 'Kindness Legend', description: 'Earn 100 Echo Tokens', icon: '👑', earned: false }
   ];
 
   return (
@@ -138,9 +138,9 @@ function MiddleSchoolKindnessExplorer({ onBack }: { onBack?: () => void }) {
           </div>
           <div className="grid grid-cols-3 gap-4 mt-4">
             <div className="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
-              <div className="text-3xl mb-1">⭐</div>
+              <div className="text-3xl mb-1">💎</div>
               <div className="text-2xl font-bold">47</div>
-              <div className="text-xs opacity-90">Kindness Stars</div>
+              <div className="text-xs opacity-90">Echo Tokens</div>
             </div>
             <div className="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
               <div className="text-3xl mb-1">🎯</div>
@@ -169,7 +169,7 @@ function MiddleSchoolKindnessExplorer({ onBack }: { onBack?: () => void }) {
             <strong>Operation Smile:</strong> Give 3 genuine compliments to classmates, teachers, or family members today!
           </p>
           <div className="flex items-center justify-between">
-            <Badge className="bg-yellow-400 text-yellow-900">+15 Bonus Stars!</Badge>
+            <Badge className="bg-yellow-400 text-yellow-900">+15 Echo Tokens!</Badge>
             <Button 
               size="sm" 
               className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600"
@@ -212,8 +212,8 @@ function MiddleSchoolKindnessExplorer({ onBack }: { onBack?: () => void }) {
                   ))}
                 </div>
                 <div className="flex items-center justify-between">
-                  <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
-                    <Star className="h-3 w-3 mr-1" /> {quest.stars} stars
+                  <Badge variant="secondary" className="bg-cyan-100 text-cyan-800">
+                    💎 {quest.tokens} tokens
                   </Badge>
                   <Button 
                     size="sm" 

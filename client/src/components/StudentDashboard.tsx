@@ -514,7 +514,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           {isMiddleSchool ? '✨' : '🌟'}
         </div>
         <h3 style={{ fontSize: '20px', fontWeight: '600', margin: 0, marginBottom: '8px' }}>
-          {stats.totalKindnessPoints} {isMiddleSchool ? 'Kindness Stars' : 'Kindness Points'}
+          {stats.totalKindnessPoints} {isMiddleSchool ? 'Echo Tokens' : 'Echo Tokens'}
         </h3>
         <p style={{ fontSize: '14px', opacity: 0.9, margin: 0 }}>
           {isMiddleSchool 
@@ -609,10 +609,10 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
                 {stats.totalKindnessPoints >= 1000 
                   ? "Max level reached! You're amazing!"
                   : stats.totalKindnessPoints >= 500 
-                    ? `${1000 - stats.totalKindnessPoints} stars until butterfly transformation!`
+                    ? `${1000 - stats.totalKindnessPoints} tokens until butterfly transformation!`
                     : stats.totalKindnessPoints >= 200 
-                      ? `${500 - stats.totalKindnessPoints} stars until hatching!`
-                      : `${200 - stats.totalKindnessPoints} stars until your egg appears!`
+                      ? `${500 - stats.totalKindnessPoints} tokens until hatching!`
+                      : `${200 - stats.totalKindnessPoints} tokens until your egg appears!`
                 }
               </p>
             </div>
@@ -731,7 +731,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
             </div>
             <div style={{ fontSize: '13px', opacity: 0.9 }}>
               {isMiddleSchool 
-                ? 'Earn stars by helping others!'
+                ? 'Earn tokens by helping others!'
                 : 'Track your community service activities'
               }
             </div>
