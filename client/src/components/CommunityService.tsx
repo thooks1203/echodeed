@@ -399,25 +399,9 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
   // Use authenticated user ID
   const userId = user?.id;
   
-  // Don't render if no user is authenticated
-  if (!user || !userId) {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 p-4">
-        <Card className="max-w-md mx-auto mt-20">
-          <CardContent className="p-8 text-center">
-            <p className="text-lg text-gray-600 dark:text-gray-300">Please log in to access community service features.</p>
-          </CardContent>
-        </Card>
-      </div>
-    );
-  }
+  // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS (React Rules of Hooks)
   
-  // MIDDLE SCHOOL: Show fun Kindness Explorer instead of formal Service Hours
-  if (isMiddleSchool) {
-    return <MiddleSchoolKindnessExplorer onBack={onBack} />;
-  }
-
-  // Form setup
+  // Form setup - always initialize
   const form = useForm<ServiceLogForm>({
     resolver: zodResolver(serviceLogSchema),
     defaultValues: {
@@ -436,13 +420,14 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
     }
   });
 
-  // Get student's service summary
+  // Get student's service summary - only fetch if we have a userId (HS experience)
   const { data: summary, isLoading: summaryLoading } = useQuery<ServiceSummary>({
     queryKey: ['/api/community-service/summary', userId],
     queryFn: async () => {
       const response = await apiRequest('GET', `/api/community-service/summary/${userId}`);
       return response.json();
-    }
+    },
+    enabled: !!userId && !isMiddleSchool
   });
 
   // Get student's service log history
@@ -451,7 +436,8 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
     queryFn: async () => {
       const response = await apiRequest('GET', `/api/community-service/logs/${userId}`);
       return response.json();
-    }
+    },
+    enabled: !!userId && !isMiddleSchool
   });
 
   // Get reflection skills and traits for tagging
@@ -461,13 +447,15 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
   }>({
     queryKey: ['/api/reflection/skills-and-traits'],
     queryFn: async () => {
-      return await apiRequest('GET', '/api/reflection/skills-and-traits');
+      const response = await apiRequest('GET', '/api/reflection/skills-and-traits');
+      return response.json();
     },
     retry: 2,
-    staleTime: 1000 * 60 * 5
+    staleTime: 1000 * 60 * 5,
+    enabled: !!userId && !isMiddleSchool
   });
 
-  // Submit service hours mutation
+  // Submit service hours mutation - must be called before conditional returns
   const submitServiceMutation = useMutation({
     mutationFn: async (data: ServiceLogForm) => {
       return await apiRequest('POST', '/api/community-service/log', {
@@ -518,6 +506,26 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
   const onSubmit = (data: ServiceLogForm) => {
     submitServiceMutation.mutate(data);
   };
+  
+  // NOW we can do conditional returns after all hooks are called
+  
+  // Don't render if no user is authenticated
+  if (!user || !userId) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50 dark:from-green-900/20 dark:to-blue-900/20 p-4">
+        <Card className="max-w-md mx-auto mt-20">
+          <CardContent className="p-8 text-center">
+            <p className="text-lg text-gray-600 dark:text-gray-300">Please log in to access community service features.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+  
+  // MIDDLE SCHOOL: Show fun Kindness Explorer instead of formal Service Hours
+  if (isMiddleSchool) {
+    return <MiddleSchoolKindnessExplorer onBack={onBack} />;
+  }
 
   // Service categories
   const categories = [
