@@ -524,39 +524,35 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         </p>
       </div>
 
-      {/* MS ONLY: Kindness Companion - A magical garden that grows with kindness */}
+      {/* MS ONLY: Kindness Companion - A magical plant that grows with kindness */}
       {isMiddleSchool && (() => {
         // Track companion progress separately - starts fresh for new students
         // Demo mode: Show seed stage (75 tokens) to demonstrate the growth journey
-        const companionTokens = 75; // Starting journey - students grow their garden from here!
+        const companionTokens = 75; // Starting journey - students grow their plant from here!
         
-        // Evolution stages - A NATURAL plant lifecycle that attracts a butterfly:
-        // 🌱 Seed (0-199) → 🌿 Sprout (200-499) → 🌸 Flower (500-999) → 🦋 Butterfly Garden (1000+)
+        // Evolution stages - A simple 3-stage plant lifecycle:
+        // 🌱 Seed (0-199) → 🌿 Sprout (200-499) → 🌸 Flower (500+)
         const getCompanionEmoji = () => {
-          if (companionTokens >= 1000) return '🦋';
           if (companionTokens >= 500) return '🌸';
           if (companionTokens >= 200) return '🌿';
           return '🌱';
         };
         
         const getCompanionMessage = () => {
-          if (companionTokens >= 1000) return "Your garden is blooming and butterflies have arrived! 🎉";
-          if (companionTokens >= 500) return "Beautiful flowers are blooming! Keep being kind!";
+          if (companionTokens >= 500) return "Your flower is in full bloom! You're a Kindness Champion! 🎉";
           if (companionTokens >= 200) return "Your sprout is growing strong! Water it with kindness!";
-          return "Meet Sparkle! Complete kindness quests to help your garden grow!";
+          return "Meet Sparkle! Complete kindness quests to help your plant grow!";
         };
         
         const getProgressPercent = () => {
-          if (companionTokens >= 1000) return 100;
-          if (companionTokens >= 500) return ((companionTokens - 500) / 500) * 100;
+          if (companionTokens >= 500) return 100;
           if (companionTokens >= 200) return ((companionTokens - 200) / 300) * 100;
           return (companionTokens / 200) * 100;
         };
         
         const getNextMilestone = () => {
-          if (companionTokens >= 1000) return "Butterfly garden complete! You're amazing!";
-          if (companionTokens >= 500) return `${1000 - companionTokens} tokens until butterflies arrive!`;
-          if (companionTokens >= 200) return `${500 - companionTokens} tokens until flowers bloom!`;
+          if (companionTokens >= 500) return "Your garden is complete! You're amazing!";
+          if (companionTokens >= 200) return `${500 - companionTokens} tokens until your flower blooms!`;
           return `${200 - companionTokens} tokens until your seed sprouts!`;
         };
         
@@ -601,7 +597,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
                 margin: 0,
                 lineHeight: '1.5'
               }}>
-                🌟 <strong>What's a Kindness Companion?</strong> Sparkle is your magical garden that grows as you do kind things! Complete quests to grow it from a tiny seed → green sprout → beautiful flower → butterfly garden!
+                🌟 <strong>What's a Kindness Companion?</strong> Sparkle is your magical plant that grows as you do kind things! Complete quests to grow it from a tiny seed → green sprout → beautiful flower!
               </p>
             </div>
             
@@ -650,7 +646,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
               </div>
             </div>
             
-            {/* Evolution journey preview */}
+            {/* Evolution journey preview - Simple 3 stages */}
             <div style={{
               display: 'flex',
               justifyContent: 'space-around',
@@ -660,24 +656,19 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
               borderRadius: '12px'
             }}>
               <div style={{ textAlign: 'center', opacity: companionTokens >= 0 ? 1 : 0.4 }}>
-                <div style={{ fontSize: '24px' }}>🌱</div>
-                <div style={{ fontSize: '10px', color: 'white', opacity: 0.8 }}>Seed</div>
-                <div style={{ fontSize: '9px', color: '#FDE68A' }}>0</div>
+                <div style={{ fontSize: '28px' }}>🌱</div>
+                <div style={{ fontSize: '11px', color: 'white', opacity: 0.9 }}>Seed</div>
+                <div style={{ fontSize: '10px', color: '#FDE68A' }}>0</div>
               </div>
               <div style={{ textAlign: 'center', opacity: companionTokens >= 200 ? 1 : 0.4 }}>
-                <div style={{ fontSize: '24px' }}>🌿</div>
-                <div style={{ fontSize: '10px', color: 'white', opacity: 0.8 }}>Sprout</div>
-                <div style={{ fontSize: '9px', color: '#FDE68A' }}>200</div>
+                <div style={{ fontSize: '28px' }}>🌿</div>
+                <div style={{ fontSize: '11px', color: 'white', opacity: 0.9 }}>Sprout</div>
+                <div style={{ fontSize: '10px', color: '#FDE68A' }}>200</div>
               </div>
               <div style={{ textAlign: 'center', opacity: companionTokens >= 500 ? 1 : 0.4 }}>
-                <div style={{ fontSize: '24px' }}>🌸</div>
-                <div style={{ fontSize: '10px', color: 'white', opacity: 0.8 }}>Flower</div>
-                <div style={{ fontSize: '9px', color: '#FDE68A' }}>500</div>
-              </div>
-              <div style={{ textAlign: 'center', opacity: companionTokens >= 1000 ? 1 : 0.4 }}>
-                <div style={{ fontSize: '24px' }}>🦋</div>
-                <div style={{ fontSize: '10px', color: 'white', opacity: 0.8 }}>Butterfly</div>
-                <div style={{ fontSize: '9px', color: '#FDE68A' }}>1000</div>
+                <div style={{ fontSize: '28px' }}>🌸</div>
+                <div style={{ fontSize: '11px', color: 'white', opacity: 0.9 }}>Flower</div>
+                <div style={{ fontSize: '10px', color: '#FDE68A' }}>500</div>
               </div>
             </div>
           </div>
