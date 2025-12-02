@@ -461,7 +461,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
       return await apiRequest('POST', '/api/community-service/log', {
         ...data,
         userId,
-        schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Dudley High School
+        schoolId: user?.schoolId || 'bc016cad-fa89-44fb-aab0-76f82c574f78', // Use user's school, fallback to Eastern Guilford HS
         serviceDate: new Date(data.serviceDate)
       });
     },
@@ -487,11 +487,11 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
       setSelectedSkillIds([]);
       setSelectedTraitIds([]);
       // Invalidate community service queries
-      queryClient.invalidateQueries({ queryKey: ['/api/community-service/summary'] });
-      queryClient.invalidateQueries({ queryKey: ['/api/community-service/logs'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/community-service/summary', userId] });
+      queryClient.invalidateQueries({ queryKey: ['/api/community-service/logs', userId] });
       // Invalidate token balance and rewards data
-      queryClient.invalidateQueries({ queryKey: ['/api', 'tokens'] });
-      queryClient.invalidateQueries({ queryKey: ['/api', 'rewards'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/tokens'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/rewards/offers/all/all'] });
       setActiveTab('history');
     },
     onError: (error: any) => {
