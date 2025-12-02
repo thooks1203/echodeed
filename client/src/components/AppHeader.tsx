@@ -167,14 +167,6 @@ export function AppHeader({ counter, isPulse, onBack, showBackButton, tokens }: 
               <span className="inline-block animate-bounce delay-150">🌈</span>
             </div>
             
-            {/* Progress bar showing growth */}
-            <div className="mt-3 bg-white/20 rounded-full h-2 overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-yellow-300 to-pink-300 rounded-full animate-pulse"
-                style={{ width: '78%' }}
-              ></div>
-            </div>
-            <p className="text-white/70 text-sm mt-2">🎯 On track to reach 300,000!</p>
           </div>
         </div>
         
