@@ -1,5 +1,5 @@
 import { db } from "../db";
-import { corporateAccounts } from "@shared/schema";
+import { schools, users } from "@shared/schema";
 import { eq } from "drizzle-orm";
 import { getSchoolLevelConfig, type SchoolLevel, type SchoolLevelConfig } from "@shared/config/schoolLevels";
 
@@ -11,9 +11,9 @@ export class SchoolConfigService {
   async getSchoolConfig(schoolId: string): Promise<SchoolLevelConfig> {
     try {
       const school = await db
-        .select({ schoolLevel: corporateAccounts.schoolLevel })
-        .from(corporateAccounts)
-        .where(eq(corporateAccounts.id, schoolId))
+        .select({ schoolLevel: schools.schoolLevel })
+        .from(schools)
+        .where(eq(schools.id, schoolId))
         .limit(1);
       
       if (!school.length) {
@@ -36,9 +36,9 @@ export class SchoolConfigService {
   async getSchoolLevel(schoolId: string): Promise<SchoolLevel> {
     try {
       const school = await db
-        .select({ schoolLevel: corporateAccounts.schoolLevel })
-        .from(corporateAccounts)
-        .where(eq(corporateAccounts.id, schoolId))
+        .select({ schoolLevel: schools.schoolLevel })
+        .from(schools)
+        .where(eq(schools.id, schoolId))
         .limit(1);
       
       if (!school.length) {
@@ -57,8 +57,6 @@ export class SchoolConfigService {
    */
   async getSchoolLevelForUser(userId: string): Promise<SchoolLevel> {
     try {
-      const { users } = await import("@shared/schema");
-      
       const user = await db
         .select({ schoolId: users.schoolId })
         .from(users)

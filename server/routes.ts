@@ -772,12 +772,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
       
       // Fetch school-level configuration for the user's school
-      const config = await schoolConfigService.getSchoolLevelForUser(userId).then(level => {
-        const { getSchoolLevelConfig } = require('@shared/config/schoolLevels');
-        return getSchoolLevelConfig(level);
-      });
+      const level = await schoolConfigService.getSchoolLevelForUser(userId);
+      const { SCHOOL_LEVEL_CONFIGS } = await import('../shared/config/schoolLevels');
+      const config = SCHOOL_LEVEL_CONFIGS[level] || SCHOOL_LEVEL_CONFIGS['high_school'];
       
-      res.json(config);
+      res.json({ ...config, level });
     } catch (error) {
       console.error("[API] Error fetching school-level config:", error);
       res.status(500).json({ message: "Failed to fetch school-level configuration" });
