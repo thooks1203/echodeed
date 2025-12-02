@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { apiRequest } from '@/lib/queryClient';
@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Gift, Award, Clock, CheckCircle, XCircle, Sparkles } from 'lucide-react';
+import { useSchoolLevel } from '@/hooks/useSchoolLevel';
 
 interface AdminReward {
   id: string;
@@ -50,14 +51,29 @@ export function SchoolRewardsView() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { schoolLevel } = useSchoolLevel();
+  const isMiddleSchool = schoolLevel === 'middle_school';
   const [selectedReward, setSelectedReward] = useState<AdminReward | null>(null);
   const [isRedeemDialogOpen, setIsRedeemDialogOpen] = useState(false);
   const [activeFilter, setActiveFilter] = useState<'available' | 'pending' | 'redeemed'>('available');
 
+  // Helper to get demo headers for API calls
+  const getDemoHeaders = useMemo(() => {
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    const demoRole = localStorage.getItem('echodeed_demo_role');
+    const demoSession = localStorage.getItem('echodeed_session');
+    
+    if (demoRole && demoSession) {
+      headers['x-session-id'] = demoSession;
+      headers['x-demo-role'] = demoRole;
+    }
+    return headers;
+  }, []);
+
   // Fetch student's token balance
   const { data: tokenData } = useQuery<TokenBalance>({
     queryKey: ['/api/tokens'],
-    queryFn: () => fetch('/api/tokens').then(r => r.json())
+    queryFn: () => fetch('/api/tokens', { headers: getDemoHeaders }).then(r => r.json())
   });
 
   const tokenBalance = tokenData?.echoBalance || 0;
@@ -65,16 +81,27 @@ export function SchoolRewardsView() {
   // Fetch available admin rewards for student's school
   const { data: rewards = [], isLoading: isLoadingRewards } = useQuery<AdminReward[]>({
     queryKey: ['/api/admin-rewards'],
-    queryFn: () => fetch('/api/admin-rewards').then(r => r.json())
+    queryFn: async () => {
+      const res = await fetch('/api/admin-rewards', { headers: getDemoHeaders });
+      if (!res.ok) {
+        console.log('Admin rewards fetch error:', res.status);
+        return [];
+      }
+      return res.json();
+    }
   });
 
   // Fetch student's reward applications
   const { data: myRedemptions = [], isLoading: isLoadingRedemptions } = useQuery<RewardRedemption[]>({
     queryKey: ['/api/admin-rewards/my-redemptions'],
-    queryFn: () => fetch('/api/admin-rewards/my-redemptions').then(r => {
-      if (!r.ok) throw new Error('Failed to load applications');
-      return r.json();
-    })
+    queryFn: async () => {
+      const res = await fetch('/api/admin-rewards/my-redemptions', { headers: getDemoHeaders });
+      if (!res.ok) {
+        console.log('My redemptions fetch error:', res.status);
+        return [];
+      }
+      return res.json();
+    }
   });
 
   // Mutation for applying to redeem a reward
@@ -169,13 +196,17 @@ export function SchoolRewardsView() {
 
   return (
     <div style={{ padding: '0', minHeight: '60vh' }}>
-      {/* Token Balance Header - Sticky */}
+      {/* Token Balance Header - Sticky - School level appropriate styling */}
       <div style={{
-        background: 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
+        background: isMiddleSchool 
+          ? 'linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%)'
+          : 'linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)',
         borderRadius: '16px',
         padding: '24px',
         marginBottom: '24px',
-        boxShadow: '0 4px 12px rgba(139, 92, 246, 0.3)',
+        boxShadow: isMiddleSchool
+          ? '0 4px 12px rgba(139, 92, 246, 0.3)'
+          : '0 4px 12px rgba(139, 92, 246, 0.3)',
         textAlign: 'center',
         color: 'white',
         position: 'sticky',
@@ -185,14 +216,17 @@ export function SchoolRewardsView() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px', marginBottom: '8px' }}>
           <Sparkles className="w-6 h-6" />
           <h3 style={{ fontSize: '20px', fontWeight: '700', margin: 0 }}>
-            Your Token Balance
+            {isMiddleSchool ? 'Your Echo Tokens' : 'Your Token Balance'}
           </h3>
         </div>
         <div style={{ fontSize: '36px', fontWeight: '800', marginBottom: '4px' }}>
-          {tokenBalance} Tokens
+          {tokenBalance} {isMiddleSchool ? 'Echo Tokens ✨' : 'Tokens'}
         </div>
         <p style={{ fontSize: '14px', opacity: 0.9, margin: 0 }}>
-          Redeem tokens for exclusive school rewards!
+          {isMiddleSchool 
+            ? 'Trade your tokens for awesome prizes!'
+            : 'Redeem tokens for exclusive school rewards!'
+          }
         </p>
       </div>
 
