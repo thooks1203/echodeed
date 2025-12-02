@@ -5424,6 +5424,87 @@ export class DatabaseStorage implements IStorage {
     }));
   }
 
+  async getMentorTrainingById(trainingId: string): Promise<MentorTraining | undefined> {
+    const [training] = await db
+      .select()
+      .from(mentorTraining)
+      .where(eq(mentorTraining.id, trainingId));
+    return training;
+  }
+
+  async startMentorTraining(userId: string, trainingId: string): Promise<{ success: boolean; alreadyCompleted?: boolean }> {
+    const existingProgress = await db
+      .select()
+      .from(userMentorTraining)
+      .where(and(
+        eq(userMentorTraining.userId, userId),
+        eq(userMentorTraining.trainingId, trainingId)
+      ));
+
+    if (existingProgress.length > 0) {
+      return { success: true, alreadyCompleted: existingProgress[0].completedAt !== null };
+    }
+
+    await db.insert(userMentorTraining).values({
+      userId,
+      trainingId,
+      startedAt: new Date(),
+      progressPercentage: 0,
+    });
+
+    return { success: true, alreadyCompleted: false };
+  }
+
+  async completeMentorTraining(userId: string, trainingId: string): Promise<{ success: boolean; tokensAwarded: number; alreadyCompleted?: boolean }> {
+    const existingProgress = await db
+      .select()
+      .from(userMentorTraining)
+      .where(and(
+        eq(userMentorTraining.userId, userId),
+        eq(userMentorTraining.trainingId, trainingId)
+      ));
+
+    if (existingProgress.length > 0 && existingProgress[0].completedAt !== null) {
+      return { success: false, tokensAwarded: 0, alreadyCompleted: true };
+    }
+
+    const training = await this.getMentorTrainingById(trainingId);
+    if (!training) {
+      return { success: false, tokensAwarded: 0 };
+    }
+
+    const tokenReward = parseInt(training.certificateReward || '0') || 0;
+
+    if (existingProgress.length > 0) {
+      await db
+        .update(userMentorTraining)
+        .set({
+          completedAt: new Date(),
+          progressPercentage: 100,
+          passed: 1,
+        })
+        .where(and(
+          eq(userMentorTraining.userId, userId),
+          eq(userMentorTraining.trainingId, trainingId)
+        ));
+    } else {
+      await db.insert(userMentorTraining).values({
+        userId,
+        trainingId,
+        startedAt: new Date(),
+        completedAt: new Date(),
+        progressPercentage: 100,
+        passed: 1,
+      });
+    }
+
+    if (tokenReward > 0) {
+      await this.updateTokens(userId, tokenReward, 'mentor_training_completion', `Completed training: ${training.title}`);
+    }
+
+    return { success: true, tokensAwarded: tokenReward };
+  }
+
   // Mentor Scenario Operations
   async createMentorScenario(scenario: InsertMentorScenario): Promise<MentorScenario> {
     const [createdScenario] = await db

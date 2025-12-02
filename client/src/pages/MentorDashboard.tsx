@@ -5,6 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Users, 
   Trophy, 
@@ -18,7 +20,12 @@ import {
   MessageCircle,
   CheckCircle,
   Clock,
-  Sparkles
+  Sparkles,
+  ChevronRight,
+  Play,
+  Lightbulb,
+  GraduationCap,
+  X
 } from "lucide-react";
 import { BackButton } from "@/components/BackButton";
 import { useState } from "react";
@@ -78,12 +85,142 @@ type TrainingModule = {
   isRequired: boolean;
   certificateReward: number;
   completed?: boolean;
+  content?: any;
+};
+
+const trainingContent: Record<string, {
+  lessons: { title: string; content: string; activity?: string }[];
+  quiz: { question: string; options: string[]; correct: number }[];
+  reflection: string;
+}> = {
+  'Welcome to Kindness Mentoring': {
+    lessons: [
+      {
+        title: 'What is Kindness Mentoring?',
+        content: 'As a Kindness Mentor, you help younger students discover the joy of spreading kindness. You\'re not just teaching - you\'re inspiring! Your role is to guide, support, and celebrate their kindness journey.',
+        activity: 'Think about a time someone showed you kindness. How did it make you feel?'
+      },
+      {
+        title: 'The Four Pillars of Mentoring',
+        content: '1. GUIDE, don\'t direct - Ask questions that help mentees think for themselves\n2. LISTEN actively - Pay full attention to their ideas and feelings\n3. ENCOURAGE creativity - Support their unique kindness ideas\n4. CELEBRATE progress - Recognize every act of kindness, big or small',
+        activity: 'Practice asking "What do you think would help?" instead of giving direct answers.'
+      },
+      {
+        title: 'Being a Role Model',
+        content: 'Your mentee will look up to you! Show kindness in your own actions, be patient when things don\'t go perfectly, and always speak positively about others.',
+      }
+    ],
+    quiz: [
+      {
+        question: 'What should you do when your mentee has a kindness idea?',
+        options: ['Tell them your better idea', 'Support and encourage their idea', 'Ignore it and move on', 'Say it won\'t work'],
+        correct: 1
+      },
+      {
+        question: 'Which is the BEST way to help a mentee?',
+        options: ['Do everything for them', 'Ask questions that help them think', 'Give them all the answers', 'Tell them what to do'],
+        correct: 1
+      }
+    ],
+    reflection: 'What quality do you think makes the best mentor? How will you use that quality with your mentee?'
+  },
+  'Building Trust and Connection': {
+    lessons: [
+      {
+        title: 'Why Trust Matters',
+        content: 'Trust is the foundation of any great mentoring relationship. When your mentee trusts you, they\'ll feel safe to share ideas, try new things, and even make mistakes.',
+        activity: 'Remember a teacher or coach you really trusted. What did they do to earn that trust?'
+      },
+      {
+        title: 'Building Connection',
+        content: 'Use these trust-building strategies:\n• Use their name frequently - it shows you care\n• Show genuine interest in their world - ask about their hobbies and friends\n• Share appropriate experiences from your own life first\n• Be reliable and consistent - always keep your promises',
+        activity: 'Practice introducing yourself and finding 3 things in common with someone new.'
+      },
+      {
+        title: 'Active Listening Skills',
+        content: 'Active listening means giving your full attention. Put away distractions, make eye contact, nod to show understanding, and ask follow-up questions. Never interrupt!',
+        activity: 'Try the 2-minute challenge: Listen to a friend for 2 minutes without interrupting, then summarize what they said.'
+      },
+      {
+        title: 'When Things Get Hard',
+        content: 'Sometimes mentees feel shy, frustrated, or don\'t want to participate. That\'s okay! Stay patient, offer encouragement, and remember that building trust takes time.',
+      }
+    ],
+    quiz: [
+      {
+        question: 'What helps build trust with your mentee?',
+        options: ['Being unreliable', 'Using their name and showing interest', 'Talking about yourself the whole time', 'Looking at your phone while they talk'],
+        correct: 1
+      },
+      {
+        question: 'What should you do if your mentee is shy?',
+        options: ['Force them to talk', 'Get frustrated', 'Be patient and encouraging', 'Give up on them'],
+        correct: 2
+      }
+    ],
+    reflection: 'Think of a time you felt really listened to. How will you create that feeling for your mentee?'
+  },
+  'Inspiring Kindness Creativity': {
+    lessons: [
+      {
+        title: 'The SPARK Framework',
+        content: 'Use SPARK to help mentees discover their unique kindness style:\n\nS - Strengths: Connect kindness to what they\'re already good at\nP - Problem-solving: Turn their concerns into kindness opportunities\nA - Action-oriented: Move from ideas to reality with small steps\nR - Ripple effect: Help them see the broader impact of their kindness\nK - Keep sustainable: Make kindness a lasting habit, not just one-time',
+        activity: 'Think of your own strengths. How could you use them to spread kindness?'
+      },
+      {
+        title: 'Brainstorming Kindness Ideas',
+        content: 'Great mentors help generate ideas! Try these techniques:\n• "What If" questions - "What if everyone in your class smiled at one new person today?"\n• Building on interests - If they love art, maybe they can make cards for lonely classmates\n• Small + consistent > Big + rare - Daily small kindnesses create bigger impact',
+        activity: 'Generate 5 kindness ideas that a 4th grader could do in just 5 minutes.'
+      },
+      {
+        title: 'Overcoming Obstacles',
+        content: 'What happens when kindness gets rejected? Help your mentee understand that:\n• Not everyone will respond positively, and that\'s okay\n• The VALUE is in the intention and effort, not just the outcome\n• Every "no" brings them closer to a meaningful "yes"\n• Rejection is part of being brave enough to try',
+        activity: 'Role-play: How would you respond if your mentee\'s kindness was ignored?'
+      },
+      {
+        title: 'Celebrating Kindness Wins',
+        content: 'Recognition fuels motivation! Celebrate every win:\n• High-fives and genuine praise\n• Share their success stories (with permission)\n• Help them see the impact they\'ve made\n• Encourage them to celebrate others too',
+      },
+      {
+        title: 'Creating Kindness Ripples',
+        content: 'One act of kindness creates ripples that spread far beyond what we can see. Help your mentee understand that their small actions can inspire others, change someone\'s day, or even start a kindness chain!',
+        activity: 'Can you think of a time when one person\'s kindness inspired you to be kind to someone else?'
+      }
+    ],
+    quiz: [
+      {
+        question: 'What does the "S" in SPARK stand for?',
+        options: ['Sharing', 'Strengths', 'Smiling', 'Speaking'],
+        correct: 1
+      },
+      {
+        question: 'If your mentee\'s kindness gets rejected, what should you do?',
+        options: ['Tell them to stop being kind', 'Help them understand the value was in trying', 'Ignore the situation', 'Be angry at the person who rejected them'],
+        correct: 1
+      },
+      {
+        question: 'What creates more impact over time?',
+        options: ['One big random act of kindness', 'Many small consistent acts of kindness', 'Only being kind on holidays', 'Kindness only when others are watching'],
+        correct: 1
+      }
+    ],
+    reflection: 'What unique kindness "superpower" do you have? How will you help your mentee discover theirs?'
+  }
 };
 
 export default function MentorDashboard() {
   const [selectedTab, setSelectedTab] = useState("training");
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
+  const { toast } = useToast();
+  
+  const [selectedTraining, setSelectedTraining] = useState<TrainingModule | null>(null);
+  const [currentLessonIndex, setCurrentLessonIndex] = useState(0);
+  const [showQuiz, setShowQuiz] = useState(false);
+  const [quizAnswers, setQuizAnswers] = useState<number[]>([]);
+  const [showReflection, setShowReflection] = useState(false);
+  const [isCompleting, setIsCompleting] = useState(false);
+  const [quizPassed, setQuizPassed] = useState(false);
 
   // Fetch mentor data
   const { data: mentorships = [], isLoading: mentorshipsLoading } = useQuery<Mentorship[]>({
@@ -118,6 +255,124 @@ export default function MentorDashboard() {
   const recentBadges = badges.filter(b => b.earnedAt).sort((a, b) => 
     new Date(b.earnedAt!).getTime() - new Date(a.earnedAt!).getTime()
   ).slice(0, 3);
+
+  const startTrainingMutation = useMutation({
+    mutationFn: async (trainingId: string) => {
+      const response = await apiRequest(`/api/mentor/training/${trainingId}/start`, {
+        method: 'POST'
+      });
+      return response;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['/api/mentor/training'] });
+    },
+    onError: (error: any) => {
+      console.error('Error starting training:', error);
+    }
+  });
+
+  const completeTrainingMutation = useMutation({
+    mutationFn: async (trainingId: string) => {
+      const response = await apiRequest(`/api/mentor/training/${trainingId}/complete`, {
+        method: 'POST'
+      });
+      return response;
+    },
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ['/api/mentor/training'] });
+      queryClient.invalidateQueries({ queryKey: ['/api/tokens'] });
+      if (data.tokensAwarded > 0) {
+        toast({
+          title: "Training Completed!",
+          description: `Congratulations! You earned ${data.tokensAwarded} tokens for completing this training module.`,
+        });
+      }
+      closeTrainingModal();
+    },
+    onError: (error: any) => {
+      toast({
+        title: "Error",
+        description: "Failed to complete training. Please try again.",
+        variant: "destructive"
+      });
+    }
+  });
+
+  const startTraining = (module: TrainingModule) => {
+    startTrainingMutation.mutate(module.id);
+    setSelectedTraining(module);
+    setCurrentLessonIndex(0);
+    setShowQuiz(false);
+    setQuizAnswers([]);
+    setShowReflection(false);
+    setIsCompleting(false);
+    setQuizPassed(false);
+  };
+
+  const closeTrainingModal = () => {
+    setSelectedTraining(null);
+    setCurrentLessonIndex(0);
+    setShowQuiz(false);
+    setQuizAnswers([]);
+    setShowReflection(false);
+    setIsCompleting(false);
+    setQuizPassed(false);
+  };
+
+  const handleNextLesson = () => {
+    const content = selectedTraining ? trainingContent[selectedTraining.title] : null;
+    if (!content) return;
+    
+    if (currentLessonIndex < content.lessons.length - 1) {
+      setCurrentLessonIndex(prev => prev + 1);
+    } else {
+      setShowQuiz(true);
+    }
+  };
+
+  const handleQuizAnswer = (questionIndex: number, answerIndex: number) => {
+    const newAnswers = [...quizAnswers];
+    newAnswers[questionIndex] = answerIndex;
+    setQuizAnswers(newAnswers);
+  };
+
+  const handleSubmitQuiz = () => {
+    const content = selectedTraining ? trainingContent[selectedTraining.title] : null;
+    if (!content) return;
+    
+    const correctAnswers = quizAnswers.filter((answer, index) => 
+      answer === content.quiz[index].correct
+    ).length;
+    
+    if (correctAnswers >= content.quiz.length - 1) {
+      setQuizPassed(true);
+      setShowReflection(true);
+      setShowQuiz(false);
+    } else {
+      toast({
+        title: "Almost there!",
+        description: "Let's review the lessons and try again. You need to get most questions right.",
+        variant: "destructive"
+      });
+      setShowQuiz(false);
+      setCurrentLessonIndex(0);
+      setQuizAnswers([]);
+      setQuizPassed(false);
+    }
+  };
+
+  const handleCompleteTraining = async () => {
+    if (!selectedTraining || !quizPassed) {
+      toast({
+        title: "Cannot Complete",
+        description: "Please pass the quiz first before completing the training.",
+        variant: "destructive"
+      });
+      return;
+    }
+    setIsCompleting(true);
+    completeTrainingMutation.mutate(selectedTraining.id);
+  };
 
   if (statsLoading || mentorshipsLoading) {
     return (
@@ -649,7 +904,12 @@ export default function MentorDashboard() {
                         {module.completed ? (
                           <Badge className="bg-green-100 text-green-700">Completed</Badge>
                         ) : (
-                          <Button className="bg-gradient-to-r from-blue-500 to-purple-500">
+                          <Button 
+                            className="bg-gradient-to-r from-blue-500 to-purple-500"
+                            onClick={() => startTraining(module)}
+                            data-testid={`start-training-${module.id}`}
+                          >
+                            <Play className="h-4 w-4 mr-2" />
                             Start Training
                           </Button>
                         )}
@@ -662,6 +922,197 @@ export default function MentorDashboard() {
           </TabsContent>
         </Tabs>
       </div>
+
+      {/* Training Modal */}
+      <Dialog open={selectedTraining !== null} onOpenChange={(open) => !open && closeTrainingModal()}>
+        <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+          {selectedTraining && trainingContent[selectedTraining.title] && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-3 text-xl">
+                  <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center">
+                    <GraduationCap className="h-5 w-5 text-white" />
+                  </div>
+                  {selectedTraining.title}
+                </DialogTitle>
+                <DialogDescription className="flex items-center gap-4 mt-2">
+                  <span className="flex items-center gap-1">
+                    <Clock className="h-4 w-4" />
+                    {selectedTraining.durationMinutes} minutes
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Award className="h-4 w-4" />
+                    {selectedTraining.certificateReward} tokens
+                  </span>
+                  {selectedTraining.isRequired && (
+                    <Badge variant="destructive" className="text-xs">Required</Badge>
+                  )}
+                </DialogDescription>
+              </DialogHeader>
+
+              {/* Progress indicator */}
+              <div className="mb-6">
+                <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
+                  <span>Progress</span>
+                  <span>
+                    {showReflection ? 'Final Reflection' : showQuiz ? 'Quiz Time' : `Lesson ${currentLessonIndex + 1} of ${trainingContent[selectedTraining.title].lessons.length}`}
+                  </span>
+                </div>
+                <Progress 
+                  value={
+                    showReflection ? 100 : 
+                    showQuiz ? 80 : 
+                    ((currentLessonIndex + 1) / trainingContent[selectedTraining.title].lessons.length) * 70
+                  } 
+                  className="h-2" 
+                />
+              </div>
+
+              {/* Lesson Content */}
+              {!showQuiz && !showReflection && (
+                <div className="space-y-6">
+                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-6">
+                    <h3 className="font-bold text-lg mb-3 flex items-center gap-2">
+                      <BookOpen className="h-5 w-5 text-blue-600" />
+                      {trainingContent[selectedTraining.title].lessons[currentLessonIndex].title}
+                    </h3>
+                    <div className="text-gray-700 whitespace-pre-line leading-relaxed">
+                      {trainingContent[selectedTraining.title].lessons[currentLessonIndex].content}
+                    </div>
+                  </div>
+
+                  {trainingContent[selectedTraining.title].lessons[currentLessonIndex].activity && (
+                    <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                      <div className="flex items-start gap-3">
+                        <Lightbulb className="h-5 w-5 text-yellow-600 mt-0.5" />
+                        <div>
+                          <h4 className="font-semibold text-yellow-800 mb-1">Think About It</h4>
+                          <p className="text-yellow-700">
+                            {trainingContent[selectedTraining.title].lessons[currentLessonIndex].activity}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="flex justify-between">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => setCurrentLessonIndex(prev => Math.max(0, prev - 1))}
+                      disabled={currentLessonIndex === 0}
+                    >
+                      Previous
+                    </Button>
+                    <Button 
+                      onClick={handleNextLesson}
+                      className="bg-gradient-to-r from-blue-500 to-purple-500"
+                    >
+                      {currentLessonIndex < trainingContent[selectedTraining.title].lessons.length - 1 
+                        ? 'Next Lesson' 
+                        : 'Take Quiz'}
+                      <ChevronRight className="h-4 w-4 ml-1" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Quiz Section */}
+              {showQuiz && (
+                <div className="space-y-6">
+                  <div className="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4">
+                    <h3 className="font-bold text-purple-800 flex items-center gap-2">
+                      <Target className="h-5 w-5" />
+                      Knowledge Check
+                    </h3>
+                    <p className="text-purple-700 text-sm">Answer these questions to show what you've learned!</p>
+                  </div>
+
+                  {trainingContent[selectedTraining.title].quiz.map((q, qIndex) => (
+                    <div key={qIndex} className="bg-white border rounded-lg p-4">
+                      <p className="font-semibold mb-3">{qIndex + 1}. {q.question}</p>
+                      <div className="space-y-2">
+                        {q.options.map((option, oIndex) => (
+                          <button
+                            key={oIndex}
+                            onClick={() => handleQuizAnswer(qIndex, oIndex)}
+                            className={`w-full text-left p-3 rounded-lg border transition-all ${
+                              quizAnswers[qIndex] === oIndex 
+                                ? 'border-purple-500 bg-purple-50 text-purple-800' 
+                                : 'border-gray-200 hover:border-purple-300 hover:bg-gray-50'
+                            }`}
+                          >
+                            <span className="font-medium mr-2">{String.fromCharCode(65 + oIndex)}.</span>
+                            {option}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+
+                  <div className="flex justify-between">
+                    <Button 
+                      variant="outline" 
+                      onClick={() => { setShowQuiz(false); setCurrentLessonIndex(trainingContent[selectedTraining.title].lessons.length - 1); }}
+                    >
+                      Review Lessons
+                    </Button>
+                    <Button 
+                      onClick={handleSubmitQuiz}
+                      className="bg-gradient-to-r from-purple-500 to-blue-500"
+                      disabled={quizAnswers.length < trainingContent[selectedTraining.title].quiz.length}
+                    >
+                      Submit Answers
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Reflection Section */}
+              {showReflection && (
+                <div className="space-y-6">
+                  <div className="bg-green-50 border border-green-200 rounded-lg p-6">
+                    <h3 className="font-bold text-green-800 flex items-center gap-2 mb-3">
+                      <Sparkles className="h-5 w-5" />
+                      Great job! Time for Reflection
+                    </h3>
+                    <p className="text-green-700 mb-4">
+                      {trainingContent[selectedTraining.title].reflection}
+                    </p>
+                    <p className="text-green-600 text-sm italic">
+                      Take a moment to think about this. Your personal insights will help you become an amazing mentor!
+                    </p>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-yellow-100 to-orange-100 border border-yellow-300 rounded-lg p-6 text-center">
+                    <Trophy className="h-12 w-12 text-yellow-600 mx-auto mb-3" />
+                    <h3 className="font-bold text-xl text-yellow-800 mb-2">You're Ready!</h3>
+                    <p className="text-yellow-700 mb-4">
+                      Complete this training to earn <span className="font-bold">{selectedTraining.certificateReward} tokens</span> and unlock the next step in your mentoring journey!
+                    </p>
+                    <Button 
+                      onClick={handleCompleteTraining}
+                      disabled={isCompleting || completeTrainingMutation.isPending}
+                      className="bg-gradient-to-r from-green-500 to-emerald-500 text-white px-8 py-3 text-lg"
+                    >
+                      {isCompleting || completeTrainingMutation.isPending ? (
+                        <>
+                          <div className="animate-spin w-4 h-4 border-2 border-white border-t-transparent rounded-full mr-2" />
+                          Completing...
+                        </>
+                      ) : (
+                        <>
+                          <CheckCircle className="h-5 w-5 mr-2" />
+                          Complete Training
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

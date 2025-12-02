@@ -11970,6 +11970,64 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Get a single training module by ID
+  app.get('/api/mentor/training/:trainingId', async (req, res) => {
+    try {
+      const { trainingId } = req.params;
+      const training = await storage.getMentorTrainingById(trainingId);
+      
+      if (!training) {
+        return res.status(404).json({ message: 'Training module not found' });
+      }
+      
+      res.json(training);
+    } catch (error) {
+      console.error('Error getting training module:', error);
+      res.status(500).json({ message: 'Failed to get training module' });
+    }
+  });
+
+  // Start a training module (authenticated)
+  app.post('/api/mentor/training/:trainingId/start', isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+      const { trainingId } = req.params;
+      
+      const result = await storage.startMentorTraining(userId, trainingId);
+      res.json(result);
+    } catch (error) {
+      console.error('Error starting training:', error);
+      res.status(500).json({ message: 'Failed to start training' });
+    }
+  });
+
+  // Complete a training module (authenticated)
+  app.post('/api/mentor/training/:trainingId/complete', isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+      const { trainingId } = req.params;
+      
+      console.log('🎓 Completing training module:', trainingId, 'for user:', userId);
+      const result = await storage.completeMentorTraining(userId, trainingId);
+      
+      if (result.alreadyCompleted) {
+        return res.json({ success: true, message: 'Training already completed', tokensAwarded: 0 });
+      }
+      
+      console.log('🎓 Training completed! Tokens awarded:', result.tokensAwarded);
+      res.json(result);
+    } catch (error) {
+      console.error('Error completing training:', error);
+      res.status(500).json({ message: 'Failed to complete training' });
+    }
+  });
+
   // Get mentor scenarios for practice
   app.get('/api/mentor/scenarios', async (req, res) => {
     try {
