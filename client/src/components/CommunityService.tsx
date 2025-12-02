@@ -6,6 +6,7 @@ import { z } from 'zod';
 import { apiRequest } from '@/lib/queryClient';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useSchoolLevel } from '@/hooks/useSchoolLevel';
 import { Button } from '@/components/ui/button';
 import { BackButton } from '@/components/BackButton';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -17,11 +18,294 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ArrowLeft, Clock, MapPin, Users, Award, CheckCircle, Clock as Clock2, XCircle, Upload, Heart } from 'lucide-react';
+import { ArrowLeft, Clock, MapPin, Users, Award, CheckCircle, Clock as Clock2, XCircle, Upload, Heart, Star, Sparkles, Trophy, Rocket, Compass, Map } from 'lucide-react';
 import { ObjectUploader } from '@/components/ObjectUploader';
 import { ServiceVerificationFormDownload } from '@/components/ServiceVerificationForm';
 import { KindnessConnectModal } from '@/components/KindnessConnectModal';
 import type { UploadResult } from '@uppy/core';
+
+// ==========================================
+// MIDDLE SCHOOL: Kindness Explorer Experience
+// ==========================================
+function MiddleSchoolKindnessExplorer({ onBack }: { onBack?: () => void }) {
+  const [selectedQuest, setSelectedQuest] = useState<string | null>(null);
+  const { user } = useAuth();
+  
+  // Fun quest categories for middle schoolers
+  const kindnessQuests = [
+    {
+      id: 'helper-hero',
+      title: '🦸 Helper Hero',
+      description: 'Help someone in your school or neighborhood today!',
+      examples: ['Help a classmate with homework', 'Hold the door for someone', 'Help clean up after lunch'],
+      stars: 10,
+      color: 'from-blue-400 to-cyan-400',
+      icon: '💪'
+    },
+    {
+      id: 'eco-warrior',
+      title: '🌱 Eco Warrior',
+      description: 'Do something good for the planet!',
+      examples: ['Pick up litter at recess', 'Start a recycling habit', 'Plant something'],
+      stars: 15,
+      color: 'from-green-400 to-emerald-400',
+      icon: '🌍'
+    },
+    {
+      id: 'friendship-builder',
+      title: '🤝 Friendship Builder',
+      description: 'Make someone feel included and valued!',
+      examples: ['Invite someone new to sit with you', 'Write a thank-you note', 'Give a genuine compliment'],
+      stars: 10,
+      color: 'from-pink-400 to-rose-400',
+      icon: '💝'
+    },
+    {
+      id: 'community-champion',
+      title: '🏆 Community Champion',
+      description: 'Help make your community better!',
+      examples: ['Volunteer with family', 'Donate toys or books', 'Visit someone who needs company'],
+      stars: 25,
+      color: 'from-purple-400 to-violet-400',
+      icon: '🌟'
+    },
+    {
+      id: 'creative-kindness',
+      title: '🎨 Creative Kindness',
+      description: 'Use your talents to spread joy!',
+      examples: ['Make cards for seniors', 'Perform for family', 'Create artwork to donate'],
+      stars: 20,
+      color: 'from-orange-400 to-amber-400',
+      icon: '✨'
+    },
+    {
+      id: 'animal-friend',
+      title: '🐾 Animal Friend',
+      description: 'Show kindness to our furry friends!',
+      examples: ['Help at an animal shelter', 'Make bird feeders', 'Care for a pet'],
+      stars: 15,
+      color: 'from-teal-400 to-cyan-400',
+      icon: '🐕'
+    }
+  ];
+
+  // Explorer badges (achievements)
+  const explorerBadges = [
+    { id: 'first-quest', name: 'First Quest!', description: 'Complete your first kindness quest', icon: '🌟', earned: true },
+    { id: 'week-warrior', name: 'Week Warrior', description: 'Complete quests 5 days in a row', icon: '🔥', earned: true },
+    { id: 'helper-10', name: 'Super Helper', description: 'Help 10 people', icon: '🦸', earned: false },
+    { id: 'eco-5', name: 'Planet Protector', description: 'Complete 5 eco quests', icon: '🌍', earned: false },
+    { id: 'friend-maker', name: 'Friend Maker', description: 'Include 5 new people', icon: '👋', earned: true },
+    { id: 'kindness-100', name: 'Kindness Legend', description: 'Earn 100 kindness stars', icon: '👑', earned: false }
+  ];
+
+  return (
+    <div className="space-y-6 p-6 md:pl-24" data-testid="kindness-explorer-page">
+      {/* Fun Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-3">
+          {onBack && (
+            <BackButton 
+              onClick={onBack} 
+              label="Back"
+              variant="minimal"
+            />
+          )}
+          <div>
+            <h1 className="text-2xl font-bold flex items-center gap-2">
+              <Compass className="h-7 w-7 text-purple-500" />
+              <span className="bg-gradient-to-r from-purple-600 via-pink-500 to-orange-400 bg-clip-text text-transparent">
+                Kindness Explorer
+              </span>
+            </h1>
+            <p className="text-muted-foreground flex items-center gap-1">
+              <Sparkles className="h-4 w-4 text-yellow-500" />
+              Discover fun ways to spread kindness in your world!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Explorer Stats Banner */}
+      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-500 via-pink-500 to-orange-400 p-6 text-white">
+        <div className="absolute top-0 right-0 opacity-20">
+          <Map className="h-32 w-32 -rotate-12" />
+        </div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="text-3xl">🗺️</span>
+            <h2 className="text-xl font-bold">Your Adventure Map</h2>
+          </div>
+          <div className="grid grid-cols-3 gap-4 mt-4">
+            <div className="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
+              <div className="text-3xl mb-1">⭐</div>
+              <div className="text-2xl font-bold">47</div>
+              <div className="text-xs opacity-90">Kindness Stars</div>
+            </div>
+            <div className="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
+              <div className="text-3xl mb-1">🎯</div>
+              <div className="text-2xl font-bold">12</div>
+              <div className="text-xs opacity-90">Quests Done</div>
+            </div>
+            <div className="bg-white/20 backdrop-blur rounded-xl p-3 text-center">
+              <div className="text-3xl mb-1">🏅</div>
+              <div className="text-2xl font-bold">3</div>
+              <div className="text-xs opacity-90">Badges Earned</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Today's Featured Quest */}
+      <Card className="border-2 border-dashed border-yellow-400 bg-gradient-to-r from-yellow-50 to-orange-50">
+        <CardHeader className="pb-2">
+          <div className="flex items-center gap-2">
+            <span className="text-2xl animate-bounce">🌟</span>
+            <CardTitle className="text-lg text-orange-600">Today's Special Quest!</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <p className="text-gray-700 mb-3">
+            <strong>Operation Smile:</strong> Give 3 genuine compliments to classmates, teachers, or family members today!
+          </p>
+          <div className="flex items-center justify-between">
+            <Badge className="bg-yellow-400 text-yellow-900">+15 Bonus Stars!</Badge>
+            <Button 
+              size="sm" 
+              className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600"
+              data-testid="button-start-special-quest"
+            >
+              <Rocket className="h-4 w-4 mr-1" /> Accept Quest!
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Quest Categories */}
+      <div>
+        <h3 className="text-lg font-bold mb-4 flex items-center gap-2">
+          <Star className="h-5 w-5 text-yellow-500" />
+          Choose Your Kindness Quest
+        </h3>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {kindnessQuests.map((quest) => (
+            <Card 
+              key={quest.id}
+              className={`cursor-pointer transition-all hover:scale-105 hover:shadow-lg ${
+                selectedQuest === quest.id ? 'ring-2 ring-purple-500' : ''
+              }`}
+              onClick={() => setSelectedQuest(quest.id)}
+              data-testid={`quest-card-${quest.id}`}
+            >
+              <CardContent className="p-4">
+                <div className={`h-2 rounded-full bg-gradient-to-r ${quest.color} mb-3`} />
+                <div className="flex items-start justify-between mb-2">
+                  <h4 className="font-bold text-base">{quest.title}</h4>
+                  <span className="text-2xl">{quest.icon}</span>
+                </div>
+                <p className="text-sm text-gray-600 mb-3">{quest.description}</p>
+                <div className="space-y-1 mb-3">
+                  {quest.examples.map((example, i) => (
+                    <p key={i} className="text-xs text-gray-500 flex items-center gap-1">
+                      <span className="text-green-500">✓</span> {example}
+                    </p>
+                  ))}
+                </div>
+                <div className="flex items-center justify-between">
+                  <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                    <Star className="h-3 w-3 mr-1" /> {quest.stars} stars
+                  </Badge>
+                  <Button 
+                    size="sm" 
+                    variant="outline"
+                    className="text-purple-600 border-purple-300 hover:bg-purple-50"
+                    data-testid={`button-start-quest-${quest.id}`}
+                  >
+                    Start Quest
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+
+      {/* Explorer Badges Collection */}
+      <Card>
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <Trophy className="h-5 w-5 text-yellow-500" />
+            <CardTitle>Your Badge Collection</CardTitle>
+          </div>
+          <CardDescription>Complete quests to unlock awesome badges!</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-3 md:grid-cols-6 gap-4">
+            {explorerBadges.map((badge) => (
+              <div 
+                key={badge.id}
+                className={`text-center p-3 rounded-xl transition-all ${
+                  badge.earned 
+                    ? 'bg-gradient-to-b from-yellow-50 to-orange-50 border-2 border-yellow-300' 
+                    : 'bg-gray-100 opacity-50 grayscale'
+                }`}
+                data-testid={`badge-${badge.id}`}
+              >
+                <div className="text-3xl mb-1">{badge.icon}</div>
+                <p className="text-xs font-semibold">{badge.name}</p>
+                {badge.earned && (
+                  <Badge className="mt-1 bg-green-500 text-white text-xs py-0">Earned!</Badge>
+                )}
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Fun Kindness Tips */}
+      <Card className="bg-gradient-to-r from-blue-50 to-purple-50">
+        <CardHeader>
+          <div className="flex items-center gap-2">
+            <span className="text-2xl">💡</span>
+            <CardTitle className="text-purple-700">Kindness Explorer Tips!</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="flex items-start gap-3 p-3 bg-white/70 rounded-lg">
+              <span className="text-2xl">🎯</span>
+              <div>
+                <p className="font-semibold text-sm">Start Small</p>
+                <p className="text-xs text-gray-600">Even a smile counts as kindness! Every little act matters.</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-3 bg-white/70 rounded-lg">
+              <span className="text-2xl">📸</span>
+              <div>
+                <p className="font-semibold text-sm">Capture Moments</p>
+                <p className="text-xs text-gray-600">Ask a parent to help you take photos of your kindness adventures!</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-3 bg-white/70 rounded-lg">
+              <span className="text-2xl">👨‍👩‍👧</span>
+              <div>
+                <p className="font-semibold text-sm">Family Quests</p>
+                <p className="text-xs text-gray-600">Invite your family to join kindness quests with you!</p>
+              </div>
+            </div>
+            <div className="flex items-start gap-3 p-3 bg-white/70 rounded-lg">
+              <span className="text-2xl">✍️</span>
+              <div>
+                <p className="font-semibold text-sm">Tell Your Story</p>
+                <p className="text-xs text-gray-600">Share how your kindness made someone feel!</p>
+              </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
 
 // Community Service interfaces
 interface ServiceLog {
@@ -107,6 +391,10 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const { user } = useAuth();
+  
+  // Get school level to determine which experience to show
+  const { schoolLevel, isLoading: isLoadingSchoolLevel } = useSchoolLevel();
+  const isMiddleSchool = schoolLevel === 'middle_school';
 
   // Use authenticated user ID
   const userId = user?.id;
@@ -122,6 +410,11 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
         </Card>
       </div>
     );
+  }
+  
+  // MIDDLE SCHOOL: Show fun Kindness Explorer instead of formal Service Hours
+  if (isMiddleSchool) {
+    return <MiddleSchoolKindnessExplorer onBack={onBack} />;
   }
 
   // Form setup
