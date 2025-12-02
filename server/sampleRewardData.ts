@@ -354,6 +354,125 @@ export async function initializeSampleRewardData() {
         maxRedemptionAmount: 2000, // 2000 $ECHO = learning bundle
         contactEmail: 'family@amazon.com',
         isDualReward: 1 // DUAL REWARD: Kid gets educational item, parent gets credit
+      },
+      // ALLEGACY FEDERAL CREDIT UNION - LEGACY PARTNER
+      {
+        partnerName: 'Allegacy Federal Credit Union',
+        partnerLogo: 'https://www.allegacy.org/themes/allegacy/images/allegacy-logo.svg',
+        partnerType: 'financial_literacy',
+        websiteUrl: 'https://www.allegacy.org',
+        description: 'LEGACY PARTNER! Supporting student financial literacy with $20 Visa gift cards.',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 500, // 500 $ECHO = $20 gift card
+        maxRedemptionAmount: 500,
+        contactEmail: 'community@allegacy.org',
+        location: 'Greensboro & Winston-Salem, NC'
+      },
+      // LOCAL GIBSONVILLE/BURLINGTON PARTNERS - Within 15 miles of Eastern Guilford
+      {
+        partnerName: 'Zacks Hot Dogs',
+        partnerLogo: 'https://images.unsplash.com/photo-1612392062631-94293c1e3ca0?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.zackshotdogs.com',
+        description: 'Burlington institution since 1928! Classic hot dogs, burgers & fries.',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 150,
+        maxRedemptionAmount: 400,
+        contactEmail: 'info@zackshotdogs.com',
+        location: 'Burlington, NC'
+      },
+      {
+        partnerName: 'Hurseys Bar-B-Q',
+        partnerLogo: 'https://images.unsplash.com/photo-1529193591184-b1d58069ecdd?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.hurseysbbq.com',
+        description: 'NC whole hog BBQ since 1949! Authentic Carolina flavor.',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 200,
+        maxRedemptionAmount: 600,
+        contactEmail: 'info@hurseysbbq.com',
+        location: 'Burlington, NC'
+      },
+      {
+        partnerName: 'Fun360 Trampoline Park',
+        partnerLogo: 'https://images.unsplash.com/photo-1576514129883-2f89d3c0fc8c?w=400',
+        partnerType: 'entertainment',
+        websiteUrl: 'https://fun360.com',
+        description: 'Indoor trampoline park at Holly Hill Mall Burlington - jump into fun!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 350,
+        maxRedemptionAmount: 800,
+        contactEmail: 'burlington@fun360.com',
+        location: 'Holly Hill Mall, Burlington, NC'
+      },
+      {
+        partnerName: 'Burlington Sock Puppets',
+        partnerLogo: 'https://images.unsplash.com/photo-1566577134770-3d85bb3a9cc4?w=400',
+        partnerType: 'local_sports',
+        websiteUrl: 'https://www.burlingtonsockpuppets.com',
+        description: 'Appalachian League baseball - family fun at the ballpark!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 300,
+        maxRedemptionAmount: 1200,
+        contactEmail: 'tickets@sockpuppets.com',
+        location: '1450 Graham St, Burlington, NC'
+      },
+      {
+        partnerName: 'Smittys Homemade Ice Cream',
+        partnerLogo: 'https://images.unsplash.com/photo-1570197788417-0e82375c9371?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.smittysicecream.com',
+        description: 'Homemade ice cream in Downtown Burlington - local favorite treats!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 100,
+        maxRedemptionAmount: 300,
+        contactEmail: 'info@smittysicecream.com',
+        location: 'Downtown Burlington, NC'
+      },
+      {
+        partnerName: 'Movies 278',
+        partnerLogo: 'https://images.unsplash.com/photo-1489599849927-2ee91cede3ba?w=400',
+        partnerType: 'entertainment',
+        websiteUrl: 'https://www.movies278.com',
+        description: 'First-run movies at affordable prices in Burlington!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 250,
+        maxRedemptionAmount: 600,
+        contactEmail: 'info@movies278.com',
+        location: '1090 Piper Ln, Burlington, NC'
+      },
+      {
+        partnerName: 'Spare Time Greensboro',
+        partnerLogo: 'https://images.unsplash.com/photo-1545232979-8bf68ee9b1af?w=400',
+        partnerType: 'entertainment',
+        websiteUrl: 'https://www.sparetimegso.com',
+        description: '34 bowling lanes, laser tag, massive arcade & VR suite!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 350,
+        maxRedemptionAmount: 1000,
+        contactEmail: 'events@sparetimegso.com',
+        location: 'Greensboro, NC'
+      },
+      {
+        partnerName: 'Renos Pizza Gibsonville',
+        partnerLogo: 'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400',
+        partnerType: 'local_dining',
+        websiteUrl: 'https://www.renospizza.com',
+        description: 'Family pizza and Italian favorites right in Gibsonville!',
+        isActive: 1,
+        isFeatured: 1,
+        minRedemptionAmount: 300,
+        maxRedemptionAmount: 800,
+        contactEmail: 'gibsonville@renospizza.com',
+        location: 'Gibsonville, NC'
       }
     ];
 
