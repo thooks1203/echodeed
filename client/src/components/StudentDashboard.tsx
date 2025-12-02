@@ -524,26 +524,26 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         </p>
       </div>
 
-      {/* MS ONLY: Kindness Companion - A fun creature that grows with kindness */}
+      {/* MS ONLY: Kindness Companion - A magical garden that grows with kindness */}
       {isMiddleSchool && (() => {
         // Track companion progress separately - starts fresh for new students
         // Demo mode: Show seed stage (75 tokens) to demonstrate the growth journey
-        const companionTokens = 75; // Starting journey - students grow their companion from here!
+        const companionTokens = 75; // Starting journey - students grow their garden from here!
         
-        // Evolution stages:
-        // 🌱 Seed (0-199) → 🥚 Egg (200-499) → 🐣 Chick (500-999) → 🦋 Butterfly (1000+)
+        // Evolution stages - A NATURAL plant lifecycle that attracts a butterfly:
+        // 🌱 Seed (0-199) → 🌿 Sprout (200-499) → 🌸 Flower (500-999) → 🦋 Butterfly Garden (1000+)
         const getCompanionEmoji = () => {
           if (companionTokens >= 1000) return '🦋';
-          if (companionTokens >= 500) return '🐣';
-          if (companionTokens >= 200) return '🥚';
+          if (companionTokens >= 500) return '🌸';
+          if (companionTokens >= 200) return '🌿';
           return '🌱';
         };
         
         const getCompanionMessage = () => {
-          if (companionTokens >= 1000) return "Sparkle has transformed into a beautiful butterfly! 🎉";
-          if (companionTokens >= 500) return "Sparkle hatched! Keep being kind to help them grow!";
-          if (companionTokens >= 200) return "Your egg is starting to glow! Almost ready to hatch!";
-          return "Meet Sparkle! Complete kindness quests to help your companion grow!";
+          if (companionTokens >= 1000) return "Your garden is blooming and butterflies have arrived! 🎉";
+          if (companionTokens >= 500) return "Beautiful flowers are blooming! Keep being kind!";
+          if (companionTokens >= 200) return "Your sprout is growing strong! Water it with kindness!";
+          return "Meet Sparkle! Complete kindness quests to help your garden grow!";
         };
         
         const getProgressPercent = () => {
@@ -554,10 +554,10 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         };
         
         const getNextMilestone = () => {
-          if (companionTokens >= 1000) return "Max level reached! You're amazing!";
-          if (companionTokens >= 500) return `${1000 - companionTokens} tokens until butterfly transformation!`;
-          if (companionTokens >= 200) return `${500 - companionTokens} tokens until hatching!`;
-          return `${200 - companionTokens} tokens until your egg appears!`;
+          if (companionTokens >= 1000) return "Butterfly garden complete! You're amazing!";
+          if (companionTokens >= 500) return `${1000 - companionTokens} tokens until butterflies arrive!`;
+          if (companionTokens >= 200) return `${500 - companionTokens} tokens until flowers bloom!`;
+          return `${200 - companionTokens} tokens until your seed sprouts!`;
         };
         
         return (
@@ -601,7 +601,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
                 margin: 0,
                 lineHeight: '1.5'
               }}>
-                🌟 <strong>What's a Kindness Companion?</strong> Sparkle is your magical friend who grows as you do kind things! Complete quests to evolve them from a tiny seed → glowing egg → baby chick → beautiful butterfly!
+                🌟 <strong>What's a Kindness Companion?</strong> Sparkle is your magical garden that grows as you do kind things! Complete quests to grow it from a tiny seed → green sprout → beautiful flower → butterfly garden!
               </p>
             </div>
             
@@ -665,13 +665,13 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
                 <div style={{ fontSize: '9px', color: '#FDE68A' }}>0</div>
               </div>
               <div style={{ textAlign: 'center', opacity: companionTokens >= 200 ? 1 : 0.4 }}>
-                <div style={{ fontSize: '24px' }}>🥚</div>
-                <div style={{ fontSize: '10px', color: 'white', opacity: 0.8 }}>Egg</div>
+                <div style={{ fontSize: '24px' }}>🌿</div>
+                <div style={{ fontSize: '10px', color: 'white', opacity: 0.8 }}>Sprout</div>
                 <div style={{ fontSize: '9px', color: '#FDE68A' }}>200</div>
               </div>
               <div style={{ textAlign: 'center', opacity: companionTokens >= 500 ? 1 : 0.4 }}>
-                <div style={{ fontSize: '24px' }}>🐣</div>
-                <div style={{ fontSize: '10px', color: 'white', opacity: 0.8 }}>Chick</div>
+                <div style={{ fontSize: '24px' }}>🌸</div>
+                <div style={{ fontSize: '10px', color: 'white', opacity: 0.8 }}>Flower</div>
                 <div style={{ fontSize: '9px', color: '#FDE68A' }}>500</div>
               </div>
               <div style={{ textAlign: 'center', opacity: companionTokens >= 1000 ? 1 : 0.4 }}>

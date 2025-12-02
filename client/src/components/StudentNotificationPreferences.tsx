@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Bell, BellOff, Clock, Award } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest } from '@/lib/queryClient';
+import { useSchoolLevel } from '@/hooks/useSchoolLevel';
 
 interface StudentNotificationPreferences {
   userId: string;
@@ -21,6 +22,8 @@ interface StudentNotificationPreferences {
 export function StudentNotificationPreferences() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { schoolLevel } = useSchoolLevel();
+  const isMiddleSchool = schoolLevel === 'middle_school';
 
   const { data: preferences, isLoading } = useQuery<StudentNotificationPreferences>({
     queryKey: ['/api/student-notifications/preferences'],
@@ -88,20 +91,36 @@ export function StudentNotificationPreferences() {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           {emailEnabled ? <Bell className="h-5 w-5 text-blue-600" /> : <BellOff className="h-5 w-5 text-gray-400" />}
-          Student Notification Settings
+          {isMiddleSchool ? 'My Notification Settings' : 'Student Notification Settings'}
         </CardTitle>
         <CardDescription>
-          Manage email notifications for service hours, token milestones, IPARD bonuses, and rewards
+          {isMiddleSchool 
+            ? 'Manage email updates about your kindness quests, achievements, and rewards'
+            : 'Manage email notifications for service hours, token milestones, IPARD bonuses, and rewards'
+          }
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div className="p-4 bg-gradient-to-r from-blue-50 to-green-50 rounded-lg border border-blue-200">
-          <p className="text-xs font-semibold text-blue-600 mb-2">📬 WHAT YOU'LL RECEIVE</p>
+        <div className={`p-4 rounded-lg border ${isMiddleSchool ? 'bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200' : 'bg-gradient-to-r from-blue-50 to-green-50 border-blue-200'}`}>
+          <p className={`text-xs font-semibold mb-2 ${isMiddleSchool ? 'text-purple-600' : 'text-blue-600'}`}>
+            {isMiddleSchool ? '🌟 WHAT YOU\'LL RECEIVE' : '📬 WHAT YOU\'LL RECEIVE'}
+          </p>
           <ul className="text-sm text-gray-700 space-y-1">
-            <li>✓ Service hour approval notifications</li>
-            <li>✓ Token milestone achievements (100, 250, 500, 1000)</li>
-            <li>✓ IPARD bonus awards (Investigation, Reflection, Demonstration)</li>
-            <li>✓ Reward redemption status updates</li>
+            {isMiddleSchool ? (
+              <>
+                <li>✓ Quest completion celebrations</li>
+                <li>✓ Token milestone achievements (25, 75, 150, 300)</li>
+                <li>✓ Badge and streak updates</li>
+                <li>✓ Reward status notifications</li>
+              </>
+            ) : (
+              <>
+                <li>✓ Service hour approval notifications</li>
+                <li>✓ Token milestone achievements (100, 250, 500, 1000)</li>
+                <li>✓ IPARD bonus awards (Investigation, Reflection, Demonstration)</li>
+                <li>✓ Reward redemption status updates</li>
+              </>
+            )}
           </ul>
         </div>
 
@@ -180,7 +199,10 @@ export function StudentNotificationPreferences() {
         {!emailEnabled && (
           <div className="p-4 bg-yellow-50 rounded-lg border border-yellow-200">
             <p className="text-sm text-gray-700">
-              💡 <strong>Email notifications are currently OFF.</strong> Enable them to stay updated on your achievements, service hour approvals, and milestone rewards!
+              💡 <strong>Email notifications are currently OFF.</strong> {isMiddleSchool 
+                ? 'Enable them to stay updated on your achievements, quest completions, and rewards!'
+                : 'Enable them to stay updated on your achievements, service hour approvals, and milestone rewards!'
+              }
             </p>
           </div>
         )}
