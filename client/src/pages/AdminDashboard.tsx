@@ -699,6 +699,7 @@ export default function AdminDashboard() {
   const { user, isAdmin, isTeacher, isStudent, isParent } = useAuth();
   const demoRoles = getDemoRoles();
   const { schoolLevel } = useSchoolLevel();
+  const isMiddleSchool = schoolLevel === 'middle_school';
   const [isKindnessConnectOpen, setIsKindnessConnectOpen] = useState(false);
   
   // ROLE-BASED ACCESS CONTROL: Only admins can access this dashboard
@@ -1273,15 +1274,17 @@ export default function AdminDashboard() {
 
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">Service Hours Logged</CardTitle>
+                <CardTitle className="text-sm font-medium">
+                  {isMiddleSchool ? 'Kindness Activities' : 'Service Hours Logged'}
+                </CardTitle>
                 <Clock className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold text-teal-600" data-testid="total-service-hours">
-                  156
+                  {isMiddleSchool ? '284' : '156'}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Total hours verified this year
+                  {isMiddleSchool ? 'Total activities logged this year' : 'Total hours verified this year'}
                 </p>
               </CardContent>
             </Card>
@@ -1312,7 +1315,7 @@ export default function AdminDashboard() {
                   {mockDistrictMetrics.complianceStatus}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  FERPA compliance status
+                  {isMiddleSchool ? 'COPPA compliance status' : 'FERPA compliance status'}
                 </p>
               </CardContent>
             </Card>
@@ -2026,7 +2029,7 @@ P.S. Teachers who approve 10+ service hours this week earn bonus tokens toward B
                 <Shield className="h-4 w-4 text-blue-600" />
                 <AlertTitle className="text-blue-900">Admin Monitoring Guidelines</AlertTitle>
                 <AlertDescription className="text-blue-800">
-                  This feed displays anonymous kindness posts for oversight purposes only. Use moderation tools to flag inappropriate content. Student identities remain protected per FERPA compliance.
+                  This feed displays anonymous kindness posts for oversight purposes only. Use moderation tools to flag inappropriate content. Student identities remain protected per {isMiddleSchool ? 'COPPA' : 'FERPA'} compliance.
                 </AlertDescription>
               </Alert>
 
@@ -2313,7 +2316,7 @@ P.S. Teachers who approve 10+ service hours this week earn bonus tokens toward B
                   Data Export Tools
                 </CardTitle>
                 <p className="text-sm text-muted-foreground">
-                  Export kindness data for analysis and reporting. All exports include FERPA compliance options.
+                  Export kindness data for analysis and reporting. All exports include {isMiddleSchool ? 'COPPA' : 'FERPA'} compliance options.
                 </p>
               </CardHeader>
               <CardContent>
@@ -2367,7 +2370,7 @@ P.S. Teachers who approve 10+ service hours this week earn bonus tokens toward B
                         />
                         <Label htmlFor="anonymize-csv" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                           <Shield className="w-4 h-4 inline mr-1" />
-                          FERPA Compliant (Anonymize student data)
+                          {isMiddleSchool ? 'COPPA' : 'FERPA'} Compliant (Anonymize student data)
                         </Label>
                       </div>
                       
@@ -2419,7 +2422,7 @@ P.S. Teachers who approve 10+ service hours this week earn bonus tokens toward B
                         />
                         <Label htmlFor="anonymize-report" className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70">
                           <Shield className="w-4 h-4 inline mr-1" />
-                          FERPA Compliant (Anonymize student data)
+                          {isMiddleSchool ? 'COPPA' : 'FERPA'} Compliant (Anonymize student data)
                         </Label>
                       </div>
 
@@ -2504,7 +2507,7 @@ P.S. Teachers who approve 10+ service hours this week earn bonus tokens toward B
                 Compliance Dashboard
               </CardTitle>
               <CardDescription>
-                FERPA and state compliance monitoring
+                {isMiddleSchool ? 'COPPA' : 'FERPA'} and state compliance monitoring
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -2515,7 +2518,7 @@ P.S. Teachers who approve 10+ service hours this week earn bonus tokens toward B
                     <div className="flex items-center justify-between p-3 border rounded-lg">
                       <div className="flex items-center gap-2">
                         <CheckCircle2 className="w-4 h-4 text-green-600" />
-                        <span>FERPA Compliance</span>
+                        <span>{isMiddleSchool ? 'COPPA' : 'FERPA'} Compliance</span>
                       </div>
                       <Badge variant="default">Compliant</Badge>
                     </div>
