@@ -640,9 +640,66 @@ export async function initializeSampleRewardData() {
         ageGroup: 'all'
       },
 
+      // Biscuitville Burlington Rd - BREAKFAST FAVORITE
+      {
+        partnerId: createdPartners[6].id, // Biscuitville Burlington Rd (index 6)
+        offerType: 'meal',
+        title: 'Breakfast Combo',
+        description: 'Fresh-baked biscuit sandwich & hash browns - made fresh every 15 minutes!',
+        offerValue: 'Breakfast Combo',
+        echoCost: 150,
+        maxRedemptions: 100,
+        currentRedemptions: 22,
+        isActive: 1,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid at Burlington Rd Gibsonville location. Breakfast served all day!',
+        imageUrl: 'https://images.unsplash.com/photo-1551024709-8f23befc6f87?w=400',
+        ageGroup: 'all'
+      },
+
+      // Bojangles Burlington Rd - SOUTHERN COMFORT
+      {
+        partnerId: createdPartners[7].id, // Bojangles Burlington Rd (index 7)
+        offerType: 'meal',
+        title: 'Cajun Chicken Combo',
+        description: 'Famous Cajun chicken, Bo-Berry biscuits & sweet tea - Southern comfort food!',
+        offerValue: 'Combo Meal',
+        echoCost: 175,
+        maxRedemptions: 100,
+        currentRedemptions: 18,
+        isActive: 1,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid at Burlington Rd Gibsonville location.',
+        imageUrl: 'https://images.unsplash.com/photo-1626082927389-6cd097cdc6ec?w=400',
+        ageGroup: 'all'
+      },
+
+      // Zaxby's Burlington Rd - CHICKEN FINGERS
+      {
+        partnerId: createdPartners[8].id, // Zaxby's Burlington Rd (index 8)
+        offerType: 'meal',
+        title: 'Chicken Fingers Meal',
+        description: 'Chicken fingers, crinkle fries & Zax sauce - student favorite!',
+        offerValue: 'Meal Deal',
+        echoCost: 175,
+        maxRedemptions: 100,
+        currentRedemptions: 24,
+        isActive: 1,
+        isFeatured: 1,
+        requiresVerification: 0,
+        expiresAt: new Date(Date.now() + 90 * 24 * 60 * 60 * 1000),
+        termsAndConditions: 'Valid at Burlington Rd Gibsonville location.',
+        imageUrl: 'https://images.unsplash.com/photo-1562967914-608f82629710?w=400',
+        ageGroup: 'all'
+      },
+
       // Greensboro Science Center
       {
-        partnerId: createdPartners[6].id, // Science Center (index 6)
+        partnerId: createdPartners[9].id, // Science Center (index 9 - after adding 3 new partners)
         offerType: 'educational',
         title: 'Science Center Pass',
         description: 'Admission to aquarium, zoo, and museum at Greensboro Science Center!',
@@ -661,7 +718,7 @@ export async function initializeSampleRewardData() {
 
       // Pizza Hut Burlington Rd
       {
-        partnerId: createdPartners[7].id, // Pizza Hut Burlington Rd (index 7)
+        partnerId: createdPartners[10].id, // Pizza Hut Burlington Rd (index 10)
         offerType: 'meal',
         title: 'Personal Pizza',
         description: 'Pizza and breadsticks on Burlington Rd - perfect for group celebrations!',
@@ -680,7 +737,7 @@ export async function initializeSampleRewardData() {
 
       // Cook Out - NC FAVORITE!
       {
-        partnerId: createdPartners[8].id, // Cook Out (index 8)
+        partnerId: createdPartners[11].id, // Cook Out (index 11)
         offerType: 'meal',
         title: 'Cook Out Combo Meal',
         description: 'NC fast food legend - burger, sides & legendary milkshake!',
@@ -699,7 +756,7 @@ export async function initializeSampleRewardData() {
 
       // Dames Chicken & Waffles - DOWNTOWN FAVORITE
       {
-        partnerId: createdPartners[9].id, // Dames Chicken & Waffles (index 9)
+        partnerId: createdPartners[12].id, // Dames Chicken & Waffles (index 12)
         offerType: 'meal',
         title: 'Chicken & Waffles Meal',
         description: 'Famous "shmears" at downtown Greensboro favorite near Dudley HS!',
@@ -718,7 +775,7 @@ export async function initializeSampleRewardData() {
 
       // Dave's Hot Chicken - TRENDING SPOT
       {
-        partnerId: createdPartners[10].id, // Dave's Hot Chicken (index 10)
+        partnerId: createdPartners[13].id, // Dave's Hot Chicken (index 13)
         offerType: 'meal',
         title: 'Hot Chicken Combo',
         description: 'Nashville-style hot chicken - super popular with students!',
@@ -737,7 +794,7 @@ export async function initializeSampleRewardData() {
 
       // Boxcar Bar + Arcade - DOWNTOWN HANGOUT
       {
-        partnerId: createdPartners[11].id, // Boxcar Bar + Arcade (index 11)
+        partnerId: createdPartners[14].id, // Boxcar Bar + Arcade (index 14)
         offerType: 'entertainment',
         title: 'Pizza & Arcade Games',
         description: 'Downtown pizza & retro arcade - perfect Dudley student hangout!',
@@ -756,7 +813,7 @@ export async function initializeSampleRewardData() {
 
       // Yum Yum Better Ice Cream - GREENSBORO TRADITION SINCE 1906
       {
-        partnerId: createdPartners[12].id, // Yum Yum (index 12)
+        partnerId: createdPartners[15].id, // Yum Yum (index 15)
         offerType: 'treat',
         title: 'Ice Cream Treat',
         description: 'Greensboro tradition since 1906 - ice cream near UNCG!',
@@ -775,7 +832,7 @@ export async function initializeSampleRewardData() {
 
       // Red Cinemas - UPSCALE DOWNTOWN THEATER
       {
-        partnerId: createdPartners[13].id, // Red Cinemas (index 13)
+        partnerId: createdPartners[16].id, // Red Cinemas (index 16)
         offerType: 'entertainment',
         title: 'Movie Ticket + Snacks',
         description: 'Upscale downtown theater - indie films, craft snacks, reserved seating!',
@@ -794,7 +851,7 @@ export async function initializeSampleRewardData() {
 
       // Triad Lanes - BOWLING & ARCADE
       {
-        partnerId: createdPartners[14].id, // Triad Lanes (index 14)
+        partnerId: createdPartners[17].id, // Triad Lanes (index 17)
         offerType: 'entertainment',
         title: 'Bowling & Arcade Package',
         description: 'Bowling, arcade games, and food - complete student hangout!',
@@ -813,7 +870,7 @@ export async function initializeSampleRewardData() {
 
       // Urban Air Trampoline Park - ACTIVE FUN
       {
-        partnerId: createdPartners[15].id, // Urban Air (index 15)
+        partnerId: createdPartners[18].id, // Urban Air (index 18)
         offerType: 'entertainment',
         title: 'Trampoline Park Pass',
         description: 'Indoor trampoline park - climbing walls, arcade, active fun!',
@@ -832,7 +889,7 @@ export async function initializeSampleRewardData() {
 
       // DUAL REWARD OFFERS - National Partners (NOT FEATURED for high school)
       {
-        partnerId: createdPartners[22].id, // Scholastic Books (index 22)
+        partnerId: createdPartners[25].id, // Scholastic Books (index 25)
         offerType: 'dual_reward',
         title: 'Book Bundle + Parent Amazon Credit',
         description: 'Kid gets $10 Scholastic book bundle, parent gets $10 Amazon gift card!',
@@ -853,7 +910,7 @@ export async function initializeSampleRewardData() {
       },
 
       {
-        partnerId: createdPartners[23].id, // Target Education (index 23)
+        partnerId: createdPartners[26].id, // Target Education (index 26)
         offerType: 'dual_reward',
         title: 'School Supplies + Parent Target Credit',
         description: 'Kid gets school supply bundle, parent gets $15 Target gift card!',
@@ -874,7 +931,7 @@ export async function initializeSampleRewardData() {
       },
 
       {
-        partnerId: createdPartners[24].id, // LEGO Education (index 24)
+        partnerId: createdPartners[27].id, // LEGO Education (index 27)
         offerType: 'dual_reward',
         title: 'LEGO Set + Parent Amazon Credit',
         description: 'Kid gets educational LEGO set, parent gets $20 Amazon gift card!',
