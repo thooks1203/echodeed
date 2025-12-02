@@ -394,7 +394,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
 
   return (
     <div className="md:pl-24" style={{ padding: '20px', minHeight: '100vh', backgroundColor: '#f8f9fa' }}>
-      {/* Header */}
+      {/* Header - Differentiated by school level */}
       <div style={{ textAlign: 'center', marginBottom: '24px', position: 'relative' }}>
         {/* Navigation Buttons */}
         <div style={{ position: 'absolute', left: 0, top: 0, display: 'flex', gap: '8px' }}>
@@ -470,60 +470,180 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           gap: '8px', 
           marginBottom: '8px' 
         }}>
-          <span style={{ fontSize: '32px' }}>👨‍🎓</span>
+          <span style={{ fontSize: '32px' }}>{schoolConfig?.level === 'middle_school' ? '🌈' : '👨‍🎓'}</span>
           <h2 style={{ 
             fontSize: '24px', 
             fontWeight: '700',
-            background: 'linear-gradient(135deg, #10B981, #06B6D4)',
+            background: schoolConfig?.level === 'middle_school' 
+              ? 'linear-gradient(135deg, #F59E0B, #EC4899, #8B5CF6)'
+              : 'linear-gradient(135deg, #10B981, #06B6D4)',
             backgroundClip: 'text',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
             margin: 0
           }}>
-            My Kindness Journey
+            {schoolConfig?.level === 'middle_school' ? 'My Kindness Adventure' : 'My Kindness Journey'}
           </h2>
         </div>
         <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>
-          Welcome back, {user?.name || 'Student'}! • Grade {user?.grade || '7'}
+          {schoolConfig?.level === 'middle_school' 
+            ? `Hey ${user?.name?.split(' ')[0] || 'Explorer'}! Ready for today's adventure? • Grade 7th`
+            : `Welcome back, ${user?.name || 'Student'}! • Grade ${user?.grade || '10'}th`
+          }
         </p>
       </div>
 
-      {/* Student Profile Card */}
+      {/* Student Profile Card - Differentiated by school level */}
       <div style={{
-        background: 'linear-gradient(135deg, #10B981 0%, #06B6D4 100%)',
+        background: schoolConfig?.level === 'middle_school'
+          ? 'linear-gradient(135deg, #F59E0B 0%, #EC4899 50%, #8B5CF6 100%)'
+          : 'linear-gradient(135deg, #10B981 0%, #06B6D4 100%)',
         borderRadius: '16px',
         padding: '24px',
         color: 'white',
         textAlign: 'center',
         marginBottom: '24px',
-        boxShadow: '0 4px 12px rgba(16, 185, 129, 0.2)'
+        boxShadow: schoolConfig?.level === 'middle_school'
+          ? '0 4px 20px rgba(236, 72, 153, 0.3)'
+          : '0 4px 12px rgba(16, 185, 129, 0.2)'
       }}>
-        <div style={{ fontSize: '48px', marginBottom: '12px' }}>🌟</div>
+        <div style={{ fontSize: '48px', marginBottom: '12px' }}>
+          {schoolConfig?.level === 'middle_school' ? '✨' : '🌟'}
+        </div>
         <h3 style={{ fontSize: '20px', fontWeight: '600', margin: 0, marginBottom: '8px' }}>
-          {stats.totalKindnessPoints} Kindness Points
+          {stats.totalKindnessPoints} {schoolConfig?.level === 'middle_school' ? 'Kindness Stars' : 'Kindness Points'}
         </h3>
         <p style={{ fontSize: '14px', opacity: 0.9, margin: 0 }}>
-          You're making a difference every day!
+          {schoolConfig?.level === 'middle_school' 
+            ? "You're a Kindness Superstar! Keep shining! 🌟"
+            : "You're making a difference every day!"
+          }
         </p>
       </div>
 
-      {/* Kindness Connect Promotional Card */}
+      {/* MS ONLY: Kindness Companion - A fun creature that grows with kindness */}
+      {schoolConfig?.level === 'middle_school' && (
+        <div style={{
+          background: 'linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%)',
+          borderRadius: '20px',
+          padding: '20px',
+          marginBottom: '24px',
+          boxShadow: '0 8px 25px rgba(139, 92, 246, 0.3)',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          {/* Sparkle background effects */}
+          <div style={{
+            position: 'absolute',
+            top: '10px',
+            right: '15px',
+            fontSize: '20px',
+            opacity: 0.6,
+            animation: 'pulse 2s infinite'
+          }}>✨</div>
+          <div style={{
+            position: 'absolute',
+            bottom: '15px',
+            left: '20px',
+            fontSize: '16px',
+            opacity: 0.5
+          }}>💫</div>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {/* Kindness Companion creature */}
+            <div style={{
+              width: '80px',
+              height: '80px',
+              background: 'linear-gradient(135deg, #FDE68A, #FBBF24)',
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: stats.totalKindnessPoints >= 500 ? '50px' : stats.totalKindnessPoints >= 200 ? '45px' : '40px',
+              boxShadow: '0 4px 15px rgba(251, 191, 36, 0.4)',
+              border: '3px solid rgba(255, 255, 255, 0.3)'
+            }}>
+              {stats.totalKindnessPoints >= 1000 ? '🦋' : 
+               stats.totalKindnessPoints >= 500 ? '🐣' : 
+               stats.totalKindnessPoints >= 200 ? '🥚' : '🌱'}
+            </div>
+            
+            <div style={{ flex: 1, color: 'white' }}>
+              <h3 style={{ fontSize: '16px', fontWeight: '700', margin: 0, marginBottom: '4px' }}>
+                Your Kindness Companion
+              </h3>
+              <p style={{ fontSize: '13px', opacity: 0.9, margin: 0, marginBottom: '8px' }}>
+                {stats.totalKindnessPoints >= 1000 
+                  ? "Sparkle has transformed into a beautiful butterfly! 🎉"
+                  : stats.totalKindnessPoints >= 500 
+                    ? "Sparkle hatched! Keep being kind to help them grow!"
+                    : stats.totalKindnessPoints >= 200 
+                      ? "Your egg is starting to glow! Almost ready to hatch!"
+                      : "Plant your kindness seed and watch Sparkle grow!"
+                }
+              </p>
+              {/* Progress to next evolution */}
+              <div style={{
+                background: 'rgba(255, 255, 255, 0.2)',
+                borderRadius: '10px',
+                height: '8px',
+                overflow: 'hidden'
+              }}>
+                <div style={{
+                  background: 'linear-gradient(90deg, #FDE68A, #FBBF24)',
+                  height: '100%',
+                  width: `${Math.min(
+                    stats.totalKindnessPoints >= 1000 ? 100 :
+                    stats.totalKindnessPoints >= 500 ? ((stats.totalKindnessPoints - 500) / 500) * 100 :
+                    stats.totalKindnessPoints >= 200 ? ((stats.totalKindnessPoints - 200) / 300) * 100 :
+                    (stats.totalKindnessPoints / 200) * 100
+                  , 100)}%`,
+                  borderRadius: '10px',
+                  transition: 'width 0.5s ease'
+                }} />
+              </div>
+              <p style={{ fontSize: '11px', opacity: 0.8, margin: 0, marginTop: '4px' }}>
+                {stats.totalKindnessPoints >= 1000 
+                  ? "Max level reached! You're amazing!"
+                  : stats.totalKindnessPoints >= 500 
+                    ? `${1000 - stats.totalKindnessPoints} stars until butterfly transformation!`
+                    : stats.totalKindnessPoints >= 200 
+                      ? `${500 - stats.totalKindnessPoints} stars until hatching!`
+                      : `${200 - stats.totalKindnessPoints} stars until your egg appears!`
+                }
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Kindness Connect Promotional Card - MS: Fun Adventures, HS: Service Opportunities */}
       <div style={{
-        background: 'linear-gradient(135deg, #EC4899 0%, #EF4444 100%)',
+        background: schoolConfig?.level === 'middle_school'
+          ? 'linear-gradient(135deg, #06B6D4 0%, #8B5CF6 100%)'
+          : 'linear-gradient(135deg, #EC4899 0%, #EF4444 100%)',
         borderRadius: '16px',
         padding: '20px',
         marginBottom: '16px',
-        boxShadow: '0 4px 12px rgba(236, 72, 153, 0.25)',
+        boxShadow: schoolConfig?.level === 'middle_school'
+          ? '0 4px 12px rgba(6, 182, 212, 0.25)'
+          : '0 4px 12px rgba(236, 72, 153, 0.25)',
         border: '2px solid rgba(255, 255, 255, 0.3)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-          <span style={{ fontSize: '32px' }}>💝</span>
+          <span style={{ fontSize: '32px' }}>{schoolConfig?.level === 'middle_school' ? '🗺️' : '💝'}</span>
           <div>
             <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'white', margin: 0, marginBottom: '4px' }}>
-              Discover Kindness Connect
+              {schoolConfig?.level === 'middle_school' 
+                ? 'Kindness Adventures Await!'
+                : 'Discover Kindness Connect'
+              }
             </h3>
             <p style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.9)', margin: 0 }}>
-              Find verified service opportunities in your community
+              {schoolConfig?.level === 'middle_school'
+                ? 'Explore fun ways to help your community!'
+                : 'Find verified service opportunities in your community'
+              }
             </p>
           </div>
         </div>
@@ -532,7 +652,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           style={{
             width: '100%',
             background: 'white',
-            color: '#EC4899',
+            color: schoolConfig?.level === 'middle_school' ? '#06B6D4' : '#EC4899',
             border: 'none',
             borderRadius: '10px',
             padding: '10px 16px',
@@ -552,17 +672,22 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           }}
           data-testid="button-kindness-connect-promo"
         >
-          Browse Service Opportunities →
+          {schoolConfig?.level === 'middle_school' 
+            ? 'Discover Adventures 🚀'
+            : 'Browse Service Opportunities →'
+          }
         </button>
       </div>
 
-      {/* Service Hours Action Button */}
+      {/* MS: Kindness Quests | HS: Service Hours Action Button */}
       <div style={{ marginBottom: '24px' }}>
         <button
           onClick={() => onNavigateToTab ? onNavigateToTab('community-service') : window.location.href = '/app?tab=community-service'}
           style={{
             width: '100%',
-            background: 'linear-gradient(135deg, #8B5CF6, #EC4899)',
+            background: schoolConfig?.level === 'middle_school'
+              ? 'linear-gradient(135deg, #F59E0B, #EF4444, #EC4899)'
+              : 'linear-gradient(135deg, #8B5CF6, #EC4899)',
             color: 'white',
             border: 'none',
             borderRadius: '16px',
@@ -574,26 +699,39 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
             justifyContent: 'center',
             gap: '12px',
             cursor: 'pointer',
-            boxShadow: '0 8px 25px rgba(139, 92, 246, 0.3)',
+            boxShadow: schoolConfig?.level === 'middle_school'
+              ? '0 8px 25px rgba(245, 158, 11, 0.3)'
+              : '0 8px 25px rgba(139, 92, 246, 0.3)',
             transition: 'all 0.3s ease',
             textShadow: '0 1px 2px rgba(0,0,0,0.2)'
           }}
           onMouseEnter={(e) => {
             const target = e.currentTarget;
             target.style.transform = 'translateY(-2px)';
-            target.style.boxShadow = '0 12px 30px rgba(139, 92, 246, 0.4)';
+            target.style.boxShadow = schoolConfig?.level === 'middle_school'
+              ? '0 12px 30px rgba(245, 158, 11, 0.4)'
+              : '0 12px 30px rgba(139, 92, 246, 0.4)';
           }}
           onMouseLeave={(e) => {
             const target = e.currentTarget;
             target.style.transform = 'translateY(0)';
-            target.style.boxShadow = '0 8px 25px rgba(139, 92, 246, 0.3)';
+            target.style.boxShadow = schoolConfig?.level === 'middle_school'
+              ? '0 8px 25px rgba(245, 158, 11, 0.3)'
+              : '0 8px 25px rgba(139, 92, 246, 0.3)';
           }}
           data-testid="button-log-service-hours"
         >
-          <span style={{ fontSize: '24px' }}>🏥</span>
+          <span style={{ fontSize: '24px' }}>{schoolConfig?.level === 'middle_school' ? '⚡' : '🏥'}</span>
           <div style={{ textAlign: 'left' }}>
-            <div style={{ fontSize: '16px', fontWeight: '700' }}>Log Service Hours</div>
-            <div style={{ fontSize: '13px', opacity: 0.9 }}>Track your community service activities</div>
+            <div style={{ fontSize: '16px', fontWeight: '700' }}>
+              {schoolConfig?.level === 'middle_school' ? 'Start a Kindness Quest!' : 'Log Service Hours'}
+            </div>
+            <div style={{ fontSize: '13px', opacity: 0.9 }}>
+              {schoolConfig?.level === 'middle_school' 
+                ? 'Earn stars by helping others!'
+                : 'Track your community service activities'
+              }
+            </div>
           </div>
           <span style={{ fontSize: '20px', marginLeft: 'auto' }}>→</span>
         </button>
