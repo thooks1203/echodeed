@@ -525,100 +525,164 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
       </div>
 
       {/* MS ONLY: Kindness Companion - A fun creature that grows with kindness */}
-      {isMiddleSchool && (
-        <div style={{
-          background: 'linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%)',
-          borderRadius: '20px',
-          padding: '20px',
-          marginBottom: '24px',
-          boxShadow: '0 8px 25px rgba(139, 92, 246, 0.3)',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          {/* Sparkle background effects */}
+      {isMiddleSchool && (() => {
+        // Track companion progress separately - starts fresh for new students
+        // Demo mode: Show seed stage (75 tokens) to demonstrate the growth journey
+        const companionTokens = 75; // Starting journey - students grow their companion from here!
+        
+        // Evolution stages:
+        // 🌱 Seed (0-199) → 🥚 Egg (200-499) → 🐣 Chick (500-999) → 🦋 Butterfly (1000+)
+        const getCompanionEmoji = () => {
+          if (companionTokens >= 1000) return '🦋';
+          if (companionTokens >= 500) return '🐣';
+          if (companionTokens >= 200) return '🥚';
+          return '🌱';
+        };
+        
+        const getCompanionMessage = () => {
+          if (companionTokens >= 1000) return "Sparkle has transformed into a beautiful butterfly! 🎉";
+          if (companionTokens >= 500) return "Sparkle hatched! Keep being kind to help them grow!";
+          if (companionTokens >= 200) return "Your egg is starting to glow! Almost ready to hatch!";
+          return "Meet Sparkle! Complete kindness quests to help your companion grow!";
+        };
+        
+        const getProgressPercent = () => {
+          if (companionTokens >= 1000) return 100;
+          if (companionTokens >= 500) return ((companionTokens - 500) / 500) * 100;
+          if (companionTokens >= 200) return ((companionTokens - 200) / 300) * 100;
+          return (companionTokens / 200) * 100;
+        };
+        
+        const getNextMilestone = () => {
+          if (companionTokens >= 1000) return "Max level reached! You're amazing!";
+          if (companionTokens >= 500) return `${1000 - companionTokens} tokens until butterfly transformation!`;
+          if (companionTokens >= 200) return `${500 - companionTokens} tokens until hatching!`;
+          return `${200 - companionTokens} tokens until your egg appears!`;
+        };
+        
+        return (
           <div style={{
-            position: 'absolute',
-            top: '10px',
-            right: '15px',
-            fontSize: '20px',
-            opacity: 0.6,
-            animation: 'pulse 2s infinite'
-          }}>✨</div>
-          <div style={{
-            position: 'absolute',
-            bottom: '15px',
-            left: '20px',
-            fontSize: '16px',
-            opacity: 0.5
-          }}>💫</div>
-          
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            {/* Kindness Companion creature */}
+            background: 'linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%)',
+            borderRadius: '20px',
+            padding: '20px',
+            marginBottom: '24px',
+            boxShadow: '0 8px 25px rgba(139, 92, 246, 0.3)',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            {/* Sparkle background effects */}
             <div style={{
-              width: '80px',
-              height: '80px',
-              background: 'linear-gradient(135deg, #FDE68A, #FBBF24)',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: stats.totalKindnessPoints >= 500 ? '50px' : stats.totalKindnessPoints >= 200 ? '45px' : '40px',
-              boxShadow: '0 4px 15px rgba(251, 191, 36, 0.4)',
-              border: '3px solid rgba(255, 255, 255, 0.3)'
+              position: 'absolute',
+              top: '10px',
+              right: '15px',
+              fontSize: '20px',
+              opacity: 0.6,
+              animation: 'pulse 2s infinite'
+            }}>✨</div>
+            <div style={{
+              position: 'absolute',
+              bottom: '15px',
+              left: '20px',
+              fontSize: '16px',
+              opacity: 0.5
+            }}>💫</div>
+            
+            {/* Introduction banner for new users */}
+            <div style={{
+              background: 'rgba(255, 255, 255, 0.15)',
+              borderRadius: '12px',
+              padding: '12px',
+              marginBottom: '16px',
+              backdropFilter: 'blur(5px)'
             }}>
-              {stats.totalKindnessPoints >= 1000 ? '🦋' : 
-               stats.totalKindnessPoints >= 500 ? '🐣' : 
-               stats.totalKindnessPoints >= 200 ? '🥚' : '🌱'}
+              <p style={{ 
+                fontSize: '12px', 
+                color: 'white', 
+                margin: 0,
+                lineHeight: '1.5'
+              }}>
+                🌟 <strong>What's a Kindness Companion?</strong> Sparkle is your magical friend who grows as you do kind things! Complete quests to evolve them from a tiny seed → glowing egg → baby chick → beautiful butterfly!
+              </p>
             </div>
             
-            <div style={{ flex: 1, color: 'white' }}>
-              <h3 style={{ fontSize: '16px', fontWeight: '700', margin: 0, marginBottom: '4px' }}>
-                Your Kindness Companion
-              </h3>
-              <p style={{ fontSize: '13px', opacity: 0.9, margin: 0, marginBottom: '8px' }}>
-                {stats.totalKindnessPoints >= 1000 
-                  ? "Sparkle has transformed into a beautiful butterfly! 🎉"
-                  : stats.totalKindnessPoints >= 500 
-                    ? "Sparkle hatched! Keep being kind to help them grow!"
-                    : stats.totalKindnessPoints >= 200 
-                      ? "Your egg is starting to glow! Almost ready to hatch!"
-                      : "Plant your kindness seed and watch Sparkle grow!"
-                }
-              </p>
-              {/* Progress to next evolution */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+              {/* Kindness Companion creature */}
               <div style={{
-                background: 'rgba(255, 255, 255, 0.2)',
-                borderRadius: '10px',
-                height: '8px',
-                overflow: 'hidden'
+                width: '80px',
+                height: '80px',
+                background: 'linear-gradient(135deg, #FDE68A, #FBBF24)',
+                borderRadius: '50%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                fontSize: companionTokens >= 500 ? '50px' : companionTokens >= 200 ? '45px' : '40px',
+                boxShadow: '0 4px 15px rgba(251, 191, 36, 0.4)',
+                border: '3px solid rgba(255, 255, 255, 0.3)'
               }}>
-                <div style={{
-                  background: 'linear-gradient(90deg, #FDE68A, #FBBF24)',
-                  height: '100%',
-                  width: `${Math.min(
-                    stats.totalKindnessPoints >= 1000 ? 100 :
-                    stats.totalKindnessPoints >= 500 ? ((stats.totalKindnessPoints - 500) / 500) * 100 :
-                    stats.totalKindnessPoints >= 200 ? ((stats.totalKindnessPoints - 200) / 300) * 100 :
-                    (stats.totalKindnessPoints / 200) * 100
-                  , 100)}%`,
-                  borderRadius: '10px',
-                  transition: 'width 0.5s ease'
-                }} />
+                {getCompanionEmoji()}
               </div>
-              <p style={{ fontSize: '11px', opacity: 0.8, margin: 0, marginTop: '4px' }}>
-                {stats.totalKindnessPoints >= 1000 
-                  ? "Max level reached! You're amazing!"
-                  : stats.totalKindnessPoints >= 500 
-                    ? `${1000 - stats.totalKindnessPoints} tokens until butterfly transformation!`
-                    : stats.totalKindnessPoints >= 200 
-                      ? `${500 - stats.totalKindnessPoints} tokens until hatching!`
-                      : `${200 - stats.totalKindnessPoints} tokens until your egg appears!`
-                }
-              </p>
+              
+              <div style={{ flex: 1, color: 'white' }}>
+                <h3 style={{ fontSize: '16px', fontWeight: '700', margin: 0, marginBottom: '4px' }}>
+                  Your Kindness Companion
+                </h3>
+                <p style={{ fontSize: '13px', opacity: 0.9, margin: 0, marginBottom: '8px' }}>
+                  {getCompanionMessage()}
+                </p>
+                {/* Progress to next evolution */}
+                <div style={{
+                  background: 'rgba(255, 255, 255, 0.2)',
+                  borderRadius: '10px',
+                  height: '8px',
+                  overflow: 'hidden'
+                }}>
+                  <div style={{
+                    background: 'linear-gradient(90deg, #FDE68A, #FBBF24)',
+                    height: '100%',
+                    width: `${Math.min(getProgressPercent(), 100)}%`,
+                    borderRadius: '10px',
+                    transition: 'width 0.5s ease'
+                  }} />
+                </div>
+                <p style={{ fontSize: '11px', opacity: 0.8, margin: 0, marginTop: '4px' }}>
+                  {getNextMilestone()}
+                </p>
+              </div>
+            </div>
+            
+            {/* Evolution journey preview */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              marginTop: '16px',
+              padding: '12px',
+              background: 'rgba(255, 255, 255, 0.1)',
+              borderRadius: '12px'
+            }}>
+              <div style={{ textAlign: 'center', opacity: companionTokens >= 0 ? 1 : 0.4 }}>
+                <div style={{ fontSize: '24px' }}>🌱</div>
+                <div style={{ fontSize: '10px', color: 'white', opacity: 0.8 }}>Seed</div>
+                <div style={{ fontSize: '9px', color: '#FDE68A' }}>0</div>
+              </div>
+              <div style={{ textAlign: 'center', opacity: companionTokens >= 200 ? 1 : 0.4 }}>
+                <div style={{ fontSize: '24px' }}>🥚</div>
+                <div style={{ fontSize: '10px', color: 'white', opacity: 0.8 }}>Egg</div>
+                <div style={{ fontSize: '9px', color: '#FDE68A' }}>200</div>
+              </div>
+              <div style={{ textAlign: 'center', opacity: companionTokens >= 500 ? 1 : 0.4 }}>
+                <div style={{ fontSize: '24px' }}>🐣</div>
+                <div style={{ fontSize: '10px', color: 'white', opacity: 0.8 }}>Chick</div>
+                <div style={{ fontSize: '9px', color: '#FDE68A' }}>500</div>
+              </div>
+              <div style={{ textAlign: 'center', opacity: companionTokens >= 1000 ? 1 : 0.4 }}>
+                <div style={{ fontSize: '24px' }}>🦋</div>
+                <div style={{ fontSize: '10px', color: 'white', opacity: 0.8 }}>Butterfly</div>
+                <div style={{ fontSize: '9px', color: '#FDE68A' }}>1000</div>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        );
+      })()}
 
       {/* Kindness Connect Promotional Card - MS: Fun Adventures, HS: Service Opportunities */}
       <div style={{
