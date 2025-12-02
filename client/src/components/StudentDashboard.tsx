@@ -374,7 +374,10 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
   });
 
   // Fetch school-level configuration (MS vs HS)
-  const { config: schoolConfig, isLoading: isLoadingConfig } = useSchoolLevel();
+  const { schoolLevel, config: schoolConfig, isLoading: isLoadingConfig } = useSchoolLevel();
+  
+  // Determine if this is a middle school experience
+  const isMiddleSchool = schoolLevel === 'middle_school';
   
   // Helper: Calculate service hour progress with safe division
   const calculateServiceProgress = (verifiedHours: string | number, goal: number): number => {
@@ -470,11 +473,11 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           gap: '8px', 
           marginBottom: '8px' 
         }}>
-          <span style={{ fontSize: '32px' }}>{schoolConfig?.level === 'middle_school' ? '🌈' : '👨‍🎓'}</span>
+          <span style={{ fontSize: '32px' }}>{isMiddleSchool ? '🌈' : '👨‍🎓'}</span>
           <h2 style={{ 
             fontSize: '24px', 
             fontWeight: '700',
-            background: schoolConfig?.level === 'middle_school' 
+            background: isMiddleSchool 
               ? 'linear-gradient(135deg, #F59E0B, #EC4899, #8B5CF6)'
               : 'linear-gradient(135deg, #10B981, #06B6D4)',
             backgroundClip: 'text',
@@ -482,11 +485,11 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
             WebkitTextFillColor: 'transparent',
             margin: 0
           }}>
-            {schoolConfig?.level === 'middle_school' ? 'My Kindness Adventure' : 'My Kindness Journey'}
+            {isMiddleSchool ? 'My Kindness Adventure' : 'My Kindness Journey'}
           </h2>
         </div>
         <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>
-          {schoolConfig?.level === 'middle_school' 
+          {isMiddleSchool 
             ? `Hey ${user?.name?.split(' ')[0] || 'Explorer'}! Ready for today's adventure? • Grade 7th`
             : `Welcome back, ${user?.name || 'Student'}! • Grade ${user?.grade || '10'}th`
           }
@@ -495,7 +498,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
 
       {/* Student Profile Card - Differentiated by school level */}
       <div style={{
-        background: schoolConfig?.level === 'middle_school'
+        background: isMiddleSchool
           ? 'linear-gradient(135deg, #F59E0B 0%, #EC4899 50%, #8B5CF6 100%)'
           : 'linear-gradient(135deg, #10B981 0%, #06B6D4 100%)',
         borderRadius: '16px',
@@ -503,18 +506,18 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         color: 'white',
         textAlign: 'center',
         marginBottom: '24px',
-        boxShadow: schoolConfig?.level === 'middle_school'
+        boxShadow: isMiddleSchool
           ? '0 4px 20px rgba(236, 72, 153, 0.3)'
           : '0 4px 12px rgba(16, 185, 129, 0.2)'
       }}>
         <div style={{ fontSize: '48px', marginBottom: '12px' }}>
-          {schoolConfig?.level === 'middle_school' ? '✨' : '🌟'}
+          {isMiddleSchool ? '✨' : '🌟'}
         </div>
         <h3 style={{ fontSize: '20px', fontWeight: '600', margin: 0, marginBottom: '8px' }}>
-          {stats.totalKindnessPoints} {schoolConfig?.level === 'middle_school' ? 'Kindness Stars' : 'Kindness Points'}
+          {stats.totalKindnessPoints} {isMiddleSchool ? 'Kindness Stars' : 'Kindness Points'}
         </h3>
         <p style={{ fontSize: '14px', opacity: 0.9, margin: 0 }}>
-          {schoolConfig?.level === 'middle_school' 
+          {isMiddleSchool 
             ? "You're a Kindness Superstar! Keep shining! 🌟"
             : "You're making a difference every day!"
           }
@@ -522,7 +525,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
       </div>
 
       {/* MS ONLY: Kindness Companion - A fun creature that grows with kindness */}
-      {schoolConfig?.level === 'middle_school' && (
+      {isMiddleSchool && (
         <div style={{
           background: 'linear-gradient(135deg, #8B5CF6 0%, #06B6D4 100%)',
           borderRadius: '20px',
@@ -619,28 +622,28 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
 
       {/* Kindness Connect Promotional Card - MS: Fun Adventures, HS: Service Opportunities */}
       <div style={{
-        background: schoolConfig?.level === 'middle_school'
+        background: isMiddleSchool
           ? 'linear-gradient(135deg, #06B6D4 0%, #8B5CF6 100%)'
           : 'linear-gradient(135deg, #EC4899 0%, #EF4444 100%)',
         borderRadius: '16px',
         padding: '20px',
         marginBottom: '16px',
-        boxShadow: schoolConfig?.level === 'middle_school'
+        boxShadow: isMiddleSchool
           ? '0 4px 12px rgba(6, 182, 212, 0.25)'
           : '0 4px 12px rgba(236, 72, 153, 0.25)',
         border: '2px solid rgba(255, 255, 255, 0.3)'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '12px' }}>
-          <span style={{ fontSize: '32px' }}>{schoolConfig?.level === 'middle_school' ? '🗺️' : '💝'}</span>
+          <span style={{ fontSize: '32px' }}>{isMiddleSchool ? '🗺️' : '💝'}</span>
           <div>
             <h3 style={{ fontSize: '16px', fontWeight: '700', color: 'white', margin: 0, marginBottom: '4px' }}>
-              {schoolConfig?.level === 'middle_school' 
+              {isMiddleSchool 
                 ? 'Kindness Adventures Await!'
                 : 'Discover Kindness Connect'
               }
             </h3>
             <p style={{ fontSize: '13px', color: 'rgba(255, 255, 255, 0.9)', margin: 0 }}>
-              {schoolConfig?.level === 'middle_school'
+              {isMiddleSchool
                 ? 'Explore fun ways to help your community!'
                 : 'Find verified service opportunities in your community'
               }
@@ -652,7 +655,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           style={{
             width: '100%',
             background: 'white',
-            color: schoolConfig?.level === 'middle_school' ? '#06B6D4' : '#EC4899',
+            color: isMiddleSchool ? '#06B6D4' : '#EC4899',
             border: 'none',
             borderRadius: '10px',
             padding: '10px 16px',
@@ -672,7 +675,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           }}
           data-testid="button-kindness-connect-promo"
         >
-          {schoolConfig?.level === 'middle_school' 
+          {isMiddleSchool 
             ? 'Discover Adventures 🚀'
             : 'Browse Service Opportunities →'
           }
@@ -685,7 +688,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           onClick={() => onNavigateToTab ? onNavigateToTab('community-service') : window.location.href = '/app?tab=community-service'}
           style={{
             width: '100%',
-            background: schoolConfig?.level === 'middle_school'
+            background: isMiddleSchool
               ? 'linear-gradient(135deg, #F59E0B, #EF4444, #EC4899)'
               : 'linear-gradient(135deg, #8B5CF6, #EC4899)',
             color: 'white',
@@ -699,7 +702,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
             justifyContent: 'center',
             gap: '12px',
             cursor: 'pointer',
-            boxShadow: schoolConfig?.level === 'middle_school'
+            boxShadow: isMiddleSchool
               ? '0 8px 25px rgba(245, 158, 11, 0.3)'
               : '0 8px 25px rgba(139, 92, 246, 0.3)',
             transition: 'all 0.3s ease',
@@ -708,26 +711,26 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           onMouseEnter={(e) => {
             const target = e.currentTarget;
             target.style.transform = 'translateY(-2px)';
-            target.style.boxShadow = schoolConfig?.level === 'middle_school'
+            target.style.boxShadow = isMiddleSchool
               ? '0 12px 30px rgba(245, 158, 11, 0.4)'
               : '0 12px 30px rgba(139, 92, 246, 0.4)';
           }}
           onMouseLeave={(e) => {
             const target = e.currentTarget;
             target.style.transform = 'translateY(0)';
-            target.style.boxShadow = schoolConfig?.level === 'middle_school'
+            target.style.boxShadow = isMiddleSchool
               ? '0 8px 25px rgba(245, 158, 11, 0.3)'
               : '0 8px 25px rgba(139, 92, 246, 0.3)';
           }}
           data-testid="button-log-service-hours"
         >
-          <span style={{ fontSize: '24px' }}>{schoolConfig?.level === 'middle_school' ? '⚡' : '🏥'}</span>
+          <span style={{ fontSize: '24px' }}>{isMiddleSchool ? '⚡' : '🏥'}</span>
           <div style={{ textAlign: 'left' }}>
             <div style={{ fontSize: '16px', fontWeight: '700' }}>
-              {schoolConfig?.level === 'middle_school' ? 'Start a Kindness Quest!' : 'Log Service Hours'}
+              {isMiddleSchool ? 'Start a Kindness Quest!' : 'Log Service Hours'}
             </div>
             <div style={{ fontSize: '13px', opacity: 0.9 }}>
-              {schoolConfig?.level === 'middle_school' 
+              {isMiddleSchool 
                 ? 'Earn stars by helping others!'
                 : 'Track your community service activities'
               }
