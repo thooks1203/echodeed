@@ -722,7 +722,7 @@ function ParentCommunitySection() {
 }
 
 // Principal's Corner Blog Section Component
-function PrincipalsBlogSection() {
+function PrincipalsBlogSection({ isMiddleSchool }: { isMiddleSchool: boolean }) {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const { toast } = useToast();
   
@@ -806,7 +806,9 @@ function PrincipalsBlogSection() {
                 Principal's Corner
               </CardTitle>
               <CardDescription>
-                Insights and guidance from Dr. Darrell Harris, Principal of the Year
+                {isMiddleSchool 
+                  ? "Insights and guidance from Principal McNeil" 
+                  : "Insights and guidance from Dr. Darrell Harris, Principal of the Year"}
               </CardDescription>
             </div>
             <div className="flex gap-2">
@@ -1404,36 +1406,71 @@ export default function ParentDashboard() {
           </div>
         </div>
 
-        {/* Kindness Connect Info Card for Parents */}
-        <Card className="mb-6 bg-gradient-to-r from-pink-50 to-red-50 border-2 border-pink-200">
-          <CardContent className="p-6">
-            <div className="flex items-start gap-4">
-              <div className="w-12 h-12 bg-gradient-to-br from-pink-600 to-red-600 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
-                <span className="text-2xl">💝</span>
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-bold text-gray-900 mb-2">
-                  🌟 Kindness Connect - Help Your Kids Find Meaningful Service
-                </h3>
-                <p className="text-sm text-gray-700 mb-3">
-                  Your {linkedStudents.length === 1 ? 'child can' : 'children can'} discover verified service opportunities through our Kindness Connect platform! We partner with 10+ trusted local organizations seeking young volunteers. From healthcare to environmental projects, there's something for every interest.
-                </p>
-                <div className="bg-white rounded-lg p-3 mb-3 border border-pink-200">
-                  <p className="text-xs font-semibold text-gray-800 mb-2">✨ Why Parents Love Kindness Connect:</p>
-                  <ul className="text-xs text-gray-700 space-y-1">
-                    <li>✓ All organizations are pre-vetted and verified</li>
-                    <li>✓ Kids can browse opportunities that match their interests</li>
-                    <li>✓ Service hours automatically tracked and teacher-verified</li>
-                    <li>✓ You receive real-time notifications when hours are approved</li>
-                  </ul>
+{/* Kindness Connect Info Card for Parents - High School Only */}
+        {!isMiddleSchool && (
+          <Card className="mb-6 bg-gradient-to-r from-pink-50 to-red-50 border-2 border-pink-200">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-pink-600 to-red-600 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
+                  <span className="text-2xl">💝</span>
                 </div>
-                <p className="text-xs text-gray-600 italic">
-                  💡 Encourage your {linkedStudents.length === 1 ? 'child' : 'children'} to explore the Service Hours section to find opportunities and start making a difference!
-                </p>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    🌟 Kindness Connect - Help Your Teen Find Meaningful Service
+                  </h3>
+                  <p className="text-sm text-gray-700 mb-3">
+                    Your {linkedStudents.length === 1 ? 'teen can' : 'teens can'} discover verified service opportunities through our Kindness Connect platform! We partner with 10+ trusted local organizations seeking young volunteers. From healthcare to environmental projects, there's something for every interest.
+                  </p>
+                  <div className="bg-white rounded-lg p-3 mb-3 border border-pink-200">
+                    <p className="text-xs font-semibold text-gray-800 mb-2">✨ Why Parents Love Kindness Connect:</p>
+                    <ul className="text-xs text-gray-700 space-y-1">
+                      <li>✓ All organizations are pre-vetted and verified</li>
+                      <li>✓ Teens can browse opportunities that match their interests</li>
+                      <li>✓ Service hours automatically tracked and teacher-verified</li>
+                      <li>✓ You receive real-time notifications when hours are approved</li>
+                    </ul>
+                  </div>
+                  <p className="text-xs text-gray-600 italic">
+                    💡 Encourage your {linkedStudents.length === 1 ? 'teen' : 'teens'} to explore the Service Hours section to find opportunities and start making a difference!
+                  </p>
+                </div>
               </div>
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
+        
+        {/* Middle School: Character Growth Card */}
+        {isMiddleSchool && (
+          <Card className="mb-6 bg-gradient-to-r from-green-50 to-teal-50 border-2 border-green-200">
+            <CardContent className="p-6">
+              <div className="flex items-start gap-4">
+                <div className="w-12 h-12 bg-gradient-to-br from-green-600 to-teal-600 rounded-full flex items-center justify-center flex-shrink-0 animate-pulse">
+                  <span className="text-2xl">🌱</span>
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-lg font-bold text-gray-900 mb-2">
+                    🌟 Growing Kindness Together!
+                  </h3>
+                  <p className="text-sm text-gray-700 mb-3">
+                    Your {linkedStudents.length === 1 ? 'child is' : 'children are'} building wonderful character habits through daily acts of kindness! Watch their Kindness Companion grow as they share good deeds and earn tokens.
+                  </p>
+                  <div className="bg-white rounded-lg p-3 mb-3 border border-green-200">
+                    <p className="text-xs font-semibold text-gray-800 mb-2">✨ Why Parents Love EchoDeed:</p>
+                    <ul className="text-xs text-gray-700 space-y-1">
+                      <li>✓ Builds positive character habits daily</li>
+                      <li>✓ Earns tokens for local rewards your family will love</li>
+                      <li>✓ Fun Kindness Companion that grows with their kindness</li>
+                      <li>✓ You receive notifications when they reach milestones</li>
+                    </ul>
+                  </div>
+                  <p className="text-xs text-gray-600 italic">
+                    💡 Encourage your {linkedStudents.length === 1 ? 'child' : 'children'} to share a kindness act every day - small acts add up to big character!
+                  </p>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Main Dashboard */}
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
@@ -1444,10 +1481,12 @@ export default function ParentDashboard() {
             <TabsTrigger value="activity" className="flex-1 min-w-fit px-3 py-2 bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg">
               Activity
             </TabsTrigger>
-            <TabsTrigger value="service-hours" className="flex-1 min-w-fit px-3 py-2 bg-teal-600 text-white hover:bg-teal-700 data-[state=active]:bg-teal-700 data-[state=active]:shadow-lg">
-              <Shield className="h-3 w-3 mr-1" />
-              Service
-            </TabsTrigger>
+{!isMiddleSchool && (
+              <TabsTrigger value="service-hours" className="flex-1 min-w-fit px-3 py-2 bg-teal-600 text-white hover:bg-teal-700 data-[state=active]:bg-teal-700 data-[state=active]:shadow-lg">
+                <Shield className="h-3 w-3 mr-1" />
+                Service
+              </TabsTrigger>
+            )}
             <TabsTrigger value="rewards" className="flex-1 min-w-fit px-3 py-2 bg-amber-600 text-white hover:bg-amber-700 data-[state=active]:bg-amber-700 data-[state=active]:shadow-lg">
               Rewards
             </TabsTrigger>
@@ -1771,22 +1810,45 @@ export default function ParentDashboard() {
               </CardHeader>
               <CardContent>
                 <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="item-1">
-                    <AccordionTrigger>How do I know if my child's service hours are verified?</AccordionTrigger>
-                    <AccordionContent>
-                      <p className="text-gray-700 dark:text-gray-300">
-                        Service hours appear in the "Service" tab with clear verification status badges:
-                      </p>
-                      <ul className="list-disc list-inside mt-2 space-y-1 text-gray-600 dark:text-gray-400">
-                        <li><strong className="text-green-600">Verified ✓</strong> - Teacher has approved the hours with photo evidence</li>
-                        <li><strong className="text-orange-600">Pending Review</strong> - Awaiting teacher verification</li>
-                        <li><strong className="text-gray-600">Rejected</strong> - Hours need correction or re-submission</li>
-                      </ul>
-                      <p className="mt-2 text-gray-700 dark:text-gray-300">
-                        You'll receive instant push notifications when hours are verified!
-                      </p>
-                    </AccordionContent>
-                  </AccordionItem>
+                  {/* High School: Service Hours FAQ */}
+                  {!isMiddleSchool && (
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger>How do I know if my teen's service hours are verified?</AccordionTrigger>
+                      <AccordionContent>
+                        <p className="text-gray-700 dark:text-gray-300">
+                          Service hours appear in the "Service" tab with clear verification status badges:
+                        </p>
+                        <ul className="list-disc list-inside mt-2 space-y-1 text-gray-600 dark:text-gray-400">
+                          <li><strong className="text-green-600">Verified ✓</strong> - Teacher has approved the hours with photo evidence</li>
+                          <li><strong className="text-orange-600">Pending Review</strong> - Awaiting teacher verification</li>
+                          <li><strong className="text-gray-600">Rejected</strong> - Hours need correction or re-submission</li>
+                        </ul>
+                        <p className="mt-2 text-gray-700 dark:text-gray-300">
+                          You'll receive instant push notifications when hours are verified!
+                        </p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  )}
+
+                  {/* Middle School: Kindness Companion FAQ */}
+                  {isMiddleSchool && (
+                    <AccordionItem value="item-1">
+                      <AccordionTrigger>What is the Kindness Companion and how does it grow?</AccordionTrigger>
+                      <AccordionContent>
+                        <p className="text-gray-700 dark:text-gray-300 mb-2">
+                          The Kindness Companion is a fun plant that grows as your child earns tokens through acts of kindness!
+                        </p>
+                        <ul className="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
+                          <li><strong className="text-green-600">🌱 Seed (0-199 tokens)</strong> - Just starting their kindness journey!</li>
+                          <li><strong className="text-emerald-600">🌿 Sprout (200-499 tokens)</strong> - Growing strong with kindness!</li>
+                          <li><strong className="text-pink-600">🌸 Flower (500+ tokens)</strong> - Blooming with character!</li>
+                        </ul>
+                        <p className="mt-2 text-gray-700 dark:text-gray-300">
+                          Watch your child's Companion grow on their dashboard as they share kindness acts!
+                        </p>
+                      </AccordionContent>
+                    </AccordionItem>
+                  )}
 
                   <AccordionItem value="item-2">
                     <AccordionTrigger>What are Echo Tokens and how do children earn them?</AccordionTrigger>
@@ -1795,13 +1857,13 @@ export default function ParentDashboard() {
                         Echo Tokens are the currency of kindness in EchoDeed. Children earn tokens for:
                       </p>
                       <ul className="list-disc list-inside space-y-1 text-gray-600 dark:text-gray-400">
-                        <li>Posting anonymous acts of kindness (10-50 tokens based on impact)</li>
-                        <li>Completing verified community service hours (100 tokens per hour)</li>
+                        <li>Posting anonymous acts of kindness ({isMiddleSchool ? '25-75' : '10-50'} tokens based on impact)</li>
+                        {!isMiddleSchool && <li>Completing verified community service hours (100 tokens per hour)</li>}
                         <li>Maintaining daily kindness streaks (bonus tokens)</li>
                         <li>Receiving "hearts" from peers on their posts</li>
                       </ul>
                       <p className="mt-2 text-gray-700 dark:text-gray-300">
-                        Tokens can be redeemed for rewards at 20+ local Greensboro partners!
+                        Tokens can be redeemed for rewards at 20+ local {isMiddleSchool ? 'Burlington area' : 'Greensboro'} partners!
                       </p>
                     </AccordionContent>
                   </AccordionItem>
@@ -1858,7 +1920,8 @@ export default function ParentDashboard() {
                         <li>You're all set! You'll receive instant alerts for:
                           <ul className="list-disc list-inside ml-6 mt-1">
                             <li>New kindness posts from your children</li>
-                            <li>Service hours verified by teachers</li>
+                            {!isMiddleSchool && <li>Service hours verified by teachers</li>}
+                            {isMiddleSchool && <li>Kindness Companion growth milestones</li>}
                             <li>Milestones & achievements unlocked</li>
                             <li>Rewards earned & available for redemption</li>
                           </ul>
@@ -1971,14 +2034,16 @@ export default function ParentDashboard() {
                           <div>
                             <p className="font-semibold text-gray-900 dark:text-white">Your Child's Teacher</p>
                             <p className="text-sm text-gray-600 dark:text-gray-400">
-                              Contact via Eastern Guilford High School main office: (336) 449-4521
+                              Contact via {isMiddleSchool ? 'Turrentine Middle School' : 'Eastern Guilford High School'} main office
                             </p>
                           </div>
                         </div>
                         <div className="flex items-start gap-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                           <Building2 className="h-5 w-5 text-purple-600 mt-0.5" />
                           <div>
-                            <p className="font-semibold text-gray-900 dark:text-white">Principal Dr. Darrell Harris</p>
+                            <p className="font-semibold text-gray-900 dark:text-white">
+                              {isMiddleSchool ? 'Principal McNeil' : 'Principal Dr. Darrell Harris'}
+                            </p>
                             <p className="text-sm text-gray-600 dark:text-gray-400">
                               Character education program lead - Available via school office
                             </p>
@@ -2005,7 +2070,7 @@ export default function ParentDashboard() {
           <TabsContent value="community">
             <div className="space-y-8">
               {/* Principal's Corner Section */}
-              <PrincipalsBlogSection />
+              <PrincipalsBlogSection isMiddleSchool={isMiddleSchool} />
               
               {/* Divider */}
               <div className="border-t border-gray-200 dark:border-gray-700"></div>
