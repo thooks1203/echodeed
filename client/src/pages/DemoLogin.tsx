@@ -2,8 +2,12 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { GraduationCap, Users, Shield, Heart } from 'lucide-react';
 import { switchDemoRole } from '@/hooks/useAuth';
+import { useSchoolLevel } from '@/hooks/useSchoolLevel';
 
 export default function DemoLogin() {
+  const { schoolLevel } = useSchoolLevel();
+  const isMiddleSchool = schoolLevel === 'middle_school';
+  
   const handleRoleSelect = (role: 'student' | 'teacher' | 'admin' | 'parent') => {
     switchDemoRole(role);
   };
@@ -17,7 +21,10 @@ export default function DemoLogin() {
           </div>
           <CardTitle className="text-2xl font-bold">EchoDeed™</CardTitle>
           <CardDescription className="text-base">
-            Eastern Guilford High School - Gibsonville, NC
+            {isMiddleSchool 
+              ? 'Eastern Guilford Middle School - Gibsonville, NC'
+              : 'Eastern Guilford High School - Gibsonville, NC'
+            }
           </CardDescription>
         </CardHeader>
         
@@ -51,7 +58,7 @@ export default function DemoLogin() {
               data-testid="button-demo-admin"
             >
               <Shield className="w-5 h-5 mr-2" />
-              Try as Principal (Dr. Darrell Harris)
+              Try as Principal ({isMiddleSchool ? 'Ms McNeil' : 'Dr. Darrell Harris'})
             </Button>
             
             <Button
@@ -66,7 +73,10 @@ export default function DemoLogin() {
           
           <div className="pt-4 border-t">
             <p className="text-xs text-center text-muted-foreground">
-              Eastern Guilford High School, Gibsonville • Grades 9-12 • 1,200 Students
+              {isMiddleSchool 
+                ? 'Eastern Guilford Middle School, Gibsonville • Grades 6-8 • 800 Students'
+                : 'Eastern Guilford High School, Gibsonville • Grades 9-12 • 1,200 Students'
+              }
             </p>
           </div>
         </CardContent>

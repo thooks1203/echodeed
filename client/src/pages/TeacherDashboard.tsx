@@ -1266,6 +1266,8 @@ export default function TeacherDashboard({ teacherId = "teacher-demo", initialTa
 // Teacher Rewards Component
 function TeacherRewardsSection() {
   const { toast } = useToast();
+  const { schoolLevel } = useSchoolLevel();
+  const isMiddleSchool = schoolLevel === 'middle_school';
   
   // Fetch teacher reward progress
   const { data: rewardProgress, isLoading: progressLoading } = useQuery<any>({
@@ -1310,42 +1312,44 @@ function TeacherRewardsSection() {
       </Card>
 
       {/* Progress Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Service Hours Excellence */}
-        <Card className="relative overflow-hidden">
-          <CardHeader>
-            <div className="flex items-center gap-3">
-              <div className={`p-3 rounded-full ${progress.serviceHoursExcellence?.eligible ? 'bg-green-100' : 'bg-blue-100'}`}>
-                <CheckCircle className={`h-6 w-6 ${progress.serviceHoursExcellence?.eligible ? 'text-green-600' : 'text-blue-600'}`} />
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {/* Service Hours Excellence - High School Only */}
+        {!isMiddleSchool && (
+          <Card className="relative overflow-hidden">
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className={`p-3 rounded-full ${progress.serviceHoursExcellence?.eligible ? 'bg-green-100' : 'bg-blue-100'}`}>
+                  <CheckCircle className={`h-6 w-6 ${progress.serviceHoursExcellence?.eligible ? 'text-green-600' : 'text-blue-600'}`} />
+                </div>
+                <div>
+                  <CardTitle className="text-lg">Service Hours Excellence</CardTitle>
+                  <CardDescription>{progress.serviceHoursExcellence?.description}</CardDescription>
+                </div>
               </div>
-              <div>
-                <CardTitle className="text-lg">Service Hours Excellence</CardTitle>
-                <CardDescription>{progress.serviceHoursExcellence?.description}</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-sm text-gray-600">Progress</span>
+                  <span className="font-semibold">{progress.serviceHoursExcellence?.monthlyProgress || 0}/{progress.serviceHoursExcellence?.monthlyThreshold || 10}</span>
+                </div>
+                <div className="w-full bg-gray-200 rounded-full h-3">
+                  <div 
+                    className={`h-3 rounded-full ${progress.serviceHoursExcellence?.eligible ? 'bg-green-500' : 'bg-blue-500'}`}
+                    style={{ width: `${Math.min(((progress.serviceHoursExcellence?.monthlyProgress || 0) / (progress.serviceHoursExcellence?.monthlyThreshold || 10)) * 100, 100)}%` }}
+                  ></div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Coffee className="h-4 w-4 text-amber-600" />
+                  <span className="text-sm font-medium">{progress.serviceHoursExcellence?.reward}</span>
+                </div>
+                {progress.serviceHoursExcellence?.eligible && (
+                  <Badge className="bg-green-100 text-green-800">Reward Earned! 🎉</Badge>
+                )}
               </div>
-            </div>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Progress</span>
-                <span className="font-semibold">{progress.serviceHoursExcellence?.monthlyProgress || 0}/{progress.serviceHoursExcellence?.monthlyThreshold || 10}</span>
-              </div>
-              <div className="w-full bg-gray-200 rounded-full h-3">
-                <div 
-                  className={`h-3 rounded-full ${progress.serviceHoursExcellence?.eligible ? 'bg-green-500' : 'bg-blue-500'}`}
-                  style={{ width: `${Math.min(((progress.serviceHoursExcellence?.monthlyProgress || 0) / (progress.serviceHoursExcellence?.monthlyThreshold || 10)) * 100, 100)}%` }}
-                ></div>
-              </div>
-              <div className="flex items-center gap-2">
-                <Coffee className="h-4 w-4 text-amber-600" />
-                <span className="text-sm font-medium">{progress.serviceHoursExcellence?.reward}</span>
-              </div>
-              {progress.serviceHoursExcellence?.eligible && (
-                <Badge className="bg-green-100 text-green-800">Reward Earned! 🎉</Badge>
-              )}
-            </div>
-          </CardContent>
-        </Card>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Wellness Champion - Hidden unless AI wellness features enabled */}
         {featureFlags.aiWellness && (

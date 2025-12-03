@@ -792,10 +792,10 @@ export default function AdminDashboard() {
   // Mock admin data (in production, get from auth context)
   const currentAdmin: SchoolAdmin = {
     id: 'admin-001',
-    name: 'Dr. Darrell Harris',
+    name: isMiddleSchool ? 'Ms McNeil' : 'Dr. Darrell Harris',
     role: 'principal',
     districtId: 'district-001',
-    email: 'dharris@easterngs.gcsnc.com'
+    email: isMiddleSchool ? 'mcneil@easternms.gcsnc.com' : 'dharris@easterngs.gcsnc.com'
   };
 
   // Real API calls for customer validation
@@ -818,14 +818,14 @@ export default function AdminDashboard() {
     totalTeachers: 85,
     totalKindnessActs: 18450,
     avgCharacterScore: 8.9,
-    topPerformingSchools: ['Eastern Guilford High School'],
+    topPerformingSchools: [isMiddleSchool ? 'Eastern Guilford Middle School' : 'Eastern Guilford High School'],
     complianceStatus: 'compliant'
   };
 
   const mockSchoolMetrics: SchoolMetrics[] = [
     {
-      schoolId: 'eastern-guilford-hs',
-      schoolName: 'Eastern Guilford High School',
+      schoolId: isMiddleSchool ? 'eastern-guilford-ms' : 'eastern-guilford-hs',
+      schoolName: isMiddleSchool ? 'Eastern Guilford Middle School' : 'Eastern Guilford High School',
       totalStudents: 1200,
       totalTeachers: 85,
       kindnessActsThisWeek: 287,
