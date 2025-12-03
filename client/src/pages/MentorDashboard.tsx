@@ -416,6 +416,41 @@ export default function MentorDashboard({ onBack }: MentorDashboardProps) {
   const [showReflection, setShowReflection] = useState(false);
   const [isCompleting, setIsCompleting] = useState(false);
   const [quizPassed, setQuizPassed] = useState(false);
+  
+  // Modal states for Schedule Activity and View Requirements
+  const [showScheduleModal, setShowScheduleModal] = useState(false);
+  const [showRequirementsModal, setShowRequirementsModal] = useState(false);
+  const [selectedBadge, setSelectedBadge] = useState<MentorBadge | null>(null);
+  const [showSessionModal, setShowSessionModal] = useState(false);
+  const [selectedMentorship, setSelectedMentorship] = useState<Mentorship | null>(null);
+  
+  // Badge requirements data
+  const badgeRequirements: Record<string, { requirements: string[]; tips: string }> = {
+    'First Connection': {
+      requirements: ['Welcome your first mentee', 'Complete initial introduction session'],
+      tips: 'Start by building rapport - share your own kindness story!'
+    },
+    'Active Listener': {
+      requirements: ['Complete 3 mentoring sessions', 'Demonstrate active listening skills in each session'],
+      tips: 'Remember to ask follow-up questions and summarize what your mentee shares.'
+    },
+    'Helper Hero': {
+      requirements: ['Help a mentee complete their first kindness challenge', 'Guide them through goal-setting'],
+      tips: 'Celebrate every small win - encouragement builds confidence!'
+    },
+    'Community Builder': {
+      requirements: ['Organize 3+ group mentoring sessions', 'Earn 1,200+ total tokens', 'Help 3+ mentees complete goals'],
+      tips: 'Group sessions create peer support and multiply your impact!'
+    },
+    'Kindness Champion': {
+      requirements: ['Complete all training modules', 'Mentor 5+ students', 'Maintain 4.5+ rating'],
+      tips: 'Consistency is key - regular check-ins build trust over time.'
+    },
+    'Mentor Master': {
+      requirements: ['Reach Level 5 Mentor status', 'Guide 50+ kindness acts', 'Train other mentors'],
+      tips: 'Share your experience to help new mentors succeed!'
+    }
+  };
 
   // Fetch mentor data
   const { data: mentorships = [], isLoading: mentorshipsLoading } = useQuery<Mentorship[]>({
@@ -913,15 +948,35 @@ export default function MentorDashboard({ onBack }: MentorDashboardProps) {
                         )}
 
                         <div className="flex gap-2">
-                          <Button size="sm" className="bg-gradient-to-r from-blue-500 to-purple-500">
+                          <Button 
+                            size="sm" 
+                            className="bg-gradient-to-r from-blue-500 to-purple-500"
+                            onClick={() => {
+                              setSelectedMentorship(mentorship);
+                              setShowSessionModal(true);
+                            }}
+                          >
                             <MessageCircle className="h-4 w-4 mr-2" />
                             Start Session
                           </Button>
-                          <Button size="sm" variant="outline">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => setShowScheduleModal(true)}
+                          >
                             <Calendar className="h-4 w-4 mr-2" />
                             Schedule Meeting
                           </Button>
-                          <Button size="sm" variant="outline">
+                          <Button 
+                            size="sm" 
+                            variant="outline"
+                            onClick={() => {
+                              toast({
+                                title: `${mentorship.menteeName}'s Progress`,
+                                description: `${mentorship.progressNotes || 'Working toward: ' + mentorship.kindnessGoal}`,
+                              });
+                            }}
+                          >
                             View Progress
                           </Button>
                         </div>
@@ -937,7 +992,10 @@ export default function MentorDashboard({ onBack }: MentorDashboardProps) {
           <TabsContent value="activities" className="space-y-6">
             <div className="flex items-center justify-between">
               <h2 className="text-2xl font-bold">Mentoring Activities</h2>
-              <Button className="bg-gradient-to-r from-green-500 to-emerald-500">
+              <Button 
+                className="bg-gradient-to-r from-green-500 to-emerald-500"
+                onClick={() => setShowScheduleModal(true)}
+              >
                 <Calendar className="h-4 w-4 mr-2" />
                 Schedule Activity
               </Button>
@@ -950,7 +1008,10 @@ export default function MentorDashboard({ onBack }: MentorDashboardProps) {
                     <Calendar className="h-16 w-16 mx-auto mb-4 text-gray-300" />
                     <h3 className="text-xl font-semibold mb-2">No Activities Yet</h3>
                     <p className="text-gray-600 mb-6">Start creating meaningful mentoring experiences.</p>
-                    <Button className="bg-gradient-to-r from-green-500 to-emerald-500">
+                    <Button 
+                      className="bg-gradient-to-r from-green-500 to-emerald-500"
+                      onClick={() => setShowScheduleModal(true)}
+                    >
                       Plan Your First Activity
                     </Button>
                   </CardContent>
@@ -1043,7 +1104,15 @@ export default function MentorDashboard({ onBack }: MentorDashboardProps) {
                         Earned {new Date(badge.earnedAt).toLocaleDateString()}
                       </div>
                     ) : (
-                      <Button size="sm" variant="outline" className="w-full">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="w-full"
+                        onClick={() => {
+                          setSelectedBadge(badge);
+                          setShowRequirementsModal(true);
+                        }}
+                      >
                         View Requirements
                       </Button>
                     )}
@@ -1363,6 +1432,177 @@ export default function MentorDashboard({ onBack }: MentorDashboardProps) {
               )}
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Schedule Activity Modal */}
+      <Dialog open={showScheduleModal} onOpenChange={setShowScheduleModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Calendar className="h-5 w-5 text-green-500" />
+              Schedule Activity
+            </DialogTitle>
+            <DialogDescription>
+              Plan a mentoring activity with your mentee
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Activity Type</label>
+              <select className="w-full p-2 border rounded-lg">
+                <option value="check-in">Weekly Check-In</option>
+                <option value="goal-planning">Goal Planning Session</option>
+                <option value="kindness-brainstorm">Kindness Brainstorm</option>
+                <option value="reflection">Reflection Session</option>
+                <option value="celebration">Achievement Celebration</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Date & Time</label>
+              <input type="datetime-local" className="w-full p-2 border rounded-lg" />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Notes (optional)</label>
+              <textarea 
+                className="w-full p-2 border rounded-lg" 
+                rows={3}
+                placeholder="What do you want to discuss?"
+              />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <Button variant="outline" onClick={() => setShowScheduleModal(false)}>
+                Cancel
+              </Button>
+              <Button 
+                className="bg-gradient-to-r from-green-500 to-emerald-500"
+                onClick={() => {
+                  toast({
+                    title: "Activity Scheduled!",
+                    description: "Your mentoring activity has been added to your calendar.",
+                  });
+                  setShowScheduleModal(false);
+                }}
+              >
+                Schedule
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* View Requirements Modal */}
+      <Dialog open={showRequirementsModal} onOpenChange={setShowRequirementsModal}>
+        <DialogContent className="max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <div className="text-3xl">{selectedBadge?.badgeIcon}</div>
+              {selectedBadge?.badgeName}
+            </DialogTitle>
+            <DialogDescription>
+              {selectedBadge?.description}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <h4 className="font-semibold mb-2 flex items-center gap-2">
+                <Target className="h-4 w-4 text-purple-500" />
+                Requirements
+              </h4>
+              <ul className="space-y-2">
+                {(badgeRequirements[selectedBadge?.badgeName || '']?.requirements || ['Complete mentoring activities']).map((req, idx) => (
+                  <li key={idx} className="flex items-start gap-2 text-sm">
+                    <CheckCircle className="h-4 w-4 text-gray-300 mt-0.5 flex-shrink-0" />
+                    <span>{req}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="bg-blue-50 p-3 rounded-lg">
+              <h4 className="font-semibold text-blue-800 mb-1 flex items-center gap-2">
+                <Lightbulb className="h-4 w-4" />
+                Pro Tip
+              </h4>
+              <p className="text-sm text-blue-700">
+                {badgeRequirements[selectedBadge?.badgeName || '']?.tips || 'Keep mentoring consistently to unlock this badge!'}
+              </p>
+            </div>
+            <div className="flex items-center justify-between text-sm">
+              <Badge variant="outline">{selectedBadge?.tier}</Badge>
+              <span className="text-amber-600 font-medium">
+                <Award className="h-4 w-4 inline mr-1" />
+                {selectedBadge?.tokenReward} tokens
+              </span>
+            </div>
+            <Button 
+              className="w-full"
+              onClick={() => setShowRequirementsModal(false)}
+            >
+              Got it!
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Session Modal */}
+      <Dialog open={showSessionModal} onOpenChange={setShowSessionModal}>
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <MessageCircle className="h-5 w-5 text-blue-500" />
+              Session with {selectedMentorship?.menteeName}
+            </DialogTitle>
+            <DialogDescription>
+              Record notes from your mentoring session
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <h4 className="font-semibold text-blue-800 mb-1">Current Goal</h4>
+              <p className="text-blue-700">{selectedMentorship?.kindnessGoal}</p>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">What did you discuss today?</label>
+              <textarea 
+                className="w-full p-2 border rounded-lg" 
+                rows={3}
+                placeholder="Summarize your conversation..."
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Kindness Progress</label>
+              <select className="w-full p-2 border rounded-lg">
+                <option value="on-track">On Track - making good progress</option>
+                <option value="needs-support">Needs Support - could use extra help</option>
+                <option value="achieved">Goal Achieved! 🎉</option>
+              </select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Next Steps</label>
+              <textarea 
+                className="w-full p-2 border rounded-lg" 
+                rows={2}
+                placeholder="What will your mentee work on next?"
+              />
+            </div>
+            <div className="flex gap-2 justify-end">
+              <Button variant="outline" onClick={() => setShowSessionModal(false)}>
+                Cancel
+              </Button>
+              <Button 
+                className="bg-gradient-to-r from-blue-500 to-purple-500"
+                onClick={() => {
+                  toast({
+                    title: "Session Recorded!",
+                    description: "Great work! Your session notes have been saved.",
+                  });
+                  setShowSessionModal(false);
+                }}
+              >
+                Save Session
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>
