@@ -121,6 +121,30 @@ export default function Landing() {
             </div>
           )}
 
+          {/* Primary CTAs for Real Use */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Link href="/school-register">
+              <Button
+                size="lg"
+                className="w-full sm:w-auto px-8 py-6 text-lg font-bold bg-white text-purple-600 hover:bg-gray-100 shadow-xl"
+                data-testid="button-register-school"
+              >
+                <Shield className="w-5 h-5 mr-2" />
+                Register Your School
+              </Button>
+            </Link>
+            <Link href="/student-signup">
+              <Button
+                size="lg"
+                className="w-full sm:w-auto px-8 py-6 text-lg font-bold bg-gradient-to-r from-emerald-400 to-teal-500 text-white hover:from-emerald-500 hover:to-teal-600 shadow-xl"
+                data-testid="button-student-signup"
+              >
+                <GraduationCap className="w-5 h-5 mr-2" />
+                Student Sign Up
+              </Button>
+            </Link>
+          </div>
+
           {/* CTA Section - Different messaging for MS vs HS */}
           <div className="mb-8">
             <h2 className="text-2xl font-semibold text-white mb-2">
@@ -240,27 +264,23 @@ export default function Landing() {
             </Card>
           </div>
 
-          {/* Footer Info - Different for MS vs HS */}
+          {/* Footer Info - Welcoming to all schools */}
           <div className="mt-16 pt-8 border-t border-white/20">
-            {isMiddleSchool ? (
-              <>
-                <p className="text-sm text-white/70">
-                  🌟 Perfect for Middle Schools (Grades 6-8)
-                </p>
-                <p className="text-xs text-white/60 mt-2">
-                  Optional Community Service • Fun Character Building • Age-Appropriate Rewards
-                </p>
-              </>
-            ) : (
-              <>
-                <p className="text-sm text-white/70">
-                  Currently piloting at Eastern Guilford High School, Gibsonville, NC
-                </p>
-                <p className="text-xs text-white/60 mt-2">
-                  Grades 9-12 • 1,200 Students • Led by Principal Dr. Darrell Harris
-                </p>
-              </>
-            )}
+            <p className="text-sm text-white/70">
+              {isMiddleSchool 
+                ? '🌟 Perfect for Middle Schools (Grades 6-8)'
+                : '🎓 Available for All K-12 Schools Nationwide'
+              }
+            </p>
+            <p className="text-xs text-white/60 mt-2">
+              {isMiddleSchool 
+                ? 'Optional Community Service • Fun Character Building • Age-Appropriate Rewards'
+                : 'Character Education • Service-Learning Tracking • Student Rewards • FERPA Compliant'
+              }
+            </p>
+            <p className="text-xs text-white/50 mt-4">
+              Questions? Contact us at hello@echodeed.com
+            </p>
           </div>
         </div>
       </div>
