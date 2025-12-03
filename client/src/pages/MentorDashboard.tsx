@@ -89,7 +89,7 @@ type TrainingModule = {
 };
 
 const trainingContent: Record<string, {
-  lessons: { title: string; content: string; activity?: string }[];
+  lessons: { title: string; content: string; activity?: string; scenario?: { situation: string; options: string[]; bestChoice: number; explanation: string } }[];
   quiz: { question: string; options: string[]; correct: number }[];
   reflection: string;
 }> = {
@@ -97,17 +97,54 @@ const trainingContent: Record<string, {
     lessons: [
       {
         title: 'What is Kindness Mentoring?',
-        content: 'As a Kindness Mentor, you help younger students discover the joy of spreading kindness. You\'re not just teaching - you\'re inspiring! Your role is to guide, support, and celebrate their kindness journey.',
-        activity: 'Think about a time someone showed you kindness. How did it make you feel?'
+        content: 'As a Kindness Mentor, you help younger students discover the joy of spreading kindness. You\'re not just teaching - you\'re inspiring! Your role is to guide, support, and celebrate their kindness journey.\n\nMentoring is different from teaching because you\'re building a personal relationship based on trust, encouragement, and shared experiences. Your mentee will look up to you as someone who believes in them.',
+        activity: 'Think about a time someone showed you kindness. How did it make you feel? Write down 3 feelings you experienced.'
       },
       {
         title: 'The Four Pillars of Mentoring',
-        content: '1. GUIDE, don\'t direct - Ask questions that help mentees think for themselves\n2. LISTEN actively - Pay full attention to their ideas and feelings\n3. ENCOURAGE creativity - Support their unique kindness ideas\n4. CELEBRATE progress - Recognize every act of kindness, big or small',
-        activity: 'Practice asking "What do you think would help?" instead of giving direct answers.'
+        content: '1. GUIDE, don\'t direct - Ask questions that help mentees think for themselves\n2. LISTEN actively - Pay full attention to their ideas and feelings\n3. ENCOURAGE creativity - Support their unique kindness ideas\n4. CELEBRATE progress - Recognize every act of kindness, big or small\n\nThese four pillars work together. When you guide with questions, you naturally listen to their answers. When you encourage their ideas, you have more to celebrate!',
+        activity: 'Practice asking "What do you think would help?" instead of giving direct answers.',
+        scenario: {
+          situation: 'Your mentee says: "I want to do something nice for the new kid, but I don\'t know what."',
+          options: [
+            'Tell them exactly what to do: "Just share your lunch with them."',
+            'Ask: "What do you think would make someone feel welcome? What would YOU want if you were new?"',
+            'Say: "That\'s too hard. Let\'s think of something easier."',
+            'Change the subject to something else.'
+          ],
+          bestChoice: 1,
+          explanation: 'Great mentors GUIDE by asking questions that help mentees discover their own answers. This builds their confidence and creativity!'
+        }
       },
       {
         title: 'Being a Role Model',
-        content: 'Your mentee will look up to you! Show kindness in your own actions, be patient when things don\'t go perfectly, and always speak positively about others.',
+        content: 'Your mentee will look up to you! Show kindness in your own actions, be patient when things don\'t go perfectly, and always speak positively about others.\n\nRemember: They\'re watching how YOU treat people, how you handle frustration, and how you talk about others when they\'re not around. Your actions teach more than your words.',
+        activity: 'For the next 24 hours, notice your own acts of kindness. How many can you count?'
+      },
+      {
+        title: 'Your Mentoring Style',
+        content: 'Everyone has a unique mentoring style based on their personality and strengths. Some mentors are:\n\n• The Encourager - Always finding something positive to say\n• The Creative - Full of fun activity ideas\n• The Listener - Making mentees feel truly heard\n• The Problem-Solver - Helping overcome obstacles\n\nYou don\'t have to pick just one! The best mentors combine different styles based on what their mentee needs.',
+        activity: 'Which mentoring style feels most natural to you? Which one might you need to practice more?'
+      },
+      {
+        title: 'Setting Up for Success',
+        content: 'Before your first session with a mentee, prepare yourself:\n\n✓ Review what you know about them (grade, interests if shared)\n✓ Prepare 2-3 conversation starters\n✓ Think of a kindness story from your own life to share\n✓ Have a backup activity ready in case they\'re shy\n✓ Remember: It\'s okay to feel nervous - they probably are too!',
+        scenario: {
+          situation: 'It\'s your first meeting with your mentee. They seem nervous and won\'t make eye contact.',
+          options: [
+            'Ask them lots of questions quickly to get them talking.',
+            'Share something about yourself first to help them feel comfortable.',
+            'Tell them they need to speak up or this won\'t work.',
+            'Sit in silence until they talk.'
+          ],
+          bestChoice: 1,
+          explanation: 'Sharing about yourself first (like a favorite hobby or a funny story) helps break the ice. It shows you\'re a real person and makes it easier for them to open up.'
+        }
+      },
+      {
+        title: 'The Mentor\'s Promise',
+        content: 'As a Kindness Mentor, you make these promises to your mentee:\n\n🤝 I will show up when I say I will\n👂 I will listen without judgment\n💪 I will believe in you, even when you don\'t believe in yourself\n🎉 I will celebrate your kindness, big or small\n❤️ I will be patient as we learn together\n\nThese promises build the foundation of trust that makes mentoring work.',
+        activity: 'Which promise do you think will be easiest for you to keep? Which might be challenging?'
       }
     ],
     quiz: [
@@ -120,30 +157,97 @@ const trainingContent: Record<string, {
         question: 'Which is the BEST way to help a mentee?',
         options: ['Do everything for them', 'Ask questions that help them think', 'Give them all the answers', 'Tell them what to do'],
         correct: 1
+      },
+      {
+        question: 'What does GUIDE mean in the Four Pillars?',
+        options: ['Give direct instructions', 'Ask questions to help them think for themselves', 'Tell them what\'s right and wrong', 'Show them exactly what to do'],
+        correct: 1
+      },
+      {
+        question: 'When meeting a shy mentee for the first time, you should:',
+        options: ['Ask lots of rapid-fire questions', 'Share something about yourself first', 'Wait silently until they talk', 'Tell them they need to speak up'],
+        correct: 1
+      },
+      {
+        question: 'Which is NOT part of the Mentor\'s Promise?',
+        options: ['I will show up when I say I will', 'I will always have perfect answers', 'I will listen without judgment', 'I will celebrate your kindness'],
+        correct: 1
       }
     ],
-    reflection: 'What quality do you think makes the best mentor? How will you use that quality with your mentee?'
+    reflection: 'What quality do you think makes the best mentor? How will you use that quality with your mentee? Think about a mentor you\'ve had (teacher, coach, older sibling) - what did they do that made a difference for you?'
   },
   'Building Trust and Connection': {
     lessons: [
       {
         title: 'Why Trust Matters',
-        content: 'Trust is the foundation of any great mentoring relationship. When your mentee trusts you, they\'ll feel safe to share ideas, try new things, and even make mistakes.',
-        activity: 'Remember a teacher or coach you really trusted. What did they do to earn that trust?'
+        content: 'Trust is the foundation of any great mentoring relationship. When your mentee trusts you, they\'ll feel safe to share ideas, try new things, and even make mistakes without fear of judgment.\n\nBuilding trust doesn\'t happen overnight - it\'s built through consistent small actions over time. Every time you keep a promise, listen carefully, or remember something they told you, you\'re adding to the trust bank.',
+        activity: 'Remember a teacher or coach you really trusted. What specific things did they do to earn that trust? List at least 3.'
+      },
+      {
+        title: 'The Trust Equation',
+        content: 'Trust is built through a simple formula:\n\nTRUST = Reliability + Credibility + Connection - Self-Interest\n\n• Reliability: Do what you say you\'ll do\n• Credibility: Know what you\'re talking about\n• Connection: Show you genuinely care\n• Self-Interest: Put their needs before yours\n\nThe more you focus on THEM (not yourself), the faster trust grows.',
+        activity: 'Rate yourself 1-5 on each part of the trust equation. Which area can you improve?'
       },
       {
         title: 'Building Connection',
-        content: 'Use these trust-building strategies:\n• Use their name frequently - it shows you care\n• Show genuine interest in their world - ask about their hobbies and friends\n• Share appropriate experiences from your own life first\n• Be reliable and consistent - always keep your promises',
-        activity: 'Practice introducing yourself and finding 3 things in common with someone new.'
+        content: 'Use these trust-building strategies:\n\n• Use their name frequently - it shows you care and remember them\n• Show genuine interest in their world - ask about their hobbies, friends, and what makes them excited\n• Share appropriate experiences from your own life first - this shows vulnerability and makes them comfortable\n• Be reliable and consistent - always keep your promises, even small ones\n• Remember details they share - asking "How did your soccer game go?" shows you were listening',
+        activity: 'Practice introducing yourself and finding 3 things in common with someone new.',
+        scenario: {
+          situation: 'Your mentee mentions they have a dog named Max. Two weeks later, you meet again.',
+          options: [
+            'Start talking about the kindness activity right away.',
+            'Ask "How\'s Max doing? Has he learned any new tricks?"',
+            'Say "Do you have any pets?"',
+            'Talk about your own pet instead.'
+          ],
+          bestChoice: 1,
+          explanation: 'Remembering and asking about details they shared (like their dog\'s name) shows you were really listening and that you care about their life!'
+        }
       },
       {
         title: 'Active Listening Skills',
-        content: 'Active listening means giving your full attention. Put away distractions, make eye contact, nod to show understanding, and ask follow-up questions. Never interrupt!',
-        activity: 'Try the 2-minute challenge: Listen to a friend for 2 minutes without interrupting, then summarize what they said.'
+        content: 'Active listening is a superpower that most people never develop. Here\'s how to do it:\n\n👀 Eyes: Put away distractions, make comfortable eye contact\n🧠 Mind: Focus on understanding, not on what you\'ll say next\n😊 Body: Nod, lean in slightly, show you\'re engaged\n❓ Questions: Ask follow-up questions like "Tell me more about that"\n🔄 Reflect: Summarize what they said to show you understood\n\nNever interrupt! Let them finish their thoughts completely.',
+        activity: 'Try the 2-minute challenge: Listen to a friend for 2 full minutes without interrupting once, then summarize what they said.'
+      },
+      {
+        title: 'Reading Body Language',
+        content: 'Your mentee might not always tell you how they\'re feeling with words. Learn to read their body language:\n\n😊 Engaged: Leaning forward, eye contact, nodding\n😟 Uncomfortable: Crossed arms, looking away, fidgeting\n😔 Sad: Slumped shoulders, quiet voice, slow responses\n😤 Frustrated: Clenched fists, short answers, sighing\n\nWhen you notice these signs, gently check in: "You seem a little quiet today. Is everything okay?"',
+        scenario: {
+          situation: 'Your mentee is sitting with crossed arms and looking at the floor. When you ask about their week, they just say "Fine."',
+          options: [
+            'Accept "fine" as an answer and move on to the activity.',
+            'Say "You don\'t seem fine. Tell me what\'s wrong right now."',
+            'Gently say "I notice you seem a little different today. Want to talk about anything?"',
+            'Ignore it and hope they\'ll cheer up.'
+          ],
+          bestChoice: 2,
+          explanation: 'A gentle, non-pressuring check-in shows you notice and care, while giving them the choice to share or not. Forcing them to talk can break trust.'
+        }
       },
       {
         title: 'When Things Get Hard',
-        content: 'Sometimes mentees feel shy, frustrated, or don\'t want to participate. That\'s okay! Stay patient, offer encouragement, and remember that building trust takes time.',
+        content: 'Sometimes mentees feel shy, frustrated, or don\'t want to participate. That\'s okay! Here\'s what to do:\n\n😶 If they\'re shy: Give them time, share about yourself first, use activities instead of just talking\n😤 If they\'re frustrated: Acknowledge their feelings, take a break, simplify the task\n🙅 If they don\'t want to participate: Ask what\'s going on, offer choices, don\'t force it\n\nRemember: Building trust takes time. Some days will be harder than others, and that\'s completely normal.',
+        activity: 'Think of a time YOU felt shy or didn\'t want to participate in something. What would have helped you?'
+      },
+      {
+        title: 'Handling Mistakes Gracefully',
+        content: 'Everyone makes mistakes - including you! How you handle mistakes affects trust:\n\nWhen THEY make a mistake:\n• Don\'t make a big deal of it\n• Say "That\'s okay! Let\'s try again."\n• Share a time you made a similar mistake\n\nWhen YOU make a mistake:\n• Admit it honestly: "I was wrong about that"\n• Apologize if needed: "I\'m sorry I forgot our meeting"\n• Show how you\'ll do better: "I\'ll set a reminder next time"\n\nBeing honest about mistakes actually BUILDS trust!',
+        scenario: {
+          situation: 'You accidentally forgot about a scheduled meeting with your mentee.',
+          options: [
+            'Pretend it didn\'t happen and don\'t mention it.',
+            'Make up an excuse like "Something important came up."',
+            'Apologize sincerely, explain you forgot, and promise to set reminders.',
+            'Blame them for not reminding you.'
+          ],
+          bestChoice: 2,
+          explanation: 'Honest apologies build trust. Making excuses or pretending it didn\'t happen damages the relationship because kids can usually tell when adults aren\'t being truthful.'
+        }
+      },
+      {
+        title: 'Creating a Safe Space',
+        content: 'Your mentee needs to know that your time together is a judgment-free zone where they can:\n\n✅ Share ideas without being laughed at\n✅ Make mistakes without being criticized\n✅ Express feelings without being dismissed\n✅ Ask questions without feeling "dumb"\n✅ Be themselves without pretending\n\nYou create this safe space through your words, reactions, and body language. When they share something vulnerable, protect it carefully.',
+        activity: 'Think of a place or person that feels "safe" to you. What makes it feel that way? How can you create that feeling for your mentee?'
       }
     ],
     quiz: [
@@ -154,37 +258,109 @@ const trainingContent: Record<string, {
       },
       {
         question: 'What should you do if your mentee is shy?',
-        options: ['Force them to talk', 'Get frustrated', 'Be patient and encouraging', 'Give up on them'],
+        options: ['Force them to talk', 'Get frustrated', 'Be patient and share about yourself first', 'Give up on them'],
         correct: 2
+      },
+      {
+        question: 'Active listening includes all of these EXCEPT:',
+        options: ['Making eye contact', 'Asking follow-up questions', 'Thinking about what you\'ll say next while they talk', 'Summarizing what they said'],
+        correct: 2
+      },
+      {
+        question: 'If your mentee seems upset but says they\'re "fine," you should:',
+        options: ['Accept it and move on', 'Force them to tell you what\'s wrong', 'Gently say you noticed they seem different and ask if they want to talk', 'Ignore their feelings'],
+        correct: 2
+      },
+      {
+        question: 'When YOU make a mistake as a mentor, the best thing to do is:',
+        options: ['Pretend it didn\'t happen', 'Make up an excuse', 'Admit it honestly and apologize', 'Blame someone else'],
+        correct: 2
+      },
+      {
+        question: 'Remembering details your mentee shared (like their pet\'s name) shows:',
+        options: ['You have a good memory', 'You were really listening and you care', 'You\'re trying to show off', 'Nothing important'],
+        correct: 1
       }
     ],
-    reflection: 'Think of a time you felt really listened to. How will you create that feeling for your mentee?'
+    reflection: 'Think of a time you felt really listened to and understood. How did that person make you feel? What specific things did they do? Now imagine giving that same gift of being heard to your mentee. How will you create that feeling for them?'
   },
   'Inspiring Kindness Creativity': {
     lessons: [
       {
         title: 'The SPARK Framework',
-        content: 'Use SPARK to help mentees discover their unique kindness style:\n\nS - Strengths: Connect kindness to what they\'re already good at\nP - Problem-solving: Turn their concerns into kindness opportunities\nA - Action-oriented: Move from ideas to reality with small steps\nR - Ripple effect: Help them see the broader impact of their kindness\nK - Keep sustainable: Make kindness a lasting habit, not just one-time',
-        activity: 'Think of your own strengths. How could you use them to spread kindness?'
+        content: 'Use SPARK to help mentees discover their unique kindness style:\n\n⭐ S - Strengths: Connect kindness to what they\'re already good at\n💡 P - Problem-solving: Turn their concerns into kindness opportunities\n🏃 A - Action-oriented: Move from ideas to reality with small steps\n🌊 R - Ripple effect: Help them see the broader impact of their kindness\n🔄 K - Keep sustainable: Make kindness a lasting habit, not just one-time\n\nThis framework helps you guide conversations and generate ideas together.',
+        activity: 'Think of your own strengths. How could you use them to spread kindness? (Example: If you\'re good at art, you could make cards for people having a hard day.)'
+      },
+      {
+        title: 'Discovering Their Strengths',
+        content: 'Every kid has unique strengths that can become kindness superpowers:\n\n🎨 Creative kids: Can make cards, posters, or art projects for others\n⚽ Athletic kids: Can include others in games, teach younger kids\n📚 Bookworm kids: Can read to younger students, share book recommendations\n🗣️ Social kids: Can welcome new students, introduce people to each other\n🔧 Problem-solvers: Can help classmates with difficult tasks\n\nYour job is to help them see their strengths as tools for kindness!',
+        scenario: {
+          situation: 'Your mentee loves video games and spends most of their free time playing. They say they can\'t think of any kindness ideas.',
+          options: [
+            'Tell them video games are a waste of time and suggest something else.',
+            'Help them see how gaming can connect to kindness: teaching others to play, including lonely classmates in games, being a good sport.',
+            'Say that\'s okay and pick a kindness idea for them.',
+            'Give up on connecting their interests to kindness.'
+          ],
+          bestChoice: 1,
+          explanation: 'Every interest can connect to kindness! Gaming can lead to including others, teaching patience, being a good sport, or even raising money for charity through gaming events.'
+        }
       },
       {
         title: 'Brainstorming Kindness Ideas',
-        content: 'Great mentors help generate ideas! Try these techniques:\n• "What If" questions - "What if everyone in your class smiled at one new person today?"\n• Building on interests - If they love art, maybe they can make cards for lonely classmates\n• Small + consistent > Big + rare - Daily small kindnesses create bigger impact',
-        activity: 'Generate 5 kindness ideas that a 4th grader could do in just 5 minutes.'
+        content: 'Great mentors help generate ideas! Try these brainstorming techniques:\n\n🤔 "What If" questions:\n• "What if everyone in your class smiled at one new person today?"\n• "What if you could make someone\'s day 10% better?"\n\n💡 Building on interests:\n• If they love art → make cards for lonely classmates\n• If they love animals → collect supplies for the animal shelter\n\n📏 Small + consistent > Big + rare:\n• Daily small kindnesses create bigger impact than one big gesture\n\nThe goal is for THEM to come up with ideas, with your guidance!',
+        activity: 'Generate 5 kindness ideas that a 4th grader could do in just 5 minutes at school.'
+      },
+      {
+        title: 'The Kindness Planning Method',
+        content: 'Help your mentee turn ideas into action with this simple planning method:\n\n1️⃣ WHAT will you do? (Be specific!)\n2️⃣ WHO will it help?\n3️⃣ WHEN will you do it?\n4️⃣ WHERE will it happen?\n5️⃣ WHAT might go wrong? (Plan B!)\n\nExample:\n• WHAT: Write an encouraging note\n• WHO: A classmate who seems sad\n• WHEN: Tomorrow during lunch\n• WHERE: In the cafeteria\n• PLAN B: If they\'re not there, leave it on their desk',
+        activity: 'Pick one kindness idea and walk through all 5 planning questions.',
+        scenario: {
+          situation: 'Your mentee says "I want to be nice to everyone!" but can\'t name a specific action.',
+          options: [
+            'Say "That\'s great!" and leave it at that.',
+            'Help them get specific: "That\'s wonderful! Let\'s pick ONE person and ONE thing you\'ll do for them this week."',
+            'Tell them their idea is too vague.',
+            'Give them a specific action to do instead.'
+          ],
+          bestChoice: 1,
+          explanation: 'Vague intentions rarely become actions. Helping them get specific (one person, one action, one timeline) makes it much more likely to actually happen!'
+        }
       },
       {
         title: 'Overcoming Obstacles',
-        content: 'What happens when kindness gets rejected? Help your mentee understand that:\n• Not everyone will respond positively, and that\'s okay\n• The VALUE is in the intention and effort, not just the outcome\n• Every "no" brings them closer to a meaningful "yes"\n• Rejection is part of being brave enough to try',
-        activity: 'Role-play: How would you respond if your mentee\'s kindness was ignored?'
+        content: 'What happens when kindness gets rejected? Help your mentee understand:\n\n❌ Not everyone will respond positively, and that\'s okay\n💎 The VALUE is in the intention and effort, not just the outcome\n🎯 Every "no" brings them closer to a meaningful "yes"\n🦁 Rejection is part of being brave enough to try\n\nPrepare them for possible obstacles:\n• What if they\'re busy?\n• What if they say no?\n• What if someone laughs?\n\nRole-play these scenarios so they feel ready!',
+        activity: 'Role-play: How would you respond if your mentee\'s kindness was ignored or rejected? Practice saying supportive things.'
+      },
+      {
+        title: 'When Kindness Doesn\'t Go as Planned',
+        content: 'Sometimes kindness attempts don\'t work out:\n\n😞 The person didn\'t notice\n😕 They said "no thanks"\n😢 Someone made fun of the idea\n😤 It backfired somehow\n\nHere\'s what to say:\n• "I\'m so proud of you for trying!"\n• "It takes courage to be kind. That courage still counts."\n• "What did you learn? What might you try differently?"\n• "One person\'s reaction doesn\'t define your kindness."\n\nNever let a setback discourage them from trying again!',
+        scenario: {
+          situation: 'Your mentee made a friendship bracelet for a classmate, but the classmate said "I don\'t want that" and walked away. Your mentee is upset.',
+          options: [
+            'Say "Well, that person is just mean. Forget about them."',
+            'Tell them they shouldn\'t have made the bracelet.',
+            'Acknowledge their feelings, praise their courage, and help them see that the VALUE was in the kind intention.',
+            'Change the subject to avoid the uncomfortable feelings.'
+          ],
+          bestChoice: 2,
+          explanation: 'First acknowledge their feelings (validation), then praise their courage (encouragement), and finally help them see the value was in trying (reframing). This builds resilience!'
+        }
       },
       {
         title: 'Celebrating Kindness Wins',
-        content: 'Recognition fuels motivation! Celebrate every win:\n• High-fives and genuine praise\n• Share their success stories (with permission)\n• Help them see the impact they\'ve made\n• Encourage them to celebrate others too',
+        content: 'Recognition fuels motivation! Celebrate every win:\n\n🙌 High-fives and genuine, specific praise\n📢 Share their success stories (with permission)\n👀 Help them SEE the impact they\'ve made\n🎉 Encourage them to celebrate others too\n\nBe specific with praise:\n❌ "Good job" (vague)\n✅ "I love how you noticed she was sitting alone and invited her to join you. That took courage!" (specific)\n\nSpecific praise teaches them what to repeat!',
+        activity: 'Think of 3 specific ways you could celebrate a mentee\'s kindness act. Be as detailed as possible.'
       },
       {
         title: 'Creating Kindness Ripples',
-        content: 'One act of kindness creates ripples that spread far beyond what we can see. Help your mentee understand that their small actions can inspire others, change someone\'s day, or even start a kindness chain!',
-        activity: 'Can you think of a time when one person\'s kindness inspired you to be kind to someone else?'
+        content: 'One act of kindness creates ripples that spread far beyond what we can see:\n\n🪨 → 🌊 → 🌊 → 🌊\n\n• You help your mentee be kind\n• That person feels good and is kind to someone else\n• That person passes it on...\n• The ripple keeps spreading!\n\nHelp your mentee understand that their small actions can inspire others, change someone\'s day, or even start a kindness chain. They may never see all the ripples they create, but they\'re real!',
+        activity: 'Can you think of a time when one person\'s kindness inspired you to be kind to someone else? That\'s the ripple effect in action!'
+      },
+      {
+        title: 'Building Kindness Habits',
+        content: 'The goal isn\'t just one-time kindness - it\'s building a kindness HABIT:\n\n📅 Habit stacking: "After I eat lunch, I\'ll say something nice to one person"\n🎯 Start small: One act per day is better than trying to do everything\n📝 Track it: Keep a simple kindness journal\n🔄 Reflect: "What kindness did I do today? How did it feel?"\n\nHelp your mentee find their "kindness trigger" - something that reminds them to be kind every day.',
+        activity: 'Create a kindness habit plan: "After I _____, I will _____ (one small kindness)."'
       }
     ],
     quiz: [
@@ -202,9 +378,24 @@ const trainingContent: Record<string, {
         question: 'What creates more impact over time?',
         options: ['One big random act of kindness', 'Many small consistent acts of kindness', 'Only being kind on holidays', 'Kindness only when others are watching'],
         correct: 1
+      },
+      {
+        question: 'When brainstorming kindness ideas with your mentee, you should:',
+        options: ['Tell them exactly what to do', 'Ask questions to help them come up with their own ideas', 'Say their ideas won\'t work', 'Skip brainstorming and assign an activity'],
+        correct: 1
+      },
+      {
+        question: 'Which is the BEST way to praise a mentee\'s kindness?',
+        options: ['"Good job"', '"Nice!"', '"I love how you noticed she was alone and invited her to join. That took courage!"', '"You\'re the best"'],
+        correct: 2
+      },
+      {
+        question: 'What is the "ripple effect" of kindness?',
+        options: ['Kindness only affects one person', 'One act of kindness can inspire others and spread', 'Kindness eventually runs out', 'Only big acts of kindness matter'],
+        correct: 1
       }
     ],
-    reflection: 'What unique kindness "superpower" do you have? How will you help your mentee discover theirs?'
+    reflection: 'What unique kindness "superpower" do you have based on your interests and strengths? How will you help your mentee discover theirs? Write down one specific way you can connect their interests to kindness opportunities.'
   }
 };
 
@@ -258,9 +449,7 @@ export default function MentorDashboard() {
 
   const startTrainingMutation = useMutation({
     mutationFn: async (trainingId: string) => {
-      const response = await apiRequest(`/api/mentor/training/${trainingId}/start`, {
-        method: 'POST'
-      });
+      const response = await apiRequest('POST', `/api/mentor/training/${trainingId}/start`);
       return response;
     },
     onSuccess: () => {
@@ -273,10 +462,8 @@ export default function MentorDashboard() {
 
   const completeTrainingMutation = useMutation({
     mutationFn: async (trainingId: string) => {
-      const response = await apiRequest(`/api/mentor/training/${trainingId}/complete`, {
-        method: 'POST'
-      });
-      return response;
+      const response = await apiRequest('POST', `/api/mentor/training/${trainingId}/complete`);
+      return response.json();
     },
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({ queryKey: ['/api/mentor/training'] });
@@ -991,6 +1178,59 @@ export default function MentorDashboard() {
                             {trainingContent[selectedTraining.title].lessons[currentLessonIndex].activity}
                           </p>
                         </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Interactive Scenario */}
+                  {trainingContent[selectedTraining.title].lessons[currentLessonIndex].scenario && (
+                    <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-5">
+                      <div className="flex items-start gap-3 mb-4">
+                        <div className="w-8 h-8 bg-indigo-500 rounded-full flex items-center justify-center flex-shrink-0">
+                          <MessageCircle className="h-4 w-4 text-white" />
+                        </div>
+                        <div>
+                          <h4 className="font-semibold text-indigo-800 mb-1">What Would You Do?</h4>
+                          <p className="text-indigo-700 font-medium">
+                            {trainingContent[selectedTraining.title].lessons[currentLessonIndex].scenario?.situation}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="space-y-2 ml-11">
+                        {trainingContent[selectedTraining.title].lessons[currentLessonIndex].scenario?.options.map((option, idx) => {
+                          const scenario = trainingContent[selectedTraining.title].lessons[currentLessonIndex].scenario!;
+                          const isCorrect = idx === scenario.bestChoice;
+                          return (
+                            <button
+                              key={idx}
+                              className={`w-full text-left p-3 rounded-lg border transition-all hover:border-indigo-400 ${
+                                isCorrect 
+                                  ? 'border-green-400 bg-green-50' 
+                                  : 'border-gray-200 bg-white hover:bg-indigo-50'
+                              }`}
+                              onClick={() => {
+                                if (isCorrect) {
+                                  toast({
+                                    title: "Great choice!",
+                                    description: scenario.explanation,
+                                  });
+                                } else {
+                                  toast({
+                                    title: "Think about it...",
+                                    description: "Try another option! Remember what you learned in this lesson.",
+                                    variant: "default"
+                                  });
+                                }
+                              }}
+                            >
+                              <span className="font-medium mr-2 text-indigo-600">{String.fromCharCode(65 + idx)}.</span>
+                              {option}
+                              {isCorrect && (
+                                <span className="ml-2 text-green-600 text-sm font-medium">✓ Best Choice</span>
+                              )}
+                            </button>
+                          );
+                        })}
                       </div>
                     </div>
                   )}
