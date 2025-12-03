@@ -399,7 +399,11 @@ const trainingContent: Record<string, {
   }
 };
 
-export default function MentorDashboard() {
+interface MentorDashboardProps {
+  onBack?: () => void;
+}
+
+export default function MentorDashboard({ onBack }: MentorDashboardProps) {
   const [selectedTab, setSelectedTab] = useState("training");
   const [, setLocation] = useLocation();
   const queryClient = useQueryClient();
@@ -567,8 +571,12 @@ export default function MentorDashboard() {
         <div className="container mx-auto">
           <BackButton 
           onClick={() => {
-            console.log('🔙 Back button clicked, navigating to /app');
-            setLocation('/app');
+            console.log('🔙 Back button clicked');
+            if (onBack) {
+              onBack();
+            } else {
+              setLocation('/app');
+            }
           }} 
           variant="minimal" 
         />
@@ -585,8 +593,12 @@ export default function MentorDashboard() {
       <div className="container mx-auto max-w-7xl">
         <BackButton 
           onClick={() => {
-            console.log('🔙 Back button clicked in MentorDashboard, navigating to /app');
-            setLocation('/app');
+            console.log('🔙 Back button clicked in MentorDashboard');
+            if (onBack) {
+              onBack();
+            } else {
+              setLocation('/app');
+            }
           }} 
           variant="minimal" 
         />

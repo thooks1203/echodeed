@@ -212,7 +212,7 @@ export default function Home() {
     try {
       return (
         <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F0F9FF' }}>
-          <MentorDashboard />
+          <MentorDashboard onBack={handleBackToDashboard} />
           <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
         </div>
       );
