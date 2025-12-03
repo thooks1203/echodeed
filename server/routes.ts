@@ -11202,7 +11202,27 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .where(conditions.length > 0 ? and(...conditions) : undefined)
         .orderBy(serviceOpportunities.featured, serviceOpportunities.organizationName);
       
-      res.json(opportunities);
+      // Transform to camelCase for frontend compatibility
+      const transformedOpportunities = opportunities.map(opp => ({
+        id: opp.id,
+        organizationName: opp.organizationName,
+        category: opp.category,
+        description: opp.description,
+        location: opp.location,
+        contactPerson: opp.contactName || '',
+        contactEmail: opp.contactEmail || '',
+        contactPhone: opp.contactPhone || '',
+        hoursOffered: opp.hoursOffered || 0,
+        ageRestriction: opp.minAge ? `${opp.minAge}+` : 'All ages',
+        scheduleDetails: opp.schedule || 'Flexible',
+        website: '',
+        isActive: opp.status === 'active',
+        spotsAvailable: (opp.maxParticipants || 50) - (opp.totalSignups || 0),
+        spotsTotal: opp.maxParticipants || 50
+      }));
+      
+      console.log(`🤝 Returning ${transformedOpportunities.length} service opportunities`);
+      res.json(transformedOpportunities);
     } catch (error) {
       console.error('Failed to get service opportunities:', error);
       res.status(500).json({ error: 'Failed to get service opportunities' });
