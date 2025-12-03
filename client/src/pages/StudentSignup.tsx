@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,6 +14,7 @@ import { ArrowLeft, Shield, Heart, Users, CheckCircle, AlertCircle } from "lucid
 import { Link, useLocation } from "wouter";
 import { useSchoolRole } from "@/lib/roleUtils";
 import { BackButton } from "@/components/BackButton";
+import { SchoolSearchSelect } from "@/components/SchoolSearchSelect";
 
 const studentSignupSchema = z.object({
   firstName: z.string().min(1, "First name is required").max(50, "Name too long"),
@@ -42,11 +43,6 @@ export default function StudentSignup() {
   const { canAccessSchoolsDashboard } = useSchoolRole();
   const { toast } = useToast();
   const [registrationResult, setRegistrationResult] = useState<any>(null);
-  
-  // Fetch available schools
-  const { data: schools = [] } = useQuery({
-    queryKey: ['/api/schools']
-  });
 
   const form = useForm<StudentSignupForm>({
     resolver: zodResolver(studentSignupSchema),
@@ -325,20 +321,16 @@ export default function StudentSignup() {
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>School *</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
-                        <FormControl>
-                          <SelectTrigger data-testid="select-school">
-                            <SelectValue placeholder="Select your school" />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          {(schools as any[]).map((school: any) => (
-                            <SelectItem key={school.id} value={school.id}>
-                              {school.name}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
+                      <FormControl>
+                        <SchoolSearchSelect
+                          value={field.value}
+                          onValueChange={(schoolId) => field.onChange(schoolId)}
+                          placeholder="Type to search for your school (e.g., Burlington)"
+                        />
+                      </FormControl>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
+                        Start typing your school name to find it
+                      </p>
                       <FormMessage />
                     </FormItem>
                   )}
