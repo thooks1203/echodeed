@@ -1018,6 +1018,8 @@ export const corporateAccounts = pgTable("corporate_accounts", {
   contactEmail: varchar("contact_email", { length: 200 }),
   contactName: varchar("contact_name", { length: 200 }),
   enrollmentCode: varchar("enrollment_code", { length: 50 }).unique(),
+  requiresEnrollmentCode: integer("requires_enrollment_code").default(1),
+  communityCode: varchar("community_code", { length: 50 }),
   isActive: integer("is_active").default(1),
   billingStatus: varchar("billing_status", { length: 50 }),
   trialEndsAt: timestamp("trial_ends_at"),

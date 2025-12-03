@@ -2,20 +2,22 @@ import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
-import { Search, School, Loader2, CheckCircle } from "lucide-react";
+import { Search, School, Loader2, CheckCircle, Users } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-interface School {
+interface SchoolData {
   id: string;
   name: string;
   type?: string;
   city?: string;
   state?: string;
+  requiresEnrollmentCode?: boolean;
+  hasCommunityCode?: boolean;
 }
 
 interface SchoolSearchSelectProps {
   value?: string;
-  onValueChange: (schoolId: string, schoolName: string) => void;
+  onValueChange: (schoolId: string, schoolName: string, requiresCode: boolean) => void;
   placeholder?: string;
   className?: string;
 }
@@ -32,7 +34,7 @@ export function SchoolSearchSelect({
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const { data: schools = [], isLoading } = useQuery<School[]>({
+  const { data: schools = [], isLoading } = useQuery<SchoolData[]>({
     queryKey: ['/api/schools/search', searchQuery],
     queryFn: async () => {
       if (searchQuery.length < 2) return [];
@@ -43,13 +45,13 @@ export function SchoolSearchSelect({
     enabled: searchQuery.length >= 2
   });
 
-  const { data: allSchools = [] } = useQuery<School[]>({
+  const { data: allSchools = [] } = useQuery<SchoolData[]>({
     queryKey: ['/api/schools']
   });
 
   useEffect(() => {
     if (value && allSchools.length > 0) {
-      const school = allSchools.find((s: School) => s.id === value);
+      const school = allSchools.find((s: SchoolData) => s.id === value);
       if (school) {
         setSelectedSchoolName(school.name);
       }
@@ -66,11 +68,11 @@ export function SchoolSearchSelect({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  const handleSelect = (school: School) => {
+  const handleSelect = (school: SchoolData) => {
     setSelectedSchoolName(school.name);
     setSearchQuery("");
     setIsOpen(false);
-    onValueChange(school.id, school.name);
+    onValueChange(school.id, school.name, school.requiresEnrollmentCode !== false);
   };
 
   const displaySchools = searchQuery.length >= 2 ? schools : allSchools.slice(0, 10);
@@ -133,11 +135,17 @@ export function SchoolSearchSelect({
                     <p className="font-medium text-gray-900 dark:text-white truncate">
                       {school.name}
                     </p>
-                    {(school.city || school.type) && (
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {[school.type, school.city, school.state].filter(Boolean).join(" • ")}
-                      </p>
-                    )}
+                    <div className="flex items-center gap-2 text-xs">
+                      {school.requiresEnrollmentCode === false ? (
+                        <span className="text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                          <Users className="h-3 w-3" /> Open Enrollment
+                        </span>
+                      ) : (
+                        <span className="text-gray-500 dark:text-gray-400">
+                          Code required from teacher
+                        </span>
+                      )}
+                    </div>
                   </div>
                   {value === school.id && (
                     <CheckCircle className="h-5 w-5 text-emerald-500 flex-shrink-0" />

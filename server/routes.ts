@@ -6253,19 +6253,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
           });
         }
         
-        // Validate enrollment code
-        if (!enrollmentCode || enrollmentCode.trim() === '') {
-          return res.status(400).json({ 
-            error: 'School enrollment code is required',
-            code: 'ENROLLMENT_CODE_REQUIRED'
-          });
-        }
+        // Check if school requires enrollment code (open enrollment schools skip this)
+        const requiresCode = school.requiresEnrollmentCode !== 0;
         
-        if (school.enrollmentCode && school.enrollmentCode !== enrollmentCode.trim().toUpperCase()) {
-          return res.status(403).json({ 
-            error: 'Invalid enrollment code for this school. Please check with your teacher or principal.',
-            code: 'INVALID_ENROLLMENT_CODE'
-          });
+        if (requiresCode) {
+          // Validate enrollment code for schools that require it
+          if (!enrollmentCode || enrollmentCode.trim() === '') {
+            return res.status(400).json({ 
+              error: 'School enrollment code is required',
+              code: 'ENROLLMENT_CODE_REQUIRED'
+            });
+          }
+          
+          if (school.enrollmentCode && school.enrollmentCode !== enrollmentCode.trim().toUpperCase()) {
+            return res.status(403).json({ 
+              error: 'Invalid enrollment code for this school. Please check with your teacher or principal.',
+              code: 'INVALID_ENROLLMENT_CODE'
+            });
+          }
+        } else if (school.communityCode && enrollmentCode) {
+          // For open enrollment schools with optional community code, validate if provided
+          if (enrollmentCode.trim().toUpperCase() !== school.communityCode.toUpperCase()) {
+            return res.status(403).json({ 
+              error: 'Invalid community code. Please check with your coach or community leader.',
+              code: 'INVALID_COMMUNITY_CODE'
+            });
+          }
         }
         
         if (school?.companyName) {
@@ -12180,7 +12193,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .map((account: any) => ({
           id: account.id,
           name: account.companyName,
-          domain: account.domain
+          domain: account.domain,
+          requiresEnrollmentCode: account.requiresEnrollmentCode !== 0,
+          hasCommunityCode: !!account.communityCode
         }))
         .slice(0, 10); // Limit to 10 results
       res.json(schools);
@@ -12210,7 +12225,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
           contactEmail: account.contactEmail,
           contactName: account.contactName,
           isActive: account.isActive,
-          billingStatus: account.billingStatus
+          billingStatus: account.billingStatus,
+          requiresEnrollmentCode: account.requiresEnrollmentCode !== 0,
+          hasCommunityCode: !!account.communityCode
         }));
 
       res.json(schools);

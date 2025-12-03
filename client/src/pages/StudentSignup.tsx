@@ -10,13 +10,13 @@ import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { apiRequest } from "@/lib/queryClient";
-import { ArrowLeft, Shield, Heart, Users, CheckCircle, AlertCircle } from "lucide-react";
+import { ArrowLeft, Shield, Heart, Users, CheckCircle, AlertCircle, Sparkles } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { useSchoolRole } from "@/lib/roleUtils";
 import { BackButton } from "@/components/BackButton";
 import { SchoolSearchSelect } from "@/components/SchoolSearchSelect";
 
-const studentSignupSchema = z.object({
+const createStudentSignupSchema = (requiresCode: boolean) => z.object({
   firstName: z.string().min(1, "First name is required").max(50, "Name too long"),
   lastName: z.string().min(1, "Last name is required").max(50, "Name too long"),
   grade: z.string().min(1, "Please select your grade"),
@@ -24,12 +24,14 @@ const studentSignupSchema = z.object({
     .min(2006, "Please enter a valid birth year (ages 14-18)") 
     .max(2011, "Please enter a valid birth year (ages 14-18)"),
   schoolId: z.string().min(1, "Please select your school"),
-  enrollmentCode: z.string().min(1, "School enrollment code is required").max(50, "Code too long"),
+  enrollmentCode: requiresCode 
+    ? z.string().min(1, "School enrollment code is required").max(50, "Code too long")
+    : z.string().max(50, "Code too long").optional(),
   parentEmail: z.string().email("Please enter a valid parent email"),
   parentName: z.string().min(1, "Parent name is required").max(100, "Name too long")
 });
 
-type StudentSignupForm = z.infer<typeof studentSignupSchema>;
+type StudentSignupForm = z.infer<ReturnType<typeof createStudentSignupSchema>>;
 
 const gradeOptions = [
   { value: "9", label: "9th Grade (Freshman)" },
@@ -43,14 +45,16 @@ export default function StudentSignup() {
   const { canAccessSchoolsDashboard } = useSchoolRole();
   const { toast } = useToast();
   const [registrationResult, setRegistrationResult] = useState<any>(null);
+  const [selectedSchoolName, setSelectedSchoolName] = useState("");
+  const [requiresEnrollmentCode, setRequiresEnrollmentCode] = useState(true);
 
   const form = useForm<StudentSignupForm>({
-    resolver: zodResolver(studentSignupSchema),
+    resolver: zodResolver(createStudentSignupSchema(requiresEnrollmentCode)),
     defaultValues: {
       firstName: "",
       lastName: "",
       grade: "",
-      birthYear: new Date().getFullYear() - 16, // Default to ~16 years old (sophomore)
+      birthYear: new Date().getFullYear() - 16,
       schoolId: "",
       enrollmentCode: "",
       parentEmail: "",
@@ -79,7 +83,6 @@ export default function StudentSignup() {
           description: "Your account is ready! Start sharing kindness today.",
           duration: 5000
         });
-        // Redirect to landing page after a moment
         setTimeout(() => setLocation("/?show=roles"), 2000);
       }
     },
@@ -93,11 +96,21 @@ export default function StudentSignup() {
     }
   });
 
+  const handleSchoolSelect = (schoolId: string, schoolName: string, requiresCode: boolean) => {
+    form.setValue("schoolId", schoolId);
+    setSelectedSchoolName(schoolName);
+    setRequiresEnrollmentCode(requiresCode);
+    
+    if (!requiresCode) {
+      form.setValue("enrollmentCode", "");
+      form.clearErrors("enrollmentCode");
+    }
+  };
+
   const onSubmit = (data: StudentSignupForm) => {
     registerStudent.mutate(data);
   };
 
-  // Show success screen if registration completed
   if (registrationResult) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 dark:from-blue-950 dark:to-green-950 flex items-center justify-center p-4">
@@ -137,7 +150,6 @@ export default function StudentSignup() {
                 
                 <Button 
                   onClick={() => {
-                    // Navigate to appropriate dashboard based on user role
                     if (canAccessSchoolsDashboard) {
                       setLocation("/app?tab=schools");
                     } else {
@@ -178,7 +190,6 @@ export default function StudentSignup() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-green-50 dark:from-blue-950 dark:to-green-950 p-4">
       <div className="max-w-2xl mx-auto">
-        {/* Header */}
         <div className="text-center mb-8">
           <Link 
             href={canAccessSchoolsDashboard ? "/app?tab=schools" : "/app?tab=student-dashboard"} 
@@ -202,7 +213,6 @@ export default function StudentSignup() {
           </div>
         </div>
 
-        {/* Safety Features */}
         <div className="grid md:grid-cols-3 gap-4 mb-8">
           <div className="bg-white dark:bg-gray-800 p-4 rounded-lg border text-center">
             <Shield className="w-8 h-8 text-blue-500 mx-auto mb-2" />
@@ -221,7 +231,6 @@ export default function StudentSignup() {
           </div>
         </div>
 
-        {/* Registration Form */}
         <Card className="bg-white dark:bg-gray-800">
           <CardHeader>
             <CardTitle className="text-2xl">Create Your Account</CardTitle>
@@ -324,7 +333,7 @@ export default function StudentSignup() {
                       <FormControl>
                         <SchoolSearchSelect
                           value={field.value}
-                          onValueChange={(schoolId) => field.onChange(schoolId)}
+                          onValueChange={handleSchoolSelect}
                           placeholder="Type to search for your school (e.g., Burlington)"
                         />
                       </FormControl>
@@ -336,28 +345,42 @@ export default function StudentSignup() {
                   )}
                 />
 
-                <FormField
-                  control={form.control}
-                  name="enrollmentCode"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>School Enrollment Code *</FormLabel>
-                      <FormControl>
-                        <Input 
-                          placeholder="Enter code from your teacher" 
-                          {...field}
-                          onChange={(e) => field.onChange(e.target.value.toUpperCase())}
-                          data-testid="input-enrollment-code"
-                          className="uppercase"
-                        />
-                      </FormControl>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        Your teacher or principal will give you this code
-                      </p>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
+                {requiresEnrollmentCode ? (
+                  <FormField
+                    control={form.control}
+                    name="enrollmentCode"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>School Enrollment Code *</FormLabel>
+                        <FormControl>
+                          <Input 
+                            placeholder="Enter code from your teacher" 
+                            {...field}
+                            onChange={(e) => field.onChange(e.target.value.toUpperCase())}
+                            data-testid="input-enrollment-code"
+                            className="uppercase"
+                          />
+                        </FormControl>
+                        <p className="text-sm text-gray-500 dark:text-gray-400">
+                          Your teacher or principal will give you this code
+                        </p>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
+                  <div className="bg-emerald-50 dark:bg-emerald-950 p-4 rounded-lg border border-emerald-200 dark:border-emerald-800">
+                    <div className="flex items-start space-x-3">
+                      <Sparkles className="w-5 h-5 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+                      <div className="text-sm text-emerald-800 dark:text-emerald-200">
+                        <p className="font-medium">Open Enrollment School</p>
+                        <p className="mt-1">
+                          {selectedSchoolName} allows direct signup! No enrollment code needed.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
 
                 <div className="border-t pt-6">
                   <h3 className="text-lg font-semibold mb-4 text-gray-900 dark:text-white">
