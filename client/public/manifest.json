@@ -1,111 +1,73 @@
 {
   "name": "EchoDeed™ - Character Education, Reimagined",
   "short_name": "EchoDeed",
-  "description": "Innovative character education platform that transforms how students learn empathy and social responsibility through evidence-based kindness activities.",
-  "start_url": "/",
+  "description": "Track kindness, earn rewards, and build character! The fun way for students to log good deeds and develop social-emotional skills.",
+  "start_url": "/app",
   "display": "standalone",
-  "background_color": "#f8f9fa",
-  "theme_color": "#8B5CF6",
+  "background_color": "#f0fdf4",
+  "theme_color": "#10b981",
   "orientation": "portrait-primary",
   "scope": "/",
   "lang": "en",
-  "categories": ["lifestyle", "social", "business", "health"],
-  "screenshots": [
-    {
-      "src": "/icons/screenshot-wide.png",
-      "sizes": "1280x720",
-      "type": "image/png",
-      "form_factor": "wide",
-      "label": "EchoDeed Corporate Dashboard"
-    },
-    {
-      "src": "/icons/screenshot-narrow.png", 
-      "sizes": "750x1334",
-      "type": "image/png",
-      "form_factor": "narrow",
-      "label": "EchoDeed Mobile Feed"
-    }
-  ],
+  "categories": ["education", "lifestyle", "social"],
   "icons": [
     {
-      "src": "/icons/icon-72x72.png",
-      "sizes": "72x72",
+      "src": "/electric-heart-logo.png",
+      "sizes": "any",
       "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-96x96.png",
-      "sizes": "96x96", 
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-128x128.png",
-      "sizes": "128x128",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-144x144.png",
-      "sizes": "144x144",
-      "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-152x152.png",
-      "sizes": "152x152",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "maskable any"
-    },
-    {
-      "src": "/icons/icon-384x384.png",
-      "sizes": "384x384",
-      "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any"
     },
     {
       "src": "/icons/icon-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable any"
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192x192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
     {
       "name": "Share Kindness",
       "short_name": "Share", 
-      "description": "Share an act of kindness",
-      "url": "/?action=share",
-      "icons": [{"src": "/icons/shortcut-share.png", "sizes": "96x96"}]
+      "description": "Share an act of kindness with your school",
+      "url": "/app?action=share",
+      "icons": [{"src": "/electric-heart-logo.png", "sizes": "96x96"}]
     },
     {
-      "name": "Corporate Dashboard",
-      "short_name": "Corporate",
-      "description": "View corporate wellness dashboard", 
-      "url": "/?tab=corporate",
-      "icons": [{"src": "/icons/shortcut-corporate.png", "sizes": "96x96"}]
+      "name": "View Rewards",
+      "short_name": "Rewards",
+      "description": "Check your Echo Tokens and rewards", 
+      "url": "/rewards",
+      "icons": [{"src": "/electric-heart-logo.png", "sizes": "96x96"}]
     },
     {
-      "name": "View Badges",
-      "short_name": "Badges",
-      "description": "Check achievement progress",
-      "url": "/?tab=badges", 
-      "icons": [{"src": "/icons/shortcut-badges.png", "sizes": "96x96"}]
+      "name": "Log Service Hours",
+      "short_name": "Service",
+      "description": "Track community service activities",
+      "url": "/app?tab=community-service", 
+      "icons": [{"src": "/electric-heart-logo.png", "sizes": "96x96"}]
     }
   ],
   "related_applications": [],
   "prefer_related_applications": false,
   "dir": "ltr",
-  "version": "1.0.3",
-  "serviceworker": {
-    "src": "/sw.js",
-    "scope": "/",
-    "update_via_cache": "none"
-  }
+  "id": "echodeed-app",
+  "version": "2.1.0"
 }

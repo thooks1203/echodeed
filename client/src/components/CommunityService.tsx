@@ -399,15 +399,6 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
   // Use authenticated user ID
   const userId = user?.id;
   
-  // Debug logging
-  console.log('[CommunityService] Rendering:', { 
-    userId, 
-    schoolLevel, 
-    isMiddleSchool, 
-    isLoadingSchoolLevel,
-    hasUser: !!user 
-  });
-  
   // ALL HOOKS MUST BE CALLED BEFORE ANY CONDITIONAL RETURNS (React Rules of Hooks)
   
   // Form setup - always initialize
@@ -430,20 +421,14 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
   });
 
   // Get student's service summary - only fetch if we have a userId (HS experience)
-  const queryEnabled = !!userId && !isMiddleSchool;
-  console.log('[CommunityService] Query enabled:', { queryEnabled, userId, isMiddleSchool });
-  
-  const { data: summary, isLoading: summaryLoading, error: summaryError } = useQuery<ServiceSummary>({
+  const { data: summary, isLoading: summaryLoading } = useQuery<ServiceSummary>({
     queryKey: ['/api/community-service/summary', userId],
     queryFn: async () => {
-      console.log('[CommunityService] Fetching summary for userId:', userId);
       const response = await apiRequest('GET', `/api/community-service/summary/${userId}`);
       return response.json();
     },
-    enabled: queryEnabled
+    enabled: !!userId && !isMiddleSchool
   });
-  
-  console.log('[CommunityService] Summary state:', { summary, summaryLoading, error: summaryError?.message });
 
   // Get student's service log history
   const { data: logs = [], isLoading: logsLoading } = useQuery<ServiceLog[]>({

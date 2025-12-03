@@ -1,13 +1,13 @@
-// EchoDeed™ Service Worker - PWA Capabilities
-const CACHE_NAME = 'echodeed-v1.0.3-DEPLOYMENT-FIX-' + Date.now();
+// EchoDeed™ Service Worker - PWA Capabilities v2.1
+const CACHE_NAME = 'echodeed-v2.1.0';
 const OFFLINE_URL = '/offline.html';
 
 const CACHE_URLS = [
   '/',
+  '/app',
   '/offline.html',
   '/manifest.json',
-  '/icons/icon-192x192.png',
-  '/icons/icon-512x512.png'
+  '/electric-heart-logo.png'
 ];
 
 // Install event - Cache core resources
