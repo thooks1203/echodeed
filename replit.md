@@ -39,6 +39,13 @@ The frontend utilizes React 18, TypeScript, and Vite, with Radix UI, shadcn/ui, 
   - **High School (Grades 9-12)**: 200-hour Service-Learning Diploma (required), 5-phase IPARD workflow, tokens 100/250/500/1000, advanced rewards including VIP parking. Full diploma tracking with progress visualization.
 - **Student Notification System**: Email-first digest architecture (7:30am daily, 3:30pm milestone notifications) complying with FERPA, using a queue-based system and new `student_notification_preferences`, `student_notification_events`, `student_notifications` tables.
 - **AI-Suggested Communications**: Generates ready-to-send email and announcement templates based on real-time Inclusion Score metrics for administrators.
+- **Progressive Web App (PWA)**: Full PWA implementation enabling:
+  - **Install on Home Screen**: Students can add EchoDeed to their phone's home screen like a native app
+  - **Offline Support**: Core features available without internet connection
+  - **Fast Loading**: Service worker caching for quick app startup
+  - **App Shortcuts**: Quick access to Share Kindness, View Rewards, and Log Service Hours
+  - **Push Notifications**: Support for sending important updates to students
+  - **Cross-Platform**: Works on iOS, Android, Windows, Mac, and Chrome OS
 
 ### Production Database Configuration
 - **Separate Databases**: Development and production use distinct PostgreSQL databases.
