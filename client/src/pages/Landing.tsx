@@ -38,11 +38,11 @@ export default function Landing() {
                 <img 
                   src="/electric-heart-logo.png" 
                   alt="EchoDeed Logo" 
-                  className="w-48 h-48 md:w-56 md:h-56 drop-shadow-2xl"
+                  className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 drop-shadow-2xl"
                 />
               </LogoSparkEffect>
             </div>
-            <h1 className="text-6xl md:text-7xl font-black mb-3 tracking-tight bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black mb-3 tracking-tight bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent">
               EchoDeed™
             </h1>
             <p className="text-xl text-white font-medium">
@@ -168,7 +168,7 @@ export default function Landing() {
                 }`}>
                   {isMiddleSchool ? <Sparkles className="w-8 h-8 text-white" /> : <GraduationCap className="w-8 h-8 text-white" />}
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900 whitespace-nowrap">For Students</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">For Students</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   {isMiddleSchool 
                     ? 'Do kind stuff, earn tokens, get cool rewards!'
@@ -196,7 +196,7 @@ export default function Landing() {
                 <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Heart className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900 whitespace-nowrap">For Parents</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">For Parents</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   {isMiddleSchool
                     ? 'Watch your kid grow & earn rewards together'
@@ -220,7 +220,7 @@ export default function Landing() {
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Users className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900 whitespace-nowrap">For Teachers</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">For Teachers</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   {isMiddleSchool
                     ? 'Make character ed easy & fun for your class'
@@ -244,7 +244,7 @@ export default function Landing() {
                 <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   {isMiddleSchool ? <Award className="w-8 h-8 text-white" /> : <Shield className="w-8 h-8 text-white" />}
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-gray-900 whitespace-nowrap">For School Leaders</h3>
+                <h3 className="text-lg font-bold mb-2 text-gray-900">For School Leaders</h3>
                 <p className="text-sm text-gray-600 mb-4">
                   {isMiddleSchool
                     ? 'Build character culture & measure outcomes'

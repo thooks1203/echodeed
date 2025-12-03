@@ -204,7 +204,7 @@ export default function StudentSignup() {
             <div className="mx-auto w-20 h-20 bg-gradient-to-br from-blue-500 to-green-500 rounded-full flex items-center justify-center mb-4">
               <Heart className="w-10 h-10 text-white" />
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-2">
+            <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white mb-2">
               Join EchoDeed!
             </h1>
             <p className="text-xl text-gray-600 dark:text-gray-300">

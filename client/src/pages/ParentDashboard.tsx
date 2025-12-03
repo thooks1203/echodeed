@@ -1300,7 +1300,7 @@ export default function ParentDashboard() {
                 </Button>
                 <div className="flex items-center gap-2 sm:gap-3">
                   <Heart className="h-6 w-6 sm:h-8 sm:w-8 text-pink-500" />
-                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white whitespace-nowrap">
+                  <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 dark:text-white">
                     Parent Dashboard
                   </h1>
                 </div>

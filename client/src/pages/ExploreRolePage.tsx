@@ -422,10 +422,10 @@ export default function ExploreRolePage() {
               <img 
                 src="/electric-heart-logo.png" 
                 alt="EchoDeed Logo" 
-                className="w-48 h-48 md:w-56 md:h-56 drop-shadow-2xl"
+                className="w-32 h-32 sm:w-40 sm:h-40 md:w-48 md:h-48 lg:w-56 lg:h-56 drop-shadow-2xl"
               />
             </div>
-            <h1 className="text-4xl md:text-5xl font-black mb-2 bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black mb-2 bg-gradient-to-r from-yellow-300 via-orange-300 to-pink-300 bg-clip-text text-transparent leading-tight">
               {config.title}
             </h1>
             <p className="text-xl text-white/90">
@@ -472,7 +472,7 @@ export default function ExploreRolePage() {
             {config.proofPoints.map((point, index) => (
               <Card key={index} className="bg-white/95 backdrop-blur-sm border-0 shadow-xl">
                 <CardContent className="p-2 sm:p-6 text-center flex flex-col items-center justify-center min-h-[100px] sm:min-h-[120px]">
-                  <div className={`text-lg sm:text-3xl md:text-4xl font-black bg-gradient-to-r ${config.gradient} bg-clip-text text-transparent mb-1 sm:mb-2 whitespace-nowrap`}>
+                  <div className={`text-base sm:text-2xl md:text-3xl lg:text-4xl font-black bg-gradient-to-r ${config.gradient} bg-clip-text text-transparent mb-1 sm:mb-2`}>
                     {point.stat}
                   </div>
                   <div className="text-[9px] sm:text-sm text-gray-600 font-medium leading-tight break-words hyphens-auto">
