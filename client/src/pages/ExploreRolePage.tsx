@@ -21,7 +21,6 @@ import {
 import { Link, useRoute } from 'wouter';
 import { switchDemoRole } from '@/hooks/useAuth';
 import DemoRoleSwitcher from '@/components/DemoRoleSwitcher';
-import { DemoSchoolLevelSwitcher } from '@/components/DemoSchoolLevelSwitcher';
 
 const DEMO_SCHOOL_LEVEL_KEY = 'demo_school_level_override';
 
@@ -561,8 +560,6 @@ export default function ExploreRolePage() {
         </div>
       </div>
       
-      {/* Demo School Level Switcher */}
-      <DemoSchoolLevelSwitcher />
     </div>
   );
 }

@@ -4,7 +4,6 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Heart, CheckCircle, Users, GraduationCap, Shield, Star, Trophy, Sparkles, Award } from 'lucide-react';
 import { Link } from 'wouter';
 import LogoSparkEffect from '@/components/LogoSparkEffect';
-import { DemoSchoolLevelSwitcher } from '@/components/DemoSchoolLevelSwitcher';
 
 const DEMO_SCHOOL_LEVEL_KEY = 'demo_school_level_override';
 
@@ -285,8 +284,6 @@ export default function Landing() {
         </div>
       </div>
       
-      {/* Demo School Level Switcher - For presentations */}
-      <DemoSchoolLevelSwitcher />
     </div>
   );
 }

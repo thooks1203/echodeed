@@ -51,7 +51,6 @@ import { HelpButton, helpContent } from '@/components/HelpButton';
 import { useForm } from 'react-hook-form';
 import type { PrincipalBlogPost, ParentCommunityPost } from '@shared/schema';
 import { useSchoolLevel } from '@/hooks/useSchoolLevel';
-import { DemoSchoolLevelSwitcher } from '@/components/DemoSchoolLevelSwitcher';
 
 interface ParentNotification {
   id: string;
@@ -2249,8 +2248,6 @@ export default function ParentDashboard() {
         onTabChange={handleBottomTabChange} 
       />
       
-      {/* Demo School Level Switcher */}
-      <DemoSchoolLevelSwitcher />
     </div>
   );
 }
