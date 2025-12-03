@@ -796,13 +796,16 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
 
       {/* Tab Navigation */}
       <div style={{
-        display: 'grid',
-        gridTemplateColumns: featureFlags.schoolYearChallenges ? '1fr 1fr 1fr 1fr 1fr' : '1fr 1fr 1fr 1fr',
+        display: 'flex',
+        overflowX: 'auto',
+        WebkitOverflowScrolling: 'touch',
         background: '#f3f4f6',
         borderRadius: '12px',
         padding: '4px',
         gap: '4px',
-        marginBottom: '24px'
+        marginBottom: '24px',
+        scrollbarWidth: 'none',
+        msOverflowStyle: 'none'
       }}>
         {[
           { id: 'overview', label: '📊 Overview' },
@@ -827,10 +830,10 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               style={{
-                padding: '12px',
+                padding: '10px 12px',
                 borderRadius: '8px',
                 border: activeTab === tab.id ? '2px solid white' : '2px solid transparent',
-                fontSize: '13px',
+                fontSize: '12px',
                 fontWeight: '600',
                 cursor: 'pointer',
                 transition: 'all 0.2s ease',
@@ -838,7 +841,9 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
                 color: 'white',
                 opacity: activeTab === tab.id ? 1 : 0.7,
                 boxShadow: activeTab === tab.id ? `0 4px 12px ${colors.shadow}` : 'none',
-                transform: activeTab === tab.id ? 'translateY(-2px)' : 'none'
+                transform: activeTab === tab.id ? 'translateY(-2px)' : 'none',
+                whiteSpace: 'nowrap',
+                flexShrink: 0
               }}
               data-testid={`student-tab-${tab.id}`}
             >
