@@ -42,13 +42,25 @@ export function HeartLinkButton({ position = 'bottom-right' }: HeartLinkButtonPr
       urgent: false
     },
     {
-      id: 'school-counselor',
-      name: 'School Counselor',
-      description: 'Talk to your school counselor',
-      action: 'Find Counselor',
+      id: 'egms-counselor',
+      name: 'EGMS Counselor',
+      description: 'Eastern Guilford Middle School',
+      detail: 'counselor@egms.gcsnc.com | (336) 449-6244',
+      action: 'Email Counselor',
       icon: Users,
       color: 'from-purple-500 to-violet-600',
-      link: '#counselor',
+      link: 'mailto:counselor@egms.gcsnc.com',
+      urgent: false
+    },
+    {
+      id: 'eghs-counselor',
+      name: 'EGHS Counselor',
+      description: 'Eastern Guilford High School',
+      detail: 'counselor@eghs.gcsnc.com | (336) 449-6260',
+      action: 'Email Counselor',
+      icon: Users,
+      color: 'from-indigo-500 to-purple-600',
+      link: 'mailto:counselor@eghs.gcsnc.com',
       urgent: false
     }
   ];
@@ -120,6 +132,11 @@ export function HeartLinkButton({ position = 'bottom-right' }: HeartLinkButtonPr
                         <p className="text-sm text-gray-600 dark:text-gray-300">
                           {resource.description}
                         </p>
+                        {(resource as any).detail && (
+                          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                            {(resource as any).detail}
+                          </p>
+                        )}
                         <span className={`inline-block mt-2 text-xs font-bold px-2 py-1 rounded-full bg-gradient-to-r ${resource.color} text-white`}>
                           {resource.action}
                         </span>

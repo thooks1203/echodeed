@@ -48,6 +48,7 @@ import { useDemoSchool } from '@/contexts/DemoSchoolContext';
 import { useToast } from '@/hooks/use-toast';
 import { apiRequest, queryClient } from '@/lib/queryClient';
 import { HelpButton, helpContent } from '@/components/HelpButton';
+import { HeartLinkButton } from '@/components/HeartLinkButton';
 import { useForm } from 'react-hook-form';
 import type { PrincipalBlogPost, ParentCommunityPost } from '@shared/schema';
 import { useSchoolLevel } from '@/hooks/useSchoolLevel';
@@ -2248,6 +2249,8 @@ export default function ParentDashboard() {
         onTabChange={handleBottomTabChange} 
       />
       
+      {/* Heart-Link Support Button - Always visible */}
+      <HeartLinkButton />
     </div>
   );
 }

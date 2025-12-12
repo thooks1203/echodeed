@@ -19,6 +19,7 @@ import { Button } from '@/components/ui/button';
 import { featureFlags } from '@shared/featureFlags';
 import { Heart } from 'lucide-react';
 import { HelpButton, helpContent } from '@/components/HelpButton';
+import { HeartLinkButton } from '@/components/HeartLinkButton';
 
 interface StudentStats {
   totalKindnessPoints: number;
@@ -1359,6 +1360,8 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         }} 
       />
       
+      {/* Heart-Link Support Button - Always visible */}
+      <HeartLinkButton />
     </div>
   );
 }

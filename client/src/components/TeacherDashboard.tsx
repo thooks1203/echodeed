@@ -40,6 +40,8 @@ import {
   Ban
 } from 'lucide-react';
 import { HelpButton, helpContent } from '@/components/HelpButton';
+import { HeartLinkButton } from '@/components/HeartLinkButton';
+import { PulseCheckAnalytics } from '@/components/PulseCheckAnalytics';
 
 interface ClassroomStats {
   totalStudents: number;
@@ -826,6 +828,11 @@ export function TeacherDashboard() {
               <div className="text-sm text-gray-600">Participation Rate</div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Pulse Check Analytics - Student Wellness Monitoring */}
+        <div className="mb-8">
+          <PulseCheckAnalytics />
         </div>
 
         {/* Kindness Connect Info Card */}
@@ -1662,6 +1669,9 @@ export function TeacherDashboard() {
           </DialogContent>
         </Dialog>
       )}
+      
+      {/* Heart-Link Support Button - Always visible */}
+      <HeartLinkButton />
     </div>
   );
 }
