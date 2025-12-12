@@ -19,6 +19,8 @@ export function PulseCheckModal() {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedScore, setSelectedScore] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
+  const [hasBeenDismissed, setHasBeenDismissed] = useState(false);
+  const [hasAutoShown, setHasAutoShown] = useState(false);
 
   const { data: todayCheck } = useQuery<{ hasCheckedToday: boolean }>({
     queryKey: ['/api/pulse-check/today'],
@@ -26,22 +28,28 @@ export function PulseCheckModal() {
   });
 
   useEffect(() => {
+    if (hasBeenDismissed || hasAutoShown) return;
+    
     const urlParams = new URLSearchParams(window.location.search);
     const pulseCheckTrigger = urlParams.get('pulseCheck');
     
     if (pulseCheckTrigger === 'true' && user && todayCheck && !todayCheck.hasCheckedToday) {
       setIsOpen(true);
+      setHasAutoShown(true);
       window.history.replaceState({}, '', window.location.pathname);
       return;
     }
     
     if (user && todayCheck && !todayCheck.hasCheckedToday) {
       const timer = setTimeout(() => {
-        setIsOpen(true);
+        if (!hasBeenDismissed && !hasAutoShown) {
+          setIsOpen(true);
+          setHasAutoShown(true);
+        }
       }, 2000);
       return () => clearTimeout(timer);
     }
-  }, [user, todayCheck]);
+  }, [user, todayCheck, hasBeenDismissed, hasAutoShown]);
 
   const submitMutation = useMutation({
     mutationFn: async (score: number) => {
@@ -72,6 +80,7 @@ export function PulseCheckModal() {
     setIsOpen(false);
     setSubmitted(false);
     setSelectedScore(null);
+    setHasBeenDismissed(true);
   };
 
   if (!user) return null;
@@ -128,7 +137,7 @@ export function PulseCheckModal() {
               <Button
                 variant="outline"
                 className="flex-1"
-                onClick={() => setIsOpen(false)}
+                onClick={handleClose}
                 data-testid="button-skip-pulse"
               >
                 Skip for now

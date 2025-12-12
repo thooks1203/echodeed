@@ -421,13 +421,13 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
   });
 
   // Get student's service summary - only fetch if we have a userId (HS experience)
-  const { data: summary, isLoading: summaryLoading } = useQuery<ServiceSummary>({
+  const { data: summary, isLoading: summaryLoading, isPending: summaryPending } = useQuery<ServiceSummary>({
     queryKey: ['/api/community-service/summary', userId],
     queryFn: async () => {
       const response = await apiRequest('GET', `/api/community-service/summary/${userId}`);
       return response.json();
     },
-    enabled: !!userId && !isMiddleSchool
+    enabled: !!userId && !isMiddleSchool && !isLoadingSchoolLevel
   });
 
   // Get student's service log history
@@ -522,6 +522,20 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
     );
   }
   
+  // Show loading while school level is still being determined
+  if (isLoadingSchoolLevel) {
+    return (
+      <div className="space-y-6 p-6 md:pl-24">
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center space-y-2">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="text-sm text-muted-foreground">Loading service dashboard...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+  
   // MIDDLE SCHOOL: Show fun Kindness Explorer instead of formal Service Hours
   if (isMiddleSchool) {
     return <MiddleSchoolKindnessExplorer onBack={onBack} />;
@@ -579,7 +593,27 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
     }
   };
 
-  if (summaryLoading) {
+  // Wait for summary data if not middle school - check ALL loading states and missing data
+  // This MUST happen BEFORE computing derived values to prevent crashes
+  const isDataLoading = !isMiddleSchool && (summaryLoading || summaryPending || !summary);
+  
+  // ONLY compute values AFTER we've confirmed we're not in a loading state
+  // (but we still need safe defaults in case something goes wrong)
+  const goalHours = 30; // Dudley's 30-hour yearly requirement
+  
+  // Compute safe values with defensive defaults to prevent NaN/undefined crashes
+  const hoursVerified = summary?.verifiedHours ? parseFloat(String(summary.verifiedHours)) : 0;
+  const hoursPending = summary?.pendingHours ? parseFloat(String(summary.pendingHours)) : 0;
+  const progressPercentage = goalHours > 0 ? (hoursVerified / goalHours) * 100 : 0;
+  const tokensEarned = summary?.totalTokensEarned ?? 0;
+  
+  // Ensure all computed values are valid numbers (not NaN)
+  const safeHoursVerified = Number.isFinite(hoursVerified) ? hoursVerified : 0;
+  const safeHoursPending = Number.isFinite(hoursPending) ? hoursPending : 0;
+  const safeProgressPercentage = Number.isFinite(progressPercentage) ? progressPercentage : 0;
+  const safeTokensEarned = Number.isFinite(tokensEarned) ? tokensEarned : 0;
+  
+  if (isDataLoading) {
     return (
       <div className="space-y-6 p-6 md:pl-24">
         <div className="flex items-center justify-center py-12">
@@ -592,11 +626,20 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
     );
   }
 
-  const hoursVerified = summary ? parseFloat(summary.verifiedHours || '0') : 0;
-  const hoursPending = summary ? parseFloat(summary.pendingHours || '0') : 0;
-  const goalHours = 30; // Dudley's 30-hour yearly requirement
-  const progressPercentage = (hoursVerified / goalHours) * 100;
-  const tokensEarned = summary ? summary.totalTokensEarned || 0 : 0;
+  // Final safety check - ensure we have the data we need before rendering
+  if (!summary) {
+    console.warn('CommunityService: Summary is unexpectedly null/undefined after loading check');
+    return (
+      <div className="space-y-6 p-6 md:pl-24">
+        <div className="flex items-center justify-center py-12">
+          <div className="text-center space-y-2">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
+            <p className="text-sm text-muted-foreground">Preparing your service dashboard...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6 p-6 md:pl-24" data-testid="community-service-page">
@@ -691,8 +734,8 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
                 <CheckCircle className="h-4 w-4 text-green-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-green-600">{hoursVerified}</div>
-                <p className="text-xs text-muted-foreground">+{tokensEarned} tokens earned</p>
+                <div className="text-2xl font-bold text-green-600">{safeHoursVerified}</div>
+                <p className="text-xs text-muted-foreground">+{safeTokensEarned} tokens earned</p>
               </CardContent>
             </Card>
 
@@ -702,7 +745,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
                 <Clock2 className="h-4 w-4 text-yellow-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-yellow-600">{hoursPending}</div>
+                <div className="text-2xl font-bold text-yellow-600">{safeHoursPending}</div>
                 <p className="text-xs text-muted-foreground">Awaiting verification</p>
               </CardContent>
             </Card>
@@ -713,8 +756,8 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
                 <Award className="h-4 w-4 text-blue-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{Math.round(progressPercentage)}%</div>
-                <p className="text-xs text-muted-foreground">{hoursVerified} of {goalHours} hours</p>
+                <div className="text-2xl font-bold">{Math.round(safeProgressPercentage)}%</div>
+                <p className="text-xs text-muted-foreground">{safeHoursVerified} of {goalHours} hours</p>
               </CardContent>
             </Card>
 
@@ -724,7 +767,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
                 <Award className="h-4 w-4 text-purple-600" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-purple-600">{tokensEarned}</div>
+                <div className="text-2xl font-bold text-purple-600">{safeTokensEarned}</div>
                 <p className="text-xs text-muted-foreground">5 tokens per verified hour</p>
               </CardContent>
             </Card>
@@ -741,12 +784,12 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
                   <span>Hours Completed</span>
-                  <span>{hoursVerified} / 200</span>
+                  <span>{safeHoursVerified} / 200</span>
                 </div>
-                <Progress value={(hoursVerified / 200) * 100} className="w-full" data-testid="progress-goal" />
+                <Progress value={(safeHoursVerified / 200) * 100} className="w-full" data-testid="progress-goal" />
               </div>
               
-              {hoursVerified >= 200 ? (
+              {safeHoursVerified >= 200 ? (
                 <div className="bg-green-50 border border-green-200 rounded-lg p-4">
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-5 w-5 text-green-600" />
@@ -758,7 +801,7 @@ export function CommunityService({ onBack }: CommunityServiceProps) {
                   <div className="flex items-center gap-2">
                     <Users className="h-5 w-5 text-blue-600" />
                     <span className="font-medium text-blue-900">
-                      You need {(200 - hoursVerified).toFixed(1)} more verified hours to reach your diploma goal
+                      You need {(200 - safeHoursVerified).toFixed(1)} more verified hours to reach your diploma goal
                     </span>
                   </div>
                 </div>
