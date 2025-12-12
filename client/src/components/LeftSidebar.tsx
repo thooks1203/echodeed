@@ -203,6 +203,57 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
           </span>
         </button>
       ))}
+      
+      {/* Spacer to push donate button to bottom */}
+      <div style={{ flexGrow: 1 }} />
+      
+      {/* Donate to Student Wellness Fund Button */}
+      <a
+        href="https://www.allegacy.org/community"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          background: 'linear-gradient(135deg, #f59e0b, #d97706)',
+          border: '2px solid rgba(255,255,255,0.3)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '4px',
+          cursor: 'pointer',
+          padding: '10px 8px',
+          borderRadius: '8px',
+          fontSize: '12px',
+          fontWeight: '600',
+          color: '#fff',
+          textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+          width: '64px',
+          transition: 'all 0.3s ease',
+          boxShadow: '0 4px 12px rgba(245,158,11,0.4)',
+          textDecoration: 'none',
+          marginBottom: '16px'
+        }}
+        data-testid="button-donate-wellness-fund"
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLElement).style.transform = 'scale(1.05)';
+          (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 16px rgba(245,158,11,0.5)';
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
+          (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 12px rgba(245,158,11,0.4)';
+        }}
+      >
+        <span style={{ fontSize: '22px' }}>💛</span>
+        <span style={{
+          fontSize: '9px',
+          letterSpacing: '0.2px',
+          fontWeight: '700',
+          whiteSpace: 'nowrap',
+          lineHeight: '1.1',
+          textAlign: 'center'
+        }}>
+          Donate
+        </span>
+      </a>
     </div>
   );
 }
