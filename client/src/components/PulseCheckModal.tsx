@@ -59,11 +59,19 @@ export function PulseCheckModal() {
     }
   };
 
+  const handleClose = () => {
+    setIsOpen(false);
+    setSubmitted(false);
+    setSelectedScore(null);
+  };
+
   if (!user) return null;
 
+  if (!isOpen) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="max-w-md mx-4">
+    <Dialog open={isOpen} onOpenChange={handleClose} modal={true}>
+      <DialogContent className="max-w-md mx-4" onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle className="text-center text-xl">
             {submitted ? '💜 Thank You!' : '💜 Daily Pulse Check'}
