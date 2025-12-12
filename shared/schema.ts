@@ -1823,6 +1823,42 @@ export const insertAdminRewardSchema = createInsertSchema(adminRewards).omit({ i
 export const insertAdminRewardRedemptionSchema = createInsertSchema(adminRewardRedemptions).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertCharacterExcellenceAwardSchema = createInsertSchema(characterExcellenceAwards).omit({ id: true, awardedAt: true });
 
+// ============================================
+// HEART-LINK & PULSE CHECK SYSTEM (v2.2)
+// ============================================
+
+// Pulse Check - Anonymous daily wellness rating
+export const pulseChecks = pgTable("pulse_checks", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id"),
+  supportScore: integer("support_score").notNull(), // 1-5 scale: "How supported do you feel?"
+  isAnonymous: integer("is_anonymous").default(1).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertPulseCheckSchema = createInsertSchema(pulseChecks).omit({ id: true, createdAt: true });
+export type PulseCheck = typeof pulseChecks.$inferSelect;
+export type InsertPulseCheck = z.infer<typeof insertPulseCheckSchema>;
+
+// Crisis alerts - Triggered when student shows consistent low scores
+export const crisisAlerts = pgTable("crisis_alerts", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id"),
+  alertType: varchar("alert_type", { length: 50 }).notNull(), // 'low_pulse_threshold', 'manual_referral'
+  triggerCount: integer("trigger_count").default(3).notNull(), // Number of low scores that triggered this
+  isResolved: integer("is_resolved").default(0).notNull(),
+  resolvedBy: varchar("resolved_by").references(() => users.id),
+  resolvedAt: timestamp("resolved_at"),
+  notes: text("notes"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertCrisisAlertSchema = createInsertSchema(crisisAlerts).omit({ id: true, createdAt: true });
+export type CrisisAlert = typeof crisisAlerts.$inferSelect;
+export type InsertCrisisAlert = z.infer<typeof insertCrisisAlertSchema>;
+
 // Type Exports
 export type ContentModerationQueue = typeof contentModerationQueue.$inferSelect;
 export type InsertContentModerationQueue = z.infer<typeof insertContentModerationQueueSchema>;

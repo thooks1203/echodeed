@@ -2,6 +2,8 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
+import { db } from "./db";
+import { sql } from "drizzle-orm";
 import { insertKindnessPostSchema, insertSupportPostSchema, insertWellnessCheckinSchema } from "@shared/schema";
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
@@ -2767,6 +2769,181 @@ export async function registerRoutes(app: Express): Promise<Server> {
       });
     } catch (error: any) {
       console.error('Failed to send test notification:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // ===== PULSE CHECK ROUTES - Heart-Link Daily Support Monitoring =====
+  
+  // Check if user has completed pulse check today
+  app.get("/api/pulse-check/today", async (req: any, res) => {
+    try {
+      const userId = req.headers['x-session-id'] || req.user?.claims?.sub;
+      if (!userId) {
+        return res.json({ hasCheckedToday: true }); // Don't show modal if not logged in
+      }
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const result = await db.execute(sql`
+        SELECT id FROM pulse_checks 
+        WHERE user_id = ${userId} AND created_at >= ${today}
+        LIMIT 1
+      `);
+      
+      res.json({ hasCheckedToday: result.rows.length > 0 });
+    } catch (error: any) {
+      console.error('Failed to check pulse status:', error);
+      res.json({ hasCheckedToday: true }); // Fail closed
+    }
+  });
+  
+  // Submit daily pulse check
+  app.post("/api/pulse-check", async (req: any, res) => {
+    try {
+      const userId = req.headers['x-session-id'] || req.user?.claims?.sub;
+      if (!userId) {
+        return res.status(401).json({ message: 'Authentication required' });
+      }
+      
+      const { supportScore, isAnonymous = 1 } = req.body;
+      
+      if (!supportScore || supportScore < 1 || supportScore > 5) {
+        return res.status(400).json({ message: 'Support score must be between 1 and 5' });
+      }
+      
+      // Get user's school ID
+      const userResult = await db.execute(sql`SELECT school_id FROM users WHERE id = ${userId}`);
+      const schoolId = userResult.rows[0]?.school_id;
+      
+      // Insert pulse check
+      const result = await db.execute(sql`
+        INSERT INTO pulse_checks (user_id, school_id, support_score, is_anonymous)
+        VALUES (${userId}, ${schoolId || null}, ${supportScore}, ${isAnonymous})
+        RETURNING *
+      `);
+      
+      // Check for crisis protocol trigger (3 low scores in 7 days)
+      if (supportScore <= 2) {
+        const weekAgo = new Date();
+        weekAgo.setDate(weekAgo.getDate() - 7);
+        
+        const lowScoresResult = await db.execute(sql`
+          SELECT COUNT(*) as count FROM pulse_checks 
+          WHERE user_id = ${userId} 
+          AND support_score <= 2 
+          AND created_at >= ${weekAgo}
+        `);
+        
+        const lowScoreCount = parseInt(lowScoresResult.rows[0]?.count || '0');
+        
+        if (lowScoreCount >= 3) {
+          // Check if there's already an unresolved alert
+          const existingAlert = await db.execute(sql`
+            SELECT id FROM crisis_alerts 
+            WHERE user_id = ${userId} AND is_resolved = 0
+            LIMIT 1
+          `);
+          
+          if (existingAlert.rows.length === 0) {
+            // Create crisis alert
+            await db.execute(sql`
+              INSERT INTO crisis_alerts (user_id, school_id, alert_type, trigger_count)
+              VALUES (${userId}, ${schoolId || null}, 'low_pulse_threshold', ${lowScoreCount})
+            `);
+            console.log(`🚨 CRISIS ALERT: Student ${userId} has ${lowScoreCount} low pulse scores in the past week`);
+          }
+        }
+      }
+      
+      res.json({ success: true, pulseCheck: result.rows[0] });
+    } catch (error: any) {
+      console.error('Failed to submit pulse check:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  // Get aggregate pulse check data for admin dashboard
+  app.get("/api/pulse-check/analytics", async (req: any, res) => {
+    try {
+      const { schoolId, days = 7 } = req.query;
+      
+      const startDate = new Date();
+      startDate.setDate(startDate.getDate() - parseInt(days as string));
+      
+      // Get daily averages
+      const dailyAveragesResult = await db.execute(sql`
+        SELECT 
+          DATE(created_at) as date,
+          AVG(support_score) as avg_score,
+          COUNT(*) as total_responses,
+          SUM(CASE WHEN support_score <= 2 THEN 1 ELSE 0 END) as low_scores
+        FROM pulse_checks
+        WHERE created_at >= ${startDate}
+        ${schoolId ? sql`AND school_id = ${schoolId}` : sql``}
+        GROUP BY DATE(created_at)
+        ORDER BY date DESC
+      `);
+      
+      // Get unresolved crisis alerts count
+      const alertsResult = await db.execute(sql`
+        SELECT COUNT(*) as count FROM crisis_alerts
+        WHERE is_resolved = 0
+        ${schoolId ? sql`AND school_id = ${schoolId}` : sql``}
+      `);
+      
+      res.json({
+        dailyAverages: dailyAveragesResult.rows,
+        unresolvedAlerts: parseInt(alertsResult.rows[0]?.count || '0')
+      });
+    } catch (error: any) {
+      console.error('Failed to get pulse analytics:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  // Get crisis alerts for counselors/admins
+  app.get("/api/crisis-alerts", async (req: any, res) => {
+    try {
+      const { schoolId, resolved } = req.query;
+      
+      const result = await db.execute(sql`
+        SELECT ca.*, u.first_name, u.last_name, u.grade
+        FROM crisis_alerts ca
+        LEFT JOIN users u ON ca.user_id = u.id
+        WHERE 1=1
+        ${schoolId ? sql`AND ca.school_id = ${schoolId}` : sql``}
+        ${resolved === 'false' ? sql`AND ca.is_resolved = 0` : sql``}
+        ${resolved === 'true' ? sql`AND ca.is_resolved = 1` : sql``}
+        ORDER BY ca.created_at DESC
+        LIMIT 100
+      `);
+      
+      res.json(result.rows);
+    } catch (error: any) {
+      console.error('Failed to get crisis alerts:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+  
+  // Resolve crisis alert
+  app.patch("/api/crisis-alerts/:id/resolve", async (req: any, res) => {
+    try {
+      const { id } = req.params;
+      const resolvedBy = req.headers['x-session-id'] || req.user?.claims?.sub;
+      const { notes } = req.body;
+      
+      const result = await db.execute(sql`
+        UPDATE crisis_alerts
+        SET is_resolved = 1, resolved_by = ${resolvedBy}, resolved_at = NOW(), notes = ${notes || null}
+        WHERE id = ${id}
+        RETURNING *
+      `);
+      
+      res.json(result.rows[0]);
+    } catch (error: any) {
+      console.error('Failed to resolve crisis alert:', error);
       res.status(500).json({ message: error.message });
     }
   });

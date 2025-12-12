@@ -30,6 +30,8 @@ import { useKindnessSparksContext } from '@/contexts/KindnessSparksContext';
 import ParentDashboard from '@/pages/ParentDashboard';
 import FamilyDashboard from '@/pages/FamilyDashboard';
 import { KindnessConnectModal } from '@/components/KindnessConnectModal';
+import { HeartLinkButton } from '@/components/HeartLinkButton';
+import { PulseCheckModal } from '@/components/PulseCheckModal';
 
 interface RewardOffer {
   id: string;
@@ -844,6 +846,12 @@ export default function Home() {
             isOpen={isKindnessConnectOpen}
             onClose={() => setIsKindnessConnectOpen(false)}
           />
+          
+          {/* Heart-Link Support Button - Always visible for wellness support */}
+          <HeartLinkButton />
+          
+          {/* Pulse Check Daily Modal - Shows once per day */}
+          <PulseCheckModal />
         </>
       )}
     </div>
