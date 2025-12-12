@@ -1830,10 +1830,11 @@ export const insertCharacterExcellenceAwardSchema = createInsertSchema(character
 // Pulse Check - Anonymous daily wellness rating
 export const pulseChecks = pgTable("pulse_checks", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
+  userId: varchar("user_id").references(() => users.id), // Nullable for anonymous/demo users
   schoolId: varchar("school_id"),
   supportScore: integer("support_score").notNull(), // 1-5 scale: "How supported do you feel?"
   isAnonymous: integer("is_anonymous").default(1).notNull(),
+  anonTrackingId: varchar("anon_tracking_id"), // For tracking demo/anonymous users without FK
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -1844,7 +1845,7 @@ export type InsertPulseCheck = z.infer<typeof insertPulseCheckSchema>;
 // Crisis alerts - Triggered when student shows consistent low scores
 export const crisisAlerts = pgTable("crisis_alerts", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
-  userId: varchar("user_id").notNull().references(() => users.id),
+  userId: varchar("user_id").references(() => users.id), // Nullable for anonymous/demo users
   schoolId: varchar("school_id"),
   alertType: varchar("alert_type", { length: 50 }).notNull(), // 'low_pulse_threshold', 'manual_referral'
   triggerCount: integer("trigger_count").default(3).notNull(), // Number of low scores that triggered this
@@ -1852,6 +1853,7 @@ export const crisisAlerts = pgTable("crisis_alerts", {
   resolvedBy: varchar("resolved_by").references(() => users.id),
   resolvedAt: timestamp("resolved_at"),
   notes: text("notes"),
+  anonTrackingId: varchar("anon_tracking_id"), // For tracking demo/anonymous users without FK
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 

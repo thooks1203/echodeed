@@ -2802,8 +2802,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Submit daily pulse check
   app.post("/api/pulse-check", async (req: any, res) => {
     try {
-      const userId = req.headers['x-session-id'] || req.user?.claims?.sub;
-      if (!userId) {
+      const sessionId = req.headers['x-session-id'] || req.user?.claims?.sub;
+      if (!sessionId) {
         return res.status(401).json({ message: 'Authentication required' });
       }
       
@@ -2813,46 +2813,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: 'Support score must be between 1 and 5' });
       }
       
-      // Get user's school ID
-      const userResult = await db.execute(sql`SELECT school_id FROM users WHERE id = ${userId}`);
-      const schoolId = userResult.rows[0]?.school_id;
+      // Check if user exists in database - if not, use null for anonymous tracking
+      const userResult = await db.execute(sql`SELECT id, school_id FROM users WHERE id = ${sessionId}`);
+      const userId = userResult.rows[0]?.id || null;
+      const schoolId = userResult.rows[0]?.school_id || null;
       
-      // Insert pulse check
+      // For demo users without DB records, store session-based tracking
+      // Use a hash of the session for anonymous tracking without FK constraint
+      const anonTrackingId = userId ? null : sessionId;
+      
+      // Insert pulse check - use NULL user_id for anonymous/demo users
       const result = await db.execute(sql`
-        INSERT INTO pulse_checks (user_id, school_id, support_score, is_anonymous)
-        VALUES (${userId}, ${schoolId || null}, ${supportScore}, ${isAnonymous})
+        INSERT INTO pulse_checks (user_id, school_id, support_score, is_anonymous, anon_tracking_id)
+        VALUES (${userId}, ${schoolId}, ${supportScore}, ${isAnonymous}, ${anonTrackingId})
         RETURNING *
       `);
       
       // Check for crisis protocol trigger (3 low scores in 7 days)
-      if (supportScore <= 2) {
+      // Use either userId or anonTrackingId for tracking
+      const trackingId = userId || anonTrackingId;
+      if (supportScore <= 2 && trackingId) {
         const weekAgo = new Date();
         weekAgo.setDate(weekAgo.getDate() - 7);
         
-        const lowScoresResult = await db.execute(sql`
-          SELECT COUNT(*) as count FROM pulse_checks 
-          WHERE user_id = ${userId} 
-          AND support_score <= 2 
-          AND created_at >= ${weekAgo}
-        `);
+        const lowScoresResult = userId 
+          ? await db.execute(sql`
+              SELECT COUNT(*) as count FROM pulse_checks 
+              WHERE user_id = ${userId} AND support_score <= 2 AND created_at >= ${weekAgo}
+            `)
+          : await db.execute(sql`
+              SELECT COUNT(*) as count FROM pulse_checks 
+              WHERE anon_tracking_id = ${anonTrackingId} AND support_score <= 2 AND created_at >= ${weekAgo}
+            `);
         
         const lowScoreCount = parseInt(lowScoresResult.rows[0]?.count || '0');
         
         if (lowScoreCount >= 3) {
           // Check if there's already an unresolved alert
-          const existingAlert = await db.execute(sql`
-            SELECT id FROM crisis_alerts 
-            WHERE user_id = ${userId} AND is_resolved = 0
-            LIMIT 1
-          `);
+          const existingAlert = userId
+            ? await db.execute(sql`SELECT id FROM crisis_alerts WHERE user_id = ${userId} AND is_resolved = 0 LIMIT 1`)
+            : await db.execute(sql`SELECT id FROM crisis_alerts WHERE anon_tracking_id = ${anonTrackingId} AND is_resolved = 0 LIMIT 1`);
           
           if (existingAlert.rows.length === 0) {
             // Create crisis alert
             await db.execute(sql`
-              INSERT INTO crisis_alerts (user_id, school_id, alert_type, trigger_count)
-              VALUES (${userId}, ${schoolId || null}, 'low_pulse_threshold', ${lowScoreCount})
+              INSERT INTO crisis_alerts (user_id, school_id, alert_type, trigger_count, anon_tracking_id)
+              VALUES (${userId}, ${schoolId}, 'low_pulse_threshold', ${lowScoreCount}, ${anonTrackingId})
             `);
-            console.log(`🚨 CRISIS ALERT: Student ${userId} has ${lowScoreCount} low pulse scores in the past week`);
+            console.log(`🚨 CRISIS ALERT: User ${trackingId} has ${lowScoreCount} low pulse scores in the past week`);
           }
         }
       }
