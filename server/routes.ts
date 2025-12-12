@@ -88,6 +88,7 @@ import { mandatoryReportingService } from "./services/mandatoryReporting";
 import { enforceCOPPA, requireCOPPACompliance } from "./middleware/coppaEnforcement";
 import { dailyEncouragementService } from "./services/dailyEncouragementNotifications";
 import { StudentNotificationService } from "./services/studentNotificationService";
+import { pulseCheckScheduler } from "./services/pulseCheckScheduler";
 
 // 🔒 TEACHER AUTHORIZATION MIDDLEWARE
 const requireTeacherRole = async (req: any, res: any, next: any) => {
@@ -2955,6 +2956,67 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.status(500).json({ message: error.message });
     }
   });
+
+  // ==================== PULSE CHECK SCHEDULER API ====================
+  
+  // Get scheduler status (admin only)
+  app.get("/api/pulse-check/scheduler/status", requireTeacherRole, async (req: any, res) => {
+    try {
+      const status = pulseCheckScheduler.getStatus();
+      res.json(status);
+    } catch (error: any) {
+      console.error('Failed to get scheduler status:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Start the scheduler (admin only)
+  app.post("/api/pulse-check/scheduler/start", requireTeacherRole, async (req: any, res) => {
+    try {
+      pulseCheckScheduler.start();
+      res.json({ success: true, message: 'Pulse check scheduler started' });
+    } catch (error: any) {
+      console.error('Failed to start scheduler:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Stop the scheduler (admin only)
+  app.post("/api/pulse-check/scheduler/stop", requireTeacherRole, async (req: any, res) => {
+    try {
+      pulseCheckScheduler.stop();
+      res.json({ success: true, message: 'Pulse check scheduler stopped' });
+    } catch (error: any) {
+      console.error('Failed to stop scheduler:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Manually trigger notifications (admin only, for testing)
+  app.post("/api/pulse-check/scheduler/trigger", requireTeacherRole, async (req: any, res) => {
+    try {
+      const result = await pulseCheckScheduler.triggerManualNotifications();
+      res.json({ success: true, ...result });
+    } catch (error: any) {
+      console.error('Failed to trigger notifications:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Update scheduler configuration (admin only)
+  app.patch("/api/pulse-check/scheduler/config", requireTeacherRole, async (req: any, res) => {
+    try {
+      const { timezone, startTime, endTime } = req.body;
+      pulseCheckScheduler.updateConfig({ timezone, startTime, endTime });
+      res.json({ success: true, config: pulseCheckScheduler.getStatus() });
+    } catch (error: any) {
+      console.error('Failed to update scheduler config:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Start the pulse check scheduler automatically
+  pulseCheckScheduler.start();
 
   // Corporate Admin Routes - Protected
   app.get('/api/corporate/account', isAuthenticated, async (req: any, res) => {

@@ -26,6 +26,15 @@ export function PulseCheckModal() {
   });
 
   useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const pulseCheckTrigger = urlParams.get('pulseCheck');
+    
+    if (pulseCheckTrigger === 'true' && user && todayCheck && !todayCheck.hasCheckedToday) {
+      setIsOpen(true);
+      window.history.replaceState({}, '', window.location.pathname);
+      return;
+    }
+    
     if (user && todayCheck && !todayCheck.hasCheckedToday) {
       const timer = setTimeout(() => {
         setIsOpen(true);

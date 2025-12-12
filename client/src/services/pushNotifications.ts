@@ -351,6 +351,28 @@ export class PushNotificationService {
   }
 
   /**
+   * 💜 Send Daily Pulse Check Reminder Notification
+   * Sent between 7:30-8:00 AM on weekdays
+   */
+  async sendPulseCheckReminder(): Promise<void> {
+    await this.sendNotification({
+      title: '💜 Quick check-in: How are you feeling today?',
+      body: 'Take a moment to share how supported you feel. Your voice matters.',
+      icon: '/icons/pulse-check.png',
+      tag: 'pulse-check-reminder',
+      actions: [
+        { action: 'check_in', title: 'Check In Now', icon: '/icons/heart.png' },
+        { action: 'later', title: 'Remind Me Later', icon: '/icons/snooze.png' }
+      ],
+      data: {
+        type: 'wellness_alert',
+        url: '/app?pulseCheck=true',
+        actionRequired: true
+      }
+    });
+  }
+
+  /**
    * Schedule daily kindness reminders
    */
   scheduleDailyReminders(timePreferences: {
