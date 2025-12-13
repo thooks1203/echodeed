@@ -788,14 +788,14 @@ export default function Home() {
       
       {/* Kindness Sparks Animation - Now mounted globally at App root */}
       
-      {/* Share Kindness Floating Action Button - POSITIONED TO THE RIGHT OF FEED */}
+      {/* Share Kindness Floating Action Button - POSITIONED TO THE LEFT */}
       {isAuthenticated && (
         <div
           onClick={() => setIsPostModalOpen(true)}
           data-testid="button-share-kindness-fab"
           className="fixed bottom-20 cursor-pointer z-[101] flex flex-col items-center gap-1.5"
           style={{
-            left: 'clamp(calc(50% + 300px + 2rem), calc(50% + 300px + 2rem), calc(100vw - 6rem))'
+            left: '100px'
           }}
         >
           <button
