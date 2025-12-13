@@ -209,8 +209,58 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
       {/* Spacer to push buttons to bottom */}
       <div style={{ flexGrow: 1 }} />
       
-      {/* Need Support Button - in sidebar */}
-      <HeartLinkButton position="bottom-left" />
+      {/* Need Support Button - styled like other sidebar buttons */}
+      <button
+        onClick={() => {
+          const heartLinkBtn = document.querySelector('[data-testid="button-heart-link"]') as HTMLButtonElement;
+          if (heartLinkBtn) heartLinkBtn.click();
+        }}
+        style={{
+          background: 'linear-gradient(135deg, #ec4899, #ef4444)',
+          border: '2px solid transparent',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '6px',
+          cursor: 'pointer',
+          padding: '12px 8px',
+          borderRadius: '8px',
+          fontSize: '12px',
+          fontWeight: '600',
+          color: '#fff',
+          textShadow: '0 1px 2px rgba(0,0,0,0.2)',
+          width: '64px',
+          transition: 'all 0.3s ease',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          marginBottom: '8px'
+        }}
+        data-testid="button-nav-support"
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #db2777, #dc2626)';
+          (e.currentTarget as HTMLElement).style.transform = 'scale(1.05)';
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #ec4899, #ef4444)';
+          (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
+        }}
+      >
+        <span style={{ fontSize: '24px' }}>💗</span>
+        <span style={{
+          fontSize: '10px',
+          letterSpacing: '0.3px',
+          fontWeight: '700',
+          whiteSpace: 'nowrap',
+          lineHeight: '1.2',
+          textAlign: 'center'
+        }}>
+          Support
+        </span>
+      </button>
+      
+      {/* Hidden HeartLink button to trigger modal */}
+      <div style={{ display: 'none' }}>
+        <HeartLinkButton position="bottom-left" />
+      </div>
       
       {/* Donate to Student Wellness Fund Button */}
       <a
@@ -219,41 +269,41 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
         rel="noopener noreferrer"
         style={{
           background: 'linear-gradient(135deg, #f59e0b, #d97706)',
-          border: '2px solid rgba(255,255,255,0.3)',
+          border: '2px solid transparent',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          gap: '4px',
+          gap: '6px',
           cursor: 'pointer',
-          padding: '10px 8px',
+          padding: '12px 8px',
           borderRadius: '8px',
           fontSize: '12px',
           fontWeight: '600',
           color: '#fff',
-          textShadow: '0 1px 2px rgba(0,0,0,0.3)',
+          textShadow: '0 1px 2px rgba(0,0,0,0.2)',
           width: '64px',
           transition: 'all 0.3s ease',
-          boxShadow: '0 4px 12px rgba(245,158,11,0.4)',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
           textDecoration: 'none',
           marginBottom: '16px'
         }}
         data-testid="button-donate-wellness-fund"
         onMouseEnter={(e) => {
+          (e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #d97706, #b45309)';
           (e.currentTarget as HTMLElement).style.transform = 'scale(1.05)';
-          (e.currentTarget as HTMLElement).style.boxShadow = '0 6px 16px rgba(245,158,11,0.5)';
         }}
         onMouseLeave={(e) => {
+          (e.currentTarget as HTMLElement).style.background = 'linear-gradient(135deg, #f59e0b, #d97706)';
           (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
-          (e.currentTarget as HTMLElement).style.boxShadow = '0 4px 12px rgba(245,158,11,0.4)';
         }}
       >
-        <span style={{ fontSize: '22px' }}>💛</span>
+        <span style={{ fontSize: '24px' }}>💛</span>
         <span style={{
-          fontSize: '9px',
-          letterSpacing: '0.2px',
+          fontSize: '10px',
+          letterSpacing: '0.3px',
           fontWeight: '700',
           whiteSpace: 'nowrap',
-          lineHeight: '1.1',
+          lineHeight: '1.2',
           textAlign: 'center'
         }}>
           Donate
