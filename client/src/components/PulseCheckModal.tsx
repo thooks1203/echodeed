@@ -133,17 +133,17 @@ export function PulseCheckModal() {
               ))}
             </div>
 
-            <div className="grid grid-cols-2 gap-3 px-4">
+            <div className="flex justify-center gap-3">
               <Button
                 variant="outline"
-                className="text-sm h-10"
+                className="text-sm h-9 px-6 min-w-[120px]"
                 onClick={handleClose}
                 data-testid="button-skip-pulse"
               >
                 Skip for now
               </Button>
               <Button
-                className="text-sm h-10 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                className="text-sm h-9 px-6 min-w-[120px] bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
                 onClick={handleSubmit}
                 disabled={selectedScore === null || submitMutation.isPending}
                 data-testid="button-submit-pulse"
