@@ -109,14 +109,14 @@ export function PulseCheckModal() {
               How supported do you feel in your school community today?
             </p>
 
-            <div className="flex justify-center gap-2 mb-6">
+            <div className="grid grid-cols-5 gap-1 mb-6 px-2">
               {PULSE_EMOJIS.map((item) => (
                 <button
                   key={item.score}
                   onClick={() => setSelectedScore(item.score)}
-                  className={`flex flex-col items-center p-3 rounded-xl transition-all duration-200 ${
+                  className={`flex flex-col items-center p-2 rounded-xl transition-all duration-200 ${
                     selectedScore === item.score
-                      ? 'scale-110 ring-2 ring-offset-2'
+                      ? 'scale-105 ring-2 ring-offset-1'
                       : 'hover:scale-105 opacity-70 hover:opacity-100'
                   }`}
                   style={{
@@ -125,8 +125,8 @@ export function PulseCheckModal() {
                   }}
                   data-testid={`pulse-score-${item.score}`}
                 >
-                  <span className="text-3xl mb-1">{item.emoji}</span>
-                  <span className="text-xs text-gray-600 dark:text-gray-300 whitespace-nowrap">
+                  <span className="text-2xl mb-1">{item.emoji}</span>
+                  <span className="text-[10px] text-gray-600 dark:text-gray-300 text-center leading-tight">
                     {item.label}
                   </span>
                 </button>
