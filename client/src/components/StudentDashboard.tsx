@@ -491,7 +491,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         <p style={{ fontSize: '14px', color: '#6b7280', margin: 0 }}>
           {isMiddleSchool 
             ? `Hey ${user?.name?.split(' ')[0] || 'Explorer'}! Ready for today's adventure? • Grade 7th`
-            : `Welcome back, ${user?.name || 'Student'}! • Grade ${user?.grade || '10'}th`
+            : `Welcome back, ${user?.name || 'Student'}! • Grade ${user?.grade || '10th'}`
           }
         </p>
       </div>
