@@ -206,6 +206,96 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
         </button>
       ))}
       
+      {/* Need Support Button - same style as other tabs */}
+      <button
+        onClick={() => {
+          const heartLinkBtn = document.querySelector('[data-testid="button-heart-link"]') as HTMLButtonElement;
+          if (heartLinkBtn) heartLinkBtn.click();
+        }}
+        style={{
+          background: 'linear-gradient(135deg, #ec4899, #f472b6)',
+          border: '2px solid transparent',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '6px',
+          cursor: 'pointer',
+          padding: '12px 8px',
+          borderRadius: '8px',
+          fontSize: '12px',
+          fontWeight: '600',
+          color: '#fff',
+          textShadow: '0 1px 2px rgba(0,0,0,0.2)',
+          width: '64px',
+          transition: 'all 0.3s ease',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+        }}
+        data-testid="button-nav-need-support"
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLElement).style.transform = 'scale(1.05)';
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
+        }}
+      >
+        <span style={{ fontSize: '24px' }}>💗</span>
+        <span style={{
+          fontSize: '10px',
+          letterSpacing: '0.3px',
+          fontWeight: '700',
+          whiteSpace: 'nowrap',
+          lineHeight: '1.2',
+          textAlign: 'center'
+        }}>
+          Support
+        </span>
+      </button>
+      
+      {/* Donate Button - same style as other tabs */}
+      <a
+        href="https://www.allegacy.org/community"
+        target="_blank"
+        rel="noopener noreferrer"
+        style={{
+          background: 'linear-gradient(135deg, #f59e0b, #fbbf24)',
+          border: '2px solid transparent',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '6px',
+          cursor: 'pointer',
+          padding: '12px 8px',
+          borderRadius: '8px',
+          fontSize: '12px',
+          fontWeight: '600',
+          color: '#fff',
+          textShadow: '0 1px 2px rgba(0,0,0,0.2)',
+          width: '64px',
+          transition: 'all 0.3s ease',
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+          textDecoration: 'none'
+        }}
+        data-testid="button-donate-wellness-fund"
+        onMouseEnter={(e) => {
+          (e.currentTarget as HTMLElement).style.transform = 'scale(1.05)';
+        }}
+        onMouseLeave={(e) => {
+          (e.currentTarget as HTMLElement).style.transform = 'scale(1)';
+        }}
+      >
+        <span style={{ fontSize: '24px' }}>💛</span>
+        <span style={{
+          fontSize: '10px',
+          letterSpacing: '0.3px',
+          fontWeight: '700',
+          whiteSpace: 'nowrap',
+          lineHeight: '1.2',
+          textAlign: 'center'
+        }}>
+          Donate
+        </span>
+      </a>
+      
       {/* Hidden HeartLink button to trigger modal */}
       <div style={{ display: 'none' }}>
         <HeartLinkButton position="bottom-left" />
