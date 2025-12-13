@@ -159,8 +159,8 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4 max-w-6xl mx-auto mb-12">
             {/* Students CTA - Different wording for MS vs HS */}
-            <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
-              <CardContent className="p-6 text-center">
+            <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 h-full">
+              <CardContent className="p-6 text-center flex flex-col h-full">
                 <div className={`w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4 ${
                   isMiddleSchool 
                     ? 'bg-gradient-to-br from-yellow-400 to-orange-500'
@@ -169,13 +169,13 @@ export default function Landing() {
                   {isMiddleSchool ? <Sparkles className="w-8 h-8 text-white" /> : <GraduationCap className="w-8 h-8 text-white" />}
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-gray-900">For Students</h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-gray-600 mb-4 flex-grow">
                   {isMiddleSchool 
                     ? 'Do kind stuff, earn tokens, get cool rewards!'
                     : 'Turn kindness into tokens, earn rewards, track service hours'
                   }
                 </p>
-                <Link href="/explore/students">
+                <Link href="/explore/students" className="mt-auto">
                   <Button
                     className={`w-full text-white ${
                       isMiddleSchool
@@ -191,19 +191,19 @@ export default function Landing() {
             </Card>
 
             {/* Parents CTA */}
-            <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
-              <CardContent className="p-6 text-center">
+            <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 h-full">
+              <CardContent className="p-6 text-center flex flex-col h-full">
                 <div className="w-16 h-16 bg-gradient-to-br from-rose-500 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Heart className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-gray-900">For Parents</h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-gray-600 mb-4 flex-grow">
                   {isMiddleSchool
                     ? 'Watch your kid grow & earn rewards together'
                     : 'Track your child\'s growth, earn dual rewards together'
                   }
                 </p>
-                <Link href="/explore/parents">
+                <Link href="/explore/parents" className="mt-auto">
                   <Button
                     className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
                     data-testid="button-explore-parent"
@@ -215,19 +215,19 @@ export default function Landing() {
             </Card>
 
             {/* Teachers CTA */}
-            <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
-              <CardContent className="p-6 text-center">
+            <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 h-full">
+              <CardContent className="p-6 text-center flex flex-col h-full">
                 <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   <Users className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-gray-900">For Teachers</h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-gray-600 mb-4 flex-grow">
                   {isMiddleSchool
                     ? 'Make character ed easy & fun for your class'
                     : 'Verify service hours, manage classroom, reduce workload'
                   }
                 </p>
-                <Link href="/explore/teachers">
+                <Link href="/explore/teachers" className="mt-auto">
                   <Button
                     className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
                     data-testid="button-explore-teacher"
@@ -239,19 +239,19 @@ export default function Landing() {
             </Card>
 
             {/* School Leaders CTA */}
-            <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1">
-              <CardContent className="p-6 text-center">
+            <Card className="bg-white/95 backdrop-blur-sm border-0 shadow-xl hover:shadow-2xl transition-all hover:-translate-y-1 h-full">
+              <CardContent className="p-6 text-center flex flex-col h-full">
                 <div className="w-16 h-16 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4">
                   {isMiddleSchool ? <Award className="w-8 h-8 text-white" /> : <Shield className="w-8 h-8 text-white" />}
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-gray-900">For School Leaders</h3>
-                <p className="text-sm text-gray-600 mb-4">
+                <p className="text-sm text-gray-600 mb-4 flex-grow">
                   {isMiddleSchool
                     ? 'Build character culture & measure outcomes'
                     : 'Get the data, see measurable character outcomes'
                   }
                 </p>
-                <Link href="/explore/school-leaders">
+                <Link href="/explore/school-leaders" className="mt-auto">
                   <Button
                     className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
                     data-testid="button-explore-admin"
