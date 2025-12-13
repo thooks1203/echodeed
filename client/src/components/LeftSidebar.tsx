@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { canAccessSchoolsDashboard } from "@/lib/roleUtils";
 import { featureFlags } from "@shared/featureFlags";
 import { useSchoolLevel } from "@/hooks/useSchoolLevel";
+import { HeartLinkButton } from "@/components/HeartLinkButton";
 
 interface LeftSidebarProps {
   activeTab: string;
@@ -204,8 +206,11 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
         </button>
       ))}
       
-      {/* Spacer to push donate button to bottom */}
+      {/* Spacer to push buttons to bottom */}
       <div style={{ flexGrow: 1 }} />
+      
+      {/* Need Support Button - in sidebar */}
+      <HeartLinkButton position="bottom-left" />
       
       {/* Donate to Student Wellness Fund Button */}
       <a
