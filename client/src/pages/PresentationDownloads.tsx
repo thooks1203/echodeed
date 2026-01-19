@@ -371,7 +371,14 @@ export default function PresentationDownloads() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-600 via-indigo-600 to-pink-500 p-4 md:p-8">
+    <div style={{ 
+      position: 'fixed', 
+      inset: 0, 
+      background: 'linear-gradient(135deg, #7c3aed 0%, #6366f1 50%, #ec4899 100%)',
+      overflow: 'auto',
+      padding: '2rem',
+      zIndex: 50
+    }}>
       <style>{`
         @media print {
           body * {
