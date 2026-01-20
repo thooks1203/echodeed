@@ -64,6 +64,11 @@ The frontend utilizes React 18, TypeScript, and Vite, with Radix UI, shadcn/ui, 
 - **IPARD Service-Learning Features**: Process-based token rewards, 21st Century Skills and Character Traits tagging, IPARD phase visualization, Admin School Rewards, Character Excellence Recognition, Monthly Recognition Leaderboards, AI-Suggested Communications, and comprehensive audit trails.
 - **School Registration with Level Selection**: During school registration, administrators use a dropdown to select their service-learning configuration (Middle School: optional community service, or High School: required 200-hour diploma). The selection determines platform behavior, UI displays, token milestones, and reward accessibility.
 - **Student Notification System**: Email-first digests for approvals, token milestones, streaks, IPARD bonuses, and reward status.
+- **School-Spirit Features (Eastern Guilford Pilot)**:
+  - **Multi-Directional Recognition**: Staff can post Staff-to-Staff and Staff-to-Student posts with gold verified styling and "Verified Staff" badges in the feed.
+  - **Badge & Achievement Engine**: Originator (first to share a category), Weekly Warrior (posts across 5 days), and Grade Hero (most posts in grade) badges with Badge Gallery UI on student dashboard.
+  - **Social Media Sharing**: SocialShareModal with canvas-based branded image generation (1080x1080 Instagram-ready format), share button on all feed posts.
+  - **Sign-up Incentive System**: Schools can configure bonus tokens for first Y sign-ups via admin settings, with atomic claim prevention and per-user eligibility checks.
 
 ## External Dependencies
 - **Frontend Frameworks**: React 18
