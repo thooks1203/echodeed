@@ -1,10 +1,11 @@
 import { useState, useMemo } from 'react';
-import { X, Heart, MapPin, HandHeart, Users, Smile, Lightbulb, Sparkles, BookOpen, TreePine, Smartphone, Crown, UserPlus, Plus, Search, GraduationCap, Check, ChevronsUpDown } from 'lucide-react';
+import { X, Heart, MapPin, HandHeart, Users, Smile, Lightbulb, Sparkles, BookOpen, TreePine, Smartphone, Crown, UserPlus, Plus, Search, GraduationCap, Check, ChevronsUpDown, BadgeCheck, Award } from 'lucide-react';
 // import electricLogoUrl from '../assets/echodeed_electric_logo.png';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import { apiRequest } from '@/lib/queryClient';
 import { pushNotifications } from '../services/pushNotifications';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
 import { LocationData } from '@/lib/types';
 import { EmojiRegistry, emojiKeys, type EmojiKey } from '@/assets/emojis';
 import { Button } from '@/components/ui/button';
@@ -12,6 +13,8 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Input } from '@/components/ui/input';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
+type PostType = 'student_to_student' | 'staff_to_staff' | 'staff_to_student';
 
 interface PostDeedModalProps {
   isOpen: boolean;
@@ -28,6 +31,7 @@ interface PostData {
   state: string;
   country: string;
   emojis: string[];
+  postType?: PostType;
   mentionedTeacherId?: string;
   teacherAppreciationMessage?: string;
 }
@@ -42,8 +46,13 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
   const [selectedTeacherId, setSelectedTeacherId] = useState<string>('none');
   const [teacherMessage, setTeacherMessage] = useState<string>('');
   const [teacherSearchOpen, setTeacherSearchOpen] = useState(false);
+  const [postType, setPostType] = useState<PostType>('student_to_student');
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { isTeacher, isAdmin } = useAuth();
+  
+  // Staff members can post as staff_to_staff or staff_to_student
+  const isStaffMember = isTeacher || isAdmin;
 
   // Fetch teachers for the school (using Eastern Guilford High School as demo)
   const { data: teachers = [] } = useQuery<any[]>({
@@ -319,6 +328,8 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
       state: location?.state || 'Unknown',
       country: location?.country || 'Unknown',
       emojis: selectedEmojis,
+      // Include postType for staff members
+      ...(isStaffMember && { postType }),
       ...(selectedTeacherId && selectedTeacherId !== 'none' && { 
         mentionedTeacherId: selectedTeacherId,
         ...(teacherMessage.trim() && { teacherAppreciationMessage: teacherMessage.trim() })
@@ -346,6 +357,36 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
         
         <div className="p-4">
           <form onSubmit={handleSubmit}>
+            {/* Staff Post Type Selector */}
+            {isStaffMember && (
+              <div className="mb-4 p-3 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 border border-amber-200 dark:border-amber-700 rounded-lg">
+                <div className="flex items-center gap-2 mb-2">
+                  <BadgeCheck size={16} className="text-amber-600" />
+                  <span className="text-sm font-semibold text-amber-800 dark:text-amber-200">Staff Recognition Post</span>
+                </div>
+                <p className="text-xs text-amber-700 dark:text-amber-300 mb-3">As staff, you can recognize colleagues or give shout-outs to students!</p>
+                <Select value={postType} onValueChange={(value) => setPostType(value as PostType)}>
+                  <SelectTrigger className="w-full bg-white dark:bg-gray-800 border-amber-300">
+                    <SelectValue placeholder="Select post type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="staff_to_student">
+                      <div className="flex items-center gap-2">
+                        <Award size={14} className="text-amber-500" />
+                        <span>Shout-out to Student</span>
+                      </div>
+                    </SelectItem>
+                    <SelectItem value="staff_to_staff">
+                      <div className="flex items-center gap-2">
+                        <BadgeCheck size={14} className="text-amber-500" />
+                        <span>Recognize a Colleague</span>
+                      </div>
+                    </SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+            
             {content.length === 0 && (() => {
               const categorySuggestions = kindnessSuggestions[category as keyof typeof kindnessSuggestions] || [];
               const quickPrompts = Array.isArray(categorySuggestions) ? categorySuggestions.slice(0, 3) : [];

@@ -20,6 +20,7 @@ import { featureFlags } from '@shared/featureFlags';
 import { Heart } from 'lucide-react';
 import { HelpButton, helpContent } from '@/components/HelpButton';
 import { HeartLinkButton } from '@/components/HeartLinkButton';
+import { BadgeGallery } from '@/components/BadgeGallery';
 
 interface StudentStats {
   totalKindnessPoints: number;
@@ -674,6 +675,11 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           </div>
         );
       })()}
+
+      {/* Badge Gallery - Achievement Showcase */}
+      <div style={{ marginBottom: '24px' }}>
+        <BadgeGallery />
+      </div>
 
       {/* Kindness Connect Promotional Card - MS: Fun Adventures, HS: Service Opportunities */}
       <div style={{

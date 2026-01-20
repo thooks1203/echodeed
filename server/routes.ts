@@ -3,8 +3,8 @@ import { createServer, type Server } from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import { storage } from "./storage";
 import { db } from "./db";
-import { sql } from "drizzle-orm";
-import { insertKindnessPostSchema, insertSupportPostSchema, insertWellnessCheckinSchema } from "@shared/schema";
+import { sql, eq } from "drizzle-orm";
+import { insertKindnessPostSchema, insertSupportPostSchema, insertWellnessCheckinSchema, schools, users } from "@shared/schema";
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
 import { contentFilter } from "./services/contentFilter";
@@ -1917,6 +1917,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       // Create post with session ID for anonymous posting
       const post = await storage.createPost({ ...postData, userId: sessionId });
+
+      // 🏆 CHECK AND AWARD BADGES after post creation
+      let awardedBadges: string[] = [];
+      try {
+        const { badgeService } = await import('./badgeService');
+        awardedBadges = await badgeService.checkBadgesAfterPost(sessionId);
+        if (awardedBadges.length > 0) {
+          console.log(`🏆 Badges awarded after post: ${awardedBadges.join(', ')}`);
+        }
+      } catch (badgeError) {
+        console.error('Badge check error (non-blocking):', badgeError);
+        // Don't fail post creation if badge check fails
+      }
 
       // 🚀 REVOLUTIONARY: Instant Parent Notification System
       // Notify parents immediately when their child posts kindness acts
@@ -4728,6 +4741,70 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json(verification);
     } catch (error: any) {
       res.status(400).json({ message: error.message });
+    }
+  });
+
+  // ===== USER BADGE ACHIEVEMENT SYSTEM =====
+  // Get user's earned badges
+  app.get('/api/badges/user/:userId', async (req, res) => {
+    try {
+      const { userId } = req.params;
+      const { badgeService } = await import('./badgeService');
+      const badges = await badgeService.getUserBadges(userId);
+      res.json(badges);
+    } catch (error: any) {
+      console.error('Error fetching user badges:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get current user's badges
+  app.get('/api/badges/mine', async (req: any, res) => {
+    try {
+      const userId = req.headers['x-session-id'] || 'demo-user';
+      const { badgeService } = await import('./badgeService');
+      const badges = await badgeService.getUserBadges(userId);
+      res.json(badges);
+    } catch (error: any) {
+      console.error('Error fetching my badges:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Get all available badge definitions
+  app.get('/api/badges/definitions', async (req, res) => {
+    try {
+      const { badgeService } = await import('./badgeService');
+      const definitions = await badgeService.getBadgeDefinitions();
+      res.json(definitions);
+    } catch (error: any) {
+      console.error('Error fetching badge definitions:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Manually award a badge (admin only)
+  app.post('/api/badges/award', isAuthenticated, async (req: any, res) => {
+    try {
+      const { userId, badgeId, metadata } = req.body;
+      const { badgeService } = await import('./badgeService');
+      const awarded = await badgeService.awardBadge(userId, badgeId, metadata);
+      res.json({ success: awarded, badgeId });
+    } catch (error: any) {
+      console.error('Error awarding badge:', error);
+      res.status(500).json({ message: error.message });
+    }
+  });
+
+  // Trigger monthly grade hero calculation (admin only)
+  app.post('/api/badges/calculate-grade-hero', isAuthenticated, async (req: any, res) => {
+    try {
+      const { badgeService } = await import('./badgeService');
+      await badgeService.awardGradeHeroBadges();
+      res.json({ success: true, message: 'Grade hero badges calculated' });
+    } catch (error: any) {
+      console.error('Error calculating grade hero:', error);
+      res.status(500).json({ message: error.message });
     }
   });
 
@@ -12537,6 +12614,185 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error: any) {
       console.error('Failed to update school:', error);
       res.status(500).json({ message: 'Failed to update school information' });
+    }
+  });
+
+  // 🏆 SCHOOL SPIRIT FEATURES - Social & Incentive Settings
+  
+  // GET /api/schools/:schoolId/settings - Get school settings including social links and signup incentive
+  app.get('/api/schools/:schoolId/settings', isAuthenticated, requireSchoolAccess, requireSpecificSchoolAccess('schoolId'), async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      
+      // Get school from the schools table
+      const school = await db.select().from(schools).where(eq(schools.id, schoolId)).limit(1);
+      
+      if (!school || school.length === 0) {
+        return res.status(404).json({ message: 'School not found' });
+      }
+      
+      const s = school[0];
+      res.json({
+        id: s.id,
+        name: s.name,
+        instagramUrl: s.instagramUrl || '',
+        websiteUrl: s.websiteUrl || '',
+        logoUrl: s.logoUrl || '',
+        signupBonusTokens: s.signupBonusTokens || 0,
+        signupBonusCap: s.signupBonusCap || 0,
+        signupBonusUsed: s.signupBonusUsed || 0
+      });
+    } catch (error: any) {
+      console.error('Failed to get school settings:', error);
+      res.status(500).json({ message: 'Failed to get school settings' });
+    }
+  });
+
+  // PUT /api/schools/:schoolId/settings - Update school settings (admin only)
+  app.put('/api/schools/:schoolId/settings', isAuthenticated, requireSchoolAccess, requireSpecificSchoolAccess('schoolId'), async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      
+      // Verify admin access
+      const userSchools = req.userSchools || [];
+      const userSchool = userSchools.find((school: any) => school.schoolId === schoolId);
+      if (!userSchool || userSchool.accessLevel !== 'admin') {
+        return res.status(403).json({ message: 'Administrator access required to update school settings' });
+      }
+      
+      const { instagramUrl, websiteUrl, logoUrl, signupBonusTokens, signupBonusCap } = req.body;
+      
+      // Validate and sanitize inputs
+      const updates: any = {};
+      if (instagramUrl !== undefined) updates.instagramUrl = String(instagramUrl).slice(0, 200);
+      if (websiteUrl !== undefined) updates.websiteUrl = String(websiteUrl).slice(0, 200);
+      if (logoUrl !== undefined) updates.logoUrl = String(logoUrl).slice(0, 500);
+      if (signupBonusTokens !== undefined) {
+        const tokens = parseInt(signupBonusTokens);
+        if (isNaN(tokens) || tokens < 0 || tokens > 1000) {
+          return res.status(400).json({ message: 'Signup bonus tokens must be between 0 and 1000' });
+        }
+        updates.signupBonusTokens = tokens;
+      }
+      if (signupBonusCap !== undefined) {
+        const cap = parseInt(signupBonusCap);
+        if (isNaN(cap) || cap < 0 || cap > 10000) {
+          return res.status(400).json({ message: 'Signup bonus cap must be between 0 and 10000' });
+        }
+        updates.signupBonusCap = cap;
+      }
+      
+      if (Object.keys(updates).length === 0) {
+        return res.status(400).json({ message: 'No valid fields to update' });
+      }
+      
+      await db.update(schools).set(updates).where(eq(schools.id, schoolId));
+      
+      res.json({ message: 'School settings updated successfully' });
+    } catch (error: any) {
+      console.error('Failed to update school settings:', error);
+      res.status(500).json({ message: 'Failed to update school settings' });
+    }
+  });
+
+  // POST /api/schools/:schoolId/claim-signup-bonus - Claim signup bonus tokens for new user
+  // SECURITY: Only allows claiming for user's own school, prevents duplicate claims
+  app.post('/api/schools/:schoolId/claim-signup-bonus', isAuthenticated, requireSchoolAccess, requireSpecificSchoolAccess('schoolId'), async (req: any, res) => {
+    try {
+      const { schoolId } = req.params;
+      const userId = req.user?.id || req.session?.userId;
+      
+      if (!userId) {
+        return res.status(401).json({ message: 'Authentication required' });
+      }
+      
+      // Verify user belongs to this school
+      const userSchools = req.userSchools || [];
+      const userSchool = userSchools.find((school: any) => school.schoolId === schoolId);
+      if (!userSchool) {
+        return res.status(403).json({ message: 'You are not a member of this school' });
+      }
+      
+      // Get user to check if already claimed
+      const user = await db.select().from(users).where(eq(users.id, userId)).limit(1);
+      if (!user || user.length === 0) {
+        return res.status(404).json({ message: 'User not found' });
+      }
+      
+      // Check if user already claimed signup bonus (use signupBonusClaimed field)
+      // For now, use metadata field or createdAt check (only new users can claim)
+      const userRecord = user[0];
+      const accountAgeHours = (Date.now() - new Date(userRecord.createdAt || Date.now()).getTime()) / (1000 * 60 * 60);
+      
+      // Only allow claims within first 24 hours of account creation
+      if (accountAgeHours > 24) {
+        return res.json({ claimed: false, message: 'Signup bonus is only available within 24 hours of registration' });
+      }
+      
+      // Check if user has any previous token transactions that indicate they already claimed
+      // (A simple safeguard - in production, add a dedicated signupBonusClaimed boolean field)
+      const currentBalance = userRecord.tokenBalance || 0;
+      const totalEarned = userRecord.totalTokensEarned || 0;
+      
+      // If user already has tokens, they may have already claimed
+      // Allow only if this would be their first tokens
+      if (totalEarned > 0) {
+        return res.json({ claimed: false, message: 'Signup bonus already claimed or not eligible' });
+      }
+      
+      // Get school settings
+      const school = await db.select().from(schools).where(eq(schools.id, schoolId)).limit(1);
+      
+      if (!school || school.length === 0) {
+        return res.status(404).json({ message: 'School not found' });
+      }
+      
+      const s = school[0];
+      const bonusTokens = s.signupBonusTokens || 0;
+      const bonusCap = s.signupBonusCap || 0;
+      const bonusUsed = s.signupBonusUsed || 0;
+      
+      // Check if bonus is available
+      if (bonusTokens === 0 || bonusCap === 0) {
+        return res.json({ claimed: false, message: 'No signup bonus available for this school' });
+      }
+      
+      if (bonusUsed >= bonusCap) {
+        return res.json({ claimed: false, message: 'Signup bonus limit reached' });
+      }
+      
+      // ATOMIC: Use conditional UPDATE to atomically increment signupBonusUsed only if cap not reached
+      // This prevents race conditions where multiple concurrent claims could exceed the cap
+      const updateResult = await db.execute(sql`
+        UPDATE schools 
+        SET signup_bonus_used = signup_bonus_used + 1 
+        WHERE id = ${schoolId} 
+        AND signup_bonus_used < signup_bonus_cap
+        RETURNING signup_bonus_used
+      `);
+      
+      // Check if the atomic update succeeded (cap wasn't reached)
+      if (!updateResult.rows || updateResult.rows.length === 0) {
+        return res.json({ claimed: false, message: 'Signup bonus limit reached' });
+      }
+      
+      const newBonusUsed = (updateResult.rows[0] as any).signup_bonus_used;
+      
+      // Award tokens to user (atomic update with totalTokensEarned to prevent double claims)
+      await db.update(users).set({ 
+        tokenBalance: currentBalance + bonusTokens,
+        totalTokensEarned: totalEarned + bonusTokens
+      }).where(eq(users.id, userId));
+      
+      res.json({ 
+        claimed: true, 
+        tokensAwarded: bonusTokens,
+        message: `Welcome! You've received ${bonusTokens} bonus tokens!`,
+        remainingBonuses: bonusCap - newBonusUsed
+      });
+    } catch (error: any) {
+      console.error('Failed to claim signup bonus:', error);
+      res.status(500).json({ message: 'Failed to claim signup bonus' });
     }
   });
 

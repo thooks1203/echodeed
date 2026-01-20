@@ -1,10 +1,25 @@
-import { Heart, MapPin, Loader2, HandHeart, Users, Smile, Coffee, TreePine, Zap, TrendingUp, Star, BookOpen, Smartphone, Crown, UserPlus } from 'lucide-react';
+import { Heart, MapPin, Loader2, HandHeart, Users, Smile, Coffee, TreePine, Zap, TrendingUp, Star, BookOpen, Smartphone, Crown, UserPlus, BadgeCheck, Award, Share2 } from 'lucide-react';
 import { KindnessPost } from '@shared/schema';
 import { formatDistance } from 'date-fns';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
+import { SocialShareModal } from './SocialShareModal';
 import { addSessionHeaders } from '@/lib/session';
 import { EmojiRegistry } from '@/assets/emojis.tsx';
+
+// Helper to check if a post is from staff
+const isStaffPost = (post: KindnessPost) => {
+  const postType = (post as any).postType;
+  return postType === 'staff_to_staff' || postType === 'staff_to_student';
+};
+
+// Get staff post label
+const getStaffPostLabel = (post: KindnessPost) => {
+  const postType = (post as any).postType;
+  if (postType === 'staff_to_staff') return 'Staff Recognition';
+  if (postType === 'staff_to_student') return 'Staff Shout-out';
+  return null;
+};
 
 interface KindnessFeedProps {
   posts: KindnessPost[];
@@ -14,6 +29,7 @@ interface KindnessFeedProps {
 export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
   const queryClient = useQueryClient();
   const [clickedPosts, setClickedPosts] = useState<Set<string>>(new Set());
+  const [sharePost, setSharePost] = useState<KindnessPost | null>(null);
 
   const heartMutation = useMutation({
     mutationFn: async (postId: string) => {
@@ -192,19 +208,37 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
           const isHighImpact = impactLevel === 'high';
           const isTrending = (post.heartsCount || 0) > 5;
           
+          const staffPost = isStaffPost(post);
+          const staffLabel = getStaffPostLabel(post);
+          
           return (
             <div 
               key={post.id} 
-              className={`px-4 py-4 border-b border-border transition-all duration-300 hover:shadow-md hover:bg-primary/5 hover:scale-[1.01] cursor-pointer group ${
-                isHighImpact ? 'bg-gradient-to-r from-background to-primary/5 shadow-sm' : 'bg-card'
+              className={`px-4 py-4 border-b transition-all duration-300 hover:shadow-md hover:bg-primary/5 hover:scale-[1.01] cursor-pointer group ${
+                staffPost 
+                  ? 'bg-gradient-to-r from-amber-50 via-yellow-50 to-amber-50 dark:from-amber-900/20 dark:via-yellow-900/20 dark:to-amber-900/20 border-l-4 border-l-amber-400 border-b-amber-200 dark:border-b-amber-700' 
+                  : isHighImpact 
+                    ? 'bg-gradient-to-r from-background to-primary/5 shadow-sm border-border' 
+                    : 'bg-card border-border'
               }`}
               style={{
                 animation: `fadeInUp 0.4s ease-out ${index * 0.05}s both`
               }}
             >
+              {/* Staff Verified Badge */}
+              {staffPost && staffLabel && (
+                <div className="flex items-center gap-1.5 mb-2 pb-2 border-b border-amber-200 dark:border-amber-700/50">
+                  <div className="flex items-center gap-1 bg-gradient-to-r from-amber-400 to-yellow-500 text-white text-xs font-bold px-2 py-0.5 rounded-full shadow-sm">
+                    <BadgeCheck size={12} className="text-white" />
+                    <span>{staffLabel}</span>
+                  </div>
+                  <Award size={14} className="text-amber-500" />
+                </div>
+              )}
+              
               <div className="flex items-start space-x-3">
                 {/* Dynamic category icon with gradient */}
-                <div className={`w-10 h-10 bg-gradient-to-br ${getCategoryColor(post.category)} rounded-xl flex items-center justify-center flex-shrink-0 mt-1 shadow-sm transition-transform duration-200 group-hover:scale-110 group-hover:shadow-md`}>
+                <div className={`w-10 h-10 bg-gradient-to-br ${staffPost ? 'from-amber-400 to-yellow-500' : getCategoryColor(post.category)} rounded-xl flex items-center justify-center flex-shrink-0 mt-1 shadow-sm transition-transform duration-200 group-hover:scale-110 group-hover:shadow-md ${staffPost ? 'ring-2 ring-amber-300 ring-offset-2' : ''}`}>
                   <IconComponent size={18} className="text-white transition-transform duration-200 group-hover:rotate-6" />
                 </div>
                 
@@ -303,6 +337,18 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
                         <span className="text-sm font-medium">{post.echoesCount || 0}</span>
                       </button>
                       
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSharePost(post);
+                        }}
+                        className="flex items-center gap-1.5 transition-all duration-200 hover:scale-110 active:scale-95 text-gray-400 hover:text-purple-500"
+                        title="Share this act of kindness"
+                        data-testid={`button-share-${post.id}`}
+                      >
+                        <Share2 size={18} />
+                      </button>
+                      
                       {(post.impactScore || 0) > 75 && (
                         <div className="flex items-center gap-1 text-amber-500">
                           <Star size={16} fill="currentColor" />
@@ -329,6 +375,20 @@ export function KindnessFeed({ posts, isLoading }: KindnessFeedProps) {
           <div className="animate-spin w-6 h-6 border-2 border-primary border-t-transparent rounded-full mx-auto mb-3"></div>
           <p className="text-muted-foreground text-sm">Loading more acts of kindness...</p>
         </div>
+      )}
+
+      {/* Social Share Modal */}
+      {sharePost && (
+        <SocialShareModal
+          isOpen={!!sharePost}
+          onClose={() => setSharePost(null)}
+          post={{
+            id: sharePost.id,
+            content: sharePost.content,
+            category: sharePost.category,
+            createdAt: sharePost.createdAt?.toString() || new Date().toISOString()
+          }}
+        />
       )}
     </main>
   );
