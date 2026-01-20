@@ -74,6 +74,8 @@ export const kindnessPosts = pgTable("kindness_posts", {
   schoolId: varchar("school_id"), // Link to school for school-specific feeds
   content: text("content").notNull(),
   category: varchar("category", { length: 50 }).notNull(),
+  // Multi-directional recognition: who is posting to whom
+  postType: varchar("post_type", { length: 30 }).$type<'student_to_student' | 'staff_to_staff' | 'staff_to_student'>().default('student_to_student'),
   location: text("location").notNull(),
   city: text("city"),
   state: text("state"), 
@@ -223,6 +225,33 @@ export const helpfulReactions = pgTable("helpful_reactions", {
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
+// User Badges & Achievements System (School-Spirit Features)
+export const userBadges = pgTable("user_badges", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  badgeId: varchar("badge_id", { length: 50 }).notNull(), // 'originator', 'weekly_warrior', 'grade_hero', etc.
+  badgeName: varchar("badge_name", { length: 100 }).notNull(), // Display name
+  badgeDescription: text("badge_description"), // Description of achievement
+  badgeIcon: varchar("badge_icon", { length: 50 }), // Emoji or icon reference
+  badgeColor: varchar("badge_color", { length: 20 }), // Color theme for badge
+  metadata: jsonb("metadata"), // Additional context (e.g., grade level, week, etc.)
+  awardedAt: timestamp("awarded_at").defaultNow().notNull(),
+});
+
+// Badge definitions catalog (reference data)
+export const badgeDefinitions = pgTable("badge_definitions", {
+  id: varchar("id").primaryKey(), // e.g., 'originator', 'weekly_warrior'
+  name: varchar("name", { length: 100 }).notNull(),
+  description: text("description").notNull(),
+  icon: varchar("icon", { length: 50 }).notNull(), // Emoji
+  color: varchar("color", { length: 20 }).notNull(), // Tailwind color class
+  category: varchar("category", { length: 50 }).notNull(), // 'achievement', 'milestone', 'recognition'
+  requirements: text("requirements"), // Human-readable requirements
+  isActive: integer("is_active").default(1).notNull(),
+  sortOrder: integer("sort_order").default(0),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 // Wellness check-ins for students
 export const wellnessCheckins = pgTable("wellness_checkins", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
@@ -260,6 +289,14 @@ export const schools = pgTable("schools", {
   subscriptionStartDate: timestamp("subscription_start_date"),
   subscriptionEndDate: timestamp("subscription_end_date"),
   isActive: integer("is_active").default(1).notNull(),
+  // Social Media & External Links (School-Spirit Features)
+  instagramUrl: varchar("instagram_url", { length: 500 }),
+  websiteUrl: varchar("website_url", { length: 500 }),
+  logoUrl: varchar("logo_url", { length: 500 }), // School logo for branded sharing
+  // Sign-up Incentive Program
+  signupBonusTokens: integer("signup_bonus_tokens").default(0), // Tokens awarded to new registrations
+  signupBonusCap: integer("signup_bonus_cap").default(0), // Max number of users who can receive bonus
+  signupBonusUsed: integer("signup_bonus_used").default(0), // How many bonuses have been claimed
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
@@ -1288,6 +1325,16 @@ export const insertSupportResponseSchema = createInsertSchema(supportResponses).
 
 export const insertWellnessCheckinSchema = createInsertSchema(wellnessCheckins).omit({
   id: true,
+  createdAt: true,
+});
+
+// Badge system insert schemas
+export const insertUserBadgeSchema = createInsertSchema(userBadges).omit({
+  id: true,
+  awardedAt: true,
+});
+
+export const insertBadgeDefinitionSchema = createInsertSchema(badgeDefinitions).omit({
   createdAt: true,
 });
 
