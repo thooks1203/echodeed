@@ -2,63 +2,55 @@ import { db } from './db';
 import { userBadges, badgeDefinitions, kindnessPosts, users } from '@shared/schema';
 import { eq, sql, and, gte, lte, count } from 'drizzle-orm';
 
-// Badge definitions with awarding logic
+// ═══════════════════════════════════════════════════════════════════════════════
+// THE MCNEILL COLLECTION - Eastern Guilford Wildcat Badges
+// Modern "level-up" gaming aesthetic with Blue/Gold Wildcat colors
+// ═══════════════════════════════════════════════════════════════════════════════
 const BADGE_DEFINITIONS = {
   originator: {
     id: 'originator',
     name: 'The Originator',
-    description: 'You shared your first act of kindness!',
-    icon: '🌟',
-    color: 'yellow',
-    category: 'achievement'
+    description: 'You planted your first seed of kindness!',
+    icon: '🌱',
+    color: 'green-gold',
+    category: 'achievement',
+    tier: 'bronze'
   },
   weekly_warrior: {
     id: 'weekly_warrior',
     name: 'Weekly Warrior',
     description: 'You shared 3+ acts of kindness in one week!',
-    icon: '⚔️',
-    color: 'purple',
-    category: 'achievement'
+    icon: '🛡️',
+    color: 'silver-blue',
+    category: 'achievement',
+    tier: 'silver'
   },
   grade_hero: {
     id: 'grade_hero',
     name: 'Grade Hero',
     description: 'Your grade had the most kindness posts this month!',
-    icon: '🦸',
-    color: 'blue',
-    category: 'recognition'
-  },
-  kindness_streak_3: {
-    id: 'kindness_streak_3',
-    name: '3-Day Streak',
-    description: 'You posted kindness 3 days in a row!',
-    icon: '🔥',
-    color: 'orange',
-    category: 'milestone'
-  },
-  kindness_streak_7: {
-    id: 'kindness_streak_7',
-    name: '7-Day Streak',
-    description: 'A full week of daily kindness!',
-    icon: '💎',
-    color: 'cyan',
-    category: 'milestone'
-  },
-  super_supporter: {
-    id: 'super_supporter',
-    name: 'Super Supporter',
-    description: 'You gave hearts to 10 different posts!',
-    icon: '💜',
-    color: 'pink',
-    category: 'achievement'
-  },
-  staff_star: {
-    id: 'staff_star',
-    name: 'Staff Star',
-    description: 'Recognized by a staff member for outstanding character!',
-    icon: '⭐',
+    icon: '👑',
     color: 'gold',
-    category: 'recognition'
+    category: 'recognition',
+    tier: 'gold'
+  },
+  echo_maker: {
+    id: 'echo_maker',
+    name: 'Echo Maker',
+    description: 'Your kindness inspired 5+ echoes from peers!',
+    icon: '💫',
+    color: 'blue-cyan',
+    category: 'achievement',
+    tier: 'silver'
+  },
+  wildcat_legend: {
+    id: 'wildcat_legend',
+    name: 'Wildcat Legend',
+    description: 'Reached 50 deeds or recognized by Principal McNeill!',
+    icon: '🐾',
+    color: 'diamond',
+    category: 'legendary',
+    tier: 'legendary'
   }
 };
 
@@ -184,10 +176,58 @@ export class BadgeService {
     }
   }
 
-  // Award Staff Star badge (when staff recognizes a student)
-  async awardStaffStarBadge(userId: string, staffName: string): Promise<boolean> {
-    return await this.awardBadge(userId, 'staff_star', {
-      recognizedBy: staffName,
+  // Check and award "Echo Maker" badge (post with 5+ echoes)
+  async checkEchoMakerBadge(userId: string, postId?: string): Promise<boolean> {
+    try {
+      // Check if any of the user's posts have 5+ echoes
+      const postsWithEchoes = await db
+        .select({ id: kindnessPosts.id, echoes: kindnessPosts.echoesCount })
+        .from(kindnessPosts)
+        .where(and(
+          eq(kindnessPosts.userId, userId),
+          gte(kindnessPosts.echoesCount, 5)
+        ))
+        .limit(1);
+
+      if (postsWithEchoes.length > 0) {
+        return await this.awardBadge(userId, 'echo_maker', {
+          postId: postsWithEchoes[0].id,
+          echoes: postsWithEchoes[0].echoes
+        });
+      }
+      return false;
+    } catch (error) {
+      console.error('Error checking echo maker badge:', error);
+      return false;
+    }
+  }
+
+  // Check and award "Wildcat Legend" badge (50+ total deeds)
+  async checkWildcatLegendBadge(userId: string): Promise<boolean> {
+    try {
+      const postCount = await db
+        .select({ count: count() })
+        .from(kindnessPosts)
+        .where(eq(kindnessPosts.userId, userId));
+
+      if (postCount[0]?.count >= 50) {
+        return await this.awardBadge(userId, 'wildcat_legend', {
+          totalDeeds: postCount[0].count,
+          milestone: '50_deeds'
+        });
+      }
+      return false;
+    } catch (error) {
+      console.error('Error checking wildcat legend badge:', error);
+      return false;
+    }
+  }
+
+  // Award Wildcat Legend by Principal recognition
+  async awardPrincipalRecognition(userId: string, principalName: string): Promise<boolean> {
+    return await this.awardBadge(userId, 'wildcat_legend', {
+      recognizedBy: principalName,
+      milestone: 'principal_recognition',
       awardedAt: new Date().toISOString()
     });
   }
@@ -196,14 +236,30 @@ export class BadgeService {
   async checkBadgesAfterPost(userId: string): Promise<string[]> {
     const awardedBadges: string[] = [];
 
-    // Check Originator
+    // Check Originator (first post)
     if (await this.checkOriginatorBadge(userId)) {
       awardedBadges.push('originator');
     }
 
-    // Check Weekly Warrior
+    // Check Weekly Warrior (3+ posts in a week)
     if (await this.checkWeeklyWarriorBadge(userId)) {
       awardedBadges.push('weekly_warrior');
+    }
+
+    // Check Wildcat Legend (50+ total deeds)
+    if (await this.checkWildcatLegendBadge(userId)) {
+      awardedBadges.push('wildcat_legend');
+    }
+
+    return awardedBadges;
+  }
+
+  // Check Echo Maker after someone echoes a post
+  async checkBadgesAfterEcho(postOwnerId: string): Promise<string[]> {
+    const awardedBadges: string[] = [];
+
+    if (await this.checkEchoMakerBadge(postOwnerId)) {
+      awardedBadges.push('echo_maker');
     }
 
     return awardedBadges;

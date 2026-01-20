@@ -23,25 +23,71 @@ interface BadgeDefinition {
   requirements?: string;
 }
 
-// Default badge definitions if API fails
+// ═══════════════════════════════════════════════════════════════════════════════
+// THE MCNEILL COLLECTION - Eastern Guilford Wildcat Badges
+// Modern "level-up" gaming aesthetic with Blue/Gold Wildcat colors
+// ═══════════════════════════════════════════════════════════════════════════════
 const DEFAULT_BADGES: BadgeDefinition[] = [
-  { id: 'originator', name: 'The Originator', description: 'Share your first act of kindness!', icon: '🌟', color: 'yellow', category: 'achievement' },
-  { id: 'weekly_warrior', name: 'Weekly Warrior', description: 'Share 3+ acts of kindness in one week!', icon: '⚔️', color: 'purple', category: 'achievement' },
-  { id: 'grade_hero', name: 'Grade Hero', description: 'Your grade had the most posts this month!', icon: '🦸', color: 'blue', category: 'recognition' },
-  { id: 'kindness_streak_3', name: '3-Day Streak', description: 'Post kindness 3 days in a row!', icon: '🔥', color: 'orange', category: 'milestone' },
-  { id: 'kindness_streak_7', name: '7-Day Streak', description: 'A full week of daily kindness!', icon: '💎', color: 'cyan', category: 'milestone' },
-  { id: 'super_supporter', name: 'Super Supporter', description: 'Give hearts to 10 different posts!', icon: '💜', color: 'pink', category: 'achievement' },
-  { id: 'staff_star', name: 'Staff Star', description: 'Recognized by staff for outstanding character!', icon: '⭐', color: 'gold', category: 'recognition' },
+  { 
+    id: 'originator', 
+    name: 'The Originator', 
+    description: 'Plant your first seed of kindness!', 
+    icon: '🌱', 
+    color: 'green-gold', 
+    category: 'achievement',
+    requirements: 'Make your very first post'
+  },
+  { 
+    id: 'weekly_warrior', 
+    name: 'Weekly Warrior', 
+    description: 'Show consistent kindness all week!', 
+    icon: '🛡️', 
+    color: 'silver-blue', 
+    category: 'achievement',
+    requirements: 'Post 3+ deeds in one week'
+  },
+  { 
+    id: 'grade_hero', 
+    name: 'Grade Hero', 
+    description: 'Lead your grade to victory!', 
+    icon: '👑', 
+    color: 'gold', 
+    category: 'recognition',
+    requirements: 'Be in the grade with most posts this month'
+  },
+  { 
+    id: 'echo_maker', 
+    name: 'Echo Maker', 
+    description: 'Your kindness creates ripples!', 
+    icon: '💫', 
+    color: 'blue-cyan', 
+    category: 'achievement',
+    requirements: 'Get 5+ echoes on a single post'
+  },
+  { 
+    id: 'wildcat_legend', 
+    name: 'Wildcat Legend', 
+    description: 'The ultimate kindness achievement!', 
+    icon: '🐾', 
+    color: 'diamond', 
+    category: 'legendary',
+    requirements: 'Reach 50 deeds or Principal recognition'
+  },
 ];
 
+// Wildcat-themed color palette (Blue/Gold base with accent colors)
 const colorClasses: Record<string, string> = {
+  'green-gold': 'from-green-400 via-emerald-500 to-amber-400 ring-green-300',
+  'silver-blue': 'from-slate-300 via-blue-400 to-blue-600 ring-blue-300',
+  'gold': 'from-yellow-400 via-amber-500 to-yellow-600 ring-yellow-300',
+  'blue-cyan': 'from-blue-500 via-cyan-400 to-teal-400 ring-cyan-300',
+  'diamond': 'from-purple-400 via-pink-300 to-cyan-300 ring-purple-200',
   yellow: 'from-yellow-400 to-amber-500 ring-yellow-300',
   purple: 'from-purple-400 to-indigo-500 ring-purple-300',
   blue: 'from-blue-400 to-cyan-500 ring-blue-300',
   orange: 'from-orange-400 to-red-500 ring-orange-300',
   cyan: 'from-cyan-400 to-teal-500 ring-cyan-300',
   pink: 'from-pink-400 to-rose-500 ring-pink-300',
-  gold: 'from-amber-400 to-yellow-500 ring-amber-300',
   green: 'from-green-400 to-emerald-500 ring-green-300',
 };
 
@@ -71,55 +117,60 @@ export function BadgeGallery({ userId }: { userId?: string }) {
   const earnedCount = allBadges.filter(b => b.isEarned).length;
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-4">
+    <div className="bg-gradient-to-br from-blue-900 via-blue-800 to-amber-900 rounded-xl shadow-lg border border-amber-400/30 p-4">
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-2">
-          <Award className="w-5 h-5 text-amber-500" />
-          <h3 className="font-bold text-gray-900 dark:text-white">Badge Gallery</h3>
+          <span className="text-xl">🐾</span>
+          <div>
+            <h3 className="font-bold text-amber-400 text-sm">The McNeill Collection</h3>
+            <p className="text-xs text-blue-200">Eastern Guilford Wildcats</p>
+          </div>
         </div>
-        <span className="text-sm text-gray-500 dark:text-gray-400">
-          {earnedCount}/{allBadges.length} Earned
-        </span>
+        <div className="bg-amber-400/20 px-3 py-1 rounded-full">
+          <span className="text-sm font-bold text-amber-400">
+            {earnedCount}/{allBadges.length}
+          </span>
+        </div>
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-4 gap-3">
-          {[1, 2, 3, 4, 5, 6, 7, 8].map(i => (
-            <div key={i} className="aspect-square rounded-xl bg-gray-100 dark:bg-gray-700 animate-pulse" />
+        <div className="grid grid-cols-5 gap-2">
+          {[1, 2, 3, 4, 5].map(i => (
+            <div key={i} className="aspect-square rounded-full bg-blue-700/50 animate-pulse" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-5 gap-2">
           {allBadges.map((badge) => (
             <div
               key={badge.id}
-              className={`relative aspect-square rounded-xl flex flex-col items-center justify-center p-2 transition-all duration-300 cursor-pointer group ${
+              className={`relative aspect-square rounded-full flex flex-col items-center justify-center transition-all duration-300 cursor-pointer group ${
                 badge.isEarned
-                  ? `bg-gradient-to-br ${colorClasses[badge.color] || colorClasses.yellow} shadow-md hover:scale-105 hover:shadow-lg ring-2 ring-offset-2`
-                  : 'bg-gray-100 dark:bg-gray-700 opacity-50 hover:opacity-70'
+                  ? `bg-gradient-to-br ${colorClasses[badge.color] || colorClasses.gold} shadow-lg hover:scale-110 hover:shadow-xl ring-2 ring-offset-1 ring-offset-blue-900`
+                  : 'bg-blue-950/60 border-2 border-blue-700/50 hover:border-blue-600/70'
               }`}
-              title={badge.isEarned ? `${badge.name} - Earned!` : `${badge.name} - ${badge.description}`}
+              title={badge.isEarned ? `${badge.name} - Earned!` : `${badge.name} - ${badge.requirements}`}
             >
               {/* Badge Icon */}
-              <span className={`text-2xl ${badge.isEarned ? '' : 'grayscale'}`}>
+              <span className={`text-xl ${badge.isEarned ? 'drop-shadow-md' : 'grayscale opacity-40'}`}>
                 {badge.icon}
               </span>
               
               {/* Lock overlay for unearned */}
               {!badge.isEarned && (
-                <div className="absolute inset-0 flex items-center justify-center bg-gray-900/20 rounded-xl">
-                  <Lock className="w-4 h-4 text-gray-400" />
+                <div className="absolute inset-0 flex items-center justify-center rounded-full">
+                  <Lock className="w-3 h-3 text-blue-400/60 absolute bottom-1" />
                 </div>
               )}
               
               {/* Sparkle effect for earned */}
               {badge.isEarned && (
-                <Sparkles className="absolute top-1 right-1 w-3 h-3 text-white/80 animate-pulse" />
+                <Sparkles className="absolute -top-0.5 -right-0.5 w-3.5 h-3.5 text-amber-300 animate-pulse drop-shadow-lg" />
               )}
               
               {/* Badge name on hover */}
               <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 translate-y-full opacity-0 group-hover:opacity-100 transition-opacity z-10 pointer-events-none">
-                <div className="bg-gray-900 text-white text-xs px-2 py-1 rounded whitespace-nowrap shadow-lg">
+                <div className="bg-blue-950 text-amber-400 text-xs px-2 py-1 rounded-lg whitespace-nowrap shadow-xl border border-amber-400/30">
                   {badge.name}
                 </div>
               </div>
@@ -130,14 +181,14 @@ export function BadgeGallery({ userId }: { userId?: string }) {
 
       {/* Recent achievements */}
       {earnedBadges.length > 0 && (
-        <div className="mt-4 pt-3 border-t border-gray-200 dark:border-gray-700">
-          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Recent Achievements</p>
+        <div className="mt-4 pt-3 border-t border-amber-400/20">
+          <p className="text-xs font-medium text-blue-300 mb-2">🏆 Recent Achievements</p>
           <div className="space-y-2">
             {earnedBadges.slice(0, 3).map((badge) => (
-              <div key={badge.id} className="flex items-center gap-2 text-sm">
-                <span>{badge.badgeIcon}</span>
-                <span className="font-medium text-gray-700 dark:text-gray-300">{badge.badgeName}</span>
-                <span className="text-xs text-gray-400">
+              <div key={badge.id} className="flex items-center gap-2 text-sm bg-blue-950/40 rounded-lg px-2 py-1">
+                <span className="text-lg">{badge.badgeIcon}</span>
+                <span className="font-medium text-amber-300">{badge.badgeName}</span>
+                <span className="text-xs text-blue-400 ml-auto">
                   {new Date(badge.awardedAt).toLocaleDateString()}
                 </span>
               </div>

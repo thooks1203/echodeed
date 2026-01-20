@@ -2146,6 +2146,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
       (updatedPost as any).echoReward = echoReward;
       (updatedPost as any).bonusReasons = bonusReasons;
       
+      // Check if the post owner earned the Echo Maker badge (5+ echoes)
+      const echoesCount = (updatedPost as any).echoesCount || 0;
+      if (echoesCount >= 5) {
+        try {
+          // Fetch the post owner ID from the database
+          const originalPost = await storage.getPost(postId);
+          const postOwnerId = originalPost?.userId;
+          if (postOwnerId) {
+            const { badgeService } = await import('./badgeService');
+            const awardedBadges = await badgeService.checkBadgesAfterEcho(postOwnerId);
+            if (awardedBadges.length > 0) {
+              console.log('🏆 Echo Maker badge awarded to post owner:', postOwnerId);
+            }
+          }
+        } catch (err) {
+          console.error('Non-blocking badge check error:', err);
+        }
+      }
+      
       // Broadcast the update to all connected WebSocket clients
       broadcast({
         type: 'POST_UPDATE',
