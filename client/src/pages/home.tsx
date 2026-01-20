@@ -32,6 +32,7 @@ import FamilyDashboard from '@/pages/FamilyDashboard';
 import { KindnessConnectModal } from '@/components/KindnessConnectModal';
 import { HeartLinkButton } from '@/components/HeartLinkButton';
 import { PulseCheckModal } from '@/components/PulseCheckModal';
+import { DemoSchoolLevelSwitcher } from '@/components/DemoSchoolLevelSwitcher';
 
 interface RewardOffer {
   id: string;
@@ -786,6 +787,9 @@ export default function Home() {
           <PulseCheckModal />
         </>
       )}
+      
+      {/* Demo Mode School Level Switcher - Always visible for demos */}
+      <DemoSchoolLevelSwitcher />
     </div>
   );
 }
