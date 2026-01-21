@@ -7,7 +7,7 @@ const doc = new PDFDocument({
   margins: { top: 40, bottom: 40, left: 40, right: 40 }
 });
 
-const outputPath = path.join(__dirname, '..', 'public', 'Allegacy-Presentation-v5.pdf');
+const outputPath = path.join(__dirname, '..', 'public', 'Allegacy-Presentation-v6.pdf');
 doc.pipe(fs.createWriteStream(outputPath));
 
 const navy = '#003366';
@@ -36,29 +36,32 @@ function addImage(doc, imagePath, x, y, options) {
 // ==================== SLIDE 1: COVER ====================
 doc.rect(0, 0, 612, 792).fill('#f8f9fa');
 
-addImage(doc, 'attached_assets/image_1769021028223.png', 206, 80, { width: 200 });
+addImage(doc, 'attached_assets/image_1769021028223.png', 206, 50, { width: 200 });
 
-doc.fillColor(navy).fontSize(28).font('Helvetica-Bold')
-   .text('THE ALLEGACY IMPACT ECOSYSTEM', 40, 200, { align: 'center' });
+doc.fillColor(gray).fontSize(10).font('Helvetica')
+   .text('Since 1967 | $2.12B in Assets | Newsweek 4-Star Rated | 28 Branches', 40, 145, { align: 'center' });
 
-doc.fillColor(allegacyRed).fontSize(14).font('Helvetica-Bold')
-   .text('Leveraging Strategic Pipelines for Regional Dominance', 40, 235, { align: 'center' });
+doc.fillColor(navy).fontSize(26).font('Helvetica-Bold')
+   .text('THE ALLEGACY IMPACT ECOSYSTEM', 40, 170, { align: 'center' });
+
+doc.fillColor(allegacyRed).fontSize(13).font('Helvetica-Bold')
+   .text('Leveraging Strategic Pipelines for Regional Dominance', 40, 200, { align: 'center' });
 
 // Profile photo
-addImage(doc, 'attached_assets/profile_suit_pic_1769023711572.jpg', 231, 270, { width: 150, height: 150 });
+addImage(doc, 'attached_assets/profile_suit_pic_1769023711572.jpg', 231, 230, { width: 150, height: 150 });
 
 doc.fillColor(gray).fontSize(14).font('Helvetica-Bold')
-   .text('Presented by', 40, 460, { align: 'center' });
+   .text('Presented by', 40, 400, { align: 'center' });
 doc.fillColor(navy).fontSize(24).font('Helvetica-Bold')
-   .text('Tavores Vanhook', 40, 485, { align: 'center' });
+   .text('Tavores Vanhook', 40, 420, { align: 'center' });
 doc.fillColor(allegacyRed).fontSize(11).font('Helvetica-Bold')
-   .text('Regional Business and Community Development Specialist - Palladium', 40, 520, { align: 'center' });
+   .text('Regional Business and Community Development Specialist - Palladium', 40, 455, { align: 'center' });
 
-doc.roundedRect(80, 560, 452, 80, 8).fill('#003366');
+doc.roundedRect(80, 490, 452, 80, 8).fill('#003366');
 doc.fillColor('white').fontSize(11).font('Helvetica-Bold')
-   .text('MY VALUE PROPOSITION:', 100, 575);
+   .text('MY VALUE PROPOSITION:', 100, 505);
 doc.fillColor('#bfdbfe').fontSize(10).font('Helvetica')
-   .text('"I don\'t just bring ideas. I bring proven relationships, tested strategies, and a pipeline already in motion. I will make Allegacy essential to this region."', 100, 595, { width: 412 });
+   .text('"I don\'t just bring ideas. I bring proven relationships, tested strategies, and a pipeline already in motion. I will make Allegacy essential to this region."', 100, 525, { width: 412 });
 
 doc.fillColor(lightGray).fontSize(9)
    .text('January 2026', 40, 720, { align: 'center' });
