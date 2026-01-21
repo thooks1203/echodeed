@@ -25,6 +25,7 @@ import MerchantVerifyPage from "@/pages/MerchantVerifyPage";
 import DemoLogin from "@/pages/DemoLogin";
 import EmergencySeed from "@/pages/emergency-seed";
 import PresentationDownloads from "@/pages/PresentationDownloads";
+import AllegacyPresentation from "@/pages/AllegacyPresentation";
 import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 import { RewardNotificationManager } from "@/components/RewardNotificationManager";
 import { SchoolRegistration } from "@/components/SchoolRegistration";
@@ -57,6 +58,7 @@ function Router() {
       <Switch>
         <Route path="/emergency-seed" component={EmergencySeed} />
         <Route path="/presentations" component={PresentationDownloads} />
+        <Route path="/allegacy-presentation" component={AllegacyPresentation} />
         <Route path="/demo-login" component={DemoLogin} />
         <Route path="/teacher-dashboard">
           <TeacherDashboard />
