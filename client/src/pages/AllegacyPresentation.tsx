@@ -1,11 +1,10 @@
-import communityMeeting from "@assets/stock_images/professional_diverse_3ddbffc1.jpg";
-import universityStudents from "@assets/stock_images/university_students__dc695de4.jpg";
-import businessStrategy from "@assets/stock_images/professional_busines_b056ce0d.jpg";
-import firstTimeHomeBuyers from "@assets/stock_images/family_first_time_ho_71cbd91c.jpg";
-import businessPartnership from "@assets/stock_images/business_partnership_8e8f31e2.jpg";
-import affordableHousing from "@assets/stock_images/affordable_housing_c_ff2431ac.jpg";
-
 export default function AllegacyPresentation() {
+  const communityMeeting = "/attached_assets/stock_images/professional_diverse_3ddbffc1.jpg";
+  const universityStudents = "/attached_assets/stock_images/university_students__dc695de4.jpg";
+  const businessStrategy = "/attached_assets/stock_images/professional_busines_b056ce0d.jpg";
+  const firstTimeHomeBuyers = "/attached_assets/stock_images/family_first_time_ho_71cbd91c.jpg";
+  const businessPartnership = "/attached_assets/stock_images/business_partnership_8e8f31e2.jpg";
+  const affordableHousing = "/attached_assets/stock_images/affordable_housing_c_ff2431ac.jpg";
   const slides = [
     {
       number: 1,
