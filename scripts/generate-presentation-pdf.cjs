@@ -7,7 +7,7 @@ const doc = new PDFDocument({
   margins: { top: 40, bottom: 40, left: 40, right: 40 }
 });
 
-const outputPath = path.join(__dirname, '..', 'public', 'Allegacy-Presentation-v3.pdf');
+const outputPath = path.join(__dirname, '..', 'public', 'Allegacy-Presentation-v4.pdf');
 doc.pipe(fs.createWriteStream(outputPath));
 
 const navy = '#003366';
@@ -226,7 +226,7 @@ y += 25;
 
 const employers = [
   { name: 'REYNOLDS AMERICA', examples: 'High-impact target (needs massaging)', members: 'TOP PRIORITY' },
-  { name: 'WAKE FOREST UNIV', examples: 'Better penetration goal', members: '8,000+ students/staff' },
+  { name: 'WAKE FOREST UNIV', examples: 'Better penetration goal', members: '9,322 students' },
   { name: 'HABITAT FOR HUMANITY', examples: 'Community partnership', members: 'Mission alignment' },
   { name: 'CHAMBER MEMBERS', examples: 'Guilford Merchants Assoc.', members: 'Business network' }
 ];
@@ -410,7 +410,7 @@ doc.text('> Connect the gaps with a comprehensive strategic plan', 80, 570);
 doc.fillColor(navy).fontSize(12).font('Helvetica')
    .text('Tavores Vanhook', 40, 630, { align: 'center' });
 doc.fillColor(gray).fontSize(10)
-   .text('Business Development Manager Candidate', 40, 650, { align: 'center' });
+   .text('Regional Business and Community Development Specialist - Palladium', 40, 650, { align: 'center' });
 
 doc.fillColor(allegacyRed).fontSize(12).font('Helvetica-Bold')
    .text('Ready to start on Day One.', 40, 690, { align: 'center' });
