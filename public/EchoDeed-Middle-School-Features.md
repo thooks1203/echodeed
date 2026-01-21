@@ -3,6 +3,14 @@
 
 ---
 
+## 🎉 LAUNCH PARTNER: Eastern Guilford Middle School
+
+**Eastern Guilford Middle School** is our first full-school middle school deployment! The entire school is rolling out EchoDeed™ to build a culture of kindness, recognition, and belonging across all grade levels.
+
+*"We believe every student deserves to feel seen and valued. EchoDeed gives us a way to make that happen—while giving students ownership of their school culture."*
+
+---
+
 ## Overview
 
 EchoDeed™ Middle School Edition is specifically designed for younger students (grades 6-8) with age-appropriate features, enhanced safety measures, and a focus on building character foundations without the pressure of diploma requirements.
@@ -141,6 +149,42 @@ EchoDeed™ Middle School Edition is specifically designed for younger students 
 - School-wide launch
 - Assembly or homeroom introduction
 - Ongoing community building
+
+---
+
+## 🏆 5 Rollout Contest Ideas to Drive Success
+
+These proven strategies create excitement, healthy competition, and rapid adoption. Customize based on your school culture!
+
+### 1. The Enrollment Race: "First to 100%"
+**How it works**: Whichever grade level reaches 70-100% enrollment in EchoDeed first wins a reward.
+**Reward idea**: Open Gym period, Extended Lunch, or Dance Party Friday
+**Why it works**: Creates peer-to-peer encouragement ("Did you sign up yet?") and visible momentum
+**Pro tip**: Announce daily progress during morning announcements
+
+### 2. Kindness Week Challenge
+**How it works**: One week where every kindness post earns double tokens. Grade with most posts wins.
+**Reward idea**: Pizza party, Ice cream social, or Movie afternoon
+**Why it works**: Concentrated burst of activity creates habit formation
+**Pro tip**: Launch during a natural transition (after winter break, start of semester)
+
+### 3. Teacher vs. Students Showdown
+**How it works**: Can teachers collectively post more Staff-to-Student recognitions than students post kindness acts?
+**Reward idea**: If students win = Pajama Day. If teachers win = Students do extra community service project together
+**Why it works**: Creates fun rivalry and models adult participation
+**Pro tip**: Display live counter in cafeteria or main hallway
+
+### 4. The "First 50" Early Adopter Club
+**How it works**: First 50 students to sign up AND make a kindness post get exclusive benefits
+**Reward idea**: Special badge in app, VIP lunch table for a week, first access to reward redemptions
+**Why it works**: Creates urgency and FOMO (fear of missing out)
+**Pro tip**: Announce in assembly: "Who will be in the First 50?"
+
+### 5. Monthly Kindness MVP (Voted by Peers)
+**How it works**: Each month, students vote on the most impactful kindness story from the feed
+**Reward idea**: Certificate signed by principal, photo on bulletin board, special token bonus
+**Why it works**: Peer recognition is more meaningful than adult recognition at this age
+**Pro tip**: Read top 3 nominees during morning announcements before voting opens
 
 ---
 
