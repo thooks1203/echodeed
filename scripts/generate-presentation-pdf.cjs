@@ -7,7 +7,7 @@ const doc = new PDFDocument({
   margins: { top: 40, bottom: 40, left: 40, right: 40 }
 });
 
-const outputPath = path.join(__dirname, '..', 'public', 'Allegacy-Presentation-v4.pdf');
+const outputPath = path.join(__dirname, '..', 'public', 'Allegacy-Presentation-v5.pdf');
 doc.pipe(fs.createWriteStream(outputPath));
 
 const navy = '#003366';
@@ -116,7 +116,7 @@ doc.fillColor(navy).fontSize(13).font('Helvetica-Bold')
    .text('My Existing Relationship:', 40, y);
 y += 20;
 doc.fillColor(gray).fontSize(10).font('Helvetica')
-   .text('At Revity, I helped engineer the High-Yield CD savings program for FSS participants. I have a seat at the table at Claremont Courts - not just a contact, but an active partnership.', 40, y, { width: 532 });
+   .text('At Revity, I helped engineer the High-Yield CD savings program for FSS participants. I have a seat at the table at Claremont Courts - not just a contact, but an active partnership. Meeting scheduled Jan 30th with Todd A. Fagan, GHA Resident Engagement & Homeownership Coordinator.', 40, y, { width: 532 });
 
 y += 45;
 doc.fillColor(allegacyRed).fontSize(12).font('Helvetica-Bold')
