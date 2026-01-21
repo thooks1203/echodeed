@@ -38,21 +38,21 @@ doc.rect(0, 0, 612, 792).fill('#f8f9fa');
 
 addImage(doc, 'attached_assets/image_1769021028223.png', 206, 80, { width: 200 });
 
-doc.fillColor(navy).fontSize(32).font('Helvetica-Bold')
-   .text('The Allegacy Impact Ecosystem', 40, 220, { align: 'center' });
+doc.fillColor(navy).fontSize(34).font('Helvetica-Bold')
+   .text('THE ALLEGACY IMPACT ECOSYSTEM', 40, 220, { align: 'center' });
 
-doc.fillColor(allegacyRed).fontSize(16).font('Helvetica')
+doc.fillColor(allegacyRed).fontSize(16).font('Helvetica-Bold')
    .text('Leveraging Strategic Pipelines for Regional Dominance', 40, 265, { align: 'center' });
 
 // Profile photo
 addImage(doc, 'attached_assets/profile_suit_pic_1769023711572.jpg', 231, 300, { width: 150, height: 150 });
 
-doc.fillColor(gray).fontSize(14)
+doc.fillColor(gray).fontSize(14).font('Helvetica-Bold')
    .text('Presented by', 40, 460, { align: 'center' });
-doc.fillColor(navy).fontSize(20).font('Helvetica-Bold')
+doc.fillColor(navy).fontSize(24).font('Helvetica-Bold')
    .text('Tavores Vanhook', 40, 485, { align: 'center' });
-doc.fillColor(lightGray).fontSize(12).font('Helvetica')
-   .text('Business Development Manager Candidate', 40, 515, { align: 'center' });
+doc.fillColor(allegacyRed).fontSize(11).font('Helvetica-Bold')
+   .text('Regional Business and Community Development Specialist - Palladium', 40, 520, { align: 'center' });
 
 doc.roundedRect(80, 560, 452, 80, 8).fill('#003366');
 doc.fillColor('white').fontSize(11).font('Helvetica-Bold')
