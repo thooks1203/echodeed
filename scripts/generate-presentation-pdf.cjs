@@ -7,7 +7,7 @@ const doc = new PDFDocument({
   margins: { top: 40, bottom: 40, left: 40, right: 40 }
 });
 
-const outputPath = path.join(__dirname, '..', 'public', 'Allegacy-Presentation-v2.pdf');
+const outputPath = path.join(__dirname, '..', 'public', 'Allegacy-Presentation-v3.pdf');
 doc.pipe(fs.createWriteStream(outputPath));
 
 const navy = '#003366';
@@ -38,14 +38,14 @@ doc.rect(0, 0, 612, 792).fill('#f8f9fa');
 
 addImage(doc, 'attached_assets/image_1769021028223.png', 206, 80, { width: 200 });
 
-doc.fillColor(navy).fontSize(34).font('Helvetica-Bold')
-   .text('THE ALLEGACY IMPACT ECOSYSTEM', 40, 220, { align: 'center' });
+doc.fillColor(navy).fontSize(28).font('Helvetica-Bold')
+   .text('THE ALLEGACY IMPACT ECOSYSTEM', 40, 200, { align: 'center' });
 
-doc.fillColor(allegacyRed).fontSize(16).font('Helvetica-Bold')
-   .text('Leveraging Strategic Pipelines for Regional Dominance', 40, 265, { align: 'center' });
+doc.fillColor(allegacyRed).fontSize(14).font('Helvetica-Bold')
+   .text('Leveraging Strategic Pipelines for Regional Dominance', 40, 235, { align: 'center' });
 
 // Profile photo
-addImage(doc, 'attached_assets/profile_suit_pic_1769023711572.jpg', 231, 300, { width: 150, height: 150 });
+addImage(doc, 'attached_assets/profile_suit_pic_1769023711572.jpg', 231, 270, { width: 150, height: 150 });
 
 doc.fillColor(gray).fontSize(14).font('Helvetica-Bold')
    .text('Presented by', 40, 460, { align: 'center' });
