@@ -124,7 +124,7 @@ const ghaStrategies = [
   { title: 'Bi-Weekly Presence', desc: 'Embedded in Claremont Courts community meetings' },
   { title: '"Savings-to-Legacy" CD Program', desc: 'High-yield savings for FSS escrow accounts' },
   { title: 'First-Time Homebuyer Pipeline', desc: 'FSS graduation to Allegacy mortgage products' },
-  { title: 'Credit Builder Accelerator', desc: 'Help participants build credit for better rates' }
+  { title: 'Enhanced Credit Building', desc: 'Leverage secured card + coaching for FSS participants' }
 ];
 
 ghaStrategies.forEach((strat, i) => {
@@ -247,9 +247,9 @@ y += 20;
 
 const approaches = [
   'On-site enrollment during open enrollment periods',
-  '$100 direct deposit bonus for new members',
+  '$100 direct deposit bonus for new members (NEW incentive)',
   'Payroll deduction savings programs',
-  'Financial wellness workshops as employee benefit'
+  'Extend Allegacy\'s existing workshops TO employer sites (leverage strength)'
 ];
 
 approaches.forEach(app => {
@@ -277,10 +277,10 @@ doc.fillColor(allegacyRed).fontSize(12).font('Helvetica-Bold')
 y += 25;
 
 const digitalIdeas = [
-  { title: 'Financial Wellness Score', desc: 'Gamified score tracking savings habits. Students compete with friends.', impact: '5x app engagement' },
-  { title: '"Round-Up" Micro-Savings', desc: 'Every purchase rounds up. Difference goes to savings automatically.', impact: '$500+/yr savings' },
-  { title: 'Instant QR Enrollment', desc: 'Scan QR at events, account created in 60 seconds. No paperwork.', impact: '10x event signups' },
-  { title: 'Financial Education Library', desc: 'Short-form video content teaching budgeting, credit, investing.', impact: 'Brand loyalty' }
+  { title: 'Financial Wellness Score', desc: 'Gamified score tracking savings habits. Students compete with friends. (Allegacy doesn\'t have this)', impact: '5x app engagement' },
+  { title: '"Round-Up" Micro-Savings', desc: 'Every purchase rounds up to savings automatically. (Allegacy doesn\'t offer this)', impact: '$500+/yr savings' },
+  { title: 'Instant QR Account Creation', desc: 'Scan QR at events, full account in 60 seconds. (Current QR is login only)', impact: '10x event signups' },
+  { title: 'Peer Ambassador Incentives', desc: 'Student leaders recruit peers for rewards. (No referral program exists)', impact: 'Viral growth' }
 ];
 
 digitalIdeas.forEach(idea => {
