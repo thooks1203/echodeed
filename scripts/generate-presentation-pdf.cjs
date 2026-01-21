@@ -7,7 +7,7 @@ const doc = new PDFDocument({
   margins: { top: 40, bottom: 40, left: 40, right: 40 }
 });
 
-const outputPath = path.join(__dirname, '..', 'public', 'Allegacy-Impact-Ecosystem-Presentation.pdf');
+const outputPath = path.join(__dirname, '..', 'public', 'Allegacy-Presentation-v2.pdf');
 doc.pipe(fs.createWriteStream(outputPath));
 
 const navy = '#003366';
