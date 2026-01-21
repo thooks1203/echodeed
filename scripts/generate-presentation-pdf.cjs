@@ -222,10 +222,10 @@ doc.fillColor(navy).fontSize(12).font('Helvetica-Bold')
 y += 25;
 
 const employers = [
-  { name: 'Healthcare', examples: 'Cone Health, Moses Cone', members: '15,000+ employees' },
-  { name: 'Manufacturing', examples: 'Honda Aircraft, Volvo', members: '8,000+ employees' },
-  { name: 'Education', examples: 'GCS, NC A&T Staff', members: '12,000+ employees' },
-  { name: 'Retail/Service', examples: 'Palladium growth', members: '5,000+ new jobs' }
+  { name: 'REYNOLDS AMERICA', examples: 'High-impact target (needs massaging)', members: 'TOP PRIORITY' },
+  { name: 'WAKE FOREST UNIV', examples: 'Better penetration goal', members: '8,000+ students/staff' },
+  { name: 'HABITAT FOR HUMANITY', examples: 'Community partnership', members: 'Mission alignment' },
+  { name: 'CHAMBER MEMBERS', examples: 'Guilford Merchants Assoc.', members: 'Business network' }
 ];
 
 employers.forEach((emp, i) => {
@@ -306,9 +306,9 @@ doc.fillColor('#93c5fd').fontSize(12)
 y = 90;
 
 const phases = [
-  { days: 'Days 1-30', title: 'FOUNDATION', color: '#dbeafe', items: ['Establish bi-weekly GHA presence', 'Design CD savings program with FSS', 'Connect with university student life offices', 'Identify first 10 employer targets'] },
-  { days: 'Days 31-60', title: 'ACTIVATION', color: '#fef3c7', items: ['Launch "First Dollar" QR enrollment', 'Begin employer outreach (top 5)', 'Host first Financial Wellness Workshop', 'Train first Peer Ambassador cohort'] },
-  { days: 'Days 61-90', title: 'SCALE', color: '#dcfce7', items: ['Measure and report pipeline results', 'Expand to additional GHA communities', 'Launch employer direct deposit program', 'Prepare for GHOE major activation'] }
+  { days: 'Days 1-30', title: 'IMMERSION', color: '#dbeafe', items: ['Audit current business relationships', 'Attend Chamber & Guilford Merchants Association meetings', 'Establish bi-weekly GHA presence at Claremont Courts', 'Map university student life offices at NC A&T, UNCG, Wake Forest'] },
+  { days: 'Days 31-60', title: 'ACTIVATION', color: '#fef3c7', items: ['Secure meetings with 5-10 prospective businesses', 'Begin strategic outreach to Reynolds America', 'Launch "First Dollar" QR enrollment at universities', 'Initiate Habitat for Humanity partnership discussions'] },
+  { days: 'Days 61-90', title: 'RESULTS', color: '#dcfce7', items: ['Secure 1 high-impact partner (target: Reynolds America)', 'Wake Forest University member growth campaign', 'Measure pipeline results & present strategic plan', 'Prepare for GHOE major activation'] }
 ];
 
 phases.forEach(phase => {
@@ -365,16 +365,16 @@ doc.fillColor('#bfdbfe').fontSize(10).font('Helvetica')
 
 // ==================== SLIDE 9: CALL TO ACTION ====================
 doc.addPage();
-doc.rect(0, 0, 612, 792).fill(navy);
+doc.rect(0, 0, 612, 792).fill('#f8f9fa');
 
-addImage(doc, 'attached_assets/image_1769021028223.png', 206, 100, { width: 200 });
+addImage(doc, 'attached_assets/image_1769021028223.png', 206, 60, { width: 200 });
 
-doc.fillColor('white').fontSize(28).font('Helvetica-Bold')
-   .text('Let\'s Build This Together', 40, 280, { align: 'center' });
+doc.fillColor(navy).fontSize(28).font('Helvetica-Bold')
+   .text('Let\'s Build This Together', 40, 200, { align: 'center' });
 
-doc.fillColor('#93c5fd').fontSize(14).font('Helvetica')
-   .text('The pipeline is ready. The relationships are built.', 40, 330, { align: 'center' });
-doc.text('The only question is: How fast do we want to grow?', 40, 355, { align: 'center' });
+doc.fillColor(gray).fontSize(14).font('Helvetica')
+   .text('The pipeline is ready. The relationships are built.', 40, 250, { align: 'center' });
+doc.text('The only question is: How fast do we want to grow?', 40, 275, { align: 'center' });
 
 const metrics = [
   { number: '35,000+', label: 'University Students' },
@@ -384,24 +384,33 @@ const metrics = [
 
 let metricX2 = 90;
 metrics.forEach(metric => {
-  doc.roundedRect(metricX2, 430, 140, 80, 8).fill('rgba(255,255,255,0.1)');
-  doc.fillColor(allegacyGold).fontSize(24).font('Helvetica-Bold')
-     .text(metric.number, metricX2, 450, { width: 140, align: 'center' });
-  doc.fillColor('#bfdbfe').fontSize(10).font('Helvetica')
-     .text(metric.label, metricX2, 485, { width: 140, align: 'center' });
+  doc.roundedRect(metricX2, 330, 140, 80, 8).fill(navy);
+  doc.fillColor('white').fontSize(24).font('Helvetica-Bold')
+     .text(metric.number, metricX2, 350, { width: 140, align: 'center' });
+  doc.fillColor('#93c5fd').fontSize(10).font('Helvetica')
+     .text(metric.label, metricX2, 385, { width: 140, align: 'center' });
   metricX2 += 160;
 });
 
-doc.fillColor('white').fontSize(16).font('Helvetica-Bold')
-   .text('= Your Future Members', 40, 540, { align: 'center' });
+doc.fillColor(allegacyRed).fontSize(16).font('Helvetica-Bold')
+   .text('= Your Future Members', 40, 440, { align: 'center' });
 
-doc.fillColor('#93c5fd').fontSize(12).font('Helvetica')
-   .text('Tavores Vanhook', 40, 650, { align: 'center' });
-doc.fillColor(lightGray).fontSize(10)
-   .text('Business Development Manager Candidate', 40, 670, { align: 'center' });
+doc.rect(60, 490, 492, 100).fill(navy);
+doc.fillColor('white').fontSize(11).font('Helvetica-Bold')
+   .text('YOUR PRIORITIES - MY PLAN:', 80, 505);
+doc.fillColor('#93c5fd').fontSize(9).font('Helvetica')
+   .text('> Audit current business relationships & attend Chamber/Merchants Association meetings', 80, 525);
+doc.text('> Secure 5-10 prospective business meetings to land 1 high-impact partner', 80, 540);
+doc.text('> Strategic approach to Reynolds America, Wake Forest University, Habitat for Humanity', 80, 555);
+doc.text('> Connect the gaps with a comprehensive strategic plan', 80, 570);
 
-doc.fillColor(allegacyGold).fontSize(11).font('Helvetica-Bold')
-   .text('Ready to start on Day One.', 40, 720, { align: 'center' });
+doc.fillColor(navy).fontSize(12).font('Helvetica')
+   .text('Tavores Vanhook', 40, 630, { align: 'center' });
+doc.fillColor(gray).fontSize(10)
+   .text('Business Development Manager Candidate', 40, 650, { align: 'center' });
+
+doc.fillColor(allegacyRed).fontSize(12).font('Helvetica-Bold')
+   .text('Ready to start on Day One.', 40, 690, { align: 'center' });
 
 doc.end();
 console.log('PDF generated at:', outputPath);
