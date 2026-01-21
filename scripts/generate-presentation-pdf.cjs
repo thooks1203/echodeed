@@ -44,18 +44,21 @@ doc.fillColor(navy).fontSize(32).font('Helvetica-Bold')
 doc.fillColor(allegacyRed).fontSize(16).font('Helvetica')
    .text('Leveraging Strategic Pipelines for Regional Dominance', 40, 265, { align: 'center' });
 
-doc.fillColor(gray).fontSize(14)
-   .text('Presented by', 40, 340, { align: 'center' });
-doc.fillColor(navy).fontSize(20).font('Helvetica-Bold')
-   .text('Tavores Vanhook', 40, 365, { align: 'center' });
-doc.fillColor(lightGray).fontSize(12).font('Helvetica')
-   .text('Business Development Manager Candidate', 40, 395, { align: 'center' });
+// Profile photo
+addImage(doc, 'attached_assets/profile_suit_pic_1769023711572.jpg', 231, 300, { width: 150, height: 150 });
 
-doc.roundedRect(80, 460, 452, 80, 8).fill('#003366');
+doc.fillColor(gray).fontSize(14)
+   .text('Presented by', 40, 460, { align: 'center' });
+doc.fillColor(navy).fontSize(20).font('Helvetica-Bold')
+   .text('Tavores Vanhook', 40, 485, { align: 'center' });
+doc.fillColor(lightGray).fontSize(12).font('Helvetica')
+   .text('Business Development Manager Candidate', 40, 515, { align: 'center' });
+
+doc.roundedRect(80, 560, 452, 80, 8).fill('#003366');
 doc.fillColor('white').fontSize(11).font('Helvetica-Bold')
-   .text('MY VALUE PROPOSITION:', 100, 475);
+   .text('MY VALUE PROPOSITION:', 100, 575);
 doc.fillColor('#bfdbfe').fontSize(10).font('Helvetica')
-   .text('"I don\'t just bring ideas. I bring proven relationships, tested strategies, and a pipeline already in motion. I will make Allegacy essential to this region."', 100, 495, { width: 412 });
+   .text('"I don\'t just bring ideas. I bring proven relationships, tested strategies, and a pipeline already in motion. I will make Allegacy essential to this region."', 100, 595, { width: 412 });
 
 doc.fillColor(lightGray).fontSize(9)
    .text('January 2026', 40, 720, { align: 'center' });
