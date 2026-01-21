@@ -7,7 +7,7 @@ const doc = new PDFDocument({
   margins: { top: 40, bottom: 40, left: 40, right: 40 }
 });
 
-const outputPath = path.join(__dirname, '..', 'public', 'Allegacy-Presentation-v6.pdf');
+const outputPath = path.join(__dirname, '..', 'public', 'Allegacy-Presentation-v7.pdf');
 doc.pipe(fs.createWriteStream(outputPath));
 
 const navy = '#003366';
@@ -228,7 +228,7 @@ doc.fillColor(navy).fontSize(12).font('Helvetica-Bold')
 y += 25;
 
 const employers = [
-  { name: 'REYNOLDS AMERICA', examples: 'High-impact target (needs massaging)', members: 'TOP PRIORITY' },
+  { name: 'HEALTHCARE SYSTEMS', examples: 'Cone Health, Novant, Wake Health', members: 'TOP PRIORITY' },
   { name: 'WAKE FOREST UNIV', examples: 'Better penetration goal', members: '9,322 students' },
   { name: 'HABITAT FOR HUMANITY', examples: 'Community partnership', members: 'Mission alignment' },
   { name: 'CHAMBER MEMBERS', examples: 'Guilford Merchants Assoc.', members: 'Business network' }
@@ -313,8 +313,8 @@ y = 90;
 
 const phases = [
   { days: 'Days 1-30', title: 'IMMERSION', color: '#dbeafe', items: ['Audit current business relationships', 'Attend Chamber & Guilford Merchants Association meetings', 'Establish bi-weekly GHA presence at Claremont Courts', 'Map university student life offices at NC A&T, UNCG, Wake Forest'] },
-  { days: 'Days 31-60', title: 'ACTIVATION', color: '#fef3c7', items: ['Secure meetings with 5-10 prospective businesses', 'Begin strategic outreach to Reynolds America', 'Launch "First Dollar" QR enrollment at universities', 'Initiate Habitat for Humanity partnership discussions'] },
-  { days: 'Days 61-90', title: 'RESULTS', color: '#dcfce7', items: ['Secure 1 high-impact partner (target: Reynolds America)', 'Wake Forest University member growth campaign', 'Measure pipeline results & present strategic plan', 'Prepare for GHOE major activation'] }
+  { days: 'Days 31-60', title: 'ACTIVATION', color: '#fef3c7', items: ['Secure meetings with 5-10 prospective businesses', 'Begin strategic outreach to Cone Health, Novant, Wake Health', 'Launch "First Dollar" QR enrollment at universities', 'Initiate Habitat for Humanity partnership discussions'] },
+  { days: 'Days 61-90', title: 'RESULTS', color: '#dcfce7', items: ['Secure 1 high-impact healthcare partner', 'Wake Forest University member growth campaign', 'Measure pipeline results & present strategic plan', 'Prepare for GHOE major activation'] }
 ];
 
 phases.forEach(phase => {
@@ -407,7 +407,7 @@ doc.fillColor('white').fontSize(11).font('Helvetica-Bold')
 doc.fillColor('#93c5fd').fontSize(9).font('Helvetica')
    .text('> Audit current business relationships & attend Chamber/Merchants Association meetings', 80, 525);
 doc.text('> Secure 5-10 prospective business meetings to land 1 high-impact partner', 80, 540);
-doc.text('> Strategic approach to Reynolds America, Wake Forest University, Habitat for Humanity', 80, 555);
+doc.text('> Strategic approach to Cone Health, Novant, Wake Health, Wake Forest University', 80, 555);
 doc.text('> Connect the gaps with a comprehensive strategic plan', 80, 570);
 
 doc.fillColor(navy).fontSize(12).font('Helvetica')
