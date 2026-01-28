@@ -267,6 +267,16 @@ const requireSpecificSchoolAccess = (schoolIdParam: string = 'schoolId') => {
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
 
+  // Health check endpoint for Railway/container orchestration
+  app.get('/api/health', (req, res) => {
+    res.status(200).json({ 
+      status: 'healthy', 
+      timestamp: new Date().toISOString(),
+      service: 'echodeed-api',
+      version: '1.0.0'
+    });
+  });
+
   // Initialize surprise giveaway service
   const surpriseGiveawayService = new SurpriseGiveawayService(storage, fulfillmentService);
   
