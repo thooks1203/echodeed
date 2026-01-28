@@ -12,6 +12,17 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
+// CRITICAL: Health check MUST respond immediately for Railway/container orchestration
+// This runs before any database initialization to prevent health check timeouts
+app.get('/api/health', (req, res) => {
+  res.status(200).json({ 
+    status: 'healthy', 
+    timestamp: new Date().toISOString(),
+    service: 'echodeed-api',
+    version: '1.0.0'
+  });
+});
+
 // ⚠️ COPPA CONSENT CODE - NOT NEEDED FOR HIGH SCHOOL (GRADES 9-12)
 // Eastern Guilford is grades 9-12, so FERPA compliance only (no COPPA)
 // Commenting out to eliminate TypeScript errors and unused code
@@ -529,47 +540,6 @@ app.use((req, res, next) => {
     log('Registering routes and setting up server...');
     const server = await registerRoutes(app);
     log('✓ Routes registered successfully');
-    
-    // Initialize sample data in development OR when DEMO_MODE is enabled in production
-    // DEMO_MODE allows demo data initialization for www.echodeed.com production demos
-    if (process.env.NODE_ENV !== 'production' || process.env.DEMO_MODE === 'true') {
-      // Initialize sample data if needed - with proper error handling
-      log('Initializing sample data...');
-      try {
-        await initializeSampleData();
-        try {
-          await initializeSampleRewardData();
-          log('✓ Reward partners initialized');
-        } catch (error) {
-          log('⚠️ Reward partners initialization failed:', error instanceof Error ? error.message : String(error));
-        }  
-        await storage.initializeEducationSubscriptionPlans();
-        
-        log('✓ Sample data initialization completed');
-
-        // Initialize Summer Challenge Program
-        log('Initializing Summer Challenge Program...');
-        const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
-        await summerChallengeEngine.initializeSummerProgram();
-        log('✓ Summer Challenge Program initialized');
-
-        // Initialize Teacher Reward System
-        try {
-          log('Initializing Teacher Reward System...');
-          const { initializeTeacherRewardSystem } = await import('./initTeacherRewards');
-          await initializeTeacherRewardSystem();
-          log('✓ Teacher Reward System initialized');
-        } catch (error) {
-          log('⚠️ Teacher Reward System initialization failed:', error instanceof Error ? error.message : String(error));
-        }
-      } catch (error) {
-        log(`✗ Sample data initialization failed: ${error}`);
-        throw error; // In development, we want to know about this
-      }
-    } else {
-      log('⚠️  Skipping sample data initialization in production (use POST /api/admin/init-demo-data endpoint)');
-      log('💡 This ensures fast Autoscale startup - initialize via API when needed');
-    }
 
     app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
       const status = err.status || err.statusCode || 500;
@@ -580,9 +550,7 @@ app.use((req, res, next) => {
       throw err;
     });
 
-    // importantly only setup vite in development and after
-    // setting up all the other routes so the catch-all route
-    // doesn't interfere with the other routes
+    // Set up static file serving
     log('Setting up static file serving...');
     const isProduction = process.env.NODE_ENV === 'production';
     if (!isProduction) {
@@ -593,10 +561,7 @@ app.use((req, res, next) => {
       log('✓ Static file serving configured for production');
     }
 
-    // ALWAYS serve the app on the port specified in the environment variable PORT
-    // Other ports are firewalled. Default to 5000 if not specified.
-    // this serves both the API and the client.
-    // It is the only port that is not firewalled.
+    // START SERVER FIRST - Critical for Railway health checks
     const port = parseInt(process.env.PORT || '5000', 10);
     log(`Starting server on 0.0.0.0:${port}...`);
     
@@ -604,14 +569,49 @@ app.use((req, res, next) => {
       port,
       host: "0.0.0.0",
       reusePort: true,
-    }, () => {
+    }, async () => {
       log(`✓ EchoDeed application successfully started and serving on port ${port}`);
       log(`✓ Server is accessible at http://0.0.0.0:${port}`);
       log(`✓ Environment: ${process.env.NODE_ENV || 'development'}`);
-      
-      // ⚠️ COPPA consent schedulers disabled - not needed for high school (grades 9-12)
-      // Eastern Guilford uses FERPA compliance only
       log('✓ No background schedulers required for high school FERPA compliance');
+      
+      // Initialize sample data AFTER server is listening (background task)
+      if (process.env.NODE_ENV !== 'production' || process.env.DEMO_MODE === 'true') {
+        log('Initializing sample data in background...');
+        try {
+          await initializeSampleData();
+          try {
+            await initializeSampleRewardData();
+            log('✓ Reward partners initialized');
+          } catch (error) {
+            log('⚠️ Reward partners initialization failed:', error instanceof Error ? error.message : String(error));
+          }  
+          await storage.initializeEducationSubscriptionPlans();
+          
+          log('✓ Sample data initialization completed');
+
+          // Initialize Summer Challenge Program
+          log('Initializing Summer Challenge Program...');
+          const { summerChallengeEngine } = await import('./services/summerChallengeEngine');
+          await summerChallengeEngine.initializeSummerProgram();
+          log('✓ Summer Challenge Program initialized');
+
+          // Initialize Teacher Reward System
+          try {
+            log('Initializing Teacher Reward System...');
+            const { initializeTeacherRewardSystem } = await import('./initTeacherRewards');
+            await initializeTeacherRewardSystem();
+            log('✓ Teacher Reward System initialized');
+          } catch (error) {
+            log('⚠️ Teacher Reward System initialization failed:', error instanceof Error ? error.message : String(error));
+          }
+        } catch (error) {
+          log(`⚠️ Sample data initialization failed (non-fatal): ${error}`);
+        }
+      } else {
+        log('⚠️  Skipping sample data initialization in production');
+        log('💡 Use POST /api/admin/init-demo-data endpoint when needed');
+      }
     });
 
     // Handle server errors
