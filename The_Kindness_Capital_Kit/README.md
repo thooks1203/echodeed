@@ -10,8 +10,8 @@
 
 ### 📈 Market Intelligence
 - **[Market Research Brief](./Market_Research_Brief.md)** - $47B TAM analysis with supporting data
-- **[Competitive Landscape](./Competitive_Analysis.md)** - Position vs. ClassDojo, Calm, Culture Amp
-- **[Customer Validation Plan](./Customer_Validation_Strategy.md)** - 30-day pilot methodology
+- **[Competitive Analysis](./Competitive_Analysis.md)** - Position vs. ClassDojo, Calm, Culture Amp
+- **[Customer Validation Plan](./Customer_Validation_Plan.md)** - 30-day pilot methodology
 
 ### 🛠 Technical Assets
 - **[Product Roadmap](./Product_Roadmap.md)** - 18-month development timeline
