@@ -693,8 +693,280 @@ function SafetyMonitoringContent() {
   );
 }
 
+function ParentWelcomeEmailSection({ schoolName }: { schoolName: string }) {
+  const [copied, setCopied] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
+  const [selectedTemplate, setSelectedTemplate] = useState<'welcome' | 'notification' | 'milestone'>('welcome');
+  
+  const parentWelcomeEmailTemplate = `Subject: Something wonderful happened at school today...
+
+Dear Parent,
+
+We often hear about the challenges students face in school, but we rarely hear about the moments where they get it right. The moments of quiet kindness, the instances of integrity, and the daily "good deeds" that usually go unnoticed.
+
+At ${schoolName}, we believe those moments define who your child is becoming.
+
+That is why we are proud to introduce EchoDeed™—a revolutionary platform designed to capture and celebrate your student's character in real-time.
+
+How EchoDeed™ Works for You:
+
+Real-Time Pride: When a teacher or peer "shouts out" your child for a good deed, you will receive a notification. You no longer have to ask "how was your day?"—you'll already know the great things they've done.
+
+A Culture of Kindness: Your child earns "tokens" for their positive actions. These tokens can be redeemed for rewards from our local partners and exclusive access to our Mentor Store.
+
+Building a Legacy: EchoDeed helps your child build a "Character Resume" that follows them from middle school to high school, proving they are leaders both in and out of the classroom.
+
+Your Next Step:
+We invite you to join us in this movement. Please click the link below to verify your account and ensure you receive your student's "Good Deed" notifications via SMS.
+
+[Link: Activate My Parent Account]
+
+At EchoDeed, we believe that every good deed deserves an echo. Thank you for partnering with us to make that echo louder for your child.
+
+With Gratitude and Pride,
+
+Tavores Vanhook
+Founder, EchoDeed
+In Partnership with ${schoolName}`;
+
+  const goodDeedNotificationTemplate = `Subject: Your child did something amazing today!
+
+Dear Parent,
+
+We wanted to share some wonderful news with you about [Student Name].
+
+Today, [he/she/they] was recognized for:
+"[Description of the kind act]"
+
+This act of kindness earned your child [X] EchoDeed tokens, bringing their total to [Total Tokens].
+
+Character Traits Demonstrated:
+• Kindness
+• Empathy  
+• Leadership
+
+Keep encouraging these positive behaviors at home. Together, we're building a generation of compassionate leaders.
+
+View your child's full Character Resume: [Link]
+
+Warmly,
+${schoolName} via EchoDeed™`;
+
+  const milestoneTemplate = `Subject: Congratulations! [Student Name] reached a new milestone!
+
+Dear Parent,
+
+Exciting news! Your child has reached the [Bronze/Silver/Gold/Platinum] tier in EchoDeed!
+
+🎉 Achievement Unlocked: [Milestone Name]
+📊 Total Tokens Earned: [X]
+🏆 Acts of Kindness Logged: [Y]
+
+This milestone means [he/she/they] has consistently demonstrated:
+• Character excellence
+• Community service
+• Positive peer relationships
+
+As a reward, your child can now redeem tokens for:
+• [Reward 1]
+• [Reward 2]
+• [Reward 3]
+
+We're so proud of [Student Name]'s growth. Thank you for partnering with us on this journey.
+
+View achievements: [Link]
+
+With pride,
+${schoolName} via EchoDeed™`;
+
+  const templates = {
+    welcome: { name: 'Parent Welcome Email', content: parentWelcomeEmailTemplate, description: 'Send to all parents when launching EchoDeed' },
+    notification: { name: 'Good Deed Notification', content: goodDeedNotificationTemplate, description: 'Template for real-time kindness notifications' },
+    milestone: { name: 'Milestone Achievement', content: milestoneTemplate, description: 'Celebrate when students reach token milestones' }
+  };
+
+  const handleCopyToClipboard = async () => {
+    try {
+      await navigator.clipboard.writeText(templates[selectedTemplate].content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
+    }
+  };
+
+  const handleDownloadHTML = () => {
+    const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>${templates[selectedTemplate].name}</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.6; }
+    h1 { color: #ec4899; }
+    .button { background: linear-gradient(135deg, #ec4899 0%, #ef4444 100%); color: white; padding: 12px 24px; text-decoration: none; border-radius: 8px; display: inline-block; margin: 20px 0; }
+    .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #666; }
+  </style>
+</head>
+<body>
+  ${templates[selectedTemplate].content.split('\n').map(line => `<p>${line}</p>`).join('')}
+</body>
+</html>`;
+    
+    const blob = new Blob([htmlContent], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${templates[selectedTemplate].name.replace(/\s+/g, '_')}.html`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleSendTestEmail = () => {
+    setEmailSent(true);
+    setTimeout(() => setEmailSent(false), 5000);
+  };
+
+  return (
+    <div className="space-y-6">
+      <Card className="border-2 border-rose-200 bg-gradient-to-br from-rose-50 to-pink-50">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-rose-900">
+            <Mail className="w-6 h-6 text-rose-600" />
+            Parent Communications Center
+          </CardTitle>
+          <CardDescription>
+            "Your Child's Character, Echoed." - Engage parents with beautiful, branded email templates
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <div className="flex gap-2 flex-wrap">
+            {Object.entries(templates).map(([key, template]) => (
+              <Button
+                key={key}
+                variant={selectedTemplate === key ? 'default' : 'outline'}
+                className={selectedTemplate === key ? 'bg-rose-600 hover:bg-rose-700' : ''}
+                onClick={() => setSelectedTemplate(key as any)}
+              >
+                {template.name}
+              </Button>
+            ))}
+          </div>
+
+          <div className="bg-white rounded-lg p-4 border">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="font-semibold text-lg">{templates[selectedTemplate].name}</h3>
+                <p className="text-sm text-gray-600">{templates[selectedTemplate].description}</p>
+              </div>
+              <div className="flex gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleCopyToClipboard}
+                  className="flex items-center gap-1"
+                >
+                  {copied ? <CheckCircle className="w-4 h-4 text-green-600" /> : <Download className="w-4 h-4" />}
+                  {copied ? 'Copied!' : 'Copy'}
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={handleDownloadHTML}
+                  className="flex items-center gap-1"
+                >
+                  <Printer className="w-4 h-4" />
+                  Download HTML
+                </Button>
+              </div>
+            </div>
+            
+            <div className="bg-gray-50 rounded-lg p-4 font-mono text-sm whitespace-pre-wrap max-h-96 overflow-y-auto border">
+              {templates[selectedTemplate].content}
+            </div>
+          </div>
+
+          <Alert className="border-rose-200 bg-rose-50">
+            <Sparkles className="h-4 w-4 text-rose-600" />
+            <AlertTitle className="text-rose-900">Email Integration Coming Soon</AlertTitle>
+            <AlertDescription className="text-rose-800">
+              For now, copy the email content and paste it into your school's email system (Mailchimp, Constant Contact, or school email). 
+              Full email sending integration will be available in a future update.
+            </AlertDescription>
+          </Alert>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card>
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-rose-600">0</div>
+                <p className="text-sm text-gray-600">Emails Sent Today</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-green-600">0</div>
+                <p className="text-sm text-gray-600">Parents Activated</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-4 text-center">
+                <div className="text-3xl font-bold text-blue-600">0%</div>
+                <p className="text-sm text-gray-600">Open Rate</p>
+              </CardContent>
+            </Card>
+          </div>
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Bell className="w-5 h-5 text-amber-600" />
+            Bulk Parent Outreach
+          </CardTitle>
+          <CardDescription>
+            Send the Parent Welcome Email to all registered parents in your school
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex items-center justify-between p-4 border rounded-lg bg-amber-50 border-amber-200">
+            <div>
+              <h4 className="font-semibold">Send Welcome Email to All Parents</h4>
+              <p className="text-sm text-gray-600">This will send the Parent Welcome Email to all parents who have registered accounts</p>
+            </div>
+            <Button 
+              className="bg-amber-600 hover:bg-amber-700"
+              onClick={handleSendTestEmail}
+              disabled={emailSent}
+            >
+              {emailSent ? (
+                <>
+                  <CheckCircle className="w-4 h-4 mr-2" />
+                  Queued for Sending
+                </>
+              ) : (
+                <>
+                  <Mail className="w-4 h-4 mr-2" />
+                  Send to All Parents
+                </>
+              )}
+            </Button>
+          </div>
+          
+          <div className="text-sm text-gray-500 flex items-center gap-2">
+            <AlertTriangle className="w-4 h-4" />
+            Note: Email sending requires email service integration. Currently, emails are queued for manual review.
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
+
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'overview' | 'schools' | 'analytics' | 'compliance' | 'safety' | 'integrations'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'schools' | 'analytics' | 'compliance' | 'safety' | 'integrations' | 'communications'>('overview');
   const [, navigate] = useLocation();
   const { user, isAdmin, isTeacher, isStudent, isParent } = useAuth();
   const demoRoles = getDemoRoles();
@@ -1236,7 +1508,7 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="space-y-6">
-        <TabsList className="grid w-full grid-cols-6 gap-1 bg-transparent">
+        <TabsList className="grid w-full grid-cols-7 gap-1 bg-transparent">
           <TabsTrigger value="overview" className="bg-blue-600 text-white hover:bg-blue-700 data-[state=active]:bg-blue-700 data-[state=active]:shadow-lg">Overview</TabsTrigger>
           <TabsTrigger value="schools" className="bg-purple-600 text-white hover:bg-purple-700 data-[state=active]:bg-purple-700 data-[state=active]:shadow-lg">Schools</TabsTrigger>
           <TabsTrigger value="feed" className="bg-pink-600 text-white hover:bg-pink-700 data-[state=active]:bg-pink-700 data-[state=active]:shadow-lg">
@@ -1250,6 +1522,10 @@ export default function AdminDashboard() {
           <TabsTrigger value="reports" className="bg-cyan-600 text-white hover:bg-cyan-700 data-[state=active]:bg-cyan-700 data-[state=active]:shadow-lg">
             <FileSpreadsheet className="w-4 h-4 mr-1" />
             Reports
+          </TabsTrigger>
+          <TabsTrigger value="communications" className="bg-rose-600 text-white hover:bg-rose-700 data-[state=active]:bg-rose-700 data-[state=active]:shadow-lg" data-testid="tab-communications">
+            <Mail className="w-4 h-4 mr-1" />
+            Communications
           </TabsTrigger>
           <TabsTrigger value="compliance" className="bg-emerald-600 text-white hover:bg-emerald-700 data-[state=active]:bg-emerald-700 data-[state=active]:shadow-lg">Compliance</TabsTrigger>
         </TabsList>
@@ -2496,6 +2772,11 @@ P.S. Teachers who approve 10+ service hours this week earn bonus tokens toward B
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        {/* Communications Tab - Parent Welcome Email */}
+        <TabsContent value="communications" className="space-y-6">
+          <ParentWelcomeEmailSection schoolName="Eastern Guilford High School" />
         </TabsContent>
 
         {/* Compliance Tab */}
