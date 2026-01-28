@@ -1,0 +1,43 @@
+this was a brain dump after tossing & turning last night! i tried to organize it so it makes sense, but i'm open to your suggestions too. also change the tokens that teachers can award from 500-1000 to 50-250. need to figure out Ms McNeil's rewards (ex open gym, etc)
+
+This is a solid plan for the Eastern Guilford pilot! Let me explore the current reward system and create a structured plan:
+
+This is a comprehensive feature set for the Eastern Guilford school pilot. Let me organize this into a clear plan:
+
+Searched for "Where do teachers or coaches award tokens/points to students? Look for token awarding UI, giving points, or shout-out features."
+Looking at your codebase, I don't see an existing teacher token awarding system - this appears to be a new feature set for the Eastern Guilford school pilot.
+
+Before I start building, I have a few quick questions:
+
+Where do teachers currently award tokens (50-250)? Is there an existing page/feature I should look at, or is this being built fresh for Eastern Guilford?
+
+There's an existing teacher reward system I should find
+uploading it to you now
+For Ms. McNeil's school-specific rewards, here are some ideas that work well for middle/high school:
+
+Open Gym (50 tokens)
+Lunch with Teacher (75 tokens)
+Homework Pass (100 tokens)
+Front of Lunch Line (25 tokens)
+Choose Your Seat Day (50 tokens)
+Music During Work Time (40 tokens)
+Extra Credit Assignment (150 tokens)
+Should I add these, or do you have a specific list from Ms. McNeil?
+
+Use these suggested rewards for now
+I see the Teacher Dashboard is on echodeed.com - that appears to be a separate site. Let me check if this codebase has any EchoDeed-related code:
+
+The Teacher Dashboard you showed is on echodeed.com - that's a separate site from this HeirKeep project. Should I:
+
+You'll open the EchoDeed project separately so I can make changes there
+sorry, i was in the wrong app. if you made any changes to heirkeep for echodeed, kill them. so, when i open echodeed, these changes will already be in place?
+
+No worries! I did not make any EchoDeed changes to HeirKeep - I asked you the clarifying question before starting, so nothing needs to be reverted here.
+
+And to clarify: No, the changes won't automatically be in EchoDeed. When you open the EchoDeed project, I'll need to work on it there to make those changes.
+
+The only changes I made to HeirKeep today were:
+
+Fixed athlete vs legacy signup tracking
+Updated SMS consent language for Twilio compliance
+Both of those are HeirKeep-specific and correct. You're all good!

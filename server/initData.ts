@@ -1176,7 +1176,7 @@ export async function initializeSampleData() {
             description: 'One free homework pass for any class',
             applicableLevel: 'middle_school',
             quantityAvailable: 40,
-            tokenCost: 200,
+            tokenCost: 100,
             isActive: true,
             createdBy: systemAdminId
           },
@@ -1188,6 +1188,73 @@ export async function initializeSampleData() {
             applicableLevel: 'middle_school',
             quantityAvailable: 15,
             tokenCost: 400,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          // Ms. McNeil's Classroom Rewards - Eastern Guilford
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Open Gym Period',
+            rewardType: 'recreation_privilege',
+            description: 'Access to the gym during lunch or free period',
+            applicableLevel: 'middle_school',
+            quantityAvailable: 30,
+            tokenCost: 50,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Lunch with Teacher',
+            rewardType: 'social_recognition',
+            description: 'Special lunch period with your favorite teacher',
+            applicableLevel: 'middle_school',
+            quantityAvailable: 20,
+            tokenCost: 75,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Front of Lunch Line',
+            rewardType: 'cafeteria_privilege',
+            description: 'Skip to the front of the lunch line for one day',
+            applicableLevel: 'middle_school',
+            quantityAvailable: 50,
+            tokenCost: 25,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Choose Your Seat Day',
+            rewardType: 'classroom_privilege',
+            description: 'Choose your own seat in class for one day',
+            applicableLevel: 'middle_school',
+            quantityAvailable: 40,
+            tokenCost: 50,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Music During Work Time',
+            rewardType: 'classroom_privilege',
+            description: 'Listen to music with earbuds during independent work time',
+            applicableLevel: 'middle_school',
+            quantityAvailable: 35,
+            tokenCost: 40,
+            isActive: true,
+            createdBy: systemAdminId
+          },
+          {
+            schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78',
+            rewardName: 'Extra Credit Assignment',
+            rewardType: 'academic_privilege',
+            description: 'Receive one extra credit assignment opportunity',
+            applicableLevel: 'middle_school',
+            quantityAvailable: 25,
+            tokenCost: 150,
             isActive: true,
             createdBy: systemAdminId
           },
@@ -1270,6 +1337,7 @@ export async function initializeSampleData() {
 
         log(`✅ Initialized ${schoolRewards.length} admin school rewards`);
         log('🏫 MS: Ice cream, hoodies, hats, homework passes, pizza parties');
+        log('🎯 MS McNeil: Open gym, lunch with teacher, front of line, choose seat, music time, extra credit');
         log('🎓 HS: VIP parking, lunch skip, early dismissal, principal meetings');
         log('🌟 Both: Dress down passes, student of the month certificates');
       } else {

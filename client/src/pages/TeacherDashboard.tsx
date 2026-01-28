@@ -1798,7 +1798,7 @@ function CharacterExcellence() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
   const [selectedStudentId, setSelectedStudentId] = useState('');
-  const [tokensAwarded, setTokensAwarded] = useState(500);
+  const [tokensAwarded, setTokensAwarded] = useState(100);
   const [narrative, setNarrative] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -1857,7 +1857,7 @@ function CharacterExcellence() {
             Character Excellence Recognition
           </CardTitle>
           <CardDescription>
-            Award 500-1000 bonus tokens to students who demonstrate exceptional character traits and leadership
+            Award 50-250 bonus tokens to students who demonstrate exceptional character traits and leadership
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -1889,14 +1889,14 @@ function CharacterExcellence() {
             </div>
 
             <div>
-              <Label htmlFor="token-amount">Token Amount (500-1000)</Label>
+              <Label htmlFor="token-amount">Token Amount (50-250)</Label>
               <div className="flex items-center gap-4">
                 <Input
                   id="token-amount"
                   type="range"
-                  min="500"
-                  max="1000"
-                  step="50"
+                  min="50"
+                  max="250"
+                  step="25"
                   value={tokensAwarded}
                   onChange={(e) => setTokensAwarded(parseInt(e.target.value))}
                   className="flex-1"
@@ -1944,7 +1944,7 @@ function CharacterExcellence() {
               Recognition Guidelines
             </h4>
             <ul className="text-sm text-yellow-800 space-y-1">
-              <li>• Awards range from 500-1000 tokens based on impact</li>
+              <li>• Awards range from 50-250 tokens based on impact</li>
               <li>• Narrative should describe specific character traits demonstrated</li>
               <li>• Examples: Consistent kindness leadership, organizing service events, mentoring peers</li>
               <li>• All awards are logged in transaction history for audit trail</li>

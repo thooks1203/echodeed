@@ -26,7 +26,7 @@ The frontend utilizes React 18, TypeScript, and Vite, with Radix UI, shadcn/ui, 
   - **Reflection Tagging**: Students tag service experiences with 21st Century Learning Skills (e.g., Accountability, Critical Thinking) and Character Traits (e.g., Kindness, Integrity).
   - **Phase Tracking**: Visual progress indicators for students' journey through IPARD phases.
   - **Admin School Rewards Portal**: High-value non-token rewards (e.g., VIP parking) requiring admin approval.
-  - **Character Excellence Awards**: Teacher-administered manual token awards (500-1000 tokens) for exceptional character demonstration with narrative justification.
+  - **Character Excellence Awards**: Teacher-administered manual token awards (50-250 tokens) for exceptional character demonstration with narrative justification.
   - **Monthly Top 5 Leaderboards**: Recognition system for top token earners per grade level.
   - **Comprehensive Audit Trail**: All token transactions are logged with before/after balance, source, and approver context.
 - **AI Behavioral Mitigation Architecture**: A three-layer system (Behavioral Pattern Analyzer, Compliance Filter, Aggregate Climate Monitor) for legal compliance and content classification, pre-posting filtering, and school-wide trend analytics, **without automatic crisis interventions**.

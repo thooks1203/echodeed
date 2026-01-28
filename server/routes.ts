@@ -11273,7 +11273,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const schema = z.object({
         studentId: z.string(),
         narrative: z.string().min(20),
-        tokensAwarded: z.number().int().min(500).max(1000)
+        tokensAwarded: z.number().int().min(50).max(250)
       });
       const { studentId, narrative, tokensAwarded } = schema.parse(req.body);
 

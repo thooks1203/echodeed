@@ -128,7 +128,7 @@ function FullPresentation() {
             <li>Automated tracking</li>
             <li>One-click verification</li>
             <li>Pre-built reporting</li>
-            <li>Character Excellence Awards (500-1000 bonus tokens)</li>
+            <li>Character Excellence Awards (50-250 bonus tokens)</li>
           </ul>
         </div>
       </section>
