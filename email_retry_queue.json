@@ -1,0 +1,15 @@
+[
+  {
+    "id": "manual-test-1",
+    "type": "studentNotification",
+    "payload": {
+      "to": "tvanhook97@gmail.com",
+      "subject": "Retry Queue — test",
+      "body": "This is a test produced by the retry queue.",
+      "isDigest": false
+    },
+    "attempts": 0,
+    "lastAttemptAt": null,
+    "lastError": null
+  }
+]

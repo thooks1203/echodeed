@@ -1,0 +1,11 @@
+C:\Users\tavores\Documents\echodeed\node_modules\openai\src\client.ts:361
+      throw new Errors.OpenAIError(
+            ^
+
+
+OpenAIError: Missing credentials. Please pass an `apiKey`, or set the `OPENAI_API_KEY` environment variable.
+    at OpenAI (C:\Users\tavores\Documents\echodeed\node_modules\openai\src\client.ts:361:13)
+    at <anonymous> (c:\Users\tavores\Documents\echodeed\server\services\aiAnalytics.ts:5:16)
+    at ModuleJob.run (node:internal/modules/esm/module_job:192:25)
+
+Node.js v20.0.0

@@ -31,3 +31,13 @@ Running in non-Replit environment - using demo authentication mode
 🧹 Rate limiter cleanup: 0 active records
 🧹 Rate limiter cleanup: 0 active records
 🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
+10:43:58 AM [express] POST /api/webhooks/resend 200 in 84ms
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
+10:52:09 AM [express] POST /api/webhooks/resend 200 in 254ms
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
