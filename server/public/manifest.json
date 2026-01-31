@@ -1,0 +1,73 @@
+{
+  "name": "EchoDeed™ - Character Education, Reimagined",
+  "short_name": "EchoDeed",
+  "description": "Track kindness, earn rewards, and build character! The fun way for students to log good deeds and develop social-emotional skills.",
+  "start_url": "/app",
+  "display": "standalone",
+  "background_color": "#f0fdf4",
+  "theme_color": "#10b981",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["education", "lifestyle", "social"],
+  "icons": [
+    {
+      "src": "/electric-heart-logo.png",
+      "sizes": "any",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192x192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512x512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Share Kindness",
+      "short_name": "Share", 
+      "description": "Share an act of kindness with your school",
+      "url": "/app?action=share",
+      "icons": [{"src": "/electric-heart-logo.png", "sizes": "96x96"}]
+    },
+    {
+      "name": "View Rewards",
+      "short_name": "Rewards",
+      "description": "Check your Echo Tokens and rewards", 
+      "url": "/rewards",
+      "icons": [{"src": "/electric-heart-logo.png", "sizes": "96x96"}]
+    },
+    {
+      "name": "Log Service Hours",
+      "short_name": "Service",
+      "description": "Track community service activities",
+      "url": "/app?tab=community-service", 
+      "icons": [{"src": "/electric-heart-logo.png", "sizes": "96x96"}]
+    }
+  ],
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "dir": "ltr",
+  "id": "echodeed-app",
+  "version": "2.1.0"
+}

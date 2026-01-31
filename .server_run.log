@@ -1,0 +1,33 @@
+
+> rest-express@1.0.0 start
+> cross-env NODE_ENV=production node dist/index.js
+
+9:31:07 AM [express] Starting EchoDeed application in production mode...
+9:31:07 AM [express] Checking required environment variables for production...
+9:31:07 AM [express] ✓ All required environment variables are present
+9:31:07 AM [express] Registering routes and setting up server...
+Running in non-Replit environment - using demo authentication mode
+💜 Starting Pulse Check Scheduler Service...
+✅ Pulse Check Scheduler running - checking every minute
+9:31:07 AM [express] ✓ Routes registered successfully
+9:31:07 AM [express] Setting up static file serving...
+9:31:07 AM [express] ✓ Static file serving configured for production
+9:31:07 AM [express] Starting server on 0.0.0.0:5000...
+9:31:07 AM [express] ✓ EchoDeed application successfully started and serving on port 5000
+9:31:07 AM [express] ✓ Server is accessible at http://0.0.0.0:5000
+9:31:07 AM [express] ✓ Environment: production
+9:31:07 AM [express] ✓ No background schedulers required for high school FERPA compliance
+9:31:07 AM [express] ⚠️  Skipping sample data initialization in production
+9:31:07 AM [express] 💡 Use POST /api/admin/init-demo-data endpoint when needed
+⚠️ Subscription plans initialization temporarily disabled due to schema mismatch
+🧹 Rate limiter cleanup: 0 active records
+9:37:11 AM [express] POST /api/admin/send-test-email 200 in 1059ms :: {"ok":true,"message":"Test ema…
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
