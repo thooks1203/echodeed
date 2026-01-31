@@ -32386,7 +32386,7 @@ async function setupVite(app2, server) {
     appType: "custom"
   });
   app2.use(vite.middlewares);
-  app2.use("*", async (req, res, next) => {
+  app2.use(async (req, res, next) => {
     const url = req.originalUrl;
     try {
       const clientTemplate = path.resolve(__dirname2, "..", "client", "index.html");
@@ -32411,7 +32411,7 @@ function serveStatic(app2) {
     );
   }
   app2.use(express.static(distPath));
-  app2.use("*", (_req, res) => {
+  app2.use((_req, res) => {
     res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
