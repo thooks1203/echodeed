@@ -32311,7 +32311,6 @@ function getDefaultGovernanceReport() {
 
 // server/vite.ts
 import express from "express";
-import fs from "fs";
 import path2 from "path";
 import { fileURLToPath as fileURLToPath2 } from "url";
 import { createServer as createViteServer, createLogger } from "vite";
