@@ -21141,7 +21141,7 @@ async function registerRoutes(app2) {
   } catch (e) {
     console.error("[RetryWorker] Failed to start:", e);
   }
-  app2.get("/objects/:rest(.*)", isAuthenticated, async (req, res) => {
+  app2.get("/objects/:objectPath", isAuthenticated, async (req, res) => {
     const userId = req.user?.claims?.sub;
     const objectStorageService = new ObjectStorageService();
     try {
