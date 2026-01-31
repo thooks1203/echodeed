@@ -21,3 +21,7 @@ Running in non-Replit environment - using demo authentication mode
 2:14:54 PM [express] ⚠️  Skipping sample data initialization in production
 2:14:54 PM [express] 💡 Use POST /api/admin/init-demo-data endpoint when needed
 ⚠️ Subscription plans initialization temporarily disabled due to schema mismatch
+[Webhook] Resend event received: message.delivered
+2:15:17 PM [express] POST /api/webhooks/resend 200 in 12ms :: {"ok":true}
+[RetryQueue] Attempting retry for manual-test-1
+[RetryQueue] Enqueued email: retry-1769886955776-ipiihm
