@@ -1,4 +1,4 @@
-// Load .env manually
+// Load .env manually (only if it exists locally)
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -13,10 +13,18 @@ if (fs.existsSync(envPath)) {
     if (line && !line.startsWith('#')) {
       const [key, ...valueParts] = line.split('=');
       if (key) {
-        process.env[key.trim()] = valueParts.join('=').trim();
+        // Only set if not already set by Railway/environment
+        if (!process.env[key.trim()]) {
+          process.env[key.trim()] = valueParts.join('=').trim();
+        }
       }
     }
   });
+}
+
+// Ensure PORT is set (Railway provides this, but fallback to 5000 if not)
+if (!process.env.PORT) {
+  process.env.PORT = '5000';
 }
 
 // Now import and run the server
