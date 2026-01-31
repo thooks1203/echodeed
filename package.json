@@ -5,7 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "npm install --omit=dev",
-    "start": "NODE_ENV=production node server-wrapper.mjs"
+    "start": "NODE_ENV=production node server-wrapper.mjs",
+    "test-db-tcp": "node scripts/test-db-tcp.js",
+    "check-api": "node scripts/check-api.js",
+    "init-demo": "node scripts/init-demo.js"
   },
   "redeploy": "2026-01-31T20:22:00Z",
   "engines": {
