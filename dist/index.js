@@ -178,11 +178,11 @@ __export(schema_exports, {
   usersRelations: () => usersRelations,
   wellnessCheckins: () => wellnessCheckins
 });
-import { sql } from "drizzle-orm";
-import { pgTable, text, varchar, timestamp, integer, jsonb, index, real, boolean, decimal } from "drizzle-orm/pg-core";
-import { createInsertSchema } from "drizzle-zod";
-import { relations } from "drizzle-orm";
-import { z } from "zod";
+var { sql } = __require("drizzle-orm");
+var { pgTable, text, varchar, timestamp, integer, jsonb, index, real, boolean, decimal } = __require("drizzle-orm/pg-core");
+var { createInsertSchema } = __require("drizzle-zod");
+var { relations } = __require("drizzle-orm");
+var { z } = __require("zod");
 var sessions, users, studentAccounts, kindnessPosts, kindnessCounter, userTokens2, brandChallenges, challengeCompletions, achievementBadges, userAchievements, heartReactions, echoReactions, supportPosts, supportResponses, helpfulReactions, userBadges, badgeDefinitions, wellnessCheckins, schools, principalBlogPosts, parentCommunityPosts, rewardPartners, rewardOffers, rewardRedemptions, communityServiceLogs, communityServiceVerifications, ipardPhaseEvents, reflectionSkills, reflectionTraits, communityServiceLogSkills, communityServiceLogTraits, tokenTransactions2, adminRewards2, adminRewardRedemptions2, characterExcellenceAwards2, studentServiceSummaries, coppaConsent, coppaConsentRequests, fundraisingCampaigns, fundraisingDonations, subscriptionPlans, surpriseGiveawayCampaigns, surpriseGiveawayWinners, summerChallenges, summerChallengeCompletions, familyChallenges, familyChallengeCompletions, schoolYearChallenges, schoolYearProgress, schoolYearChallengeEngagement, mentorBadges, mentorBadgeAwards, mentorTraining, userMentorTraining, mentorScenarios, mentorScenarioResponses, mentorConversations, mentorCertifications, mentorships, mentorActivities, mentorStats, privacyLogs, teacherRewards, teacherRewardCriteria, sponsors, sponsorAnalytics, corporateAccounts, corporateEmployees, corporateTeams, corporateChallenges, corporateAnalytics, parentalConsentRecords, parentalConsentRequests, usersRelations, schoolsRelations, kindnessPostsRelations, userTokensRelations, rewardPartnersRelations, rewardOffersRelations, rewardRedemptionsRelations, communityServiceLogsRelations, communityServiceVerificationsRelations, fundraisingCampaignsRelations, fundraisingDonationsRelations, surpriseGiveawayCampaignsRelations, surpriseGiveawayWinnersRelations, teacherRewardsRelations, sponsorsRelations, sponsorAnalyticsRelations, insertUserSchema, insertKindnessPostSchema, insertBrandChallengeSchema, insertSupportPostSchema, insertSupportResponseSchema, insertWellnessCheckinSchema, insertUserBadgeSchema, insertBadgeDefinitionSchema, insertSchoolSchema, insertStudentAccountSchema2, insertRewardPartnerSchema, insertRewardOfferSchema, insertCommunityServiceLogSchema, insertCommunityServiceVerificationSchema, insertStudentServiceSummarySchema, insertCoppaConsentSchema, insertFundraisingCampaignSchema, insertFundraisingDonationSchema, insertTeacherRewardSchema, insertTeacherRewardCriteriaSchema, insertSponsorSchema, insertSponsorAnalyticsSchema, insertUserTokensSchema, contentModerationQueue, behavioralTrendAnalytics, climateMetrics, serviceOpportunities, serviceOpportunitySignups, studentNotificationPreferences, studentNotifications, studentNotificationEvents, studentGoals2, schoolInclusionScores, schoolInclusionTrendDaily, insertContentModerationQueueSchema, insertBehavioralTrendAnalyticsSchema, insertClimateMetricsSchema, insertServiceOpportunitySchema, insertServiceOpportunitySignupSchema, insertStudentNotificationPreferencesSchema, insertStudentNotificationSchema, insertStudentNotificationEventSchema, insertStudentGoalSchema, insertPrincipalBlogPostSchema, insertParentCommunityPostSchema, insertSchoolInclusionScoreSchema, insertSchoolInclusionTrendDailySchema, insertIpardPhaseEventSchema, insertReflectionSkillSchema, insertReflectionTraitSchema, insertCommunityServiceLogSkillSchema, insertCommunityServiceLogTraitSchema, insertTokenTransactionSchema, insertAdminRewardSchema, insertAdminRewardRedemptionSchema, insertCharacterExcellenceAwardSchema, pulseChecks, insertPulseCheckSchema, crisisAlerts, insertCrisisAlertSchema;
 var init_schema = __esm({
   "shared/schema.ts"() {
@@ -2149,9 +2149,9 @@ __export(db_exports, {
   db: () => db,
   pool: () => pool
 });
-import { Pool, neonConfig } from "@neondatabase/serverless";
-import { drizzle } from "drizzle-orm/neon-serverless";
-import ws from "ws";
+var { Pool, neonConfig } = __require("@neondatabase/serverless");
+var { drizzle } = __require("drizzle-orm/neon-serverless");
+var ws = __require("ws");
 var pool, db;
 var init_db = __esm({
   "server/db.ts"() {
@@ -2180,7 +2180,7 @@ var cryptoSecurity_exports = {};
 __export(cryptoSecurity_exports, {
   CryptoSecurity: () => CryptoSecurity
 });
-import { createHash, timingSafeEqual } from "crypto";
+var { createHash, timingSafeEqual } = __require("crypto");
 var CryptoSecurity;
 var init_cryptoSecurity = __esm({
   "server/utils/cryptoSecurity.ts"() {
@@ -2765,7 +2765,7 @@ var init_demoSeed = __esm({
 });
 
 // server/storage.ts
-import { eq, sql as sql2, desc, and as and2, count, or, gte, lte, isNotNull, isNull, inArray, gt, getTableColumns } from "drizzle-orm";
+var { eq, sql: sql2, desc, and: and2, count, or, gte, lte, isNotNull, isNull, inArray, gt, getTableColumns } = __require("drizzle-orm");
 var DatabaseStorage, storage;
 var init_storage = __esm({
   "server/storage.ts"() {
@@ -7328,7 +7328,7 @@ var emailService_exports = {};
 __export(emailService_exports, {
   emailService: () => emailService
 });
-import nodemailer from "nodemailer";
+var nodemailer = __require("nodemailer");
 var NodemailerEmailService, emailService;
 var init_emailService = __esm({
   "server/services/emailService.ts"() {
@@ -9158,7 +9158,7 @@ __export(schoolConfigService_exports, {
   SchoolConfigService: () => SchoolConfigService,
   schoolConfigService: () => schoolConfigService
 });
-import { eq as eq4 } from "drizzle-orm";
+var { eq: eq4 } = __require("drizzle-orm");
 var SchoolConfigService, schoolConfigService;
 var init_schoolConfigService = __esm({
   "server/services/schoolConfigService.ts"() {
@@ -9224,7 +9224,7 @@ __export(badgeService_exports, {
   BadgeService: () => BadgeService,
   badgeService: () => badgeService
 });
-import { eq as eq5, sql as sql5, and as and5, gte as gte3, count as count2 } from "drizzle-orm";
+var { eq: eq5, sql: sql5, and: and5, gte: gte3, count: count2 } = __require("drizzle-orm");
 var BADGE_DEFINITIONS, BadgeService, badgeService;
 var init_badgeService = __esm({
   "server/badgeService.ts"() {
@@ -10449,7 +10449,7 @@ __export(summerChallengeEngine_exports, {
   SummerChallengeEngine: () => SummerChallengeEngine,
   summerChallengeEngine: () => summerChallengeEngine
 });
-import { eq as eq6, and as and6 } from "drizzle-orm";
+var { eq: eq6, and: and6 } = __require("drizzle-orm");
 var SummerChallengeEngine, summerChallengeEngine;
 var init_summerChallengeEngine = __esm({
   "server/services/summerChallengeEngine.ts"() {
@@ -11003,7 +11003,7 @@ __export(familyChallengeEngine_exports, {
   FamilyChallengeEngine: () => FamilyChallengeEngine,
   familyChallengeEngine: () => familyChallengeEngine
 });
-import { eq as eq7, and as and7 } from "drizzle-orm";
+var { eq: eq7, and: and7 } = __require("drizzle-orm");
 var FamilyChallengeEngine, familyChallengeEngine;
 var init_familyChallengeEngine = __esm({
   "server/services/familyChallengeEngine.ts"() {
@@ -11536,7 +11536,7 @@ __export(schoolYearChallengeEngine_exports, {
   SchoolYearChallengeEngine: () => SchoolYearChallengeEngine,
   schoolYearChallengeEngine: () => schoolYearChallengeEngine
 });
-import { eq as eq8, and as and8 } from "drizzle-orm";
+var { eq: eq8, and: and8 } = __require("drizzle-orm");
 var SchoolYearChallengeEngine, schoolYearChallengeEngine;
 var init_schoolYearChallengeEngine = __esm({
   "server/services/schoolYearChallengeEngine.ts"() {
@@ -11817,7 +11817,7 @@ __export(communityServiceEngine_exports, {
   CommunityServiceEngine: () => CommunityServiceEngine,
   communityServiceEngine: () => communityServiceEngine
 });
-import { eq as eq9, and as and9, sql as sql7, desc as desc2 } from "drizzle-orm";
+var { eq: eq9, and: and9, sql: sql7, desc: desc2 } = __require("drizzle-orm");
 var CommunityServiceEngine, communityServiceEngine;
 var init_communityServiceEngine = __esm({
   "server/services/communityServiceEngine.ts"() {
@@ -12191,7 +12191,7 @@ __export(ipardService_exports, {
   ipardService: () => ipardService,
   tagServiceLogReflections: () => tagServiceLogReflections
 });
-import { eq as eq10, and as and10 } from "drizzle-orm";
+var { eq: eq10, and: and10 } = __require("drizzle-orm");
 async function awardApprovalFormBonus(serviceLogId, userId) {
   return await db.transaction(async (tx) => {
     const [serviceLog] = await tx.select().from(communityServiceLogs).where(and10(
@@ -12918,7 +12918,7 @@ __export(inclusionScoreCalculator_exports, {
   getInclusionScoreWithCache: () => getInclusionScoreWithCache,
   saveDailySnapshot: () => saveDailySnapshot
 });
-import { eq as eq11, and as and11, gte as gte4, sql as sql8, desc as desc3 } from "drizzle-orm";
+var { eq: eq11, and: and11, gte: gte4, sql: sql8, desc: desc3 } = __require("drizzle-orm");
 async function calculateInclusionScore(schoolId, daysLookback = 30) {
   try {
     const lookbackDate = /* @__PURE__ */ new Date();
@@ -13136,7 +13136,7 @@ var mentorSampleData_exports = {};
 __export(mentorSampleData_exports, {
   initializeMentorSampleData: () => initializeMentorSampleData
 });
-import { eq as eq13, and as and12 } from "drizzle-orm";
+var { eq: eq13, and: and12 } = __require("drizzle-orm");
 async function initializeMentorSampleData() {
   console.log("\u{1F393} Initializing mentor sample data...");
   try {
@@ -32310,18 +32310,14 @@ function getDefaultGovernanceReport() {
 }
 
 // server/vite.ts
-import express from "express";
-import path2 from "path";
-import { fileURLToPath as fileURLToPath2 } from "url";
-import { createServer as createViteServer, createLogger } from "vite";
+var express = __require("express");
+var { createServer: createViteServer, createLogger } = __require("vite");
 
 // vite.config.ts
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-import path from "path";
-import { fileURLToPath } from "url";
-import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
-var __dirname = path.dirname(fileURLToPath(import.meta.url));
+var { defineConfig } = __require("vite");
+var react = __require("@vitejs/plugin-react");
+var runtimeErrorOverlay = __require("@replit/vite-plugin-runtime-error-modal");
+var __dirname = path.dirname(__require("url").fileURLToPath(import.meta.url));
 var vite_config_default = defineConfig({
   plugins: [
     react(),
@@ -32353,9 +32349,9 @@ var vite_config_default = defineConfig({
 });
 
 // server/vite.ts
-import { nanoid as nanoid3 } from "nanoid";
+var { nanoid: nanoid3 } = __require("nanoid");
 var viteLogger = createLogger();
-var __dirname2 = path2.dirname(fileURLToPath2(import.meta.url));
+var __dirname2 = path.dirname(__require("url").fileURLToPath(import.meta.url));
 function log(message, source = "express") {
   const formattedTime = (/* @__PURE__ */ new Date()).toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -32388,7 +32384,7 @@ async function setupVite(app2, server) {
   app2.use("*", async (req, res, next) => {
     const url = req.originalUrl;
     try {
-      const clientTemplate = path2.resolve(__dirname2, "..", "client", "index.html");
+      const clientTemplate = path.resolve(__dirname2, "..", "client", "index.html");
       let template = await fs.promises.readFile(clientTemplate, "utf-8");
       template = template.replace(
         `src="/src/main.tsx"`,
@@ -32403,7 +32399,7 @@ async function setupVite(app2, server) {
   });
 }
 function serveStatic(app2) {
-  const distPath = path2.resolve(__dirname2, "public");
+  const distPath = path.resolve(__dirname2, "public");
   if (!fs.existsSync(distPath)) {
     throw new Error(
       `Could not find the build directory: ${distPath}, make sure to build the client first`
@@ -32411,7 +32407,7 @@ function serveStatic(app2) {
   }
   app2.use(express.static(distPath));
   app2.use("*", (_req, res) => {
-    res.sendFile(path2.resolve(distPath, "index.html"));
+    res.sendFile(path.resolve(distPath, "index.html"));
   });
 }
 

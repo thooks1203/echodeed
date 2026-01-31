@@ -111,3 +111,31 @@ Error: Dynamic require of "fs" is not supported
     at ModuleJob.run (node:internal/modules/esm/module_job:192:25)
 
 Node.js v20.0.0
+
+> echodeed-temp@1.0.0 start
+> cross-env NODE_ENV=production node dist/index.js
+
+file:///C:/Users/tavores/Documents/echodeed/dist/index.js:9
+  throw Error('Dynamic require of "' + x + '" is not supported');
+        ^
+
+Error: Dynamic require of "fs" is not supported
+    at file:///C:/Users/tavores/Documents/echodeed/dist/index.js:9:9
+    at file:///C:/Users/tavores/Documents/echodeed/dist/index.js:2061:10
+    at ModuleJob.run (node:internal/modules/esm/module_job:192:25)
+
+Node.js v20.0.0
+
+> echodeed-temp@1.0.0 start
+> cross-env NODE_ENV=production node dist/index.js
+
+file:///C:/Users/tavores/Documents/echodeed/dist/index.js:9
+  throw Error('Dynamic require of "' + x + '" is not supported');
+        ^
+
+Error: Dynamic require of "fs" is not supported
+    at file:///C:/Users/tavores/Documents/echodeed/dist/index.js:9:9
+    at file:///C:/Users/tavores/Documents/echodeed/dist/index.js:2061:10
+    at ModuleJob.run (node:internal/modules/esm/module_job:192:25)
+
+Node.js v20.0.0
