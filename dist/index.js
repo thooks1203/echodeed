@@ -1,3 +1,5 @@
+import { createRequire } from 'module';
+const requireCJS = createRequire(import.meta.url);
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -6,6 +8,7 @@ var __require = /* @__PURE__ */ ((x) => typeof require !== "undefined" ? require
   get: (a, b) => (typeof require !== "undefined" ? require : a)[b]
 }) : x)(function(x) {
   if (typeof require !== "undefined") return require.apply(this, arguments);
+  if (typeof requireCJS !== "undefined") return requireCJS.apply(this, arguments);
   throw Error('Dynamic require of "' + x + '" is not supported');
 });
 var __esm = (fn, res) => function __init() {
