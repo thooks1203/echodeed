@@ -26,10 +26,10 @@ if (fs.existsSync(envPath)) {
   console.log('[server-wrapper] No .env file found, using Railway environment variables');
 }
 
-// Ensure PORT is set (Railway provides this, but fallback to 5000 if not)
+// Ensure PORT is set (Railway provides this, but fallback to 8080 for Railway compatibility)
 if (!process.env.PORT) {
-  console.log('[server-wrapper] PORT not set in environment, defaulting to 5000');
-  process.env.PORT = '5000';
+  console.log('[server-wrapper] PORT not set in environment, defaulting to 8080 for Railway');
+  process.env.PORT = '8080';
 }
 
 console.log('[server-wrapper] Starting server with PORT:', process.env.PORT);
