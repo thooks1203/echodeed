@@ -1,2 +1,4 @@
 node_modules
 .env
+*.log
+email_retry_queue.json

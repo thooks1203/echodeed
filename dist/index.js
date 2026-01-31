@@ -20892,6 +20892,44 @@ async function registerRoutes(app2) {
   }
   await setupAuth(app2);
   app2.locals.storage = storage;
+  app2.get("/api/admin/db-diagnostics", async (req, res) => {
+    console.log("[db-diagnostics] Starting comprehensive DB diagnostics...");
+    const diagnostics = { timestamp: new Date().toISOString(), checks: {} };
+    try {
+      diagnostics.checks.load_db = "in-progress";
+      const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
+      diagnostics.checks.load_db = "success";
+      diagnostics.checks.load_schema = "in-progress";
+      const { schools: schools3 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
+      diagnostics.checks.load_schema = "success";
+      diagnostics.checks.raw_query_select_1 = "in-progress";
+      const rawResult = await db2.execute("SELECT 1 AS test");
+      diagnostics.checks.raw_query_select_1 = "success";
+      diagnostics.checks.count_schools = "in-progress";
+      const countResult = await db2.select().from(schools3);
+      diagnostics.checks.count_schools = "success";
+      diagnostics.schoolCount = Array.isArray(countResult) ? countResult.length : 0;
+      diagnostics.schoolSample = Array.isArray(countResult) && countResult.length > 0 ? countResult[0] : null;
+      res.json({ ok: true, ...diagnostics });
+    } catch (err) {
+      console.error("[db-diagnostics] Error:", err);
+      diagnostics.error = String(err);
+      diagnostics.stack = err && err.stack ? err.stack : void 0;
+      res.status(500).json({ ok: false, ...diagnostics });
+    }
+  });
+  app2.get("/api/admin/db-health", async (req, res) => {
+    console.log("[db-health] Checking DB connectivity...");
+    try {
+      const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
+      const { schools: schools3 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
+      const sample = await db2.select().from(schools3).limit(1);
+      res.json({ ok: true, message: "DB query succeeded", sampleCount: Array.isArray(sample) ? sample.length : 0 });
+    } catch (err) {
+      console.error("[db-health] Error:", err);
+      res.status(500).json({ ok: false, message: "DB query failed", error: String(err), stack: err && err.stack ? err.stack : void 0 });
+    }
+  });
   app2.post("/api/admin/init-demo-data", async (req, res) => {
     console.log("\u{1F527} Admin init-demo-data endpoint called");
     try {

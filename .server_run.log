@@ -25,3 +25,14 @@ Running in non-Replit environment - using demo authentication mode
 2:15:17 PM [express] POST /api/webhooks/resend 200 in 12ms :: {"ok":true}
 [RetryQueue] Attempting retry for manual-test-1
 [RetryQueue] Enqueued email: retry-1769886955776-ipiihm
+[RetryQueue] Attempting retry for manual-test-1
+[RetryQueue] Enqueued email: retry-1769887075517-8qb32a
+🧹 Rate limiter cleanup: 0 active records
+[RetryQueue] Attempting retry for manual-test-1
+[RetryQueue] Enqueued email: retry-1769887195419-hcmy03
+[RetryQueue] Attempting retry for manual-test-1
+[RetryQueue] Enqueued email: retry-1769887315618-p9jgf9
+[RetryQueue] Attempting retry for manual-test-1
+[RetryQueue] Enqueued email: retry-1769887435743-r27pif
+🧹 Rate limiter cleanup: 0 active records
+🧹 Rate limiter cleanup: 0 active records
