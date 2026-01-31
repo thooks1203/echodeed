@@ -1,141 +1,23 @@
 
-> rest-express@1.0.0 start
-> cross-env NODE_ENV=production node dist/index.js
+> echodeed-temp@1.0.0 start
+> cross-env NODE_ENV=production node server-wrapper.mjs
 
-9:31:07 AM [express] Starting EchoDeed application in production mode...
-9:31:07 AM [express] Checking required environment variables for production...
-9:31:07 AM [express] ✓ All required environment variables are present
-9:31:07 AM [express] Registering routes and setting up server...
+2:14:54 PM [express] Starting EchoDeed application in production mode...
+2:14:54 PM [express] Checking required environment variables for production...
+2:14:54 PM [express] ✓ All required environment variables are present
+2:14:54 PM [express] Registering routes and setting up server...
 Running in non-Replit environment - using demo authentication mode
+[RetryWorker] Started (interval ms): 60000
 💜 Starting Pulse Check Scheduler Service...
 ✅ Pulse Check Scheduler running - checking every minute
-9:31:07 AM [express] ✓ Routes registered successfully
-9:31:07 AM [express] Setting up static file serving...
-9:31:07 AM [express] ✓ Static file serving configured for production
-9:31:07 AM [express] Starting server on 0.0.0.0:5000...
-9:31:07 AM [express] ✓ EchoDeed application successfully started and serving on port 5000
-9:31:07 AM [express] ✓ Server is accessible at http://0.0.0.0:5000
-9:31:07 AM [express] ✓ Environment: production
-9:31:07 AM [express] ✓ No background schedulers required for high school FERPA compliance
-9:31:07 AM [express] ⚠️  Skipping sample data initialization in production
-9:31:07 AM [express] 💡 Use POST /api/admin/init-demo-data endpoint when needed
+2:14:54 PM [express] ✓ Routes registered successfully
+2:14:54 PM [express] Setting up static file serving...
+2:14:54 PM [express] ✓ Static file serving configured for production
+2:14:54 PM [express] Starting server on 0.0.0.0:5000...
+2:14:54 PM [express] ✓ EchoDeed application successfully started and serving on port 5000
+2:14:54 PM [express] ✓ Server is accessible at http://0.0.0.0:5000
+2:14:54 PM [express] ✓ Environment: production
+2:14:54 PM [express] ✓ No background schedulers required for high school FERPA compliance
+2:14:54 PM [express] ⚠️  Skipping sample data initialization in production
+2:14:54 PM [express] 💡 Use POST /api/admin/init-demo-data endpoint when needed
 ⚠️ Subscription plans initialization temporarily disabled due to schema mismatch
-🧹 Rate limiter cleanup: 0 active records
-9:37:11 AM [express] POST /api/admin/send-test-email 200 in 1059ms :: {"ok":true,"message":"Test ema…
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-10:43:58 AM [express] POST /api/webhooks/resend 200 in 84ms
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-10:52:09 AM [express] POST /api/webhooks/resend 200 in 254ms
-🧹 Rate limiter cleanup: 0 active records
-🧹 Rate limiter cleanup: 0 active records
-
-> echodeed-temp@1.0.0 start
-> cross-env NODE_ENV=production node dist/index.js
-
-file:///C:/Users/tavores/Documents/echodeed/dist/index.js:32314
-import fs from "fs";
-^^^^^^^^^
-
-SyntaxError: Identifier 'fs' has already been declared
-    at DefaultModuleLoader.moduleStrategy (node:internal/modules/esm/translators:116:18)
-    at DefaultModuleLoader.moduleProvider (node:internal/modules/esm/loader:205:14)
-    at async link (node:internal/modules/esm/module_job:67:21)
-
-Node.js v20.0.0
-
-> echodeed-temp@1.0.0 start
-> cross-env NODE_ENV=production node dist/index.js
-
-file:///C:/Users/tavores/Documents/echodeed/dist/index.js:32321
-import path from "path";
-^^^^^^^^^^^
-
-SyntaxError: Identifier 'path' has already been declared
-    at DefaultModuleLoader.moduleStrategy (node:internal/modules/esm/translators:116:18)
-    at DefaultModuleLoader.moduleProvider (node:internal/modules/esm/loader:205:14)
-    at async link (node:internal/modules/esm/module_job:67:21)
-
-Node.js v20.0.0
-
-> echodeed-temp@1.0.0 start
-> cross-env NODE_ENV=production node dist/index.js
-
-file:///C:/Users/tavores/Documents/echodeed/dist/index.js:32321
-import path from "path";
-^^^^^^^^^^^
-
-SyntaxError: Identifier 'path' has already been declared
-    at DefaultModuleLoader.moduleStrategy (node:internal/modules/esm/translators:116:18)
-    at DefaultModuleLoader.moduleProvider (node:internal/modules/esm/loader:205:14)
-    at async link (node:internal/modules/esm/module_job:67:21)
-
-Node.js v20.0.0
-
-> echodeed-temp@1.0.0 start
-> cross-env NODE_ENV=production node dist/index.js
-
-file:///C:/Users/tavores/Documents/echodeed/dist/index.js:9
-  throw Error('Dynamic require of "' + x + '" is not supported');
-        ^
-
-Error: Dynamic require of "fs" is not supported
-    at file:///C:/Users/tavores/Documents/echodeed/dist/index.js:9:9
-    at file:///C:/Users/tavores/Documents/echodeed/dist/index.js:2061:10
-    at ModuleJob.run (node:internal/modules/esm/module_job:192:25)
-
-Node.js v20.0.0
-
-> echodeed-temp@1.0.0 start
-> cross-env NODE_ENV=production node dist/index.js
-
-file:///C:/Users/tavores/Documents/echodeed/dist/index.js:9
-  throw Error('Dynamic require of "' + x + '" is not supported');
-        ^
-
-Error: Dynamic require of "fs" is not supported
-    at file:///C:/Users/tavores/Documents/echodeed/dist/index.js:9:9
-    at file:///C:/Users/tavores/Documents/echodeed/dist/index.js:2061:10
-    at ModuleJob.run (node:internal/modules/esm/module_job:192:25)
-
-Node.js v20.0.0
-
-> echodeed-temp@1.0.0 start
-> cross-env NODE_ENV=production node dist/index.js
-
-file:///C:/Users/tavores/Documents/echodeed/dist/index.js:9
-  throw Error('Dynamic require of "' + x + '" is not supported');
-        ^
-
-Error: Dynamic require of "fs" is not supported
-    at file:///C:/Users/tavores/Documents/echodeed/dist/index.js:9:9
-    at file:///C:/Users/tavores/Documents/echodeed/dist/index.js:2061:10
-    at ModuleJob.run (node:internal/modules/esm/module_job:192:25)
-
-Node.js v20.0.0
-
-> echodeed-temp@1.0.0 start
-> cross-env NODE_ENV=production node dist/index.js
-
-file:///C:/Users/tavores/Documents/echodeed/dist/index.js:9
-  throw Error('Dynamic require of "' + x + '" is not supported');
-        ^
-
-Error: Dynamic require of "fs" is not supported
-    at file:///C:/Users/tavores/Documents/echodeed/dist/index.js:9:9
-    at file:///C:/Users/tavores/Documents/echodeed/dist/index.js:2061:10
-    at ModuleJob.run (node:internal/modules/esm/module_job:192:25)
-
-Node.js v20.0.0

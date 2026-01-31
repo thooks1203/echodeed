@@ -178,11 +178,11 @@ __export(schema_exports, {
   usersRelations: () => usersRelations,
   wellnessCheckins: () => wellnessCheckins
 });
-var { sql } = __require("drizzle-orm");
-var { pgTable, text, varchar, timestamp, integer, jsonb, index, real, boolean, decimal } = __require("drizzle-orm/pg-core");
-var { createInsertSchema } = __require("drizzle-zod");
-var { relations } = __require("drizzle-orm");
-var { z } = __require("zod");
+import { sql } from "drizzle-orm";
+import { pgTable, text, varchar, timestamp, integer, jsonb, index, real, boolean, decimal } from "drizzle-orm/pg-core";
+import { createInsertSchema } from "drizzle-zod";
+import { relations } from "drizzle-orm";
+import { z } from "zod";
 var sessions, users, studentAccounts, kindnessPosts, kindnessCounter, userTokens2, brandChallenges, challengeCompletions, achievementBadges, userAchievements, heartReactions, echoReactions, supportPosts, supportResponses, helpfulReactions, userBadges, badgeDefinitions, wellnessCheckins, schools, principalBlogPosts, parentCommunityPosts, rewardPartners, rewardOffers, rewardRedemptions, communityServiceLogs, communityServiceVerifications, ipardPhaseEvents, reflectionSkills, reflectionTraits, communityServiceLogSkills, communityServiceLogTraits, tokenTransactions2, adminRewards2, adminRewardRedemptions2, characterExcellenceAwards2, studentServiceSummaries, coppaConsent, coppaConsentRequests, fundraisingCampaigns, fundraisingDonations, subscriptionPlans, surpriseGiveawayCampaigns, surpriseGiveawayWinners, summerChallenges, summerChallengeCompletions, familyChallenges, familyChallengeCompletions, schoolYearChallenges, schoolYearProgress, schoolYearChallengeEngagement, mentorBadges, mentorBadgeAwards, mentorTraining, userMentorTraining, mentorScenarios, mentorScenarioResponses, mentorConversations, mentorCertifications, mentorships, mentorActivities, mentorStats, privacyLogs, teacherRewards, teacherRewardCriteria, sponsors, sponsorAnalytics, corporateAccounts, corporateEmployees, corporateTeams, corporateChallenges, corporateAnalytics, parentalConsentRecords, parentalConsentRequests, usersRelations, schoolsRelations, kindnessPostsRelations, userTokensRelations, rewardPartnersRelations, rewardOffersRelations, rewardRedemptionsRelations, communityServiceLogsRelations, communityServiceVerificationsRelations, fundraisingCampaignsRelations, fundraisingDonationsRelations, surpriseGiveawayCampaignsRelations, surpriseGiveawayWinnersRelations, teacherRewardsRelations, sponsorsRelations, sponsorAnalyticsRelations, insertUserSchema, insertKindnessPostSchema, insertBrandChallengeSchema, insertSupportPostSchema, insertSupportResponseSchema, insertWellnessCheckinSchema, insertUserBadgeSchema, insertBadgeDefinitionSchema, insertSchoolSchema, insertStudentAccountSchema2, insertRewardPartnerSchema, insertRewardOfferSchema, insertCommunityServiceLogSchema, insertCommunityServiceVerificationSchema, insertStudentServiceSummarySchema, insertCoppaConsentSchema, insertFundraisingCampaignSchema, insertFundraisingDonationSchema, insertTeacherRewardSchema, insertTeacherRewardCriteriaSchema, insertSponsorSchema, insertSponsorAnalyticsSchema, insertUserTokensSchema, contentModerationQueue, behavioralTrendAnalytics, climateMetrics, serviceOpportunities, serviceOpportunitySignups, studentNotificationPreferences, studentNotifications, studentNotificationEvents, studentGoals2, schoolInclusionScores, schoolInclusionTrendDaily, insertContentModerationQueueSchema, insertBehavioralTrendAnalyticsSchema, insertClimateMetricsSchema, insertServiceOpportunitySchema, insertServiceOpportunitySignupSchema, insertStudentNotificationPreferencesSchema, insertStudentNotificationSchema, insertStudentNotificationEventSchema, insertStudentGoalSchema, insertPrincipalBlogPostSchema, insertParentCommunityPostSchema, insertSchoolInclusionScoreSchema, insertSchoolInclusionTrendDailySchema, insertIpardPhaseEventSchema, insertReflectionSkillSchema, insertReflectionTraitSchema, insertCommunityServiceLogSkillSchema, insertCommunityServiceLogTraitSchema, insertTokenTransactionSchema, insertAdminRewardSchema, insertAdminRewardRedemptionSchema, insertCharacterExcellenceAwardSchema, pulseChecks, insertPulseCheckSchema, crisisAlerts, insertCrisisAlertSchema;
 var init_schema = __esm({
   "shared/schema.ts"() {
@@ -2058,9 +2058,9 @@ var init_schema = __esm({
   }
 });
 // Email retry queue and Resend webhook helpers
-var fs = __require("fs");
-var path = __require("path");
-var crypto = __require("crypto");
+import fs from "fs";
+import path from "path";
+import crypto from "crypto";
 var RETRY_QUEUE_PATH = path.join(process.cwd(), "email_retry_queue.json");
 function loadRetryQueue() {
   try {
@@ -2149,9 +2149,9 @@ __export(db_exports, {
   db: () => db,
   pool: () => pool
 });
-var { Pool, neonConfig } = __require("@neondatabase/serverless");
-var { drizzle } = __require("drizzle-orm/neon-serverless");
-var ws = __require("ws");
+import { Pool, neonConfig } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-serverless";
+import ws from "ws";
 var pool, db;
 var init_db = __esm({
   "server/db.ts"() {
@@ -2180,7 +2180,7 @@ var cryptoSecurity_exports = {};
 __export(cryptoSecurity_exports, {
   CryptoSecurity: () => CryptoSecurity
 });
-var { createHash, timingSafeEqual } = __require("crypto");
+import { createHash, timingSafeEqual } from "crypto";
 var CryptoSecurity;
 var init_cryptoSecurity = __esm({
   "server/utils/cryptoSecurity.ts"() {
@@ -2765,7 +2765,7 @@ var init_demoSeed = __esm({
 });
 
 // server/storage.ts
-var { eq, sql: sql2, desc, and: and2, count, or, gte, lte, isNotNull, isNull, inArray, gt, getTableColumns } = __require("drizzle-orm");
+import { eq, sql as sql2, desc, and as and2, count, or, gte, lte, isNotNull, isNull, inArray, gt, getTableColumns } from "drizzle-orm";
 var DatabaseStorage, storage;
 var init_storage = __esm({
   "server/storage.ts"() {
@@ -4621,7 +4621,7 @@ var init_storage = __esm({
       }
       // 🛡️ ENHANCED COPPA CONSENT OPERATIONS - PRODUCTION COMPLIANCE
       async createConsentRecord(record) {
-        const { nanoid: nanoid4 } = await import("nanoid");
+        const { nanoid: nanoid4 } = __require("nanoid");
         const verificationCode = nanoid4(25);
         const enhancedRecord = {
           ...record,
@@ -5078,7 +5078,7 @@ var init_storage = __esm({
         return await query.orderBy(parentalConsentRecords.validUntil);
       }
       async createRenewalRequestFromConsent(consentId, snapshot, code) {
-        const { nanoid: nanoid4 } = await import("nanoid");
+        const { nanoid: nanoid4 } = __require("nanoid");
         const originalConsent = await this.getConsentRecord(consentId);
         if (!originalConsent) {
           throw new Error("Original consent record not found");
@@ -7328,7 +7328,7 @@ var emailService_exports = {};
 __export(emailService_exports, {
   emailService: () => emailService
 });
-var nodemailer = __require("nodemailer");
+import nodemailer from "nodemailer";
 var NodemailerEmailService, emailService;
 var init_emailService = __esm({
   "server/services/emailService.ts"() {
@@ -9158,7 +9158,7 @@ __export(schoolConfigService_exports, {
   SchoolConfigService: () => SchoolConfigService,
   schoolConfigService: () => schoolConfigService
 });
-var { eq: eq4 } = __require("drizzle-orm");
+import { eq as eq4 } from "drizzle-orm";
 var SchoolConfigService, schoolConfigService;
 var init_schoolConfigService = __esm({
   "server/services/schoolConfigService.ts"() {
@@ -9224,7 +9224,7 @@ __export(badgeService_exports, {
   BadgeService: () => BadgeService,
   badgeService: () => badgeService
 });
-var { eq: eq5, sql: sql5, and: and5, gte: gte3, count: count2 } = __require("drizzle-orm");
+import { eq as eq5, sql as sql5, and as and5, gte as gte3, count as count2 } from "drizzle-orm";
 var BADGE_DEFINITIONS, BadgeService, badgeService;
 var init_badgeService = __esm({
   "server/badgeService.ts"() {
@@ -10449,7 +10449,7 @@ __export(summerChallengeEngine_exports, {
   SummerChallengeEngine: () => SummerChallengeEngine,
   summerChallengeEngine: () => summerChallengeEngine
 });
-var { eq: eq6, and: and6 } = __require("drizzle-orm");
+import { eq as eq6, and as and6 } from "drizzle-orm";
 var SummerChallengeEngine, summerChallengeEngine;
 var init_summerChallengeEngine = __esm({
   "server/services/summerChallengeEngine.ts"() {
@@ -11003,7 +11003,7 @@ __export(familyChallengeEngine_exports, {
   FamilyChallengeEngine: () => FamilyChallengeEngine,
   familyChallengeEngine: () => familyChallengeEngine
 });
-var { eq: eq7, and: and7 } = __require("drizzle-orm");
+import { eq as eq7, and as and7 } from "drizzle-orm";
 var FamilyChallengeEngine, familyChallengeEngine;
 var init_familyChallengeEngine = __esm({
   "server/services/familyChallengeEngine.ts"() {
@@ -11536,7 +11536,7 @@ __export(schoolYearChallengeEngine_exports, {
   SchoolYearChallengeEngine: () => SchoolYearChallengeEngine,
   schoolYearChallengeEngine: () => schoolYearChallengeEngine
 });
-var { eq: eq8, and: and8 } = __require("drizzle-orm");
+import { eq as eq8, and as and8 } from "drizzle-orm";
 var SchoolYearChallengeEngine, schoolYearChallengeEngine;
 var init_schoolYearChallengeEngine = __esm({
   "server/services/schoolYearChallengeEngine.ts"() {
@@ -11817,7 +11817,7 @@ __export(communityServiceEngine_exports, {
   CommunityServiceEngine: () => CommunityServiceEngine,
   communityServiceEngine: () => communityServiceEngine
 });
-var { eq: eq9, and: and9, sql: sql7, desc: desc2 } = __require("drizzle-orm");
+import { eq as eq9, and as and9, sql as sql7, desc as desc2 } from "drizzle-orm";
 var CommunityServiceEngine, communityServiceEngine;
 var init_communityServiceEngine = __esm({
   "server/services/communityServiceEngine.ts"() {
@@ -12191,7 +12191,7 @@ __export(ipardService_exports, {
   ipardService: () => ipardService,
   tagServiceLogReflections: () => tagServiceLogReflections
 });
-var { eq: eq10, and: and10 } = __require("drizzle-orm");
+import { eq as eq10, and as and10 } from "drizzle-orm";
 async function awardApprovalFormBonus(serviceLogId, userId) {
   return await db.transaction(async (tx) => {
     const [serviceLog] = await tx.select().from(communityServiceLogs).where(and10(
@@ -12918,7 +12918,7 @@ __export(inclusionScoreCalculator_exports, {
   getInclusionScoreWithCache: () => getInclusionScoreWithCache,
   saveDailySnapshot: () => saveDailySnapshot
 });
-var { eq: eq11, and: and11, gte: gte4, sql: sql8, desc: desc3 } = __require("drizzle-orm");
+import { eq as eq11, and as and11, gte as gte4, sql as sql8, desc as desc3 } from "drizzle-orm";
 async function calculateInclusionScore(schoolId, daysLookback = 30) {
   try {
     const lookbackDate = /* @__PURE__ */ new Date();
@@ -13136,7 +13136,7 @@ var mentorSampleData_exports = {};
 __export(mentorSampleData_exports, {
   initializeMentorSampleData: () => initializeMentorSampleData
 });
-var { eq: eq13, and: and12 } = __require("drizzle-orm");
+import { eq as eq13, and as and12 } from "drizzle-orm";
 async function initializeMentorSampleData() {
   console.log("\u{1F393} Initializing mentor sample data...");
   try {
@@ -14090,7 +14090,7 @@ var AIAnalyticsService = class {
     if (!process.env.OPENAI_API_KEY) return this.getFallbackAnalysis(content);
     try {
       if (!openai) {
-        const OpenAIMod = await import("openai");
+        const OpenAIMod = __require("openai");
         const OpenAIClass = OpenAIMod.default ?? OpenAIMod;
         openai = new OpenAIClass({ apiKey: process.env.OPENAI_API_KEY });
       }
@@ -14158,7 +14158,7 @@ Respond in JSON format only.`
         riskFactors: []
       };
       if (!openai) {
-        const OpenAIMod = await import("openai");
+        const OpenAIMod = __require("openai");
         const OpenAIClass = OpenAIMod.default ?? OpenAIMod;
         openai = new OpenAIClass({ apiKey: process.env.OPENAI_API_KEY });
       }
@@ -20894,7 +20894,7 @@ async function registerRoutes(app2) {
     try {
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { users: users2, userTokens: userTokens3, communityServiceLogs: communityServiceLogs2, schools: schools3 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq14 } = await import("drizzle-orm");
+      const { eq: eq14 } = __require("drizzle-orm");
       console.log("\u{1F4CA} Checking if Eastern Guilford HS exists...");
       const existingSchools = await db2.select().from(schools3).where(eq14(schools3.id, "bc016cad-fa89-44fb-aab0-76f82c574f78"));
       if (existingSchools.length === 0) {
@@ -21230,7 +21230,7 @@ async function registerRoutes(app2) {
     try {
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { users: users2, userTokens: userTokens3, communityServiceLogs: communityServiceLogs2, studentServiceSummaries: studentServiceSummaries3 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq14 } = await import("drizzle-orm");
+      const { eq: eq14 } = __require("drizzle-orm");
       const studentUserId = "student-001";
       const schoolId = "bc016cad-fa89-44fb-aab0-76f82c574f78";
       await db2.delete(communityServiceLogs2).where(eq14(communityServiceLogs2.userId, studentUserId));
@@ -27767,7 +27767,7 @@ async function registerRoutes(app2) {
         }
         if (consentDecision === "approve") {
           const signatureTimestamp = /* @__PURE__ */ new Date();
-          const { nanoid: nanoid4 } = await import("nanoid");
+          const { nanoid: nanoid4 } = __require("nanoid");
           const signatureId = nanoid4(25);
           const signaturePayload = JSON.stringify({
             renewalId: renewalRecord.id,
@@ -27777,7 +27777,7 @@ async function registerRoutes(app2) {
             ipAddress,
             signatureId
           });
-          const crypto = await import("crypto");
+          const crypto = __require("crypto");
           const digitalSignatureHash = crypto.createHash("sha256").update(signaturePayload + digitalSignature + process.env.CONSENT_SIGNATURE_SECRET).digest("hex");
           const signatureMetadata = {
             signatureId,
@@ -28160,7 +28160,7 @@ async function registerRoutes(app2) {
               (r) => r.supersedesConsentId === consent.id && r.renewalStatus
             );
             if (!hasExistingRenewal) {
-              const { nanoid: nanoid4 } = await import("nanoid");
+              const { nanoid: nanoid4 } = __require("nanoid");
               const renewalCode = nanoid4(32);
               const parentSnapshot = {
                 parentName: consent.parentName,
@@ -28486,7 +28486,7 @@ async function registerRoutes(app2) {
         });
       }
       const claimCode = await storage.generateUniqueClaimCode();
-      const crypto = await import("crypto");
+      const crypto = __require("crypto");
       const claimCodeHash = crypto.createHash("sha256").update(claimCode).digest("hex");
       const newClaimCode = await storage.createTeacherClaimCode({
         claimCode,
@@ -28781,7 +28781,7 @@ async function registerRoutes(app2) {
     try {
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { communityServiceLogs: communityServiceLogs2, studentServiceSummaries: studentServiceSummaries3 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq14 } = await import("drizzle-orm");
+      const { eq: eq14 } = __require("drizzle-orm");
       const logs = await db2.select().from(communityServiceLogs2).where(eq14(communityServiceLogs2.userId, "student-001"));
       const summary = await db2.select().from(studentServiceSummaries3).where(eq14(studentServiceSummaries3.userId, "student-001"));
       res.json({
@@ -28806,7 +28806,7 @@ async function registerRoutes(app2) {
     try {
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { communityServiceLogs: communityServiceLogs2, users: users2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq14, and: and13 } = await import("drizzle-orm");
+      const { eq: eq14, and: and13 } = __require("drizzle-orm");
       const schoolId = "bc016cad-fa89-44fb-aab0-76f82c574f78";
       const results = await db2.select({
         serviceLog: communityServiceLogs2,
@@ -28856,7 +28856,7 @@ async function registerRoutes(app2) {
     try {
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { communityServiceLogs: communityServiceLogs2, studentServiceSummaries: studentServiceSummaries3 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq14 } = await import("drizzle-orm");
+      const { eq: eq14 } = __require("drizzle-orm");
       const currentLogs = await db2.select().from(communityServiceLogs2).where(eq14(communityServiceLogs2.userId, "student-001"));
       const pendingCount = currentLogs.filter((log2) => log2.verificationStatus === "pending").length;
       if (pendingCount >= 3) {
@@ -30226,7 +30226,7 @@ async function registerRoutes(app2) {
       const { category, status, featured } = req.query;
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { serviceOpportunities: serviceOpportunities2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { and: and13, eq: eq14 } = await import("drizzle-orm");
+      const { and: and13, eq: eq14 } = __require("drizzle-orm");
       const conditions = [];
       if (category) conditions.push(eq14(serviceOpportunities2.category, category));
       if (status) conditions.push(eq14(serviceOpportunities2.status, status));
@@ -30261,7 +30261,7 @@ async function registerRoutes(app2) {
       const { id } = req.params;
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { serviceOpportunities: serviceOpportunities2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq14 } = await import("drizzle-orm");
+      const { eq: eq14 } = __require("drizzle-orm");
       const opportunity = await db2.select().from(serviceOpportunities2).where(eq14(serviceOpportunities2.id, id)).limit(1);
       if (opportunity.length === 0) {
         return res.status(404).json({ error: "Opportunity not found" });
@@ -30293,7 +30293,7 @@ async function registerRoutes(app2) {
       const { id } = req.params;
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { serviceOpportunities: serviceOpportunities2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq14 } = await import("drizzle-orm");
+      const { eq: eq14 } = __require("drizzle-orm");
       const updated = await db2.update(serviceOpportunities2).set({
         ...req.body,
         updatedBy: req.teacherContext?.userId || "unknown",
@@ -30313,7 +30313,7 @@ async function registerRoutes(app2) {
       const { id } = req.params;
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { serviceOpportunities: serviceOpportunities2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq14 } = await import("drizzle-orm");
+      const { eq: eq14 } = __require("drizzle-orm");
       const deleted = await db2.delete(serviceOpportunities2).where(eq14(serviceOpportunities2.id, id)).returning();
       if (deleted.length === 0) {
         return res.status(404).json({ error: "Opportunity not found" });
@@ -30330,7 +30330,7 @@ async function registerRoutes(app2) {
       const userId = req.user.claims.sub;
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { serviceOpportunitySignups: serviceOpportunitySignups2, serviceOpportunities: serviceOpportunities2, insertServiceOpportunitySignupSchema: insertServiceOpportunitySignupSchema2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq14 } = await import("drizzle-orm");
+      const { eq: eq14 } = __require("drizzle-orm");
       const opportunity = await db2.select().from(serviceOpportunities2).where(eq14(serviceOpportunities2.id, opportunityId)).limit(1);
       if (opportunity.length === 0) {
         return res.status(404).json({ error: "Opportunity not found" });
@@ -30360,7 +30360,7 @@ async function registerRoutes(app2) {
       const userId = req.user.claims.sub;
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { serviceOpportunitySignups: serviceOpportunitySignups2, serviceOpportunities: serviceOpportunities2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq14 } = await import("drizzle-orm");
+      const { eq: eq14 } = __require("drizzle-orm");
       const signups = await db2.select({
         signup: serviceOpportunitySignups2,
         opportunity: serviceOpportunities2
@@ -30377,7 +30377,7 @@ async function registerRoutes(app2) {
       const userId = req.user.claims.sub;
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { serviceOpportunitySignups: serviceOpportunitySignups2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq14, and: and13 } = await import("drizzle-orm");
+      const { eq: eq14, and: and13 } = __require("drizzle-orm");
       const updated = await db2.update(serviceOpportunitySignups2).set({
         ...req.body,
         updatedAt: /* @__PURE__ */ new Date()
@@ -30399,7 +30399,7 @@ async function registerRoutes(app2) {
       const { category, schoolId } = req.query;
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { principalBlogPosts: principalBlogPosts2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { and: and13, eq: eq14, desc: desc4 } = await import("drizzle-orm");
+      const { and: and13, eq: eq14, desc: desc4 } = __require("drizzle-orm");
       const conditions = [eq14(principalBlogPosts2.isPublished, 1)];
       if (category) conditions.push(eq14(principalBlogPosts2.category, category));
       if (schoolId) conditions.push(eq14(principalBlogPosts2.schoolId, schoolId));
@@ -30444,7 +30444,7 @@ async function registerRoutes(app2) {
       const { category, schoolId } = req.query;
       const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { parentCommunityPosts: parentCommunityPosts2, users: users2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { and: and13, eq: eq14, desc: desc4 } = await import("drizzle-orm");
+      const { and: and13, eq: eq14, desc: desc4 } = __require("drizzle-orm");
       const conditions = [eq14(parentCommunityPosts2.isApproved, 1)];
       if (category) conditions.push(eq14(parentCommunityPosts2.category, category));
       if (schoolId) conditions.push(eq14(parentCommunityPosts2.schoolId, schoolId));
@@ -32310,23 +32310,19 @@ function getDefaultGovernanceReport() {
 }
 
 // server/vite.ts
-var express = __require("express");
-var { createServer: createViteServer, createLogger } = __require("vite");
+import express from "express";
+import { createServer as createViteServer, createLogger } from "vite";
 
 // vite.config.ts
-var { defineConfig } = __require("vite");
-var react = __require("@vitejs/plugin-react");
-var runtimeErrorOverlay = __require("@replit/vite-plugin-runtime-error-modal");
-var __dirname = path.dirname(__require("url").fileURLToPath(import.meta.url));
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
+import runtimeErrorOverlay from "@replit/vite-plugin-runtime-error-modal";
+var __dirname = typeof __dirname !== "undefined" ? __dirname : ".";
 var vite_config_default = defineConfig({
   plugins: [
     react(),
     runtimeErrorOverlay(),
-    ...process.env.NODE_ENV !== "production" && process.env.REPL_ID !== void 0 ? [
-      await import("@replit/vite-plugin-cartographer").then(
-        (m) => m.cartographer()
-      )
-    ] : []
+    ...process.env.NODE_ENV !== "production" && process.env.REPL_ID !== void 0 ? [] : []
   ],
   resolve: {
     alias: {
@@ -32349,9 +32345,9 @@ var vite_config_default = defineConfig({
 });
 
 // server/vite.ts
-var { nanoid: nanoid3 } = __require("nanoid");
+import { nanoid as nanoid3 } from "nanoid";
 var viteLogger = createLogger();
-var __dirname2 = path.dirname(__require("url").fileURLToPath(import.meta.url));
+var __dirname2 = typeof __dirname2 !== "undefined" ? __dirname2 : ".";
 function log(message, source = "express") {
   const formattedTime = (/* @__PURE__ */ new Date()).toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -32399,7 +32395,7 @@ async function setupVite(app2, server) {
   });
 }
 function serveStatic(app2) {
-  const distPath = path.resolve(__dirname2, "public");
+  const distPath = path.resolve("./dist/public");
   if (!fs.existsSync(distPath)) {
     throw new Error(
       `Could not find the build directory: ${distPath}, make sure to build the client first`
@@ -32434,7 +32430,7 @@ async function initializeSampleData() {
     try {
       log("\u{1F4E2} Setting up student notification system...");
       const { db: db3 } = await Promise.resolve().then(() => (init_db(), db_exports));
-      const { sql: sql10 } = await import("drizzle-orm");
+      const { sql: sql10 } = __require("drizzle-orm");
       await db3.execute(sql10`
         CREATE TABLE IF NOT EXISTS student_notification_preferences (
           id VARCHAR PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -32463,7 +32459,7 @@ async function initializeSampleData() {
     try {
       log("\u{1F3EB} Adding school-level configuration columns...");
       const { db: db3 } = await Promise.resolve().then(() => (init_db(), db_exports));
-      const { sql: sql10 } = await import("drizzle-orm");
+      const { sql: sql10 } = __require("drizzle-orm");
       await db3.execute(sql10`
         ALTER TABLE corporate_accounts 
         ADD COLUMN IF NOT EXISTS school_level VARCHAR(20) NOT NULL DEFAULT 'high_school'
@@ -32480,7 +32476,7 @@ async function initializeSampleData() {
       log("\u{1F510} Updating schools with enrollment codes...");
       const { db: db3 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { corporateAccounts: corporateAccounts2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq15, isNull: isNull2 } = await import("drizzle-orm");
+      const { eq: eq15, isNull: isNull2 } = __require("drizzle-orm");
       await db3.update(corporateAccounts2).set({ enrollmentCode: "EGHS-2025" }).where(eq15(corporateAccounts2.companyName, "Eastern Guilford High School"));
       log("\u2713 Updated Eastern Guilford High School with code: EGHS-2025");
       const schoolCodes = [
@@ -32827,7 +32823,7 @@ async function initializeSampleData() {
     const actualPostCount = allPostsAfterCreation.length;
     const { db: db2 } = await Promise.resolve().then(() => (init_db(), db_exports));
     const { kindnessCounter: kindnessCounter2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-    const { eq: eq14 } = await import("drizzle-orm");
+    const { eq: eq14 } = __require("drizzle-orm");
     await db2.update(kindnessCounter2).set({ count: actualPostCount, updatedAt: /* @__PURE__ */ new Date() }).where(eq14(kindnessCounter2.id, "global"));
     log(`\u2713 Added ${samplePosts.length} sample posts`);
     log(`\u2705 Global kindness counter synchronized to ${actualPostCount} (matches total posts)`);
@@ -32835,7 +32831,7 @@ async function initializeSampleData() {
     try {
       const { db: db3 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { users: users2, userTokens: userTokens3, communityServiceLogs: communityServiceLogs2, studentServiceSummaries: studentServiceSummaries3, communityServiceVerifications: communityServiceVerifications3 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq15, inArray: inArray2 } = await import("drizzle-orm");
+      const { eq: eq15, inArray: inArray2 } = __require("drizzle-orm");
       await storage.upsertUser({
         id: "student-001",
         email: "sofia.rodriguez@easterngs.gcsnc.com",
@@ -33029,7 +33025,7 @@ async function initializeSampleData() {
       log("\u{1F91D} Initializing Kindness Connect service opportunities...");
       const { db: db3 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { serviceOpportunities: serviceOpportunities2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { count: count3 } = await import("drizzle-orm");
+      const { count: count3 } = __require("drizzle-orm");
       const existingOpportunities = await db3.select({ count: count3() }).from(serviceOpportunities2);
       const oppCount = existingOpportunities[0]?.count || 0;
       if (oppCount === 0) {
@@ -33287,7 +33283,7 @@ async function initializeSampleData() {
       log("\u{1F381} Initializing admin school rewards...");
       const { db: db3 } = await Promise.resolve().then(() => (init_db(), db_exports));
       const { adminRewards: adminRewards3, users: users2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { count: count3, eq: eq15 } = await import("drizzle-orm");
+      const { count: count3, eq: eq15 } = __require("drizzle-orm");
       const existingRewards = await db3.select({ count: count3() }).from(adminRewards3);
       const rewardCount = existingRewards[0]?.count || 0;
       if (rewardCount === 0) {
@@ -33519,7 +33515,7 @@ async function initializeSampleData() {
     try {
       log(`\u{1F4DD} Initializing Principal's Corner blog posts...`);
       const { principalBlogPosts: principalBlogPosts2, users: users2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq15 } = await import("drizzle-orm");
+      const { eq: eq15 } = __require("drizzle-orm");
       const drHarrisId = "admin-dr-harris";
       const existingAdmin = await db2.select().from(users2).where(eq15(users2.id, drHarrisId)).limit(1);
       if (existingAdmin.length === 0) {
@@ -33769,7 +33765,7 @@ Principal, Eastern Guilford High School`,
     try {
       log(`\u{1F46A} Initializing Parent Community posts...`);
       const { parentCommunityPosts: parentCommunityPosts2, users: users2 } = await Promise.resolve().then(() => (init_schema(), schema_exports));
-      const { eq: eq15 } = await import("drizzle-orm");
+      const { eq: eq15 } = __require("drizzle-orm");
       const existingCommunityPosts = await db2.select().from(parentCommunityPosts2).limit(1);
       if (existingCommunityPosts.length === 0) {
         const parentUsers = [
@@ -35121,3 +35117,5 @@ app.use((req, res, next) => {
     process.exit(1);
   }
 })();
+
+

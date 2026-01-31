@@ -8,8 +8,8 @@
       "body": "This is a test produced by the retry queue.",
       "isDigest": false
     },
-    "attempts": 0,
-    "lastAttemptAt": null,
-    "lastError": null
+    "attempts": 1,
+    "lastAttemptAt": "2026-01-31T19:15:55.778Z",
+    "lastError": "retry-failed"
   }
 ]
