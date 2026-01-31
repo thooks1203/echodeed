@@ -30503,7 +30503,16 @@ async function registerRoutes(app2) {
       res.status(400).json({ message: "Failed to create fundraiser", error: error.message });
     }
   });
-  app2.get("/api/fundraisers/active/:schoolName?", async (req, res) => {
+  app2.get("/api/fundraisers/active", async (req, res) => {
+    try {
+      const fundraisers = await storage.getActiveFundraisers();
+      res.json(fundraisers);
+    } catch (error) {
+      console.error("Error getting fundraisers:", error);
+      res.status(500).json({ message: "Failed to get fundraisers" });
+    }
+  });
+  app2.get("/api/fundraisers/active/:schoolName", async (req, res) => {
     try {
       const { schoolName } = req.params;
       const fundraisers = await storage.getActiveFundraisers(schoolName);
