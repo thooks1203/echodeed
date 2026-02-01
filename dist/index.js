@@ -21523,6 +21523,46 @@ async function registerRoutes(app2) {
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
+  app2.get("/api/students", isAuthenticated, async (req, res) => {
+    try {
+      const demoStudents = [
+        {
+          id: "student-001",
+          name: "Sofia Rodriguez",
+          email: "sofia.rodriguez@easterngs.gcsnc.com",
+          grade: "10",
+          status: "active",
+          kindnessActsCount: 12,
+          tokensEarned: 450,
+          lastActivityDate: new Date().toISOString()
+        },
+        {
+          id: "student-002",
+          name: "James Chen",
+          email: "james.chen@easterngs.gcsnc.com",
+          grade: "10",
+          status: "active",
+          kindnessActsCount: 8,
+          tokensEarned: 325,
+          lastActivityDate: new Date().toISOString()
+        },
+        {
+          id: "student-003",
+          name: "Aisha Thompson",
+          email: "aisha.thompson@easterngs.gcsnc.com",
+          grade: "11",
+          status: "active",
+          kindnessActsCount: 15,
+          tokensEarned: 625,
+          lastActivityDate: new Date().toISOString()
+        }
+      ];
+      res.json({ students: demoStudents });
+    } catch (error) {
+      console.error("Error fetching students:", error);
+      res.status(500).json({ message: "Failed to fetch students" });
+    }
+  });
   app2.get("/api/school-level/config", isAuthenticated, async (req, res) => {
     try {
       const { schoolConfigService: schoolConfigService2 } = await Promise.resolve().then(() => (init_schoolConfigService(), schoolConfigService_exports));
