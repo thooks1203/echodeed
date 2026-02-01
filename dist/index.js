@@ -21455,19 +21455,38 @@ async function registerRoutes(app2) {
       if (!userId) {
         return res.status(401).json({ message: "Unauthorized" });
       }
-      const user = await storage.getUser(userId);
-      if (user) {
-        const name = user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.firstName || user.lastName || "User";
+      try {
+        const user = await storage.getUser(userId);
+        if (user) {
+          const name = user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.firstName || user.lastName || "User";
+          res.json({
+            ...user,
+            name,
+            authenticated: true
+          });
+          return;
+        }
+      } catch (dbError) {
+        console.error("DB error fetching user:", dbError);
+      }
+      if (demoUser) {
+        const name = demoUser.name;
         res.json({
-          ...user,
+          id: demoUser.id,
+          email: demoUser.email,
+          firstName: demoUser.name.split(" ")[0],
+          lastName: demoUser.name.split(" ").slice(1).join(" ") || "User",
+          schoolRole: demoUser.schoolRole,
+          schoolId: demoUser.schoolId,
           name,
-          authenticated: true
+          authenticated: true,
+          isDemoUser: true
         });
       } else {
         res.status(404).json({ message: "User not found" });
       }
     } catch (error) {
-      console.error("Error fetching current user:", error);
+      console.error("Error in /api/auth/me:", error);
       res.status(500).json({ message: "Failed to fetch user" });
     }
   });
