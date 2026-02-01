@@ -18685,6 +18685,59 @@ async function setupAuth(app2) {
     app2.get("/api/login", (req, res) => {
       res.redirect("/demo-login");
     });
+    app2.get("/demo-login", (req, res) => {
+      const sessionId = Buffer.from(`demo-${Date.now()}-${Math.random()}`).toString("base64");
+      req.headers["x-session-id"] = sessionId;
+      const demoRole = req.query.role || "student";
+      let demoUser;
+      if (demoRole === "teacher") {
+        demoUser = {
+          id: "teacher-001",
+          name: "Ms. Sarah Wilson",
+          email: "sarah.wilson@school.edu",
+          role: "teacher",
+          schoolRole: "teacher",
+          schoolId: "bc016cad-fa89-44fb-aab0-76f82c574f78"
+        };
+      } else {
+        demoUser = DEMO_USER_STUDENT;
+      }
+      const nameParts = demoUser.name.split(" ");
+      const firstName = nameParts.slice(0, -1).join(" ");
+      const lastName = nameParts[nameParts.length - 1];
+      req.user = {
+        claims: {
+          sub: demoUser.id,
+          email: demoUser.email,
+          first_name: firstName,
+          last_name: lastName,
+          role: demoUser.role,
+          schoolRole: demoUser.schoolRole,
+          schoolId: demoUser.schoolId,
+          grade: demoUser.grade
+        },
+        expires_at: Math.floor(Date.now() / 1e3) + 86400
+      };
+      try {
+        storage.upsertUser({
+          id: demoUser.id,
+          email: demoUser.email,
+          firstName,
+          lastName,
+          schoolRole: demoUser.schoolRole,
+          schoolId: demoUser.schoolId
+        }).catch((e) => console.error("Demo user creation failed:", e));
+      } catch (e) {
+        console.error("Demo user creation error:", e);
+      }
+      req.login(req.user, (err) => {
+        if (err) {
+          console.error("Demo login error:", err);
+          return res.status(500).json({ error: "Login failed" });
+        }
+        res.redirect(demoRole === "teacher" ? "/app/teachers" : "/app/students");
+      });
+    });
     app2.get("/api/logout", (req, res) => {
       req.logout(() => {
         res.redirect("/");
@@ -21351,6 +21404,71 @@ async function registerRoutes(app2) {
     } catch (error) {
       console.error("Seed failed:", error);
       res.status(500).json({ success: false, error: error.message });
+    }
+  });
+  app2.get("/api/auth/me", async (req, res) => {
+    try {
+      const isDemoMode = process.env.NODE_ENV === "development" || process.env.DEMO_MODE === "true";
+      let userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId && isDemoMode) {
+        let demoUser;
+        const demoRole = req.query.role || "student";
+        if (demoRole === "teacher") {
+          demoUser = {
+            id: "teacher-001",
+            name: "Ms. Sarah Wilson",
+            email: "sarah.wilson@school.edu",
+            role: "teacher",
+            schoolRole: "teacher",
+            schoolId: "bc016cad-fa89-44fb-aab0-76f82c574f78"
+          };
+        } else {
+          demoUser = DEMO_USER_STUDENT;
+        }
+        userId = demoUser.id;
+        req.user = {
+          claims: {
+            sub: demoUser.id,
+            email: demoUser.email,
+            first_name: demoUser.name.split(" ")[0],
+            last_name: demoUser.name.split(" ")[1],
+            role: demoUser.role,
+            schoolRole: demoUser.schoolRole,
+            schoolId: demoUser.schoolId,
+            grade: demoUser.grade
+          },
+          expires_at: Math.floor(Date.now() / 1e3) + 86400
+        };
+        try {
+          await storage.upsertUser({
+            id: demoUser.id,
+            email: demoUser.email,
+            firstName: demoUser.name.split(" ")[0],
+            lastName: demoUser.name.split(" ")[1],
+            schoolRole: demoUser.schoolRole,
+            schoolId: demoUser.schoolId
+          });
+        } catch (e) {
+          console.error("Demo user upsert failed:", e);
+        }
+      }
+      if (!userId) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+      const user = await storage.getUser(userId);
+      if (user) {
+        const name = user.firstName && user.lastName ? `${user.firstName} ${user.lastName}` : user.firstName || user.lastName || "User";
+        res.json({
+          ...user,
+          name,
+          authenticated: true
+        });
+      } else {
+        res.status(404).json({ message: "User not found" });
+      }
+    } catch (error) {
+      console.error("Error fetching current user:", error);
+      res.status(500).json({ message: "Failed to fetch user" });
     }
   });
   app2.get("/api/auth/user", isAuthenticated, async (req, res) => {
