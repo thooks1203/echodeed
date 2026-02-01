@@ -21410,7 +21410,7 @@ async function registerRoutes(app2) {
     try {
       const isDemoMode = process.env.NODE_ENV === "development" || process.env.DEMO_MODE === "true";
       let userId = req.user?.claims?.sub || req.user?.id;
-      if (!userId && isDemoMode) {
+      if (!userId) {
         let demoUser;
         const demoRole = req.query.role || "student";
         if (demoRole === "teacher") {
@@ -21431,7 +21431,7 @@ async function registerRoutes(app2) {
             sub: demoUser.id,
             email: demoUser.email,
             first_name: demoUser.name.split(" ")[0],
-            last_name: demoUser.name.split(" ")[1],
+            last_name: demoUser.name.split(" ")[1] || "",
             role: demoUser.role,
             schoolRole: demoUser.schoolRole,
             schoolId: demoUser.schoolId,
@@ -21444,7 +21444,7 @@ async function registerRoutes(app2) {
             id: demoUser.id,
             email: demoUser.email,
             firstName: demoUser.name.split(" ")[0],
-            lastName: demoUser.name.split(" ")[1],
+            lastName: demoUser.name.split(" ").slice(1).join(" ") || "User",
             schoolRole: demoUser.schoolRole,
             schoolId: demoUser.schoolId
           });
