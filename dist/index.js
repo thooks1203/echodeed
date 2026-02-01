@@ -21410,8 +21410,8 @@ async function registerRoutes(app2) {
     try {
       const isDemoMode = process.env.NODE_ENV === "development" || process.env.DEMO_MODE === "true";
       let userId = req.user?.claims?.sub || req.user?.id;
+      let demoUser = null;
       if (!userId) {
-        let demoUser;
         const demoRole = req.query.role || "student";
         if (demoRole === "teacher") {
           demoUser = {
@@ -21447,9 +21447,11 @@ async function registerRoutes(app2) {
             lastName: demoUser.name.split(" ").slice(1).join(" ") || "User",
             schoolRole: demoUser.schoolRole,
             schoolId: demoUser.schoolId
+          }).catch((e) => {
+            console.warn("Demo user upsert failed (non-blocking):", e.message);
           });
         } catch (e) {
-          console.error("Demo user upsert failed:", e);
+          console.warn("Demo user upsert error (non-blocking):", e);
         }
       }
       if (!userId) {
@@ -21467,7 +21469,7 @@ async function registerRoutes(app2) {
           return;
         }
       } catch (dbError) {
-        console.error("DB error fetching user:", dbError);
+        console.warn("DB error fetching user (non-blocking):", dbError.message);
       }
       if (demoUser) {
         const name = demoUser.name;
@@ -21487,7 +21489,7 @@ async function registerRoutes(app2) {
       }
     } catch (error) {
       console.error("Error in /api/auth/me:", error);
-      res.status(500).json({ message: "Failed to fetch user" });
+      res.status(500).json({ message: "Failed to fetch user", error: error.message });
     }
   });
   app2.get("/api/auth/user", isAuthenticated, async (req, res) => {
