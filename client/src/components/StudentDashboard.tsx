@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '@/hooks/useAuth';
 import { LeftSidebar } from '@/components/LeftSidebar';
@@ -676,9 +676,15 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         );
       })()}
 
-      {/* Badge Gallery - Achievement Showcase */}
+      {/* Badge Gallery / Leadership Progress - Conditional by School Level */}
       <div style={{ marginBottom: '24px' }}>
-        <BadgeGallery />
+        {isMiddleSchool ? (
+          <BadgeGallery />
+        ) : (
+          typeof window !== 'undefined' && (window as any).LeadershipProgress
+            ? React.createElement((window as any).LeadershipProgress, { userId: user?.id })
+            : <BadgeGallery />
+        )}
       </div>
 
       {/* Kindness Connect Promotional Card - MS: Fun Adventures, HS: Service Opportunities */}
