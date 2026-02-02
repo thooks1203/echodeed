@@ -1,5 +1,6 @@
-// EchoDeed™ Service Worker - PWA Capabilities v2.1
-const CACHE_NAME = 'echodeed-v2.1.0';
+// EchoDeed™ Service Worker - PWA Capabilities v3.0
+// CRITICAL: Bump version on EVERY deployment to force cache clear
+const CACHE_NAME = 'echodeed-v3.0.0';
 const OFFLINE_URL = '/offline.html';
 
 const CACHE_URLS = [
