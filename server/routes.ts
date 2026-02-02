@@ -10702,7 +10702,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get student's community service summary
-  app.get('/api/community-service/summary/:userId', isAuthenticated, async (req: any, res) => {
+  app.get('/api/community-service/summary/:userId', async (req: any, res) => {
     try {
       const { userId } = req.params;
       const { communityServiceEngine } = await import('./services/communityServiceEngine');
