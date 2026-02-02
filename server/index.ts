@@ -1,4 +1,5 @@
 import express, { type Request, Response, NextFunction } from "express";
+import path from "path";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { initializeSampleData } from "./initData";
@@ -557,7 +558,18 @@ app.use((req, res, next) => {
       await setupVite(app, server);
       log('✓ Vite development server configured');
     } else {
-      serveStatic(app);
+      // Production: serve from dist/public with explicit path resolution
+      const distPublicPath = path.resolve(process.cwd(), 'dist', 'public');
+      log(`📂 Production static path: ${distPublicPath}`);
+      app.use(express.static(distPublicPath));
+      
+      // SPA fallback - serve index.html for all non-API routes
+      app.use('*', (req, res, next) => {
+        if (req.originalUrl.startsWith('/api/')) {
+          return next();
+        }
+        res.sendFile(path.resolve(distPublicPath, 'index.html'));
+      });
       log('✓ Static file serving configured for production');
     }
 
