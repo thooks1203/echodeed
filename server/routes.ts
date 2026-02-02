@@ -11985,7 +11985,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get active fundraisers for a school
-  app.get('/api/fundraisers/active/:schoolName?', async (req, res) => {
+  app.get('/api/fundraisers/active{/:schoolName}', async (req, res) => {
     try {
       const { schoolName } = req.params;
       const fundraisers = await storage.getActiveFundraisers(schoolName);
