@@ -1,0 +1,140 @@
+2026-02-02T16:52:45.000000000Z [inf]  Starting Container
+2026-02-02T16:52:46.393202482Z [inf]  ✅ Tables created
+2026-02-02T16:52:46.393228541Z [inf]  🌱 Seeding mentor training modules...
+2026-02-02T16:52:46.393240705Z [inf]  ✅ Seeded 6 mentor training modules
+2026-02-02T16:52:46.393251088Z [inf]  🏆 Seeding badge definitions...
+2026-02-02T16:52:46.393260336Z [inf]  ✅ Seeded 3 badge definitions
+2026-02-02T16:52:46.393271045Z [inf]  
+2026-02-02T16:52:46.393285560Z [inf]  ✅ Database initialization complete!
+2026-02-02T16:52:46.393295153Z [inf]  🚀 Ready for server startup
+2026-02-02T16:52:46.393306007Z [inf]  [server-wrapper] Checking for .env file at: /app/.env
+2026-02-02T16:52:46.393315294Z [inf]  [server-wrapper] No .env file found, using Railway environment variables
+2026-02-02T16:52:46.393323067Z [inf]  [server-wrapper] Starting server with PORT: 8080
+2026-02-02T16:52:46.393332420Z [inf]  [server-wrapper] Initializing database schema...
+2026-02-02T16:52:46.393344448Z [inf]  [server-wrapper] ✅ Connected to database
+2026-02-02T16:52:46.393354012Z [inf]  [server-wrapper] ℹ️ Database already has 86 tables - skipping schema recreation
+2026-02-02T16:52:46.393363924Z [inf]  [server-wrapper] ✅ Existing data preserved on restart
+2026-02-02T16:52:46.393373454Z [inf]  [server-wrapper] Applying production schema fixes...
+2026-02-02T16:52:46.393381526Z [inf]  [server-wrapper] 🔧 Fixing pulse_checks.support_score column...
+2026-02-02T16:52:46.393390678Z [inf]  [server-wrapper] 🔧 Fixing badge_definitions.color column...
+2026-02-02T16:52:46.393400384Z [inf]  [server-wrapper] 🔧 Fixing badge_definitions.requirements column...
+2026-02-02T16:52:46.393409011Z [inf]  [server-wrapper] 🔧 Fixing badge_definitions.is_active column...
+2026-02-02T16:52:46.394010430Z [inf]  🚀 Initializing database schema...
+2026-02-02T16:52:46.394016718Z [inf]  📍 Database: postgres.railway.internal:5432
+2026-02-02T16:52:46.394023099Z [inf]  ✅ Connected to database
+2026-02-02T16:52:46.394031452Z [inf]  📊 Creating tables...
+2026-02-02T16:52:46.398387160Z [inf]  [server-wrapper] 🔧 Fixing badge_definitions.sort_order column...
+2026-02-02T16:52:46.398392449Z [inf]  [server-wrapper] 🔧 Fixing mentor_badges.badge_name column...
+2026-02-02T16:52:46.398396621Z [inf]  [server-wrapper] 🔧 Fixing mentor_activities.mentorship_id column...
+2026-02-02T16:52:46.398401732Z [inf]  [server-wrapper] 🔧 Fixing mentorships.kindness_goal column...
+2026-02-02T16:52:46.398405752Z [inf]  [server-wrapper] 🔧 Fixing mentor_badges.badge_icon column...
+2026-02-02T16:52:46.398409887Z [inf]  [server-wrapper] 🔧 Fixing mentorships.progress_notes column...
+2026-02-02T16:52:46.398413894Z [inf]  [server-wrapper] 🔧 Fixing mentorships.next_session_at column...
+2026-02-02T16:52:46.398418217Z [inf]  [server-wrapper] 🔧 Fixing mentor_badges.category column...
+2026-02-02T16:52:46.398422454Z [inf]  [server-wrapper] 🔧 Fixing mentor_badges.token_reward column...
+2026-02-02T16:52:46.398426434Z [inf]  [server-wrapper] 🔧 Fixing mentor_badges.rarity column...
+2026-02-02T16:52:46.411649868Z [inf]  [server-wrapper] 🔧 Fixing mentor_activities.mentorship_id UUID type...
+2026-02-02T16:52:46.417187735Z [inf]  [server-wrapper] 🔧 Adding users.school_level column...
+2026-02-02T16:52:46.421095285Z [inf]  [server-wrapper] 🔧 Ensuring test users have high_school level...
+2026-02-02T16:52:46.425429204Z [inf]  [server-wrapper] ✅ Schema fixes applied
+2026-02-02T16:52:47.503543539Z [inf]  📊 Database URL detected (first 50 chars): postgresql://postgres:UkqhvRdNHImFDDCwCBOrHmJlPfNj...
+2026-02-02T16:52:47.503550135Z [inf]  ✅ Using TCP PostgreSQL connection (pg library) for Railway
+2026-02-02T16:52:47.503556736Z [inf]  4:52:47 PM [express] Starting EchoDeed application in production mode...
+2026-02-02T16:52:47.503562978Z [inf]  4:52:47 PM [express] Checking required environment variables for production...
+2026-02-02T16:52:47.503569015Z [inf]  4:52:47 PM [express] ✓ All required environment variables are present
+2026-02-02T16:52:47.503575384Z [inf]  4:52:47 PM [express] Registering routes and setting up server...
+2026-02-02T16:52:47.503581611Z [inf]  Running in non-Replit environment - using demo authentication mode
+2026-02-02T16:52:47.503589794Z [inf]  [RetryWorker] Started (interval ms): 60000
+2026-02-02T16:52:47.503596047Z [inf]  💜 Starting Pulse Check Scheduler Service...
+2026-02-02T16:52:47.503602456Z [inf]  ✅ Pulse Check Scheduler running - checking every minute
+2026-02-02T16:52:47.507142031Z [inf]  4:52:47 PM [express] ✓ Routes registered successfully
+2026-02-02T16:52:47.507147485Z [inf]  4:52:47 PM [express] Setting up static file serving...
+2026-02-02T16:52:47.509810435Z [inf]  4:52:47 PM [express] Starting server on 0.0.0.0:8080...
+2026-02-02T16:52:47.509831231Z [inf]  4:52:47 PM [express] DEBUG: Server object type: object, has listen: function
+2026-02-02T16:52:47.509894426Z [inf]  4:52:47 PM [express] ✓ Static file serving configured for production
+2026-02-02T16:52:47.514567850Z [inf]  4:52:47 PM [express] ✓ EchoDeed application successfully started and serving on port 8080
+2026-02-02T16:52:47.514572532Z [inf]  4:52:47 PM [express] ✓ Server is accessible at http://0.0.0.0:8080
+2026-02-02T16:52:47.514576805Z [inf]  4:52:47 PM [express] ✓ Environment: production
+2026-02-02T16:52:47.514581642Z [inf]  4:52:47 PM [express] ✓ No background schedulers required for high school FERPA compliance
+2026-02-02T16:53:27.334716131Z [inf]  🎁 Returning 0 unique offers (out of 0 total) - optimized for demo
+2026-02-02T16:53:27.334726321Z [inf]  4:53:24 PM [express] GET /api/rewards/offers/all/all 200 in 85ms :: []
+2026-02-02T16:53:27.334734286Z [inf]  4:53:24 PM [express] GET /api/tokens 200 in 94ms :: {"userId":"student-001","echoBalance":1103,"tota…
+2026-02-02T16:53:27.334740926Z [inf]  4:53:24 PM [express] GET /api/auth/user 200 in 116ms :: {"id":"student-001","email":"sofia.rodriguez…
+2026-02-02T16:53:27.334816914Z [inf]  🎁 Fetching reward offers (optimized for demo)...
+2026-02-02T16:53:34.051370467Z [inf]  4:53:34 PM [express] GET /api/pulse-check/today 200 in 5ms :: {"hasCheckedToday":false}
+2026-02-02T16:53:34.059607977Z [inf]  4:53:34 PM [express] GET /api/counter 200 in 12ms :: {"count":0}
+2026-02-02T16:53:34.059616502Z [inf]  🎁 Fetching reward offers (optimized for demo)...
+2026-02-02T16:53:34.068869589Z [inf]  4:53:34 PM [express] GET /api/auth/user 200 in 17ms :: {"id":"student-001","email":"sofia.rodriguez@…
+2026-02-02T16:53:34.068878177Z [inf]  4:53:34 PM [express] GET /api/school-level/config 200 in 28ms :: {"level":"high_school","displayName…
+2026-02-02T16:53:34.071536358Z [inf]  4:53:34 PM [express] GET /api/posts 200 in 5ms :: []
+2026-02-02T16:53:34.160823964Z [inf]  🎁 Returning 0 unique offers (out of 0 total) - optimized for demo
+2026-02-02T16:53:34.160829455Z [inf]  4:53:34 PM [express] GET /api/rewards/offers/all/all 200 in 81ms :: []
+2026-02-02T16:53:34.164692030Z [inf]  4:53:34 PM [express] GET /api/tokens 200 in 113ms :: {"userId":"student-001","echoBalance":1103,"tot…
+2026-02-02T16:53:40.225220461Z [inf]  4:53:40 PM [express] GET /api/mentor/badges 200 in 2ms :: [{"id":"badge-1","name":"First Steps","des…
+2026-02-02T16:53:40.225226981Z [inf]  4:53:40 PM [express] GET /api/mentor/mentorships 200 in 9ms :: []
+2026-02-02T16:53:40.225233086Z [inf]  4:53:40 PM [express] GET /api/mentor/activities 200 in 1ms :: []
+2026-02-02T16:53:40.232759638Z [inf]  4:53:40 PM [express] GET /api/mentor/stats 200 in 7ms :: {"totalMentees":0,"activeMentorships":0,"to…
+2026-02-02T16:53:40.236750397Z [inf]  🎓 Training API called for user: student-001
+2026-02-02T16:53:40.248792987Z [inf]  🎓 Training data retrieved: 6 modules, first has completed: false
+2026-02-02T16:53:40.248798958Z [inf]  4:53:40 PM [express] GET /api/mentor/training 200 in 11ms :: [{"id":"e7493566-1d35-4fb1-942c-2d48ca3…
+2026-02-02T16:53:40.248806003Z [inf]  4:53:40 PM [express] GET /api/auth/user 200 in 17ms :: {"id":"student-001","email":"sofia.rodriguez@…
+2026-02-02T16:53:40.254722633Z [inf]  4:53:40 PM [express] GET /api/school-level/config 200 in 17ms :: {"level":"high_school","displayName…
+2026-02-02T16:53:41.956511402Z [inf]  4:53:41 PM [express] GET /api/school-level/config 200 in 29ms :: {"level":"high_school","displayName…
+2026-02-02T16:53:41.956524615Z [inf]  4:53:41 PM [express] GET /api/badges/mine 200 in 74ms :: []
+2026-02-02T16:53:41.956531945Z [inf]  4:53:41 PM [express] GET /api/tokens 200 in 86ms :: {"userId":"student-001","echoBalance":1103,"tota…
+2026-02-02T16:53:41.956666960Z [inf]  4:53:41 PM [express] GET /api/community-service/summary/student-001 401 in 3ms :: {"error":"Unauthor…
+2026-02-02T16:53:41.956673441Z [inf]  4:53:41 PM [express] GET /api/auth/user 200 in 22ms :: {"id":"student-001","email":"sofia.rodriguez@…
+2026-02-02T16:53:41.956678675Z [inf]  4:53:41 PM [express] GET /api/badges/definitions 200 in 18ms :: [{"id":"7b26b5ef-def7-4d8b-bd6f-09c9…
+2026-02-02T16:53:47.147588583Z [inf]  🎁 Fetching reward offers (optimized for demo)...
+2026-02-02T16:53:47.147592268Z [inf]  4:53:46 PM [express] GET /api/auth/user 200 in 17ms :: {"id":"student-001","email":"sofia.rodriguez@…
+2026-02-02T16:53:47.147596344Z [inf]  🎁 Returning 0 unique offers (out of 0 total) - optimized for demo
+2026-02-02T16:53:47.147600534Z [inf]  4:53:46 PM [express] GET /api/rewards/offers/all/all 200 in 12ms :: []
+2026-02-02T16:53:47.147604746Z [inf]  4:53:46 PM [express] GET /api/tokens 200 in 10ms :: {"userId":"student-001","echoBalance":1103,"tota…
+2026-02-02T16:53:53.441430007Z [inf]  4:53:53 PM [express] GET /api/auth/user 200 in 12ms :: {"id":"student-001","email":"sofia.rodriguez@…
+2026-02-02T16:53:53.441435626Z [inf]  4:53:53 PM [express] GET /api/pulse-check/today 200 in 6ms :: {"hasCheckedToday":false}
+2026-02-02T16:53:53.441441495Z [inf]  🎁 Fetching reward offers (optimized for demo)...
+2026-02-02T16:53:53.441450493Z [inf]  4:53:53 PM [express] GET /api/school-level/config 200 in 24ms :: {"level":"high_school","displayName…
+2026-02-02T16:53:53.441457694Z [inf]  4:53:53 PM [express] GET /api/posts 200 in 10ms :: []
+2026-02-02T16:53:53.441568951Z [inf]  4:53:53 PM [express] GET /api/counter 200 in 78ms :: {"count":0}
+2026-02-02T16:53:53.441575858Z [inf]  4:53:53 PM [express] GET /api/tokens 200 in 79ms :: {"userId":"student-001","echoBalance":1103,"tota…
+2026-02-02T16:53:53.441583524Z [inf]  🎁 Returning 0 unique offers (out of 0 total) - optimized for demo
+2026-02-02T16:53:53.441589988Z [inf]  4:53:53 PM [express] GET /api/rewards/offers/all/all 200 in 75ms :: []
+2026-02-02T16:53:55.362633902Z [inf]  4:53:55 PM [express] GET /api/mentor/badges 200 in 1ms :: [{"id":"badge-1","name":"First Steps","des…
+2026-02-02T16:53:55.362637816Z [inf]  4:53:55 PM [express] GET /api/mentor/activities 200 in 1ms :: []
+2026-02-02T16:53:55.362645767Z [inf]  🎓 Training API called for user: student-001
+2026-02-02T16:53:55.362649761Z [inf]  4:53:55 PM [express] GET /api/mentor/mentorships 200 in 15ms :: []
+2026-02-02T16:53:55.362653825Z [inf]  4:53:55 PM [express] GET /api/mentor/stats 200 in 9ms :: {"totalMentees":0,"activeMentorships":0,"to…
+2026-02-02T16:53:55.362658406Z [inf]  🎓 Training data retrieved: 6 modules, first has completed: false
+2026-02-02T16:53:55.362662546Z [inf]  4:53:55 PM [express] GET /api/mentor/training 200 in 12ms :: [{"id":"e7493566-1d35-4fb1-942c-2d48ca3…
+2026-02-02T16:53:55.362666890Z [inf]  4:53:55 PM [express] GET /api/school-level/config 200 in 33ms :: {"level":"high_school","displayName…
+2026-02-02T16:53:55.362671740Z [inf]  4:53:55 PM [express] GET /api/auth/user 200 in 37ms :: {"id":"student-001","email":"sofia.rodriguez@…
+2026-02-02T16:53:56.351656825Z [inf]  4:53:56 PM [express] GET /api/school-level/config 200 in 24ms :: {"level":"high_school","displayName…
+2026-02-02T16:53:56.351674040Z [inf]  4:53:56 PM [express] GET /api/badges/mine 200 in 3ms :: []
+2026-02-02T16:53:56.351685416Z [inf]  4:53:56 PM [express] GET /api/community-service/summary/student-001 401 in 1ms :: {"error":"Unauthor…
+2026-02-02T16:53:56.351693566Z [inf]  4:53:56 PM [express] GET /api/badges/definitions 200 in 10ms :: [{"id":"7b26b5ef-def7-4d8b-bd6f-09c9…
+2026-02-02T16:53:56.351699930Z [inf]  4:53:56 PM [express] GET /api/auth/user 200 in 15ms :: {"id":"student-001","email":"sofia.rodriguez@…
+2026-02-02T16:53:56.387991081Z [inf]  4:53:56 PM [express] GET /api/tokens 200 in 94ms :: {"userId":"student-001","echoBalance":1103,"tota…
+2026-02-02T16:54:00.833500131Z [inf]  4:54:00 PM [express] GET /api/tokens 304 in 86ms :: {"userId":"student-001","echoBalance":1103,"tota…
+2026-02-02T16:54:00.833577436Z [inf]  4:54:00 PM [express] GET /api/rewards/offers/all/all 200 in 14ms :: []
+2026-02-02T16:54:00.833583727Z [inf]  4:54:00 PM [express] GET /api/auth/user 200 in 26ms :: {"id":"student-001","email":"sofia.rodriguez@…
+2026-02-02T16:54:00.833595073Z [inf]  4:54:00 PM [express] GET /api/school-level/config 200 in 29ms :: {"level":"high_school","displayName…
+2026-02-02T16:54:00.833595391Z [inf]  4:54:00 PM [express] GET /api/counter 200 in 10ms :: {"count":0}
+2026-02-02T16:54:00.833604193Z [inf]  🎁 Fetching reward offers (optimized for demo)...
+2026-02-02T16:54:00.833608793Z [inf]  🎁 Returning 0 unique offers (out of 0 total) - optimized for demo
+2026-02-02T16:54:00.833609449Z [inf]  4:54:00 PM [express] GET /api/posts 304 in 86ms :: []
+2026-02-02T16:54:00.833618424Z [inf]  4:54:00 PM [express] GET /api/pulse-check/today 200 in 84ms :: {"hasCheckedToday":false}
+2026-02-02T16:54:06.566570393Z [inf]  4:54:06 PM [express] GET /api/mentor/training 200 in 7ms :: [{"id":"e7493566-1d35-4fb1-942c-2d48ca34…
+2026-02-02T16:54:06.566580736Z [inf]  4:54:06 PM [express] GET /api/school-level/config 200 in 17ms :: {"level":"high_school","displayName…
+2026-02-02T16:54:06.566589189Z [inf]  4:54:06 PM [express] GET /api/auth/user 200 in 20ms :: {"id":"student-001","email":"sofia.rodriguez@…
+2026-02-02T16:54:06.566608748Z [inf]  🎓 Training API called for user: student-001
+2026-02-02T16:54:06.566620942Z [inf]  4:54:06 PM [express] GET /api/mentor/mentorships 200 in 6ms :: []
+2026-02-02T16:54:06.566629441Z [inf]  🎓 Training data retrieved: 6 modules, first has completed: false
+2026-02-02T16:54:06.566843489Z [inf]  4:54:06 PM [express] GET /api/mentor/activities 200 in 1ms :: []
+2026-02-02T16:54:06.566854362Z [inf]  4:54:06 PM [express] GET /api/mentor/badges 200 in 1ms :: [{"id":"badge-1","name":"First Steps","des…
+2026-02-02T16:54:06.566860386Z [inf]  4:54:06 PM [express] GET /api/mentor/stats 200 in 9ms :: {"totalMentees":0,"activeMentorships":0,"to…
+2026-02-02T16:54:07.503062711Z [inf]  4:54:07 PM [express] GET /api/tokens 304 in 14ms :: {"userId":"student-001","echoBalance":1103,"tota…
+2026-02-02T16:54:07.503077865Z [inf]  4:54:07 PM [express] GET /api/school-level/config 200 in 20ms :: {"level":"high_school","displayName…
+2026-02-02T16:54:07.503115325Z [inf]  4:54:07 PM [express] GET /api/community-service/summary/student-001 401 in 2ms :: {"error":"Unauthor…
+2026-02-02T16:54:07.503126139Z [inf]  4:54:07 PM [express] GET /api/badges/definitions 200 in 8ms :: [{"id":"7b26b5ef-def7-4d8b-bd6f-09c9e…
+2026-02-02T16:54:07.503148053Z [inf]  4:54:07 PM [express] GET /api/auth/user 200 in 15ms :: {"id":"student-001","email":"sofia.rodriguez@…
+2026-02-02T16:54:07.503155871Z [inf]  4:54:07 PM [express] GET /api/badges/mine 200 in 9ms :: []

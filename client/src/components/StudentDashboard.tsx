@@ -21,6 +21,7 @@ import { Heart } from 'lucide-react';
 import { HelpButton, helpContent } from '@/components/HelpButton';
 import { HeartLinkButton } from '@/components/HeartLinkButton';
 import { BadgeGallery } from '@/components/BadgeGallery';
+import { LeadershipProgress } from '@/components/LeadershipProgress';
 
 interface StudentStats {
   totalKindnessPoints: number;
@@ -681,9 +682,7 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
         {isMiddleSchool ? (
           <BadgeGallery />
         ) : (
-          typeof window !== 'undefined' && (window as any).LeadershipProgress
-            ? React.createElement((window as any).LeadershipProgress, { userId: user?.id })
-            : <BadgeGallery />
+          <LeadershipProgress userId={user?.id} />
         )}
       </div>
 
