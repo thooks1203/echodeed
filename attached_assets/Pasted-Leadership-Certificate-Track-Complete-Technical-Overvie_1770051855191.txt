@@ -1,0 +1,149 @@
+Leadership Certificate Track - Complete Technical Overview
+Purpose & Audience
+The Leadership Certificate Track is an educational feature in EchoDeed™ designed specifically for high school students (ages 14-18). It's a professional certification program that proves a student has developed leadership competencies through three core pillars of achievement. This is distinct from the McNeill Collection (middle school gamified badges) - high school students should ONLY see the Leadership Track.
+
+Three Required Components (ALL MUST BE COMPLETED)
+1. MENTOR TRAINING PROGRAM
+What it is: A structured 5-module leadership development curriculum
+Modules:
+
+Module 1: Mentoring Foundations (What is mentoring, why it matters)
+Module 2: Active Listening Skills (Hearing others, emotional intelligence)
+Module 3: Problem-Solving Together (Collaborative approaches)
+Module 4: Building Trust & Accountability (Character foundations)
+Module 5: Leading Change (Vision and impact)
+Completion Requirement: Student must START and COMPLETE all 5 modules
+Current Status in DB: Stored in mentor_training table with 6 modules seeded (3991784a, etc.)
+Progress Tracking: Stored in user_mentor_training table with completedAt timestamp and progressPercentage
+
+2. KINDNESS QUESTS (Community Service)
+What it is: Verified acts of service/kindness logged in the community service system
+Requirement: 10 VERIFIED community service activities minimum
+How it works:
+
+Student logs a service activity (e.g., "tutored math," "organized cleanup")
+Activity includes: date, organization, hours, supervisor contact, location, reflection
+Teacher or supervisor verifies the activity
+Once verified, it counts toward the 10-quest requirement
+Data stored in community_service_logs table
+Verification stored in separate community_service_verifications table
+Current Status:
+
+Community service summary endpoint: /api/community-service/summary/:userId
+Returns student's total verified hours and activity count
+Currently has 401 auth issues that we've been fixing
+3. PORTFOLIO DEFENSE (5-Minute Presentation)
+What it is: A formal leadership presentation where the student demonstrates their growth
+Components:
+
+5-minute recorded or live presentation to school leadership
+Student addresses: "How have you grown as a leader? What impact did you make?"
+Must reference their mentor training experience + service activities + personal growth
+Teacher provides written endorsement of their leadership capability
+Data stored in leadership_portfolios table
+Presentation Elements:
+
+mentor_training_reflection: How mentor training shaped them
+top_impactful_kindness_quests: 3 specific service activities they're proud of
+personal_growth_reflection: What they learned about themselves
+future_leadership_goals: What they'll do next
+presentation_url: Link to video/presentation evidence
+Teacher Endorsement:
+
+Stored in portfolio_endorsements table
+Teacher confirms: "This student demonstrates leadership readiness"
+Includes teacher_id, approval_status, feedback, created_at
+Overall Progress Tracking
+Progress Calculation
+
+Overall Progress = Average of three components:  - Mentor Training: (modules_completed / 5) * 100  - Kindness Quests: (verified_activities / 10) * 100    - Portfolio Defense: (0% until started, 100% when teacher approves)Certificate Earned: When ALL THREE = 100%
+Leadership Certificate Earned
+When a student reaches 100% on all three components:
+
+Portfolio is approved by teacher
+Student receives digital certificate
+System marks certificateEarned = true in database
+Displayed prominently on their dashboard
+Current Frontend Implementation
+Dashboard Display (High School Students Only)
+The leadership-progress.js component (rendered via window.LeadershipProgress) shows:
+
+Header Card:
+
+Student name and current overall progress percentage
+Visual progress indicator (0-100%)
+Status message: "In Progress", "Nearly There!", "Certificate Earned! 🎉"
+Three Requirement Cards (each with progress bar):
+
+📚 Mentor Training Program
+
+"Complete all 5 Mentor Training modules to develop leadership skills"
+Progress: X/5 modules completed
+Link: "Start Training"
+🤝 Verified Kindness Quests
+
+"Log and verify 10 acts of service or kindness in your community"
+Progress: X/10 activities verified
+Link: "Log Service Hours"
+📋 Leadership Portfolio Defense
+
+"5-minute presentation + teacher endorsement of your leadership growth"
+Progress: Not Started / In Progress / Approved
+Link: "Start Portfolio"
+Database Tables
+Core Tables:
+mentor_training - The 5 module definitions
+user_mentor_training - Student's progress on each module
+community_service_logs - Service activities students log
+community_service_verifications - Teacher/supervisor approvals
+leadership_portfolios - Student portfolio submissions
+portfolio_endorsements - Teacher approvals
+Related:
+users - Must have school_level = 'high_school'
+mentor_badges - Recognition/incentives (not required for cert, but displayed)
+mentorships - Student mentoring relationships
+Key Endpoints
+For Students:
+GET /api/leadership-certificate/progress - Get overall progress (0-100%)
+GET /api/mentor/training - List 5 modules, student's completion status
+POST /api/mentor/training/:moduleId/complete - Mark module complete
+GET /api/community-service/summary/:userId - Get verified service hours & count
+POST /api/community-service/log - Log new service activity
+GET /api/leadership-certificate/portfolio/status - Check portfolio status
+POST /api/leadership-certificate/portfolio/submit - Submit portfolio
+For Teachers:
+GET /api/leadership-certificate/portfolio/pending - List pending portfolios to review
+POST /api/leadership-certificate/portfolio/:portfolioId/approve - Approve portfolio
+POST /api/community-service/verify - Verify a student's service activity
+Current Issues & Fixes Applied
+1. School Level Not Set Correctly
+Problem: Users not identified as high_school, so they see wrong dashboard
+Fixed: Added school_level = 'high_school' to demo user creation
+Fixed: server-wrapper.mjs ensures all test users have school_level set
+2. Community Service Summary Returns 401
+Problem: Auth middleware blocking legitimate requests
+Fixed: Added DEMO_MODE validation with X-Session-ID and X-Demo-Role headers
+Fixed: Route now allows valid demo requests to bypass standard auth
+3. Mentor Badges Query Errors (Missing Columns)
+Problem: Database missing rarity, token_reward, badge_icon columns
+Fixed: Added to server-wrapper.mjs ALTER TABLE statements
+4. UUID Type Mismatches
+Problem: Comparing string IDs to UUID fields (mentor_id vs uuid)
+Fixed: Added UUID validation checks in mentor activities/badges endpoints
+Fixed: Demo users (string IDs) now return sample data instead of querying
+5. McNeill Collection Still Visible
+Problem: BadgeGallery displaying instead of LeadershipProgress
+Fixed: Dashboard.tsx hard-coded to ONLY render LeadershipProgress for all users
+Expected User Journey (Sofia - student-001)
+Login → Sees "High School Student" dashboard with Leadership track prominent
+Mentor Training Tab → Can see 5 modules, starts Module 1, progresses through all 5
+Community Service Tab → Logs activities (tutoring, cleanup, etc.), gets verified by teacher
+Portfolio Tab → Records 5-min video/presentation, submits reflection
+Teacher Reviews → Teacher approves portfolio, adds endorsement
+Certificate Earned → Dashboard shows 100% complete, student gets digital certificate
+Key Business Rules
+All THREE components required - Can't earn cert with only 2/3 done
+Verification required - Service hours must be teacher-verified, not self-reported
+Teacher approval required - Portfolio doesn't count until teacher endorses it
+One per student - Each student gets one certificate per school year
+High school only - Middle school students should NEVER see this, only McNeill Collection

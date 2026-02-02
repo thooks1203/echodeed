@@ -1,20 +1,25 @@
 import { useQuery } from '@tanstack/react-query';
 import { addSessionHeaders } from '@/lib/session';
 
-interface ServiceSummary {
-  totalHours: number;
-  verifiedHours: number;
-  pendingHours: number;
-  annualGoal: number;
-  progressPercentage: number;
-  totalActivities: number;
-  recentActivities: Array<{
+interface MentorTrainingProgress {
+  totalModules: number;
+  completedModules: number;
+  modules: Array<{
     id: string;
-    activityName: string;
-    hours: number;
-    status: string;
-    loggedAt: string;
+    title: string;
+    completed: boolean;
   }>;
+}
+
+interface KindnessQuestsProgress {
+  requiredActivities: number;
+  verifiedActivities: number;
+  pendingActivities: number;
+}
+
+interface PortfolioProgress {
+  status: 'not_started' | 'in_progress' | 'submitted' | 'approved';
+  hasTeacherEndorsement: boolean;
 }
 
 interface LeadershipProgressProps {
@@ -22,41 +27,107 @@ interface LeadershipProgressProps {
 }
 
 export function LeadershipProgress({ userId }: LeadershipProgressProps) {
-  const { data: summary, isLoading, error } = useQuery<ServiceSummary>({
-    queryKey: ['/api/community-service/summary', userId],
+  // Fetch mentor training progress
+  const { data: mentorData } = useQuery<MentorTrainingProgress>({
+    queryKey: ['/api/mentor/training/progress', userId],
     queryFn: async () => {
-      const res = await fetch(`/api/community-service/summary/${userId || 'student-001'}`, {
-        headers: addSessionHeaders()
-      });
-      if (!res.ok) {
-        // Return default data for demo mode
+      try {
+        const res = await fetch('/api/mentor/training', {
+          headers: addSessionHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to fetch');
+        return res.json();
+      } catch {
         return {
-          totalHours: 47.5,
-          verifiedHours: 42,
-          pendingHours: 5.5,
-          annualGoal: 200,
-          progressPercentage: 21,
-          totalActivities: 8,
-          recentActivities: []
+          totalModules: 5,
+          completedModules: 2,
+          modules: []
         };
       }
-      return res.json();
     },
     enabled: !!userId,
   });
 
-  // Use demo data if loading or error
-  const displayData = summary || {
-    totalHours: 47.5,
-    verifiedHours: 42,
-    pendingHours: 5.5,
-    annualGoal: 200,
-    progressPercentage: 21,
-    totalActivities: 8,
-    recentActivities: []
+  // Fetch community service/kindness quests progress
+  const { data: questsData } = useQuery<KindnessQuestsProgress>({
+    queryKey: ['/api/community-service/summary', userId],
+    queryFn: async () => {
+      try {
+        const res = await fetch(`/api/community-service/summary/${userId}`, {
+          headers: addSessionHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to fetch');
+        const data = await res.json();
+        return {
+          requiredActivities: 10,
+          verifiedActivities: data.totalActivities || 3,
+          pendingActivities: data.pendingActivities || 1
+        };
+      } catch {
+        return {
+          requiredActivities: 10,
+          verifiedActivities: 3,
+          pendingActivities: 1
+        };
+      }
+    },
+    enabled: !!userId,
+  });
+
+  // Fetch portfolio progress
+  const { data: portfolioData } = useQuery<PortfolioProgress>({
+    queryKey: ['/api/leadership-certificate/portfolio/status', userId],
+    queryFn: async () => {
+      try {
+        const res = await fetch('/api/leadership-certificate/portfolio/status', {
+          headers: addSessionHeaders()
+        });
+        if (!res.ok) throw new Error('Failed to fetch');
+        return res.json();
+      } catch {
+        return {
+          status: 'not_started' as const,
+          hasTeacherEndorsement: false
+        };
+      }
+    },
+    enabled: !!userId,
+  });
+
+  // Default values for demo
+  const mentor = mentorData || { totalModules: 5, completedModules: 2, modules: [] };
+  const quests = questsData || { requiredActivities: 10, verifiedActivities: 3, pendingActivities: 1 };
+  const portfolio = portfolioData || { status: 'not_started' as const, hasTeacherEndorsement: false };
+
+  // Calculate progress percentages
+  const mentorProgress = Math.min(100, (mentor.completedModules / 5) * 100);
+  const questsProgress = Math.min(100, (quests.verifiedActivities / 10) * 100);
+  const portfolioProgress = portfolio.status === 'approved' ? 100 : 
+                           portfolio.status === 'submitted' ? 75 :
+                           portfolio.status === 'in_progress' ? 25 : 0;
+
+  // Overall progress is average of all three
+  const overallProgress = Math.round((mentorProgress + questsProgress + portfolioProgress) / 3);
+  const certificateEarned = mentorProgress === 100 && questsProgress === 100 && portfolioProgress === 100;
+
+  // Status message
+  const getStatusMessage = () => {
+    if (certificateEarned) return { text: 'Certificate Earned!', emoji: '🎉', color: '#10B981' };
+    if (overallProgress >= 75) return { text: 'Nearly There!', emoji: '🌟', color: '#F59E0B' };
+    if (overallProgress >= 50) return { text: 'Making Progress', emoji: '📈', color: '#3B82F6' };
+    return { text: 'In Progress', emoji: '🚀', color: '#8B5CF6' };
   };
 
-  const progressPercent = Math.min(100, (displayData.verifiedHours / displayData.annualGoal) * 100);
+  const status = getStatusMessage();
+
+  const getPortfolioStatusText = () => {
+    switch (portfolio.status) {
+      case 'approved': return 'Approved ✓';
+      case 'submitted': return 'Awaiting Review';
+      case 'in_progress': return 'In Progress';
+      default: return 'Not Started';
+    }
+  };
 
   return (
     <div style={{
@@ -67,38 +138,55 @@ export function LeadershipProgress({ userId }: LeadershipProgressProps) {
       boxShadow: '0 4px 20px rgba(30, 58, 95, 0.3)'
     }}>
       {/* Header */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '16px' }}>
-        <span style={{ fontSize: '32px' }}>🎓</span>
-        <div>
-          <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0, marginBottom: '4px' }}>
-            Service-Learning Diploma
-          </h3>
-          <p style={{ fontSize: '13px', opacity: 0.8, margin: 0 }}>
-            200-Hour Community Service Achievement
-          </p>
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        marginBottom: '20px' 
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+          <span style={{ fontSize: '32px' }}>🏆</span>
+          <div>
+            <h3 style={{ fontSize: '18px', fontWeight: '700', margin: 0, marginBottom: '4px' }}>
+              Leadership Certificate Track
+            </h3>
+            <p style={{ fontSize: '13px', opacity: 0.8, margin: 0 }}>
+              Complete all 3 requirements to earn your certificate
+            </p>
+          </div>
+        </div>
+        <div style={{
+          background: `${status.color}22`,
+          border: `1px solid ${status.color}`,
+          borderRadius: '20px',
+          padding: '6px 12px',
+          fontSize: '12px',
+          fontWeight: '600',
+          color: status.color
+        }}>
+          {status.emoji} {status.text}
         </div>
       </div>
 
-      {/* Progress Circle */}
+      {/* Overall Progress Circle */}
       <div style={{ 
         display: 'flex', 
         justifyContent: 'center', 
         alignItems: 'center',
-        marginBottom: '20px'
+        marginBottom: '24px'
       }}>
         <div style={{
-          width: '120px',
-          height: '120px',
+          width: '100px',
+          height: '100px',
           borderRadius: '50%',
-          background: `conic-gradient(#10B981 ${progressPercent}%, #374151 ${progressPercent}%)`,
+          background: `conic-gradient(${status.color} ${overallProgress}%, #374151 ${overallProgress}%)`,
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          position: 'relative'
+          justifyContent: 'center'
         }}>
           <div style={{
-            width: '90px',
-            height: '90px',
+            width: '76px',
+            height: '76px',
             borderRadius: '50%',
             background: '#1e3a5f',
             display: 'flex',
@@ -106,117 +194,159 @@ export function LeadershipProgress({ userId }: LeadershipProgressProps) {
             alignItems: 'center',
             justifyContent: 'center'
           }}>
-            <span style={{ fontSize: '24px', fontWeight: '700' }}>
-              {displayData.verifiedHours}
+            <span style={{ fontSize: '22px', fontWeight: '700' }}>
+              {overallProgress}%
             </span>
-            <span style={{ fontSize: '11px', opacity: 0.8 }}>
-              of {displayData.annualGoal} hrs
-            </span>
+            <span style={{ fontSize: '10px', opacity: 0.7 }}>Overall</span>
           </div>
         </div>
       </div>
 
-      {/* Stats Row */}
-      <div style={{ 
-        display: 'grid', 
-        gridTemplateColumns: '1fr 1fr 1fr', 
-        gap: '12px',
-        marginBottom: '16px'
-      }}>
-        <div style={{ 
-          background: 'rgba(255,255,255,0.1)', 
-          borderRadius: '10px', 
-          padding: '12px',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '20px', fontWeight: '700', color: '#10B981' }}>
-            {displayData.verifiedHours}
-          </div>
-          <div style={{ fontSize: '11px', opacity: 0.7 }}>Verified</div>
-        </div>
-        <div style={{ 
-          background: 'rgba(255,255,255,0.1)', 
-          borderRadius: '10px', 
-          padding: '12px',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '20px', fontWeight: '700', color: '#F59E0B' }}>
-            {displayData.pendingHours}
-          </div>
-          <div style={{ fontSize: '11px', opacity: 0.7 }}>Pending</div>
-        </div>
-        <div style={{ 
-          background: 'rgba(255,255,255,0.1)', 
-          borderRadius: '10px', 
-          padding: '12px',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontSize: '20px', fontWeight: '700', color: '#06B6D4' }}>
-            {displayData.totalActivities}
-          </div>
-          <div style={{ fontSize: '11px', opacity: 0.7 }}>Activities</div>
-        </div>
-      </div>
-
-      {/* Progress Bar */}
-      <div style={{ marginBottom: '12px' }}>
-        <div style={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          marginBottom: '6px',
-          fontSize: '12px'
-        }}>
-          <span>Progress to Diploma</span>
-          <span style={{ color: '#10B981', fontWeight: '600' }}>{progressPercent.toFixed(1)}%</span>
-        </div>
+      {/* Three Requirement Cards */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        
+        {/* 1. Mentor Training */}
         <div style={{
-          height: '8px',
-          background: 'rgba(255,255,255,0.2)',
-          borderRadius: '4px',
-          overflow: 'hidden'
+          background: 'rgba(255,255,255,0.08)',
+          borderRadius: '12px',
+          padding: '16px',
+          border: mentorProgress === 100 ? '2px solid #10B981' : '1px solid rgba(255,255,255,0.1)'
         }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+            <span style={{ fontSize: '24px' }}>📚</span>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: '600', fontSize: '14px' }}>Mentor Training Program</div>
+              <div style={{ fontSize: '11px', opacity: 0.7 }}>
+                Complete all 5 leadership development modules
+              </div>
+            </div>
+            <div style={{ 
+              fontSize: '14px', 
+              fontWeight: '700',
+              color: mentorProgress === 100 ? '#10B981' : '#F59E0B'
+            }}>
+              {mentor.completedModules}/5
+            </div>
+          </div>
           <div style={{
-            height: '100%',
-            width: `${progressPercent}%`,
-            background: 'linear-gradient(90deg, #10B981, #06B6D4)',
-            borderRadius: '4px',
-            transition: 'width 0.5s ease'
-          }} />
+            height: '6px',
+            background: 'rgba(255,255,255,0.15)',
+            borderRadius: '3px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              height: '100%',
+              width: `${mentorProgress}%`,
+              background: mentorProgress === 100 ? '#10B981' : 'linear-gradient(90deg, #8B5CF6, #EC4899)',
+              borderRadius: '3px',
+              transition: 'width 0.3s ease'
+            }} />
+          </div>
+        </div>
+
+        {/* 2. Kindness Quests */}
+        <div style={{
+          background: 'rgba(255,255,255,0.08)',
+          borderRadius: '12px',
+          padding: '16px',
+          border: questsProgress === 100 ? '2px solid #10B981' : '1px solid rgba(255,255,255,0.1)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+            <span style={{ fontSize: '24px' }}>🤝</span>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: '600', fontSize: '14px' }}>Verified Kindness Quests</div>
+              <div style={{ fontSize: '11px', opacity: 0.7 }}>
+                Log and verify 10 acts of community service
+              </div>
+            </div>
+            <div style={{ 
+              fontSize: '14px', 
+              fontWeight: '700',
+              color: questsProgress === 100 ? '#10B981' : '#F59E0B'
+            }}>
+              {quests.verifiedActivities}/10
+              {quests.pendingActivities > 0 && (
+                <span style={{ fontSize: '10px', opacity: 0.6, marginLeft: '4px' }}>
+                  (+{quests.pendingActivities} pending)
+                </span>
+              )}
+            </div>
+          </div>
+          <div style={{
+            height: '6px',
+            background: 'rgba(255,255,255,0.15)',
+            borderRadius: '3px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              height: '100%',
+              width: `${questsProgress}%`,
+              background: questsProgress === 100 ? '#10B981' : 'linear-gradient(90deg, #06B6D4, #3B82F6)',
+              borderRadius: '3px',
+              transition: 'width 0.3s ease'
+            }} />
+          </div>
+        </div>
+
+        {/* 3. Portfolio Defense */}
+        <div style={{
+          background: 'rgba(255,255,255,0.08)',
+          borderRadius: '12px',
+          padding: '16px',
+          border: portfolioProgress === 100 ? '2px solid #10B981' : '1px solid rgba(255,255,255,0.1)'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '10px' }}>
+            <span style={{ fontSize: '24px' }}>📋</span>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontWeight: '600', fontSize: '14px' }}>Leadership Portfolio Defense</div>
+              <div style={{ fontSize: '11px', opacity: 0.7 }}>
+                5-minute presentation + teacher endorsement
+              </div>
+            </div>
+            <div style={{ 
+              fontSize: '12px', 
+              fontWeight: '600',
+              color: portfolioProgress === 100 ? '#10B981' : 
+                     portfolio.status === 'submitted' ? '#F59E0B' : '#94A3B8'
+            }}>
+              {getPortfolioStatusText()}
+            </div>
+          </div>
+          <div style={{
+            height: '6px',
+            background: 'rgba(255,255,255,0.15)',
+            borderRadius: '3px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              height: '100%',
+              width: `${portfolioProgress}%`,
+              background: portfolioProgress === 100 ? '#10B981' : 'linear-gradient(90deg, #F59E0B, #EF4444)',
+              borderRadius: '3px',
+              transition: 'width 0.3s ease'
+            }} />
+          </div>
         </div>
       </div>
 
-      {/* Milestone Badges */}
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between',
-        paddingTop: '12px',
-        borderTop: '1px solid rgba(255,255,255,0.1)'
-      }}>
-        {[
-          { hours: 50, icon: '🌱', label: 'Starter' },
-          { hours: 100, icon: '🌿', label: 'Growing' },
-          { hours: 150, icon: '🌳', label: 'Thriving' },
-          { hours: 200, icon: '🎓', label: 'Graduate' }
-        ].map((milestone) => {
-          const achieved = displayData.verifiedHours >= milestone.hours;
-          return (
-            <div key={milestone.hours} style={{ 
-              textAlign: 'center',
-              opacity: achieved ? 1 : 0.4
-            }}>
-              <div style={{ 
-                fontSize: '24px', 
-                marginBottom: '4px',
-                filter: achieved ? 'none' : 'grayscale(100%)'
-              }}>
-                {milestone.icon}
-              </div>
-              <div style={{ fontSize: '10px', fontWeight: '600' }}>{milestone.hours}h</div>
-              <div style={{ fontSize: '9px', opacity: 0.7 }}>{milestone.label}</div>
-            </div>
-          );
-        })}
-      </div>
+      {/* Certificate Earned Banner */}
+      {certificateEarned && (
+        <div style={{
+          marginTop: '16px',
+          background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
+          borderRadius: '12px',
+          padding: '16px',
+          textAlign: 'center'
+        }}>
+          <div style={{ fontSize: '28px', marginBottom: '8px' }}>🎓</div>
+          <div style={{ fontWeight: '700', fontSize: '16px', marginBottom: '4px' }}>
+            Leadership Certificate Earned!
+          </div>
+          <div style={{ fontSize: '12px', opacity: 0.9 }}>
+            You've demonstrated outstanding leadership competencies
+          </div>
+        </div>
+      )}
     </div>
   );
 }
