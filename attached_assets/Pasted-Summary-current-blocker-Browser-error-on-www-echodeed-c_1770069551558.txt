@@ -1,0 +1,63 @@
+Summary (current blocker)
+Browser error on www.echodeed.com:
+
+
+index-clean-FINAL.js: Failed to load module script (server returned text/html)
+That means the request for /assets/index-clean-FINAL.js is returning HTML (fallback) instead of JS. This happens when static assets aren’t found in the directory the server is serving.
+
+Verified via HTTP
+GET https://www.echodeed.com → HTML referencing /assets/index-clean-FINAL.js
+GET https://www.echodeed.com/assets/index-clean-FINAL.js → 200 text/html, not JS
+So the server is falling back to index.html for that path.
+Most likely root cause
+Runtime static assets aren’t present where Express serves them (public). When missing, Express fallback sends index.html for all routes.
+
+Fixes applied & pushed
+Build-time sync to copy built assets into server/public
+
+New file: sync-public.mjs
+Build script updated in package.json to:
+
+vite build && node [sync-public.mjs](http://_vscodecontentref_/5) && npm install --omit=dev
+Ensures server/public has same assets as dist/public.
+server/public index updated to reference new bundle:
+
+server/public/index.html
+
+/assets/index-clean-FINAL.js/assets/index-clean-FINAL.css
+Runtime static fallback added to server bundle
+
+If dist/public missing, serve from server/public instead
+Logs: Static assets path: ...
+This was patched directly in dist/index.js (because source not available in repo).
+Current deployment status
+Changes pushed and Railway deploy triggered.
+Need to verify new deploy logs include:
+
+Static assets path: /app/dist/public
+or
+
+Static assets path: /app/server/public
+If not present, new bundle hasn’t deployed.
+What to check next
+Railway Deploy logs after latest push: confirm new log line “Static assets path: …”
+Re-test:
+curl -I https://www.echodeed.com/assets/index-clean-FINAL.js
+Should return Content-Type: application/javascript
+If still text/html: assets still missing or host isn’t serving the updated container.
+Extra context
+Local build fails (Node 20.0.0 too old), Railway builds fine.
+Service worker v5.0.0 does NOT cache JS/CSS.
+Old bundle cache loop fixed; now issue is missing static assets at runtime.
+If you want a quick status probe, hit /assets/index-clean-FINAL.js and check Content-Type. That’s the fastest signal.- If not present, new bundle hasn’t deployed.
+
+What to check next
+Railway Deploy logs after latest push: confirm new log line “Static assets path: …”
+Re-test:
+curl -I https://www.echodeed.com/assets/index-clean-FINAL.js
+Should return Content-Type: application/javascript
+If still text/html: assets still missing or host isn’t serving the updated container.
+Extra context
+Local build fails (Node 20.0.0 too old), Railway builds fine.
+Service worker v5.0.0 does NOT cache JS/CSS.
+Old bundle cache loop fixed; now issue is missing static assets at runtime.

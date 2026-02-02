@@ -1,0 +1,62 @@
+Current Issue
+Browser error:
+index-clean-FINAL.js:1 Failed to load module script... MIME type text/html
+
+This means the request to /assets/index-clean-FINAL.js is returning HTML (a fallback page) instead of JavaScript. That happens when the server can’t find the JS file and serves index.html instead.
+
+Confirmed Findings
+www.echodeed.com returns HTML for the JS file:
+GET /assets/index-clean-FINAL.js → 200 text/html
+So the server fallback route is being hit, not a real JS file.
+Root Cause (most likely)
+The static assets being served at runtime are missing or served from the wrong directory.
+Your backend serves static files from dist/public (Express production mode).
+If the file is missing there, it returns index.html for every path → MIME error.
+
+What We Already Tried
+✅ Fixing cache loop
+Service worker v5.0.0: never cache JS/CSS
+Renamed bundle to index-clean-FINAL.js
+Hard refresh / clear storage / SW unregister
+✅ Fixing build/import errors
+Removed bad import from main.jsx
+Simplified Dashboard with hardcoded cards
+Vite build succeeds on Railway (Node 20.20.0)
+✅ Ensuring bundle filename matches
+vite.config.ts outputs assets/index-clean-FINAL.js
+index.html updated to reference index-clean-FINAL.js
+✅ Verified runtime server config
+Production server serves static from dist/public
+If public missing, it would crash, but it starts fine
+✅ New Actions Added
+Sync script to copy build output into server/public:
+
+Added sync-public.mjs
+Build script now: vite build && node scripts/sync-public.mjs
+Updated index.html to reference index-clean-FINAL.js
+Server fallback updated (in bundled server):
+
+If dist/public missing, fallback to server/public
+Logs which static path is used
+Why It Still Fails
+The new fixes just shipped, and the DNS/hosting for www.echodeed.com might still be serving:
+
+Old build output
+A different container instance
+Or a static folder that doesn’t include index-clean-FINAL.js
+What to Look For in Logs
+After the latest deploy, Railway should log:
+
+
+Static assets path: /app/dist/public
+or
+
+
+Static assets path: /app/server/public
+If you don’t see that line, the new server bundle isn’t what’s running yet.
+
+Commands / Checks We Ran
+GET https://www.echodeed.com → HTML references index-clean-FINAL.js
+GET https://www.echodeed.com/assets/index-clean-FINAL.js → 200 text/html (wrong)
+Summary in One Line
+The server is returning HTML for the JS bundle because the static assets aren’t being found in the directory it’s actually serving. We added build-time syncing + runtime fallback to fix that, and the new deploy needs to be confirmed via log
