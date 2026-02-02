@@ -513,7 +513,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ==================== OBJECT STORAGE ROUTES ====================
   // Endpoint for serving private objects (verification photos)
-  app.get("/objects/:objectPath(*)", isAuthenticated, async (req: any, res) => {
+  app.get("/objects/:objectPath+", isAuthenticated, async (req: any, res) => {
     const userId = req.user?.claims?.sub;
     const objectStorageService = new ObjectStorageService();
     try {
