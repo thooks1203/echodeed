@@ -12476,6 +12476,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/mentor/activities', isAuthenticated, async (req, res) => {
     try {
       const userId = req.user?.claims?.sub || req.user?.id || 'mentor-001';
+      
+      // DEMO MODE FIX: Demo users have string IDs, not UUIDs - return empty array
+      const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+      if (!isValidUUID) {
+        return res.json([]); // Return empty for demo users
+      }
+      
       const activities = await storage.getMentorActivitiesByMentor(userId);
       res.json(activities);
     } catch (error) {
@@ -12488,6 +12495,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/mentor/badges', isAuthenticated, async (req, res) => {
     try {
       const userId = req.user?.claims?.sub || req.user?.id || 'mentor-001';
+      
+      // DEMO MODE FIX: Demo users have string IDs, not UUIDs - return sample badges
+      const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
+      if (!isValidUUID) {
+        // Return sample badge data for demo users
+        return res.json([
+          { id: 'badge-1', name: 'First Steps', description: 'Complete your first mentoring session', icon: 'footprints', category: 'milestone', isEarned: true, progress: 100 },
+          { id: 'badge-2', name: 'Kindness Champion', description: 'Share 10 kind acts', icon: 'heart', category: 'kindness', isEarned: true, progress: 100 },
+          { id: 'badge-3', name: 'Service Star', description: 'Complete 5 hours of service', icon: 'star', category: 'service', isEarned: false, progress: 60 }
+        ]);
+      }
+      
       const badges = await storage.getMentorBadgesByUser(userId);
       res.json(badges);
     } catch (error) {
