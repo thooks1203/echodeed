@@ -10702,16 +10702,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Get student's community service summary
-  app.get('/api/community-service/summary/:userId', async (req: any, res) => {
-    try {
-      const { userId } = req.params;
-      const { communityServiceEngine } = await import('./services/communityServiceEngine');
-      const summary = await communityServiceEngine.getStudentServiceSummary(userId);
-      res.json(summary);
-    } catch (error) {
-      console.error('Failed to get service summary:', error);
-      res.status(500).json({ error: 'Failed to get service summary' });
+  // DEMO MODE FIX: Allow demo access only when DEMO_MODE env var is explicitly set
+  app.get('/api/community-service/summary/:userId', async (req: any, res, next) => {
+    // SECURITY: Only bypass auth if DEMO_MODE is explicitly true (production demo)
+    // AND a valid demo role is provided (not just any session ID)
+    const isDemoMode = process.env.DEMO_MODE === 'true';
+    const sessionId = req.headers['x-session-id'] || req.headers['X-Session-ID'];
+    const demoRole = req.headers['x-demo-role'];
+    
+    // In demo mode with valid session and demo role, bypass auth for this educational demo
+    if (isDemoMode && sessionId && demoRole && ['student', 'teacher', 'admin', 'parent'].includes(demoRole)) {
+      try {
+        const { userId } = req.params;
+        const { communityServiceEngine } = await import('./services/communityServiceEngine');
+        const summary = await communityServiceEngine.getStudentServiceSummary(userId);
+        return res.json(summary);
+      } catch (error) {
+        console.error('Failed to get service summary:', error);
+        return res.status(500).json({ error: 'Failed to get service summary' });
+      }
     }
+    
+    // For non-demo mode or invalid demo credentials, use standard authentication
+    return isAuthenticated(req, res, async () => {
+      try {
+        const { userId } = req.params;
+        const { communityServiceEngine } = await import('./services/communityServiceEngine');
+        const summary = await communityServiceEngine.getStudentServiceSummary(userId);
+        res.json(summary);
+      } catch (error) {
+        console.error('Failed to get service summary:', error);
+        res.status(500).json({ error: 'Failed to get service summary' });
+      }
+    });
   });
 
   // Get student's service log history

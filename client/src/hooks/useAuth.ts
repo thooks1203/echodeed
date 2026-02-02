@@ -87,10 +87,13 @@ export function switchDemoRole(role: SchoolRole) {
   // Always set demo role and session for educational demo purposes
   localStorage.setItem('echodeed_demo_role', role);
   
-  // Ensure session exists for API calls
-  if (!localStorage.getItem('echodeed_session')) {
-    localStorage.setItem('echodeed_session', 'demo-session');
-  }
+  // CRITICAL: Force set the school level to 'high_school' for consistent demo experience
+  // This ensures the session properly recognizes the school level
+  localStorage.setItem('demo_school_level_override', 'high_school');
+  
+  // Ensure session exists for API calls - regenerate to force new session
+  const sessionId = `demo-${role}-${Date.now()}`;
+  localStorage.setItem('echodeed_session', sessionId);
   
   // Navigate to appropriate dashboard
   const dashboardPaths: Record<SchoolRole, string> = {

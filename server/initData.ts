@@ -79,6 +79,22 @@ export async function initializeSampleData() {
       log(`⚠️ Could not add school-level columns: ${error.message}`);
     }
     
+    // 🎓 Add missing rarity column to mentor_badges table (fixes Mentor 500 error)
+    try {
+      log('🎓 Adding mentor_badges.rarity column if missing...');
+      const { db } = await import('./db');
+      const { sql } = await import('drizzle-orm');
+      
+      await db.execute(sql`
+        ALTER TABLE mentor_badges
+        ADD COLUMN IF NOT EXISTS rarity text DEFAULT 'common'
+      `);
+      
+      log('✅ mentor_badges.rarity column added successfully');
+    } catch (error: any) {
+      log(`⚠️ Could not add rarity column: ${error.message}`);
+    }
+    
     // Update schools with enrollment codes for secure student registration
     try {
       log('🔐 Updating schools with enrollment codes...');

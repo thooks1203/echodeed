@@ -30,11 +30,17 @@ export function addSessionHeaders(headers: HeadersInit = {}): HeadersInit {
                      window.location.hostname.includes('echodeed.com');
   
   const userRole = localStorage.getItem('echodeed_demo_role') || 'student';
-  const sessionId = isDemoMode ? 'demo-session' : getSessionId();
+  // Use stored session ID from localStorage (set by switchDemoRole) or generate one
+  const storedSession = localStorage.getItem('echodeed_session');
+  const sessionId = storedSession || (isDemoMode ? 'demo-session' : getSessionId());
+  
+  // Get school level from localStorage (force high_school for consistent demo)
+  const schoolLevel = localStorage.getItem('demo_school_level_override') || 'high_school';
   
   return {
     ...headers,
     'X-Session-ID': sessionId,
     'X-Demo-Role': userRole, // Send user's actual role to server
+    'X-School-Level': schoolLevel, // Ensure high_school level is locked in
   };
 }
