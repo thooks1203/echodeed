@@ -1,6 +1,13 @@
 // Anonymous session management for $ECHO tokens
 // No personal data stored, just a random session ID
 
+const SCHOOL_LEVEL_KEY = 'demo_school_level_override';
+
+// Initialize school level to high_school on load (force it for Dr. Harris demo)
+if (typeof window !== 'undefined') {
+  localStorage.setItem(SCHOOL_LEVEL_KEY, 'high_school');
+}
+
 export function getSessionId(): string {
   const SESSION_KEY = 'echodeed_session';
   
