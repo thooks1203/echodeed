@@ -1,0 +1,252 @@
+2026-02-02T17:36:43.455165410Z [inf]  
+2026-02-02T17:36:45.758058997Z [inf]  [35m[Region: us-east4][0m
+2026-02-02T17:36:45.769257233Z [err]  INFO No package manager inferred, using npm default
+2026-02-02T17:36:45.769285245Z [err]  
+2026-02-02T17:36:45.811476521Z [inf]  
+2026-02-02T17:36:45.811513924Z [inf]  [38;2;125;86;243m╭─────────────────╮[0m
+2026-02-02T17:36:45.811523392Z [inf]  [38;2;125;86;243m│[0m Railpack 0.17.1 [38;2;125;86;243m│[0m
+2026-02-02T17:36:45.811527595Z [inf]  [38;2;125;86;243m╰─────────────────╯[0m
+2026-02-02T17:36:45.811533507Z [inf]  
+2026-02-02T17:36:45.811537614Z [inf]  [97m↳ Detected Node[0m
+2026-02-02T17:36:45.811541679Z [inf]  [97m↳ Using npm package manager[0m
+2026-02-02T17:36:45.811545681Z [inf]  
+2026-02-02T17:36:45.811549695Z [inf]  [1mPackages[0m
+2026-02-02T17:36:45.811553734Z [inf]  [38;5;238m──────────[0m
+2026-02-02T17:36:45.811558232Z [inf]  [95mnode[0m  [38;5;238m│[0m  [96m20.20.0[0m  [38;5;238m│[0m  package.json > engines > node (>=20.0.0)
+2026-02-02T17:36:45.811562085Z [inf]  
+2026-02-02T17:36:45.811565797Z [inf]  [1mSteps[0m
+2026-02-02T17:36:45.811569896Z [inf]  [38;5;238m──────────[0m
+2026-02-02T17:36:45.811573848Z [inf]  [95m▸ install[0m
+2026-02-02T17:36:45.811577787Z [inf]  [38;5;245m$[0m [1mnpm ci[0m
+2026-02-02T17:36:45.811581972Z [inf]  
+2026-02-02T17:36:45.811585808Z [inf]  [95m▸ build[0m
+2026-02-02T17:36:45.811589856Z [inf]  [38;5;245m$[0m [1mnpm run build[0m
+2026-02-02T17:36:45.811593467Z [inf]  
+2026-02-02T17:36:45.811597271Z [inf]  [1mDeploy[0m
+2026-02-02T17:36:45.811601439Z [inf]  [38;5;238m──────────[0m
+2026-02-02T17:36:45.811605534Z [inf]  [38;5;245m$[0m [1mNODE_ENV=production DEMO_MODE=true node dist/scripts/init-mentor-sample-data.js && node server-wrapper.mjs[0m
+2026-02-02T17:36:45.811609522Z [inf]  
+2026-02-02T17:36:45.811613328Z [inf]  
+2026-02-02T17:36:45.812675139Z [inf]  Successfully prepared Railpack plan for build
+2026-02-02T17:36:45.812709941Z [inf]  
+2026-02-02T17:36:45.812717808Z [inf]  
+2026-02-02T17:36:45.813273163Z [inf]  context: wr49-xtDi
+2026-02-02T17:36:45.986341196Z [inf]  [internal] load build definition from railpack-plan.json
+2026-02-02T17:36:45.986411518Z [inf]  [internal] load build definition from railpack-plan.json
+2026-02-02T17:36:45.986427758Z [inf]  [internal] load build definition from railpack-plan.json
+2026-02-02T17:36:46.001213957Z [inf]  [internal] load build definition from railpack-plan.json
+2026-02-02T17:36:46.003323496Z [inf]  resolve image config for docker-image://ghcr.io/railwayapp/railpack-frontend:v0.17.1
+2026-02-02T17:36:46.083512496Z [inf]  resolve image config for docker-image://ghcr.io/railwayapp/railpack-frontend:v0.17.1
+2026-02-02T17:36:46.083748195Z [inf]  docker-image://ghcr.io/railwayapp/railpack-frontend:v0.17.1@sha256:ac10f8936f18bb8b57892ff5fd7d70a55728296480089b165a9d2f14645babb3
+2026-02-02T17:36:46.084631845Z [inf]  docker-image://ghcr.io/railwayapp/railpack-frontend:v0.17.1@sha256:ac10f8936f18bb8b57892ff5fd7d70a55728296480089b165a9d2f14645babb3
+2026-02-02T17:36:46.089512466Z [inf]  docker-image://ghcr.io/railwayapp/railpack-frontend:v0.17.1@sha256:ac10f8936f18bb8b57892ff5fd7d70a55728296480089b165a9d2f14645babb3
+2026-02-02T17:36:46.089701547Z [inf]  docker-image://ghcr.io/railwayapp/railpack-frontend:v0.17.1@sha256:ac10f8936f18bb8b57892ff5fd7d70a55728296480089b165a9d2f14645babb3
+2026-02-02T17:36:46.179432732Z [inf]  load build definition from railpack-plan.json
+2026-02-02T17:36:46.180356954Z [inf]  load build definition from railpack-plan.json
+2026-02-02T17:36:46.180774437Z [inf]  load build definition from railpack-plan.json
+2026-02-02T17:36:46.201877513Z [inf]  load build definition from railpack-plan.json
+2026-02-02T17:36:46.299674234Z [inf]  [railpack] loading secrets
+2026-02-02T17:36:46.299732467Z [inf]  copy /root/.local/state/mise
+2026-02-02T17:36:46.299744270Z [inf]  copy /etc/mise/config.toml
+2026-02-02T17:36:46.299752056Z [inf]  copy /usr/local/bin/mise
+2026-02-02T17:36:46.299763779Z [inf]  copy /mise/installs
+2026-02-02T17:36:46.299779086Z [inf]  [railpack] copy secrets hash
+2026-02-02T17:36:46.299791767Z [inf]  install mise packages: node
+2026-02-02T17:36:46.299804643Z [inf]  create mise config
+2026-02-02T17:36:46.299816778Z [inf]  mkdir /etc/mise
+2026-02-02T17:36:46.299824804Z [inf]  docker-image://ghcr.io/railwayapp/railpack-builder:latest
+2026-02-02T17:36:46.299833033Z [inf]  install apt packages: libatomic1
+2026-02-02T17:36:46.299839935Z [inf]  [railpack] secrets hash
+2026-02-02T17:36:46.299848189Z [inf]  docker-image://ghcr.io/railwayapp/railpack-runtime:latest
+2026-02-02T17:36:46.299854882Z [inf]  copy /mise/shims
+2026-02-02T17:36:46.299929595Z [inf]  copy /app
+2026-02-02T17:36:46.299937757Z [inf]  copy /root/.cache
+2026-02-02T17:36:46.299947180Z [inf]  copy /app/node_modules
+2026-02-02T17:36:46.299954089Z [inf]  npm run build
+2026-02-02T17:36:46.299961462Z [inf]  copy / /app
+2026-02-02T17:36:46.299968763Z [inf]  npm ci
+2026-02-02T17:36:46.299976041Z [inf]  copy package.json
+2026-02-02T17:36:46.299989377Z [inf]  copy package-lock.json
+2026-02-02T17:36:46.299996450Z [inf]  loading .
+2026-02-02T17:36:46.300004199Z [inf]  mkdir -p /app/node_modules/.cache
+2026-02-02T17:36:46.300011929Z [inf]  [railpack] copy used secrets hash
+2026-02-02T17:36:46.300018429Z [inf]  [railpack] hash used secrets
+2026-02-02T17:36:46.300033668Z [inf]  [railpack] merge $packages:apt:runtime, $packages:mise, $build, $build
+2026-02-02T17:36:46.300055513Z [inf]  docker-image://ghcr.io/railwayapp/railpack-runtime:latest
+2026-02-02T17:36:46.300063373Z [inf]  loading .
+2026-02-02T17:36:46.300069889Z [inf]  docker-image://ghcr.io/railwayapp/railpack-builder:latest
+2026-02-02T17:36:46.300077467Z [inf]  [railpack] secrets hash
+2026-02-02T17:36:46.300087713Z [inf]  [railpack] secrets hash
+2026-02-02T17:36:46.300103306Z [inf]  [railpack] loading secrets
+2026-02-02T17:36:46.354066489Z [inf]  docker-image://ghcr.io/railwayapp/railpack-builder:latest
+2026-02-02T17:36:46.354587531Z [inf]  mkdir /etc/mise
+2026-02-02T17:36:46.354611008Z [inf]  create mise config
+2026-02-02T17:36:46.354630328Z [inf]  install mise packages: node
+2026-02-02T17:36:46.365883944Z [inf]  [railpack] loading secrets
+2026-02-02T17:36:46.366210507Z [inf]  loading .
+2026-02-02T17:36:46.366246744Z [inf]  [railpack] secrets hash
+2026-02-02T17:36:46.369130556Z [inf]  docker-image://ghcr.io/railwayapp/railpack-runtime:latest
+2026-02-02T17:36:46.369403099Z [inf]  docker-image://ghcr.io/railwayapp/railpack-runtime:latest
+2026-02-02T17:36:46.369509580Z [inf]  install apt packages: libatomic1
+2026-02-02T17:36:46.381404468Z [inf]  [railpack] secrets hash
+2026-02-02T17:36:46.388092932Z [inf]  [railpack] loading secrets
+2026-02-02T17:36:46.392458174Z [inf]  [railpack] loading secrets
+2026-02-02T17:36:46.392523453Z [inf]  [railpack] copy secrets hash
+2026-02-02T17:36:46.418295674Z [inf]  [railpack] copy secrets hash
+2026-02-02T17:36:46.420424169Z [inf]  [railpack] hash used secrets
+2026-02-02T17:36:46.505132007Z [inf]  [railpack] hash used secrets
+2026-02-02T17:36:46.516779058Z [inf]  [railpack] copy used secrets hash
+2026-02-02T17:36:46.548142932Z [inf]  Get:1 http://deb.debian.org/debian bookworm InRelease [151 kB]
+
+2026-02-02T17:36:46.559053371Z [inf]  Get:2 http://deb.debian.org/debian bookworm-updates InRelease [55.4 kB]
+
+2026-02-02T17:36:46.559064125Z [inf]  Get:3 http://deb.debian.org/debian-security bookworm-security InRelease [48.0 kB]
+
+2026-02-02T17:36:46.627679782Z [inf]  loading .
+2026-02-02T17:36:46.629748934Z [inf]  Get:4 http://deb.debian.org/debian bookworm/main amd64 Packages [8792 kB]
+
+2026-02-02T17:36:46.67100705Z [inf]  mise node@20.20.0    install
+
+2026-02-02T17:36:46.672228753Z [inf]  mise node@20.20.0    download node-v20.20.0-linux-x64.tar.gz
+
+2026-02-02T17:36:46.688413816Z [inf]  Get:5 http://deb.debian.org/debian bookworm-updates/main amd64 Packages [6924 B]
+
+2026-02-02T17:36:46.728543239Z [inf]  Get:6 http://deb.debian.org/debian-security bookworm-security/main amd64 Packages [293 kB]
+
+2026-02-02T17:36:47.530442762Z [inf]  mise node@20.20.0    extract node-v20.20.0-linux-x64.tar.gz
+
+2026-02-02T17:36:47.745461126Z [inf]  Fetched 9346 kB in 1s (7728 kB/s)
+Reading package lists...
+2026-02-02T17:36:48.245663861Z [inf]  
+
+2026-02-02T17:36:48.265482642Z [inf]  Reading package lists...
+2026-02-02T17:36:48.441175731Z [inf]  mise node@20.20.0    node -v
+
+2026-02-02T17:36:48.444916042Z [inf]  mise node@20.20.0    v20.20.0
+
+2026-02-02T17:36:48.445882999Z [inf]  mise node@20.20.0    npm -v
+
+2026-02-02T17:36:48.546492225Z [inf]  mise node@20.20.0    10.8.2
+
+2026-02-02T17:36:48.564315054Z [inf]  mise node@20.20.0  ✓ installed
+
+2026-02-02T17:36:48.648523983Z [inf]  install mise packages: node
+2026-02-02T17:36:48.654541624Z [inf]  mkdir -p /app/node_modules/.cache
+2026-02-02T17:36:48.773213705Z [inf]  
+
+2026-02-02T17:36:48.787233575Z [inf]  Building dependency tree...
+2026-02-02T17:36:48.823246686Z [inf]  mkdir -p /app/node_modules/.cache
+2026-02-02T17:36:48.825038610Z [inf]  copy package-lock.json
+2026-02-02T17:36:48.840190174Z [inf]  copy package-lock.json
+2026-02-02T17:36:48.841715484Z [inf]  copy package.json
+2026-02-02T17:36:48.893260525Z [inf]  copy package.json
+2026-02-02T17:36:48.894602604Z [inf]  npm ci
+2026-02-02T17:36:48.925840703Z [inf]  
+Reading state information...
+2026-02-02T17:36:48.926232586Z [inf]  
+
+2026-02-02T17:36:49.074433216Z [inf]  The following NEW packages will be installed:
+
+2026-02-02T17:36:49.075107136Z [inf]    libatomic1
+
+2026-02-02T17:36:49.094006993Z [inf]  0 upgraded, 1 newly installed, 0 to remove and 12 not upgraded.
+Need to get 9376 B of archives.
+After this operation, 46.1 kB of additional disk space will be used.
+Get:1 http://deb.debian.org/debian bookworm/main amd64 libatomic1 amd64 12.2.0-14+deb12u1 [9376 B]
+
+2026-02-02T17:36:49.115161431Z [inf]  npm warn config production Use `--omit=dev` instead.
+
+2026-02-02T17:36:49.215897712Z [inf]  debconf: delaying package configuration, since apt-utils is not installed
+
+2026-02-02T17:36:49.241252166Z [inf]  Fetched 9376 B in 0s (693 kB/s)
+
+2026-02-02T17:36:49.258050201Z [inf]  Selecting previously unselected package libatomic1:amd64.
+(Reading database ... 
+2026-02-02T17:36:49.259705567Z [inf]  (Reading database ... 5%
+(Reading database ... 10%
+(Reading database ... 15%
+(Reading database ... 20%
+(Reading database ... 25%
+(Reading database ... 30%
+(Reading database ... 35%
+(Reading database ... 40%
+(Reading database ... 45%
+(Reading database ... 50%
+(Reading database ... 55%
+(Reading database ... 60%
+(Reading database ... 65%
+(Reading database ... 70%
+2026-02-02T17:36:49.265183469Z [inf]  (Reading database ... 75%
+2026-02-02T17:36:49.268628848Z [inf]  (Reading database ... 80%
+2026-02-02T17:36:49.271481144Z [inf]  (Reading database ... 85%
+2026-02-02T17:36:49.274618081Z [inf]  (Reading database ... 90%
+2026-02-02T17:36:49.278114109Z [inf]  (Reading database ... 95%
+2026-02-02T17:36:49.282441716Z [inf]  (Reading database ... 100%
+(Reading database ... 6622 files and directories currently installed.)
+
+2026-02-02T17:36:49.282947953Z [inf]  Preparing to unpack .../libatomic1_12.2.0-14+deb12u1_amd64.deb ...
+
+2026-02-02T17:36:49.285496144Z [inf]  Unpacking libatomic1:amd64 (12.2.0-14+deb12u1) ...
+
+2026-02-02T17:36:49.307073281Z [inf]  Setting up libatomic1:amd64 (12.2.0-14+deb12u1) ...
+
+2026-02-02T17:36:49.310795411Z [inf]  Processing triggers for libc-bin (2.36-9+deb12u13) ...
+
+2026-02-02T17:36:49.362868932Z [inf]  install apt packages: libatomic1
+2026-02-02T17:36:49.626010897Z [inf]  copy /mise/shims
+2026-02-02T17:36:49.626057273Z [inf]  copy /mise/installs
+2026-02-02T17:36:49.626073244Z [inf]  copy /usr/local/bin/mise
+2026-02-02T17:36:49.626082250Z [inf]  copy /etc/mise/config.toml
+2026-02-02T17:36:49.626091199Z [inf]  copy /root/.local/state/mise
+2026-02-02T17:36:51.417961415Z [inf]  npm warn deprecated @esbuild-kit/esm-loader@2.6.5: Merged into tsx: https://tsx.is
+
+2026-02-02T17:36:51.418546999Z [inf]  npm warn deprecated @esbuild-kit/core-utils@3.3.2: Merged into tsx: https://tsx.is
+
+2026-02-02T17:36:54.005040943Z [inf]  
+added 288 packages, and audited 289 packages in 5s
+
+2026-02-02T17:36:54.02957384Z [inf]  
+6 vulnerabilities (4 moderate, 2 high)
+
+To address all issues, run:
+  npm audit fix
+
+Run `npm audit` for details.
+
+2026-02-02T17:36:54.119002111Z [inf]  npm ci
+2026-02-02T17:36:54.121153142Z [inf]  copy / /app
+2026-02-02T17:36:54.280515152Z [inf]  copy / /app
+2026-02-02T17:36:54.282456354Z [inf]  npm run build
+2026-02-02T17:36:54.510413188Z [inf]  npm warn config production Use `--omit=dev` instead.
+
+2026-02-02T17:36:54.525688024Z [inf]  
+> echodeed-temp@1.0.0 build
+> vite build && npm install --omit=dev
+
+
+2026-02-02T17:36:54.73625237Z [inf]  [36mvite v7.3.1 [32mbuilding client environment for production...[36m[39m
+
+2026-02-02T17:36:54.797569976Z [inf]  transforming...
+
+2026-02-02T17:36:54.809664547Z [inf]  [32m✓[39m 2 modules transformed.
+
+2026-02-02T17:36:54.814547346Z [inf]  [31m✗[39m Build failed in 51ms
+
+2026-02-02T17:36:54.814737305Z [inf]  [31merror during build:
+[31m[vite]: Rollup failed to resolve import "@/components/LeadershipProgress" from "/app/client/src/main.jsx".
+This is most likely unintended because it can break your application at runtime.
+If you do want to externalize this module explicitly add it to
+`build.rollupOptions.external`[31m
+    at viteLog (file:///app/node_modules/vite/dist/node/chunks/config.js:33635:57)
+    at file:///app/node_modules/vite/dist/node/chunks/config.js:33669:73
+    at onwarn (file:///app/node_modules/@vitejs/plugin-react/dist/index.js:76:7)
+    at file:///app/node_modules/vite/dist/node/chunks/config.js:33669:28
+    at onRollupLog (file:///app/node_modules/vite/dist/node/chunks/config.js:33664:63)
+    at onLog (file:///app/node_modules/vite/dist/node/chunks/config.js:33467:4)
+    at file:///app/node_modules/rollup/dist/es/shared/node-entry.js:20958:32
+    at Object.logger [as onLog] (file:///app/node_modules/rollup/dist/es/shared/node-entry.js:22945:9)
+    at ModuleLoader.handleInvalidResolvedId (file:///app/node_modules/rollup/dist/es/shared/node-entry.js:21689:26)
+    at file:///app/node_modules/rollup/dist/es/shared/node-entry.js:21647:26[39m
+
+2026-02-02T17:36:54.857028017Z [err]  npm run build
+2026-02-02T17:36:54.875438516Z [err]  ERROR: failed to build: failed to solve: process "npm run build" did not complete successfully: exit code: 1
