@@ -3,8 +3,8 @@
 
 const SCHOOL_LEVEL_KEY = 'demo_school_level_override';
 
-// Initialize school level to high_school on load (force it for Dr. Harris demo)
-if (typeof window !== 'undefined') {
+// Set default school level to high_school ONLY if not already set (preserves user's toggle choice)
+if (typeof window !== 'undefined' && !localStorage.getItem(SCHOOL_LEVEL_KEY)) {
   localStorage.setItem(SCHOOL_LEVEL_KEY, 'high_school');
 }
 
