@@ -1,0 +1,28 @@
+sw.js:172 EchoDeed™ Service Worker loaded - Your Kindness, Amplified! 🚀
+sw.js:15 EchoDeed™ Service Worker installing...
+sw.js:19 Caching core resources
+sw.js:23 EchoDeed™ Service Worker installed successfully
+sw.js:31 EchoDeed™ Service Worker activating...
+sw.js:40 EchoDeed™ Service Worker activated
+index-BlsEO_Ek.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: 0 postsLoading: true
+index-BlsEO_Ek.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-BlsEO_Ek.js:833 🔍 FETCHING POSTS - activeTab: feed filters: Object
+index-BlsEO_Ek.js:833 🌐 POSTS URL: /api/posts
+app:110 EchoDeed™ SW registered successfully
+index-BlsEO_Ek.js:1527 SW registered:  ServiceWorkerRegistration
+index-BlsEO_Ek.js:833 ✅ POSTS RECEIVED: 0 posts
+index-BlsEO_Ek.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: 0 postsLoading: false
+index-BlsEO_Ek.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-BlsEO_Ek.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: 0 postsLoading: false
+index-BlsEO_Ek.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-BlsEO_Ek.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: 0 postsLoading: false
+index-BlsEO_Ek.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-BlsEO_Ek.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: 0 postsLoading: false
+index-BlsEO_Ek.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-BlsEO_Ek.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: 0 postsLoading: false
+index-BlsEO_Ek.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-BlsEO_Ek.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: 0 postsLoading: false
+index-BlsEO_Ek.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-BlsEO_Ek.js:646 🔍 Fetching service hours for user: student-001
+api/community-service/summary/student-001:1  Failed to load resource: the server responded with a status of 401 ()
+index-BlsEO_Ek.js:646 📊 Service hours data: Object
