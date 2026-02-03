@@ -46,7 +46,7 @@ const BADGE_DEFINITIONS = {
   wildcat_legend: {
     id: 'wildcat_legend',
     name: 'Wildcat Legend',
-    description: 'Reached 50 deeds or recognized by Principal McNeill!',
+    description: 'Reached 50 deeds or received Principal recognition!',
     icon: '🐾',
     color: 'diamond',
     category: 'legendary',

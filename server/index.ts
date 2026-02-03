@@ -617,6 +617,15 @@ app.use((req, res, next) => {
           } catch (error) {
             log('⚠️ Teacher Reward System initialization failed:', error instanceof Error ? error.message : String(error));
           }
+
+          // Initialize Mentor Training Modules
+          try {
+            log('Initializing Mentor Training Modules...');
+            await initializeMentorTraining();
+            log('✓ Mentor Training Modules initialized');
+          } catch (error) {
+            log('⚠️ Mentor Training initialization failed:', error instanceof Error ? error.message : String(error));
+          }
         } catch (error) {
           log(`⚠️ Sample data initialization failed (non-fatal): ${error}`);
         }

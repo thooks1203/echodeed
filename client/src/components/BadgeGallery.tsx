@@ -24,7 +24,7 @@ interface BadgeDefinition {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
-// THE MCNEILL COLLECTION - Eastern Guilford Wildcat Badges
+// WILDCAT PRIDE BADGES - Eastern Guilford Achievement System
 // Modern "level-up" gaming aesthetic with Blue/Gold Wildcat colors
 // ═══════════════════════════════════════════════════════════════════════════════
 const DEFAULT_BADGES: BadgeDefinition[] = [
@@ -122,7 +122,7 @@ export function BadgeGallery({ userId }: { userId?: string }) {
         <div className="flex items-center gap-2">
           <span className="text-xl">🐾</span>
           <div>
-            <h3 className="font-bold text-amber-400 text-sm">The McNeill Collection</h3>
+            <h3 className="font-bold text-amber-400 text-sm">Wildcat Pride Badges</h3>
             <p className="text-xs text-blue-200">Eastern Guilford Wildcats</p>
           </div>
         </div>
