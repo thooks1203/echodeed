@@ -1,0 +1,250 @@
+the fixed arent working. i've been going back & forth with agents for almost a week now. i keep getting the same issues. here are the logs. i'm also open to other ways to resolve the matter or just eliminate these sections & maybe create something else. sw.js:172 EchoDeed™ Service Worker loaded - Your Kindness, Amplified! 🚀
+sw.js:15 EchoDeed™ Service Worker installing...
+sw.js:19 Caching core resources
+sw.js:23 EchoDeed™ Service Worker installed successfully
+sw.js:31 EchoDeed™ Service Worker activating...
+sw.js:40 EchoDeed™ Service Worker activated
+index-BlsEO_Ek.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: 0 postsLoading: true
+index-BlsEO_Ek.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-BlsEO_Ek.js:833 🔍 FETCHING POSTS - activeTab: feed filters: Object
+index-BlsEO_Ek.js:833 🌐 POSTS URL: /api/posts
+app:110 EchoDeed™ SW registered successfully
+index-BlsEO_Ek.js:1527 SW registered:  ServiceWorkerRegistration
+index-BlsEO_Ek.js:833 ✅ POSTS RECEIVED: 0 posts
+index-BlsEO_Ek.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: 0 postsLoading: false
+index-BlsEO_Ek.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-BlsEO_Ek.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: 0 postsLoading: false
+index-BlsEO_Ek.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-BlsEO_Ek.js:617 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+(anonymous) @ index-BlsEO_Ek.js:617
+index-BlsEO_Ek.js:617 `DialogContent` requires a `DialogTitle` for the component to be accessible for screen reader users.
+
+If you want to hide the `DialogTitle`, you can wrap it with our VisuallyHidden component.
+
+For more information, see https://radix-ui.com/primitives/docs/components/dialog
+(anonymous) @ index-BlsEO_Ek.js:617
+index-BlsEO_Ek.js:617 Warning: Missing `Description` or `aria-describedby={undefined}` for {DialogContent}.
+(anonymous) @ index-BlsEO_Ek.js:617
+api/mentor/training/a5fee7e8-28ea-4616-a9cc-4a8c79fc5ee8/start:1  Failed to load resource: the server responded with a status of 500 ()
+index-BlsEO_Ek.js:833 Error starting training: Error: 500: {"message":"Failed to start training"}
+    at a4 (index-BlsEO_Ek.js:573:58683)
+    at async ze (index-BlsEO_Ek.js:573:58888)
+    at async Object.mutationFn (index-BlsEO_Ek.js:833:3807)
+onError @ index-BlsEO_Ek.js:833
+index-BlsEO_Ek.js:646 🔍 Fetching service hours for user: student-001
+api/community-service/summary/student-001:1  Failed to load resource: the server responded with a status of 500 ()
+index-BlsEO_Ek.js:646 📊 Service hours data: Object
+2026-02-04T18:58:20.000000000Z [inf]  Starting Container
+2026-02-04T18:58:21.331897927Z [inf]  [server-wrapper] No .env file found, using Railway environment variables
+2026-02-04T18:58:21.331908421Z [inf]  [server-wrapper] Starting server with PORT: 8080
+2026-02-04T18:58:21.331976057Z [inf]  [server-wrapper] Checking for .env file at: /app/.env
+2026-02-04T18:58:22.249442985Z [inf]  📧 Email service initialized in demo/skip mode (no real emails will be sent)
+2026-02-04T18:58:22.249452917Z [inf]  6:58:21 PM [express] Starting EchoDeed application in production mode...
+2026-02-04T18:58:22.249460316Z [inf]  6:58:21 PM [express] Checking required environment variables for production...
+2026-02-04T18:58:22.249468138Z [inf]  6:58:21 PM [express] ✓ All required environment variables are present
+2026-02-04T18:58:22.249478202Z [inf]  6:58:21 PM [express] Registering routes and setting up server...
+2026-02-04T18:58:22.249487037Z [inf]  Running in non-Replit environment - using demo authentication mode
+2026-02-04T18:58:22.249493872Z [inf]  [RetryWorker] Started (interval ms): 60000
+2026-02-04T18:58:22.249501258Z [inf]  💜 Starting Pulse Check Scheduler Service...
+2026-02-04T18:58:22.249508513Z [inf]  ✅ Pulse Check Scheduler running - checking every minute
+2026-02-04T18:58:22.249515127Z [inf]  6:58:21 PM [express] ✓ Routes registered successfully
+2026-02-04T18:58:22.249522857Z [inf]  6:58:21 PM [express] ✓ Ensured pulse_checks.anon_tracking_id exists
+2026-02-04T18:58:22.249530813Z [inf]  6:58:21 PM [express] ✓ Converted mentorships.mentor_id to VARCHAR
+2026-02-04T18:58:22.249539382Z [inf]  6:58:21 PM [express] ✓ Converted mentorships.mentee_id to VARCHAR
+2026-02-04T18:58:22.249546921Z [inf]  6:58:21 PM [express] ✓ Converted mentor_activities.mentorship_id to VARCHAR
+2026-02-04T18:58:22.249554461Z [inf]  6:58:21 PM [relation "mentor_training_progress" does not exist] ⚠️ mentor_training_progress.user_id conversion failed:
+2026-02-04T18:58:22.249562358Z [inf]  6:58:21 PM [express] ✓ Converted community_service_logs.user_id to VARCHAR
+2026-02-04T18:58:22.249569401Z [inf]  6:58:21 PM [express] ✓ Ensured badge_definitions.color exists
+2026-02-04T18:58:22.249576712Z [inf]  6:58:21 PM [express] ✓ Ensured badge_definitions.requirements exists
+2026-02-04T18:58:22.254997714Z [inf]  6:58:21 PM [express] ✓ Ensured badge_definitions.is_active is boolean
+2026-02-04T18:58:22.255006624Z [inf]  6:58:21 PM [express] ✓ Ensured mentor_badge_awards.awarded_by is uuid
+2026-02-04T18:58:22.255015962Z [inf]  6:58:22 PM [express] ✓ Ensured mentor-related user id columns accept string IDs
+2026-02-04T18:58:22.255024794Z [inf]  6:58:22 PM [express] ✓ Added student_service_summaries.rejected_hours column
+2026-02-04T18:58:22.255032440Z [inf]  6:58:22 PM [express] ✓ Added mentor_activities.scheduled_at column
+2026-02-04T18:58:22.255075018Z [inf]  6:58:22 PM [express] ✓ Added student_service_summaries.total_tokens_earned column
+2026-02-04T18:58:22.255083555Z [inf]  6:58:22 PM [express] ✓ Added mentor_activities.is_completed column
+2026-02-04T18:58:22.255091884Z [inf]  6:58:22 PM [express] ✓ Added student_service_summaries.total_service_sessions column
+2026-02-04T18:58:22.255100020Z [inf]  6:58:22 PM [express] ✓ Added mentor_activities.mentor_reflection column
+2026-02-04T18:58:22.255107845Z [inf]  6:58:22 PM [express] ✓ Added mentor_activities.mentee_reflection column
+2026-02-04T18:58:22.255115413Z [inf]  6:58:22 PM [express] ✓ Added mentor_activities.completed_at column
+2026-02-04T18:58:22.255122854Z [inf]  6:58:22 PM [express] ✓ Added mentor_activities.kindness_act_discussed column
+2026-02-04T18:58:22.255130796Z [inf]  6:58:22 PM [express] ✓ Added mentor_activities.created_at column
+2026-02-04T18:58:22.272714177Z [inf]  6:58:22 PM [express] ✓ Added student_service_summaries.annual_goal_hours column
+2026-02-04T18:58:22.286266791Z [inf]  6:58:22 PM [express] ✓ Added student_service_summaries.current_school_year column
+2026-02-04T18:58:22.300237782Z [inf]  6:58:22 PM [express] ✓ Added student_service_summaries.current_streak column
+2026-02-04T18:58:22.312323373Z [inf]  6:58:22 PM [express] ✓ Added student_service_summaries.longest_streak column
+2026-02-04T18:58:22.329965270Z [inf]  6:58:22 PM [express] ✓ Added student_service_summaries.last_service_date column
+2026-02-04T18:58:23.173682955Z [inf]  6:58:22 PM [express] 🎭 DEMO_MODE: true
+2026-02-04T18:58:23.173692175Z [inf]  6:58:22 PM [express] 🗄️  Database URL: postgresql://postgres:UkqhvRdNHImFDDCwCBOrHmJlPfNj...
+2026-02-04T18:58:23.173697357Z [inf]  6:58:22 PM [express] ================================================================================
+2026-02-04T18:58:23.173733984Z [inf]  6:58:22 PM [express] ✓ Added student_service_summaries.last_updated column
+2026-02-04T18:58:23.173741298Z [inf]  6:58:22 PM [default for column "id" cannot be cast automatically to type uuid] ⚠️ mentor activity mentorship_id migration failed:
+2026-02-04T18:58:23.173746791Z [inf]  6:58:22 PM [express] Badge definitions missing requirements - re-seeding badge definitions...
+2026-02-04T18:58:23.173752188Z [inf]  6:58:22 PM [seedBadgeDefinitions is not defined] ⚠️ Mentor training seed check failed:
+2026-02-04T18:58:23.173757873Z [inf]  6:58:22 PM [express] Setting up static file serving...
+2026-02-04T18:58:23.173762767Z [inf]  6:58:22 PM [express] ✓ Static file serving configured for production
+2026-02-04T18:58:23.173767940Z [inf]  6:58:22 PM [express] Starting server on 0.0.0.0:8080...
+2026-02-04T18:58:23.173773050Z [inf]  6:58:22 PM [express] ✓ EchoDeed application successfully started and serving on port 8080
+2026-02-04T18:58:23.173778105Z [inf]  6:58:22 PM [express] ✓ Server is accessible at http://0.0.0.0:8080
+2026-02-04T18:58:23.173783107Z [inf]  6:58:22 PM [express] ✓ Environment: production
+2026-02-04T18:58:23.173789448Z [inf]  6:58:22 PM [express] ✓ No background schedulers required for high school FERPA compliance
+2026-02-04T18:58:23.173794786Z [inf]  6:58:22 PM [express] Initializing sample data in background...
+2026-02-04T18:58:23.173799487Z [inf]  6:58:22 PM [express] ================================================================================
+2026-02-04T18:58:23.173804901Z [inf]  6:58:22 PM [express] 🚀 INITIALIZING DEMO DATA
+2026-02-04T18:58:23.173809769Z [inf]  6:58:22 PM [express] 📍 Environment: production
+2026-02-04T18:58:23.218787670Z [inf]  6:58:22 PM [express] ✗ Database connection failed: Failed query: select "id", "count", "updated_at" from "kindness_counter" where "kindness_counter"."id" = $1
+2026-02-04T18:58:23.218798897Z [inf]  params: global
+2026-02-04T18:58:23.218805427Z [inf]  6:58:22 PM [express] ✗ Error initializing sample data: Database connection failed during startup: Failed query: select "id", "count", "updated_at" from "kindness_counter" where "kindness_counter"."id" = $1
+2026-02-04T18:58:23.218817997Z [inf]  params: global
+2026-02-04T18:58:23.218832414Z [inf]  6:58:22 PM [express] ⚠️ Sample data initialization failed (non-fatal): Error: Sample data initialization failed: Database connection failed during startup: Failed query: select "id", "count", "updated_at" from "kindness_counter" where "kindness_counter"."id" = $1
+2026-02-04T18:58:23.218840288Z [inf]  params: global
+2026-02-04T18:58:23.218847256Z [inf]  ⚠️ Subscription plans initialization temporarily disabled due to schema mismatch
+2026-02-04T19:02:39.518007739Z [inf]  🎁 Fetching reward offers (optimized for demo)...
+2026-02-04T19:02:39.518012507Z [inf]  🎁 Returning 0 unique offers (out of 0 total) - optimized for demo
+2026-02-04T19:02:39.518021448Z [inf]  7:02:35 PM [express] GET /api/rewards/offers/all/all 200 in 89ms :: []
+2026-02-04T19:02:39.518030131Z [inf]  7:02:35 PM [express] GET /api/tokens 200 in 99ms :: {"userId":"student-001","echoBalance":1103,"tota…
+2026-02-04T19:02:39.518034195Z [inf]  7:02:35 PM [express] GET /api/auth/user 200 in 108ms :: {"id":"student-001","email":"sofia.rodriguez…
+2026-02-04T19:02:40.607536597Z [inf]  7:02:40 PM [express] GET /api/auth/user 200 in 16ms :: {"id":"student-001","email":"sofia.rodriguez@…
+2026-02-04T19:02:40.607546144Z [inf]  7:02:40 PM [express] GET /api/pulse-check/today 200 in 13ms :: {"hasCheckedToday":false}
+2026-02-04T19:02:40.607555919Z [inf]  7:02:40 PM [express] GET /api/posts 200 in 11ms :: []
+2026-02-04T19:02:40.607563509Z [inf]  🎁 Fetching reward offers (optimized for demo)...
+2026-02-04T19:02:40.607570709Z [inf]  7:02:40 PM [express] GET /api/counter 200 in 12ms :: {"count":0}
+2026-02-04T19:02:40.607576771Z [inf]  🎁 Returning 0 unique offers (out of 0 total) - optimized for demo
+2026-02-04T19:02:40.607582488Z [inf]  7:02:40 PM [express] GET /api/rewards/offers/all/all 200 in 15ms :: []
+2026-02-04T19:02:40.607587824Z [inf]  7:02:40 PM [express] GET /api/tokens 200 in 81ms :: {"userId":"student-001","echoBalance":1103,"tota…
+2026-02-04T19:02:40.607595343Z [inf]  7:02:40 PM [express] GET /api/school-level/config 200 in 94ms :: {"level":"high_school","displayName…
+2026-02-04T19:02:47.420153159Z [inf]  7:02:47 PM [express] GET /api/mentor/stats 200 in 24ms :: {"totalMentees":0,"activeMentorships":0,"t…
+2026-02-04T19:02:47.423907627Z [inf]  🎓 Training API called for user: student-001
+2026-02-04T19:02:47.437594416Z [inf]  7:02:47 PM [express] GET /api/mentor/mentorships 200 in 36ms :: [{"id":"59c4b72a-280b-415b-a3e8-9ab7…
+2026-02-04T19:02:47.444093783Z [inf]  🎓 Training data retrieved: 6 modules, first has completed: false
+2026-02-04T19:02:47.444098746Z [inf]  7:02:47 PM [express] GET /api/mentor/training 200 in 25ms :: [{"id":"a5fee7e8-28ea-4616-a9cc-4a8c79f…
+2026-02-04T19:02:47.450242261Z [inf]  7:02:47 PM [express] GET /api/school-level/config 200 in 44ms :: {"level":"high_school","displayName…
+2026-02-04T19:02:47.458004175Z [inf]  7:02:47 PM [express] GET /api/mentor/activities 200 in 14ms :: []
+2026-02-04T19:02:47.516972594Z [inf]  7:02:47 PM [express] GET /api/mentor/badges 200 in 84ms :: []
+2026-02-04T19:02:47.518509582Z [inf]  7:02:47 PM [express] GET /api/auth/user 200 in 107ms :: {"id":"student-001","email":"sofia.rodriguez…
+2026-02-04T19:02:50.404418112Z [err]  Error starting training: DrizzleQueryError: Failed query: insert into "user_mentor_training" ("id", "user_id", "training_id", "started_at", "completed_at", "progress_percentage", "current_module", "time_spent", "passed", "certificate_issued") values (default, $1, $2, $3, default, $4, default, default, default, default)
+2026-02-04T19:02:50.404422192Z [err]  params: student-001,a5fee7e8-28ea-4616-a9cc-4a8c79fc5ee8,2026-02-04T19:02:50.194Z,0
+2026-02-04T19:02:50.404426620Z [err]      at NodePgPreparedQuery.queryWithCache (file:///app/node_modules/drizzle-orm/pg-core/session.js:41:15)
+2026-02-04T19:02:50.404431726Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2026-02-04T19:02:50.404437012Z [err]      at async DatabaseStorage.startMentorTraining (file:///app/dist/index.js:5914:9)
+2026-02-04T19:02:50.404442453Z [err]      at async file:///app/dist/index.js:31757:22 {
+2026-02-04T19:02:50.404449300Z [err]    query: 'insert into "user_mentor_training" ("id", "user_id", "training_id", "started_at", "completed_at", "progress_percentage", "current_module", "time_spent", "passed", "certificate_issued") values (default, $1, $2, $3, default, $4, default, default, default, default)',
+2026-02-04T19:02:50.404456081Z [err]    params: [
+2026-02-04T19:02:50.404462442Z [err]      'student-001',
+2026-02-04T19:02:50.404468329Z [err]      'a5fee7e8-28ea-4616-a9cc-4a8c79fc5ee8',
+2026-02-04T19:02:50.404475407Z [err]      '2026-02-04T19:02:50.194Z',
+2026-02-04T19:02:50.404482164Z [inf]      0
+2026-02-04T19:02:50.404488535Z [err]    ],
+2026-02-04T19:02:50.404493938Z [err]    cause: error: insert or update on table "user_mentor_training" violates foreign key constraint "user_mentor_training_user_id_fkey"
+2026-02-04T19:02:50.404501003Z [err]        at /app/node_modules/pg-pool/index.js:45:11
+2026-02-04T19:02:50.404507289Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2026-02-04T19:02:50.409974574Z [err]        at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:113:20
+2026-02-04T19:02:50.409981138Z [err]        at async NodePgPreparedQuery.queryWithCache (file:///app/node_modules/drizzle-orm/pg-core/session.js:39:16)
+2026-02-04T19:02:50.409987315Z [err]        at async DatabaseStorage.startMentorTraining (file:///app/dist/index.js:5914:9)
+2026-02-04T19:02:50.409993848Z [err]        at async file:///app/dist/index.js:31757:22 {
+2026-02-04T19:02:50.410006477Z [err]      length: 322,
+2026-02-04T19:02:50.410013056Z [err]      severity: 'ERROR',
+2026-02-04T19:02:50.410018762Z [err]      code: '23503',
+2026-02-04T19:02:50.410024751Z [err]      detail: 'Key (user_id)=(student-001) is not present in table "mentor_training".',
+2026-02-04T19:02:50.410030302Z [err]      hint: undefined,
+2026-02-04T19:02:50.410050611Z [err]      position: undefined,
+2026-02-04T19:02:50.410058186Z [err]      internalPosition: undefined,
+2026-02-04T19:02:50.410068408Z [err]      internalQuery: undefined,
+2026-02-04T19:02:50.410075432Z [err]      where: undefined,
+2026-02-04T19:02:50.410080664Z [err]      schema: 'public',
+2026-02-04T19:02:50.410086618Z [err]      table: 'user_mentor_training',
+2026-02-04T19:02:50.410092870Z [err]      column: undefined,
+2026-02-04T19:02:50.410100264Z [err]      dataType: undefined,
+2026-02-04T19:02:50.410106443Z [err]      constraint: 'user_mentor_training_user_id_fkey',
+2026-02-04T19:02:50.410112446Z [err]      file: 'ri_triggers.c',
+2026-02-04T19:02:50.410118548Z [err]      line: '2599',
+2026-02-04T19:02:50.410125675Z [err]      routine: 'ri_ReportViolation'
+2026-02-04T19:02:50.410131495Z [err]    }
+2026-02-04T19:02:50.410137642Z [err]  }
+2026-02-04T19:02:50.410144425Z [inf]  7:02:50 PM [express] POST /api/mentor/training/a5fee7e8-28ea-4616-a9cc-4a8c79fc5ee8/start 500 in 32m…
+2026-02-04T19:02:53.322657124Z [err]    params: [ 'student-001' ],
+2026-02-04T19:02:53.322743486Z [inf]  7:02:53 PM [express] GET /api/badges/definitions 200 in 6ms :: [{"id":"a0895b59-da9c-409b-a4bf-5ebd3…
+2026-02-04T19:02:53.322750883Z [inf]  7:02:53 PM [express] GET /api/auth/user 200 in 18ms :: {"id":"student-001","email":"sofia.rodriguez@…
+2026-02-04T19:02:53.322757637Z [inf]  7:02:53 PM [express] GET /api/badges/mine 200 in 5ms :: []
+2026-02-04T19:02:53.322763718Z [err]  ❌ Error getting student summary: DrizzleQueryError: Failed query: select "id", "user_id", "school_id", "total_hours", "verified_hours", "pending_hours", "rejected_hours", "total_tokens_earned", "total_service_sessions", "annual_goal_hours", "current_school_year", "current_streak", "longest_streak", "last_service_date", "last_updated", "created_at" from "student_service_summaries" where "student_service_summaries"."user_id" = $1
+2026-02-04T19:02:53.322770129Z [err]  params: student-001
+2026-02-04T19:02:53.322777478Z [err]      at NodePgPreparedQuery.queryWithCache (file:///app/node_modules/drizzle-orm/pg-core/session.js:41:15)
+2026-02-04T19:02:53.322785122Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2026-02-04T19:02:53.322793180Z [err]      at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:117:22
+2026-02-04T19:02:53.322800401Z [err]      at async CommunityServiceEngine.getStudentServiceSummary (file:///app/dist/index.js:12051:27)
+2026-02-04T19:02:53.322807478Z [err]      at async file:///app/dist/index.js:30495:23 {
+2026-02-04T19:02:53.322817807Z [err]    query: 'select "id", "user_id", "school_id", "total_hours", "verified_hours", "pending_hours", "rejected_hours", "total_tokens_earned", "total_service_sessions", "annual_goal_hours", "current_school_year", "current_streak", "longest_streak", "last_service_date", "last_updated", "created_at" from "student_service_summaries" where "student_service_summaries"."user_id" = $1',
+2026-02-04T19:02:53.327211907Z [err]    cause: error: column "created_at" does not exist
+2026-02-04T19:02:53.327218017Z [err]        at /app/node_modules/pg-pool/index.js:45:11
+2026-02-04T19:02:53.327223520Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2026-02-04T19:02:53.327228924Z [err]        at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:124:18
+2026-02-04T19:02:53.327234883Z [err]        at async NodePgPreparedQuery.queryWithCache (file:///app/node_modules/drizzle-orm/pg-core/session.js:39:16)
+2026-02-04T19:02:53.327240663Z [err]        at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:117:22
+2026-02-04T19:02:53.327248688Z [err]        at async CommunityServiceEngine.getStudentServiceSummary (file:///app/dist/index.js:12051:27)
+2026-02-04T19:02:53.327255577Z [err]        at async file:///app/dist/index.js:30495:23 {
+2026-02-04T19:02:53.327262538Z [err]      length: 194,
+2026-02-04T19:02:53.327269991Z [err]      severity: 'ERROR',
+2026-02-04T19:02:53.327277025Z [err]      code: '42703',
+2026-02-04T19:02:53.327286029Z [err]      detail: undefined,
+2026-02-04T19:02:53.327295205Z [err]      hint: 'Perhaps you meant to reference the column "student_service_summaries.updated_at".',
+2026-02-04T19:02:53.327303128Z [err]      position: '272',
+2026-02-04T19:02:53.327311066Z [err]      internalPosition: undefined,
+2026-02-04T19:02:53.327317377Z [err]      internalQuery: undefined,
+2026-02-04T19:02:53.327326922Z [err]      where: undefined,
+2026-02-04T19:02:53.327335942Z [err]      schema: undefined,
+2026-02-04T19:02:53.327343644Z [err]      table: undefined,
+2026-02-04T19:02:53.327351544Z [err]      column: undefined,
+2026-02-04T19:02:53.327364206Z [err]      dataType: undefined,
+2026-02-04T19:02:53.327372875Z [err]      constraint: undefined,
+2026-02-04T19:02:53.327379154Z [err]      file: 'parse_relation.c',
+2026-02-04T19:02:53.327551446Z [err]      line: '3723',
+2026-02-04T19:02:53.327557109Z [err]      routine: 'errorMissingColumn'
+2026-02-04T19:02:53.327563196Z [err]    }
+2026-02-04T19:02:53.327570502Z [err]  }
+2026-02-04T19:02:53.327576725Z [err]  Failed to get service summary: DrizzleQueryError: Failed query: select "id", "user_id", "school_id", "total_hours", "verified_hours", "pending_hours", "rejected_hours", "total_tokens_earned", "total_service_sessions", "annual_goal_hours", "current_school_year", "current_streak", "longest_streak", "last_service_date", "last_updated", "created_at" from "student_service_summaries" where "student_service_summaries"."user_id" = $1
+2026-02-04T19:02:53.327583112Z [err]  params: student-001
+2026-02-04T19:02:53.327589147Z [err]      at NodePgPreparedQuery.queryWithCache (file:///app/node_modules/drizzle-orm/pg-core/session.js:41:15)
+2026-02-04T19:02:53.327595097Z [err]      at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2026-02-04T19:02:53.327601790Z [err]      at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:117:22
+2026-02-04T19:02:53.327608075Z [err]      at async CommunityServiceEngine.getStudentServiceSummary (file:///app/dist/index.js:12051:27)
+2026-02-04T19:02:53.327613865Z [err]      at async file:///app/dist/index.js:30495:23 {
+2026-02-04T19:02:53.327619497Z [err]    query: 'select "id", "user_id", "school_id", "total_hours", "verified_hours", "pending_hours", "rejected_hours", "total_tokens_earned", "total_service_sessions", "annual_goal_hours", "current_school_year", "current_streak", "longest_streak", "last_service_date", "last_updated", "created_at" from "student_service_summaries" where "student_service_summaries"."user_id" = $1',
+2026-02-04T19:02:53.327624888Z [err]    params: [ 'student-001' ],
+2026-02-04T19:02:53.327629809Z [err]    cause: error: column "created_at" does not exist
+2026-02-04T19:02:53.327634738Z [err]        at /app/node_modules/pg-pool/index.js:45:11
+2026-02-04T19:02:53.330093220Z [err]      table: undefined,
+2026-02-04T19:02:53.330105065Z [err]      column: undefined,
+2026-02-04T19:02:53.330109330Z [err]        at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+2026-02-04T19:02:53.330116028Z [err]      dataType: undefined,
+2026-02-04T19:02:53.330122585Z [err]        at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:124:18
+2026-02-04T19:02:53.330128500Z [err]      constraint: undefined,
+2026-02-04T19:02:53.330135184Z [err]        at async NodePgPreparedQuery.queryWithCache (file:///app/node_modules/drizzle-orm/pg-core/session.js:39:16)
+2026-02-04T19:02:53.330145327Z [err]      file: 'parse_relation.c',
+2026-02-04T19:02:53.330147285Z [err]        at async file:///app/node_modules/drizzle-orm/node-postgres/session.js:117:22
+2026-02-04T19:02:53.330161974Z [err]        at async CommunityServiceEngine.getStudentServiceSummary (file:///app/dist/index.js:12051:27)
+2026-02-04T19:02:53.330162736Z [err]      line: '3723',
+2026-02-04T19:02:53.330174931Z [err]      routine: 'errorMissingColumn'
+2026-02-04T19:02:53.330182228Z [err]    }
+2026-02-04T19:02:53.330674195Z [err]        at async file:///app/dist/index.js:30495:23 {
+2026-02-04T19:02:53.330687576Z [err]      length: 194,
+2026-02-04T19:02:53.330694306Z [err]      severity: 'ERROR',
+2026-02-04T19:02:53.330698938Z [err]      code: '42703',
+2026-02-04T19:02:53.330703097Z [err]      detail: undefined,
+2026-02-04T19:02:53.330707902Z [err]      hint: 'Perhaps you meant to reference the column "student_service_summaries.updated_at".',
+2026-02-04T19:02:53.330715391Z [err]      position: '272',
+2026-02-04T19:02:53.330720042Z [err]      internalPosition: undefined,
+2026-02-04T19:02:53.330724153Z [err]      internalQuery: undefined,
+2026-02-04T19:02:53.330729145Z [err]      where: undefined,
+2026-02-04T19:02:53.330733736Z [err]      schema: undefined,
+2026-02-04T19:02:53.332476244Z [err]  }
+2026-02-04T19:02:53.332485187Z [inf]  7:02:53 PM [express] GET /api/community-service/summary/student-001 500 in 29ms :: {"error":"Failed …
+2026-02-04T19:02:53.332491465Z [inf]  7:02:53 PM [express] GET /api/tokens 304 in 49ms :: {"userId":"student-001","echoBalance":1103,"tota…
+2026-02-04T19:02:53.332497024Z [inf]  7:02:53 PM [express] GET /api/school-level/config 200 in 64ms :: {"level":"high_school","displayName…
+2026-02-04T19:02:56.703205670Z [inf]  🎓 Training API called for user: student-001
+2026-02-04T19:02:56.709627022Z [inf]  7:02:56 PM [express] GET /api/mentor/mentorships 200 in 18ms :: [{"id":"59c4b72a-280b-415b-a3e8-9ab7…
+2026-02-04T19:02:56.714463968Z [inf]  7:02:56 PM [express] GET /api/mentor/stats 200 in 20ms :: {"totalMentees":0,"activeMentorships":0,"t…
+2026-02-04T19:02:56.722413111Z [inf]  7:02:56 PM [express] GET /api/mentor/activities 200 in 25ms :: []
+2026-02-04T19:02:58.053647060Z [inf]  🎓 Training data retrieved: 6 modules, first has completed: false
+2026-02-04T19:02:58.053654268Z [inf]  7:02:56 PM [express] GET /api/mentor/training 200 in 85ms :: [{"id":"a5fee7e8-28ea-4616-a9cc-4a8c79f…
+2026-02-04T19:02:58.053661293Z [inf]  7:02:56 PM [express] GET /api/mentor/badges 200 in 102ms :: []
+2026-02-04T19:03:29.297802493Z [inf]  🧹 Rate limiter cleanup: 0 active records 
