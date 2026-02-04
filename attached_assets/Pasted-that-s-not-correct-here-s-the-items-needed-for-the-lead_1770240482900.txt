@@ -1,0 +1,49 @@
+that's not correct. here's the items needed for the leadership certificate: 🏆
+Leadership Certificate Track
+Complete all 3 requirements to earn your certificate
+
+🚀 In Progress
+NaN%
+Overall
+📚
+Mentor Training Program
+Complete all 5 leadership development modules
+/5
+🤝
+Verified Kindness Quests
+Log and verify 10 acts of community service
+3/10(+1 pending)
+📋
+Leadership Portfolio Defense
+5-minute presentation + teacher endorsement
+Not Started
+here's a breakdown of how to achieve it. let me know if there's confusion with it. Please implement a dedicated Leadership Certificate Track that is separate from the general Mentorship program. This track is the prerequisite for the $500 EchoDeed Leadership Scholarship.
+
+Data & Progress Logic
+Requirement 1: Core Leadership Training
+
+Display 3 specific modules: "The Power of One", "Self-Awareness", and "Effective Communication".
+
+These must be tracked under a new logic key (e.g., leadership_track_status) to avoid caching issues with the old mentor program [cite: 2026-02-04].
+
+Requirement 2: Verified Kindness Quests
+
+Requirement: Log and verify 10 acts of community service.
+
+Progress is currently 3/10; ensure the progress bar pulls from community_service_logs.
+
+Requirement 3: Leadership Portfolio Defense
+
+Requirement: A 5-minute presentation + teacher endorsement.
+
+This is a manual toggle that an admin/teacher must approve in the database.
+
+UI & Dashboard Updates
+Dedicated View: Create a "Leadership Track" tab in the sidebar [cite: 2026-02-04].
+
+Progress Circle: The "Overall %" circle should calculate based on the completion of these 3 pillars (Training, 10 Quests, Portfolio).
+
+Scholarship Banner: Add a label or banner to this section stating: "Complete this track to qualify for the $500 EchoDeed Leadership Scholarship" [cite: 2026-02-01].
+
+Database Handshake (Railway)
+Please ensure that when a student completes one of the 3 modules, it writes to a new table or a clearly defined metadata field to prevent the "instant completion" bug we encountered previously.
