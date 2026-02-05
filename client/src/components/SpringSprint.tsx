@@ -1459,8 +1459,8 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
                       Give 3 genuine compliments to classmates today!
                     </p>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Progress value={66} style={{ flex: 1, height: '8px' }} />
-                      <span style={{ fontSize: '12px', fontWeight: '600', color: '#059669' }}>2/3</span>
+                      <Progress value={0} style={{ flex: 1, height: '8px' }} />
+                      <span style={{ fontSize: '12px', fontWeight: '600', color: '#059669' }}>0/3</span>
                     </div>
                   </div>
                   <div style={{
