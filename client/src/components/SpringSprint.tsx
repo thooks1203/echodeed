@@ -8,7 +8,318 @@ import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { BackButton } from "@/components/BackButton";
-import { CheckCircle, Circle, Trophy, GraduationCap, Heart, FileText, Upload, Award, Calendar, Target } from "lucide-react";
+import { CheckCircle, Circle, Trophy, GraduationCap, Heart, FileText, Upload, Award, Calendar, Target, ChevronDown, ChevronRight, BookOpen } from "lucide-react";
+
+// Interactive Module Content Viewer - breaks content into clickable sections
+function ModuleContentViewer({ content }: { content: string }) {
+  const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set([0])); // First section open by default
+  const [currentSection, setCurrentSection] = useState(0);
+  
+  // Parse content into sections by ### headers
+  const parseContent = (rawContent: string) => {
+    const lines = rawContent.split('\n');
+    const sections: { title: string; content: string; type: 'intro' | 'lesson' | 'activity' | 'summary' }[] = [];
+    let currentTitle = '';
+    let currentContent: string[] = [];
+    
+    lines.forEach((line) => {
+      if (line.startsWith('### ')) {
+        // Save previous section if exists
+        if (currentTitle || currentContent.length > 0) {
+          const title = currentTitle || 'Introduction';
+          let type: 'intro' | 'lesson' | 'activity' | 'summary' = 'lesson';
+          if (title.toLowerCase().includes('introduction')) type = 'intro';
+          else if (title.toLowerCase().includes('activity') || title.toLowerCase().includes('reflection')) type = 'activity';
+          else if (title.toLowerCase().includes('takeaway') || title.toLowerCase().includes('final')) type = 'summary';
+          
+          sections.push({
+            title,
+            content: currentContent.join('\n').trim(),
+            type
+          });
+        }
+        currentTitle = line.replace('### ', '').trim();
+        currentContent = [];
+      } else if (line.startsWith('## ')) {
+        // Main title - add as intro
+        if (sections.length === 0) {
+          currentTitle = line.replace('## ', '').trim();
+        }
+      } else if (line !== '---') {
+        currentContent.push(line);
+      }
+    });
+    
+    // Don't forget the last section
+    if (currentTitle || currentContent.length > 0) {
+      const title = currentTitle || 'Conclusion';
+      let type: 'intro' | 'lesson' | 'activity' | 'summary' = 'summary';
+      if (title.toLowerCase().includes('activity')) type = 'activity';
+      sections.push({
+        title,
+        content: currentContent.join('\n').trim(),
+        type
+      });
+    }
+    
+    return sections;
+  };
+  
+  const sections = parseContent(content);
+  
+  const toggleSection = (index: number) => {
+    const newExpanded = new Set(expandedSections);
+    if (newExpanded.has(index)) {
+      newExpanded.delete(index);
+    } else {
+      newExpanded.add(index);
+      setCurrentSection(Math.max(currentSection, index));
+    }
+    setExpandedSections(newExpanded);
+  };
+  
+  const goToNextSection = () => {
+    const nextIndex = currentSection + 1;
+    if (nextIndex < sections.length) {
+      const newExpanded = new Set(expandedSections);
+      newExpanded.add(nextIndex);
+      setExpandedSections(newExpanded);
+      setCurrentSection(nextIndex);
+    }
+  };
+  
+  const formatContent = (text: string) => {
+    // Convert markdown-style formatting to styled elements
+    return text.split('\n').map((line, idx) => {
+      // Bold text
+      let formattedLine = line.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+      
+      // Handle bullet points
+      if (line.trim().startsWith('- ')) {
+        return (
+          <div key={idx} style={{ 
+            paddingLeft: '16px', 
+            marginBottom: '8px',
+            position: 'relative'
+          }}>
+            <span style={{ 
+              position: 'absolute', 
+              left: '0', 
+              color: '#6366F1',
+              fontWeight: 'bold'
+            }}>•</span>
+            <span dangerouslySetInnerHTML={{ __html: formattedLine.replace('- ', '') }} />
+          </div>
+        );
+      }
+      
+      // Handle numbered items
+      const numberedMatch = line.match(/^(\d+)\.\s(.+)/);
+      if (numberedMatch) {
+        return (
+          <div key={idx} style={{ 
+            paddingLeft: '24px', 
+            marginBottom: '8px',
+            position: 'relative'
+          }}>
+            <span style={{ 
+              position: 'absolute', 
+              left: '0', 
+              color: '#6366F1',
+              fontWeight: 'bold'
+            }}>{numberedMatch[1]}.</span>
+            <span dangerouslySetInnerHTML={{ __html: numberedMatch[2] }} />
+          </div>
+        );
+      }
+      
+      // Handle checkmarks
+      if (line.trim().startsWith('✓')) {
+        return (
+          <div key={idx} style={{ 
+            marginBottom: '8px',
+            color: '#059669',
+            fontWeight: '500'
+          }}>
+            {line}
+          </div>
+        );
+      }
+      
+      // Regular paragraph
+      if (line.trim()) {
+        return (
+          <p key={idx} style={{ marginBottom: '12px' }} dangerouslySetInnerHTML={{ __html: formattedLine }} />
+        );
+      }
+      
+      return null;
+    });
+  };
+  
+  const getSectionIcon = (type: string, isOpen: boolean) => {
+    const iconStyle = { width: '18px', height: '18px' };
+    switch(type) {
+      case 'intro': return <BookOpen style={{ ...iconStyle, color: '#6366F1' }} />;
+      case 'activity': return <Target style={{ ...iconStyle, color: '#F59E0B' }} />;
+      case 'summary': return <CheckCircle style={{ ...iconStyle, color: '#059669' }} />;
+      default: return isOpen ? <ChevronDown style={iconStyle} /> : <ChevronRight style={iconStyle} />;
+    }
+  };
+  
+  const getSectionColor = (type: string) => {
+    switch(type) {
+      case 'intro': return { bg: '#EEF2FF', border: '#6366F1', accent: '#4F46E5' };
+      case 'activity': return { bg: '#FFFBEB', border: '#F59E0B', accent: '#D97706' };
+      case 'summary': return { bg: '#ECFDF5', border: '#10B981', accent: '#059669' };
+      default: return { bg: '#F9FAFB', border: '#D1D5DB', accent: '#6B7280' };
+    }
+  };
+  
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      {/* Progress indicator */}
+      <div style={{ 
+        display: 'flex', 
+        alignItems: 'center', 
+        gap: '8px', 
+        marginBottom: '8px',
+        padding: '12px 16px',
+        background: '#F0FDF4',
+        borderRadius: '8px',
+        border: '1px solid #BBF7D0'
+      }}>
+        <BookOpen style={{ width: '16px', height: '16px', color: '#059669' }} />
+        <span style={{ fontSize: '13px', color: '#166534', fontWeight: '500' }}>
+          Reading Progress: {expandedSections.size} of {sections.length} sections viewed
+        </span>
+        <div style={{ 
+          flex: 1, 
+          height: '6px', 
+          background: '#D1FAE5', 
+          borderRadius: '3px',
+          marginLeft: '8px'
+        }}>
+          <div style={{ 
+            width: `${(expandedSections.size / sections.length) * 100}%`,
+            height: '100%',
+            background: '#059669',
+            borderRadius: '3px',
+            transition: 'width 0.3s ease'
+          }} />
+        </div>
+      </div>
+      
+      {/* Sections */}
+      {sections.map((section, index) => {
+        const isOpen = expandedSections.has(index);
+        const isUnlocked = index <= currentSection + 1;
+        const colors = getSectionColor(section.type);
+        
+        return (
+          <div 
+            key={index}
+            style={{
+              borderRadius: '12px',
+              border: `2px solid ${isOpen ? colors.border : '#E5E7EB'}`,
+              overflow: 'hidden',
+              opacity: isUnlocked ? 1 : 0.6,
+              transition: 'all 0.2s ease'
+            }}
+          >
+            {/* Section Header - Clickable */}
+            <button
+              onClick={() => isUnlocked && toggleSection(index)}
+              disabled={!isUnlocked}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '12px',
+                padding: '16px 20px',
+                background: isOpen ? colors.bg : 'white',
+                border: 'none',
+                cursor: isUnlocked ? 'pointer' : 'not-allowed',
+                textAlign: 'left',
+                transition: 'background 0.2s ease'
+              }}
+            >
+              <div style={{
+                width: '28px',
+                height: '28px',
+                borderRadius: '50%',
+                background: isOpen ? colors.border : '#E5E7EB',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'white',
+                fontSize: '12px',
+                fontWeight: 'bold',
+                flexShrink: 0
+              }}>
+                {expandedSections.has(index) ? '✓' : index + 1}
+              </div>
+              
+              <div style={{ flex: 1 }}>
+                <div style={{ 
+                  fontSize: '15px', 
+                  fontWeight: '600', 
+                  color: isOpen ? colors.accent : '#374151'
+                }}>
+                  {section.title}
+                </div>
+                {section.type !== 'lesson' && (
+                  <div style={{ 
+                    fontSize: '11px', 
+                    color: colors.accent,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    marginTop: '2px'
+                  }}>
+                    {section.type === 'intro' ? '📖 Introduction' : 
+                     section.type === 'activity' ? '✏️ Activity' : '⭐ Key Takeaways'}
+                  </div>
+                )}
+              </div>
+              
+              {getSectionIcon(section.type, isOpen)}
+            </button>
+            
+            {/* Section Content - Expandable */}
+            {isOpen && (
+              <div style={{
+                padding: '20px',
+                background: 'white',
+                borderTop: `1px solid ${colors.border}`,
+                fontSize: '14px',
+                lineHeight: '1.7',
+                color: '#374151'
+              }}>
+                {formatContent(section.content)}
+                
+                {/* Continue button if not the last section */}
+                {index < sections.length - 1 && index === currentSection && (
+                  <Button
+                    onClick={goToNextSection}
+                    style={{
+                      marginTop: '20px',
+                      background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+                      color: 'white',
+                      fontWeight: '600',
+                      width: '100%'
+                    }}
+                  >
+                    Continue to Next Section →
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 interface LeadershipProgress {
   id?: string;
@@ -1285,17 +1596,22 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
                       borderRadius: '12px',
                       border: '1px solid #e5e7eb'
                     }}>
-                      <div style={{ 
-                        marginBottom: '20px', 
-                        color: '#374151', 
-                        fontSize: '14px', 
-                        lineHeight: '1.6',
-                        padding: '16px',
-                        background: 'white',
-                        borderRadius: '8px',
-                        borderLeft: '4px solid #6366F1'
-                      }}>
-                        {module.content || `Complete the "${module.title}" module by reading the content and reflecting on how it applies to your leadership journey.`}
+                      <div style={{ marginBottom: '20px' }}>
+                        {module.content ? (
+                          <ModuleContentViewer content={module.content} />
+                        ) : (
+                          <div style={{ 
+                            color: '#374151', 
+                            fontSize: '14px', 
+                            lineHeight: '1.6',
+                            padding: '16px',
+                            background: 'white',
+                            borderRadius: '8px',
+                            borderLeft: '4px solid #6366F1'
+                          }}>
+                            {`Complete the "${module.title}" module by reading the content and reflecting on how it applies to your leadership journey.`}
+                          </div>
+                        )}
                       </div>
 
                       {!isComplete && (
