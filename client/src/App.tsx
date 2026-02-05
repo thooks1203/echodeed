@@ -19,6 +19,9 @@ import MentorDashboard from "@/pages/MentorDashboard";
 import FamilyDashboard from "@/pages/FamilyDashboard";
 import AnalyticsDashboard from "@/pages/AnalyticsDashboard";
 import StudentSignup from "@/pages/StudentSignup";
+import TeacherSignup from "@/pages/TeacherSignup";
+import ParentSignup from "@/pages/ParentSignup";
+import AdminSignup from "@/pages/AdminSignup";
 import ParentConsent from "@/pages/ParentConsent";
 import SchoolConsentDashboard from "@/pages/SchoolConsentDashboard";
 import MerchantVerifyPage from "@/pages/MerchantVerifyPage";
@@ -83,6 +86,9 @@ function Router() {
           <SchoolRegistration />
         </Route>
         <Route path="/student-signup" component={StudentSignup} />
+        <Route path="/teacher-signup" component={TeacherSignup} />
+        <Route path="/parent-signup" component={ParentSignup} />
+        <Route path="/admin-signup" component={AdminSignup} />
         <Route path="/parent-consent/:verificationCode" component={ParentConsent} />
         <Route path="/r/:code" component={MerchantVerifyPage} />
         {/* <Route path="/tv-display" component={TVDisplayMode} />

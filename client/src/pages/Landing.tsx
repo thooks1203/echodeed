@@ -176,18 +176,29 @@ export default function Landing() {
                     : 'Turn kindness into tokens, earn rewards, track service hours'
                   }
                 </p>
-                <Link href="/explore/students" className="mt-auto">
-                  <Button
-                    className={`w-full text-white ${
-                      isMiddleSchool
-                        ? 'bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600'
-                        : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700'
-                    }`}
-                    data-testid="button-explore-student"
-                  >
-                    {isMiddleSchool ? 'Explore for Students ✨' : 'Explore for Students'}
-                  </Button>
-                </Link>
+                <div className="mt-auto space-y-2">
+                  <Link href="/student-signup">
+                    <Button
+                      className={`w-full text-white ${
+                        isMiddleSchool
+                          ? 'bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600'
+                          : 'bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700'
+                      }`}
+                      data-testid="button-student-signup-card"
+                    >
+                      {isMiddleSchool ? 'Sign Up ✨' : 'Student Sign Up'}
+                    </Button>
+                  </Link>
+                  <Link href="/explore/students">
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      data-testid="button-explore-student"
+                    >
+                      Learn More
+                    </Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
 
@@ -204,14 +215,25 @@ export default function Landing() {
                     : 'Track your child\'s growth, earn dual rewards together'
                   }
                 </p>
-                <Link href="/explore/parents" className="mt-auto">
-                  <Button
-                    className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
-                    data-testid="button-explore-parent"
-                  >
-                    {isMiddleSchool ? 'Explore for Parents ❤️' : 'Explore for Parents'}
-                  </Button>
-                </Link>
+                <div className="mt-auto space-y-2">
+                  <Link href="/parent-signup">
+                    <Button
+                      className="w-full bg-gradient-to-r from-rose-500 to-pink-600 hover:from-rose-600 hover:to-pink-700 text-white"
+                      data-testid="button-parent-signup-card"
+                    >
+                      {isMiddleSchool ? 'Parent Sign Up ❤️' : 'Parent Sign Up'}
+                    </Button>
+                  </Link>
+                  <Link href="/explore/parents">
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      data-testid="button-explore-parent"
+                    >
+                      Learn More
+                    </Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
 
@@ -228,14 +250,25 @@ export default function Landing() {
                     : 'Verify service hours, manage classroom, reduce workload'
                   }
                 </p>
-                <Link href="/explore/teachers" className="mt-auto">
-                  <Button
-                    className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
-                    data-testid="button-explore-teacher"
-                  >
-                    {isMiddleSchool ? 'Explore for Teachers 📚' : 'Explore for Teachers'}
-                  </Button>
-                </Link>
+                <div className="mt-auto space-y-2">
+                  <Link href="/teacher-signup">
+                    <Button
+                      className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white"
+                      data-testid="button-teacher-signup-card"
+                    >
+                      {isMiddleSchool ? 'Teacher Sign Up 📚' : 'Teacher Sign Up'}
+                    </Button>
+                  </Link>
+                  <Link href="/explore/teachers">
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      data-testid="button-explore-teacher"
+                    >
+                      Learn More
+                    </Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
 
@@ -252,14 +285,25 @@ export default function Landing() {
                     : 'Get the data, see measurable character outcomes'
                   }
                 </p>
-                <Link href="/explore/school-leaders" className="mt-auto">
-                  <Button
-                    className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
-                    data-testid="button-explore-admin"
-                  >
-                    {isMiddleSchool ? 'For School Leaders 🏆' : 'For School Leaders'}
-                  </Button>
-                </Link>
+                <div className="mt-auto space-y-2">
+                  <Link href="/admin-signup">
+                    <Button
+                      className="w-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white"
+                      data-testid="button-admin-signup-card"
+                    >
+                      {isMiddleSchool ? 'Admin Sign Up 🏆' : 'Admin Sign Up'}
+                    </Button>
+                  </Link>
+                  <Link href="/explore/school-leaders">
+                    <Button
+                      variant="outline"
+                      className="w-full"
+                      data-testid="button-explore-admin"
+                    >
+                      Learn More
+                    </Button>
+                  </Link>
+                </div>
               </CardContent>
             </Card>
           </div>

@@ -6755,6 +6755,194 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
+  // Teacher Registration Endpoint
+  app.post('/api/teachers/register', async (req, res) => {
+    try {
+      const { firstName, lastName, email, department, schoolId, enrollmentCode, subjects } = req.body;
+      
+      // Validate required fields
+      if (!firstName || !lastName || !email || !department || !schoolId || !enrollmentCode) {
+        return res.status(400).json({ 
+          error: 'Missing required fields',
+          code: 'MISSING_FIELDS'
+        });
+      }
+      
+      // Verify school and enrollment code
+      const school = await storage.getCorporateAccount(schoolId);
+      if (!school) {
+        return res.status(404).json({ 
+          error: 'School not found',
+          code: 'SCHOOL_NOT_FOUND'
+        });
+      }
+      
+      // Validate enrollment code
+      if (school.enrollmentCode && school.enrollmentCode !== enrollmentCode.trim().toUpperCase()) {
+        return res.status(403).json({ 
+          error: 'Invalid enrollment code for this school. Please check with your administrator.',
+          code: 'INVALID_ENROLLMENT_CODE'
+        });
+      }
+      
+      // Create user account with teacher role
+      const newUser = await storage.upsertUser({
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        workplaceId: schoolId,
+        role: 'teacher'
+      });
+      
+      res.json({
+        success: true,
+        userId: newUser.id,
+        firstName: firstName,
+        lastName: lastName,
+        schoolName: school.companyName,
+        message: 'Teacher account created successfully!'
+      });
+      
+    } catch (error: any) {
+      console.error('Teacher registration failed:', error);
+      res.status(500).json({ 
+        error: 'Registration failed. Please try again.',
+        details: error.message 
+      });
+    }
+  });
+  
+  // Parent Registration Endpoint (Independent of student consent flow)
+  app.post('/api/parents/register', async (req, res) => {
+    try {
+      const { firstName, lastName, email, phone, schoolId, childFirstName, childLastName, childGrade, relationship } = req.body;
+      
+      // Validate required fields
+      if (!firstName || !lastName || !email || !schoolId || !childFirstName || !childLastName || !childGrade || !relationship) {
+        return res.status(400).json({ 
+          error: 'Missing required fields',
+          code: 'MISSING_FIELDS'
+        });
+      }
+      
+      // Verify school exists
+      const school = await storage.getCorporateAccount(schoolId);
+      if (!school) {
+        return res.status(404).json({ 
+          error: 'School not found',
+          code: 'SCHOOL_NOT_FOUND'
+        });
+      }
+      
+      // Create user account with parent role
+      const newUser = await storage.upsertUser({
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        workplaceId: schoolId,
+        role: 'parent'
+      });
+      
+      // Note: Child linking will happen when student signs up with parent's email
+      const childLinked = false;
+      
+      res.json({
+        success: true,
+        userId: newUser.id,
+        firstName: firstName,
+        childFirstName: childFirstName,
+        childLinked: childLinked,
+        schoolName: school.companyName,
+        message: childLinked 
+          ? 'Parent account created and linked to child!' 
+          : 'Parent account created! Your child\'s account will be linked when they sign up.'
+      });
+      
+    } catch (error: any) {
+      console.error('Parent registration failed:', error);
+      res.status(500).json({ 
+        error: 'Registration failed. Please try again.',
+        details: error.message 
+      });
+    }
+  });
+  
+  // Admin/Principal Registration Endpoint
+  app.post('/api/admins/register', async (req, res) => {
+    try {
+      const { firstName, lastName, title, email, schoolId, adminCode, phone } = req.body;
+      
+      // Validate required fields
+      if (!firstName || !lastName || !title || !email || !schoolId || !adminCode) {
+        return res.status(400).json({ 
+          error: 'Missing required fields',
+          code: 'MISSING_FIELDS'
+        });
+      }
+      
+      // Verify school exists
+      const school = await storage.getCorporateAccount(schoolId);
+      if (!school) {
+        return res.status(404).json({ 
+          error: 'School not found',
+          code: 'SCHOOL_NOT_FOUND'
+        });
+      }
+      
+      // Validate admin code (use ADMIN- prefix + school code)
+      const expectedAdminCode = `ADMIN-${school.enrollmentCode || schoolId.slice(0, 6).toUpperCase()}`;
+      const validAdminCodes = [
+        expectedAdminCode,
+        'ECHODEED-ADMIN-2025', // Master admin code
+        school.adminCode // School-specific admin code if exists
+      ].filter(Boolean);
+      
+      if (!validAdminCodes.some(code => code === adminCode.trim().toUpperCase())) {
+        return res.status(403).json({ 
+          error: 'Invalid administrator code. Please contact EchoDeed support.',
+          code: 'INVALID_ADMIN_CODE'
+        });
+      }
+      
+      // Create user account with admin role
+      const newUser = await storage.upsertUser({
+        firstName: firstName,
+        lastName: lastName,
+        email: email,
+        workplaceId: schoolId,
+        role: 'admin'
+      });
+      
+      // Get title display
+      const titleDisplayMap: Record<string, string> = {
+        'principal': 'Dr.',
+        'assistant_principal': 'Ms./Mr.',
+        'dean': 'Dean',
+        'counselor_head': 'Dr.',
+        'activities_director': 'Director',
+        'district_admin': 'Dr.',
+        'other_admin': 'Administrator'
+      };
+      
+      res.json({
+        success: true,
+        userId: newUser.id,
+        firstName: firstName,
+        lastName: lastName,
+        title: titleDisplayMap[title] || 'Administrator',
+        schoolName: school.companyName,
+        message: 'Administrator account created successfully!'
+      });
+      
+    } catch (error: any) {
+      console.error('Admin registration failed:', error);
+      res.status(500).json({ 
+        error: 'Registration failed. Please try again.',
+        details: error.message 
+      });
+    }
+  });
+  
   // Step 2: Parent clicks consent email link
   app.get('/api/students/consent/:verificationCode', async (req, res) => {
     try {
