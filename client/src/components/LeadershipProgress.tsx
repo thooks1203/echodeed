@@ -107,7 +107,8 @@ export function LeadershipProgress({ userId }: LeadershipProgressProps) {
                            portfolio.status === 'in_progress' ? 25 : 0;
 
   // Overall progress is average of all three
-  const overallProgress = Math.round((mentorProgress + questsProgress + portfolioProgress) / 3);
+  const overallProgressValue = (mentorProgress + questsProgress + portfolioProgress) / 3;
+  const overallProgress = isNaN(overallProgressValue) ? 0 : Math.round(overallProgressValue);
   const certificateEarned = mentorProgress === 100 && questsProgress === 100 && portfolioProgress === 100;
 
   // Status message
