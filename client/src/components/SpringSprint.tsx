@@ -2091,11 +2091,32 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
             }}>
               <h4 style={{ fontWeight: '700', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <FileText size={20} />
-                Personal Reflection (Required)
+                Leadership Reflection (Required)
               </h4>
-              <p style={{ fontSize: '14px', color: '#78350F', marginBottom: '12px' }}>
-                Write a 250-word reflection on your leadership journey and what you've learned from the 5 modules.
-              </p>
+              
+              <div style={{ 
+                background: 'white', 
+                padding: '16px', 
+                borderRadius: '8px', 
+                marginBottom: '16px',
+                border: '1px solid #F59E0B'
+              }}>
+                <p style={{ fontSize: '14px', color: '#78350F', marginBottom: '12px', fontWeight: '600' }}>
+                  The Prompt:
+                </p>
+                <p style={{ fontSize: '14px', color: '#4B5563', marginBottom: '12px', lineHeight: '1.6' }}>
+                  Reflect on the core skills you've learned regarding <strong>active listening</strong>, <strong>empathy</strong>, and <strong>providing student guidance</strong>. Specifically, how do you see yourself applying these mentorship principles in your future career or academic path?
+                </p>
+                
+                <div style={{ fontSize: '13px', color: '#6B7280', marginTop: '12px' }}>
+                  <p style={{ fontWeight: '600', marginBottom: '8px' }}>Requirements:</p>
+                  <ul style={{ paddingLeft: '20px', margin: 0 }}>
+                    <li style={{ marginBottom: '4px' }}><strong>Word Count:</strong> Minimum 250 words</li>
+                    <li style={{ marginBottom: '4px' }}><strong>Focus:</strong> Connect the mentor training fundamentals to your specific long-term goals</li>
+                    <li><strong>Impact:</strong> Describe how "The EchoDeed Standard" of character-led leadership will change the way you interact with peers or mentees</li>
+                  </ul>
+                </div>
+              </div>
               
               {progress?.personalReflection ? (
                 <div style={{
@@ -2117,8 +2138,8 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
                   <Textarea
                     value={reflection}
                     onChange={(e) => setReflection(e.target.value)}
-                    placeholder="Share your leadership journey..."
-                    style={{ minHeight: '150px', marginBottom: '8px' }}
+                    placeholder="Reflect on how active listening, empathy, and student guidance skills will shape your future career or academic path. Describe how The EchoDeed Standard of character-led leadership will change the way you interact with peers or mentees..."
+                    style={{ minHeight: '180px', marginBottom: '8px' }}
                   />
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <span style={{ fontSize: '13px', color: wordCount >= 250 ? '#059669' : '#78350F' }}>
