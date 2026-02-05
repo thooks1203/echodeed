@@ -1705,11 +1705,21 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
             <CardTitle style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <Gift size={24} />
               Real-World Rewards
+              <span style={{
+                background: 'rgba(255,255,255,0.25)',
+                padding: '4px 10px',
+                borderRadius: '12px',
+                fontSize: '11px',
+                fontWeight: '600',
+                marginLeft: 'auto'
+              }}>
+                Coming Soon!
+              </span>
             </CardTitle>
           </CardHeader>
           <CardContent style={{ padding: '20px' }}>
             <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '16px' }}>
-              After earning your Gold Badge (300 tokens), you can redeem tokens for awesome rewards from local partners!
+              After earning your Gold Badge (300 tokens), you'll be able to redeem tokens for awesome rewards from local partners!
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
               {['Chick-fil-A', 'Greensboro Science Center', 'Target', 'Scholastic Books'].map((partner) => (
@@ -1719,11 +1729,23 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
                   borderRadius: '20px',
                   fontSize: '13px',
                   fontWeight: '500',
-                  color: '#374151'
+                  color: '#374151',
+                  opacity: 0.7
                 }}>
                   {partner}
                 </div>
               ))}
+            </div>
+            <div style={{ 
+              marginTop: '16px', 
+              padding: '12px', 
+              background: 'linear-gradient(135deg, #EDE9FE, #DDD6FE)', 
+              borderRadius: '12px',
+              textAlign: 'center'
+            }}>
+              <span style={{ fontSize: '13px', color: '#6D28D9', fontWeight: '500' }}>
+                🎁 Rewards from local partners will be available soon - keep earning those tokens!
+              </span>
             </div>
           </CardContent>
         </Card>
