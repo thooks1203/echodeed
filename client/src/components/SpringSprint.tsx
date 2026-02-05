@@ -31,11 +31,66 @@ interface LeadershipProgress {
 }
 
 const LEADERSHIP_MODULES = [
-  { id: 1, title: "The Power of One", description: "Discover how individual actions create ripple effects of positive change", duration: "15 min", content: "Leadership begins with a single person's decision to act. In this module, we explore the 'Ripple Effect'—how one small act of kindness or initiative can inspire others, creating a wave of positive change throughout a school community. You will learn about famous leaders who started with nothing but a vision and the courage to take the first step. Reflection: What is one small change you can make today that might inspire someone else?" },
-  { id: 2, title: "Self-Awareness", description: "Understand your strengths, values, and areas for growth as a leader", duration: "20 min", content: "To lead others, you must first know yourself. This module focuses on identifying your core values, character strengths, and areas for development. We use the 'Window of Growth' model to understand how others perceive our leadership. By being honest about our strengths and weaknesses, we build the authenticity required to earn trust. Reflection: Identify three core values that define your leadership style." },
-  { id: 3, title: "Effective Communication", description: "Master the art of inspiring and connecting with others", duration: "20 min", content: "Communication is the bridge between a vision and its reality. Leaders must be able to listen actively, speak with clarity, and use empathy to connect with their team. This module teaches the 'L.E.A.D.' communication framework: Listen, Empathize, Ask, and Direct. Good communication is not just about talking; it's about making sure others feel heard. Reflection: Recall a time you successfully resolved a conflict through communication." },
-  { id: 4, title: "Team Leadership", description: "Learn to build, motivate, and lead high-performing teams", duration: "25 min", content: "Great leaders don't create followers; they create more leaders. In this module, we look at team dynamics and the importance of psychological safety. You'll learn how to delegate effectively, set clear goals, and celebrate the diverse strengths of your team members. A leader's success is measured by the success of the people they lead. Reflection: How do you handle a situation where a team member is struggling?" },
-  { id: 5, title: "Community Impact", description: "Transform your leadership into lasting community change", duration: "25 min", content: "Leadership is ultimately about service. This final module connects your personal growth to the wider community. We explore the 'IPARD' model (Investigation, Preparation, Action, Reflection, Demonstration) and how to design projects that address real-world needs. Your leadership track culminates in a project that leaves a positive legacy. Reflection: What kind of impact do you want to leave on your school before you graduate?" },
+  { 
+    id: 1, 
+    title: "The Power of One", 
+    description: "Discover how individual actions create ripple effects of positive change", 
+    duration: "15 min", 
+    content: "Leadership begins with a single person's decision to act. In this module, we explore the 'Ripple Effect'—how one small act of kindness or initiative can inspire others, creating a wave of positive change throughout a school community. You will learn about famous leaders who started with nothing but a vision and the courage to take the first step. Reflection: What is one small change you can make today that might inspire someone else?",
+    questions: [
+      { id: "q1_1", question: "What is the 'Ripple Effect' in leadership?", options: ["A physical wave in the ocean", "How one act of kindness inspires others", "A mathematical equation", "A type of weather pattern"], correctAnswer: 1 },
+      { id: "q1_2", question: "True or False: Leadership always requires a large team to start.", options: ["True", "False"], correctAnswer: 1 },
+      { id: "q1_3", question: "Where does leadership begin according to this module?", options: ["With a government decree", "With a large budget", "With an individual's decision to act", "With a trophy"], correctAnswer: 2 }
+    ]
+  },
+  { 
+    id: 2, 
+    title: "Self-Awareness", 
+    description: "Understand your strengths, values, and areas for growth as a leader", 
+    duration: "20 min", 
+    content: "To lead others, you must first know yourself. This module focuses on identifying your core values, character strengths, and areas for development. We use the 'Window of Growth' model to understand how others perceive our leadership. By being honest about our strengths and weaknesses, we build the authenticity required to earn trust. Reflection: Identify three core values that define your leadership style.",
+    questions: [
+      { id: "q2_1", question: "What is the primary focus of self-awareness for a leader?", options: ["Knowing your favorite food", "Identifying core values and strengths", "Learning how to use a computer", "Memorizing school rules"], correctAnswer: 1 },
+      { id: "q2_2", question: "Why is being honest about weaknesses important?", options: ["It makes you look weak", "It builds authenticity and trust", "It helps you avoid work", "It is not important"], correctAnswer: 1 },
+      { id: "q2_3", question: "What model is used to understand how others perceive our leadership?", options: ["Window of Growth", "Mirror of Success", "Ladder of Power", "Circle of Friends"], correctAnswer: 0 }
+    ]
+  },
+  { 
+    id: 3, 
+    title: "Effective Communication", 
+    description: "Master the art of inspiring and connecting with others", 
+    duration: "20 min", 
+    content: "Communication is the bridge between a vision and its reality. Leaders must be able to listen actively, speak with clarity, and use empathy to connect with their team. This module teaches the 'L.E.A.D.' communication framework: Listen, Empathize, Ask, and Direct. Good communication is not just about talking; it's about making sure others feel heard. Reflection: Recall a time you successfully resolved a conflict through communication.",
+    questions: [
+      { id: "q3_1", question: "What does the 'L' in the L.E.A.D. framework stand for?", options: ["Lead", "Listen", "Learn", "Laugh"], correctAnswer: 1 },
+      { id: "q3_2", question: "Communication is described as the bridge between vision and what?", options: ["Fantasy", "Reality", "Silence", "Money"], correctAnswer: 1 },
+      { id: "q3_3", question: "Is communication only about talking?", options: ["Yes, always", "No, it's also about making others feel heard", "Only when giving orders", "Only in emails"], correctAnswer: 1 }
+    ]
+  },
+  { 
+    id: 4, 
+    title: "Team Leadership", 
+    description: "Learn to build, motivate, and lead high-performing teams", 
+    duration: "25 min", 
+    content: "Great leaders don't create followers; they create more leaders. In this module, we look at team dynamics and the importance of psychological safety. You'll learn how to delegate effectively, set clear goals, and celebrate the diverse strengths of your team members. A leader's success is measured by the success of the people they lead. Reflection: How do you handle a situation where a team member is struggling?",
+    questions: [
+      { id: "q4_1", question: "What do great leaders create according to this module?", options: ["Followers", "More leaders", "Competitors", "Rules"], correctAnswer: 1 },
+      { id: "q4_2", question: "How is a leader's success measured?", options: ["By their bank account", "By the success of the people they lead", "By how many trophies they have", "By their title"], correctAnswer: 1 },
+      { id: "q4_3", question: "What is an important factor in team dynamics mentioned?", options: ["Psychological safety", "Having the loudest voice", "Always being right", "Avoiding delegation"], correctAnswer: 0 }
+    ]
+  },
+  { 
+    id: 5, 
+    title: "Community Impact", 
+    description: "Transform your leadership into lasting community change", 
+    duration: "25 min", 
+    content: "Leadership is ultimately about service. This final module connects your personal growth to the wider community. We explore the 'IPARD' model (Investigation, Preparation, Action, Reflection, Demonstration) and how to design projects that address real-world needs. Your leadership track culminates in a project that leaves a positive legacy. Reflection: What kind of impact do you want to leave on your school before you graduate?",
+    questions: [
+      { id: "q5_1", question: "What is leadership ultimately about according to this module?", options: ["Control", "Service", "Fame", "Wealth"], correctAnswer: 1 },
+      { id: "q5_2", question: "What does the 'I' in IPARD stand for?", options: ["Impact", "Investigation", "Initiative", "Interest"], correctAnswer: 1 },
+      { id: "q5_3", question: "A leadership track culminates in what?", options: ["A test", "A project that leaves a positive legacy", "A summer vacation", "A new title"], correctAnswer: 1 }
+    ]
+  },
 ];
 
 export function SpringSprint() {
@@ -44,6 +99,8 @@ export function SpringSprint() {
   const queryClient = useQueryClient();
   const [reflection, setReflection] = useState("");
   const [activeModuleId, setActiveModuleId] = useState<number | null>(null);
+  const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
 
   const { data: progress, isLoading } = useQuery<LeadershipProgress>({
     queryKey: ['/api/leadership-track/progress'],
@@ -61,11 +118,31 @@ export function SpringSprint() {
       queryClient.invalidateQueries({ queryKey: ['/api/leadership-track/progress'] });
       toast({ title: "Module Completed!", description: "Great work on your leadership journey!" });
       setActiveModuleId(null);
+      setQuizAnswers({});
+      setQuizSubmitted(false);
     },
     onError: () => {
       toast({ title: "Error", description: "Failed to complete module", variant: "destructive" });
     },
   });
+
+  const handleQuizSubmit = (moduleId: number) => {
+    const module = LEADERSHIP_MODULES.find(m => m.id === moduleId);
+    if (!module || !module.questions) return;
+
+    const allCorrect = module.questions.every((q, idx) => quizAnswers[`${moduleId}_${idx}`] === q.correctAnswer);
+
+    if (allCorrect) {
+      setQuizSubmitted(true);
+      completeModuleMutation.mutate(moduleId);
+    } else {
+      toast({ 
+        title: "Try Again", 
+        description: "Some answers were incorrect. Please review the content and try again.", 
+        variant: "destructive" 
+      });
+    }
+  };
 
   const submitReflectionMutation = useMutation({
     mutationFn: async (reflectionText: string) => {
@@ -239,11 +316,10 @@ export function SpringSprint() {
                       background: isComplete ? '#ECFDF5' : isActive ? '#EEF2FF' : '#F9FAFB',
                       borderRadius: '12px',
                       border: isComplete ? '2px solid #10B981' : isActive ? '2px solid #6366F1' : '1px solid #e5e7eb',
-                      cursor: isComplete ? 'default' : 'pointer',
+                      cursor: 'pointer',
                       transition: 'all 0.2s ease'
                     }}
                     onClick={() => setActiveModuleId(isActive ? null : module.id)}
-                    style={{ cursor: 'pointer' }}
                   >
                     {isComplete ? (
                       <CheckCircle size={24} style={{ color: '#10B981' }} />
@@ -283,19 +359,56 @@ export function SpringSprint() {
                       }}>
                         {module.content || `Complete the "${module.title}" module by reading the content and reflecting on how it applies to your leadership journey.`}
                       </div>
+
                       {!isComplete && (
-                        <Button
-                          onClick={() => completeModuleMutation.mutate(module.id)}
-                          disabled={completeModuleMutation.isPending}
-                          style={{
-                            background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
-                            color: 'white',
-                            fontWeight: '600',
-                            width: '100%'
-                          }}
-                        >
-                          {completeModuleMutation.isPending ? 'Completing...' : 'Mark as Complete'}
-                        </Button>
+                        <div style={{ marginTop: '20px', borderTop: '1px solid #e5e7eb', paddingTop: '20px' }}>
+                          <h5 style={{ fontWeight: '700', fontSize: '14px', marginBottom: '12px', color: '#1F2937' }}>
+                            Module Quiz
+                          </h5>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                            {module.questions?.map((q, qIdx) => (
+                              <div key={q.id} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                                <div style={{ fontSize: '13px', fontWeight: '600', color: '#4B5563' }}>
+                                  {qIdx + 1}. {q.question}
+                                </div>
+                                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px' }}>
+                                  {q.options.map((option, oIdx) => (
+                                    <Button
+                                      key={oIdx}
+                                      variant="outline"
+                                      style={{
+                                        justifyContent: 'flex-start',
+                                        fontSize: '12px',
+                                        padding: '8px 12px',
+                                        height: 'auto',
+                                        textAlign: 'left',
+                                        background: quizAnswers[`${module.id}_${qIdx}`] === oIdx ? '#EEF2FF' : 'white',
+                                        borderColor: quizAnswers[`${module.id}_${qIdx}`] === oIdx ? '#6366F1' : '#e5e7eb'
+                                      }}
+                                      onClick={() => setQuizAnswers({ ...quizAnswers, [`${module.id}_${qIdx}`]: oIdx })}
+                                    >
+                                      {option}
+                                    </Button>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                          
+                          <Button
+                            onClick={() => handleQuizSubmit(module.id)}
+                            disabled={completeModuleMutation.isPending || (module.questions?.length || 0) !== Object.keys(quizAnswers).filter(k => k.startsWith(`${module.id}_`)).length}
+                            style={{
+                              marginTop: '20px',
+                              background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+                              color: 'white',
+                              fontWeight: '600',
+                              width: '100%'
+                            }}
+                          >
+                            {completeModuleMutation.isPending ? 'Submitting...' : 'Submit Quiz & Complete Module'}
+                          </Button>
+                        </div>
                       )}
                       {isComplete && (
                         <div style={{
