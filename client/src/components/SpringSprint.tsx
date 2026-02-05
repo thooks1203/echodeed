@@ -91,7 +91,12 @@ export function SpringSprint() {
       .filter(m => m === 1).length : 0;
 
   const pillar1Progress = (completedModules / 5) * 100;
-  const pillar2Progress = questsData ? (Math.min(questsData.verified, 4) / 4) * 100 : 0;
+  // Wildcat Rule: Must have at least 1 Middle School Mentoring quest to complete Pillar 2
+  const hasWildcatRule = questsData?.hasMiddleSchoolQuest ?? false;
+  const verifiedQuests = questsData?.verified ?? 0;
+  // Pillar 2 caps at 75% without Middle School quest (3/4 quests), 100% only with Wildcat Rule
+  const pillar2Progress = questsData ? 
+    (hasWildcatRule ? (Math.min(verifiedQuests, 4) / 4) * 100 : Math.min((Math.min(verifiedQuests, 3) / 4) * 100, 75)) : 0;
   const pillar3Progress = progress?.portfolioDefenseApproved === 1 ? 100 : 0;
   const overallProgress = Math.round((pillar1Progress + pillar2Progress + pillar3Progress) / 3);
 
@@ -390,6 +395,11 @@ export function SpringSprint() {
                 <div style={{ fontSize: '13px', color: '#6b7280' }}>
                   At least one quest must be a Middle School Mentoring Session
                 </div>
+                {!questsData?.hasMiddleSchoolQuest && verifiedQuests >= 3 && (
+                  <div style={{ fontSize: '12px', color: '#DC2626', fontWeight: '600', marginTop: '4px' }}>
+                    ⚠️ Pillar 2 capped at 75% until Middle School quest is completed
+                  </div>
+                )}
               </div>
             </div>
           </div>
