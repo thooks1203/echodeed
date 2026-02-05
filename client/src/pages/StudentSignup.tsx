@@ -19,6 +19,8 @@ import { SchoolSearchSelect } from "@/components/SchoolSearchSelect";
 const createStudentSignupSchema = (requiresCode: boolean) => z.object({
   firstName: z.string().min(1, "First name is required").max(50, "Name too long"),
   lastName: z.string().min(1, "Last name is required").max(50, "Name too long"),
+  email: z.string().email("Please enter a valid email").optional().or(z.literal("")),
+  phoneNumber: z.string().regex(/^(\+1)?[0-9]{10}$/, "Please enter a valid 10-digit phone number").optional().or(z.literal("")),
   grade: z.string().min(1, "Please select your grade"),
   birthYear: z.coerce.number()
     .min(2006, "Please enter a valid birth year (ages 14-18)") 
@@ -53,6 +55,8 @@ export default function StudentSignup() {
     defaultValues: {
       firstName: "",
       lastName: "",
+      email: "",
+      phoneNumber: "",
       grade: "",
       birthYear: new Date().getFullYear() - 16,
       schoolId: "",
@@ -274,6 +278,49 @@ export default function StudentSignup() {
                             data-testid="input-last-name"
                           />
                         </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Your Email <span className="text-sm text-gray-500">(optional)</span></FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="email"
+                            placeholder="your.email@school.edu" 
+                            {...field} 
+                            data-testid="input-student-email"
+                          />
+                        </FormControl>
+                        <p className="text-xs text-gray-500">For notifications and password reset</p>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <FormField
+                    control={form.control}
+                    name="phoneNumber"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Phone Number <span className="text-sm text-gray-500">(optional)</span></FormLabel>
+                        <FormControl>
+                          <Input 
+                            type="tel"
+                            placeholder="1234567890" 
+                            {...field}
+                            onChange={(e) => field.onChange(e.target.value.replace(/\D/g, '').slice(0, 10))}
+                            data-testid="input-phone-number"
+                          />
+                        </FormControl>
+                        <p className="text-xs text-gray-500">For daily mood check-in reminders via SMS</p>
                         <FormMessage />
                       </FormItem>
                     )}

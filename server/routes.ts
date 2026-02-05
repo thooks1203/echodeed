@@ -6608,7 +6608,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Step 1: Student creates account with age verification
   app.post('/api/students/register', async (req, res) => {
     try {
-      const { firstName, grade, birthYear, schoolId, parentEmail, parentName, enrollmentCode } = req.body;
+      const { firstName, lastName, email, phoneNumber, grade, birthYear, schoolId, parentEmail, parentName, enrollmentCode } = req.body;
       
       // COPPA Age Verification - Calculate current age
       const currentYear = new Date().getFullYear();
@@ -6674,6 +6674,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       // Create user account first (inactive)
       const newUser = await storage.upsertUser({
         firstName: firstName,
+        lastName: lastName || undefined,
+        email: email || undefined,
+        phoneNumber: phoneNumber || undefined,
+        smsEnabled: phoneNumber ? true : false,
         anonymityLevel: 'full', // Default to full anonymity for safety
         workplaceId: schoolId, // Link to school
       });
