@@ -1354,8 +1354,10 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
 
   const { data: questsData } = useQuery<{ verified: number; pending: number; hasMiddleSchoolQuest: boolean }>({
     queryKey: ['/api/leadership-track/quests'],
+    enabled: !isMiddleSchool, // Only fetch for high school
   });
 
+  // Define mutations BEFORE any early returns to satisfy React hooks rules
   const completeModuleMutation = useMutation({
     mutationFn: async (moduleNumber: number) => {
       return await apiRequest('POST', `/api/leadership-track/module/${moduleNumber}/complete`);
@@ -1372,24 +1374,6 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
     },
   });
 
-  const handleQuizSubmit = (moduleId: number) => {
-    const module = LEADERSHIP_MODULES.find(m => m.id === moduleId);
-    if (!module || !module.questions) return;
-
-    const allCorrect = module.questions.every((q, idx) => quizAnswers[`${moduleId}_${idx}`] === q.correctAnswer);
-
-    if (allCorrect) {
-      setQuizSubmitted(true);
-      completeModuleMutation.mutate(moduleId);
-    } else {
-      toast({ 
-        title: "Try Again", 
-        description: "Some answers were incorrect. Please review the content and try again.", 
-        variant: "destructive" 
-      });
-    }
-  };
-
   const submitReflectionMutation = useMutation({
     mutationFn: async (reflectionText: string) => {
       return await apiRequest('POST', '/api/leadership-track/reflection', { reflection: reflectionText });
@@ -1403,39 +1387,7 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
     },
   });
 
-  const getModuleStatus = (moduleNum: number): boolean => {
-    if (!progress) return false;
-    const key = `module${moduleNum}Complete` as keyof LeadershipProgress;
-    return progress[key] === 1;
-  };
-
-  const completedModules = progress ? 
-    [progress.module1Complete, progress.module2Complete, progress.module3Complete, progress.module4Complete, progress.module5Complete]
-      .filter(m => m === 1).length : 0;
-
-  const pillar1Progress = (completedModules / 5) * 100;
-  // Wildcat Rule: Must have at least 1 Middle School Mentoring quest to complete Pillar 2
-  const hasWildcatRule = questsData?.hasMiddleSchoolQuest ?? false;
-  const verifiedQuests = questsData?.verified ?? 0;
-  // Pillar 2 caps at 75% without Middle School quest (3/4 quests), 100% only with Wildcat Rule
-  const pillar2Progress = questsData ? 
-    (hasWildcatRule ? (Math.min(verifiedQuests, 4) / 4) * 100 : Math.min((Math.min(verifiedQuests, 3) / 4) * 100, 75)) : 0;
-  const pillar3Progress = progress?.portfolioDefenseApproved === 1 ? 100 : 0;
-  const overallProgress = Math.round((pillar1Progress + pillar2Progress + pillar3Progress) / 3);
-
-  const allModulesComplete = completedModules === 5;
-  const wordCount = reflection.trim().split(/\s+/).filter(w => w.length > 0).length;
-
-  if (isLoading && !isMiddleSchool) {
-    return (
-      <div style={{ padding: '40px', textAlign: 'center' }}>
-        <div style={{ fontSize: '48px', marginBottom: '16px' }}>🏆</div>
-        <p style={{ color: '#6b7280' }}>Loading your leadership journey...</p>
-      </div>
-    );
-  }
-
-  // MIDDLE SCHOOL CONTENT - Age-appropriate Spring Sprint activities
+  // MIDDLE SCHOOL: Early return to avoid high school API calls and calculations
   if (isMiddleSchool) {
     return (
       <div style={{ 
@@ -1762,6 +1714,56 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
     );
   }
 
+  const handleQuizSubmit = (moduleId: number) => {
+    const module = LEADERSHIP_MODULES.find(m => m.id === moduleId);
+    if (!module || !module.questions) return;
+
+    const allCorrect = module.questions.every((q, idx) => quizAnswers[`${moduleId}_${idx}`] === q.correctAnswer);
+
+    if (allCorrect) {
+      setQuizSubmitted(true);
+      completeModuleMutation.mutate(moduleId);
+    } else {
+      toast({ 
+        title: "Try Again", 
+        description: "Some answers were incorrect. Please review the content and try again.", 
+        variant: "destructive" 
+      });
+    }
+  };
+
+  const getModuleStatus = (moduleNum: number): boolean => {
+    if (!progress) return false;
+    const key = `module${moduleNum}Complete` as keyof LeadershipProgress;
+    return progress[key] === 1;
+  };
+
+  const completedModules = progress ? 
+    [progress.module1Complete, progress.module2Complete, progress.module3Complete, progress.module4Complete, progress.module5Complete]
+      .filter(m => m === 1).length : 0;
+
+  const pillar1Progress = (completedModules / 5) * 100;
+  // Wildcat Rule: Must have at least 1 Middle School Mentoring quest to complete Pillar 2
+  const hasWildcatRule = questsData?.hasMiddleSchoolQuest ?? false;
+  const verifiedQuests = questsData?.verified ?? 0;
+  // Pillar 2 caps at 75% without Middle School quest (3/4 quests), 100% only with Wildcat Rule
+  const pillar2Progress = questsData ? 
+    (hasWildcatRule ? (Math.min(verifiedQuests, 4) / 4) * 100 : Math.min((Math.min(verifiedQuests, 3) / 4) * 100, 75)) : 0;
+  const pillar3Progress = progress?.portfolioDefenseApproved === 1 ? 100 : 0;
+  const overallProgress = Math.round((pillar1Progress + pillar2Progress + pillar3Progress) / 3);
+
+  const allModulesComplete = completedModules === 5;
+  const wordCount = reflection.trim().split(/\s+/).filter(w => w.length > 0).length;
+
+  if (isLoading) {
+    return (
+      <div style={{ padding: '40px', textAlign: 'center' }}>
+        <div style={{ fontSize: '48px', marginBottom: '16px' }}>🏆</div>
+        <p style={{ color: '#6b7280' }}>Loading your leadership journey...</p>
+      </div>
+    );
+  }
+
   // HIGH SCHOOL CONTENT - Leadership Certificate Track
   return (
     <div style={{ 
@@ -1821,44 +1823,21 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
               </div>
             </div>
             <div style={{
-              width: '80px',
-              height: '80px',
-              borderRadius: '50%',
-              background: `conic-gradient(#10B981 ${overallProgress * 3.6}deg, #e5e7eb ${overallProgress * 3.6}deg)`,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)'
+              background: overallProgress >= 100 ? 'linear-gradient(135deg, #10B981, #059669)' : 'linear-gradient(135deg, #6366F1, #4F46E5)',
+              color: 'white',
+              padding: '8px 16px',
+              borderRadius: '20px',
+              fontWeight: '700',
+              fontSize: '16px'
             }}>
-              <div style={{
-                width: '64px',
-                height: '64px',
-                borderRadius: '50%',
-                background: 'white',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: '800',
-                fontSize: '20px',
-                color: '#10B981'
-              }}>
-                {overallProgress}%
-              </div>
+              {overallProgress}%
             </div>
           </div>
-          
-          {progress?.isScholarshipFinalist === 1 && (
-            <div style={{
-              background: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
-              borderRadius: '12px',
-              padding: '16px',
-              color: 'white',
-              textAlign: 'center'
-            }}>
-              <div style={{ fontSize: '24px', marginBottom: '8px' }}>🎉</div>
-              <span style={{ fontWeight: '700', fontSize: '18px' }}>
-                Congratulations! You're a Scholarship Finalist!
-              </span>
+          <Progress value={overallProgress} className="h-4" />
+          {overallProgress >= 100 && (
+            <div style={{ marginTop: '16px', padding: '12px', background: '#ECFDF5', borderRadius: '8px', textAlign: 'center' }}>
+              <CheckCircle2 size={20} style={{ color: '#10B981', display: 'inline', marginRight: '8px' }} />
+              <span style={{ color: '#065F46', fontWeight: '600' }}>Certificate Complete! You qualify for the $500 Scholarship.</span>
             </div>
           )}
         </CardContent>
