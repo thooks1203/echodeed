@@ -13,23 +13,23 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
   const centerX = window.innerWidth / 2;
   const centerY = window.innerHeight / 2;
   
-  // Start from bottom center, move to top center (guaranteed visible)
-  const startX = centerX + (Math.random() - 0.5) * 200; // Small spread around center
+  // Start from bottom center, move towards middle-top (guaranteed visible)
+  const startX = centerX + (Math.random() - 0.5) * 300; // Wider spread
   const startY = window.innerHeight - 100; // Start near bottom
-  const endX = centerX + (Math.random() - 0.5) * 200; // End near center
-  const endY = 50; // End near top
-  
+  const endX = centerX + (Math.random() - 0.5) * 400; // End with wider spread
+  const endY = window.innerHeight / 4; // End at upper quarter
+
   // Random icon and color
   const icons = [Heart, Sparkles, Star];
-  const colors = ['#ff1744', '#00e676', '#2196f3', '#ff9800', '#e91e63', '#9c27b0', '#ffeb3b']; // Much brighter colors
+  const colors = ['#FFD700', '#FF69B4', '#00FFFF', '#7FFF00', '#FF4500', '#9370DB', '#FF1493']; // Vibrant celebratory colors
   const IconComponent = icons[Math.floor(Math.random() * icons.length)];
   const color = colors[Math.floor(Math.random() * colors.length)];
-  
-  // MASSIVE size for guaranteed visibility!
-  const size = 120; // 120px - absolutely impossible to miss!
-  
-  // Perfect 5-second duration for poster appreciation 
-  const duration = 5; // 5 seconds - gives time to appreciate the celebration!
+
+  // Size for visibility
+  const size = 80; // 80px - significant but not overwhelming
+
+  // Animation duration
+  const duration = 3.5; // 3.5 seconds - energetic yet appreciative
   
   // Sparks are working beautifully! 🎆
   
