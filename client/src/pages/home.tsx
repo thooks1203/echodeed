@@ -258,7 +258,7 @@ export default function Home() {
   if (activeTab === 'spring-sprint') {
     return (
       <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F0F9FF' }}>
-        <SpringSprint />
+        <SpringSprint onBack={() => setActiveTab('student-dashboard')} />
         <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );

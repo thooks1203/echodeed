@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
+import { BackButton } from "@/components/BackButton";
 import { CheckCircle, Circle, Trophy, GraduationCap, Heart, FileText, Upload, Award, Calendar, Target } from "lucide-react";
 
 interface LeadershipProgress {
@@ -1019,7 +1020,11 @@ Your leadership journey is just beginning. The world needs what you have to offe
   },
 ];
 
-export function SpringSprint() {
+interface SpringSprintProps {
+  onBack?: () => void;
+}
+
+export function SpringSprint({ onBack }: SpringSprintProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -1122,6 +1127,13 @@ export function SpringSprint() {
       padding: '24px',
       minHeight: '100vh'
     }}>
+      {/* Back Button */}
+      {onBack && (
+        <div style={{ marginBottom: '16px' }}>
+          <BackButton onClick={onBack} label="Back to Dashboard" />
+        </div>
+      )}
+      
       {/* Header */}
       <div style={{
         background: 'linear-gradient(135deg, #1e3a5f 0%, #0d1b2a 100%)',
