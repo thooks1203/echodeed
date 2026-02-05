@@ -13,14 +13,20 @@ const PULSE_EMOJIS = [
   { score: 5, emoji: '😊', label: 'Very supported', color: '#10b981' },
 ];
 
+const SESSION_KEY = 'pulse_check_shown_this_session';
+
 export function PulseCheckModal() {
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedScore, setSelectedScore] = useState<number | null>(null);
   const [submitted, setSubmitted] = useState(false);
-  const [hasBeenDismissed, setHasBeenDismissed] = useState(false);
-  const [hasAutoShown, setHasAutoShown] = useState(false);
+  const [hasBeenDismissed, setHasBeenDismissed] = useState(() => {
+    return sessionStorage.getItem(SESSION_KEY) === 'true';
+  });
+  const [hasAutoShown, setHasAutoShown] = useState(() => {
+    return sessionStorage.getItem(SESSION_KEY) === 'true';
+  });
 
   const { data: todayCheck } = useQuery<{ hasCheckedToday: boolean }>({
     queryKey: ['/api/pulse-check/today'],
@@ -36,6 +42,7 @@ export function PulseCheckModal() {
     if (pulseCheckTrigger === 'true' && user && todayCheck && !todayCheck.hasCheckedToday) {
       setIsOpen(true);
       setHasAutoShown(true);
+      sessionStorage.setItem(SESSION_KEY, 'true');
       window.history.replaceState({}, '', window.location.pathname);
       return;
     }
@@ -45,6 +52,7 @@ export function PulseCheckModal() {
         if (!hasBeenDismissed && !hasAutoShown) {
           setIsOpen(true);
           setHasAutoShown(true);
+          sessionStorage.setItem(SESSION_KEY, 'true');
         }
       }, 2000);
       return () => clearTimeout(timer);
@@ -81,6 +89,7 @@ export function PulseCheckModal() {
     setSubmitted(false);
     setSelectedScore(null);
     setHasBeenDismissed(true);
+    sessionStorage.setItem(SESSION_KEY, 'true');
   };
 
   if (!user) return null;
