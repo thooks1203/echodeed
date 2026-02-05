@@ -325,6 +325,10 @@ export default function Landing() {
             <p className="text-xs text-white/50 mt-4">
               Questions? Contact us at hello@echodeed.com
             </p>
+            <div className="mt-4 flex gap-4 text-xs">
+              <a href="/privacy-policy" className="text-white/50 hover:text-white/80 underline">Privacy Policy</a>
+              <a href="/help" className="text-white/50 hover:text-white/80 underline">Help Center</a>
+            </div>
           </div>
         </div>
       </div>

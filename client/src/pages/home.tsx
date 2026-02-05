@@ -76,7 +76,7 @@ export default function Home() {
     const urlParams = new URLSearchParams(window.location.search);
     const tabParam = urlParams.get('tab');
     
-    if (tabParam && ['feed', 'schools', 'support', 'summer', 'community-service', 'rewards', 'mentor-dashboard', 'student-dashboard', 'teacher-dashboard', 'parent-dashboard', 'family-dashboard', 'sponsors', 'reports'].includes(tabParam)) {
+    if (tabParam && ['feed', 'schools', 'support', 'summer', 'community-service', 'rewards', 'mentor-dashboard', 'student-dashboard', 'teacher-dashboard', 'parent-dashboard', 'family-dashboard', 'sponsors', 'reports', 'help'].includes(tabParam)) {
       setActiveTab(tabParam);
       // Remove the tab parameter from URL to keep it clean
       window.history.replaceState({}, '', window.location.pathname);
@@ -206,6 +206,10 @@ export default function Home() {
   };
 
   const navigateToTab = (tab: string) => {
+    if (tab === 'help') {
+      navigate('/help');
+      return;
+    }
     setActiveTab(tab);
   };
 

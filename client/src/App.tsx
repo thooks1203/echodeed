@@ -30,6 +30,9 @@ import EmergencySeed from "@/pages/emergency-seed";
 import PresentationDownloads from "@/pages/PresentationDownloads";
 import AllegacyPresentation from "@/pages/AllegacyPresentation";
 import MarketingAssets from "@/pages/MarketingAssets";
+import HelpCenter from "@/pages/HelpCenter";
+import PrivacyPolicy from "@/pages/PrivacyPolicy";
+import SuperAdminPanel from "@/pages/SuperAdminPanel";
 import { FloatingRewardsButton } from "@/components/FloatingRewardsButton";
 import { RewardNotificationManager } from "@/components/RewardNotificationManager";
 import { SchoolRegistration } from "@/components/SchoolRegistration";
@@ -70,6 +73,9 @@ function Router() {
         </Route>
         <Route path="/class-settings" component={ClassSettings} />
         <Route path="/support" component={SupportPage} />
+        <Route path="/help" component={HelpCenter} />
+        <Route path="/privacy-policy" component={PrivacyPolicy} />
+        <Route path="/super-admin" component={SuperAdminPanel} />
         <Route path="/admin" component={AdminDashboard} />
         <Route path="/admin-dashboard" component={AdminDashboard} />
         <Route path="/admin/consents" component={SchoolConsentDashboard} />

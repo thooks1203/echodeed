@@ -27,6 +27,7 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
     { id: 'community-service', label: isMiddleSchool ? 'Kindness' : 'Service', icon: isMiddleSchool ? '💝' : '🏥' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
+    { id: 'help', label: 'Help', icon: '❓' },
   ];
 
   const studentTabs = allStudentTabs.filter(tab => {
@@ -46,6 +47,7 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
     { id: 'reports', label: 'Reports', icon: '📊' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
+    { id: 'help', label: 'Help', icon: '❓' },
   ];
   
   const teacherTabs = allTeacherTabs.filter(tab => {
@@ -61,6 +63,7 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
     { id: 'community-service', label: isMiddleSchool ? 'Kindness' : 'Service', icon: isMiddleSchool ? '💝' : '🏥' },
     { id: 'support', label: 'Support', icon: '💜' },
     { id: 'rewards', label: 'Rewards', icon: '🔥' },
+    { id: 'help', label: 'Help', icon: '❓' },
   ];
   
   const parentTabs = allParentTabs.filter(tab => {

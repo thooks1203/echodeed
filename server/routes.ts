@@ -14194,6 +14194,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // Register Spring Sprint 2026 Leadership Track routes
   registerLeadershipTrackRoutes(app, storage, isAuthenticated);
+  
+  // Register Support & Help Center routes
+  registerSupportRoutes(app, storage, isAuthenticated);
+  
+  // Register Super Admin routes
+  registerSuperAdminRoutes(app, storage, isAuthenticated);
 
   return httpServer;
 }
@@ -14573,6 +14579,190 @@ export function registerLeadershipTrackRoutes(app: Express, storage: IStorage, i
     } catch (error) {
       console.error('Error approving portfolio defense:', error);
       res.status(500).json({ message: 'Failed to approve portfolio defense' });
+    }
+  });
+}
+
+// ===== SUPPORT & HELP CENTER ROUTES =====
+
+export function registerSupportRoutes(app: Express, storage: IStorage, isAuthenticated: any) {
+  // Report an issue
+  app.post('/api/support/report-issue', async (req, res) => {
+    try {
+      const { issueType, subject, description, contactEmail } = req.body;
+      
+      if (!issueType || !subject || !description) {
+        return res.status(400).json({ message: 'Missing required fields' });
+      }
+      
+      // Store the issue in a simple log for now (can be enhanced with DB table later)
+      const issue = {
+        id: `issue-${Date.now()}`,
+        issueType,
+        subject,
+        description,
+        contactEmail: contactEmail || 'not provided',
+        userId: req.user?.claims?.sub || req.user?.id || 'anonymous',
+        createdAt: new Date().toISOString(),
+        status: 'open'
+      };
+      
+      console.log('📧 NEW SUPPORT ISSUE REPORTED:', JSON.stringify(issue, null, 2));
+      
+      // For production, you would send an email here using an email service
+      // For now, we just log it and return success
+      
+      res.json({ success: true, issueId: issue.id, message: 'Issue reported successfully' });
+    } catch (error) {
+      console.error('Error reporting issue:', error);
+      res.status(500).json({ message: 'Failed to report issue' });
+    }
+  });
+}
+
+// ===== SUPER ADMIN ROUTES (Restricted Access) =====
+
+export function registerSuperAdminRoutes(app: Express, storage: IStorage, isAuthenticated: any) {
+  // Middleware to check super admin access - PRODUCTION SECURE
+  const requireSuperAdmin = async (req: any, res: any, next: any) => {
+    // Get user info
+    const userEmail = req.user?.claims?.email || req.user?.email;
+    const userId = req.user?.claims?.sub || req.user?.id;
+    
+    // Super admin emails from environment (comma-separated)
+    const superAdminEmails = (process.env.SUPER_ADMIN_EMAILS || '').split(',')
+      .map(e => e.trim().toLowerCase())
+      .filter(e => e.length > 0);
+    
+    // Check if user is in super admin list
+    if (userEmail && superAdminEmails.includes(userEmail.toLowerCase())) {
+      console.log(`🔐 Super admin access granted to: ${userEmail}`);
+      return next();
+    }
+    
+    // DEMO MODE: Allow demo admin access for testing purposes only
+    // In production, set DEMO_MODE=false to disable this
+    if (process.env.DEMO_MODE === 'true') {
+      const sessionId = req.headers['x-session-id'];
+      const demoRole = req.headers['x-demo-role'];
+      if (sessionId && demoRole === 'admin') {
+        console.log(`🎭 Demo admin access granted via session: ${sessionId}`);
+        return next();
+      }
+    }
+    
+    console.log(`🚫 Super admin access denied for: ${userEmail || userId || 'unknown'}`);
+    return res.status(403).json({ message: 'Super admin access required. Contact platform administrator.' });
+  };
+
+  // Get sign-ups by school
+  app.get('/api/super-admin/school-signups', requireSuperAdmin, async (req, res) => {
+    try {
+      const result = await db.execute(sql`
+        SELECT 
+          ca.id as school_id,
+          ca.company_name as school_name,
+          COUNT(CASE WHEN u.school_role = 'student' THEN 1 END) as student_count,
+          COUNT(CASE WHEN u.school_role = 'teacher' THEN 1 END) as teacher_count,
+          COUNT(CASE WHEN u.school_role = 'admin' THEN 1 END) as admin_count,
+          COUNT(CASE WHEN u.school_role = 'parent' THEN 1 END) as parent_count,
+          COUNT(u.id) as total_users
+        FROM corporate_accounts ca
+        LEFT JOIN users u ON u.school_id = ca.id
+        GROUP BY ca.id, ca.company_name
+        ORDER BY COUNT(u.id) DESC
+      `);
+      
+      const signups = result.rows.map((row: any) => ({
+        schoolId: row.school_id,
+        schoolName: row.school_name,
+        studentCount: parseInt(row.student_count) || 0,
+        teacherCount: parseInt(row.teacher_count) || 0,
+        adminCount: parseInt(row.admin_count) || 0,
+        parentCount: parseInt(row.parent_count) || 0,
+        totalUsers: parseInt(row.total_users) || 0
+      }));
+      
+      res.json(signups);
+    } catch (error) {
+      console.error('Error fetching school signups:', error);
+      res.status(500).json({ message: 'Failed to fetch school signups' });
+    }
+  });
+
+  // Get all users
+  app.get('/api/super-admin/users', requireSuperAdmin, async (req, res) => {
+    try {
+      const result = await db.execute(sql`
+        SELECT 
+          u.id,
+          u.email,
+          u.first_name,
+          u.last_name,
+          u.school_role,
+          u.grade,
+          u.created_at,
+          ca.company_name as school_name
+        FROM users u
+        LEFT JOIN corporate_accounts ca ON u.school_id = ca.id
+        ORDER BY u.created_at DESC
+        LIMIT 1000
+      `);
+      
+      const users = result.rows.map((row: any) => ({
+        id: row.id,
+        email: row.email,
+        firstName: row.first_name,
+        lastName: row.last_name,
+        schoolRole: row.school_role,
+        schoolName: row.school_name,
+        grade: row.grade,
+        createdAt: row.created_at
+      }));
+      
+      res.json(users);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      res.status(500).json({ message: 'Failed to fetch users' });
+    }
+  });
+
+  // Get pending quests
+  app.get('/api/super-admin/pending-quests', requireSuperAdmin, async (req, res) => {
+    try {
+      const result = await db.execute(sql`
+        SELECT 
+          lqe.id,
+          lqe.user_id,
+          lqe.title,
+          lqe.description,
+          lqe.hours_logged,
+          lqe.evidence_url,
+          lqe.created_at as submitted_at,
+          u.first_name || ' ' || u.last_name as user_name
+        FROM leadership_quest_evidence lqe
+        JOIN users u ON lqe.user_id = u.id
+        WHERE lqe.verification_status = 'pending'
+        ORDER BY lqe.created_at DESC
+        LIMIT 100
+      `);
+      
+      const quests = result.rows.map((row: any) => ({
+        id: row.id,
+        userId: row.user_id,
+        userName: row.user_name || 'Unknown',
+        title: row.title,
+        description: row.description,
+        hoursLogged: parseFloat(row.hours_logged) || 0,
+        evidenceUrl: row.evidence_url,
+        submittedAt: row.submitted_at
+      }));
+      
+      res.json(quests);
+    } catch (error) {
+      console.error('Error fetching pending quests:', error);
+      // Return empty array if table doesn't exist yet
+      res.json([]);
     }
   });
 }
