@@ -1168,19 +1168,28 @@ export default function MentorDashboard({ onBack }: MentorDashboardProps) {
                           </div>
                         </div>
                       </div>
-                      <div>
-                        {module.completed ? (
+                      <div className="flex items-center gap-2">
+                        {module.completed && (
                           <Badge className="bg-green-100 text-green-700">Completed</Badge>
-                        ) : (
-                          <Button 
-                            className="bg-gradient-to-r from-blue-500 to-purple-500"
-                            onClick={() => startTraining(module)}
-                            data-testid={`start-training-${module.id}`}
-                          >
-                            <Play className="h-4 w-4 mr-2" />
-                            Start Training
-                          </Button>
                         )}
+                        <Button 
+                          className={module.completed ? "bg-gray-500 hover:bg-gray-600" : "bg-gradient-to-r from-blue-500 to-purple-500"}
+                          variant={module.completed ? "outline" : "default"}
+                          onClick={() => startTraining(module)}
+                          data-testid={`start-training-${module.id}`}
+                        >
+                          {module.completed ? (
+                            <>
+                              <BookOpen className="h-4 w-4 mr-2" />
+                              Review Content
+                            </>
+                          ) : (
+                            <>
+                              <Play className="h-4 w-4 mr-2" />
+                              Start Training
+                            </>
+                          )}
+                        </Button>
                       </div>
                     </div>
                   </CardContent>
