@@ -1,0 +1,299 @@
+2026-02-05T01:49:01.000000000Z [inf]  Starting Container
+2026-02-05T01:49:02.869323897Z [inf]  1:49:02 AM [express] ✓ Static file serving configured for production
+2026-02-05T01:49:02.869335475Z [inf]  1:49:02 AM [express] Starting server on 0.0.0.0:8080...
+2026-02-05T01:49:02.869341627Z [inf]  1:49:02 AM [express] ✓ EchoDeed application successfully started and serving on port 8080
+2026-02-05T01:49:02.869345694Z [err]  npm warn config production Use `--omit=dev` instead.
+2026-02-05T01:49:02.869351817Z [inf]  1:49:02 AM [express] ✓ Server is accessible at http://0.0.0.0:8080
+2026-02-05T01:49:02.869354857Z [inf]  
+2026-02-05T01:49:02.869363268Z [inf]  > rest-express@1.0.0 start
+2026-02-05T01:49:02.869363977Z [inf]  1:49:02 AM [express] ✓ Environment: production
+2026-02-05T01:49:02.869373868Z [inf]  > NODE_ENV=production node dist/index.js
+2026-02-05T01:49:02.869374114Z [inf]  1:49:02 AM [express] ✓ No background schedulers required for high school FERPA compliance
+2026-02-05T01:49:02.869382574Z [inf]  
+2026-02-05T01:49:02.869386253Z [inf]  1:49:02 AM [express] Initializing sample data in background...
+2026-02-05T01:49:02.869390518Z [inf]  📧 Email service initialized in demo mode (logging only)
+2026-02-05T01:49:02.869396860Z [inf]  1:49:02 AM [express] ================================================================================
+2026-02-05T01:49:02.869399520Z [inf]  1:49:02 AM [express] Starting EchoDeed application in production mode...
+2026-02-05T01:49:02.869406413Z [inf]  1:49:02 AM [express] 🚀 INITIALIZING DEMO DATA
+2026-02-05T01:49:02.869410447Z [inf]  1:49:02 AM [express] Checking required environment variables for production...
+2026-02-05T01:49:02.869414396Z [inf]  1:49:02 AM [express] 📍 Environment: production
+2026-02-05T01:49:02.869423582Z [inf]  1:49:02 AM [express] 🎭 DEMO_MODE: true
+2026-02-05T01:49:02.869424057Z [inf]  1:49:02 AM [express] ✓ All required environment variables are present
+2026-02-05T01:49:02.869432193Z [inf]  1:49:02 AM [express] Registering routes and setting up server...
+2026-02-05T01:49:02.869433565Z [inf]  1:49:02 AM [express] 🗄️  Database URL: postgresql://postgres:UkqhvRdNHImFDDCwCBOrHmJlPfNj...
+2026-02-05T01:49:02.869440296Z [inf]  Running in non-Replit environment - using demo authentication mode
+2026-02-05T01:49:02.869442974Z [inf]  1:49:02 AM [express] ================================================================================
+2026-02-05T01:49:02.869449898Z [inf]  💜 Starting Pulse Check Scheduler Service...
+2026-02-05T01:49:02.869453838Z [inf]  1:49:02 AM [express] ✗ Database connection failed: 
+2026-02-05T01:49:02.869459025Z [inf]  ✅ Pulse Check Scheduler running - checking every minute
+2026-02-05T01:49:02.869464272Z [inf]  1:49:02 AM [express] ✗ Error initializing sample data: Database connection failed during startup: 
+2026-02-05T01:49:02.869468552Z [inf]  1:49:02 AM [express] ✓ Routes registered successfully
+2026-02-05T01:49:02.869474888Z [inf]  1:49:02 AM [express] ⚠️ Sample data initialization failed (non-fatal): Error: Sample data initialization failed: Database connection failed during startup: 
+2026-02-05T01:49:02.869479667Z [inf]  1:49:02 AM [express] Setting up static file serving...
+2026-02-05T01:49:02.869484640Z [inf]  1:49:02 AM [express] 📂 Production static path: /app/dist/public
+2026-02-05T01:49:03.538890310Z [inf]  ⚠️ Subscription plans initialization temporarily disabled due to schema mismatch
+2026-02-05T01:49:53.650417321Z [inf]  🎁 Fetching reward offers (optimized for demo)...
+2026-02-05T01:49:53.650428286Z [inf]  1:49:45 AM [express] GET /api/surprise-giveaways/check-user 200 in 2ms :: {"hasGiveaway":false,"give…
+2026-02-05T01:49:53.650435745Z [err]  Failed to create demo user: ErrorEvent {
+2026-02-05T01:49:53.650442593Z [err]    [Symbol(kTarget)]: WebSocket {
+2026-02-05T01:49:53.650449815Z [err]      _events: [Object: null prototype] {
+2026-02-05T01:49:53.650460746Z [err]        error: [Function],
+2026-02-05T01:49:53.650468406Z [err]        message: [Function],
+2026-02-05T01:49:53.650476363Z [err]        close: [Function],
+2026-02-05T01:49:53.650489383Z [err]        open: [Function]
+2026-02-05T01:49:53.650498103Z [err]      },
+2026-02-05T01:49:53.650505787Z [err]      _eventsCount: 4,
+2026-02-05T01:49:53.650513081Z [err]      _maxListeners: undefined,
+2026-02-05T01:49:53.650521591Z [err]      _binaryType: 'arraybuffer',
+2026-02-05T01:49:53.650528435Z [err]      _closeCode: 1006,
+2026-02-05T01:49:53.650536586Z [err]      _closeFrameReceived: false,
+2026-02-05T01:49:53.650543513Z [err]      _closeFrameSent: false,
+2026-02-05T01:49:53.650550654Z [err]      _closeMessage: <Buffer >,
+2026-02-05T01:49:53.650558666Z [err]      _closeTimer: null,
+2026-02-05T01:49:53.650565691Z [err]      _errorEmitted: true,
+2026-02-05T01:49:53.650572022Z [err]      _extensions: {},
+2026-02-05T01:49:53.650582050Z [err]      _paused: false,
+2026-02-05T01:49:53.650589393Z [err]      _protocol: '',
+2026-02-05T01:49:53.650597700Z [err]      _readyState: 3,
+2026-02-05T01:49:53.650604610Z [err]      _receiver: null,
+2026-02-05T01:49:53.650611344Z [err]      _sender: null,
+2026-02-05T01:49:53.650618226Z [err]      _socket: null,
+2026-02-05T01:49:53.651953410Z [err]      _bufferedAmount: 0,
+2026-02-05T01:49:53.651963180Z [err]      _isServer: false,
+2026-02-05T01:49:53.651970395Z [err]      _redirects: 0,
+2026-02-05T01:49:53.651978951Z [err]      _autoPong: true,
+2026-02-05T01:49:53.651985568Z [err]      _closeTimeout: 30000,
+2026-02-05T01:49:53.651993270Z [err]      _url: 'wss://postgres.railway.internal/v2',
+2026-02-05T01:49:53.652000610Z [err]      _req: null,
+2026-02-05T01:49:53.652008824Z [err]      [Symbol(shapeMode)]: false,
+2026-02-05T01:49:53.652015840Z [err]      [Symbol(kCapture)]: false
+2026-02-05T01:49:53.652022870Z [err]    },
+2026-02-05T01:49:53.652031306Z [err]    [Symbol(kType)]: 'error',
+2026-02-05T01:49:53.652039595Z [err]    [Symbol(kError)]: AggregateError [ECONNREFUSED]: 
+2026-02-05T01:49:53.652047531Z [err]        at internalConnectMultiple (node:net:1122:18)
+2026-02-05T01:49:53.652056062Z [err]        at afterConnectMultiple (node:net:1689:7) {
+2026-02-05T01:49:53.652063509Z [err]      code: 'ECONNREFUSED',
+2026-02-05T01:49:53.652072604Z [err]      [errors]: [ [Error], [Error] ]
+2026-02-05T01:49:53.652080611Z [err]    },
+2026-02-05T01:49:53.652087800Z [err]    [Symbol(kMessage)]: ''
+2026-02-05T01:49:53.652093920Z [err]  }
+2026-02-05T01:49:53.652101200Z [err]  Failed to create demo user: ErrorEvent {
+2026-02-05T01:49:53.652110188Z [err]    [Symbol(kTarget)]: WebSocket {
+2026-02-05T01:49:53.652118663Z [err]      _events: [Object: null prototype] {
+2026-02-05T01:49:53.652125385Z [err]        error: [Function],
+2026-02-05T01:49:53.652133158Z [err]        message: [Function],
+2026-02-05T01:49:53.652139255Z [err]        close: [Function],
+2026-02-05T01:49:53.652147628Z [err]        open: [Function]
+2026-02-05T01:49:53.652156291Z [err]      },
+2026-02-05T01:49:53.652165076Z [err]      _eventsCount: 4,
+2026-02-05T01:49:53.652172648Z [err]      _maxListeners: undefined,
+2026-02-05T01:49:53.652181101Z [err]      _binaryType: 'arraybuffer',
+2026-02-05T01:49:53.652188250Z [err]      _closeCode: 1006,
+2026-02-05T01:49:53.652194753Z [err]      _closeFrameReceived: false,
+2026-02-05T01:49:53.652202146Z [err]      _closeFrameSent: false,
+2026-02-05T01:49:53.652208689Z [err]      _closeMessage: <Buffer >,
+2026-02-05T01:49:53.652217975Z [err]      _closeTimer: null,
+2026-02-05T01:49:53.652226086Z [err]      _errorEmitted: true,
+2026-02-05T01:49:53.652234108Z [err]      _extensions: {},
+2026-02-05T01:49:53.652243778Z [err]      _paused: false,
+2026-02-05T01:49:53.652252578Z [err]      _protocol: '',
+2026-02-05T01:49:53.652260466Z [err]      _readyState: 3,
+2026-02-05T01:49:53.652268008Z [err]      _receiver: null,
+2026-02-05T01:49:53.652275433Z [err]      _sender: null,
+2026-02-05T01:49:53.652282572Z [err]      _socket: null,
+2026-02-05T01:49:53.652291238Z [err]      _bufferedAmount: 0,
+2026-02-05T01:49:53.652298957Z [err]      _isServer: false,
+2026-02-05T01:49:53.652307073Z [err]      _redirects: 0,
+2026-02-05T01:49:53.652315453Z [err]      _autoPong: true,
+2026-02-05T01:49:53.652324638Z [err]      _closeTimeout: 30000,
+2026-02-05T01:49:53.652344483Z [err]      _url: 'wss://postgres.railway.internal/v2',
+2026-02-05T01:49:53.652353221Z [err]      _req: null,
+2026-02-05T01:49:53.652360711Z [err]      [Symbol(shapeMode)]: false,
+2026-02-05T01:49:53.652367291Z [err]      [Symbol(kCapture)]: false
+2026-02-05T01:49:53.652375103Z [err]    },
+2026-02-05T01:49:53.652383248Z [err]    [Symbol(kType)]: 'error',
+2026-02-05T01:49:53.652389813Z [err]    [Symbol(kError)]: AggregateError [ECONNREFUSED]: 
+2026-02-05T01:49:53.652397998Z [err]        at internalConnectMultiple (node:net:1122:18)
+2026-02-05T01:49:53.652405868Z [err]        at afterConnectMultiple (node:net:1689:7) {
+2026-02-05T01:49:53.652414290Z [err]      code: 'ECONNREFUSED',
+2026-02-05T01:49:53.652421020Z [err]      [errors]: [ [Error], [Error] ]
+2026-02-05T01:49:53.652428853Z [err]    },
+2026-02-05T01:49:53.652436333Z [err]    [Symbol(kMessage)]: ''
+2026-02-05T01:49:53.652444337Z [err]  }
+2026-02-05T01:49:53.652450873Z [inf]  1:49:45 AM [express] GET /api/surprise-giveaways/campaigns 200 in 82ms :: [{"id":"weekly-kindness-su…
+2026-02-05T01:49:53.652456656Z [err]  Failed to create demo user: ErrorEvent {
+2026-02-05T01:49:53.652463688Z [err]    [Symbol(kTarget)]: WebSocket {
+2026-02-05T01:49:53.652471144Z [err]      _events: [Object: null prototype] {
+2026-02-05T01:49:53.652479978Z [err]        error: [Function],
+2026-02-05T01:49:53.652488048Z [err]        message: [Function],
+2026-02-05T01:49:53.652494403Z [err]        close: [Function],
+2026-02-05T01:49:53.652501480Z [err]        open: [Function]
+2026-02-05T01:49:53.652508630Z [err]      },
+2026-02-05T01:49:53.652515698Z [err]      _eventsCount: 4,
+2026-02-05T01:49:53.652523511Z [err]      _maxListeners: undefined,
+2026-02-05T01:49:53.652531170Z [err]      _binaryType: 'arraybuffer',
+2026-02-05T01:49:53.652537468Z [err]      _closeCode: 1006,
+2026-02-05T01:49:53.652543878Z [err]      _closeFrameReceived: false,
+2026-02-05T01:49:53.652550561Z [err]      _closeFrameSent: false,
+2026-02-05T01:49:53.652556768Z [err]      _closeMessage: <Buffer >,
+2026-02-05T01:49:53.652563668Z [err]      _closeTimer: null,
+2026-02-05T01:49:53.652570268Z [err]      _errorEmitted: true,
+2026-02-05T01:49:53.652577738Z [err]      _extensions: {},
+2026-02-05T01:49:53.652584680Z [err]      _paused: false,
+2026-02-05T01:49:53.652590971Z [err]      _protocol: '',
+2026-02-05T01:49:53.652597183Z [err]      _readyState: 3,
+2026-02-05T01:49:53.652605003Z [err]      _receiver: null,
+2026-02-05T01:49:53.652611220Z [err]      _sender: null,
+2026-02-05T01:49:53.652617677Z [err]      _socket: null,
+2026-02-05T01:49:53.652624548Z [err]      _bufferedAmount: 0,
+2026-02-05T01:49:53.652632490Z [err]      _isServer: false,
+2026-02-05T01:49:53.652639628Z [err]      _redirects: 0,
+2026-02-05T01:49:53.652647195Z [err]      _autoPong: true,
+2026-02-05T01:49:53.652653830Z [err]      _closeTimeout: 30000,
+2026-02-05T01:49:53.652660209Z [err]      _url: 'wss://postgres.railway.internal/v2',
+2026-02-05T01:49:53.652667353Z [err]      _req: null,
+2026-02-05T01:49:53.652675999Z [err]      [Symbol(shapeMode)]: false,
+2026-02-05T01:49:53.652682109Z [err]      [Symbol(kCapture)]: false
+2026-02-05T01:49:53.652691575Z [err]    },
+2026-02-05T01:49:53.652709279Z [err]    [Symbol(kType)]: 'error',
+2026-02-05T01:49:53.652716196Z [err]    [Symbol(kError)]: AggregateError [ECONNREFUSED]: 
+2026-02-05T01:49:53.652723798Z [err]        at internalConnectMultiple (node:net:1122:18)
+2026-02-05T01:49:53.653760646Z [err]        at afterConnectMultiple (node:net:1689:7) {
+2026-02-05T01:49:53.653768868Z [err]      code: 'ECONNREFUSED',
+2026-02-05T01:49:53.653775420Z [err]      [errors]: [ [Error], [Error] ]
+2026-02-05T01:49:53.653781428Z [err]    },
+2026-02-05T01:49:53.653787416Z [err]    [Symbol(kMessage)]: ''
+2026-02-05T01:49:53.653795646Z [err]  }
+2026-02-05T01:49:53.653801495Z [err]  Failed to get reward offers: ErrorEvent {
+2026-02-05T01:49:53.653808655Z [err]    [Symbol(kTarget)]: WebSocket {
+2026-02-05T01:49:53.653814758Z [err]      _events: [Object: null prototype] {
+2026-02-05T01:49:53.653821642Z [err]        error: [Function],
+2026-02-05T01:49:53.653827754Z [err]        message: [Function],
+2026-02-05T01:49:53.653835340Z [err]        close: [Function],
+2026-02-05T01:49:53.653842363Z [err]        open: [Function]
+2026-02-05T01:49:53.653850044Z [err]      },
+2026-02-05T01:49:53.653856845Z [err]      _eventsCount: 4,
+2026-02-05T01:49:53.653863706Z [err]      _maxListeners: undefined,
+2026-02-05T01:49:53.653871300Z [err]      _binaryType: 'arraybuffer',
+2026-02-05T01:49:53.653878588Z [err]      _closeCode: 1006,
+2026-02-05T01:49:53.653884467Z [err]      _closeFrameReceived: false,
+2026-02-05T01:49:53.653890904Z [err]      _closeFrameSent: false,
+2026-02-05T01:49:53.653897813Z [err]      _closeMessage: <Buffer >,
+2026-02-05T01:49:53.653905456Z [err]      _closeTimer: null,
+2026-02-05T01:49:53.653911674Z [err]      _errorEmitted: true,
+2026-02-05T01:49:53.653918471Z [err]      _extensions: {},
+2026-02-05T01:49:53.653927217Z [err]      _paused: false,
+2026-02-05T01:49:53.653935188Z [err]      _protocol: '',
+2026-02-05T01:49:53.653942700Z [err]      _readyState: 3,
+2026-02-05T01:49:53.653950301Z [err]      _receiver: null,
+2026-02-05T01:49:53.653957808Z [err]      _sender: null,
+2026-02-05T01:49:53.655992138Z [err]      _socket: null,
+2026-02-05T01:49:53.656004175Z [err]      _bufferedAmount: 0,
+2026-02-05T01:49:53.656011828Z [err]      _isServer: false,
+2026-02-05T01:49:53.656018729Z [err]      _redirects: 0,
+2026-02-05T01:49:53.656030060Z [err]      _autoPong: true,
+2026-02-05T01:49:53.656037553Z [err]      _closeTimeout: 30000,
+2026-02-05T01:49:53.656044363Z [err]      _url: 'wss://postgres.railway.internal/v2',
+2026-02-05T01:49:53.656052015Z [err]      _req: null,
+2026-02-05T01:49:53.656058635Z [err]      [Symbol(shapeMode)]: false,
+2026-02-05T01:49:53.656065956Z [err]      [Symbol(kCapture)]: false
+2026-02-05T01:49:53.656072613Z [err]    },
+2026-02-05T01:49:53.656080303Z [err]    [Symbol(kType)]: 'error',
+2026-02-05T01:49:53.656087397Z [err]    [Symbol(kError)]: AggregateError [ECONNREFUSED]: 
+2026-02-05T01:49:53.656094543Z [err]        at internalConnectMultiple (node:net:1122:18)
+2026-02-05T01:49:53.656102233Z [err]        at afterConnectMultiple (node:net:1689:7) {
+2026-02-05T01:49:53.656110331Z [err]      code: 'ECONNREFUSED',
+2026-02-05T01:49:53.656119107Z [err]      [errors]: [ [Error], [Error] ]
+2026-02-05T01:49:53.656126166Z [err]    },
+2026-02-05T01:49:53.656133508Z [err]    [Symbol(kMessage)]: ''
+2026-02-05T01:49:53.656140665Z [err]  }
+2026-02-05T01:49:53.656155861Z [err]      _closeFrameSent: false,
+2026-02-05T01:49:53.656163557Z [err]      _closeMessage: <Buffer >,
+2026-02-05T01:49:53.656170153Z [err]      _closeTimer: null,
+2026-02-05T01:49:53.656176020Z [err]      _errorEmitted: true,
+2026-02-05T01:49:53.656180971Z [inf]  1:49:45 AM [express] GET /api/rewards/offers/all/all 500 in 71ms :: {"message":"Failed to get reward…
+2026-02-05T01:49:53.656182990Z [err]      _extensions: {},
+2026-02-05T01:49:53.656188844Z [err]  Error fetching user: ErrorEvent {
+2026-02-05T01:49:53.656197083Z [err]    [Symbol(kTarget)]: WebSocket {
+2026-02-05T01:49:53.656199447Z [err]      },
+2026-02-05T01:49:53.656203895Z [err]      _events: [Object: null prototype] {
+2026-02-05T01:49:53.656210758Z [err]        error: [Function],
+2026-02-05T01:49:53.656210971Z [err]      _eventsCount: 4,
+2026-02-05T01:49:53.656217691Z [err]        message: [Function],
+2026-02-05T01:49:53.656218761Z [err]      _maxListeners: undefined,
+2026-02-05T01:49:53.656224635Z [err]        close: [Function],
+2026-02-05T01:49:53.656226341Z [err]      _binaryType: 'arraybuffer',
+2026-02-05T01:49:53.656232048Z [err]        open: [Function]
+2026-02-05T01:49:53.656233199Z [err]      _closeCode: 1006,
+2026-02-05T01:49:53.656240873Z [err]      _closeFrameReceived: false,
+2026-02-05T01:49:53.656254683Z [err]      _eventsCount: 4,
+2026-02-05T01:49:53.656263866Z [err]      _maxListeners: undefined,
+2026-02-05T01:49:53.656269070Z [err]      _paused: false,
+2026-02-05T01:49:53.656271375Z [err]      _binaryType: 'arraybuffer',
+2026-02-05T01:49:53.656277016Z [err]      _protocol: '',
+2026-02-05T01:49:53.656279305Z [err]      _closeCode: 1006,
+2026-02-05T01:49:53.656284191Z [err]      _readyState: 3,
+2026-02-05T01:49:53.656291236Z [err]  COPPA enforcement error: ErrorEvent {
+2026-02-05T01:49:53.656291814Z [err]      _receiver: null,
+2026-02-05T01:49:53.656299150Z [err]    [Symbol(kTarget)]: WebSocket {
+2026-02-05T01:49:53.656300111Z [err]      _sender: null,
+2026-02-05T01:49:53.656307455Z [err]      _events: [Object: null prototype] {
+2026-02-05T01:49:53.656309611Z [err]      _socket: null,
+2026-02-05T01:49:53.656315318Z [err]        error: [Function],
+2026-02-05T01:49:53.656317243Z [err]      _bufferedAmount: 0,
+2026-02-05T01:49:53.656324009Z [err]        message: [Function],
+2026-02-05T01:49:53.656326032Z [err]      _isServer: false,
+2026-02-05T01:49:53.656330996Z [err]        close: [Function],
+2026-02-05T01:49:53.656332679Z [err]      _redirects: 0,
+2026-02-05T01:49:53.656337983Z [err]        open: [Function]
+2026-02-05T01:49:53.656339325Z [err]      _autoPong: true,
+2026-02-05T01:49:53.656345206Z [err]      },
+2026-02-05T01:49:53.656345779Z [err]      _closeTimeout: 30000,
+2026-02-05T01:49:53.656351821Z [err]      _url: 'wss://postgres.railway.internal/v2',
+2026-02-05T01:49:53.656357737Z [err]      _req: null,
+2026-02-05T01:49:53.656359375Z [err]      _protocol: '',
+2026-02-05T01:49:53.656364427Z [err]      [Symbol(shapeMode)]: false,
+2026-02-05T01:49:53.656366223Z [err]      _readyState: 3,
+2026-02-05T01:49:53.656371226Z [err]      [Symbol(kCapture)]: false
+2026-02-05T01:49:53.656373335Z [err]      _receiver: null,
+2026-02-05T01:49:53.656378093Z [err]    },
+2026-02-05T01:49:53.656380106Z [err]      _sender: null,
+2026-02-05T01:49:53.656385532Z [err]    [Symbol(kType)]: 'error',
+2026-02-05T01:49:53.656391882Z [err]      _closeFrameReceived: false,
+2026-02-05T01:49:53.656393482Z [err]    [Symbol(kError)]: AggregateError [ECONNREFUSED]: 
+2026-02-05T01:49:53.656399898Z [err]      _closeFrameSent: false,
+2026-02-05T01:49:53.656400186Z [err]        at internalConnectMultiple (node:net:1122:18)
+2026-02-05T01:49:53.656408200Z [err]        at afterConnectMultiple (node:net:1689:7) {
+2026-02-05T01:49:53.656408216Z [err]      _closeMessage: <Buffer >,
+2026-02-05T01:49:53.656415849Z [err]      code: 'ECONNREFUSED',
+2026-02-05T01:49:53.656415858Z [err]      _closeTimer: null,
+2026-02-05T01:49:53.656422709Z [err]      _errorEmitted: true,
+2026-02-05T01:49:53.656424201Z [err]      [errors]: [ [Error], [Error] ]
+2026-02-05T01:49:53.656429905Z [err]      _extensions: {},
+2026-02-05T01:49:53.656430851Z [err]    },
+2026-02-05T01:49:53.656436817Z [err]      _paused: false,
+2026-02-05T01:49:53.656437875Z [err]    [Symbol(kMessage)]: ''
+2026-02-05T01:49:53.656444039Z [err]  }
+2026-02-05T01:49:53.656451320Z [inf]  1:49:45 AM [express] GET /api/auth/user 500 in 88ms :: {"message":"Failed to fetch user"}
+2026-02-05T01:49:53.656454284Z [err]      _socket: null,
+2026-02-05T01:49:53.656461611Z [err]      _bufferedAmount: 0,
+2026-02-05T01:49:53.656463392Z [err]      _autoPong: true,
+2026-02-05T01:49:53.656468924Z [err]      _isServer: false,
+2026-02-05T01:49:53.656471202Z [err]      _closeTimeout: 30000,
+2026-02-05T01:49:53.656477134Z [err]      _redirects: 0,
+2026-02-05T01:49:53.656479054Z [err]      _url: 'wss://postgres.railway.internal/v2',
+2026-02-05T01:49:53.656485422Z [err]      _req: null,
+2026-02-05T01:49:53.657128559Z [err]      [Symbol(shapeMode)]: false,
+2026-02-05T01:49:53.657136798Z [err]      [Symbol(kCapture)]: false
+2026-02-05T01:49:53.657142791Z [err]    },
+2026-02-05T01:49:53.657148701Z [err]    [Symbol(kType)]: 'error',
+2026-02-05T01:49:53.657155428Z [err]    [Symbol(kError)]: AggregateError [ECONNREFUSED]: 
+2026-02-05T01:49:53.657161596Z [err]        at internalConnectMultiple (node:net:1122:18)
+2026-02-05T01:49:53.657168436Z [err]        at afterConnectMultiple (node:net:1689:7) {
+2026-02-05T01:49:53.657175751Z [err]      code: 'ECONNREFUSED',
+2026-02-05T01:49:53.657181870Z [err]      [errors]: [ [Error], [Error] ]
+2026-02-05T01:49:53.657188891Z [err]    },
+2026-02-05T01:49:53.657195951Z [err]    [Symbol(kMessage)]: ''
+2026-02-05T01:49:53.657205394Z [err]  }
+2026-02-05T01:49:53.657218890Z [inf]  🔒 SECURITY_AUDIT: {"timestamp":"2026-02-05T01:49:45.597Z","eventType":"CLAIM_CODE_EVENT","userId":"student-001","userRole":"student","action":"REDEEM_FAILED","success":false,"details":{"blockReason":"COPPA_ENFORCEMENT_ERROR","error":"Unknown error","endpoint":"/api/tokens","timestamp":"2026-02-05T01:49:45.597Z","security_context":"coppa_compliant_registration","compliance_note":"Student registration audit - no sensitive data stored","data_minimization":"COPPA_COMPLIANT"},"compliance":"COPPA_FERPA_NCMEC_COMPLIANT"}
+2026-02-05T01:49:53.657227808Z [inf]  1:49:45 AM [express] GET /api/tokens 500 in 88ms :: {"error":"Account access verification temporaril…

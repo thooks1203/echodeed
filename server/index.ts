@@ -564,7 +564,7 @@ app.use((req, res, next) => {
       app.use(express.static(distPublicPath));
       
       // SPA fallback - serve index.html for all non-API routes
-      app.use('{*path}', (req, res, next) => {
+      app.use('*', (req, res, next) => {
         if (req.originalUrl.startsWith('/api/')) {
           return next();
         }
