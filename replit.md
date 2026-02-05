@@ -70,6 +70,14 @@ The frontend utilizes React 18, TypeScript, and Vite, with Radix UI, shadcn/ui, 
   - **Badge & Achievement Engine**: Originator (first to share a category), Weekly Warrior (posts across 5 days), and Grade Hero (most posts in grade) badges with Badge Gallery UI on student dashboard.
   - **Social Media Sharing**: SocialShareModal with canvas-based branded image generation (1080x1080 Instagram-ready format), share button on all feed posts.
   - **Sign-up Incentive System**: Schools can configure bonus tokens for first Y sign-ups via admin settings, with atomic claim prevention and per-user eligibility checks.
+- **Spring Sprint 2026 Leadership Certificate Track**:
+  - **$500 EchoDeed Scholarship**: Students completing all 3 pillars by May 15th qualify as scholarship finalists
+  - **Pillar 1 - Mentor Training**: 5 leadership modules (Power of One, Self-Awareness, Effective Communication, Team Leadership, Community Impact) with 250-word personal reflection requirement (server-validated)
+  - **Pillar 2 - Impact Quests**: 4 verified community service quests with evidence upload. **The Wildcat Rule**: At least 1 quest must be a Middle School Mentoring Session (progress caps at 75% without it)
+  - **Pillar 3 - Portfolio Defense**: 10-minute presentation requiring admin/teacher approval toggle
+  - **Separate Database Tables**: Uses `leadership_track_progress` and `leadership_quest_evidence` tables (not caching) to avoid mentor training system issues
+  - **Progress Calculation**: Average of 3 pillars with Wildcat Rule enforcement
+  - **Certificate Generation**: Dual-signed PDF with Principal and Corporate Sponsor signatures (planned)
 
 ## External Dependencies
 - **Frontend Frameworks**: React 18
