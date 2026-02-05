@@ -22,6 +22,7 @@ export function LeftSidebar({ activeTab, onTabChange }: LeftSidebarProps) {
   const allStudentTabs = [
     { id: 'mentor-dashboard', label: 'Mentor', icon: '🌟' },
     { id: 'student-dashboard', label: 'Dashboard', icon: '👨‍🎓' },
+    { id: 'spring-sprint', label: 'Spring Sprint', icon: '🏆' },
     { id: 'summer', label: 'Summer', icon: '🏖️' },
     { id: 'community-service', label: isMiddleSchool ? 'Kindness' : 'Service', icon: isMiddleSchool ? '💝' : '🏥' },
     { id: 'support', label: 'Support', icon: '💜' },

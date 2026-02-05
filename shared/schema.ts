@@ -1955,3 +1955,72 @@ export type AdminRewardRedemption = typeof adminRewardRedemptions.$inferSelect;
 export type InsertAdminRewardRedemption = z.infer<typeof insertAdminRewardRedemptionSchema>;
 export type CharacterExcellenceAward = typeof characterExcellenceAwards.$inferSelect;
 export type InsertCharacterExcellenceAward = z.infer<typeof insertCharacterExcellenceAwardSchema>;
+
+// ============================================================================
+// SPRING SPRINT 2026 - LEADERSHIP CERTIFICATE TRACK
+// ============================================================================
+
+// Leadership Track Progress - Separate from mentor training to avoid caching issues
+export const leadershipTrackProgress = pgTable("leadership_track_progress", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id"),
+  
+  // Pillar 1: Core Leadership Training (5 modules)
+  module1Complete: integer("module1_complete").default(0), // The Power of One
+  module2Complete: integer("module2_complete").default(0), // Self-Awareness
+  module3Complete: integer("module3_complete").default(0), // Effective Communication
+  module4Complete: integer("module4_complete").default(0), // Team Leadership
+  module5Complete: integer("module5_complete").default(0), // Community Impact
+  trainingCompletedAt: timestamp("training_completed_at"),
+  personalReflection: text("personal_reflection"), // 250-word reflection after completing modules
+  
+  // Pillar 2: Impact Quests (4 verified community service acts)
+  verifiedQuestsCount: integer("verified_quests_count").default(0),
+  hasMiddleSchoolMentoringQuest: integer("has_middle_school_mentoring_quest").default(0), // The Wildcat Rule
+  questsCompletedAt: timestamp("quests_completed_at"),
+  
+  // Pillar 3: Leadership Portfolio Defense
+  portfolioDefenseStatus: varchar("portfolio_defense_status", { length: 20 }).default("not_started"), // not_started, scheduled, completed
+  portfolioDefenseApproved: integer("portfolio_defense_approved").default(0),
+  portfolioDefenseApprovedBy: varchar("portfolio_defense_approved_by"),
+  portfolioDefenseApprovedAt: timestamp("portfolio_defense_approved_at"),
+  
+  // Overall Progress
+  overallProgress: integer("overall_progress").default(0), // 0-100
+  isScholarshipFinalist: integer("is_scholarship_finalist").default(0),
+  certificateIssuedAt: timestamp("certificate_issued_at"),
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// Leadership Quest Evidence - For image uploads and teacher verification
+export const leadershipQuestEvidence = pgTable("leadership_quest_evidence", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  serviceLogId: varchar("service_log_id"), // Link to community_service_logs
+  
+  title: text("title").notNull(),
+  description: text("description"),
+  questType: varchar("quest_type", { length: 50 }).notNull(), // community_service, middle_school_mentoring, kindness_act
+  
+  // Evidence
+  imageUrl: text("image_url"),
+  hasTeacherVerification: integer("has_teacher_verification").default(0),
+  verifiedByTeacher: varchar("verified_by_teacher"),
+  verifiedAt: timestamp("verified_at"),
+  
+  // Status
+  status: varchar("status", { length: 20 }).default("pending"), // pending, verified, rejected
+  
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertLeadershipTrackProgressSchema = createInsertSchema(leadershipTrackProgress).omit({ id: true, createdAt: true, updatedAt: true });
+export const insertLeadershipQuestEvidenceSchema = createInsertSchema(leadershipQuestEvidence).omit({ id: true, createdAt: true });
+
+export type LeadershipTrackProgress = typeof leadershipTrackProgress.$inferSelect;
+export type InsertLeadershipTrackProgress = z.infer<typeof insertLeadershipTrackProgressSchema>;
+export type LeadershipQuestEvidence = typeof leadershipQuestEvidence.$inferSelect;
+export type InsertLeadershipQuestEvidence = z.infer<typeof insertLeadershipQuestEvidenceSchema>;
