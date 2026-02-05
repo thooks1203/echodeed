@@ -17,7 +17,9 @@ import {
   AlertTriangle,
   Shield,
   FileSpreadsheet,
-  Eye
+  Eye,
+  Heart,
+  TrendingUp
 } from 'lucide-react';
 
 interface SchoolSignups {
@@ -52,6 +54,12 @@ interface PendingQuest {
   evidenceUrl?: string;
 }
 
+interface PulseData {
+  date: string;
+  averageMood: number;
+  totalLogs: number;
+}
+
 export default function SuperAdminPanel() {
   const { user } = useAuth();
   const [, setLocation] = useLocation();
@@ -74,6 +82,11 @@ export default function SuperAdminPanel() {
 
   const totalSignups = schoolSignups?.reduce((sum, s) => sum + s.totalUsers, 0) || 0;
   const totalStudents = schoolSignups?.reduce((sum, s) => sum + s.studentCount, 0) || 0;
+
+  // Fetch pulse analytics
+  const { data: pulseData } = useQuery<PulseData[]>({
+    queryKey: ['/api/admin/pulse-analytics', { days: 7 }],
+  });
 
   const downloadCSV = () => {
     if (!allUsers || allUsers.length === 0) {
@@ -172,6 +185,10 @@ export default function SuperAdminPanel() {
           <TabsTrigger value="quests">
             <Clock size={16} style={{ marginRight: '8px' }} />
             Pending Quests
+          </TabsTrigger>
+          <TabsTrigger value="pulse">
+            <Heart size={16} style={{ marginRight: '8px' }} />
+            Pulse Analytics
           </TabsTrigger>
         </TabsList>
 
@@ -348,6 +365,134 @@ export default function SuperAdminPanel() {
                 <div style={{ textAlign: 'center', padding: '48px', color: '#6B7280' }}>
                   <CheckCircle size={48} style={{ margin: '0 auto 16px', color: '#10B981' }} />
                   <p>No pending quests to review!</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Pulse Analytics Tab */}
+        <TabsContent value="pulse">
+          <Card>
+            <CardHeader>
+              <CardTitle style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <Heart size={20} style={{ color: '#EC4899' }} />
+                Student Pulse (Daily Mood Tracking)
+              </CardTitle>
+              <CardDescription>
+                Average mood scores across schools - Track student well-being trends
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {pulseData && pulseData.length > 0 ? (
+                <div>
+                  {/* Simple bar chart visualization */}
+                  <div style={{ 
+                    display: 'flex', 
+                    alignItems: 'flex-end', 
+                    gap: '8px', 
+                    height: '200px',
+                    padding: '20px 0',
+                    borderBottom: '2px solid #E5E7EB',
+                    marginBottom: '16px'
+                  }}>
+                    {pulseData.map((day, index) => {
+                      const height = (day.averageMood / 5) * 160;
+                      const getColor = (score: number) => {
+                        if (score >= 4) return '#10B981';
+                        if (score >= 3) return '#F59E0B';
+                        if (score >= 2) return '#F97316';
+                        return '#EF4444';
+                      };
+                      return (
+                        <div key={index} style={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                          <div style={{
+                            background: getColor(day.averageMood),
+                            width: '100%',
+                            maxWidth: '60px',
+                            height: `${height}px`,
+                            borderRadius: '8px 8px 0 0',
+                            display: 'flex',
+                            alignItems: 'flex-start',
+                            justifyContent: 'center',
+                            paddingTop: '8px',
+                            color: 'white',
+                            fontWeight: '700',
+                            fontSize: '14px',
+                          }}>
+                            {day.averageMood.toFixed(1)}
+                          </div>
+                          <div style={{ 
+                            fontSize: '11px', 
+                            color: '#6B7280', 
+                            marginTop: '8px',
+                            textAlign: 'center'
+                          }}>
+                            {new Date(day.date).toLocaleDateString('en-US', { weekday: 'short' })}
+                          </div>
+                          <div style={{ fontSize: '10px', color: '#9CA3AF' }}>
+                            {day.totalLogs} logs
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  
+                  {/* Mood legend */}
+                  <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', marginTop: '16px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <div style={{ width: '12px', height: '12px', background: '#10B981', borderRadius: '2px' }} />
+                      <span style={{ fontSize: '12px', color: '#6B7280' }}>Great (4-5)</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <div style={{ width: '12px', height: '12px', background: '#F59E0B', borderRadius: '2px' }} />
+                      <span style={{ fontSize: '12px', color: '#6B7280' }}>Okay (3-4)</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <div style={{ width: '12px', height: '12px', background: '#F97316', borderRadius: '2px' }} />
+                      <span style={{ fontSize: '12px', color: '#6B7280' }}>Down (2-3)</span>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <div style={{ width: '12px', height: '12px', background: '#EF4444', borderRadius: '2px' }} />
+                      <span style={{ fontSize: '12px', color: '#6B7280' }}>Struggling (1-2)</span>
+                    </div>
+                  </div>
+                  
+                  {/* Summary stats */}
+                  <div style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(3, 1fr)', 
+                    gap: '16px', 
+                    marginTop: '24px',
+                    padding: '16px',
+                    background: '#F9FAFB',
+                    borderRadius: '12px'
+                  }}>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: '24px', fontWeight: '700', color: '#10B981' }}>
+                        {(pulseData.reduce((sum, d) => sum + d.averageMood, 0) / pulseData.length).toFixed(1)}
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#6B7280' }}>Weekly Avg Mood</div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: '24px', fontWeight: '700', color: '#4F46E5' }}>
+                        {pulseData.reduce((sum, d) => sum + d.totalLogs, 0)}
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#6B7280' }}>Total Check-ins</div>
+                    </div>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ fontSize: '24px', fontWeight: '700', color: '#EC4899' }}>
+                        {pulseData.length}
+                      </div>
+                      <div style={{ fontSize: '12px', color: '#6B7280' }}>Active Days</div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div style={{ textAlign: 'center', padding: '48px', color: '#6B7280' }}>
+                  <TrendingUp size={48} style={{ margin: '0 auto 16px', color: '#D1D5DB' }} />
+                  <p>No pulse data available yet.</p>
+                  <p style={{ fontSize: '14px' }}>Students will see Daily Check-In prompts on their dashboard.</p>
                 </div>
               )}
             </CardContent>

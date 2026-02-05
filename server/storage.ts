@@ -51,6 +51,8 @@ import {
   leadershipTrackProgress,
   leadershipQuestEvidence,
   helpfulReactions,
+  dailyLogs,
+  smsReminders,
   corporateAccounts,
   corporateEmployees,
   corporateTeams,
@@ -216,6 +218,9 @@ import {
   type InsertStudentNotificationEvent,
   type LeadershipTrackProgress,
   type LeadershipQuestEvidence,
+  type DailyLog,
+  type InsertDailyLog,
+  type SMSReminder,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte, lte, isNotNull, isNull, inArray, gt, getTableColumns } from "drizzle-orm";
@@ -829,6 +834,15 @@ export interface IStorage {
   completeLeadershipModule(userId: string, moduleNumber: number): Promise<{ success: boolean }>;
   submitLeadershipReflection(userId: string, reflection: string): Promise<{ success: boolean }>;
   approvePortfolioDefense(userId: string, adminId: string): Promise<{ success: boolean }>;
+  
+  // Daily Mood Logs & SMS Engagement System
+  getDailyLogForDate(userId: string, date: Date): Promise<DailyLog | undefined>;
+  createDailyLog(log: InsertDailyLog): Promise<DailyLog>;
+  getDailyLogStreak(userId: string): Promise<{ current: number; longest: number }>;
+  getUserByPhoneNumber(phoneNumber: string): Promise<User | undefined>;
+  getUsersForSMSReminders(reminderTime: string): Promise<User[]>;
+  getPulseAnalytics(schoolId: string, days: number): Promise<{ date: string; averageMood: number; totalLogs: number }[]>;
+  logSMSReminder(userId: string, phoneNumber: string, templateType: string, messageSid: string | null): Promise<void>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -7051,6 +7065,155 @@ export class DatabaseStorage implements IStorage {
         certificateIssuedAt: isScholarshipFinalist ? new Date() : null,
       })
       .where(eq(leadershipTrackProgress.userId, userId));
+  }
+
+  // ===== DAILY MOOD LOGS & SMS ENGAGEMENT SYSTEM =====
+  
+  async getDailyLogForDate(userId: string, date: Date): Promise<DailyLog | undefined> {
+    const startOfDay = new Date(date);
+    startOfDay.setHours(0, 0, 0, 0);
+    const endOfDay = new Date(date);
+    endOfDay.setHours(23, 59, 59, 999);
+    
+    const [log] = await db
+      .select()
+      .from(dailyLogs)
+      .where(
+        and(
+          eq(dailyLogs.userId, userId),
+          gte(dailyLogs.date, startOfDay),
+          lte(dailyLogs.date, endOfDay)
+        )
+      )
+      .limit(1);
+    
+    return log || undefined;
+  }
+
+  async createDailyLog(log: InsertDailyLog): Promise<DailyLog> {
+    const [created] = await db.insert(dailyLogs).values(log).returning();
+    return created;
+  }
+
+  async getDailyLogStreak(userId: string): Promise<{ current: number; longest: number }> {
+    const logs = await db
+      .select()
+      .from(dailyLogs)
+      .where(eq(dailyLogs.userId, userId))
+      .orderBy(desc(dailyLogs.date));
+    
+    if (logs.length === 0) {
+      return { current: 0, longest: 0 };
+    }
+    
+    let currentStreak = 0;
+    let longestStreak = 0;
+    let tempStreak = 1;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    // Check if first log is from today or yesterday
+    const firstLogDate = new Date(logs[0].date);
+    firstLogDate.setHours(0, 0, 0, 0);
+    const dayDiff = Math.floor((today.getTime() - firstLogDate.getTime()) / (1000 * 60 * 60 * 24));
+    
+    if (dayDiff <= 1) {
+      currentStreak = 1;
+      
+      for (let i = 1; i < logs.length; i++) {
+        const prevDate = new Date(logs[i - 1].date);
+        const currDate = new Date(logs[i].date);
+        prevDate.setHours(0, 0, 0, 0);
+        currDate.setHours(0, 0, 0, 0);
+        
+        const diff = Math.floor((prevDate.getTime() - currDate.getTime()) / (1000 * 60 * 60 * 24));
+        
+        if (diff === 1) {
+          currentStreak++;
+          tempStreak++;
+        } else {
+          longestStreak = Math.max(longestStreak, tempStreak);
+          tempStreak = 1;
+          break;
+        }
+      }
+    }
+    
+    longestStreak = Math.max(longestStreak, tempStreak, currentStreak);
+    
+    return { current: currentStreak, longest: longestStreak };
+  }
+
+  async getUserByPhoneNumber(phoneNumber: string): Promise<User | undefined> {
+    // Normalize phone number (remove non-digits)
+    const normalized = phoneNumber.replace(/\D/g, '');
+    
+    const [user] = await db
+      .select()
+      .from(users)
+      .where(sql`REPLACE(REPLACE(REPLACE(${users.phoneNumber}, '-', ''), ' ', ''), '+', '') LIKE '%' || ${normalized.slice(-10)} || '%'`)
+      .limit(1);
+    
+    return user || undefined;
+  }
+
+  async getUsersForSMSReminders(reminderTime: string): Promise<User[]> {
+    const result = await db
+      .select()
+      .from(users)
+      .where(
+        and(
+          eq(users.smsEnabled, true),
+          eq(users.smsReminderTime, reminderTime),
+          isNotNull(users.phoneNumber)
+        )
+      );
+    
+    return result;
+  }
+
+  async getPulseAnalytics(schoolId: string, days: number): Promise<{ date: string; averageMood: number; totalLogs: number }[]> {
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+    startDate.setHours(0, 0, 0, 0);
+    
+    const logs = await db
+      .select()
+      .from(dailyLogs)
+      .where(
+        and(
+          eq(dailyLogs.schoolId, schoolId),
+          gte(dailyLogs.date, startDate)
+        )
+      );
+    
+    // Group by date
+    const byDate: Record<string, { total: number; count: number }> = {};
+    
+    for (const log of logs) {
+      const dateStr = new Date(log.date).toISOString().split('T')[0];
+      if (!byDate[dateStr]) {
+        byDate[dateStr] = { total: 0, count: 0 };
+      }
+      byDate[dateStr].total += log.moodScore;
+      byDate[dateStr].count++;
+    }
+    
+    return Object.entries(byDate).map(([date, data]) => ({
+      date,
+      averageMood: Math.round((data.total / data.count) * 10) / 10,
+      totalLogs: data.count,
+    })).sort((a, b) => a.date.localeCompare(b.date));
+  }
+
+  async logSMSReminder(userId: string, phoneNumber: string, templateType: string, messageSid: string | null): Promise<void> {
+    await db.insert(smsReminders).values({
+      userId,
+      phoneNumber,
+      templateType,
+      messageSid,
+      status: messageSid ? 'sent' : 'failed',
+    });
   }
 }
 

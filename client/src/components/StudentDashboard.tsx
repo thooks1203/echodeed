@@ -66,6 +66,7 @@ const challengeReflectionSchema = z.object({
 type ChallengeReflectionForm = z.infer<typeof challengeReflectionSchema>;
 
 import { useKindnessSparks } from './KindnessSparks';
+import { DailyCheckIn } from './DailyCheckIn';
 
 function WeeklyChallengesView() {
   const { user } = useAuth();
@@ -502,6 +503,13 @@ export function StudentDashboard({ onNavigateToTab, activeBottomTab = 'feed' }: 
           }
         </p>
       </div>
+
+      {/* Daily Check-In Card - Top priority for engagement */}
+      <DailyCheckIn 
+        userName={user?.name || user?.firstName}
+        currentStreak={stats.currentStreak}
+        isMiddleSchool={isMiddleSchool}
+      />
 
       {/* Student Profile Card - Differentiated by school level */}
       <div style={{

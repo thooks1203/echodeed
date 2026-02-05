@@ -14195,6 +14195,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Register Spring Sprint 2026 Leadership Track routes
   registerLeadershipTrackRoutes(app, storage, isAuthenticated);
   
+  // Register Daily Logs & Mood Tracking routes
+  registerDailyLogRoutes(app, storage, isAuthenticated);
+  
   // Register Support & Help Center routes
   registerSupportRoutes(app, storage, isAuthenticated);
   
@@ -14579,6 +14582,176 @@ export function registerLeadershipTrackRoutes(app: Express, storage: IStorage, i
     } catch (error) {
       console.error('Error approving portfolio defense:', error);
       res.status(500).json({ message: 'Failed to approve portfolio defense' });
+    }
+  });
+}
+
+// ===== DAILY LOGS & MOOD TRACKING ROUTES =====
+
+export function registerDailyLogRoutes(app: Express, storage: IStorage, isAuthenticated: any) {
+  // Get today's log for current user
+  app.get('/api/daily-logs/today', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const log = await storage.getDailyLogForDate(userId, today);
+      res.json(log || null);
+    } catch (error) {
+      console.error('Error fetching today log:', error);
+      res.status(500).json({ message: 'Failed to fetch daily log' });
+    }
+  });
+
+  // Create a new daily log entry
+  app.post('/api/daily-logs', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+      
+      const { moodScore, positiveInteraction, tomorrowGoal } = req.body;
+      
+      if (!moodScore || moodScore < 1 || moodScore > 5) {
+        return res.status(400).json({ message: 'Invalid mood score (must be 1-5)' });
+      }
+      
+      // Check if user already logged today (prevent duplicates)
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const existingLog = await storage.getDailyLogForDate(userId, today);
+      
+      if (existingLog) {
+        return res.status(409).json({ 
+          message: 'Already logged today', 
+          existingLog 
+        });
+      }
+      
+      // Get user's school ID
+      const user = await storage.getUser(userId);
+      
+      const log = await storage.createDailyLog({
+        userId,
+        schoolId: user?.schoolId || null,
+        date: new Date(),
+        moodScore,
+        positiveInteraction: positiveInteraction || false,
+        tomorrowGoal: tomorrowGoal || null,
+        source: 'app',
+      });
+      
+      res.json(log);
+    } catch (error) {
+      console.error('Error creating daily log:', error);
+      res.status(500).json({ message: 'Failed to create daily log' });
+    }
+  });
+
+  // Get user's streak info
+  app.get('/api/daily-logs/streak', isAuthenticated, async (req: any, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+      
+      const streak = await storage.getDailyLogStreak(userId);
+      res.json({ currentStreak: streak.current, longestStreak: streak.longest });
+    } catch (error) {
+      console.error('Error fetching streak:', error);
+      res.status(500).json({ message: 'Failed to fetch streak' });
+    }
+  });
+
+  // Admin: Get pulse analytics by school (average mood scores)
+  app.get('/api/admin/pulse-analytics', isAuthenticated, async (req: any, res) => {
+    try {
+      const schoolRole = req.user?.schoolRole;
+      const userEmail = req.user?.claims?.email || req.user?.email;
+      
+      // Check if user is super admin
+      const superAdminEmails = (process.env.SUPER_ADMIN_EMAILS || '').split(',')
+        .map(e => e.trim().toLowerCase())
+        .filter(e => e.length > 0);
+      const isSuperAdmin = userEmail && superAdminEmails.includes(userEmail.toLowerCase());
+      
+      // Allow super admins, school admins, or teachers
+      if (schoolRole !== 'admin' && schoolRole !== 'teacher' && !isSuperAdmin) {
+        // Also allow demo mode access
+        if (process.env.DEMO_MODE !== 'true') {
+          return res.status(403).json({ message: 'Admin or teacher access required' });
+        }
+      }
+      
+      const schoolId = req.user?.schoolId || req.query.schoolId || '';
+      const days = parseInt(req.query.days as string) || 7;
+      
+      const analytics = await storage.getPulseAnalytics(schoolId, days);
+      res.json(analytics);
+    } catch (error) {
+      console.error('Error fetching pulse analytics:', error);
+      res.status(500).json({ message: 'Failed to fetch analytics' });
+    }
+  });
+
+  // Twilio webhook for incoming SMS replies
+  app.post('/api/sms/webhook', async (req, res) => {
+    try {
+      // Validate Twilio signature for security
+      const twilioSignature = req.headers['x-twilio-signature'] as string;
+      if (!twilioSignature && process.env.NODE_ENV === 'production') {
+        console.log('❌ Missing Twilio signature on SMS webhook');
+        res.set('Content-Type', 'text/xml');
+        return res.status(403).send('<Response></Response>');
+      }
+      
+      const { From, Body } = req.body;
+      
+      if (!From || !Body) {
+        return res.status(400).send('<Response></Response>');
+      }
+      
+      // Parse emoji from SMS body
+      const { parseEmojiMood } = await import('./services/twilioService');
+      const moodScore = parseEmojiMood(Body);
+      
+      if (moodScore) {
+        // Find user by phone number
+        const user = await storage.getUserByPhoneNumber(From);
+        
+        if (user) {
+          await storage.createDailyLog({
+            userId: user.id,
+            schoolId: user.schoolId || null,
+            date: new Date(),
+            moodScore,
+            positiveInteraction: false,
+            tomorrowGoal: null,
+            source: 'sms',
+          });
+          
+          console.log(`📱 SMS mood logged for ${user.firstName}: ${moodScore}/5`);
+          
+          // Send confirmation response via TwiML
+          res.set('Content-Type', 'text/xml');
+          return res.send(`<Response><Message>Thanks! Your mood (${moodScore}/5) has been logged. Keep your streak going! 🔥</Message></Response>`);
+        }
+      }
+      
+      // Default response if we couldn't process the reply
+      res.set('Content-Type', 'text/xml');
+      res.send('<Response><Message>Reply with an emoji to log your mood: 😊 😔 😐 🙂 😢</Message></Response>');
+    } catch (error) {
+      console.error('Error processing SMS webhook:', error);
+      res.set('Content-Type', 'text/xml');
+      res.send('<Response></Response>');
     }
   });
 }

@@ -47,6 +47,10 @@ export const users = pgTable("users", {
   anonymityLevel: varchar("anonymity_level", { length: 20 }).default("full").notNull(), // full, semi, public
   wellnessTrackingEnabled: integer("wellness_tracking_enabled").default(1).notNull(),
   burnoutAlertEnabled: integer("burnout_alert_enabled").default(0).notNull(), // Premium feature
+  // SMS NOTIFICATION SYSTEM
+  phoneNumber: varchar("phone_number", { length: 20 }), // For SMS reminders
+  smsEnabled: boolean("sms_enabled").default(false), // Opt-in for SMS notifications
+  smsReminderTime: varchar("sms_reminder_time", { length: 5 }).default("16:00"), // Default 4:00 PM
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
 });
@@ -106,6 +110,36 @@ export const kindnessCounter = pgTable("kindness_counter", {
 });
 
 export type KindnessCounter = typeof kindnessCounter.$inferSelect;
+
+// Daily mood/check-in logs for student well-being tracking
+export const dailyLogs = pgTable("daily_logs", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  schoolId: varchar("school_id"), // For school-level analytics
+  date: timestamp("date").notNull(), // Date of the log entry
+  moodScore: integer("mood_score").notNull(), // 1-5 emoji scale (1=struggling, 5=great)
+  positiveInteraction: boolean("positive_interaction").default(false), // Did they have a positive interaction?
+  tomorrowGoal: text("tomorrow_goal"), // Short text for their goal
+  source: varchar("source", { length: 20 }).default("app"), // app, sms, or web
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertDailyLogSchema = createInsertSchema(dailyLogs).omit({ id: true, createdAt: true });
+export type InsertDailyLog = z.infer<typeof insertDailyLogSchema>;
+export type DailyLog = typeof dailyLogs.$inferSelect;
+
+// SMS reminder tracking for audit and analytics
+export const smsReminders = pgTable("sms_reminders", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  userId: varchar("user_id").notNull().references(() => users.id),
+  phoneNumber: varchar("phone_number", { length: 20 }).notNull(),
+  templateType: varchar("template_type", { length: 30 }).notNull(), // mood, quest, streak, milestone
+  messageSid: varchar("message_sid", { length: 50 }), // Twilio message SID
+  status: varchar("status", { length: 20 }).default("sent"), // sent, delivered, failed
+  sentAt: timestamp("sent_at").defaultNow().notNull(),
+});
+
+export type SMSReminder = typeof smsReminders.$inferSelect;
 
 // User token tracking - now linked to authenticated users
 export const userTokens = pgTable("user_tokens", {
