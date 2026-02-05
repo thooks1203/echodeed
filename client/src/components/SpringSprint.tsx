@@ -31,11 +31,11 @@ interface LeadershipProgress {
 }
 
 const LEADERSHIP_MODULES = [
-  { id: 1, title: "The Power of One", description: "Discover how individual actions create ripple effects of positive change", duration: "15 min" },
-  { id: 2, title: "Self-Awareness", description: "Understand your strengths, values, and areas for growth as a leader", duration: "20 min" },
-  { id: 3, title: "Effective Communication", description: "Master the art of inspiring and connecting with others", duration: "20 min" },
-  { id: 4, title: "Team Leadership", description: "Learn to build, motivate, and lead high-performing teams", duration: "25 min" },
-  { id: 5, title: "Community Impact", description: "Transform your leadership into lasting community change", duration: "25 min" },
+  { id: 1, title: "The Power of One", description: "Discover how individual actions create ripple effects of positive change", duration: "15 min", content: "Leadership begins with a single person's decision to act. In this module, we explore the 'Ripple Effect'—how one small act of kindness or initiative can inspire others, creating a wave of positive change throughout a school community. You will learn about famous leaders who started with nothing but a vision and the courage to take the first step. Reflection: What is one small change you can make today that might inspire someone else?" },
+  { id: 2, title: "Self-Awareness", description: "Understand your strengths, values, and areas for growth as a leader", duration: "20 min", content: "To lead others, you must first know yourself. This module focuses on identifying your core values, character strengths, and areas for development. We use the 'Window of Growth' model to understand how others perceive our leadership. By being honest about our strengths and weaknesses, we build the authenticity required to earn trust. Reflection: Identify three core values that define your leadership style." },
+  { id: 3, title: "Effective Communication", description: "Master the art of inspiring and connecting with others", duration: "20 min", content: "Communication is the bridge between a vision and its reality. Leaders must be able to listen actively, speak with clarity, and use empathy to connect with their team. This module teaches the 'L.E.A.D.' communication framework: Listen, Empathize, Ask, and Direct. Good communication is not just about talking; it's about making sure others feel heard. Reflection: Recall a time you successfully resolved a conflict through communication." },
+  { id: 4, title: "Team Leadership", description: "Learn to build, motivate, and lead high-performing teams", duration: "25 min", content: "Great leaders don't create followers; they create more leaders. In this module, we look at team dynamics and the importance of psychological safety. You'll learn how to delegate effectively, set clear goals, and celebrate the diverse strengths of your team members. A leader's success is measured by the success of the people they lead. Reflection: How do you handle a situation where a team member is struggling?" },
+  { id: 5, title: "Community Impact", description: "Transform your leadership into lasting community change", duration: "25 min", content: "Leadership is ultimately about service. This final module connects your personal growth to the wider community. We explore the 'IPARD' model (Investigation, Preparation, Action, Reflection, Demonstration) and how to design projects that address real-world needs. Your leadership track culminates in a project that leaves a positive legacy. Reflection: What kind of impact do you want to leave on your school before you graduate?" },
 ];
 
 export function SpringSprint() {
@@ -270,16 +270,26 @@ export function SpringSprint() {
                       borderRadius: '12px',
                       border: '1px solid #e5e7eb'
                     }}>
-                      <p style={{ marginBottom: '16px', color: '#4B5563' }}>
-                        Complete the "{module.title}" module by reading the content and reflecting on how it applies to your leadership journey.
-                      </p>
+                      <div style={{ 
+                        marginBottom: '20px', 
+                        color: '#374151', 
+                        fontSize: '14px', 
+                        lineHeight: '1.6',
+                        padding: '16px',
+                        background: 'white',
+                        borderRadius: '8px',
+                        borderLeft: '4px solid #6366F1'
+                      }}>
+                        {module.content || `Complete the "${module.title}" module by reading the content and reflecting on how it applies to your leadership journey.`}
+                      </div>
                       <Button
                         onClick={() => completeModuleMutation.mutate(module.id)}
                         disabled={completeModuleMutation.isPending}
                         style={{
                           background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
                           color: 'white',
-                          fontWeight: '600'
+                          fontWeight: '600',
+                          width: '100%'
                         }}
                       >
                         {completeModuleMutation.isPending ? 'Completing...' : 'Mark as Complete'}
