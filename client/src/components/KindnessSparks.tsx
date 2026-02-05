@@ -1,6 +1,6 @@
 import { motion, AnimatePresence, MotionConfig } from "framer-motion";
 import { Heart, Sparkles, Star } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { createPortal } from "react-dom";
 
 interface KindnessSparkProps {
@@ -9,15 +9,19 @@ interface KindnessSparkProps {
 }
 
 function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
-  // TEST VERSION: Fixed visible positions in center of screen
-  const centerX = window.innerWidth / 2;
-  const centerY = window.innerHeight / 2;
-  
-  // Start from bottom center, move towards middle-top (guaranteed visible)
-  const startX = centerX + (Math.random() - 0.5) * 300; // Wider spread
-  const startY = window.innerHeight - 100; // Start near bottom
-  const endX = centerX + (Math.random() - 0.5) * 400; // End with wider spread
-  const endY = window.innerHeight / 4; // End at upper quarter
+  const positions = useMemo(() => {
+    if (typeof window === 'undefined') {
+      return { startX: 0, startY: 0, endX: 0, endY: 0 };
+    }
+    const centerX = window.innerWidth / 2;
+    const startX = centerX + (Math.random() - 0.5) * 300;
+    const startY = window.innerHeight - 100;
+    const endX = centerX + (Math.random() - 0.5) * 400;
+    const endY = window.innerHeight / 4;
+    return { startX, startY, endX, endY };
+  }, []);
+
+  const { startX, startY, endX, endY } = positions;
 
   // Random icon and color
   const icons = [Heart, Sparkles, Star];
@@ -30,8 +34,6 @@ function KindnessSpark({ id, onComplete }: KindnessSparkProps) {
 
   // Animation duration
   const duration = 3.5; // 3.5 seconds - energetic yet appreciative
-  
-  // Sparks are working beautifully! 🎆
   
   return (
     <motion.div
@@ -148,7 +150,10 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
     });
   };
 
-  // Use React Portal to render directly to document.body to escape any clipping containers
+  if (typeof document === 'undefined') {
+    return null;
+  }
+
   return createPortal(
     <MotionConfig reducedMotion="never">
       <AnimatePresence>
@@ -160,7 +165,6 @@ export function KindnessSparks({ isActive, onComplete }: KindnessSparksProps) {
           />
         ))}
       </AnimatePresence>
-      {/* Kindness sparks are now working beautifully! */}
     </MotionConfig>,
     document.body
   );
