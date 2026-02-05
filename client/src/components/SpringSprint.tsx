@@ -9,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { BackButton } from "@/components/BackButton";
-import { CheckCircle, Circle, Trophy, GraduationCap, Heart, FileText, Upload, Award, Calendar, Target, ChevronDown, ChevronRight, BookOpen, Sparkles, Star, Rocket, Users } from "lucide-react";
+import { CheckCircle, Circle, Trophy, GraduationCap, Heart, FileText, Upload, Award, Calendar, Target, ChevronDown, ChevronRight, BookOpen, Sparkles, Star, Rocket, Users, Gift } from "lucide-react";
 
 // Interactive Module Content Viewer - breaks content into clickable sections
 function ModuleContentViewer({ content }: { content: string }) {
@@ -1649,46 +1649,109 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
           </CardContent>
         </Card>
 
-        {/* Fun Achievements Section */}
+        {/* Achievement Badges Section - 100, 200, 300 tokens */}
         <Card style={{ marginBottom: '24px' }}>
           <CardHeader>
             <CardTitle style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
               <Trophy className="text-yellow-500" size={24} />
-              Your Kindness Achievements
+              Achievement Badges
             </CardTitle>
           </CardHeader>
           <CardContent>
+            <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '16px' }}>
+              Earn tokens and unlock badges as you reach milestones!
+            </p>
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
               <div style={{ 
                 textAlign: 'center', 
                 padding: '16px',
-                background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)',
-                borderRadius: '16px'
-              }}>
-                <div style={{ fontSize: '32px', marginBottom: '8px' }}>🌟</div>
-                <div style={{ fontSize: '12px', fontWeight: '600', color: '#92400E' }}>Kindness Star</div>
-                <div style={{ fontSize: '10px', color: '#B45309' }}>10 kind acts</div>
-              </div>
-              <div style={{ 
-                textAlign: 'center', 
-                padding: '16px',
-                background: 'linear-gradient(135deg, #E0E7FF, #C7D2FE)',
-                borderRadius: '16px'
-              }}>
-                <div style={{ fontSize: '32px', marginBottom: '8px' }}>🤗</div>
-                <div style={{ fontSize: '12px', fontWeight: '600', color: '#3730A3' }}>Friend Finder</div>
-                <div style={{ fontSize: '10px', color: '#4338CA' }}>3 new friends</div>
-              </div>
-              <div style={{ 
-                textAlign: 'center', 
-                padding: '16px',
-                background: '#F3F4F6',
+                background: 'linear-gradient(135deg, #ECFDF5, #D1FAE5)',
                 borderRadius: '16px',
-                opacity: 0.6
+                border: '2px solid #10B981'
               }}>
-                <div style={{ fontSize: '32px', marginBottom: '8px' }}>🦸</div>
-                <div style={{ fontSize: '12px', fontWeight: '600', color: '#6B7280' }}>Super Helper</div>
-                <div style={{ fontSize: '10px', color: '#9CA3AF' }}>Help 5 teachers</div>
+                <div style={{ fontSize: '32px', marginBottom: '8px' }}>🥉</div>
+                <div style={{ fontSize: '14px', fontWeight: '700', color: '#065F46' }}>Bronze</div>
+                <div style={{ fontSize: '12px', color: '#059669', fontWeight: '600' }}>100 Tokens</div>
+              </div>
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '16px',
+                background: 'linear-gradient(135deg, #F3F4F6, #E5E7EB)',
+                borderRadius: '16px',
+                border: '2px solid #9CA3AF'
+              }}>
+                <div style={{ fontSize: '32px', marginBottom: '8px' }}>🥈</div>
+                <div style={{ fontSize: '14px', fontWeight: '700', color: '#374151' }}>Silver</div>
+                <div style={{ fontSize: '12px', color: '#6B7280', fontWeight: '600' }}>200 Tokens</div>
+              </div>
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '16px',
+                background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)',
+                borderRadius: '16px',
+                border: '2px solid #F59E0B'
+              }}>
+                <div style={{ fontSize: '32px', marginBottom: '8px' }}>🥇</div>
+                <div style={{ fontSize: '14px', fontWeight: '700', color: '#92400E' }}>Gold</div>
+                <div style={{ fontSize: '12px', color: '#B45309', fontWeight: '600' }}>300 Tokens</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Real World Rewards Section */}
+        <Card style={{ marginBottom: '24px', border: '2px solid #8B5CF6' }}>
+          <CardHeader style={{ background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)', color: 'white', borderRadius: '8px 8px 0 0' }}>
+            <CardTitle style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Gift size={24} />
+              Real-World Rewards
+            </CardTitle>
+          </CardHeader>
+          <CardContent style={{ padding: '20px' }}>
+            <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '16px' }}>
+              After earning your Gold Badge (300 tokens), you can redeem tokens for awesome rewards from local partners!
+            </p>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+              {['Chick-fil-A', 'Greensboro Science Center', 'Target', 'Scholastic Books'].map((partner) => (
+                <div key={partner} style={{
+                  padding: '8px 16px',
+                  background: '#F3F4F6',
+                  borderRadius: '20px',
+                  fontSize: '13px',
+                  fontWeight: '500',
+                  color: '#374151'
+                }}>
+                  {partner}
+                </div>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Junior Leadership Awards */}
+        <Card style={{ marginBottom: '24px', border: '2px solid #F59E0B' }}>
+          <CardHeader style={{ background: 'linear-gradient(135deg, #F59E0B, #D97706)', color: 'white', borderRadius: '8px 8px 0 0' }}>
+            <CardTitle style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Award size={24} />
+              Junior Leadership Awards
+            </CardTitle>
+          </CardHeader>
+          <CardContent style={{ padding: '20px' }}>
+            <div style={{ 
+              background: 'linear-gradient(135deg, #FFFBEB, #FEF3C7)', 
+              padding: '16px', 
+              borderRadius: '12px',
+              textAlign: 'center'
+            }}>
+              <div style={{ fontSize: '28px', marginBottom: '8px' }}>🏆</div>
+              <h4 style={{ fontSize: '16px', fontWeight: '700', color: '#92400E', marginBottom: '8px' }}>
+                $250 Leadership Award
+              </h4>
+              <p style={{ fontSize: '13px', color: '#B45309', marginBottom: '12px' }}>
+                The top 2 students with the most tokens and engagement will receive a $250 Leadership Award at the end of the semester!
+              </p>
+              <div style={{ fontSize: '12px', color: '#78716C', fontStyle: 'italic' }}>
+                Keep earning tokens and spreading kindness to be a top contender!
               </div>
             </div>
           </CardContent>
