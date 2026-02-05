@@ -5510,7 +5510,13 @@ export class DatabaseStorage implements IStorage {
     }
 
     if (tokenReward > 0) {
-      await this.updateTokens(userId, tokenReward, 'mentor_training_completion', `Completed training: ${training.title}`);
+      const currentTokens = await this.getUserTokens(userId);
+      if (currentTokens) {
+        await this.updateUserTokens(userId, {
+          echoBalance: currentTokens.echoBalance + tokenReward,
+          totalEarned: currentTokens.totalEarned + tokenReward
+        });
+      }
     }
 
     return { success: true, tokensAwarded: tokenReward };
