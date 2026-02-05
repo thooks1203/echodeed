@@ -1836,7 +1836,7 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
           <Progress value={overallProgress} className="h-4" />
           {overallProgress >= 100 && (
             <div style={{ marginTop: '16px', padding: '12px', background: '#ECFDF5', borderRadius: '8px', textAlign: 'center' }}>
-              <CheckCircle2 size={20} style={{ color: '#10B981', display: 'inline', marginRight: '8px' }} />
+              <CheckCircle size={20} style={{ color: '#10B981', display: 'inline', marginRight: '8px' }} />
               <span style={{ color: '#065F46', fontWeight: '600' }}>Certificate Complete! You qualify for the $500 Scholarship.</span>
             </div>
           )}
