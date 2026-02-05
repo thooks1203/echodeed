@@ -102,15 +102,54 @@ export async function initializeSampleData() {
       const { corporateAccounts } = await import('@shared/schema');
       const { eq, isNull } = await import('drizzle-orm');
       
-      // Update Eastern Guilford High School
-      await db.update(corporateAccounts)
-        .set({ enrollmentCode: 'EGHS-2025' })
-        .where(eq(corporateAccounts.companyName, 'Eastern Guilford High School'));
+      // Create Eastern Guilford High School if it doesn't exist
+      const existingEGHS = await db.select().from(corporateAccounts).where(eq(corporateAccounts.companyName, 'Eastern Guilford High School'));
+      if (existingEGHS.length === 0) {
+        await db.insert(corporateAccounts).values({
+          companyName: 'Eastern Guilford High School',
+          industry: 'education',
+          enrollmentCode: 'EGHS-2025',
+          domain: 'easterngs.gcsnc.com',
+          companySize: 'large',
+          isActive: 1,
+          subscriptionTier: 'basic',
+          maxEmployees: 1500,
+          primaryColor: '#1E3A5F',
+          contactEmail: 'info@easterngs.gcsnc.com',
+          contactName: 'Dr. Harris'
+        });
+        log('✓ Created Eastern Guilford High School with code: EGHS-2025');
+      } else {
+        await db.update(corporateAccounts)
+          .set({ enrollmentCode: 'EGHS-2025' })
+          .where(eq(corporateAccounts.companyName, 'Eastern Guilford High School'));
+        log('✓ Updated Eastern Guilford High School with code: EGHS-2025');
+      }
       
-      log('✓ Updated Eastern Guilford High School with code: EGHS-2025');
+      // Create Eastern Guilford Middle School if it doesn't exist
+      const existingEGMS = await db.select().from(corporateAccounts).where(eq(corporateAccounts.companyName, 'Eastern Guilford Middle School'));
+      if (existingEGMS.length === 0) {
+        await db.insert(corporateAccounts).values({
+          companyName: 'Eastern Guilford Middle School',
+          industry: 'education',
+          enrollmentCode: 'EGMS-2025',
+          domain: 'easterngms.gcsnc.com',
+          companySize: 'medium',
+          isActive: 1,
+          subscriptionTier: 'basic',
+          maxEmployees: 1000,
+          primaryColor: '#059669',
+          contactEmail: 'info@easterngms.gcsnc.com',
+          contactName: 'Principal'
+        });
+        log('✓ Created Eastern Guilford Middle School with code: EGMS-2025');
+      } else {
+        log('✓ Eastern Guilford Middle School already exists');
+      }
       
       // Update other demo schools with codes if they exist
       const schoolCodes = [
+        { name: 'Eastern Guilford Middle School', code: 'EGMS-2025' },
         { name: 'Demo Elementary School', code: 'DEMO-ELEM-2025' },
         { name: 'Burlington Christian Academy', code: 'BCA-2025' },
         { name: 'Turrentine Middle School', code: 'TMS-2025' },

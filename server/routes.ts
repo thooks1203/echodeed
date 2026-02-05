@@ -349,6 +349,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
         console.log('✅ School already exists');
       }
       
+      // Ensure Eastern Guilford Middle School exists
+      const existingMiddleSchools = await db.select().from(schools).where(eq(schools.name, 'Eastern Guilford Middle School'));
+      
+      if (existingMiddleSchools.length === 0) {
+        console.log('🏫 Creating Eastern Guilford Middle School...');
+        await db.insert(schools).values({
+          name: 'Eastern Guilford Middle School',
+          address: '415 Peeden Dr',
+          city: 'Gibsonville',
+          state: 'NC',
+          zipCode: '27249',
+          phone: '(336) 449-4512',
+          gradeRange: '6-8',
+          studentCount: 800,
+          accreditation: 'SACS',
+          establishedYear: 1970,
+          isActive: 1,
+          enrollmentCode: 'EGMS-2025'
+        });
+        console.log('✅ Eastern Guilford Middle School created');
+      } else {
+        console.log('✅ Eastern Guilford Middle School already exists');
+      }
+      
       console.log('👤 Creating/updating Sofia Rodriguez user...');
       
       // Create Sofia Rodriguez user
