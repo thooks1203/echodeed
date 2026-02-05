@@ -48,6 +48,8 @@ import {
   supportResponses,
   heartReactions,
   echoReactions,
+  leadershipTrackProgress,
+  leadershipQuestEvidence,
   helpfulReactions,
   corporateAccounts,
   corporateEmployees,
@@ -212,6 +214,8 @@ import {
   type InsertStudentNotification,
   type StudentNotificationEvent,
   type InsertStudentNotificationEvent,
+  type LeadershipTrackProgress,
+  type LeadershipQuestEvidence,
 } from "@shared/schema";
 import { db } from "./db";
 import { eq, sql, desc, and, count, or, gte, lte, isNotNull, isNull, inArray, gt, getTableColumns } from "drizzle-orm";
@@ -818,6 +822,13 @@ export interface IStorage {
   createStudentGoal(goalData: InsertStudentGoal): Promise<StudentGoal>;
   updateStudentGoal(id: string, userId: string, updates: Partial<StudentGoal>): Promise<StudentGoal | undefined>;
   deleteStudentGoal(id: string, userId: string): Promise<boolean>;
+  
+  // Spring Sprint 2026 - Leadership Certificate Track
+  getLeadershipTrackProgress(userId: string): Promise<LeadershipTrackProgress | undefined>;
+  getLeadershipQuests(userId: string): Promise<{ verified: number; pending: number; hasMiddleSchoolQuest: boolean }>;
+  completeLeadershipModule(userId: string, moduleNumber: number): Promise<{ success: boolean }>;
+  submitLeadershipReflection(userId: string, reflection: string): Promise<{ success: boolean }>;
+  approvePortfolioDefense(userId: string, adminId: string): Promise<{ success: boolean }>;
 }
 
 export class DatabaseStorage implements IStorage {
@@ -6874,6 +6885,166 @@ export class DatabaseStorage implements IStorage {
       .update(users)
       .set({ ambassadorRewardEarned: true })
       .where(eq(users.id, ambassadorId));
+  }
+
+  // ===== SPRING SPRINT 2026 - LEADERSHIP CERTIFICATE TRACK =====
+  
+  async getLeadershipTrackProgress(userId: string): Promise<LeadershipTrackProgress | undefined> {
+    const [progress] = await db
+      .select()
+      .from(leadershipTrackProgress)
+      .where(eq(leadershipTrackProgress.userId, userId));
+    return progress;
+  }
+
+  async getLeadershipQuests(userId: string): Promise<{ verified: number; pending: number; hasMiddleSchoolQuest: boolean }> {
+    // Get verified quests count from community service logs
+    const verifiedLogs = await db
+      .select()
+      .from(communityServiceLogs)
+      .where(and(
+        eq(communityServiceLogs.userId, userId),
+        eq(communityServiceLogs.status, 'verified')
+      ));
+    
+    const pendingLogs = await db
+      .select()
+      .from(communityServiceLogs)
+      .where(and(
+        eq(communityServiceLogs.userId, userId),
+        eq(communityServiceLogs.status, 'pending')
+      ));
+    
+    // Check if any verified log is a middle school mentoring quest
+    const hasMiddleSchoolQuest = verifiedLogs.some(log => 
+      log.activityType?.toLowerCase().includes('mentor') || 
+      log.description?.toLowerCase().includes('middle school')
+    );
+    
+    return {
+      verified: verifiedLogs.length,
+      pending: pendingLogs.length,
+      hasMiddleSchoolQuest,
+    };
+  }
+
+  async completeLeadershipModule(userId: string, moduleNumber: number): Promise<{ success: boolean }> {
+    // Check if progress record exists
+    let [progress] = await db
+      .select()
+      .from(leadershipTrackProgress)
+      .where(eq(leadershipTrackProgress.userId, userId));
+    
+    if (!progress) {
+      // Create new progress record
+      const [newProgress] = await db
+        .insert(leadershipTrackProgress)
+        .values({ userId })
+        .returning();
+      progress = newProgress;
+    }
+    
+    // Update the specific module
+    const moduleField = `module${moduleNumber}Complete` as keyof typeof leadershipTrackProgress.$inferSelect;
+    const updateData: Record<string, any> = {
+      [`module${moduleNumber}Complete`]: 1,
+      updatedAt: new Date(),
+    };
+    
+    await db
+      .update(leadershipTrackProgress)
+      .set(updateData)
+      .where(eq(leadershipTrackProgress.userId, userId));
+    
+    // Check if all modules are complete
+    const [updated] = await db
+      .select()
+      .from(leadershipTrackProgress)
+      .where(eq(leadershipTrackProgress.userId, userId));
+    
+    if (updated.module1Complete && updated.module2Complete && updated.module3Complete && 
+        updated.module4Complete && updated.module5Complete && !updated.trainingCompletedAt) {
+      await db
+        .update(leadershipTrackProgress)
+        .set({ trainingCompletedAt: new Date() })
+        .where(eq(leadershipTrackProgress.userId, userId));
+    }
+    
+    // Recalculate overall progress
+    await this.recalculateLeadershipProgress(userId);
+    
+    return { success: true };
+  }
+
+  async submitLeadershipReflection(userId: string, reflection: string): Promise<{ success: boolean }> {
+    await db
+      .update(leadershipTrackProgress)
+      .set({ 
+        personalReflection: reflection,
+        updatedAt: new Date(),
+      })
+      .where(eq(leadershipTrackProgress.userId, userId));
+    
+    return { success: true };
+  }
+
+  async approvePortfolioDefense(userId: string, adminId: string): Promise<{ success: boolean }> {
+    await db
+      .update(leadershipTrackProgress)
+      .set({
+        portfolioDefenseStatus: 'completed',
+        portfolioDefenseApproved: 1,
+        portfolioDefenseApprovedBy: adminId,
+        portfolioDefenseApprovedAt: new Date(),
+        updatedAt: new Date(),
+      })
+      .where(eq(leadershipTrackProgress.userId, userId));
+    
+    // Recalculate overall progress
+    await this.recalculateLeadershipProgress(userId);
+    
+    return { success: true };
+  }
+
+  private async recalculateLeadershipProgress(userId: string): Promise<void> {
+    const [progress] = await db
+      .select()
+      .from(leadershipTrackProgress)
+      .where(eq(leadershipTrackProgress.userId, userId));
+    
+    if (!progress) return;
+    
+    // Calculate training progress (5 modules)
+    const modulesComplete = [
+      progress.module1Complete,
+      progress.module2Complete,
+      progress.module3Complete,
+      progress.module4Complete,
+      progress.module5Complete,
+    ].filter(m => m === 1).length;
+    const trainingProgress = (modulesComplete / 5) * 100;
+    
+    // Calculate quests progress (4 required)
+    const quests = await this.getLeadershipQuests(userId);
+    const questsProgress = (Math.min(quests.verified, 4) / 4) * 100;
+    
+    // Portfolio defense progress
+    const portfolioProgress = progress.portfolioDefenseApproved === 1 ? 100 : 0;
+    
+    // Overall is average of all three
+    const overallProgress = Math.round((trainingProgress + questsProgress + portfolioProgress) / 3);
+    const isScholarshipFinalist = overallProgress === 100 ? 1 : 0;
+    
+    await db
+      .update(leadershipTrackProgress)
+      .set({
+        overallProgress,
+        isScholarshipFinalist,
+        verifiedQuestsCount: quests.verified,
+        hasMiddleSchoolMentoringQuest: quests.hasMiddleSchoolQuest ? 1 : 0,
+        certificateIssuedAt: isScholarshipFinalist ? new Date() : null,
+      })
+      .where(eq(leadershipTrackProgress.userId, userId));
   }
 }
 

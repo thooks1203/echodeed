@@ -13978,6 +13978,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  // Register Spring Sprint 2026 Leadership Track routes
+  registerLeadershipTrackRoutes(app, storage, isAuthenticated);
+
   return httpServer;
 }
 
@@ -14249,4 +14252,113 @@ function getDefaultGovernanceReport() {
     complianceStatus: { gdpr: 'Not Applicable' },
     lastUpdated: new Date().toISOString(),
   };
+}
+
+// ===== SPRING SPRINT 2026 - LEADERSHIP CERTIFICATE TRACK =====
+
+export function registerLeadershipTrackRoutes(app: Express, storage: IStorage, isAuthenticated: any) {
+  // Get leadership track progress for current user
+  app.get('/api/leadership-track/progress', async (req, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id || 'student-001';
+      const progress = await storage.getLeadershipTrackProgress(userId);
+      
+      if (!progress) {
+        // Return default progress for new users
+        return res.json({
+          userId,
+          module1Complete: 0,
+          module2Complete: 0,
+          module3Complete: 0,
+          module4Complete: 0,
+          module5Complete: 0,
+          personalReflection: null,
+          verifiedQuestsCount: 0,
+          hasMiddleSchoolMentoringQuest: 0,
+          portfolioDefenseStatus: 'not_started',
+          portfolioDefenseApproved: 0,
+          overallProgress: 0,
+          isScholarshipFinalist: 0,
+        });
+      }
+      
+      res.json(progress);
+    } catch (error) {
+      console.error('Error getting leadership track progress:', error);
+      res.status(500).json({ message: 'Failed to get leadership track progress' });
+    }
+  });
+
+  // Get leadership quests summary
+  app.get('/api/leadership-track/quests', async (req, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id || 'student-001';
+      const quests = await storage.getLeadershipQuests(userId);
+      res.json(quests);
+    } catch (error) {
+      console.error('Error getting leadership quests:', error);
+      res.status(500).json({ message: 'Failed to get leadership quests' });
+    }
+  });
+
+  // Complete a leadership training module
+  app.post('/api/leadership-track/module/:moduleNumber/complete', isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+      
+      const moduleNumber = parseInt(req.params.moduleNumber);
+      if (isNaN(moduleNumber) || moduleNumber < 1 || moduleNumber > 5) {
+        return res.status(400).json({ message: 'Invalid module number' });
+      }
+      
+      const result = await storage.completeLeadershipModule(userId, moduleNumber);
+      res.json(result);
+    } catch (error) {
+      console.error('Error completing leadership module:', error);
+      res.status(500).json({ message: 'Failed to complete module' });
+    }
+  });
+
+  // Submit personal reflection
+  app.post('/api/leadership-track/reflection', isAuthenticated, async (req, res) => {
+    try {
+      const userId = req.user?.claims?.sub || req.user?.id;
+      if (!userId) {
+        return res.status(401).json({ message: 'User not authenticated' });
+      }
+      
+      const { reflection } = req.body;
+      if (!reflection || typeof reflection !== 'string') {
+        return res.status(400).json({ message: 'Reflection text is required' });
+      }
+      
+      const wordCount = reflection.trim().split(/\s+/).filter((w: string) => w.length > 0).length;
+      if (wordCount < 250) {
+        return res.status(400).json({ message: 'Reflection must be at least 250 words' });
+      }
+      
+      const result = await storage.submitLeadershipReflection(userId, reflection);
+      res.json(result);
+    } catch (error) {
+      console.error('Error submitting reflection:', error);
+      res.status(500).json({ message: 'Failed to submit reflection' });
+    }
+  });
+
+  // Admin: Approve portfolio defense
+  app.post('/api/leadership-track/portfolio-defense/:userId/approve', isAuthenticated, async (req, res) => {
+    try {
+      const adminId = req.user?.claims?.sub || req.user?.id;
+      const { userId } = req.params;
+      
+      const result = await storage.approvePortfolioDefense(userId, adminId);
+      res.json(result);
+    } catch (error) {
+      console.error('Error approving portfolio defense:', error);
+      res.status(500).json({ message: 'Failed to approve portfolio defense' });
+    }
+  });
 }

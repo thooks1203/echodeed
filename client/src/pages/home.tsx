@@ -26,6 +26,7 @@ import RewardsPage from '@/pages/rewards';
 import { SummerChallenges } from '@/components/SummerChallenges';
 import { SponsorsPage } from '@/components/SponsorsPage';
 import { CommunityService } from '@/components/CommunityService';
+import { SpringSprint } from '@/components/SpringSprint';
 import { useKindnessSparksContext } from '@/contexts/KindnessSparksContext';
 import ParentDashboard from '@/pages/ParentDashboard';
 import FamilyDashboard from '@/pages/FamilyDashboard';
@@ -250,6 +251,15 @@ export default function Home() {
       <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F0F9FF' }}>
         <SummerChallenges onBack={handleBackToDashboard} />
         <LeftSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+      </div>
+    );
+  }
+
+  if (activeTab === 'spring-sprint') {
+    return (
+      <div className="md:ml-[80px]" style={{ minHeight: '100vh', background: '#F0F9FF' }}>
+        <SpringSprint />
+        <LeftSidebar activeTab={activeTab} onTabChange={navigateToTab} />
       </div>
     );
   }
