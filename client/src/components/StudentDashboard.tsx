@@ -65,10 +65,13 @@ const challengeReflectionSchema = z.object({
 
 type ChallengeReflectionForm = z.infer<typeof challengeReflectionSchema>;
 
+import { useKindnessSparks } from './KindnessSparks';
+
 function WeeklyChallengesView() {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { KindnessSparksComponent, triggerSparks } = useKindnessSparks();
   
   // Fetch current week theme
   const { data: currentWeek } = useQuery({
@@ -102,6 +105,7 @@ function WeeklyChallengesView() {
         title: 'Challenge Completed!',
         description: 'Your challenge submission has been sent for teacher approval.',
       });
+      triggerSparks();
       // Fixed cache invalidation to match API route pattern
       queryClient.invalidateQueries({ queryKey: ['/api/school-year/progress', user?.id] });
       // Also invalidate challenges and tokens so UI refreshes immediately
@@ -165,6 +169,7 @@ function WeeklyChallengesView() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+      <KindnessSparksComponent />
       {/* Current Week Theme */}
       {currentWeek && (
         <div style={{

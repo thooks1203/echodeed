@@ -13,6 +13,7 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Input } from '@/components/ui/input';
 import { Command, CommandInput, CommandList, CommandEmpty, CommandGroup, CommandItem } from '@/components/ui/command';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useKindnessSparks } from './KindnessSparks';
 
 type PostType = 'student_to_student' | 'staff_to_staff' | 'staff_to_student';
 
@@ -35,8 +36,6 @@ interface PostData {
   mentionedTeacherId?: string;
   teacherAppreciationMessage?: string;
 }
-
-import { useKindnessSparks } from './KindnessSparks';
 
 export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: PostDeedModalProps) {
   const { KindnessSparksComponent, triggerSparks } = useKindnessSparks();
@@ -62,9 +61,6 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
     queryKey: ['/api/schools/bc016cad-fa89-44fb-aab0-76f82c574f78/teachers'],
     enabled: isOpen, // Only fetch when modal is open
   });
-
-  // Debug logging
-  console.log('🎓 PostDeedModal - Teachers:', teachers, 'Length:', teachers?.length, 'isOpen:', isOpen);
 
   // Intelligent kindness suggestions for grades 6-12
   const kindnessSuggestions = useMemo(() => {
@@ -355,398 +351,399 @@ export function PostDeedModal({ isOpen, onClose, location, onPostSuccess }: Post
         <div className="bg-card w-full max-w-md mx-auto rounded-2xl shadow-2xl transform transition-transform max-h-[85vh] overflow-y-auto my-auto">
           <div className="p-4 border-b border-border flex items-center justify-between">
             <h3 className="text-lg font-semibold text-foreground">Share Your Deed</h3>
-          <button 
-            onClick={onClose}
-            className="p-2 rounded-lg hover:bg-muted transition-colors"
-            data-testid="button-close-modal"
-          >
-            <X className="text-muted-foreground" size={16} />
-          </button>
-        </div>
-        
-        <div className="p-4">
-          <form onSubmit={handleSubmit}>
-            {/* Staff Post Type Selector */}
-            {isStaffMember && (
-              <div className="mb-4 p-3 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 border border-amber-200 dark:border-amber-700 rounded-lg">
-                <div className="flex items-center gap-2 mb-2">
-                  <BadgeCheck size={16} className="text-amber-600" />
-                  <span className="text-sm font-semibold text-amber-800 dark:text-amber-200">Staff Recognition Post</span>
-                </div>
-                <p className="text-xs text-amber-700 dark:text-amber-300 mb-3">As staff, you can recognize colleagues or give shout-outs to students!</p>
-                <Select value={postType} onValueChange={(value) => setPostType(value as PostType)}>
-                  <SelectTrigger className="w-full bg-white dark:bg-gray-800 border-amber-300">
-                    <SelectValue placeholder="Select post type" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="staff_to_student">
-                      <div className="flex items-center gap-2">
-                        <Award size={14} className="text-amber-500" />
-                        <span>Shout-out to Student</span>
-                      </div>
-                    </SelectItem>
-                    <SelectItem value="staff_to_staff">
-                      <div className="flex items-center gap-2">
-                        <BadgeCheck size={14} className="text-amber-500" />
-                        <span>Recognize a Colleague</span>
-                      </div>
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-            
-            {content.length === 0 && (() => {
-              const categorySuggestions = kindnessSuggestions[category as keyof typeof kindnessSuggestions] || [];
-              const quickPrompts = Array.isArray(categorySuggestions) ? categorySuggestions.slice(0, 3) : [];
-              return quickPrompts.length > 0 ? (
-              <div className="mb-3">
-                <p className="text-xs font-medium text-muted-foreground mb-2">Quick Ideas:</p>
-                <div className="flex flex-wrap gap-2">
-                  {quickPrompts.map((suggestion: string, idx: number) => (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setContent(suggestion)}
-                      className="text-xs px-3 py-1.5 bg-gradient-to-r from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 border border-purple-200/50 dark:border-purple-500/30 rounded-full text-foreground font-medium transition-all hover:scale-105"
-                      data-testid={`prompt-chip-${idx}`}
-                    >
-                      {suggestion.length > 40 ? suggestion.slice(0, 40) + '...' : suggestion}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              ) : null;
-            })()}
-            <textarea 
-              value={content}
-              onChange={(e) => {
-                setContent(e.target.value);
-                setShowSuggestions(e.target.value.length === 0);
-              }}
-              onFocus={() => setShowSuggestions(content.length === 0)}
-              placeholder="What kind act did you do today? Be specific and inspiring..."
-              className="w-full p-4 border border-input rounded-lg resize-none bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
-              rows={4}
-              maxLength={280}
-              data-testid="input-deed-content"
-            />
-            
-            {/* Privacy Notice */}
-            <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg">
-              <div className="flex items-start space-x-2">
-                <div className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0 mt-0.5">
-                  <Users className="w-3 h-3 text-blue-600 dark:text-blue-400" />
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-1">
-                    Keep It Anonymous
-                  </p>
-                  <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
-                    To protect everyone's privacy, please don't use specific names. Instead of "I helped Emma with math," try "I helped a classmate with math."
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex items-center justify-between mt-3 text-sm text-muted-foreground">
-              <span>Characters: <span data-testid="text-char-count">{content.length}</span>/280</span>
-              <div className="flex items-center space-x-2">
-                <MapPin size={12} />
-                <span data-testid="text-current-location">{location?.fullLocation || 'Location not available'}</span>
-              </div>
-            </div>
-
-            {/* Custom Emoji Picker */}
-            <div className="mt-4">
-              <div className="flex items-center justify-between mb-2">
-                <label className="text-sm font-medium text-foreground">Add Kindness Emojis (max 3)</label>
-                <span className="text-xs text-muted-foreground">{selectedEmojis.length}/3</span>
-              </div>
-              
-              {/* Selected Emojis */}
-              {selectedEmojis.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-3 p-2 bg-muted/50 rounded-lg">
-                  {selectedEmojis.map((emojiKey) => {
-                    const emoji = EmojiRegistry[emojiKey];
-                    const EmojiComponent = emoji.component;
-                    return (
-                      <div
-                        key={emojiKey}
-                        className="flex items-center gap-1 bg-background border border-border rounded-full px-2 py-1 text-xs"
-                        data-testid={`selected-emoji-${emojiKey}`}
-                      >
-                        <EmojiComponent size={16} />
-                        <span>{emoji.label}</span>
-                        <button
-                          type="button"
-                          onClick={() => removeEmoji(emojiKey)}
-                          className="ml-1 text-muted-foreground hover:text-destructive transition-colors"
-                          data-testid={`remove-emoji-${emojiKey}`}
-                        >
-                          <X size={12} />
-                        </button>
-                      </div>
-                    );
-                  })}
+            <button 
+              onClick={onClose}
+              className="p-2 rounded-lg hover:bg-muted transition-colors"
+              data-testid="button-close-modal"
+            >
+              <X className="text-muted-foreground" size={16} />
+            </button>
+          </div>
+          
+          <div className="p-4">
+            <form onSubmit={handleSubmit}>
+              {/* Staff Post Type Selector */}
+              {isStaffMember && (
+                <div className="mb-4 p-3 bg-gradient-to-r from-amber-50 to-yellow-50 dark:from-amber-900/20 dark:to-yellow-900/20 border border-amber-200 dark:border-amber-700 rounded-lg">
+                  <div className="flex items-center gap-2 mb-2">
+                    <BadgeCheck size={16} className="text-amber-600" />
+                    <span className="text-sm font-semibold text-amber-800 dark:text-amber-200">Staff Recognition Post</span>
+                  </div>
+                  <p className="text-xs text-amber-700 dark:text-amber-300 mb-3">As staff, you can recognize colleagues or give shout-outs to students!</p>
+                  <Select value={postType} onValueChange={(value) => setPostType(value as PostType)}>
+                    <SelectTrigger className="w-full bg-white dark:bg-gray-800 border-amber-300">
+                      <SelectValue placeholder="Select post type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="staff_to_student">
+                        <div className="flex items-center gap-2">
+                          <Award size={14} className="text-amber-500" />
+                          <span>Shout-out to Student</span>
+                        </div>
+                      </SelectItem>
+                      <SelectItem value="staff_to_staff">
+                        <div className="flex items-center gap-2">
+                          <BadgeCheck size={14} className="text-amber-500" />
+                          <span>Recognize a Colleague</span>
+                        </div>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               )}
-
-              {/* Emoji Picker Button/Grid */}
-              <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
-                <PopoverTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="w-full justify-start h-auto p-3"
-                    data-testid="button-open-emoji-picker"
-                  >
-                    <Plus size={16} className="mr-2" />
-                    <span>Choose kindness emojis</span>
-                    <Sparkles size={14} className="ml-auto text-primary" />
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-80 p-0" data-testid="popover-emoji-picker">
-                  <Command>
-                    <div className="flex items-center border-b px-3">
-                      <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
-                      <CommandInput
-                        placeholder="Search kindness emojis..."
-                        value={emojiSearch}
-                        onValueChange={setEmojiSearch}
-                        data-testid="input-emoji-search"
-                      />
-                    </div>
-                    <CommandList className="max-h-60">
-                      <CommandEmpty>No emojis found.</CommandEmpty>
-                      <CommandGroup>
-                        <div className="grid grid-cols-3 gap-2 p-2">
-                          {filteredEmojis.map((emojiKey) => {
-                            const emoji = EmojiRegistry[emojiKey];
-                            const EmojiComponent = emoji.component;
-                            const isSelected = selectedEmojis.includes(emojiKey);
-                            
-                            return (
-                              <CommandItem
-                                key={emojiKey}
-                                onSelect={() => handleEmojiSelect(emojiKey)}
-                                className={`flex flex-col items-center p-3 cursor-pointer rounded-lg hover:bg-muted ${
-                                  isSelected ? 'bg-primary/10 border-primary' : 'border border-transparent'
-                                }`}
-                                data-testid={`emoji-option-${emojiKey}`}
-                              >
-                                <EmojiComponent size={24} />
-                                <span className="text-xs mt-1 text-center leading-tight">{emoji.label}</span>
-                              </CommandItem>
-                            );
-                          })}
-                        </div>
-                      </CommandGroup>
-                    </CommandList>
-                  </Command>
-                </PopoverContent>
-              </Popover>
-            </div>
-
-            {/* Kindness Suggestions */}
-            {showSuggestions && content.length === 0 && (
-              <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
-                <div className="flex items-center gap-2 mb-3">
-                  <Lightbulb className="text-blue-600 dark:text-blue-400" size={16} />
-                  <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100">
-                    Need inspiration? Try these kindness ideas:
-                  </h4>
-                  <Sparkles className="text-purple-500" size={14} />
+              
+              {content.length === 0 && (() => {
+                const categorySuggestions = kindnessSuggestions[category as keyof typeof kindnessSuggestions] || [];
+                const quickPrompts = Array.isArray(categorySuggestions) ? categorySuggestions.slice(0, 3) : [];
+                return quickPrompts.length > 0 ? (
+                <div className="mb-3">
+                  <p className="text-xs font-medium text-muted-foreground mb-2">Quick Ideas:</p>
+                  <div className="flex flex-wrap gap-2">
+                    {quickPrompts.map((suggestion: string, idx: number) => (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setContent(suggestion)}
+                        className="text-xs px-3 py-1.5 bg-gradient-to-r from-purple-500/10 to-pink-500/10 hover:from-purple-500/20 hover:to-pink-500/20 border border-purple-200/50 dark:border-purple-500/30 rounded-full text-foreground font-medium transition-all hover:scale-105"
+                        data-testid={`prompt-chip-${idx}`}
+                      >
+                        {suggestion.length > 40 ? suggestion.slice(0, 40) + '...' : suggestion}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-                <div className="grid gap-2 max-h-32 overflow-y-auto">
-                  {kindnessSuggestions.slice(0, 4).map((suggestion, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => handleSuggestionClick(suggestion)}
-                      className="text-left p-2 text-sm bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 text-gray-700 dark:text-gray-300"
-                      data-testid={`suggestion-${index}`}
-                    >
-                      <span className="text-blue-600 dark:text-blue-400 mr-2">•</span>
-                      {suggestion}
-                    </button>
-                  ))}
-                </div>
-                <p className="text-xs text-blue-600 dark:text-blue-400 mt-2 italic">
-                  💡 Click any idea to use it, or write your own unique act of kindness!
-                </p>
-              </div>
-            )}
-            
-            {/* Category Selection */}
-            <div className="mt-4">
-              <label className="block text-sm font-medium text-foreground mb-2">Category</label>
-              <div className="grid grid-cols-2 gap-2">
-                {[
-                  { value: 'Helping Others', icon: HandHeart, label: 'Helping Others' },
-                  { value: 'Academic Support', icon: BookOpen, label: 'Academic Support' },
-                  { value: 'Environmental Action', icon: TreePine, label: 'Environmental Action' },
-                  { value: 'Digital Kindness', icon: Smartphone, label: 'Digital Kindness' },
-                  { value: 'Leadership & Mentoring', icon: Crown, label: 'Leadership & Mentoring' },
-                  { value: 'Inclusion & Belonging', icon: UserPlus, label: 'Inclusion & Belonging' },
-                  { value: 'Community Action', icon: Users, label: 'Community Action' },
-                  { value: 'Spreading Positivity', icon: Smile, label: 'Spreading Positivity' },
-                ].map(({ value, icon: Icon, label }) => (
-                  <label key={value} className="flex items-center">
-                    <input 
-                      type="radio" 
-                      name="category" 
-                      value={value}
-                      checked={category === value}
-                      onChange={(e) => setCategory(e.target.value)}
-                      className="sr-only" 
-                      data-testid={`radio-category-${value.toLowerCase().replace(/\s+/g, '-')}`}
-                    />
-                    <span className={`category-option ${category === value ? 'active' : ''}`}>
-                      <Icon size={14} className="mr-1" />
-                      {label}
-                    </span>
-                  </label>
-                ))}
-              </div>
-            </div>
-
-            {/* 🎓 TEACHER UPLIFT PULSE: Optional Teacher Appreciation */}
-            {teachers && teachers.length > 0 && (
-              <div className="mt-4 p-4 rounded-xl border-2 animate-pulse-slow" 
-                style={{
-                  background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 50%, #FCD34D 100%)',
-                  borderColor: '#F59E0B',
-                  boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3), 0 0 20px rgba(252, 211, 77, 0.4)',
-                  animation: 'teacher-glow 3s ease-in-out infinite'
+                ) : null;
+              })()}
+              <textarea 
+                value={content}
+                onChange={(e) => {
+                  setContent(e.target.value);
+                  setShowSuggestions(e.target.value.length === 0);
                 }}
-              >
-                <label className="block text-sm font-bold text-orange-900 mb-3 flex items-center gap-2">
-                  <GraduationCap size={18} className="text-orange-600" />
-                  💝 Thank a Teacher (Optional)
-                </label>
+                onFocus={() => setShowSuggestions(content.length === 0)}
+                placeholder="What kind act did you do today? Be specific and inspiring..."
+                className="w-full p-4 border border-input rounded-lg resize-none bg-background text-foreground placeholder-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                rows={4}
+                maxLength={280}
+                data-testid="input-deed-content"
+              />
+              
+              {/* Privacy Notice */}
+              <div className="mt-3 p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-800 rounded-lg">
+                <div className="flex items-start space-x-2">
+                  <div className="w-5 h-5 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <Users className="w-3 h-3 text-blue-600 dark:text-blue-400" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-1">
+                      Keep It Anonymous
+                    </p>
+                    <p className="text-xs text-blue-700 dark:text-blue-300 leading-relaxed">
+                      To protect everyone's privacy, please don't use specific names. Instead of "I helped Emma with math," try "I helped a classmate with math."
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between mt-3 text-sm text-muted-foreground">
+                <span>Characters: <span data-testid="text-char-count">{content.length}</span>/280</span>
+                <div className="flex items-center space-x-2">
+                  <MapPin size={12} />
+                  <span data-testid="text-current-location">{location?.fullLocation || 'Location not available'}</span>
+                </div>
+              </div>
+
+              {/* Custom Emoji Picker */}
+              <div className="mt-4">
+                <div className="flex items-center justify-between mb-2">
+                  <label className="text-sm font-medium text-foreground">Add Kindness Emojis (max 3)</label>
+                  <span className="text-xs text-muted-foreground">{selectedEmojis.length}/3</span>
+                </div>
                 
-                {/* Searchable Teacher Combobox - Fast filtering! */}
-                <Popover open={teacherSearchOpen} onOpenChange={setTeacherSearchOpen}>
+                {/* Selected Emojis */}
+                {selectedEmojis.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mb-3 p-2 bg-muted/50 rounded-lg">
+                    {selectedEmojis.map((emojiKey) => {
+                      const emoji = EmojiRegistry[emojiKey];
+                      const EmojiComponent = emoji.component;
+                      return (
+                        <div
+                          key={emojiKey}
+                          className="flex items-center gap-1 bg-background border border-border rounded-full px-2 py-1 text-xs"
+                          data-testid={`selected-emoji-${emojiKey}`}
+                        >
+                          <EmojiComponent size={16} />
+                          <span>{emoji.label}</span>
+                          <button
+                            type="button"
+                            onClick={() => removeEmoji(emojiKey)}
+                            className="ml-1 text-muted-foreground hover:text-destructive transition-colors"
+                            data-testid={`remove-emoji-${emojiKey}`}
+                          >
+                            <X size={12} />
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
+                {/* Emoji Picker Button/Grid */}
+                <Popover open={showEmojiPicker} onOpenChange={setShowEmojiPicker}>
                   <PopoverTrigger asChild>
                     <Button
+                      type="button"
                       variant="outline"
-                      role="combobox"
-                      aria-expanded={teacherSearchOpen}
-                      className="w-full justify-between bg-white border-2 border-orange-300 hover:border-orange-500 hover:bg-white transition-all text-gray-900"
-                      data-testid="select-teacher"
+                      className="w-full justify-start h-auto p-3"
+                      data-testid="button-open-emoji-picker"
                     >
-                      {selectedTeacherId === 'none' 
-                        ? "Type to search teachers..." 
-                        : `${teachers?.find((t: any) => t.id === selectedTeacherId)?.firstName} ${teachers?.find((t: any) => t.id === selectedTeacherId)?.lastName}`
-                      }
-                      <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      <Plus size={16} className="mr-2" />
+                      <span>Choose kindness emojis</span>
+                      <Sparkles size={14} className="ml-auto text-primary" />
                     </Button>
                   </PopoverTrigger>
-                  <PopoverContent className="w-[400px] p-0" align="start">
+                  <PopoverContent className="w-80 p-0" data-testid="popover-emoji-picker">
                     <Command>
-                      <CommandInput 
-                        placeholder="Type teacher's name... (e.g., Sarah, Wilson)" 
-                        className="h-9"
-                      />
-                      <CommandList>
-                        <CommandEmpty>No teacher found.</CommandEmpty>
+                      <div className="flex items-center border-b px-3">
+                        <Search className="mr-2 h-4 w-4 shrink-0 opacity-50" />
+                        <CommandInput
+                          placeholder="Search kindness emojis..."
+                          value={emojiSearch}
+                          onValueChange={setEmojiSearch}
+                          data-testid="input-emoji-search"
+                        />
+                      </div>
+                      <CommandList className="max-h-60">
+                        <CommandEmpty>No emojis found.</CommandEmpty>
                         <CommandGroup>
-                          <CommandItem
-                            value="none"
-                            onSelect={() => {
-                              setSelectedTeacherId('none');
-                              setTeacherSearchOpen(false);
-                            }}
-                            data-testid="select-teacher-none"
-                          >
-                            <Check
-                              className={`mr-2 h-4 w-4 ${selectedTeacherId === 'none' ? 'opacity-100' : 'opacity-0'}`}
-                            />
-                            None - Keep anonymous
-                          </CommandItem>
-                          {teachers?.map((teacher: any) => (
-                            <CommandItem
-                              key={teacher.id}
-                              value={`${teacher.firstName} ${teacher.lastName}`}
-                              onSelect={() => {
-                                setSelectedTeacherId(teacher.id);
-                                setTeacherSearchOpen(false);
-                              }}
-                              data-testid={`select-teacher-${teacher.id}`}
-                            >
-                              <Check
-                                className={`mr-2 h-4 w-4 ${selectedTeacherId === teacher.id ? 'opacity-100' : 'opacity-0'}`}
-                              />
-                              {teacher.firstName} {teacher.lastName}
-                            </CommandItem>
-                          ))}
+                          <div className="grid grid-cols-3 gap-2 p-2">
+                            {filteredEmojis.map((emojiKey) => {
+                              const emoji = EmojiRegistry[emojiKey];
+                              const EmojiComponent = emoji.component;
+                              const isSelected = selectedEmojis.includes(emojiKey);
+                              
+                              return (
+                                <CommandItem
+                                  key={emojiKey}
+                                  onSelect={() => handleEmojiSelect(emojiKey)}
+                                  className={`flex flex-col items-center p-3 cursor-pointer rounded-lg hover:bg-muted ${
+                                    isSelected ? 'bg-primary/10 border-primary' : 'border border-transparent'
+                                  }`}
+                                  data-testid={`emoji-option-${emojiKey}`}
+                                >
+                                  <EmojiComponent size={24} />
+                                  <span className="text-xs mt-1 text-center leading-tight">{emoji.label}</span>
+                                </CommandItem>
+                              );
+                            })}
+                          </div>
                         </CommandGroup>
                       </CommandList>
                     </Command>
                   </PopoverContent>
                 </Popover>
-                <p className="text-xs text-orange-800 mt-2 italic font-medium flex items-center gap-1">
-                  <span className="text-base">✨</span> 
-                  Recognize a teacher who helped you or inspired your kindness act. They'll see your appreciation privately!
-                </p>
-                
-                {/* Show personal message field when teacher is selected */}
-                {selectedTeacherId !== 'none' && (
-                  <div className="mt-3 animate-in fade-in slide-in-from-top-2 duration-300">
-                    <label className="block text-sm font-semibold text-orange-900 mb-2">
-                      💌 Personal Message for {teachers?.find((t: any) => t.id === selectedTeacherId)?.firstName}
-                    </label>
-                    <textarea
-                      value={teacherMessage}
-                      onChange={(e) => setTeacherMessage(e.target.value)}
-                      placeholder="Example: Thank you for helping me understand fractions yesterday. You inspired me to help my friend today!"
-                      className="w-full px-3 py-2 border-2 border-orange-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 resize-none bg-white text-gray-800"
-                      rows={3}
-                      maxLength={280}
-                      data-testid="textarea-teacher-message"
-                    />
-                    <div className="flex justify-between items-center mt-1">
-                      <p className="text-xs text-orange-700 italic">
-                        This private message will brighten their day! 🌟
-                      </p>
-                      <span className="text-xs text-orange-600 font-medium">
-                        {teacherMessage.length}/280
-                      </span>
-                    </div>
-                  </div>
-                )}
               </div>
-            )}
-            
-            <style>{`
-              @keyframes teacher-glow {
-                0%, 100% {
-                  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3), 0 0 20px rgba(252, 211, 77, 0.4);
-                  border-color: #F59E0B;
+
+              {/* Kindness Suggestions */}
+              {showSuggestions && content.length === 0 && (
+                <div className="mt-4 p-4 bg-gradient-to-r from-blue-50 to-purple-50 dark:from-blue-900/20 dark:to-purple-900/20 rounded-lg border border-blue-200 dark:border-blue-800">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Lightbulb className="text-blue-600 dark:text-blue-400" size={16} />
+                    <h4 className="text-sm font-medium text-blue-900 dark:text-blue-100">
+                      Need inspiration? Try these kindness ideas:
+                    </h4>
+                    <Sparkles className="text-purple-500" size={14} />
+                  </div>
+                  <div className="grid gap-2 max-h-32 overflow-y-auto">
+                    {kindnessSuggestions.slice(0, 4).map((suggestion, index) => (
+                      <button
+                        key={index}
+                        type="button"
+                        onClick={() => handleSuggestionClick(suggestion)}
+                        className="text-left p-2 text-sm bg-white dark:bg-gray-800 rounded border border-gray-200 dark:border-gray-700 hover:bg-blue-50 dark:hover:bg-blue-900/30 hover:border-blue-300 dark:hover:border-blue-600 transition-all duration-200 text-gray-700 dark:text-gray-300"
+                        data-testid={`suggestion-${index}`}
+                      >
+                        <span className="text-blue-600 dark:text-blue-400 mr-2">•</span>
+                        {suggestion}
+                      </button>
+                    ))}
+                  </div>
+                  <p className="text-xs text-blue-600 dark:text-blue-400 mt-2 italic">
+                    💡 Click any idea to use it, or write your own unique act of kindness!
+                  </p>
+                </div>
+              )}
+              
+              {/* Category Selection */}
+              <div className="mt-4">
+                <label className="block text-sm font-medium text-foreground mb-2">Category</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { value: 'Helping Others', icon: HandHeart, label: 'Helping Others' },
+                    { value: 'Academic Support', icon: BookOpen, label: 'Academic Support' },
+                    { value: 'Environmental Action', icon: TreePine, label: 'Environmental Action' },
+                    { value: 'Digital Kindness', icon: Smartphone, label: 'Digital Kindness' },
+                    { value: 'Leadership & Mentoring', icon: Crown, label: 'Leadership & Mentoring' },
+                    { value: 'Inclusion & Belonging', icon: UserPlus, label: 'Inclusion & Belonging' },
+                    { value: 'Community Action', icon: Users, label: 'Community Action' },
+                    { value: 'Spreading Positivity', icon: Smile, label: 'Spreading Positivity' },
+                  ].map(({ value, icon: Icon, label }) => (
+                    <label key={value} className="flex items-center">
+                      <input 
+                        type="radio" 
+                        name="category" 
+                        value={value}
+                        checked={category === value}
+                        onChange={(e) => setCategory(e.target.value)}
+                        className="sr-only" 
+                        data-testid={`radio-category-${value.toLowerCase().replace(/\s+/g, '-')}`}
+                      />
+                      <span className={`category-option ${category === value ? 'active' : ''}`}>
+                        <Icon size={14} className="mr-1" />
+                        {label}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* 🎓 TEACHER UPLIFT PULSE: Optional Teacher Appreciation */}
+              {teachers && teachers.length > 0 && (
+                <div className="mt-4 p-4 rounded-xl border-2 animate-pulse-slow" 
+                  style={{
+                    background: 'linear-gradient(135deg, #FEF3C7 0%, #FDE68A 50%, #FCD34D 100%)',
+                    borderColor: '#F59E0B',
+                    boxShadow: '0 4px 15px rgba(245, 158, 11, 0.3), 0 0 20px rgba(252, 211, 77, 0.4)',
+                    animation: 'teacher-glow 3s ease-in-out infinite'
+                  }}
+                >
+                  <label className="block text-sm font-bold text-orange-900 mb-3 flex items-center gap-2">
+                    <GraduationCap size={18} className="text-orange-600" />
+                    💝 Thank a Teacher (Optional)
+                  </label>
+                  
+                  {/* Searchable Teacher Combobox - Fast filtering! */}
+                  <Popover open={teacherSearchOpen} onOpenChange={setTeacherSearchOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        role="combobox"
+                        aria-expanded={teacherSearchOpen}
+                        className="w-full justify-between bg-white border-2 border-orange-300 hover:border-orange-500 hover:bg-white transition-all text-gray-900"
+                        data-testid="select-teacher"
+                      >
+                        {selectedTeacherId === 'none' 
+                          ? "Type to search teachers..." 
+                          : `${teachers?.find((t: any) => t.id === selectedTeacherId)?.firstName} ${teachers?.find((t: any) => t.id === selectedTeacherId)?.lastName}`
+                        }
+                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[400px] p-0" align="start">
+                      <Command>
+                        <CommandInput 
+                          placeholder="Type teacher's name... (e.g., Sarah, Wilson)" 
+                          className="h-9"
+                        />
+                        <CommandList>
+                          <CommandEmpty>No teacher found.</CommandEmpty>
+                          <CommandGroup>
+                            <CommandItem
+                              value="none"
+                              onSelect={() => {
+                                setSelectedTeacherId('none');
+                                setTeacherSearchOpen(false);
+                              }}
+                              data-testid="select-teacher-none"
+                            >
+                              <Check
+                                className={`mr-2 h-4 w-4 ${selectedTeacherId === 'none' ? 'opacity-100' : 'opacity-0'}`}
+                              />
+                              None - Keep anonymous
+                            </CommandItem>
+                            {teachers?.map((teacher: any) => (
+                              <CommandItem
+                                key={teacher.id}
+                                value={`${teacher.firstName} ${teacher.lastName}`}
+                                onSelect={() => {
+                                  setSelectedTeacherId(teacher.id);
+                                  setTeacherSearchOpen(false);
+                                }}
+                                data-testid={`select-teacher-${teacher.id}`}
+                              >
+                                <Check
+                                  className={`mr-2 h-4 w-4 ${selectedTeacherId === teacher.id ? 'opacity-100' : 'opacity-0'}`}
+                                />
+                                {teacher.firstName} {teacher.lastName}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
+                  <p className="text-xs text-orange-800 mt-2 italic font-medium flex items-center gap-1">
+                    <span className="text-base">✨</span> 
+                    Recognize a teacher who helped you or inspired your kindness act. They'll see your appreciation privately!
+                  </p>
+                  
+                  {/* Show personal message field when teacher is selected */}
+                  {selectedTeacherId !== 'none' && (
+                    <div className="mt-3 animate-in fade-in slide-in-from-top-2 duration-300">
+                      <label className="block text-sm font-semibold text-orange-900 mb-2">
+                        💌 Personal Message for {teachers?.find((t: any) => t.id === selectedTeacherId)?.firstName}
+                      </label>
+                      <textarea
+                        value={teacherMessage}
+                        onChange={(e) => setTeacherMessage(e.target.value)}
+                        placeholder="Example: Thank you for helping me understand fractions yesterday. You inspired me to help my friend today!"
+                        className="w-full px-3 py-2 border-2 border-orange-300 rounded-lg focus:border-orange-500 focus:ring-2 focus:ring-orange-200 resize-none bg-white text-gray-800"
+                        rows={3}
+                        maxLength={280}
+                        data-testid="textarea-teacher-message"
+                      />
+                      <div className="flex justify-between items-center mt-1">
+                        <p className="text-xs text-orange-700 italic">
+                          This private message will brighten their day! 🌟
+                        </p>
+                        <span className="text-xs text-orange-600 font-medium">
+                          {teacherMessage.length}/280
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              <style>{`
+                @keyframes teacher-glow {
+                  0%, 100% {
+                    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3), 0 0 20px rgba(252, 211, 77, 0.4);
+                    border-color: #F59E0B;
+                  }
+                  50% {
+                    box-shadow: 0 4px 25px rgba(245, 158, 11, 0.5), 0 0 30px rgba(252, 211, 77, 0.6);
+                    border-color: #FBBF24;
+                  }
                 }
-                50% {
-                  box-shadow: 0 4px 25px rgba(245, 158, 11, 0.5), 0 0 30px rgba(252, 211, 77, 0.6);
-                  border-color: #FBBF24;
-                }
-              }
-            `}</style>
-            
-            <button 
-              type="submit"
-              disabled={postMutation.isPending}
-              className="w-full mt-6 bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
-              data-testid="button-submit-deed"
-            >
-              <span className="inline mr-2 w-4 h-4 flex items-center justify-center text-sm" key="electric-modal">⚡</span>
-              {postMutation.isPending ? 'Sharing...' : 'Share Your Deed'}
-            </button>
-            
-            <p className="mt-3 text-xs text-center text-muted-foreground leading-relaxed">
-              Your post will be completely anonymous. <br />
-              <strong>Your Kindness, Amplified.</strong>
-            </p>
-          </form>
+              `}</style>
+              
+              <button 
+                type="submit"
+                disabled={postMutation.isPending}
+                className="w-full mt-6 bg-primary text-primary-foreground py-3 rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50"
+                data-testid="button-submit-deed"
+              >
+                <span className="inline mr-2 w-4 h-4 flex items-center justify-center text-sm" key="electric-modal">⚡</span>
+                {postMutation.isPending ? 'Sharing...' : 'Share Your Deed'}
+              </button>
+              
+              <p className="mt-3 text-xs text-center text-muted-foreground leading-relaxed">
+                Your post will be completely anonymous. <br />
+                <strong>Your Kindness, Amplified.</strong>
+              </p>
+            </form>
+          </div>
         </div>
       </div>
     </>
