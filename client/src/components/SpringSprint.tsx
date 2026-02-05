@@ -242,7 +242,8 @@ export function SpringSprint() {
                       cursor: isComplete ? 'default' : 'pointer',
                       transition: 'all 0.2s ease'
                     }}
-                    onClick={() => !isComplete && setActiveModuleId(isActive ? null : module.id)}
+                    onClick={() => setActiveModuleId(isActive ? null : module.id)}
+                    style={{ cursor: 'pointer' }}
                   >
                     {isComplete ? (
                       <CheckCircle size={24} style={{ color: '#10B981' }} />
@@ -262,7 +263,7 @@ export function SpringSprint() {
                     </div>
                   </div>
                   
-                  {isActive && !isComplete && (
+                  {isActive && (
                     <div style={{
                       marginTop: '12px',
                       padding: '20px',
@@ -282,18 +283,33 @@ export function SpringSprint() {
                       }}>
                         {module.content || `Complete the "${module.title}" module by reading the content and reflecting on how it applies to your leadership journey.`}
                       </div>
-                      <Button
-                        onClick={() => completeModuleMutation.mutate(module.id)}
-                        disabled={completeModuleMutation.isPending}
-                        style={{
-                          background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
-                          color: 'white',
+                      {!isComplete && (
+                        <Button
+                          onClick={() => completeModuleMutation.mutate(module.id)}
+                          disabled={completeModuleMutation.isPending}
+                          style={{
+                            background: 'linear-gradient(135deg, #6366F1 0%, #4F46E5 100%)',
+                            color: 'white',
+                            fontWeight: '600',
+                            width: '100%'
+                          }}
+                        >
+                          {completeModuleMutation.isPending ? 'Completing...' : 'Mark as Complete'}
+                        </Button>
+                      )}
+                      {isComplete && (
+                        <div style={{
+                          textAlign: 'center',
+                          padding: '8px',
+                          background: '#ECFDF5',
+                          borderRadius: '8px',
+                          color: '#059669',
                           fontWeight: '600',
-                          width: '100%'
-                        }}
-                      >
-                        {completeModuleMutation.isPending ? 'Completing...' : 'Mark as Complete'}
-                      </Button>
+                          fontSize: '13px'
+                        }}>
+                          ✓ Module Completed
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>

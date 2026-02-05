@@ -194,8 +194,45 @@ export function SchoolRewardsView() {
     }
   };
 
+  // Calculate badge tiers
+  const badgeTiers = [
+    { threshold: 100, name: "Bronze Kindness Badge", emoji: "🥉" },
+    { threshold: 200, name: "Silver Kindness Badge", emoji: "🥈" },
+    { threshold: 300, name: "Gold Kindness Badge", emoji: "🥇" },
+  ];
+
   return (
     <div style={{ padding: '0', minHeight: '60vh' }}>
+      {/* Badge Progress Section */}
+      <Card className="mb-6 border-purple-200 bg-purple-50/50">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-sm font-bold flex items-center gap-2">
+            <Award className="w-4 h-4 text-purple-600" />
+            Kindness Milestones
+          </CardTitle>
+          <CardDescription className="text-xs">
+            Earn badges for every 100 tokens. Real rewards unlock at 300 tokens!
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex justify-between items-center gap-4">
+            {badgeTiers.map((tier) => (
+              <div key={tier.threshold} className="flex flex-col items-center flex-1">
+                <div className={`text-2xl mb-1 ${tokenBalance >= tier.threshold ? 'opacity-100 scale-110' : 'opacity-30 grayscale'}`}>
+                  {tier.emoji}
+                </div>
+                <div className="text-[10px] font-bold text-center leading-tight">
+                  {tier.name}
+                </div>
+                <div className={`text-[10px] mt-1 ${tokenBalance >= tier.threshold ? 'text-green-600 font-bold' : 'text-gray-400'}`}>
+                  {tokenBalance >= tier.threshold ? 'Earned!' : `${tier.threshold} Tokens`}
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Token Balance Header - Sticky - School level appropriate styling */}
       <div style={{
         background: isMiddleSchool 
@@ -288,11 +325,11 @@ export function SchoolRewardsView() {
                   <CardFooter>
                     <Button
                       onClick={() => handleRedeemClick(reward)}
-                      disabled={tokenBalance < reward.tokenCost || redeemMutation.isPending}
+                      disabled={tokenBalance < 300 || tokenBalance < reward.tokenCost || redeemMutation.isPending}
                       className="w-full"
                       data-testid={`button-apply-reward-${reward.id}`}
                     >
-                      {tokenBalance < reward.tokenCost ? 'Insufficient Tokens' : 'Apply Now'}
+                      {tokenBalance < 300 ? 'Unlocks at 300 tokens' : tokenBalance < reward.tokenCost ? 'Insufficient Tokens' : 'Apply Now'}
                     </Button>
                   </CardFooter>
                 </Card>
