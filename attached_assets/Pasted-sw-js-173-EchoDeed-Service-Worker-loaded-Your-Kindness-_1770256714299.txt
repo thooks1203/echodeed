@@ -1,0 +1,47 @@
+sw.js:173 EchoDeed™ Service Worker loaded - Your Kindness, Amplified! 🚀
+sw.js:16 EchoDeed™ Service Worker installing...
+sw.js:20 Caching core resources
+sw.js:24 EchoDeed™ Service Worker installed successfully
+sw.js:32 EchoDeed™ Service Worker activating...
+sw.js:41 EchoDeed™ Service Worker activated
+index-Di9l9fyW.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: 0 postsLoading: true
+index-Di9l9fyW.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-Di9l9fyW.js:833 🔍 FETCHING POSTS - activeTab: feed filters: Object
+index-Di9l9fyW.js:833 🌐 POSTS URL: /api/posts
+app:110 EchoDeed™ SW registered successfully
+index-Di9l9fyW.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: 0 postsLoading: true
+index-Di9l9fyW.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-Di9l9fyW.js:1517 SW registered:  ServiceWorkerRegistration
+api/counter:1  Failed to load resource: the server responded with a status of 500 ()
+api/rewards/offers/all/all:1  Failed to load resource: the server responded with a status of 500 ()
+api/posts:1  Failed to load resource: the server responded with a status of 500 ()
+index-Di9l9fyW.js:833 ✅ POSTS RECEIVED: 0 posts
+index-Di9l9fyW.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: undefined postsLoading: false
+index-Di9l9fyW.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-Di9l9fyW.js:833 🎯 RENDERING MAIN FEED - activeTab: feed posts: undefined postsLoading: false
+index-Di9l9fyW.js:626 🎓 PostDeedModal - Teachers: Array(0) Length: 0 isOpen: false
+index-Di9l9fyW.js:40 TypeError: t.filter is not a function
+    at pd (index-Di9l9fyW.js:617:19912)
+    at Q0 (index-Di9l9fyW.js:38:17018)
+    at Dx (index-Di9l9fyW.js:40:3139)
+    at Gk (index-Di9l9fyW.js:40:44833)
+    at Hk (index-Di9l9fyW.js:40:39790)
+    at SR (index-Di9l9fyW.js:40:39718)
+    at Wh (index-Di9l9fyW.js:40:39570)
+    at Ux (index-Di9l9fyW.js:40:35934)
+    at fj (index-Di9l9fyW.js:40:36738)
+    at yi (index-Di9l9fyW.js:38:3279)
+Mx @ index-Di9l9fyW.js:40
+index-Di9l9fyW.js:38 Uncaught TypeError: t.filter is not a function
+    at pd (index-Di9l9fyW.js:617:19912)
+    at Q0 (index-Di9l9fyW.js:38:17018)
+    at Dx (index-Di9l9fyW.js:40:3139)
+    at Gk (index-Di9l9fyW.js:40:44833)
+    at Hk (index-Di9l9fyW.js:40:39790)
+    at SR (index-Di9l9fyW.js:40:39718)
+    at Wh (index-Di9l9fyW.js:40:39570)
+    at Ux (index-Di9l9fyW.js:40:35934)
+    at fj (index-Di9l9fyW.js:40:36738)
+    at yi (index-Di9l9fyW.js:38:3279)
+api/tokens:1  Failed to load resource: the server responded with a status of 500 ()
+api/auth/user:1  Failed to load resource: the server responded with a status of 500 ()
