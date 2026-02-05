@@ -133,6 +133,8 @@ export function SurpriseGiveawayManager() {
     handleCloseModal();
   };
 
+  return null;
+  /*
   return (
     <SurpriseGiveawayModal
       isOpen={showModal}
@@ -141,6 +143,7 @@ export function SurpriseGiveawayManager() {
       onRedeem={handleRedeem}
     />
   );
+  */
 }
 
 // Export test utilities

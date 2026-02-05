@@ -293,6 +293,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
   }, 1000);
   
   // Auto-trigger a test surprise giveaway after 3 seconds in development
+  /*
   if (process.env.NODE_ENV === 'development') {
     setTimeout(async () => {
       try {
@@ -304,6 +305,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
     }, 3000);
   }
+  */
 
   // Auth middleware - Set up before routes
   await setupAuth(app);
