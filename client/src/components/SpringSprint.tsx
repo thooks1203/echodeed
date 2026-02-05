@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
+import { useSchoolLevel } from "@/hooks/useSchoolLevel";
 import { apiRequest } from "@/lib/queryClient";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,7 +9,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { BackButton } from "@/components/BackButton";
-import { CheckCircle, Circle, Trophy, GraduationCap, Heart, FileText, Upload, Award, Calendar, Target, ChevronDown, ChevronRight, BookOpen } from "lucide-react";
+import { CheckCircle, Circle, Trophy, GraduationCap, Heart, FileText, Upload, Award, Calendar, Target, ChevronDown, ChevronRight, BookOpen, Sparkles, Star, Rocket, Users } from "lucide-react";
 
 // Interactive Module Content Viewer - breaks content into clickable sections
 function ModuleContentViewer({ content }: { content: string }) {
@@ -1339,6 +1340,8 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { schoolLevel } = useSchoolLevel();
+  const isMiddleSchool = schoolLevel === 'middle_school';
   const [reflection, setReflection] = useState("");
   const [activeModuleId, setActiveModuleId] = useState<number | null>(null);
   const [quizAnswers, setQuizAnswers] = useState<Record<string, number>>({});
@@ -1346,6 +1349,7 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
 
   const { data: progress, isLoading } = useQuery<LeadershipProgress>({
     queryKey: ['/api/leadership-track/progress'],
+    enabled: !isMiddleSchool, // Only fetch for high school
   });
 
   const { data: questsData } = useQuery<{ verified: number; pending: number; hasMiddleSchoolQuest: boolean }>({
@@ -1422,7 +1426,7 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
   const allModulesComplete = completedModules === 5;
   const wordCount = reflection.trim().split(/\s+/).filter(w => w.length > 0).length;
 
-  if (isLoading) {
+  if (isLoading && !isMiddleSchool) {
     return (
       <div style={{ padding: '40px', textAlign: 'center' }}>
         <div style={{ fontSize: '48px', marginBottom: '16px' }}>🏆</div>
@@ -1431,6 +1435,334 @@ export function SpringSprint({ onBack }: SpringSprintProps) {
     );
   }
 
+  // MIDDLE SCHOOL CONTENT - Age-appropriate Spring Sprint activities
+  if (isMiddleSchool) {
+    return (
+      <div style={{ 
+        maxWidth: '900px', 
+        margin: '0 auto', 
+        padding: '24px',
+        minHeight: '100vh'
+      }}>
+        {/* Back Button */}
+        {onBack && (
+          <div style={{ marginBottom: '16px' }}>
+            <BackButton onClick={onBack} label="Back to Dashboard" />
+          </div>
+        )}
+        
+        {/* Middle School Header - Fun & Colorful */}
+        <div style={{
+          background: 'linear-gradient(135deg, #F59E0B 0%, #EC4899 50%, #8B5CF6 100%)',
+          borderRadius: '20px',
+          padding: '32px',
+          marginBottom: '24px',
+          color: 'white',
+          textAlign: 'center',
+          boxShadow: '0 8px 32px rgba(236, 72, 153, 0.4)'
+        }}>
+          <div style={{ fontSize: '48px', marginBottom: '12px' }}>🌟</div>
+          <h1 style={{ fontSize: '28px', fontWeight: '800', marginBottom: '8px' }}>
+            Spring Kindness Challenge
+          </h1>
+          <h2 style={{ fontSize: '18px', fontWeight: '600', opacity: 0.9, marginBottom: '16px' }}>
+            Be a Kindness Champion! 🏆
+          </h2>
+          <p style={{ fontSize: '14px', opacity: 0.9, maxWidth: '500px', margin: '0 auto' }}>
+            Complete fun kindness activities this spring and earn awesome rewards!
+          </p>
+        </div>
+
+        {/* Weekly Challenge Cards */}
+        <div style={{ marginBottom: '24px' }}>
+          <h3 style={{ fontSize: '20px', fontWeight: '700', marginBottom: '16px', color: '#1f2937' }}>
+            🎯 This Week's Challenges
+          </h3>
+          
+          <div style={{ display: 'grid', gap: '16px' }}>
+            {/* Challenge 1: Compliment Quest */}
+            <Card style={{ 
+              border: '2px solid #10B981', 
+              background: 'linear-gradient(135deg, #ECFDF5 0%, #D1FAE5 100%)'
+            }}>
+              <CardContent style={{ padding: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: '16px',
+                    background: 'linear-gradient(135deg, #10B981, #059669)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '28px'
+                  }}>
+                    💬
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <h4 style={{ fontSize: '16px', fontWeight: '700', color: '#065F46', marginBottom: '4px' }}>
+                      Compliment Quest
+                    </h4>
+                    <p style={{ fontSize: '13px', color: '#047857', marginBottom: '8px' }}>
+                      Give 3 genuine compliments to classmates today!
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Progress value={66} style={{ flex: 1, height: '8px' }} />
+                      <span style={{ fontSize: '12px', fontWeight: '600', color: '#059669' }}>2/3</span>
+                    </div>
+                  </div>
+                  <div style={{
+                    background: '#10B981',
+                    color: 'white',
+                    padding: '8px 12px',
+                    borderRadius: '20px',
+                    fontSize: '12px',
+                    fontWeight: '700'
+                  }}>
+                    +15 Tokens
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Challenge 2: Helper Hero */}
+            <Card style={{ 
+              border: '2px solid #8B5CF6', 
+              background: 'linear-gradient(135deg, #F5F3FF 0%, #EDE9FE 100%)'
+            }}>
+              <CardContent style={{ padding: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: '16px',
+                    background: 'linear-gradient(135deg, #8B5CF6, #7C3AED)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '28px'
+                  }}>
+                    🦸
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <h4 style={{ fontSize: '16px', fontWeight: '700', color: '#5B21B6', marginBottom: '4px' }}>
+                      Helper Hero
+                    </h4>
+                    <p style={{ fontSize: '13px', color: '#6D28D9', marginBottom: '8px' }}>
+                      Help a teacher or staff member with a task
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Progress value={0} style={{ flex: 1, height: '8px' }} />
+                      <span style={{ fontSize: '12px', fontWeight: '600', color: '#7C3AED' }}>0/1</span>
+                    </div>
+                  </div>
+                  <div style={{
+                    background: '#8B5CF6',
+                    color: 'white',
+                    padding: '8px 12px',
+                    borderRadius: '20px',
+                    fontSize: '12px',
+                    fontWeight: '700'
+                  }}>
+                    +25 Tokens
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Challenge 3: Friendship Friday */}
+            <Card style={{ 
+              border: '2px solid #EC4899', 
+              background: 'linear-gradient(135deg, #FDF2F8 0%, #FCE7F3 100%)'
+            }}>
+              <CardContent style={{ padding: '20px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                  <div style={{
+                    width: '56px',
+                    height: '56px',
+                    borderRadius: '16px',
+                    background: 'linear-gradient(135deg, #EC4899, #DB2777)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '28px'
+                  }}>
+                    🤝
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <h4 style={{ fontSize: '16px', fontWeight: '700', color: '#9D174D', marginBottom: '4px' }}>
+                      Friendship Friday
+                    </h4>
+                    <p style={{ fontSize: '13px', color: '#BE185D', marginBottom: '8px' }}>
+                      Sit with someone new at lunch this week
+                    </p>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Progress value={100} style={{ flex: 1, height: '8px' }} />
+                      <span style={{ fontSize: '12px', fontWeight: '600', color: '#DB2777' }}>✓ Done!</span>
+                    </div>
+                  </div>
+                  <div style={{
+                    background: '#EC4899',
+                    color: 'white',
+                    padding: '8px 12px',
+                    borderRadius: '20px',
+                    fontSize: '12px',
+                    fontWeight: '700'
+                  }}>
+                    +20 Tokens
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* Spring Kindness Bingo */}
+        <Card style={{ 
+          marginBottom: '24px', 
+          border: '2px solid #F59E0B',
+          background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)'
+        }}>
+          <CardHeader>
+            <CardTitle style={{ 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '12px',
+              color: '#92400E'
+            }}>
+              <span style={{ fontSize: '28px' }}>🎲</span>
+              Spring Kindness Bingo
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p style={{ fontSize: '14px', color: '#B45309', marginBottom: '16px' }}>
+              Complete a row, column, or diagonal to earn bonus tokens!
+            </p>
+            
+            {/* Simple 3x3 Bingo Grid */}
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(3, 1fr)', 
+              gap: '8px',
+              maxWidth: '320px',
+              margin: '0 auto'
+            }}>
+              {[
+                { text: 'Hold door', done: true },
+                { text: 'Say thanks', done: true },
+                { text: 'Share snack', done: false },
+                { text: 'Help clean', done: false },
+                { text: '⭐ FREE', done: true },
+                { text: 'Smile wave', done: true },
+                { text: 'Pick up trash', done: false },
+                { text: 'Encourage', done: true },
+                { text: 'Include new friend', done: false },
+              ].map((cell, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    aspectRatio: '1',
+                    borderRadius: '12px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '11px',
+                    fontWeight: '600',
+                    textAlign: 'center',
+                    padding: '8px',
+                    background: cell.done 
+                      ? 'linear-gradient(135deg, #10B981, #059669)' 
+                      : 'white',
+                    color: cell.done ? 'white' : '#6B7280',
+                    border: cell.done ? 'none' : '2px solid #E5E7EB',
+                    boxShadow: cell.done ? '0 2px 8px rgba(16, 185, 129, 0.3)' : 'none'
+                  }}
+                >
+                  {cell.done && cell.text !== '⭐ FREE' ? '✓ ' : ''}{cell.text}
+                </div>
+              ))}
+            </div>
+            
+            <div style={{ 
+              marginTop: '16px', 
+              textAlign: 'center',
+              padding: '12px',
+              background: 'rgba(245, 158, 11, 0.2)',
+              borderRadius: '12px'
+            }}>
+              <span style={{ fontSize: '14px', fontWeight: '600', color: '#92400E' }}>
+                🎁 Complete a line for +50 bonus tokens!
+              </span>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Fun Achievements Section */}
+        <Card style={{ marginBottom: '24px' }}>
+          <CardHeader>
+            <CardTitle style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <Trophy className="text-yellow-500" size={24} />
+              Your Kindness Achievements
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px' }}>
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '16px',
+                background: 'linear-gradient(135deg, #FEF3C7, #FDE68A)',
+                borderRadius: '16px'
+              }}>
+                <div style={{ fontSize: '32px', marginBottom: '8px' }}>🌟</div>
+                <div style={{ fontSize: '12px', fontWeight: '600', color: '#92400E' }}>Kindness Star</div>
+                <div style={{ fontSize: '10px', color: '#B45309' }}>10 kind acts</div>
+              </div>
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '16px',
+                background: 'linear-gradient(135deg, #E0E7FF, #C7D2FE)',
+                borderRadius: '16px'
+              }}>
+                <div style={{ fontSize: '32px', marginBottom: '8px' }}>🤗</div>
+                <div style={{ fontSize: '12px', fontWeight: '600', color: '#3730A3' }}>Friend Finder</div>
+                <div style={{ fontSize: '10px', color: '#4338CA' }}>3 new friends</div>
+              </div>
+              <div style={{ 
+                textAlign: 'center', 
+                padding: '16px',
+                background: '#F3F4F6',
+                borderRadius: '16px',
+                opacity: 0.6
+              }}>
+                <div style={{ fontSize: '32px', marginBottom: '8px' }}>🦸</div>
+                <div style={{ fontSize: '12px', fontWeight: '600', color: '#6B7280' }}>Super Helper</div>
+                <div style={{ fontSize: '10px', color: '#9CA3AF' }}>Help 5 teachers</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Encouragement Banner */}
+        <div style={{
+          background: 'linear-gradient(135deg, #06B6D4 0%, #8B5CF6 100%)',
+          borderRadius: '16px',
+          padding: '24px',
+          textAlign: 'center',
+          color: 'white'
+        }}>
+          <div style={{ fontSize: '32px', marginBottom: '8px' }}>🚀</div>
+          <h3 style={{ fontSize: '18px', fontWeight: '700', marginBottom: '8px' }}>
+            You're Doing Amazing!
+          </h3>
+          <p style={{ fontSize: '14px', opacity: 0.9 }}>
+            Keep spreading kindness - every small act makes a big difference!
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // HIGH SCHOOL CONTENT - Leadership Certificate Track
   return (
     <div style={{ 
       maxWidth: '900px', 
