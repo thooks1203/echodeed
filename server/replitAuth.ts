@@ -172,20 +172,33 @@ export const isAuthenticated: RequestHandler = async (req, res, next) => {
     const demoRole = req.query.demo_role || req.headers['x-demo-role'] || 
                      (req.headers['user-agent']?.includes('Teacher') ? 'teacher' : 'student');
     
-    let demoUser;
-    if (demoRole === 'teacher') {
-      demoUser = {
+    const demoUsers: Record<string, any> = {
+      teacher: {
         id: 'teacher-001',
-        name: 'Ms. Sarah Wilson', 
-        email: 'sarah.wilson@school.edu',
+        name: 'Ms. Kim Jones', 
+        email: 'kjones@easterngs.gcsnc.com',
         role: 'teacher',
         schoolRole: 'teacher',
         schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
-      };
-    } else {
-      // Default to Sofia Rodriguez for student or any other role
-      demoUser = DEMO_USER_STUDENT;
-    }
+      },
+      admin: {
+        id: 'admin-001',
+        name: 'Dr. Darrell Harris',
+        email: 'dharris@easterngs.gcsnc.com',
+        role: 'admin',
+        schoolRole: 'admin',
+        schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
+      },
+      parent: {
+        id: 'parent-001',
+        name: 'Maria Rodriguez',
+        email: 'maria.rodriguez@email.com',
+        role: 'parent',
+        schoolRole: 'parent',
+        schoolId: 'bc016cad-fa89-44fb-aab0-76f82c574f78'
+      }
+    };
+    let demoUser = demoUsers[demoRole as string] || DEMO_USER_STUDENT;
     
     // Create mock user for smooth demo experience
     const nameParts = demoUser.name.split(' ');

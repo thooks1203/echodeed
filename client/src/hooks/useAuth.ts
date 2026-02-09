@@ -91,8 +91,14 @@ export function switchDemoRole(role: SchoolRole) {
   // This ensures the session properly recognizes the school level
   localStorage.setItem('demo_school_level_override', 'high_school');
   
-  // Ensure session exists for API calls - regenerate to force new session
-  const sessionId = `demo-${role}-${Date.now()}`;
+  const demoUserIds: Record<string, string> = {
+    student: 'student-001',
+    teacher: 'teacher-001',
+    admin: 'admin-001',
+    parent: 'parent-001',
+    counselor: 'teacher-001'
+  };
+  const sessionId = demoUserIds[role] || `demo-${role}`;
   localStorage.setItem('echodeed_session', sessionId);
   
   // Navigate to appropriate dashboard
