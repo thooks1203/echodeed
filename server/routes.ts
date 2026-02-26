@@ -12789,29 +12789,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get('/api/schools/search', async (req, res) => {
     try {
       const { query } = req.query;
-      
-      if (!query || typeof query !== 'string') {
+
+      if (!query || typeof query !== 'string' || query.length < 2) {
         return res.json([]);
       }
-      
-      // Get all corporate accounts that are schools
-      const allAccounts = await storage.getCorporateAccounts();
-      
-      const educationAccounts = allAccounts.filter((account: any) => account.industry === 'education');
-      
-      const schools = educationAccounts
-        .filter((account: any) => 
-          account.companyName.toLowerCase().includes(query.toLowerCase())
+
+      const { schools: schoolsTable } = await import('@shared/schema');
+      const { ilike, and, eq: eqOp } = await import('drizzle-orm');
+
+      const results = await db
+        .select({
+          id: schoolsTable.id,
+          name: schoolsTable.name,
+          city: schoolsTable.city,
+          state: schoolsTable.state,
+          enrollmentCode: schoolsTable.enrollmentCode,
+          isActive: schoolsTable.isActive
+        })
+        .from(schoolsTable)
+        .where(
+          and(
+            ilike(schoolsTable.name, `%${query}%`),
+            eqOp(schoolsTable.isActive, 1)
+          )
         )
-        .map((account: any) => ({
-          id: account.id,
-          name: account.companyName,
-          domain: account.domain,
-          requiresEnrollmentCode: account.requiresEnrollmentCode !== 0,
-          hasCommunityCode: !!account.communityCode
-        }))
-        .slice(0, 10); // Limit to 10 results
-      res.json(schools);
+        .limit(10);
+
+      const mapped = results.map((school: any) => ({
+        id: school.id,
+        name: school.name,
+        city: school.city,
+        state: school.state,
+        requiresEnrollmentCode: !!school.enrollmentCode,
+        hasCommunityCode: false
+      }));
+
+      res.json(mapped);
     } catch (error: any) {
       console.error('Failed to search schools:', error);
       res.status(500).json({ message: 'Failed to search schools' });
@@ -12821,29 +12834,40 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Get all schools - For dashboard display
   app.get('/api/schools', async (req, res) => {
     try {
-      // Get all corporate accounts that are schools
-      const allAccounts = await storage.getCorporateAccounts();
-      const schools = allAccounts
-        .filter((account: any) => account.industry === 'education')
-        .map((account: any) => ({
-          id: account.id,
-          name: account.companyName,
-          type: account.companySize === 'small' ? 'elementary' : 
-                account.companySize === 'medium' ? 'middle' : 'high',
-          studentCount: account.maxEmployees ? account.maxEmployees - 50 : 300, // Subtract staff estimate
-          teacherCount: Math.floor((account.maxEmployees || 300) * 0.1), // 10% of total
-          totalKindnessActs: Math.floor(Math.random() * 2000) + 500, // Sample data for now
-          avgKindnessScore: (Math.random() * 2 + 7).toFixed(1), // 7.0-9.0 range
-          domain: account.domain,
-          contactEmail: account.contactEmail,
-          contactName: account.contactName,
-          isActive: account.isActive,
-          billingStatus: account.billingStatus,
-          requiresEnrollmentCode: account.requiresEnrollmentCode !== 0,
-          hasCommunityCode: !!account.communityCode
-        }));
+      const { schools: schoolsTable } = await import('@shared/schema');
+      const { eq: eqOp } = await import('drizzle-orm');
 
-      res.json(schools);
+      const results = await db
+        .select({
+          id: schoolsTable.id,
+          name: schoolsTable.name,
+          city: schoolsTable.city,
+          state: schoolsTable.state,
+          schoolLevel: schoolsTable.schoolLevel,
+          studentCount: schoolsTable.studentCount,
+          teacherCount: schoolsTable.teacherCount,
+          kindnessPostsCount: schoolsTable.kindnessPostsCount,
+          isActive: schoolsTable.isActive,
+          enrollmentCode: schoolsTable.enrollmentCode
+        })
+        .from(schoolsTable)
+        .where(eqOp(schoolsTable.isActive, 1));
+
+      const mapped = results.map((school: any) => ({
+        id: school.id,
+        name: school.name,
+        city: school.city,
+        state: school.state,
+        type: school.schoolLevel === 'middle_school' ? 'middle' : 'high',
+        studentCount: school.studentCount || 0,
+        teacherCount: school.teacherCount || 0,
+        totalKindnessActs: school.kindnessPostsCount || 0,
+        isActive: school.isActive,
+        requiresEnrollmentCode: !!school.enrollmentCode,
+        hasCommunityCode: false
+      }));
+
+      res.json(mapped);
     } catch (error: any) {
       console.error('Failed to get schools:', error);
       res.status(500).json({ message: 'Failed to get schools' });
