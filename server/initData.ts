@@ -95,6 +95,105 @@ export async function initializeSampleData() {
       log(`⚠️ Could not add rarity column: ${error.message}`);
     }
     
+    // Ensure schools table has updated_at column (schema migration)
+    try {
+      const { db: migDb } = await import('./db');
+      const { sql: rawSql } = await import('drizzle-orm');
+      await migDb.execute(rawSql`ALTER TABLE schools ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP DEFAULT NOW()`);
+      log('✅ schools.updated_at column verified');
+    } catch (err: any) {
+      log(`⚠️ Could not add schools.updated_at: ${err.message}`);
+    }
+
+    // Seed the schools table (primary source for student registration)
+    try {
+      log('🏫 Seeding schools table for student registration...');
+      const { db: schoolDb } = await import('./db');
+      const { schools: schoolsTable } = await import('@shared/schema');
+      const { eq: eqSchool } = await import('drizzle-orm');
+
+      const schoolsToSeed = [
+        {
+          name: 'Eastern Guilford High School',
+          city: 'Gibsonville',
+          state: 'NC',
+          country: 'United States',
+          zipCode: '27249',
+          phoneNumber: '(336) 449-4521',
+          enrollmentCode: 'EGHS-2025',
+          schoolLevel: 'high_school' as const,
+          studentCount: 1450,
+          teacherCount: 150,
+          subscriptionTier: 'free',
+          subscriptionStatus: 'active',
+          isActive: 1,
+        },
+        {
+          name: 'Eastern Guilford Middle School',
+          city: 'Gibsonville',
+          state: 'NC',
+          country: 'United States',
+          zipCode: '27249',
+          phoneNumber: '(336) 449-4512',
+          enrollmentCode: 'EGMS-2025',
+          schoolLevel: 'middle_school' as const,
+          studentCount: 950,
+          teacherCount: 100,
+          subscriptionTier: 'free',
+          subscriptionStatus: 'active',
+          isActive: 1,
+        },
+        {
+          name: 'Turrentine Middle School',
+          city: 'Burlington',
+          state: 'NC',
+          country: 'United States',
+          enrollmentCode: 'TMS-2025',
+          schoolLevel: 'middle_school' as const,
+          studentCount: 400,
+          teacherCount: 45,
+          subscriptionTier: 'free',
+          subscriptionStatus: 'active',
+          isActive: 1,
+        },
+        {
+          name: 'Burlington Christian Academy',
+          city: 'Burlington',
+          state: 'NC',
+          country: 'United States',
+          enrollmentCode: 'BCA-2025',
+          schoolLevel: 'high_school' as const,
+          studentCount: 450,
+          teacherCount: 50,
+          subscriptionTier: 'free',
+          subscriptionStatus: 'active',
+          isActive: 1,
+        },
+      ];
+
+      for (const schoolData of schoolsToSeed) {
+        try {
+          const existing = await schoolDb.select({ id: schoolsTable.id })
+            .from(schoolsTable)
+            .where(eqSchool(schoolsTable.name, schoolData.name));
+          if (existing.length === 0) {
+            await schoolDb.insert(schoolsTable).values(schoolData);
+            log(`✓ Added ${schoolData.name} to schools table`);
+          } else {
+            await schoolDb.update(schoolsTable)
+              .set({ enrollmentCode: schoolData.enrollmentCode, isActive: 1 })
+              .where(eqSchool(schoolsTable.name, schoolData.name));
+            log(`✓ Verified ${schoolData.name} in schools table`);
+          }
+        } catch (schoolErr: any) {
+          log(`⚠️ Could not seed ${schoolData.name}: ${schoolErr.message}`);
+        }
+      }
+      log('✅ Schools table seeded successfully');
+    } catch (error: any) {
+      log(`⚠️ Could not seed schools table: ${error.message}`);
+    }
+
     // Update schools with enrollment codes for secure student registration
     try {
       log('🔐 Updating schools with enrollment codes...');
